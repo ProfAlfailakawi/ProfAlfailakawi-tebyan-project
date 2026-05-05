@@ -126,17 +126,6 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                         {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleString(language === 'ar' ? 'ar-SA' : 'en-US') : 'Just now'}
                       </span>
                       <div className="flex gap-2">
-                        {msg.email && (
-                          <a
-                            href={`mailto:${msg.email}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="p-1.5 px-3 rounded-full text-zinc-600 bg-white border border-zinc-200 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-colors flex items-center gap-1.5"
-                            title={language === 'ar' ? 'رد عبر الإيميل' : 'Reply via email'}
-                          >
-                            <Mail className="w-3.5 h-3.5" />
-                            <span className="text-xs font-bold">{language === 'ar' ? 'رد' : 'Reply'}</span>
-                          </a>
-                        )}
                         {msg.status === 'new' && (
                           <button
                             onClick={(e) => { e.stopPropagation(); markAsRead(msg.id, msg.status); }}

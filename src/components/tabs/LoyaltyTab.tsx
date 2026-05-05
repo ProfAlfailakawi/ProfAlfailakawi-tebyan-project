@@ -10,7 +10,6 @@ import { cn } from '../../lib/utils';
 import { collection, onSnapshot, query, where, orderBy, limit, doc, updateDoc, Timestamp, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { TabHeader } from '../TabHeader';
-import { CouponsManager } from './CouponsManager';
 
 interface Customer {
   id: string;
@@ -25,7 +24,6 @@ interface Customer {
 }
 
 export const LoyaltyTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
-  const [activeTab, setActiveTab] = useState<'customers' | 'coupons'>('customers');
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -137,27 +135,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
         onBack={() => handleTabChange('home')}
       />
 
-      <div className="flex bg-zinc-100 p-1 rounded-2xl w-fit mt-6 mb-2">
-        <button 
-          onClick={() => setActiveTab('customers')}
-          className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'customers' ? "bg-white text-black shadow-sm" : "text-zinc-500 hover:text-black")}
-        >
-          {language === 'ar' ? 'العملاء والولاء' : 'Customers & Loyalty'}
-        </button>
-        <button 
-          onClick={() => setActiveTab('coupons')}
-          className={cn("px-6 py-2 rounded-xl text-sm font-bold transition-all", activeTab === 'coupons' ? "bg-white text-black shadow-sm" : "text-zinc-500 hover:text-black")}
-        >
-          {language === 'ar' ? 'إدارة الكوبونات' : 'Coupons Management'}
-        </button>
-      </div>
-
-      {activeTab === 'coupons' ? (
-        <CouponsManager language={language} />
-      ) : (
-        <>
-          {/* Analytics Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 mb-8">
+      {/* Analytics Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 mb-8">
         {[
           { label: 'إجمالي العملاء', val: customers.length, color: 'emerald', icon: Users },
           { label: 'متوسط النقاط', val: Math.round(customers.reduce((acc, c) => acc + c.points, 0) / (customers.length || 1)), color: 'indigo', icon: TrendingUp },
@@ -459,8 +438,6 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
             </div>
          </div>
       </div>
-      </>
-      )}
     </div>
   );
 };

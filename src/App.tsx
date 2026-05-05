@@ -470,7 +470,7 @@ const App: React.FC = () => {
              </div>
              <p className="text-[13px] font-medium">نظامك لفهم العالم &copy; {new Date().getFullYear()}</p>
              <div className="mt-4 flex flex-col items-center gap-1 opacity-50 scale-75">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">Version 3.1.3.Release</span>
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">Version 3.1.1.Release</span>
              </div>
           </footer>
         </div>
