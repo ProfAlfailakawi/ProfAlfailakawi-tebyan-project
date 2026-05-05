@@ -82,7 +82,7 @@ ai.models.generateContent = async (params: any & { skipCache?: boolean }) => {
   return result;
 };
 
-const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-2.0-flash";
 
 function tryRepairJson(json: string): string {
   let cleaned = json.trim();
