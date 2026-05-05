@@ -1,0 +1,88 @@
+:root {
+  --color-brand-primary: #000000;
+  --color-brand-accent: #000000;
+  --color-brand-bg: #FAFAFA;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Alexandria", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Amiri", serif;
+  
+  --color-brand-primary: #000000;
+  --color-brand-accent: #000000;
+  --color-brand-bg: #FAFAFA;
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-zinc-50 text-zinc-900 selection:bg-zinc-200 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  button, [type="button"], [type="submit"], [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
+
+.markdown-body {
+  @apply prose prose-zinc prose-base max-w-none prose-headings:font-black prose-headings:tracking-tighter prose-p:text-zinc-700 prose-p:leading-[1.85] prose-strong:text-zinc-900 prose-p:mb-5 prose-li:mb-2 prose-ul:my-5 prose-h3:mt-8;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.markdown-body pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.markdown-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-inner p {
+  margin-bottom: 0.75rem;
+}
+.markdown-inner p:last-child {
+  margin-bottom: 0;
+}
+.markdown-inner ul {
+  list-style-type: disc;
+  padding-inline-start: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.markdown-inner li {
+  margin-bottom: 0.5rem;
+}

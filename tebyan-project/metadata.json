@@ -1,0 +1,8 @@
+{
+  "name": "تبيان",
+  "description": "نظامك لفهم العالم",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": []
+}

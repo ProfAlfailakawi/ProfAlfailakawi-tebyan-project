@@ -24,11 +24,6 @@ service cloud.firestore {
       allow list, delete: if isAdmin();
     }
 
-    match /ai_logs/{logId} {
-      allow read, write: if isAdmin();
-      allow create: if true;
-    }
-    
     match /search_logs/{logId} {
       allow create: if true; 
       allow read: if true;
