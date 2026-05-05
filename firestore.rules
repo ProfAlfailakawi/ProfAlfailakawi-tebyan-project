@@ -1,0 +1,94 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helpers
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isAdminEmail() { 
+      return isSignedIn() && 'email' in request.auth.token && 
+             (request.auth.token.email.lower() == 'alfailakawidrahmad@gmail.com'); 
+    }
+    function isAdminRole() { 
+      // Avoid failing if users doc does not exist
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'; 
+    }
+    function isAdmin() { return isAdminEmail() || isAdminRole(); }
+
+    match /users/{userId} {
+      allow get, update, create: if isOwner(userId) || isAdmin();
+      allow list, delete: if isAdmin();
+    }
+
+    match /search_logs/{logId} {
+      allow create: if true; 
+      allow read: if true;
+      allow update, delete: if isAdmin();
+    }
+    
+    match /search_trends/{trendId} {
+      allow read, write: if true;
+    }
+
+    match /missing_questions/{questionId} {
+      allow read, write: if true;
+    }
+
+    match /qawl_fasl_backup_before_reset/{backupId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /system_config/{configId} {
+      allow read, create, update: if true;
+      allow delete: if isAdmin();
+    }
+
+    match /system_configs/{configId} {
+      allow read, create, update: if true;
+      allow delete: if isAdmin();
+    }
+
+    match /system_settings/{settingId} {
+      allow read, create, update: if true;
+      allow delete: if isAdmin();
+    }
+
+    match /qawl_fasl_generation_logs/{logId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+    }
+
+    match /qawl_fasl_questions/{questionId} {
+      allow read: if true;
+      
+      // Anyone can create (to allow AI generations from user searches)
+      allow create: if true;
+      
+      // Anyone can update viewCount/feedback
+      allow update: if isAdmin() || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['viewCount', 'view_count', 'feedback', 'updatedAt', 'lastUpdated', 'last_updated'])
+      ); 
+      
+      allow delete: if isAdmin();
+    }
+
+    match /analytics/{eventId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+    }
+
+    match /contact_requests/{requestId} {
+      allow create: if true;
+      allow read, write: if isAdmin();
+    }
+
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
