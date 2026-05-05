@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "gen-lang-client-0579828362",
     "public": "dist",
     "ignore": [
       "firebase.json",
@@ -8,17 +9,12 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
-        "function": "api"
-      },
-      {
         "source": "**",
-        "destination": "/index.html"
+        "run": {
+          "serviceId": "service",
+          "region": "europe-west1"
+        }
       }
     ]
-  },
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20"
   }
 }
