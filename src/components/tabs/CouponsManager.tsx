@@ -115,7 +115,7 @@ export const CouponsManager = ({ language }: { language: string }) => {
                   required
                   min="1" max="100"
                   value={discount}
-                  onChange={e => setDiscount(e.target.value)}
+                  onChange={e => setCode(e.target.value)}
                   placeholder="20"
                   className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 rtl:pr-10 ltr:pl-10 font-bold text-black"
                 />
