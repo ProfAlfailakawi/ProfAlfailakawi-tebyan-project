@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, RefreshCw, Headphones, Printer, Volume2, Square } from 'lucide-react';
+import { Users, RefreshCw, Headphones, Printer, Volume2, Square, BookOpen, Search, Library, ExternalLink, PlayCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { generateAudioForText } from '../../services/qawlFaslAiService';
@@ -330,7 +330,8 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                  <div className="space-y-4">
-                    <h4 className="font-bold text-zinc-400 uppercase tracking-widest text-sm">{language === 'ar' ? 'المراجع والمصادر' : 'Global References'}</h4>
+                    <h4 className="font-bold text-zinc-400 uppercase tracking-widest text-sm"><Library className="w-4 h-4" />
+                       {language === 'ar' ? 'المراجع والمصادر العالمية' : 'Global References & Sources'}</h4>
                     <div className="flex flex-wrap gap-2">
                        {councilData?.global_references?.map((r: string, i: number) => (
                          <span key={i} className="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold text-zinc-300">{r}</span>
@@ -338,7 +339,8 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
                     </div>
                  </div>
                  <div className="space-y-4">
-                    <h4 className="font-bold text-zinc-400 uppercase tracking-widest text-sm">{language === 'ar' ? 'توصيات الميديا والبحث' : 'Media Recommendations'}</h4>
+                    <h4 className="font-bold text-zinc-400 uppercase tracking-widest text-sm"><PlayCircle className="w-4 h-4" />
+                       {language === 'ar' ? 'توصيات الميديا والبحث' : 'Media & Research Picks'}</h4>
                     <div className="grid gap-4">
                        {councilData?.media_recommendations?.map((m: any, i: number) => (
                          <a 

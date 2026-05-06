@@ -1371,7 +1371,9 @@ STRICT LAYOUT RULES:
    - advice: 3 points, each MAX 1 line.
    - genius_hack: MAX 1 line.
 3. "executive_verdict": 2 lines total summary.
-4. Tone: Calm, human, practical. NO academic lecturing.
+4. "global_references": List 3-5 real-world or historical high-level references (books, theories, or famous thinkers).
+5. "media_recommendations": Provide 3 specific learning resources (YouTube search terms or book titles) with brief descriptions.
+6. Tone: Calm, human, practical. NO academic lecturing.
 Return raw JSON:
 {
   "council_discussion": [ { "speaker": "A", "message": "B" } ],
@@ -1427,7 +1429,7 @@ Return raw JSON:
                 }
               }
             },
-            required: ["council_discussion", "consultants", "executive_verdict"]
+            required: ["council_discussion", "consultants", "executive_verdict", "global_references", "media_recommendations"]
           }
         }
       });
