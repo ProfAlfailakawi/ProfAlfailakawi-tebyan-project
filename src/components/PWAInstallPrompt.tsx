@@ -27,6 +27,8 @@ export const PWAHeaderButton = () => {
       e.preventDefault();
       setDeferredPrompt(e);
       setIsInstallable(true);
+      // Mark as seen for this session once shown
+      sessionStorage.setItem('pwa_install_prompt_seen', 'true');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -34,6 +36,8 @@ export const PWAHeaderButton = () => {
     // If it's iOS and not standalone, it's installable via Share -> Add to Home Screen
     if (_isIOS) {
       setIsInstallable(true);
+      // Mark as seen for this session once shown
+      sessionStorage.setItem('pwa_install_prompt_seen', 'true');
     }
 
     return () => {
@@ -42,10 +46,6 @@ export const PWAHeaderButton = () => {
   }, []);
 
   const handleInstallClick = async () => {
-    // Mark as seen in session
-    sessionStorage.setItem('pwa_install_prompt_seen', 'true');
-    setIsInstallable(false);
-
     if (isIOS) {
       setShowIOSInstructions(true);
       return;
@@ -59,7 +59,7 @@ export const PWAHeaderButton = () => {
       }
       setDeferredPrompt(null);
     } else {
-        // Fallback or Android showing instructions if needed
+        // Fallback
         alert("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).");
     }
   };
