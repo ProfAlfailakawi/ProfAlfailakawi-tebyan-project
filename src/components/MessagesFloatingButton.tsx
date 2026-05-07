@@ -44,7 +44,7 @@ export function MessagesFloatingButton() {
   return (
     <>
       <motion.button
-        className="fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full bg-slate-900 text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform"
+        className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-slate-900 text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform"
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.9 }}
       >

@@ -84,7 +84,7 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
                                <Sparkles className="w-4 h-4" /> 
                                {language === 'ar' ? 'نقطة الانطلاق:' : 'Starting Point:'} <span className="text-white">{contextTopic}</span>
                            </div>
-                           <div className="markdown-body font-serif rtl:font-sans leading-loose text-lg md:text-xl text-zinc-300">
+                           <div className="markdown-body font-serif rtl:font-sans leading-loose text-lg md:text-xl text-zinc-100">
                                <ReactMarkdown>{serendipityPath}</ReactMarkdown>
                            </div>
                        </div>

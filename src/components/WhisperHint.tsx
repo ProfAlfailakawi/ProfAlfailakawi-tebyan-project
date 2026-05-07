@@ -39,7 +39,7 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
       clearTimeout(idleTimer);
       // If user is inactive for 10 seconds, show a whisper hint
       idleTimer = setTimeout(() => {
-        const hints = language === 'ar' ? [
+        const rawHints = language === 'ar' ? [
           'يبدو أنك تتأمل.. هل جربت الضغط على ⌘+K للبحث السريع؟',
           'هل تبحث عن إجابة حاسمة؟ اسأل "قول فصل".',
           'يمكن تجربة وضع التركيز لقراءة أعمق.',
@@ -56,6 +56,8 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
           'Dwelling on this text? Should I expand?',
           'There are new articles that might touch your current interests..'
         ];
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+        const hints = isMobile ? rawHints.filter(h => !h.includes('⌘') && !h.includes('Cmd')) : rawHints;
         setHint(hints[Math.floor(Math.random() * hints.length)]);
         setShow(true);
       }, 15000); // 15 seconds of inactivity
