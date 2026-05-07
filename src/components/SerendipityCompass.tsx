@@ -41,7 +41,7 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
             setIsOpen(true);
             if (!serendipityPath && !isLoading) exploreTheUnknown();
         }}
-        className="fixed bottom-24 right-5 md:right-8 z-40 bg-zinc-900 border border-zinc-700 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all group overflow-hidden"
+        className="fixed bottom-40 left-4 md:left-6 z-40 bg-zinc-900 border border-zinc-700 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all group overflow-hidden"
         title={language === 'ar' ? 'بوصلة التيه (الصدفة)' : 'Serendipity Compass'}
       >
         <div className="absolute inset-0 bg-blue-500/20 blur-md group-hover:bg-purple-500/40 transition-colors"></div>

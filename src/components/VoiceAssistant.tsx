@@ -4,6 +4,7 @@ import { Mic, MicOff, Loader2, Sparkles, X, Volume2, Activity } from 'lucide-rea
 import { universalOracle } from '../services/gemini';
 import { generateAudioForText } from '../services/qawlFaslAiService';
 import { cn } from '../lib/utils';
+import ReactMarkdown from 'react-markdown';
 
 export const VoiceAssistant = ({ language }: { language: string }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -222,8 +223,8 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
                     )}
                     {response && !isProcessing && (
                         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full">
-                            <div className="p-8 max-h-[60vh] overflow-y-auto w-full no-scrollbar">
-                                <p className="text-white font-medium text-center text-3xl md:text-5xl leading-relaxed tracking-tight">{response}</p>
+                            <div className="p-8 max-h-[60vh] overflow-y-auto w-full no-scrollbar markdown-body font-medium text-xl md:text-2xl leading-[1.8] text-white/90 text-center [&_p]:text-white/90 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-emerald-300">
+                                <ReactMarkdown>{response}</ReactMarkdown>
                             </div>
                         </motion.div>
                     )}

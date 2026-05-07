@@ -135,7 +135,19 @@ export default function AdminDashboard() {
             config: {
                 systemInstruction: `Return ONLY a JSON array of 3 objects, each with 'title', 'description' (string), and 'priority' ('low', 'medium', 'high') fields.
                 The response MUST be in Arabic language.`,
-                responseMimeType: 'application/json'
+                responseMimeType: 'application/json',
+                responseSchema: {
+                  type: 'ARRAY',
+                  items: {
+                    type: 'OBJECT',
+                    properties: {
+                      title: { type: 'STRING' },
+                      description: { type: 'STRING' },
+                      priority: { type: 'STRING' }
+                    },
+                    required: ["title", "description", "priority"]
+                  }
+                }
             }
           });
           

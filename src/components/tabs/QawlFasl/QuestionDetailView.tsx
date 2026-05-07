@@ -28,6 +28,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   
   const [shadowResponse, setShadowResponse] = useState<string | null>(null);
   const [isSummoningShadow, setIsSummoningShadow] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isAudioGenerating, setIsAudioGenerating] = useState(false);
@@ -343,7 +344,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                         </div>
                         <div className="flex-1">
                             <h4 className="text-xl font-black text-rose-500 mb-4 tracking-wider">ظلّك الفلسفي يتحدث:</h4>
-                            <div className="markdown-body font-serif rtl:font-sans text-rose-100/90 leading-relaxed text-lg">
+                            <div className="font-serif rtl:font-sans text-rose-100/90 leading-relaxed text-lg [&_p]:text-rose-100/90 [&_strong]:text-rose-300 [&_h1]:text-rose-400 [&_h2]:text-rose-400 [&_h3]:text-rose-400 [&_li]:text-rose-100/90 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
                                 <ReactMarkdown>{shadowResponse}</ReactMarkdown>
                             </div>
                         </div>
@@ -517,11 +518,18 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
                <div className="pt-8 border-t border-[#EBEAE4] mt-8">
                  <p className="font-bold text-[#5A5A40] mb-6 text-lg">هل وجدت هذه الإجابة مفيدة لموقفك؟</p>
-                 <div className="flex flex-wrap gap-4 justify-center">
-                   <button onClick={() => qawlFaslService.submitFeedback(questionId, 'positive')} className="bg-[#F0F5ED] text-[#4B6B42] hover:bg-[#E3EEDB] px-6 py-3 rounded-full font-bold transition-colors">نعم، جداً</button>
-                   <button onClick={() => qawlFaslService.submitFeedback(questionId, 'partial')} className="bg-[#F6F5F0] text-[#5A5A40] hover:bg-[#EAECE6] px-6 py-3 rounded-full font-bold transition-colors">جزئياً</button>
-                   <button onClick={() => qawlFaslService.submitFeedback(questionId, 'negative')} className="bg-[#FAF0E6] text-[#A6603F] hover:bg-[#F2D7C8] px-6 py-3 rounded-full font-bold transition-colors">لا</button>
-                 </div>
+                 {feedbackSubmitted ? (
+                   <div className="bg-[#F0F5ED] text-[#4B6B42] px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2">
+                     <CheckCircle2 className="w-5 h-5" />
+                     شكراً لمساهمتك، رأيك يهمنا في تحسين جودة الإجابات!
+                   </div>
+                 ) : (
+                   <div className="flex flex-wrap gap-4 justify-center">
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'positive'); setFeedbackSubmitted(true); }} className="bg-[#F0F5ED] text-[#4B6B42] hover:bg-[#E3EEDB] px-6 py-3 rounded-full font-bold transition-colors">نعم، جداً</button>
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'partial'); setFeedbackSubmitted(true); }} className="bg-[#F6F5F0] text-[#5A5A40] hover:bg-[#EAECE6] px-6 py-3 rounded-full font-bold transition-colors">جزئياً</button>
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'negative'); setFeedbackSubmitted(true); }} className="bg-[#FAF0E6] text-[#A6603F] hover:bg-[#F2D7C8] px-6 py-3 rounded-full font-bold transition-colors">لا</button>
+                   </div>
+                 )}
                </div>
             </div>
 

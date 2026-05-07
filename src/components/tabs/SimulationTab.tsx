@@ -46,8 +46,10 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
     setChatHistory([]);
     setRpRadar(null);
     setIsRoleplaying(true);
-    // Add an initial greeting from the AI child
-    handleRoleplaySend('مرحباً', activeTopic);
+    // Add an initial greeting from the AI child, but make it context-aware
+    handleRoleplaySend(language === 'ar' 
+      ? 'ابدأ المحادثة فورا دون مقدمات، وبناء على الموقف، باشر بالحديث بشكل مباشر (سواء بهجوم أو رد فعل غاضب أو سؤال مستفز).' 
+      : 'Start the conversation immediately based on the situation with an aggressive or provocative start without intro.', activeTopic);
   };
 
   React.useEffect(() => {

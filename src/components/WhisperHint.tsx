@@ -84,7 +84,7 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
           initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           exit={{ opacity: 0, scale: 0.9, filter: 'blur(5px)' }}
-          className="fixed bottom-24 right-8 z-40 max-w-[280px]"
+          className="fixed bottom-24 right-6 z-50 max-w-[280px]"
         >
           <div className="bg-white/80 backdrop-blur-xl border border-zinc-200/50 p-4 rounded-2xl shadow-2xl flex gap-3 items-start global-floating-buttons relative overflow-hidden text-sm">
             <div className="absolute top-0 right-0 w-16 h-16 bg-indigo-500/10 blur-xl rounded-full"></div>

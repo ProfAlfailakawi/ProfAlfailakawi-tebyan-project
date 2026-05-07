@@ -199,7 +199,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         </section>
 
         {/* Bento Grid Features */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:h-[500px]">
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
           <div className="lg:col-span-8 relative overflow-hidden bg-black rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-white flex flex-col justify-end shadow-2xl group text-right">
             <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-110 opacity-20 group-hover:opacity-30">

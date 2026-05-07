@@ -27,7 +27,9 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
       const data = await generateTimeMachineJourney(timeMachineTopic, language);
       setTimeMachineData(data);
     } catch (err: any) {
-      setError(err.message);
+      setError(language === 'ar' 
+        ? "آلة الزمن واجهت مطباً زمنياً صغيراً.. اضغط مجدداً لتتجاوز الفجوة وتكمل الرحلة." 
+        : "The time machine hit a minor temporal bump.. click again to skip the gap.");
     } finally {
       setIsLoading(false);
     }

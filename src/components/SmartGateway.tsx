@@ -170,8 +170,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `ما الجديد اليوم في هذا السياق؟`, en: `What's new today in this context?` },
-            { ar: isWeekend ? `تلخيص تطورات الأسبوع` : `خطة عمل اليوم بناءً على ذلك`, en: isWeekend ? `Summarize weekly developments` : `Today's action plan based on this` }
-        ];
+            { ar: isWeekend ? `تلخيص تطورات الأسبوع` : `خطة عمل اليوم بناءً على ذلك`, en: isWeekend ? `Summarize weekly developments` : `Today's action plan based on this` },
+            { ar: `منظور ممتع للقضية`, en: `A fun perspective on this` },
+            { ar: `تفكيك المشكلة إلى خطوات بسيطة`, en: `Break down the problem into simple steps` },
+            { ar: `ما هي التحديات الخفية هنا؟`, en: `What are the hidden challenges here?` },
+            { ar: `استعراض أفكار خارج الصندوق`, en: `Explore out-of-the-box ideas` },
+            { ar: `تمرين بصري حول الموضوع`, en: `Visual exercise on the topic` }
+        ].sort(() => 0.5 - Math.random());
       } else {
         arG = 'صباح الوعي والتجدد';
         enG = 'Morning of awareness';
@@ -180,7 +185,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         dynamicSuggests = [
             { ar: `استعراض ملخص الأحداث العالمية`, en: `Global events summary` },
             { ar: `بناء خريطة ذهنية لليوم`, en: `Build a daily mind map` },
-        ];
+            { ar: `كيف أرتب أولوياتي بذكاء؟`, en: `How to prioritize smartly?` },
+            { ar: `تدريب على التركيز العميق`, en: `Deep focus practice` },
+            { ar: `مهارة صباحية سريعة جديدة`, en: `Quick new morning skill` },
+            { ar: `تحفيز فكري سريع لليوم`, en: `Quick intellectual boost for today` },
+            { ar: `كيف أتعامل مع مهام اليوم الصعبة؟`, en: `How to handle today's tough tasks?` },
+            { ar: `قراءة موجزة لكتاب ملهم`, en: `Brief read of an inspiring book` },
+            { ar: `تمرين تنفس وتخيل مبسط`, en: `Simple breathing and visualization exercise` }
+        ].sort(() => 0.5 - Math.random()).slice(0, 6);
       }
     } else if (hour < 18) {
       arG = 'منتصف يوم حافل';
@@ -189,8 +201,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       enSub = 'Do you need a pivot point before your next decision?';
       dynamicSuggests = [
           { ar: `اقتراح الموازنة بين الأولويات الحالية`, en: `Suggest balancing current priorities` },
-          { ar: `مراجعة قراراتي اليوم`, en: `Review my decisions today` }
-      ];
+          { ar: `مراجعة وتصحيح مسار قراراتي اليوم`, en: `Review and correct my path today` },
+          { ar: `تمرين سريع لإعادة شحن الطاقة`, en: `Quick recharge exercise` },
+          { ar: `كيف أتعامل مع ضغط العمل الآن؟`, en: `How to handle work stress now?` },
+          { ar: `فكرة إبداعية تكسر الروتين`, en: `Creative idea to break the routine` },
+          { ar: `نصيحة للخروج من التشتت الذهني`, en: `Tip to escape mental distraction` },
+          { ar: `كيف أدير اجتماعاً بطريقة أفضل؟`, en: `How to run a meeting better?` },
+          { ar: `شرح لمفهوم إداري معقد`, en: `Explanation of a complex management concept` },
+          { ar: `توليد أفكار لمشروع مستعصي`, en: `Brainstorming ideas for a stuck project` }
+      ].sort(() => 0.5 - Math.random()).slice(0, 6);
     } else {
       arG = 'مساء التأمل والعمق';
       enG = 'Evening of reflection';
@@ -198,8 +217,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       enSub = 'What occupies your consciousness at the end of this day?';
       dynamicSuggests = [
           { ar: `تأملات في مجريات اليوم`, en: `Reflections on today's events` },
-          { ar: `كيف أستعد للغد بذكاء؟`, en: `How to prepare for tomorrow smartly?` }
-      ];
+          { ar: `كيف أستعد للغد بذكاء؟`, en: `How to prepare for tomorrow smartly?` },
+          { ar: `تقييم ما أنجزته وما تعلمته`, en: `Evaluate accomplishments and learnings` },
+          { ar: `حوار هادئ لتفريغ زحام الأفكار`, en: `Calm dialogue to unpack crowded thoughts` },
+          { ar: `تلخيص فكرة قرأتها اليوم لاستيعابها`, en: `Summarize an idea read today for deeper grasp` },
+          { ar: `تحليل لتحدي واجهته اليوم`, en: `Analysis of a challenge faced today` },
+          { ar: `قصة قصيرة للهدوء ما قبل النوم`, en: `Short story for pre-sleep calmness` },
+          { ar: `اقتراح طريقة تنظيم للأسبوع القادم`, en: `Suggest an organization method for next week` },
+          { ar: `التغلب على التفكير المفرط بالليل`, en: `Overcoming overthinking at night` }
+      ].sort(() => 0.5 - Math.random()).slice(0, 6);
     }
     return { arG, enG, arSub, enSub, dynamicSuggests };
   }, [lastInteraction]);
@@ -458,6 +484,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
     if (overrideQuery) setQuery(overrideQuery);
     setShowResumePrompt(false);
+
+    if (activeQuery.trim()) {
+        try {
+            const historyStr = localStorage.getItem('tibyan_search_history');
+            let historyList = historyStr ? JSON.parse(historyStr) : [];
+            if (!historyList.includes(activeQuery)) {
+                historyList.unshift(activeQuery);
+                historyList = historyList.slice(0, 50); // keep recent 50
+                localStorage.setItem('tibyan_search_history', JSON.stringify(historyList));
+            }
+        } catch (e) {}
+    }
 
     // Intercept fluid navigation commands
     const qLower = activeQuery.toLowerCase();
@@ -1322,9 +1360,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           viewport={{ once: true }}
           className="mt-12 mb-8"
       >
-        <h3 className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-6 flex items-center justify-center gap-2">
-           <Zap className="w-4 h-4 text-amber-500" />
-           {language === 'ar' ? 'أفكار ملتقطة للتو (اسحب للحفظ والتجربة الفيزيائية)' : 'Recently Captured Ideas (Drag to save)'}
+        <h3 className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-6 flex items-center justify-center gap-2 text-center px-4 leading-relaxed">
+           <Zap className="w-4 h-4 text-amber-500 shrink-0" />
+           {language === 'ar' ? 'أفكار ملتقطة للتو (اسحب البطاقات بأي اتجاه لاختبار الثقل الفيزيائي للأفكار)' : 'Recently Captured Ideas (Drag cards in any direction to feel their physical weight)'}
         </h3>
         <div className="flex flex-col md:flex-row gap-6">
            <GravityCard 

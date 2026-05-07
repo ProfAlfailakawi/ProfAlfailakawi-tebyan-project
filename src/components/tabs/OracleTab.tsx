@@ -31,6 +31,8 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     }
   }, [initialValue]);
 
+  const runOracleRef = React.useRef<() => void>();
+
   const handleRunOracle = async () => {
     if (!input.trim() || isLoading) return;
     setIsLoading(true);
@@ -41,11 +43,26 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       const res = await universalOracle(promptInstructed, oraclePersona, language);
       setOracleResult(res || '');
     } catch (err: any) {
-      setError(err.message);
+      setError(language === 'ar' 
+        ? "المستشار يتأمل بعمق في سؤالك.. عاود الضغط ليصيغ لك حكمة." 
+        : "The counselor is deeply reflecting.. please click again for wisdom.");
     } finally {
       setIsLoading(false);
     }
   };
+  
+  runOracleRef.current = handleRunOracle;
+
+  const isFirstRender = React.useRef(true);
+  React.useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    if (oracleResult && input.trim() && runOracleRef.current) {
+      runOracleRef.current();
+    }
+  }, [oraclePersona]);
 
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">

@@ -62,13 +62,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
         />
         
         <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-zinc-200/60 pb-8 relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-          <button 
-              onClick={() => window.print()}
-              className="absolute top-0 right-0 md:-top-4 md:-right-4 bg-zinc-100 text-black p-3 rounded-full hover:bg-zinc-200 transition-colors shadow-xl print:hidden z-10"
-              title={language === 'ar' ? 'استخراج تقرير PDF' : 'Export PDF Report'}
-          >
-              <Printer className="w-5 h-5" />
-          </button>
+          {/* Header Content can go here if needed in the future */}
         </header>
 
         {/* Stats Grid */}

@@ -36,7 +36,9 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       setActiveConsultantIndex(0);
       window.dispatchEvent(new CustomEvent('add_xp', { detail: { amount: 200 } }));
     } catch (err: any) {
-      setError(err.message);
+      setError(language === 'ar' 
+        ? "تفرق الخبراء لمناقشة طارئة.. يرجى الضغط مرة أخرى ليجتمعوا ويصدروا إجابتهم." 
+        : "The experts are in a heated debate.. please click again to gather them.");
     } finally {
       setIsLoading(false);
     }

@@ -328,12 +328,12 @@ const AppContent: React.FC = () => {
              <span className="font-black text-xl text-black tracking-tighter">تبيان</span>
            </button>
            
-           <button 
+           {/* <button 
              onClick={() => setLanguage(l => l === 'ar' ? 'en' : 'ar')}
              className="hidden md:flex ml-4 px-3 py-1.5 rounded-full bg-white/50 backdrop-blur-sm border border-zinc-200/50 text-xs font-bold text-zinc-500 hover:text-black hover:bg-white transition-all shadow-sm"
            >
              {language === 'ar' ? 'EN' : 'عربي'}
-           </button>
+           </button> */}
          </div>
 
          <div className="flex items-center gap-2 pointer-events-auto">
@@ -399,10 +399,12 @@ const AppContent: React.FC = () => {
                 ))}
               </div>
               <div className="p-6 border-t border-zinc-100 bg-zinc-50/50 space-y-3">
+                 {/* Language Switcher Hidden
                  <button onClick={() => { setLanguage(l => l === 'ar' ? 'en' : 'ar'); setMobileMenuOpen(false); }} className="w-full flex items-center justify-center gap-2 py-3.5 bg-white border border-zinc-200/80 rounded-2xl text-sm font-semibold text-zinc-700 shadow-sm hover:border-zinc-300">
                     <Globe className="w-4 h-4" />
                     {language === 'ar' ? 'English' : 'العربية'}
                  </button>
+                 */}
                  {authReady && !user && (
                     <button onClick={() => { setShowLogin(true); setMobileMenuOpen(false); }} className="w-full py-3.5 bg-black text-white rounded-2xl text-sm font-semibold shadow-md">
                       تسجيل الدخول
@@ -520,7 +522,7 @@ const AppContent: React.FC = () => {
              </div>
              <p className="text-[13px] font-medium">نظامك لفهم العالم &copy; {new Date().getFullYear()}</p>
              <div className="mt-4 flex flex-col items-center gap-1 opacity-50 scale-75">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">Version 3.1.5.Release</span>
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">Version 3.2.0.Release</span>
              </div>
           </footer>
         </div>

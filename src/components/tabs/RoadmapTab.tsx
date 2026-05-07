@@ -91,7 +91,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
 
       <AnimatePresence mode="wait">
         {roadmap && !isLoading && (
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12" dir="rtl">
             {/* Clean Header */}
             <div className="bg-white border text-zinc-900 border-zinc-200 p-8 rounded-3xl shadow-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -z-10"></div>

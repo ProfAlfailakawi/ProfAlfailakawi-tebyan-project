@@ -414,7 +414,7 @@ export async function generateTimeMachineJourney(concept: string, lang: string =
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: [{ parts: [{ text: concept || "مفهوم التعاون" }] }],
+        contents: [{ role: 'user', parts: [{ text: concept || "مفهوم التعاون" }] }],
         config: {
           systemInstruction,
           responseMimeType: "application/json",
@@ -558,20 +558,18 @@ export async function careerCompass(skills: string, lang: string = 'ar') {
 export async function generateInstructionalDesign(topic: string, level: string) {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
-    const systemInstruction = `أنت خبير في الهندسة الاستراتيجية (Strategic Design). 
-قم بإنشاء خطة تكتيكية وعميقة جداً للتعامل مع هذا التحدي/الهدف: ${topic} لـ: ${level}.
-يجب أن تشمل الخطة تفاصيل دقيقة لكل خطوة:
-1. التحليل (Analysis): توصيف دقيق للسياق، تحليل الاحتياجات والفجوات، والمخاطر.
-2. التصميم (Design): صياغة أهداف ذكية (SMART)، اختيار الاستراتيجيات المناسبة، وتخطيط التسلسل المنطقي.
-3. التطوير (Development): قائمة بالوسائل، والمصادر لتبني الحل، والخطوات التكتيكية.
-4. التنفيذ (Implementation): سيناريو مقترح لكيفية طرح الموضوع داخل البيئة التعليمية (الفصل أو المنصة).
-5. التقويم (Evaluation): أدوات التقييم القبلي والتكويني والختامي.
-أرجع النتيجة بصيغة JSON.`;
+    const systemInstruction = `أنت خبير في الهندسة الاستراتيجية (Strategic Design). إرجع النتيجة حصراً بصيغة JSON.`;
 
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: [{ parts: [{ text: "أنتج خطة ADDIE احترافية ومفصلة" }] }],
+        contents: [{ role: 'user', parts: [{ text: `قم بإنشاء خطة تكتيكية وعميقة جداً للتعامل مع هذا التحدي/الهدف: ${topic} لـ: ${level}.
+يجب أن تشمل الخطة تفاصيل دقيقة لكل خطوة:
+1. التحليل (analysis): توصيف دقيق للسياق، تحليل الاحتياجات والفجوات، والمخاطر.
+2. التصميم (design): صياغة أهداف ذكية (SMART)، اختيار الاستراتيجيات المناسبة، وتخطيط التسلسل المنطقي.
+3. التطوير (development): قائمة بالوسائل، والمصادر لتبني الحل، والخطوات التكتيكية.
+4. التنفيذ (implementation): سيناريو مقترح لكيفية طرح الموضوع داخل البيئة التعليمية (الفصل أو المنصة).
+5. التقويم (evaluation): أدوات التقييم القبلي والتكويني والختامي.` }] }],
         config: {
           systemInstruction,
           responseMimeType: "application/json",
