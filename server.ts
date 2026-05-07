@@ -86,10 +86,10 @@ async function startServer() {
         });
     });
 
-    // AI Rate Limiter
+    // AI Rate Limiter (Increased substantially to prevent blocking)
     const aiRateLimit = rateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 50,
+        max: 2000, // Increased from 50 to 2000
         message: { error: "Too many requests, please try again later." }
     });
 

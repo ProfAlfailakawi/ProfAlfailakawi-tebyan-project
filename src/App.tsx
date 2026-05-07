@@ -24,6 +24,7 @@ import { MessagesFloatingButton } from './components/MessagesFloatingButton';
 import { VoiceAssistantFloatingButton } from './components/VoiceAssistantFloatingButton';
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
 import { GlobalSageBar } from './components/GlobalSageBar';
@@ -525,6 +526,7 @@ const App: React.FC = () => {
         handleTabChange={handleTabChange}
       />
 
+      <PWAInstallPrompt />
       <VoiceAssistant language={language} />
 
 

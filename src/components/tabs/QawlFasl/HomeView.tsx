@@ -88,7 +88,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               onEmergency();
             }
           } catch(err: any) {
-             if (err instanceof GeminiKeyMissingError) {
+             if (err instanceof GeminiKeyMissingError || err?.name === "GeminiKeyMissingError" || (err?.message || "").includes("يبدو أنك قمت")) {
                  console.warn("AI generation skipped: GEMINI_API_KEY_NOT_CONFIGURED");
                  alert("يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة.");
              } else {

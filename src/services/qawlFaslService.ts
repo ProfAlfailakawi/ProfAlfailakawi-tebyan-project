@@ -153,7 +153,7 @@ export const qawlFaslService = {
             if (status === 'published') published++;
             else needsReview++;
         } catch (error: any) {
-            if (error instanceof GeminiKeyMissingError) {
+            if (error instanceof GeminiKeyMissingError || error?.name === "GeminiKeyMissingError" || (error?.message || "").includes("يبدو أنك قمت")) {
               console.warn("AI generation skipped: GEMINI_API_KEY_NOT_CONFIGURED");
               errors++;
               break;
@@ -239,7 +239,7 @@ export const qawlFaslService = {
 
         return { id: docRef.id, ...questionData } as Question;
     } catch (e: any) {
-        if (e instanceof GeminiKeyMissingError) {
+        if (e instanceof GeminiKeyMissingError || e?.name === "GeminiKeyMissingError" || (e?.message || "").includes("يبدو أنك قمت")) {
             console.warn("AI generation for missing search skipped: GEMINI_API_KEY_NOT_CONFIGURED");
             throw e;
         }
