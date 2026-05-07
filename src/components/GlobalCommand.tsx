@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, X, BrainCircuit, Loader2, ArrowLeft } from 'lucide-react';
+import { Search, Sparkles, X, BrainCircuit, Loader2, ArrowLeft, Navigation, Eye, Zap, Wind } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { universalOracle } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
+import { useCognitiveMode } from '../contexts/CognitiveModeContext';
 
-export const GlobalCommand = ({ isOpen, onClose, language }: { isOpen: boolean, onClose: () => void, language: string }) => {
+export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange }: { isOpen: boolean, onClose: () => void, language: string, tabs: any[], handleTabChange: (tab: string) => void }) => {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { mode, setMode } = useCognitiveMode();
 
   useEffect(() => {
     if (isOpen) {
@@ -17,7 +19,6 @@ export const GlobalCommand = ({ isOpen, onClose, language }: { isOpen: boolean, 
     }
   }, [isOpen]);
 
-  // Handle Cmd+K / Ctrl+K mapping logic is handled in App.tsx
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -27,6 +28,13 @@ export const GlobalCommand = ({ isOpen, onClose, language }: { isOpen: boolean, 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  const handleAction = (action: () => void) => {
+     action();
+     onClose();
+  };
+
+  const filteredTabs = query ? tabs.filter(t => !t.hidden && t.label.toLowerCase().includes(query.toLowerCase())) : [];
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,28 +109,89 @@ export const GlobalCommand = ({ isOpen, onClose, language }: { isOpen: boolean, 
 
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto min-h-[300px] p-6 md:p-10 relative">
-              {!result && !isSearching && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 opacity-60">
-                  <BrainCircuit className="w-16 h-16 text-zinc-300 mb-6" />
-                  <h3 className="text-xl font-bold text-zinc-500 mb-2">
-                    {language === 'ar' ? 'اسأل الذكاء الكلي' : 'Ask the Omni-Intelligence'}
-                  </h3>
-                  <p className="text-zinc-400 max-w-sm">
-                    {language === 'ar' 
-                      ? 'يمكنك البحث عن أي مفهوم في النظام، وسيقوم بتوليد إجابة لحظية مجمعة من جميع النماذج.'
-                      : 'Search for any concept in the system, and it will generate an instant synthesized answer.'}
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-2 mt-8 w-full">
-                     {['الذكاء الاصطناعي في التعليم', 'نظريات التعلم الحديثة', 'تصميم المناهج'].map(suggestion => (
-                       <button 
-                         key={suggestion}
-                         onClick={() => setQuery(suggestion)}
-                         className="px-4 py-2 rounded-full border border-zinc-200 text-sm font-medium text-zinc-600 hover:bg-black hover:text-white transition-colors"
-                       >
-                         {suggestion}
-                       </button>
-                     ))}
+              {!result && !isSearching && !query && (
+                <div className="space-y-8">
+                  {/* Cognitive Modes */}
+                  <div>
+                     <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                       {language === 'ar' ? 'أنماط الإدراك' : 'Cognitive Modes'}
+                     </h3>
+                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <button onClick={() => handleAction(() => setMode('default'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'default' ? 'border-black bg-black text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
+                          <Sparkles className={cn("w-5 h-5 mb-2", mode === 'default' ? 'text-white' : 'text-zinc-500')} />
+                          <div className="font-bold">{language === 'ar' ? 'الافتراضي' : 'Default'}</div>
+                        </button>
+                        <button onClick={() => handleAction(() => setMode('focus'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'focus' ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
+                          <Eye className={cn("w-5 h-5 mb-2", mode === 'focus' ? 'text-white' : 'text-zinc-500')} />
+                          <div className="font-bold">{language === 'ar' ? 'التركيز' : 'Focus'}</div>
+                        </button>
+                        <button onClick={() => handleAction(() => setMode('executive'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'executive' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
+                          <Zap className={cn("w-5 h-5 mb-2", mode === 'executive' ? 'text-white' : 'text-zinc-500')} />
+                          <div className="font-bold">{language === 'ar' ? 'التنفيذي' : 'Executive'}</div>
+                        </button>
+                        <button onClick={() => handleAction(() => setMode('genesis'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'genesis' ? 'border-amber-500 bg-amber-500 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
+                          <Wind className={cn("w-5 h-5 mb-2", mode === 'genesis' ? 'text-white' : 'text-zinc-500')} />
+                          <div className="font-bold">{language === 'ar' ? 'الاستكشاف' : 'Genesis'}</div>
+                        </button>
+                     </div>
                   </div>
+
+                  {/* Quick Navigation */}
+                  <div>
+                    <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                       {language === 'ar' ? 'التنقل السريع' : 'Quick Navigation'}
+                     </h3>
+                     <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                        {tabs.filter(t => !t.hidden).map(tab => (
+                          <button
+                            key={tab.id}
+                            onClick={() => handleAction(() => handleTabChange(tab.id))}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100 transition-colors text-right"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
+                               <tab.icon className="w-4 h-4 text-zinc-500" />
+                            </div>
+                            <span className="font-semibold text-zinc-700">{tab.label}</span>
+                          </button>
+                        ))}
+                     </div>
+                  </div>
+                </div>
+              )}
+
+              {!result && !isSearching && query && (
+                <div className="space-y-6">
+                  {filteredTabs.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                         {language === 'ar' ? 'التنقل' : 'Navigation'}
+                       </h3>
+                       <div className="space-y-1">
+                          {filteredTabs.map(tab => (
+                            <button
+                              key={tab.id}
+                              onClick={() => handleAction(() => handleTabChange(tab.id))}
+                              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100 transition-colors text-right"
+                            >
+                               <Navigation className="w-4 h-4 text-zinc-400" />
+                               <span className="font-bold">{tab.label}</span>
+                            </button>
+                          ))}
+                       </div>
+                    </div>
+                  )}
+
+                  <button 
+                    onClick={handleSearch}
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl bg-black text-white hover:bg-zinc-800 transition-colors text-right"
+                  >
+                     <Sparkles className="w-5 h-5 text-indigo-400" />
+                     <div className="flex-1">
+                        <div className="font-bold text-lg">{language === 'ar' ? 'البحث عن' : 'Search for'} "{query}"</div>
+                        <div className="text-sm text-zinc-400 opacity-80">{language === 'ar' ? 'البحث باستخدام الذكاء الكلي للتفاصيل...' : 'Use Omni-AI for deep insights...'}</div>
+                     </div>
+                     <kbd className="px-2 py-1 rounded bg-zinc-800 font-sans text-xs">Enter</kbd>
+                  </button>
                 </div>
               )}
 

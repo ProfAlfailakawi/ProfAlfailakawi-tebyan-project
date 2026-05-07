@@ -1,5 +1,6 @@
 import { GamificationProvider } from './components/GamificationProvider';
 import { UserProvider } from './contexts/UserContext';
+import { CognitiveModeProvider } from './contexts/CognitiveModeContext';
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -21,6 +22,8 @@ import { GamificationBadge } from './components/GamificationBadge';
 import { TheOrb } from './components/TheOrb';
 import { MessagesFloatingButton } from './components/MessagesFloatingButton';
 import { VoiceAssistantFloatingButton } from './components/VoiceAssistantFloatingButton';
+import { ThoughtNebula } from './components/ThoughtNebula';
+import { WhisperHint } from './components/WhisperHint';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
 import { GlobalSageBar } from './components/GlobalSageBar';
@@ -239,9 +242,12 @@ const App: React.FC = () => {
   ];
 
   return (
+    <CognitiveModeProvider>
     <GamificationProvider>
       <UserProvider>
         <div className={cn("h-[100dvh] bg-zinc-50 font-sans flex flex-col overflow-hidden text-zinc-900 selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          <ThoughtNebula />
+          <WhisperHint language={language} />
 
         <AnimatePresence>
         {toast && (
@@ -515,6 +521,8 @@ const App: React.FC = () => {
         isOpen={showGlobalCommand} 
         onClose={() => setShowGlobalCommand(false)} 
         language={language}
+        tabs={tabs}
+        handleTabChange={handleTabChange}
       />
 
       <VoiceAssistant language={language} />
@@ -523,6 +531,7 @@ const App: React.FC = () => {
       </div>
       </UserProvider>
     </GamificationProvider>
+    </CognitiveModeProvider>
   );
 };
 
