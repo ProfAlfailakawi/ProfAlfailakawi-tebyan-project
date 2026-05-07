@@ -24,7 +24,11 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
         const response = await universalOracle(prompt, 'Serendipity Explorer', language);
         setSerendipityPath(response);
     } catch (e) {
-        setSerendipityPath("Lost in the void. Try again.");
+        setSerendipityPath(
+            language === 'ar' 
+            ? "ضعت في الفراغ. يرجى الضغط مرة أخرى للمحاولة." 
+            : "Lost in the void. Please click again to retry."
+        );
     } finally {
         setIsLoading(false);
     }
