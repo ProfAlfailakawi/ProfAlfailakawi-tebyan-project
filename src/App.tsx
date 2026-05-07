@@ -25,7 +25,9 @@ import { MessagesFloatingButton } from './components/MessagesFloatingButton';
 import { VoiceAssistantFloatingButton } from './components/VoiceAssistantFloatingButton';
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
+import { SerendipityCompass } from './components/SerendipityCompass';
 import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt';
+import { SerendipityCompass } from './components/SerendipityCompass';
 import { SpatialGhost } from './components/SpatialGhost';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
@@ -225,7 +227,7 @@ const AppContent: React.FC = () => {
     { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
     { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route },
     { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },
-    { id: 'story', label: language === 'ar' ? 'الحكواتي' : 'Story Weaver', icon: LibraryBig },
+    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
     { id: 'lab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
     { id: 'mindmap', label: language === 'ar' ? 'العقل المدبر' : 'Mastermind', icon: Network },
     { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
@@ -567,6 +569,8 @@ const AppContent: React.FC = () => {
         tabs={tabs}
         handleTabChange={handleTabChange}
       />
+
+      <SerendipityCompass language={language} contextTopic={initialContext || activeTab} />
 
       <PWAInstallPrompt />
       <VoiceAssistant language={language} />

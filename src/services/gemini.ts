@@ -1679,7 +1679,7 @@ export async function generateRoadmap(goal: string, lang: string = 'ar') {
 export async function generateStory(topic: string, details: string, lang: string = 'ar') {
   return withRetry(async () => {
     const prompt = lang === 'ar' ?
-      `أنتِ "الأم الحنونة والحكواتية". ألفي قصة لـ: ${topic}. التفاصيل: ${details}. بلهجة بيضاء كويتية حنونة.
+      `أنتِ "الأم الحنونة والراوية". ألفي قصة لـ: ${topic}. التفاصيل: ${details}. بلهجة بيضاء كويتية حنونة.
       هيكل القصة السريع:
       - المشهد الافتتاحي (سطر واحد).
       - الحبكة (سطر واحد).
@@ -1693,7 +1693,7 @@ export async function generateStory(topic: string, details: string, lang: string
       - The Warm Lesson (1 bold line).`;
     
     const systemInstruction = lang === 'ar' ?
-      `أنت "الحكواتي المبدع". اكتب قصة قصيرة جداً (ميكرو-ستوري) للموضوع: ${topic}.
+      `أنت "الراوي المبدع". اكتب قصة قصيرة جداً (ميكرو-ستوري) للموضوع: ${topic}.
       هيكل القصة السريع:
       - المشهد الافتتاحي (سطر واحد).
       - الحبكة/التحدي (سطر واحد).

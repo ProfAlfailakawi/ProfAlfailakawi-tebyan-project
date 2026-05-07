@@ -59,26 +59,40 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
 
                         const label = typeLabels[type] || typeLabels.item;
 
+                        // Aesthetic Memory Decay (Items at the bottom / higher index appear older)
+                        // If there are many items, the older ones get a yellowish sepia wash and slight blur/fade
+                        // When hovered, the group-hover resets it
+                        const isDecaying = index > 3; // Let's say items past index 3 start decaying
+                        const decayLevel = Math.min((index - 3) * 0.1, 0.4); // max 0.4 opacity on sepia
+                        
                         return (
                             <motion.li 
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: index * 0.05 }}
                                 key={index} 
-                                className="p-6 bg-white border border-zinc-200 rounded-[28px] shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4 group"
+                                className="relative p-6 bg-white border border-zinc-200 rounded-[28px] shadow-sm hover:shadow-md transition-all duration-1000 flex flex-col justify-between gap-4 group overflow-hidden"
                             >
-                                <div className="space-y-3">
+                                {/* Decay Overlay applied to old items */}
+                                {isDecaying && (
+                                    <div 
+                                        className="absolute inset-0 bg-[#D4C3A3] pointer-events-none mix-blend-multiply transition-opacity duration-1000 ease-out group-hover:opacity-0"
+                                        style={{ opacity: decayLevel }}
+                                    ></div>
+                                )}
+                                
+                                <div className={cn("space-y-3 relative z-10 transition-all duration-1000", isDecaying ? "sepia-[0.3] opacity-80 group-hover:sepia-0 group-hover:opacity-100" : "")}>
                                     <div className="flex items-center justify-between">
                                         <span className={cn("px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border", label.color)}>
                                             {language === 'ar' ? label.ar : type}
                                         </span>
                                     </div>
-                                    {title && <h3 className="text-black font-black text-lg leading-tight group-hover:text-zinc-600 transition-colors line-clamp-2">{title}</h3>}
+                                    {title && <h3 className="text-black font-black text-lg leading-tight transition-colors line-clamp-2">{title}</h3>}
                                     <div className="text-zinc-500 font-medium leading-relaxed text-sm line-clamp-4">
                                         {type === 'oracle' ? <ReactMarkdown>{content.substring(0, 300) + (content.length > 300 ? '...' : '')}</ReactMarkdown> : content}
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 relative z-10">
                                   <button 
                                       onClick={() => removeFromLibrary(item)}
                                       className="flex-1 py-3 bg-zinc-50 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 rounded-2xl text-xs font-black transition-all border border-transparent hover:border-rose-100"

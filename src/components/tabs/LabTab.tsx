@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 
 const labTools = [
+  { id: 'collider', ar: 'مُصادم الأفكار', en: 'Cognitive Collider', tooltip: { ar: 'دمج وتصادم الأفكار المتناقضة لتوليد أفكار جديدة', en: 'Collide contradicting ideas to generate new ones' } },
   { id: 'design', ar: 'تصميم استراتيجي', en: 'Strategic Design', tooltip: { ar: 'تصميم مسارات وخطط شاملة وممنهجة', en: 'Design systematic strategic paths' } },
   { id: 'scout', ar: 'كشاف الأدوات', en: 'Tool Scout', tooltip: { ar: 'البحث عن أفضل الأدوات التقنية المناسبة لاحتياجاتك', en: 'Find best tech tools for your needs' } },
   { id: 'personas', ar: 'تحليل الشخصيات', en: 'Persona Analysis', tooltip: { ar: 'تحليل شخصيات الأفراد والدوافع النفسية', en: 'Analyze personas and psychological motives' } },
@@ -17,8 +18,10 @@ const labTools = [
 ];
 
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
-  const [activeLabTool, setActiveLabTool] = React.useState('design');
+  const [activeLabTool, setActiveLabTool] = React.useState('collider');
   const [labInput, setLabInput] = React.useState('');
+  const [labInput2, setLabInput2] = React.useState(''); // For Collider
+  const [labColliderResult, setLabColliderResult] = React.useState<string | null>(null);
   const [labDesign, setLabDesign] = React.useState<any>(null);
   const [labScout, setLabScout] = React.useState<any[]>([]);
 
@@ -39,6 +42,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [error, setError] = React.useState<string | null>(null);
 
   const resetAllLabResults = () => {
+    setLabColliderResult(null);
     setLabDesign(null); 
     setLabScout([]); 
     setLabPersonas([]); 
@@ -57,10 +61,21 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     try {
       const { 
         generateInstructionalDesign, scoutTools, generatePersonas, auditUDL,
-        generateMindMap, explainSimply, careerCompass, generateWorkshop
+        generateMindMap, explainSimply, careerCompass, generateWorkshop, universalOracle
       } = await import('../../services/gemini');
       resetAllLabResults();
       switch (activeLabTool) {
+        case 'collider': 
+           if (!labInput2.trim()) { throw new Error("يجب توفير الفكرة الثانية للتصادم!"); }
+           setLabColliderResult(await universalOracle(
+               `أنت في وضع "مُصادم الأفكار". لقد رمى المستخدم هذين المفهومين المتناقضين في الثقب الأسود:
+                المفهوم الأول: "${labInput}"
+                المفهوم الثاني: "${labInput2}"
+                مهمتك: دمج هذين المفهومين بطريقة مسرحية وفلسفية وتوليد وليدة فكرية جديدة تماماً ومدهشة. اخلق بعداً ثالثاً لم يُفكر به من قبل.`,
+               'Cognitive Collider',
+               language
+           ));
+           break;
         case 'design': setLabDesign(await generateInstructionalDesign(labInput, "General")); break;
         case 'scout': setLabScout(await scoutTools(labInput)); break;
         case 'personas': setLabPersonas(await generatePersonas(labInput)); break;
@@ -116,18 +131,38 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
          </div>
          
          <div className="flex flex-col md:flex-row gap-4">
-           <input 
-             value={labInput} 
-             onChange={(e) => setLabInput(e.target.value)} 
-             className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-zinc-200/80 outline-none transition-all" 
-             placeholder={language === 'ar' ? "أدخل الموضوع أو التحدي..." : "Enter topic or challenge..."} 
-           />
+            {activeLabTool === 'collider' ? (
+                <div className="flex-1 flex flex-col md:flex-row gap-4">
+                    <input 
+                      value={labInput} 
+                      onChange={(e) => setLabInput(e.target.value)} 
+                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-indigo-200 outline-none transition-all placeholder:text-zinc-300" 
+                      placeholder={language === 'ar' ? "الفكرة الأولى (مثال: العدمية)..." : "Concept A..."} 
+                    />
+                    <div className="flex items-center justify-center -mx-2 z-10 hidden md:flex">
+                        <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black shadow-lg">VS</div>
+                    </div>
+                    <input 
+                      value={labInput2} 
+                      onChange={(e) => setLabInput2(e.target.value)} 
+                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-rose-200 outline-none transition-all placeholder:text-zinc-300" 
+                      placeholder={language === 'ar' ? "الفكرة الثانية (مثال: الأمل)..." : "Concept B..."} 
+                    />
+                </div>
+            ) : (
+                <input 
+                  value={labInput} 
+                  onChange={(e) => setLabInput(e.target.value)} 
+                  className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-zinc-200/80 outline-none transition-all" 
+                  placeholder={language === 'ar' ? "أدخل الموضوع أو التحدي..." : "Enter topic or challenge..."} 
+                />
+            )}
            <button 
              onClick={handleRunLabTool} 
-             disabled={isLoading}
+             disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
              className={cn(
                "md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
-               isLoading ? "bg-zinc-400 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
+               (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-indigo-600 to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
              )}
            >
              {isLoading ? (
@@ -135,6 +170,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                  <RefreshCw className="w-5 h-5 animate-spin" />
                  <span>{language === 'ar' ? 'جاري التحليل...' : 'Analyzing...'}</span>
                </>
+             ) : activeLabTool === 'collider' ? (
+               <span>{language === 'ar' ? 'تصادم 💥' : 'COLLIDE 💥'}</span>
              ) : (
                <span>{language === 'ar' ? 'تشغيل المختبر' : 'Run Lab'}</span>
              )}
@@ -163,6 +200,25 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                </motion.div>
             ) : (
               <>
+                {activeLabTool === 'collider' && labColliderResult && (
+                  <motion.div 
+                     initial={{ scale: 0.9, opacity: 0 }}
+                     animate={{ scale: 1, opacity: 1 }}
+                     className="bg-black text-white rounded-[32px] p-8 md:p-12 relative overflow-hidden shadow-2xl"
+                  >
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[100px]"></div>
+                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/20 rounded-full blur-[100px]"></div>
+                     <div className="relative z-10 flex flex-col items-center">
+                         <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.5)] flex items-center justify-center mb-10">
+                            <Zap className="w-10 h-10 text-white animate-pulse" />
+                         </div>
+                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white/90">
+                            <ReactMarkdown>{labColliderResult}</ReactMarkdown>
+                         </div>
+                     </div>
+                  </motion.div>
+                )}
+
                 {activeLabTool === 'design' && labDesign && (
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">

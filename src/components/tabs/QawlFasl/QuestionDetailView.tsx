@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, PlayCircle, BookOpen, Link, Share2, Volume2, Play, Pause, Loader2, Bookmark, BookmarkCheck } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, PlayCircle, BookOpen, Link, Share2, Volume2, Play, Pause, Loader2, Bookmark, BookmarkCheck, Ghost } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { generateAudioForText, generatePodcastScript } from '../../../services/qawlFaslAiService';
+import { BreathingText } from '../../BreathingText';
 
 interface Props {
   questions: QawlFaslQuestion[];
@@ -24,6 +25,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   const [activeTab, setActiveTab] = useState<'quick' | 'deep' | 'age' | 'steps' | 'resources'>(getDefaultTab());
   const [related, setRelated] = useState<QawlFaslQuestion[]>([]);
+  
+  const [shadowResponse, setShadowResponse] = useState<string | null>(null);
+  const [isSummoningShadow, setIsSummoningShadow] = useState(false);
   
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isAudioGenerating, setIsAudioGenerating] = useState(false);
@@ -293,6 +297,60 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               </button>
             </div>
 
+            {/* Devil's Advocate Shadow Button */}
+            {!shadowResponse && !isSummoningShadow && (
+                <div className="flex justify-center -mt-2 mb-4">
+                    <button 
+                        onClick={async () => {
+                            setIsSummoningShadow(true);
+                            try {
+                                const { universalOracle } = await import('../../../services/gemini');
+                                const res = await universalOracle(
+                                    `أنت "القرين الفلسفي" (Devil's Advocate Shadow). 
+                                     المستخدم يقرأ إجابة على هذا السؤال الذي يطرحه الأطفال عادة: "${question.question}".
+                                     وملخص الإجابة هو: "${question.quickSummary}".
+                                     مهمتك: الظهور فجأة للهجوم الفكري الناقد. قم بتحدي ومهاجمة الافتراضات الموجودة في الإجابة أو السؤال نفسه من زاوية مختلفة تماماً (ربما علمية بحتة، عدمية، أو فلسفية صادمة لكن راقية). اجعل المستخدم يعيد التفكير في كل شيء. لا تكن وقحاً، بل تكن حاد الذكاء ومستفزاً فكرياً. لا تستخدم مقدمات، تحدث مباشرة كأنك قرينه الذي ظهر من العدم.`,
+                                    'Philosophical Shadow',
+                                    'ar'
+                                );
+                                setShadowResponse(res);
+                            } catch(e) {
+                                // fail
+                            } finally {
+                                setIsSummoningShadow(false);
+                            }
+                        }}
+                        className="text-[#A6603F] text-sm font-bold flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#F2D7C8] hover:bg-[#FAF0E6] bg-white transition-colors"
+                    >
+                        <Ghost className="w-4 h-4" /> استدعاء القرين الفلسفي والمخالف
+                    </button>
+                </div>
+            )}
+
+            {isSummoningShadow && (
+                <div className="bg-zinc-900 border border-zinc-700 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center animate-pulse">
+                    <Ghost className="w-8 h-8 text-rose-500 mb-4 animate-bounce" />
+                    <p className="text-rose-400 font-bold tracking-widest text-sm">جاري استدعاء الظل من العالم الموازي...</p>
+                </div>
+            )}
+
+            {shadowResponse && (
+                <div className="bg-zinc-900 border-l-4 border-rose-600 rounded-[24px] p-6 md:p-10 shadow-[0_10px_40px_rgba(225,29,72,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-rose-600/10 rounded-full blur-3xl"></div>
+                    <div className="flex items-start gap-4 md:gap-6 relative z-10">
+                        <div className="w-12 h-12 bg-rose-950/50 rounded-full flex items-center justify-center shrink-0 border border-rose-900">
+                            <Ghost className="w-6 h-6 text-rose-500" />
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="text-xl font-black text-rose-500 mb-4 tracking-wider">ظلّك الفلسفي يتحدث:</h4>
+                            <div className="markdown-body font-serif rtl:font-sans text-rose-100/90 leading-relaxed text-lg">
+                                <ReactMarkdown>{shadowResponse}</ReactMarkdown>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#F0F5ED] rounded-[24px] p-8 border border-[#DFEBD8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <h4 className="font-bold text-[#4B6B42] mb-4 flex items-center gap-2 text-lg">
@@ -334,14 +392,20 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                
                <div className="pt-8 border-t border-[#EBEAE4]">
                  <h3 className="text-2xl font-bold text-[#4A6B8C] mb-4">التحليل الاستراتيجي والنفسي</h3>
-                 <p className="text-[#5A5A40] font-medium leading-[2] text-base md:text-lg">{question.educationalView}</p>
+                 <BreathingText 
+                    className="text-[#5A5A40] font-medium leading-[2] text-base md:text-lg" 
+                    text={question.educationalView} 
+                    language={language}
+                 />
                </div>
                
                <div className="pt-8 border-t border-[#EBEAE4]">
                  <h3 className="text-2xl font-bold text-[#A68F58] mb-4">جواب استرشادي</h3>
-                 <p className="text-[#5A5A40] font-medium leading-[1.85] bg-white/60 backdrop-blur-2xl border border-[#EACD9B] p-5 md:p-6 rounded-[16px] italic text-lg md:text-xl">
-                   "{question.suggestedAnswer}"
-                 </p>
+                 <BreathingText 
+                   className="text-[#5A5A40] font-medium leading-[1.85] bg-white/60 backdrop-blur-2xl border border-[#EACD9B] p-5 md:p-6 rounded-[16px] italic text-lg md:text-xl"
+                   text={`"${question.suggestedAnswer}"`}
+                   language={language}
+                 />
                </div>
                
                {question.religiousReference && (

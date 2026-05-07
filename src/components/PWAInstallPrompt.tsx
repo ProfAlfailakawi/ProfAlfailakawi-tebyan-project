@@ -1,76 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Download, X, Share, Compass } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { Download, X, Share } from 'lucide-react';
 
+let deferredPromptGlobal: any = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPromptGlobal = e;
+});
+
+const isStandaloneMode = () => {
+  return window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+};
+
+const isIOsDevice = () => {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+};
+
+// ============================================
+// The Header Icon (Always visible if not installed)
+// ============================================
 export const PWAHeaderButton = () => {
-  const [isInstallable, setIsInstallable] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [isIOS, setIsIOS] = useState(false);
+  const [showIcon, setShowIcon] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
 
   useEffect(() => {
-    // Check if already installed (standalone mode)
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                         (window.navigator as any).standalone === true;
-    
-    // Check session storage
-    const hasSeenInSession = sessionStorage.getItem('pwa_install_prompt_seen') === 'true';
-
-    if (isStandalone || hasSeenInSession) return;
-
-    // Check iOS
-    const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    setIsIOS(_isIOS);
-
-    const handleBeforeInstallPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setIsInstallable(true);
-      // Mark as seen for this session once shown
-      sessionStorage.setItem('pwa_install_prompt_seen', 'true');
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    // If it's iOS and not standalone, it's installable via Share -> Add to Home Screen
-    if (_isIOS) {
-      setIsInstallable(true);
-      // Mark as seen for this session once shown
-      sessionStorage.setItem('pwa_install_prompt_seen', 'true');
+    if (!isStandaloneMode()) {
+       setShowIcon(true);
     }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    };
   }, []);
 
   const handleInstallClick = async () => {
-    if (isIOS) {
+    if (isIOsDevice()) {
       setShowIOSInstructions(true);
       return;
     }
 
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+    if (deferredPromptGlobal) {
+      deferredPromptGlobal.prompt();
+      const { outcome } = await deferredPromptGlobal.userChoice;
       if (outcome === 'accepted') {
-        // App installed, isStandalone will handle hiding it on next load
+        setShowIcon(false); // Hide on successful install
       }
-      setDeferredPrompt(null);
+      deferredPromptGlobal = null;
     } else {
-        // Fallback
         alert("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).");
     }
   };
 
-  const closeInstructions = () => {
-    setShowIOSInstructions(false);
-    sessionStorage.setItem('pwa_install_prompt_seen', 'true');
-    setIsInstallable(false);
-  };
-
-  if (!isInstallable) return null;
+  if (!showIcon) return null;
 
   return (
     <>
@@ -101,7 +78,7 @@ export const PWAHeaderButton = () => {
                className="bg-white/95 backdrop-blur-xl border border-zinc-200/60 p-6 rounded-3xl shadow-2xl relative overflow-hidden w-full max-w-sm mb-4 md:mb-0"
                onClick={(e) => e.stopPropagation()}
             >
-               <button onClick={closeInstructions} className="absolute top-4 left-4 p-2 text-zinc-400 hover:text-black bg-zinc-50 rounded-full transition-colors">
+               <button onClick={() => setShowIOSInstructions(false)} className="absolute top-4 left-4 p-2 text-zinc-400 hover:text-black bg-zinc-50 rounded-full transition-colors">
                  <X className="w-4 h-4" />
                </button>
                <h3 className="font-black text-zinc-900 text-xl mb-6 pr-2 pt-2 tracking-tight">تثبيت التطبيق على آيفون</h3>
@@ -120,7 +97,7 @@ export const PWAHeaderButton = () => {
                  </li>
                </ol>
                <button 
-                  onClick={closeInstructions}
+                  onClick={() => setShowIOSInstructions(false)}
                   className="w-full mt-8 p-4 rounded-2xl bg-black text-white font-bold text-sm hover:bg-zinc-800 transition-colors shadow-lg shadow-black/20"
                 >
                   حسناً، فهمت
@@ -133,5 +110,70 @@ export const PWAHeaderButton = () => {
   );
 };
 
-// Deprecated old prompt export if previously used, replace it with null to avoid breaking imports
-export const PWAInstallPrompt = () => null;
+// ============================================
+// The Popup Banner (Shows ONCE per session)
+// ============================================
+export const PWAInstallPrompt = () => {
+  const [showPrompt, setShowPrompt] = useState(false);
+
+  useEffect(() => {
+    // Delay slightly to not bombard immediately
+    const timer = setTimeout(() => {
+      if (isStandaloneMode()) return;
+      if (sessionStorage.getItem('pwa_prompt_closed') === 'true') return;
+      
+      // If we are here, we can show the banner.
+      setShowPrompt(true);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleClose = () => {
+    setShowPrompt(false);
+    sessionStorage.setItem('pwa_prompt_closed', 'true');
+  };
+
+  const handleInstallClick = async () => {
+    handleClose(); // mark as closed
+    if (isIOsDevice()) {
+       // On iOS, the prompt tells them to use Share. 
+       // The header button will handle detailed instructions.
+       alert('لتثبيت التطبيق على أيفون، اضغط زر المشاركة ثم "إضافة إلى الشاشة الرئيسية"');
+       return;
+    }
+
+    if (deferredPromptGlobal) {
+      deferredPromptGlobal.prompt();
+      const { outcome } = await deferredPromptGlobal.userChoice;
+      deferredPromptGlobal = null;
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {showPrompt && (
+        <motion.div
+           initial={{ y: 150, opacity: 0 }}
+           animate={{ y: 0, opacity: 1 }}
+           exit={{ y: 150, opacity: 0 }}
+           className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:w-96 bg-white border border-zinc-200 p-5 rounded-3xl shadow-2xl z-50 flex items-start gap-4"
+        >
+          <div className="w-12 h-12 bg-black rounded-[14px] flex items-center justify-center shrink-0">
+             <Download className="w-6 h-6 text-white" />
+          </div>
+          <div className="flex-1 pt-1 rtl" dir="rtl">
+             <h4 className="font-bold text-zinc-900 mb-1">ثبّت التطبيق</h4>
+             <p className="text-zinc-500 text-sm mb-3">لتجربة أسرع وأفضل، يمكنك تثبيت التطبيق على جهازك.</p>
+             <div className="flex items-center gap-2">
+                <button onClick={handleInstallClick} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-bold shadow-md hover:scale-105 active:scale-95 transition-all">تثبيت الآن</button>
+                <button onClick={handleClose} className="px-4 py-2 bg-zinc-100 text-zinc-600 rounded-xl text-sm font-bold hover:bg-zinc-200 transition-colors">لاحقاً</button>
+             </div>
+          </div>
+          <button onClick={handleClose} className="p-1 -mr-2 text-zinc-400 hover:text-black transition-colors rounded-full left-0 mx-2 absolute top-4">
+             <X className="w-4 h-4" />
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};

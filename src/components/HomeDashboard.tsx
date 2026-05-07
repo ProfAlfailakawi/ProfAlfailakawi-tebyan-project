@@ -283,7 +283,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           items={[
             { id: 'timemachine', label: language === 'ar' ? 'آلة الزمن' : 'Time Machine', icon: Hourglass },
             { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
-            { id: 'story', label: language === 'ar' ? 'الحكواتي' : 'Story Weaver', icon: LibraryBig },
+            { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
             { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: Bookmark }
           ]}
           handleTabChange={handleTabChange}

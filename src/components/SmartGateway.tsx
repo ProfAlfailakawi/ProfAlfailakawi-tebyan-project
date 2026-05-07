@@ -686,7 +686,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
     // 5. Narrative (Storyteller)
     const storyMatch = !q || q.includes('قصة') || q.includes('شخص') || q.includes('حكاية') || q.includes('تبسيط') || q.includes('كذب') || q.includes('story') || q.includes('tell');
-    addPath('story', 'story', 'الحكاواتي', 'The Narrative', MessageCircleQuestion, 'تحويل الموقف لقصة ملهمة', 'Turn situation into story', 'لأن القصص هي أسرع وسيلة لإيصال المعنى والتغيير', 'Because stories are the fastest way to convey meaning', storyMatch ? 7.5 : 2);
+    addPath('story', 'story', 'الراوي', 'The Narrative', MessageCircleQuestion, 'تحويل الموقف لقصة ملهمة', 'Turn situation into story', 'لأن القصص هي أسرع وسيلة لإيصال المعنى والتغيير', 'Because stories are the fastest way to convey meaning', storyMatch ? 7.5 : 2);
 
     // 6. Innovation (Omni Counselor <button Concepts)
     const innovMatch = !q || q.includes('فكرة') || q.includes('جديد') || q.includes('ابتكار') || q.includes('تغيير') || q.includes('استراتيجية') || q.includes('innovation') || q.includes('creative') || q.includes('سؤال') || q.includes('مشورة');
