@@ -27,7 +27,6 @@ import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
 import { SerendipityCompass } from './components/SerendipityCompass';
 import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt';
-import { SerendipityCompass } from './components/SerendipityCompass';
 import { SpatialGhost } from './components/SpatialGhost';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
