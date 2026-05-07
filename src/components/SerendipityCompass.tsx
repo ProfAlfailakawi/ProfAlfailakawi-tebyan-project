@@ -46,12 +46,12 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-black/60">
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-black/40">
             <motion.div 
                initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
                animate={{ opacity: 1, scale: 1, rotate: 0 }}
                exit={{ opacity: 0, scale: 0.9, rotate: 2 }}
-               className="bg-black text-zinc-100 w-full max-w-2xl max-h-[85vh] rounded-[32px] p-1 border border-zinc-800 shadow-2xl overflow-hidden relative flex flex-col"
+               className="bg-zinc-900 text-zinc-100 w-full max-w-2xl max-h-[85vh] rounded-[32px] p-1 border border-zinc-700 shadow-2xl overflow-hidden relative flex flex-col"
             >
                {/* Background cosmic effect */}
                <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.15),transparent_50%)] pointer-events-none"></div>
@@ -84,7 +84,7 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
                                <Sparkles className="w-4 h-4" /> 
                                {language === 'ar' ? 'نقطة الانطلاق:' : 'Starting Point:'} <span className="text-white">{contextTopic}</span>
                            </div>
-                           <div className="markdown-body font-serif rtl:font-sans leading-loose text-lg md:text-xl text-zinc-100">
+                           <div className="font-serif rtl:font-sans leading-loose text-lg md:text-xl text-zinc-100 [&_p]:text-zinc-100 [&_strong]:text-white [&_strong]:font-bold [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h3]:font-black [&_h3]:mt-6 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-zinc-100 [&_li]:mb-2">
                                <ReactMarkdown>{serendipityPath}</ReactMarkdown>
                            </div>
                        </div>
