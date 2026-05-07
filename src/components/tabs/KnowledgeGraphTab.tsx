@@ -76,13 +76,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
       </div>
 
       <div className="flex-1 relative w-full h-full min-h-[500px] border border-white/10 rounded-3xl bg-black/50 overflow-hidden shadow-inner flex items-center justify-center">
-         {history.length === 0 ? (
-            <div className="text-center text-zinc-500">
-                <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>{language === 'ar' ? 'ابدأ البحث والتحليل لتغذية شبكتك العصبية.' : 'Start searching to feed your neural network.'}</p>
-            </div>
-         ) : (
-             <svg width="100%" height="100%" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+         {/* Always show graph, use fallback nodes if history is empty */}
+         <svg width="100%" height="100%" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
                 {/* Edges */}
                 {edges.map((edge, i) => {
                     const source = nodes.find(n => n.id === edge.source);
@@ -127,7 +122,6 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     </motion.g>
                 ))}
              </svg>
-         )}
       </div>
     </div>
   );

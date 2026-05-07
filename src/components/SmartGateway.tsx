@@ -1,11 +1,12 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
 import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
+import { TypographicAcoustic } from './TypographicAcoustic';
 
 const DAILY_CHALLENGES = [
     {
@@ -765,7 +766,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     // 7. Visualization/Thinking Tools
     const thinkMatch = !q || q.includes('رسم') || q.includes('توضيح') || q.includes('بصري') || q.includes('هيكلة') || q.includes('think') || q.includes('map');
     addPath('mindmap', 'thinking', 'العقل المدبر', 'Mastermind', Network, 'هيكلة بصرية للأفكار', 'Visual thought structure', 'لتنظيم شتات الأفكار في صورة واحدة واضحة', 'To organize thoughts in one clear visual', thinkMatch ? 7 : 1);
+    addPath('knowledgegraph', 'thinking', 'الشبكة العصبية المعرفية', 'Knowledge Graph', Network, 'روابط الأفكار المكتشفة', 'Neural knowledge structure', 'لاستكشاف كيف تترابط أبحاثك وأفكارك في شبكة واحدة', 'To explore how your research and ideas interconnect', thinkMatch ? 6.5 : 1);
     addPath('timemachine', 'analysis', 'آلة الزمن', 'Time Machine', Hourglass, 'تأمل وحوار عبر الزمن', 'Journey through time', 'لفهم كيف تطور المفهوم عبر العصور وتوقع مستقبله', 'To understand how the concept evolved and predict its future', thinkMatch ? 5 : 1);
+    
+    // 8. Specialized Labs
+    const specializedMatch = !q || q.includes('قرار') || q.includes('خيار') || q.includes('أزمة') || q.includes('تنفيذي') || q.includes('استراتيجي') || q.includes('decision') || q.includes('strategic') || q.includes('executive');
+    addPath('decisionroom', 'innovation', 'غرفة القرار', 'Decision Room', Lock, 'مختبر القرارات الاستراتيجية', 'Strategic decision lab', 'لتحليل الخيارات المعقدة واتخاذ قرارات مصيرية بناءً على محاور القوة والمخاطر', 'To analyze complex choices and make critical decisions', specializedMatch ? 12 : 2);
+    
     addPath('quizzes', 'roadmap', 'الاختبارات الذكية', 'Strategic Quizzes', ClipboardCheck, 'قياس الفجوة', 'Measure gap', 'للتأكد من استيعاب السياق أو المفهوم قبل البدء في التطبيق', 'To ensure core context is understood before applying', roadMatch ? 6 : 1);
     
 
@@ -941,16 +948,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     <div className="relative w-full max-w-sm h-20 flex flex-col items-center justify-center overflow-hidden gap-4">
                        <AIHeartbeat className="opacity-50" />
                        <AnimatePresence mode="popLayout">
-                          <motion.p
+                          <TypographicAcoustic
                              key={loadingPhraseIndex}
-                             initial={{ y: 20, opacity: 0, filter: 'blur(4px)' }}
-                             animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-                             exit={{ y: -20, opacity: 0, filter: 'blur(4px)' }}
-                             transition={{ duration: 0.4 }}
+                             type="snap"
                              className="text-black font-black text-xl text-center w-full"
                           >
                              {language === 'ar' ? loadingPhrasesAr[loadingPhraseIndex] : loadingPhrasesEn[loadingPhraseIndex]}
-                          </motion.p>
+                          </TypographicAcoustic>
                        </AnimatePresence>
                     </div>
                     
@@ -974,17 +978,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 </motion.div>
                             )}
                             
-                            <motion.div
+                            <TypographicAcoustic
                                 key={insightIndex}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
-                                className="min-h-[60px] flex items-center justify-center"
+                                type="whisper"
+                                className="min-h-[60px] flex items-center justify-center italic text-base leading-relaxed"
                             >
-                                <p className="text-zinc-400 font-bold italic text-base leading-relaxed">
-                                    "{dynamicInsights[insightIndex]}"
-                                </p>
-                            </motion.div>
+                                "{dynamicInsights[insightIndex]}"
+                            </TypographicAcoustic>
                         </AnimatePresence>
                     </div>
                   </div>

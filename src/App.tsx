@@ -8,7 +8,7 @@ import {
   GraduationCap, Globe, Command, Sparkles, 
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
-  Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User
+  Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -63,12 +63,14 @@ const AnalyticsTab = React.lazy(() => import('./components/tabs/AnalyticsTab').t
 const LoyaltyTab = React.lazy(() => import('./components/tabs/LoyaltyTab').then(m => ({ default: m.LoyaltyTab })));
 const RoadmapTab = React.lazy(() => import('./components/tabs/RoadmapTab').then(m => ({ default: m.RoadmapTab })));
 const StoryTab = React.lazy(() => import('./components/tabs/StoryTab').then(m => ({ default: m.StoryTab })));
+const DecisionExecutiveTab = React.lazy(() => import('./components/tabs/DecisionExecutiveTab').then(m => ({ default: m.DecisionExecutiveTab })));
 const MyLibraryTab = React.lazy(() => import('./components/tabs/MyLibraryTab'));
 const ContactTab = React.lazy(() => import('./components/tabs/ContactTab').then(m => ({ default: m.ContactTab })));
+const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 
-type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages';
+type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom';
 
-const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages'];
+const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard'];
 
 import DevPanel from './components/DevPanel';
 
@@ -216,6 +218,7 @@ const AppContent: React.FC = () => {
   }, [checkAuth, language, setMobileMenuOpen, setSidebarOpen, setIsLoading, setError, setInitialContext, setActiveTab]);
 
   const tabs = [
+    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار' : 'Decision Room', icon: Lock },
     { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search },
     { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion },
     { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
@@ -416,7 +419,7 @@ const AppContent: React.FC = () => {
                       {(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
                         <button 
                           onClick={() => {
-                            navigate('/admin');
+                            handleTabChange('adminusers');
                           }}
                           className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-900 text-white rounded-[20px] text-base font-bold shadow-lg transition-all active:scale-[0.98]"
                         >
@@ -500,12 +503,16 @@ const AppContent: React.FC = () => {
                     return <LabTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
                   case 'qawlfasl':
                     return <QawlFaslTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                  case 'decisionroom':
+                    return <DecisionExecutiveTab handleTabChange={handleTabChange} language={language} />;
                   case 'adminusers':
                     return (profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminUsersDashboard /> : null;
                   case 'adminqawlfasl':
                     return (profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminQawlFasl /> : null;
                   case 'adminmessages':
                     return (profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminContactTab language={language} /> : null;
+                  case 'admindashboard':
+                    return (profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminDashboard /> : null;
                   case 'contact':
                     return <ContactTab language={language} />;
                   default:

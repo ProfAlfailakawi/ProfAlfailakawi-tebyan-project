@@ -222,8 +222,8 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
                          </motion.div>
                     )}
                     {response && !isProcessing && (
-                        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full">
-                            <div className="p-4 max-h-[50vh] overflow-y-auto w-full no-scrollbar markdown-body font-medium text-base md:text-lg leading-relaxed text-zinc-300 text-center [&_p]:text-zinc-300 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-emerald-300">
+                        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full px-4">
+                            <div className="p-4 max-h-[50vh] overflow-y-auto w-full no-scrollbar markdown-body font-medium text-base md:text-lg leading-relaxed text-zinc-100 text-center [&_p]:text-zinc-100 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-emerald-400">
                                 <ReactMarkdown>{response}</ReactMarkdown>
                             </div>
                         </motion.div>

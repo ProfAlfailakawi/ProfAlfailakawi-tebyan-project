@@ -67,6 +67,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   const handlePersonaChange = (id: string) => {
     setOraclePersona(id);
     setOracleResult('');
+    setIsLoading(false);
     setError(null);
   };
 

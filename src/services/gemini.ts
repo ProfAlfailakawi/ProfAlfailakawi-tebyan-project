@@ -13,7 +13,7 @@ import { proxyGenerateContent } from "../lib/aiProxy";
 import { db } from "../lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-const ai: any = {
+export const ai: any = {
   models: {
     generateContent: async (params: any) => {
       const response = await proxyGenerateContent({
@@ -1363,6 +1363,7 @@ export async function generateCouncilConsultation(topic: string, lang: string = 
     try {
       const prompt = `You are a supreme council of 5 experts. Analyze "${topic}".
 Language: ${lang === 'ar' ? 'Arabic' : 'English'}.
+Arabic Tone: Use "White Dialect" (لهجة بيضاء كويتية/خليجية عامية مفهومة للجميع) - warm, natural, and friendly.
 STRICT LAYOUT RULES:
 1. "council_discussion": Each speaker message must be MAX 2 lines. Focus on 1 key insight.
 2. "consultants": 
