@@ -64,6 +64,12 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     }
   }, [oraclePersona]);
 
+  const handlePersonaChange = (id: string) => {
+    setOraclePersona(id);
+    setOracleResult('');
+    setError(null);
+  };
+
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
@@ -81,7 +87,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       <div className="flex flex-wrap gap-3 items-center justify-center">
         {personas.map(p => (
           <button
-            key={p.id} onClick={() => setOraclePersona(p.id)}
+            key={p.id} onClick={() => handlePersonaChange(p.id)}
             title={language === 'ar' ? `تغيير المنظور إلى ${p.ar}` : `Change perspective to ${p.en}`}
             className={cn(
               "px-5 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer border",

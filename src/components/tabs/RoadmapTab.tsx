@@ -36,7 +36,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
   }, [initialValue, roadmap, isLoading, onValueUsed]);
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 max-h-[90vh] overflow-y-auto px-4 sm:px-6 pb-20 custom-scrollbar relative">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 max-h-[90vh] overflow-y-auto px-4 sm:px-6 pb-20 custom-scrollbar relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
         icon={Map}
         title={{ ar: 'طريق النجاح', en: 'Success Roadmap' }}
@@ -91,7 +91,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
 
       <AnimatePresence mode="wait">
         {roadmap && !isLoading && (
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12" dir="rtl">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
             {/* Clean Header */}
             <div className="bg-white border text-zinc-900 border-zinc-200 p-8 rounded-3xl shadow-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -z-10"></div>
@@ -151,10 +151,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
             {/* Clean Timeline */}
             <div className="relative">
               {/* Connector line */}
-              <div className={cn(
-                "absolute top-8 bottom-8 w-px bg-zinc-200 hidden md:block",
-                language === 'ar' ? 'right-[2.5rem]' : 'left-[2.5rem]'
-              )}></div>
+              <div className="absolute top-8 bottom-8 w-px bg-zinc-200 hidden md:block rtl:right-[2.5rem] ltr:left-[2.5rem]"></div>
 
               <div className="space-y-6">
                 {roadmap.milestones?.map((milestone: any, i: number) => (
@@ -166,10 +163,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                     key={i} 
                     className="relative"
                   >
-                    <div className={cn(
-                      "flex flex-col md:flex-row items-start gap-4 md:gap-6",
-                      language === 'ar' ? 'md:flex-row-reverse' : ''
-                    )}>
+                    <div className="flex flex-col md:flex-row items-start gap-4 md:gap-6">
                       {/* Timeline Node */}
                       <div className="relative z-10 hidden md:flex flex-col items-center shrink-0 w-20">
                         <div className={cn(
@@ -203,7 +197,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                             </h5>
                             <ul className="space-y-2.5">
                               {milestone.tasks.map((task: string, j: number) => (
-                                <li key={j} className={cn("flex items-start gap-3", language === 'ar' ? 'flex-row-reverse' : '')}>
+                                <li key={j} className="flex items-start gap-3">
                                   <div className="mt-[6px] w-[5px] h-[5px] rounded-full bg-indigo-400 opacity-60 shrink-0" />
                                   <span className={cn("text-sm font-medium text-zinc-700 leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>{task?.replace(/\*\*/g, '')}</span>
                                 </li>

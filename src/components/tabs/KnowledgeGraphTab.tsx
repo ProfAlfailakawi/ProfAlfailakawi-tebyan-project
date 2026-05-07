@@ -24,9 +24,19 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
     // Center Node (User Consciousness)
     n.push({ id: 0, x: centerX, y: centerY, label: language === 'ar' ? 'الوعي المركزي' : 'Core Consciousness', type: 'core' });
 
-    history.forEach((query, index) => {
+    let activeHistory = history;
+    if (activeHistory.length === 0) {
+        // Mock data to ensure the section doesn't appear broken
+        activeHistory = [
+            language === 'ar' ? 'الذكاء الاصطناعي' : 'AI',
+            language === 'ar' ? 'فلسفة الوعي' : 'Philosophy of Consciousness',
+            language === 'ar' ? 'التعلم المستمر' : 'Continuous Learning'
+        ];
+    }
+
+    activeHistory.forEach((query, index) => {
         const radius = 100 + Math.random() * 150;
-        const angle = (index / history.length) * Math.PI * 2 + Math.random() * 0.5;
+        const angle = (index / activeHistory.length) * Math.PI * 2 + Math.random() * 0.5;
         const x = centerX + Math.cos(angle) * radius;
         const y = centerY + Math.sin(angle) * radius;
 
@@ -96,6 +106,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ type: 'spring', delay: i * 0.1 + 0.5 }}
+                        className="cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => alert(node.label)}
                     >
                         <circle 
                             cx={node.x} cy={node.y} 

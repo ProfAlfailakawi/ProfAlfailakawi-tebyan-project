@@ -204,55 +204,55 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
                  )}></div>
              </div>
 
-             <div className="z-10 text-center mt-4 mb-12">
-                 <h3 className="text-3xl font-black text-white/90">
+             <div className="z-10 text-center mt-4 mb-6">
+                 <h3 className="text-2xl font-bold text-white/80">
                      {language === 'ar' ? 'المساعد الحنون' : 'Warm Assistant'}
                  </h3>
-                 <p className="text-zinc-500 text-lg mt-2">
+                 <p className="text-zinc-500 text-sm mt-1">
                      {language === 'ar' ? 'تحدث معي كصديق يسمعك بصدق' : 'Speak to me like a friend'}
                  </p>
              </div>
 
-             <div className="z-10 flex-1 flex flex-col items-center justify-center min-h-[200px] w-full max-w-4xl relative">
+             <div className="z-10 flex-1 flex flex-col items-center justify-center min-h-[150px] w-full max-w-lg relative">
                  <AnimatePresence mode="popLayout">
                     {isProcessing && (
                          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center">
-                            <Loader2 className="w-16 h-16 text-emerald-400 animate-spin mb-6" />
-                            <p className="text-emerald-400/80 animate-pulse font-medium text-lg">{language === 'ar' ? 'أفكر في أفضل رد يريحك...' : 'Thinking of the best response...'}</p>
+                            <Loader2 className="w-12 h-12 text-emerald-400 animate-spin mb-4" />
+                            <p className="text-emerald-400/80 animate-pulse font-medium text-sm">{language === 'ar' ? 'أفكر في أفضل رد يريحك...' : 'Thinking of the best response...'}</p>
                          </motion.div>
                     )}
                     {response && !isProcessing && (
                         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center w-full">
-                            <div className="p-8 max-h-[60vh] overflow-y-auto w-full no-scrollbar markdown-body font-medium text-xl md:text-2xl leading-[1.8] text-white/90 text-center [&_p]:text-white/90 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-emerald-300">
+                            <div className="p-4 max-h-[50vh] overflow-y-auto w-full no-scrollbar markdown-body font-medium text-base md:text-lg leading-relaxed text-zinc-300 text-center [&_p]:text-zinc-300 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-emerald-300">
                                 <ReactMarkdown>{response}</ReactMarkdown>
                             </div>
                         </motion.div>
                     )}
                     {!isProcessing && !response && (
-                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center w-full">
+                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center w-full px-4">
                             {errorStatus ? (
-                                <p className="text-rose-400 font-bold mb-4">{errorStatus}</p>
+                                <p className="text-rose-400 font-medium text-sm mb-4">{errorStatus}</p>
                             ) : isListening ? (
-                                <div className="space-y-8">
-                                    <div className="flex justify-center gap-2">
+                                <div className="space-y-4">
+                                    <div className="flex justify-center gap-1">
                                         {[1,2,3].map(i => (
                                             <motion.div
                                                 key={i}
                                                 animate={{ scale: [1, 1.5, 1] }}
                                                 transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.2 }}
-                                                className="w-4 h-4 rounded-full bg-emerald-400"
+                                                className="w-2 h-2 rounded-full bg-emerald-400"
                                             />
                                         ))}
                                     </div>
-                                    <p className="text-emerald-400 font-black animate-pulse text-lg tracking-widest uppercase">{language === 'ar' ? 'أنا أسمعك من قلبي... تفضل' : 'LISTENING...'}</p>
+                                    <p className="text-emerald-400 font-bold animate-pulse text-sm tracking-widest uppercase">{language === 'ar' ? 'أنا أسمعك...' : 'LISTENING...'}</p>
                                     {transcript && (
-                                        <p className="text-white/60 font-medium text-2xl md:text-4xl px-4 mt-8">{transcript}</p>
+                                        <p className="text-white/60 font-medium text-lg px-2 mt-4">{transcript}</p>
                                     )}
                                 </div>
                             ) : transcript ? (
-                                <p className="text-3xl font-bold text-white/50 pb-4 mb-4">{transcript}</p>
+                                <p className="text-xl font-bold text-white/50 pb-2 mb-2">{transcript}</p>
                             ) : (
-                                <p className="text-zinc-600 italic text-2xl">{language === 'ar' ? 'اضغط الميكروفون وتحدث بحرية...' : 'Tap the mic and speak freely...'}</p>
+                                <p className="text-zinc-500 italic text-lg">{language === 'ar' ? 'تحدث بحرية...' : 'Speak freely...'}</p>
                             )}
                          </motion.div>
                     )}

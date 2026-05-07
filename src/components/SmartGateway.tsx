@@ -165,8 +165,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       if (lastInteraction && lastInteraction.query) {
         arG = 'صباح الوعي والتجدد';
         enG = 'Good morning, visionary';
-        arSub = `أهلاً بك مجدداً.. بالأمس توقفنا عند فكرة "${lastInteraction.query.substring(0, 20)}"، هل القهوة جاهزة لنكمل؟ ☕`;
-        enSub = `Welcome back.. yesterday we stopped at "${lastInteraction.query.substring(0, 20)}", is your coffee ready to continue? ☕`;
+        arSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">أهلاً بك مجدداً.. توقفنا في المرة السابقة عند <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>، هل القهوة جاهزة لنكمل؟ ☕</span>;
+        enSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">Welcome back.. last time we stopped at <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>, is your coffee ready to continue? ☕</span>;
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `ما الجديد اليوم في هذا السياق؟`, en: `What's new today in this context?` },
@@ -198,8 +198,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       if (lastInteraction && lastInteraction.query) {
         arG = 'مساء التمكين والعمق';
         enG = 'Good afternoon, visionary';
-        arSub = `أهلاً بك مجدداً.. توقفنا عند فكرة "${lastInteraction.query.substring(0, 20)}"، هل نكمل الاستكشاف؟ ☕`;
-        enSub = `Welcome back.. we stopped at "${lastInteraction.query.substring(0, 20)}", shall we continue exploring? ☕`;
+        arSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">أهلاً بك مجدداً.. توقفنا في المرة السابقة عند <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>، هل نكمل الاستكشاف؟ ☕</span>;
+        enSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">Welcome back.. last time we stopped at <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>, shall we continue exploring? ☕</span>;
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `مراجعة وتصحيح مسار قراراتي حول ذلك`, en: `Review and correct my path about this` },
@@ -229,8 +229,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       if (lastInteraction && lastInteraction.query) {
         arG = 'مساء التأمل والعمق';
         enG = 'Evening of reflection';
-        arSub = `أهلاً بك مجدداً.. توقفنا بالأمس عند "${lastInteraction.query.substring(0, 20)}".. هل كان يوماً مثمراً؟ 🌟`;
-        enSub = `Welcome back.. we stopped at "${lastInteraction.query.substring(0, 20)}", how was your day? 🌟`;
+        arSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">أهلاً بك مجدداً.. توقفنا في المرة السابقة عند <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>.. هل كان يوماً مثمراً؟ 🌟</span>;
+        enSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">Welcome back.. last time we stopped at <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>, how was your day? 🌟</span>;
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `كيف أستعد للغد بذكاء حول هذه الفكرة؟`, en: `How to prepare for tomorrow smartly about this?` },
@@ -806,13 +806,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           >
              <header className="text-center">
         
-                <motion.p
+                <motion.div
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
                    className="text-zinc-500 font-bold text-sm mb-2"
                 >
                    {language === 'ar' ? proactiveInsights.arSub : proactiveInsights.enSub}
-                </motion.p>
+                </motion.div>
                 <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-black tracking-tighter leading-[0.9] mb-4 md:mb-6">
                   {language === 'ar' ? proactiveInsights.arG.split(' ')[0] : proactiveInsights.enG.split(' ')[0]}<br/>
                   <span className="text-zinc-400 italic">

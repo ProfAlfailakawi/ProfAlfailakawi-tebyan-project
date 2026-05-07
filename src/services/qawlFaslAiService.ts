@@ -56,7 +56,7 @@ export async function generateAudioForText(text: string): Promise<string | null>
     console.log(`Starting High-Quality AI Audio Generation...`);
     const audioData = await proxyGenerateAudio({
       text: text.substring(0, 3000),
-      voiceName: 'Aoede' 
+      voiceName: 'Puck' 
     });
     
     if (audioData) {

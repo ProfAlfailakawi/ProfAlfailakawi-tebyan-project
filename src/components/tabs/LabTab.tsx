@@ -204,15 +204,15 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                   <motion.div 
                      initial={{ scale: 0.9, opacity: 0 }}
                      animate={{ scale: 1, opacity: 1 }}
-                     className="bg-black text-white rounded-[32px] p-8 md:p-12 relative overflow-hidden shadow-2xl"
+                     className="bg-zinc-900 text-zinc-100 rounded-[32px] p-8 md:p-12 relative overflow-hidden shadow-2xl"
                   >
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[100px]"></div>
-                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/20 rounded-full blur-[100px]"></div>
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px]"></div>
+                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/10 rounded-full blur-[100px]"></div>
                      <div className="relative z-10 flex flex-col items-center">
-                         <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.5)] flex items-center justify-center mb-10">
+                         <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.3)] flex items-center justify-center mb-10">
                             <Zap className="w-10 h-10 text-white animate-pulse" />
                          </div>
-                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white/90 [&_p]:text-white/90 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-indigo-300">
+                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-zinc-100 [&_p]:text-zinc-100 [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-indigo-300">
                             <ReactMarkdown>{labColliderResult}</ReactMarkdown>
                          </div>
                      </div>

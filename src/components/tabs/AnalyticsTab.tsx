@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BarChart3, TrendingUp, Target, Activity, Cpu, Radar, Plus, AlertTriangle, ShieldCheck, Printer, Sparkles } from 'lucide-react';
+import { BarChart3, TrendingUp, Target, Activity, Cpu, Radar, Plus, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { generatePredictiveRadar } from '../../services/gemini';
@@ -47,7 +47,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
   };
 
   return (
-    <div className="w-full bg-white max-h-[85vh] overflow-y-auto rounded-[32px] p-8 shadow-sm border border-zinc-200 custom-scrollbar print:max-h-none print:overflow-visible">
+    <div className="w-full bg-white max-h-[85vh] overflow-y-auto rounded-[32px] p-8 shadow-sm border border-zinc-200 custom-scrollbar">
       <div className="max-w-5xl mx-auto space-y-12 position-relative px-2">
         <TabHeader 
           icon={Radar}

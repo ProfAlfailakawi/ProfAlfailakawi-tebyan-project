@@ -10,7 +10,17 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
     
     return (
         <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">المكتبة المفضلة</h2>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">المكتبة المفضلة</h2>
+                {handleTabChange && (
+                    <button 
+                        onClick={() => handleTabChange('discover')}
+                        className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 rounded-xl text-sm font-bold transition-all"
+                    >
+                        {language === 'ar' ? 'رجوع' : 'Back'}
+                    </button>
+                )}
+            </div>
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-zinc-400">
                     <LibraryBig className="w-16 h-16 mb-4 opacity-20" />

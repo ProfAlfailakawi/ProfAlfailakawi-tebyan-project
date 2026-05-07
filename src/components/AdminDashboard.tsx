@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Brain, TrendingUp, DollarSign, Lightbulb, Zap, ArrowRight, BookOpen, Home, RefreshCw, BarChart4, Users, LayoutDashboard, TicketPercent, Mail } from 'lucide-react';
-import { proxyGenerateContent } from '../lib/aiProxy';
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -129,7 +128,8 @@ export default function AdminDashboard() {
 
       for (let i = 0; i < maxRetries; i++) {
         try {
-          const response = await proxyGenerateContent({
+          const { ai } = await import('../services/gemini');
+          const response = await ai.models.generateContent({
             model: "gemini-1.5-flash",
             contents: [{ role: 'user', parts: [{ text: `Based on this traffic data: ${JSON.stringify(mockTrafficData)}, analyze and provide 3 actionable development suggestions, including new feature ideas or UI/UX improvements (icons, tools, dashboards) to improve user retention and platform value.` }] }],
             config: {

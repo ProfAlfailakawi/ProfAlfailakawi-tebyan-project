@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Users, RefreshCw, Headphones, Printer, Volume2, Square, BookOpen, Search, Library, ExternalLink, PlayCircle } from 'lucide-react';
+import { Users, RefreshCw, Headphones, Volume2, Square, BookOpen, Search, Library, ExternalLink, PlayCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { generateAudioForText } from '../../services/qawlFaslAiService';
@@ -112,10 +112,6 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
     };
   }, []);
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
@@ -195,17 +191,10 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
             </div>
           </motion.div>
         ) : councilData && (
-          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 relative print:text-black">
-            <button 
-              onClick={handlePrint}
-              className="absolute top-0 right-0 md:-top-4 md:-right-4 bg-white text-black p-3 rounded-full hover:bg-zinc-200 shadow-xl print:hidden z-10"
-              title={language === 'ar' ? 'استخراج تقرير PDF' : 'Export PDF Report'}
-            >
-              <Printer className="w-5 h-5" />
-            </button>
+          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 relative">
             
            {councilData?.council_discussion && councilData.council_discussion.length > 0 && (
-             <div className="bg-zinc-900/50 border border-zinc-800 rounded-[24px] p-6 space-y-6 print:bg-white print:border-zinc-200 shadow-inner">
+             <div className="bg-zinc-900/50 border border-zinc-800 rounded-[24px] p-6 space-y-6 shadow-inner">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                   <h3 className="text-xl font-bold flex items-center gap-3">
                      <Users className="w-6 h-6" />
