@@ -13,11 +13,12 @@ export const PWAHeaderButton = () => {
     // Check if already installed (standalone mode)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                          (window.navigator as any).standalone === true;
-    if (isStandalone) return;
-
-    // Check if on mobile device (optional, but PWA is usually for mobile or desktop apps, let's allow it generally if installable)
-    // Actually, let's allow it on any device if deferredPrompt fires or it's iOS
     
+    // Check session storage
+    const hasSeenInSession = sessionStorage.getItem('pwa_install_prompt_seen') === 'true';
+
+    if (isStandalone || hasSeenInSession) return;
+
     // Check iOS
     const _isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
     setIsIOS(_isIOS);
@@ -41,6 +42,10 @@ export const PWAHeaderButton = () => {
   }, []);
 
   const handleInstallClick = async () => {
+    // Mark as seen in session
+    sessionStorage.setItem('pwa_install_prompt_seen', 'true');
+    setIsInstallable(false);
+
     if (isIOS) {
       setShowIOSInstructions(true);
       return;
@@ -50,13 +55,19 @@ export const PWAHeaderButton = () => {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        setIsInstallable(false);
+        // App installed, isStandalone will handle hiding it on next load
       }
       setDeferredPrompt(null);
     } else {
         // Fallback or Android showing instructions if needed
         alert("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).");
     }
+  };
+
+  const closeInstructions = () => {
+    setShowIOSInstructions(false);
+    sessionStorage.setItem('pwa_install_prompt_seen', 'true');
+    setIsInstallable(false);
   };
 
   if (!isInstallable) return null;
@@ -90,7 +101,7 @@ export const PWAHeaderButton = () => {
                className="bg-white/95 backdrop-blur-xl border border-zinc-200/60 p-6 rounded-3xl shadow-2xl relative overflow-hidden w-full max-w-sm mb-4 md:mb-0"
                onClick={(e) => e.stopPropagation()}
             >
-               <button onClick={() => setShowIOSInstructions(false)} className="absolute top-4 left-4 p-2 text-zinc-400 hover:text-black bg-zinc-50 rounded-full transition-colors">
+               <button onClick={closeInstructions} className="absolute top-4 left-4 p-2 text-zinc-400 hover:text-black bg-zinc-50 rounded-full transition-colors">
                  <X className="w-4 h-4" />
                </button>
                <h3 className="font-black text-zinc-900 text-xl mb-6 pr-2 pt-2 tracking-tight">تثبيت التطبيق على آيفون</h3>
@@ -109,7 +120,7 @@ export const PWAHeaderButton = () => {
                  </li>
                </ol>
                <button 
-                  onClick={() => setShowIOSInstructions(false)}
+                  onClick={closeInstructions}
                   className="w-full mt-8 p-4 rounded-2xl bg-black text-white font-bold text-sm hover:bg-zinc-800 transition-colors shadow-lg shadow-black/20"
                 >
                   حسناً، فهمت
