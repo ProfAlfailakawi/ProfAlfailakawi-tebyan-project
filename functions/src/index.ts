@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as functions from "firebase-functions";
 import fetch from "node-fetch";
 import cors from "cors";

@@ -3,12 +3,25 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, X } from 'lucide-react';
 import { useCognitiveMode } from '../contexts/CognitiveModeContext';
 
-export const WhisperHint = ({ language }: { language: string }) => {
+export const WhisperHint = ({ language, forceShow = false }: { language: string, forceShow?: boolean }) => {
   const [show, setShow] = useState(false);
   const [hint, setHint] = useState('');
   const { mode } = useCognitiveMode();
 
   useEffect(() => {
+    if (forceShow) {
+       const hints = language === 'ar' ? [
+          'يبدو أنك تبحث عن شيء محدد.. هل أساعدك؟',
+          'الماوس يتحرك بحيرة.. اضغط ⌘+K للبحث.'
+       ] : [
+          'Seems you are looking for something.. Need help?',
+          'Mouse moving erratically.. Press Cmd+K to search.'
+       ];
+       setHint(hints[Math.floor(Math.random() * hints.length)]);
+       setShow(true);
+       return;
+    }
+
     let idleTimer: NodeJS.Timeout;
     
     // Only show hints in default mode to avoid distraction

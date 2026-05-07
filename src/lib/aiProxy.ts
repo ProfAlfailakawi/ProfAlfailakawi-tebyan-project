@@ -11,7 +11,7 @@ export async function proxyGenerateContent(params: {
   config?: any;
 }) {
   // استخدام الرابط الأساسي للخادم إذا كان معرفاً في 환경 الإنتاج، وإلا استخدام مسار نسبي
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+  const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
   
   const response = await fetch(`${baseUrl}/api/ai/generate`, {
     method: 'POST',
@@ -45,7 +45,7 @@ export async function proxyGenerateAudio(params: {
   text: string;
   voiceName?: string;
 }) {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || '';
+  const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
   
   const response = await fetch(`${baseUrl}/api/ai/audio`, {
     method: 'POST',

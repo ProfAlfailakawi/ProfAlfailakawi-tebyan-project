@@ -5,6 +5,7 @@ import { ExpandableText } from './ui/ExpandableText';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
+import { GravityCard } from './GravityCard';
 
 const DAILY_CHALLENGES = [
     {
@@ -1313,6 +1314,30 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   </div>
               </div>
           </div>
+      </motion.div>
+      {/* Gravity of Intent Demonstration */}
+      <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 mb-8"
+      >
+        <h3 className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-6 flex items-center justify-center gap-2">
+           <Zap className="w-4 h-4 text-amber-500" />
+           {language === 'ar' ? 'أفكار ملتقطة للتو (اسحب للحفظ والتجربة الفيزيائية)' : 'Recently Captured Ideas (Drag to save)'}
+        </h3>
+        <div className="flex flex-col md:flex-row gap-6">
+           <GravityCard 
+              content={language === 'ar' ? 'فكرة سريعة: استخدام الزنجار الرقمي في واجهة المستخدم يوفر تجربة دافئة' : 'Quick Idea: Using digital patina provides a warm UX.'}
+              weight="light"
+              className="flex-1"
+           />
+           <GravityCard 
+              content={language === 'ar' ? 'فلسفة عميقة: الإنسان يتفاعل مع الأوزان الفيزيائية حتى في بيئة رقمية. كلما كان النص يحمل تفاصيل معقدة وحقائق ثقيلة، يجب أن يبدي المحرك الفيزيائي مقاومة سحب أعلى، مما يوهم العقل الباطن بأنه يحمل وزناً فكرياً.' : 'Deep Philosophy: Humans interact with physical weights even in a digital environment. The more complex the text, the higher the drag resistance should be.'}
+              weight="heavy"
+              className="flex-1 md:max-w-md"
+           />
+        </div>
       </motion.div>
     </div>
   );

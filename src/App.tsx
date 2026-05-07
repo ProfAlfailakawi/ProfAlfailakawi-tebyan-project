@@ -1,6 +1,7 @@
 import { GamificationProvider } from './components/GamificationProvider';
 import { UserProvider } from './contexts/UserContext';
 import { CognitiveModeProvider } from './contexts/CognitiveModeContext';
+import { useAmbientIntelligence } from './hooks/useAmbientIntelligence';
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -25,6 +26,7 @@ import { VoiceAssistantFloatingButton } from './components/VoiceAssistantFloatin
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { SpatialGhost } from './components/SpatialGhost';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
 import { GlobalSageBar } from './components/GlobalSageBar';
@@ -73,7 +75,7 @@ import { SmartGateway } from './components/SmartGateway';
 import { logEvent } from './services/analyticsService';
 import { cronService } from './services/cronService';
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, loading, authReady } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('home');
@@ -89,6 +91,9 @@ const App: React.FC = () => {
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollTop = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
+  
+  // Ambient Intelligence Hook
+  const { isConfused } = useAmbientIntelligence();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -122,6 +127,15 @@ const App: React.FC = () => {
 
     // Automatically check and run daily tasks
     cronService.runDailyTasks();
+
+    // Digital Patina Simulation (Accelerated for demonstration)
+    const visits = parseInt(localStorage.getItem('app_visits') || '0', 10) + 1;
+    localStorage.setItem('app_visits', visits.toString());
+    
+    // If visited more than 5 times (or refresh), apply patina (aging effect)
+    if (visits > 2) { // just for show
+      document.body.classList.add('patina-aged');
+    }
   }, []);
 
   useEffect(() => {
@@ -243,12 +257,18 @@ const App: React.FC = () => {
   ];
 
   return (
-    <CognitiveModeProvider>
-    <GamificationProvider>
-      <UserProvider>
         <div className={cn("h-[100dvh] bg-zinc-50 font-sans flex flex-col overflow-hidden text-zinc-900 selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <ThoughtNebula />
-          <WhisperHint language={language} />
+          <WhisperHint language={language} forceShow={isConfused} />
+          
+          {/* Spatial Ghosting (الذاكرة المكانية الوهمية) */}
+          {activeTab === 'discover' && (
+            <SpatialGhost 
+              message={language === 'ar' ? "في ديسمبر الماضي، كنت تبحث عن الذكاء والتطبيقات..." : "Last December, you searched for AI apps..."} 
+              x="left-8" 
+              y="top-1/3" 
+            />
+          )}
 
         <AnimatePresence>
         {toast && (
@@ -531,11 +551,18 @@ const App: React.FC = () => {
 
 
       </div>
-      </UserProvider>
-    </GamificationProvider>
-    </CognitiveModeProvider>
   );
 };
+
+const App = () => (
+  <CognitiveModeProvider>
+    <GamificationProvider>
+      <UserProvider>
+        <AppContent />
+      </UserProvider>
+    </GamificationProvider>
+  </CognitiveModeProvider>
+);
 
 export default App;
 

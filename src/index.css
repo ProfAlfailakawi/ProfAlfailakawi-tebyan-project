@@ -57,7 +57,61 @@ html.theme-evening .bg-white {
   background-color: #fdfbf7;
 }
 
-/* Cognitive Modes */
+/* 
+  Elastic Density (الكثافة المرنة)
+  Adjust layout dynamically based on scroll speed and interaction.
+*/
+body.scroll-fast main {
+  opacity: 0.85;
+  transform: scale(0.995);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.scroll-fast .markdown-body p {
+  color: #52525b; /* dim slightly */
+  transition: color 0.3s ease;
+}
+
+body.scroll-dwelling main {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.scroll-dwelling .marginalia-hint {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.marginalia-hint {
+  opacity: 0;
+  transform: translateX(-10px);
+  pointer-events: none;
+}
+
+/* 
+  Digital Patina (الزنجار الرقمي)
+  These variables represents the "age" of the application install.
+  We will map this directly in CSS. Over time, bg-zinc-50 becomes slightly warmer.
+*/
+:root {
+  --patina-warmth: 0%; /* Default */
+}
+
+body.patina-aged {
+  /* Simulate 6 months of aging: warmer tone, softer contrasts */
+  --patina-warmth: 100%;
+  background-color: color-mix(in srgb, #f4f4f5, #fcfaf5 var(--patina-warmth));
+}
+
+body.patina-aged .bg-white {
+  background-color: color-mix(in srgb, #ffffff, #fffdf8 var(--patina-warmth));
+}
+
+body.patina-aged .text-zinc-900 {
+  color: color-mix(in srgb, #18181b, #2d2620 var(--patina-warmth));
+}
 body.mode-focus main {
   max-width: 800px;
   margin: 0 auto;
