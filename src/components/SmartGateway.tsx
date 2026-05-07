@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig } from 'lucide-react';
-import { ExpandableText } from './ui/ExpandableText';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
 import { GravityCard } from './GravityCard';
+import { AIHeartbeat } from './ui/AIHeartbeat';
 
 const DAILY_CHALLENGES = [
     {
@@ -164,9 +164,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     if (hour < 12) {
       if (lastInteraction && lastInteraction.query) {
         arG = 'صباح الوعي والتجدد';
-        enG = 'Morning of awareness';
-        arSub = `لقد كنت تفكر البارحة في "${lastInteraction.query.substring(0, 15)}.."، هل نكمل الاستكشاف؟`;
-        enSub = `You were thinking about "${lastInteraction.query.substring(0, 15)}.." yesterday. Shall we explore further?`;
+        enG = 'Good morning, visionary';
+        arSub = `أهلاً بك مجدداً.. بالأمس توقفنا عند فكرة "${lastInteraction.query.substring(0, 20)}"، هل القهوة جاهزة لنكمل؟ ☕`;
+        enSub = `Welcome back.. yesterday we stopped at "${lastInteraction.query.substring(0, 20)}", is your coffee ready to continue? ☕`;
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `ما الجديد اليوم في هذا السياق؟`, en: `What's new today in this context?` },
@@ -195,37 +195,67 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         ].sort(() => 0.5 - Math.random()).slice(0, 6);
       }
     } else if (hour < 18) {
-      arG = 'منتصف يوم حافل';
-      enG = 'A busy midday';
-      arSub = 'هل تحتاج لنقطة ارتكاز قبل اتخاذ قرارك القادم؟';
-      enSub = 'Do you need a pivot point before your next decision?';
-      dynamicSuggests = [
-          { ar: `اقتراح الموازنة بين الأولويات الحالية`, en: `Suggest balancing current priorities` },
-          { ar: `مراجعة وتصحيح مسار قراراتي اليوم`, en: `Review and correct my path today` },
-          { ar: `تمرين سريع لإعادة شحن الطاقة`, en: `Quick recharge exercise` },
-          { ar: `كيف أتعامل مع ضغط العمل الآن؟`, en: `How to handle work stress now?` },
-          { ar: `فكرة إبداعية تكسر الروتين`, en: `Creative idea to break the routine` },
-          { ar: `نصيحة للخروج من التشتت الذهني`, en: `Tip to escape mental distraction` },
-          { ar: `كيف أدير اجتماعاً بطريقة أفضل؟`, en: `How to run a meeting better?` },
-          { ar: `شرح لمفهوم إداري معقد`, en: `Explanation of a complex management concept` },
-          { ar: `توليد أفكار لمشروع مستعصي`, en: `Brainstorming ideas for a stuck project` }
-      ].sort(() => 0.5 - Math.random()).slice(0, 6);
+      if (lastInteraction && lastInteraction.query) {
+        arG = 'مساء التمكين والعمق';
+        enG = 'Good afternoon, visionary';
+        arSub = `أهلاً بك مجدداً.. توقفنا عند فكرة "${lastInteraction.query.substring(0, 20)}"، هل نكمل الاستكشاف؟ ☕`;
+        enSub = `Welcome back.. we stopped at "${lastInteraction.query.substring(0, 20)}", shall we continue exploring? ☕`;
+        dynamicSuggests = [
+            { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
+            { ar: `مراجعة وتصحيح مسار قراراتي حول ذلك`, en: `Review and correct my path about this` },
+            { ar: `تمرين سريع لإعادة شحن الطاقة`, en: `Quick recharge exercise` },
+            { ar: `كيف أتعامل مع ضغط العمل الآن؟`, en: `How to handle work stress now?` },
+            { ar: `توليد أفكار مستعصية لهذه الفكرة`, en: `Brainstorming ideas for this concept` },
+            { ar: `تحليل التحديات المعقدة فيها`, en: `Analyze complex challenges` }
+        ].sort(() => 0.5 - Math.random()).slice(0, 6);
+      } else {
+          arG = 'منتصف يوم حافل';
+          enG = 'A busy midday';
+          arSub = 'هل تحتاج لنقطة ارتكاز قبل اتخاذ قرارك القادم؟';
+          enSub = 'Do you need a pivot point before your next decision?';
+          dynamicSuggests = [
+              { ar: `اقتراح الموازنة بين الأولويات الحالية`, en: `Suggest balancing current priorities` },
+              { ar: `مراجعة وتصحيح مسار قراراتي اليوم`, en: `Review and correct my path today` },
+              { ar: `تمرين سريع لإعادة شحن الطاقة`, en: `Quick recharge exercise` },
+              { ar: `كيف أتعامل مع ضغط العمل الآن؟`, en: `How to handle work stress now?` },
+              { ar: `فكرة إبداعية تكسر الروتين`, en: `Creative idea to break the routine` },
+              { ar: `نصيحة للخروج من التشتت الذهني`, en: `Tip to escape mental distraction` },
+              { ar: `كيف أدير اجتماعاً بطريقة أفضل؟`, en: `How to run a meeting better?` },
+              { ar: `شرح لمفهوم إداري معقد`, en: `Explanation of a complex management concept` },
+              { ar: `توليد أفكار لمشروع مستعصي`, en: `Brainstorming ideas for a stuck project` }
+          ].sort(() => 0.5 - Math.random()).slice(0, 6);
+      }
     } else {
-      arG = 'مساء التأمل والعمق';
-      enG = 'Evening of reflection';
-      arSub = 'ما الذي يشغل حيز وعيك في نهاية هذا اليوم؟';
-      enSub = 'What occupies your consciousness at the end of this day?';
-      dynamicSuggests = [
-          { ar: `تأملات في مجريات اليوم`, en: `Reflections on today's events` },
-          { ar: `كيف أستعد للغد بذكاء؟`, en: `How to prepare for tomorrow smartly?` },
-          { ar: `تقييم ما أنجزته وما تعلمته`, en: `Evaluate accomplishments and learnings` },
-          { ar: `حوار هادئ لتفريغ زحام الأفكار`, en: `Calm dialogue to unpack crowded thoughts` },
-          { ar: `تلخيص فكرة قرأتها اليوم لاستيعابها`, en: `Summarize an idea read today for deeper grasp` },
-          { ar: `تحليل لتحدي واجهته اليوم`, en: `Analysis of a challenge faced today` },
-          { ar: `قصة قصيرة للهدوء ما قبل النوم`, en: `Short story for pre-sleep calmness` },
-          { ar: `اقتراح طريقة تنظيم للأسبوع القادم`, en: `Suggest an organization method for next week` },
-          { ar: `التغلب على التفكير المفرط بالليل`, en: `Overcoming overthinking at night` }
-      ].sort(() => 0.5 - Math.random()).slice(0, 6);
+      if (lastInteraction && lastInteraction.query) {
+        arG = 'مساء التأمل والعمق';
+        enG = 'Evening of reflection';
+        arSub = `أهلاً بك مجدداً.. توقفنا بالأمس عند "${lastInteraction.query.substring(0, 20)}".. هل كان يوماً مثمراً؟ 🌟`;
+        enSub = `Welcome back.. we stopped at "${lastInteraction.query.substring(0, 20)}", how was your day? 🌟`;
+        dynamicSuggests = [
+            { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
+            { ar: `كيف أستعد للغد بذكاء حول هذه الفكرة؟`, en: `How to prepare for tomorrow smartly about this?` },
+            { ar: `حوار هادئ لتفريغ زحام الأفكار`, en: `Calm dialogue to unpack crowded thoughts` },
+            { ar: `تأملات في مجريات اليوم بهذا الشأن`, en: `Reflections on today's events regarding this` },
+            { ar: `قصة قصيرة للهدوء ما قبل النوم`, en: `Short story for pre-sleep calmness` },
+            { ar: `التغلب على التفكير المفرط بالليل`, en: `Overcoming overthinking at night` }
+        ].sort(() => 0.5 - Math.random()).slice(0, 6);
+      } else {
+          arG = 'مساء التأمل والعمق';
+          enG = 'Evening of reflection';
+          arSub = 'ما الذي يشغل حيز وعيك في نهاية هذا اليوم؟';
+          enSub = 'What occupies your consciousness at the end of this day?';
+          dynamicSuggests = [
+              { ar: `تأملات في مجريات اليوم`, en: `Reflections on today's events` },
+              { ar: `كيف أستعد للغد بذكاء؟`, en: `How to prepare for tomorrow smartly?` },
+              { ar: `تقييم ما أنجزته وما تعلمته`, en: `Evaluate accomplishments and learnings` },
+              { ar: `حوار هادئ لتفريغ زحام الأفكار`, en: `Calm dialogue to unpack crowded thoughts` },
+              { ar: `تلخيص فكرة قرأتها اليوم لاستيعابها`, en: `Summarize an idea read today for deeper grasp` },
+              { ar: `تحليل لتحدي واجهته اليوم`, en: `Analysis of a challenge faced today` },
+              { ar: `قصة قصيرة للهدوء ما قبل النوم`, en: `Short story for pre-sleep calmness` },
+              { ar: `اقتراح طريقة تنظيم للأسبوع القادم`, en: `Suggest an organization method for next week` },
+              { ar: `التغلب على التفكير المفرط بالليل`, en: `Overcoming overthinking at night` }
+          ].sort(() => 0.5 - Math.random()).slice(0, 6);
+      }
     }
     return { arG, enG, arSub, enSub, dynamicSuggests };
   }, [lastInteraction]);
@@ -908,7 +938,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               >
                 {isThinking ? (
                   <div className="py-12 flex flex-col items-center justify-center gap-6">
-                    <div className="relative w-full max-w-sm h-12 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-full max-w-sm h-20 flex flex-col items-center justify-center overflow-hidden gap-4">
+                       <AIHeartbeat className="opacity-50" />
                        <AnimatePresence mode="popLayout">
                           <motion.p
                              key={loadingPhraseIndex}
@@ -916,7 +947,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                              animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
                              exit={{ y: -20, opacity: 0, filter: 'blur(4px)' }}
                              transition={{ duration: 0.4 }}
-                             className="text-black font-black text-xl absolute text-center w-full"
+                             className="text-black font-black text-xl text-center w-full"
                           >
                              {language === 'ar' ? loadingPhrasesAr[loadingPhraseIndex] : loadingPhrasesEn[loadingPhraseIndex]}
                           </motion.p>
@@ -933,7 +964,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 >
                                     <div className="flex items-center gap-2 mb-2 justify-center">
                                         <Sparkles className="w-4 h-4 text-emerald-500" />
-                                        <span className="text-.11px. leading-.1.6. font-black text-emerald-600 uppercase tracking-widest">
+                                        <span className="text-[11px] leading-[1.6] font-black text-emerald-600 uppercase tracking-widest">
                                             {language === 'ar' ? 'استنتاج أولي' : 'Initial Insight'}
                                         </span>
                                     </div>
@@ -1015,7 +1046,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               {/* Focus Layer: Secondary Options */}
                               {secondarySuggestions.length > 0  && (
                                   <div className="mt-8 pt-8 border-t border-zinc-100">
-                                     <h4 className="text-.11px. leading-.1.6. font-black text-zinc-400 uppercase tracking-widest mb-4 px-2">
+                                     <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest mb-4 px-2">
                                         {language === 'ar' ? 'خيارات إضافية للموقف' : 'SECONDARY OPTIONS'}
                                      </h4>
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1034,7 +1065,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                                   </div>
                                                   <div className="text-right">
                                                       <h4 className="text-sm font-black text-black">{s.label}</h4>
-                                                      <ExpandableText text={s.desc} className="text-.11px. leading-.1.6. text-zinc-500 font-bold mt-1" lineClamp={1} />
+                                                      <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                                   </div>
                                               </div>
                                               <ArrowLeft className={cn("w-4 h-4 text-zinc-300 group-hover:text-black", language === 'ar' ? "" : "rotate-180")} />
@@ -1048,7 +1079,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
                           {/* Alternative Paths */}
                           <div className="col-span-12 md:col-span-4 space-y-4">
-                             <h4 className="text-.11px. leading-.1.6. font-black text-zinc-400 uppercase tracking-widest px-2">
+                             <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest px-2">
                                  {language === 'ar' ? 'مسارات أخرى' : 'ALTERNATIVE PATHS'}
                              </h4>
                              <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
@@ -1066,7 +1097,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                        </div>
                                        <div className="text-right flex-1 min-w-0">
                                           <div className="font-bold text-xs text-zinc-800 truncate">{s.label}</div>
-                                          <ExpandableText text={s.desc} className="text-.11px. leading-.1.6. text-zinc-500 font-bold mt-1" lineClamp={1} />
+                                          <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                        </div>
                                      </button>
                                    );
@@ -1088,7 +1119,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                  >
                     {isThinking ? (
                         <div className="py-12 flex flex-col items-center justify-center gap-6">
-                           <div className="relative w-full max-w-sm h-12 flex items-center justify-center overflow-hidden">
+                           <div className="relative w-full max-w-sm h-20 flex flex-col items-center justify-center overflow-hidden gap-4">
+                               <AIHeartbeat className="opacity-50" />
                                <AnimatePresence mode="popLayout">
                                   <motion.p
                                      key={loadingPhraseIndex}
@@ -1096,7 +1128,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                      animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
                                      exit={{ y: -20, opacity: 0, filter: 'blur(4px)' }}
                                      transition={{ duration: 0.4 }}
-                                     className="text-black font-black text-lg absolute text-center w-full"
+                                     className="text-black font-black text-lg text-center w-full"
                                   >
                                      {language === 'ar' ? loadingPhrasesAr[loadingPhraseIndex] : loadingPhrasesEn[loadingPhraseIndex]}
                                   </motion.p>
@@ -1148,7 +1180,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                    </div>
                                    <div className="text-right">
                                       <div className="font-black text-lg tracking-tight">{primarySuggestion.label}</div>
-                                      <div className="text-.11px. leading-.1.6. opacity-60 font-bold">{language === 'ar' ? 'البداية الأسرع والأكثر فعالية' : 'Fastest and most effective start'}</div>
+                                      <div className="text-[11px] leading-[1.6] opacity-60 font-bold">{language === 'ar' ? 'البداية الأسرع والأكثر فعالية' : 'Fastest and most effective start'}</div>
                                    </div>
                                 </div>
                                 <ArrowLeft className={cn("w-6 h-6", language === 'ar' ? "" : "rotate-180")} />
@@ -1176,7 +1208,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                           </div>
                                           <div className="text-right">
                                              <div className="font-bold text-sm text-zinc-900">{s.label}</div>
-                                             <ExpandableText text={s.desc} className="text-.11px. leading-.1.6. text-zinc-500 font-bold mt-1" lineClamp={1} />
+                                             <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                           </div>
                                        </div>
                                        <ArrowLeft className={cn("w-4 h-4 text-zinc-300", language === 'ar' ? "" : "rotate-180")} />
@@ -1207,7 +1239,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                          </div>
                                          <div className="text-right">
                                             <div className="font-bold text-[11px] text-zinc-800">{s.label}</div>
-                                            <ExpandableText text={s.desc} className="text-.11px. leading-.1.6. text-zinc-500 font-bold mt-1" lineClamp={1} />
+                                            <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                          </div>
                                       </div>
                                     );
@@ -1255,7 +1287,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             <div className="relative z-10">
                 <div className="flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full w-fit mb-4 md:mb-6">
                     <Gamepad2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                    <span className="text-.11px. leading-.1.6. uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
+                    <span className="text-[11px] leading-[1.6] uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
                 </div>
                 <h3 className="text-xl md:text-2xl font-black mb-3 md:mb-4">
                     {language === 'ar' ? currentChallenge.titleAr : currentChallenge.titleEn}
@@ -1283,7 +1315,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             <div>
                 <div className="flex items-center gap-2 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full w-fit mb-4 md:mb-6">
                     <BrainCircuit className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                    <span className="text-.11px. leading-.1.6. uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
+                    <span className="text-[11px] leading-[1.6] uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
                 </div>
                 <h3 className="text-lg md:text-xl font-black text-black mb-4">
                     {language === 'ar' ? currentInsight.titleAr : currentInsight.titleEn}
@@ -1354,53 +1386,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           </div>
       </motion.div>
       {/* Gravity of Intent Demonstration */}
-      <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-12 mb-8"
-      >
-        <h3 className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-6 flex items-center justify-center gap-2 text-center px-4 leading-relaxed">
-           <Zap className="w-4 h-4 text-amber-500 shrink-0" />
-           {language === 'ar' ? 'أفكار ملتقطة للتو (اسحب البطاقات بأي اتجاه لاختبار الثقل الفيزيائي للأفكار)' : 'Recently Captured Ideas (Drag cards in any direction to feel their physical weight)'}
-        </h3>
-        <div className="flex flex-col md:flex-row gap-6">
-           <GravityCard 
-              content={language === 'ar' ? 
-                [
-                  'فكرة سريعة: استخدام الألفة الرقمية في واجهة المستخدم يوفر تجربة دافئة',
-                  'اقتباس: البساطة هي أقصى درجات التطور والمعرفة المستدامة',
-                  'ملاحظة: حفيف الأفكار يجعل القراءة وتيرة متناغمة وليست طباعة جامدة'
-                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3] 
-                : 
-                [
-                  'Quick Idea: Using digital familiarity provides a warm UX.',
-                  'Quote: Simplicity is the ultimate sophistication.',
-                  'Format Note: Typographic acoustics creates a harmonious reading pace.'
-                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3]
-              }
-              weight="light"
-              className="flex-1"
-           />
-           <GravityCard 
-              content={language === 'ar' ? 
-                [
-                  'فلسفة عميقة: الإنسان يتفاعل مع الأوزان الفيزيائية حتى في بيئة رقمية. كلما كان النص يحمل تفاصيل معقدة وحقائق ثقيلة، يجب أن يبدي المحرك الفيزيائي مقاومة سحب أعلى، مما يوهم العقل الباطن بأنه يحمل وزناً فكرياً.',
-                  'تأمل: الذاكرة المكانية في التطبيقات تجعل المستخدم يشعر بالانتماء، بدلاً من الفوضى المستمرة، يمكن ترك "أطياف" ترشده لما بحث عنه مسبقاً بصمت ودون تشتيت مباشر.',
-                  'قاعدة معرفية: الكثافة المرنة تعني استجابة النظام لحيوية المستخدم. إذا كان مستعجلاً نعطيه الملخص العميق، وإذا كان هادئاً نفتح له الهوامش لتغوص في التفاصيل المعقدة ببطء وروية.'
-                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3]
-                : 
-                [
-                  'Deep Philosophy: Humans interact with physical weights even in a digital environment. The more complex the text, the higher the drag resistance should be.',
-                  'Reflection: Spatial memory in apps makes users feel a sense of belonging instead of constant chaos, using ghostly hints.',
-                  'Knowledge Rule: Elastic density means the system responds to user energy, summarizing when rushed and expanding when lingering.'
-                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3]
-              }
-              weight="heavy"
-              className="flex-1 md:max-w-md"
-           />
-        </div>
-      </motion.div>
+
     </div>
   );
 };

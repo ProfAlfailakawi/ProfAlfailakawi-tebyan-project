@@ -34,8 +34,14 @@ export function ExpandableText({ text, className, lineClamp = 3 }: Props) {
     4: "line-clamp-4"
   }[lineClamp];
 
+  const handleInteraction = (e: React.MouseEvent | React.TouchEvent | React.KeyboardEvent) => {
+      // If we're interacting with the text to expand it, or selecting it,
+      // stop propagation so parent buttons don't fire.
+      e.stopPropagation();
+  };
+
   return (
-    <div className={cn("relative group/text", className)}>
+    <div className={cn("relative group/text", className)} onClick={handleInteraction}>
       <div 
         ref={textRef}
         tabIndex={0}

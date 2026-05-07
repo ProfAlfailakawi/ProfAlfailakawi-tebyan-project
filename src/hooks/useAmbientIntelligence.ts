@@ -62,6 +62,18 @@ export const useAmbientIntelligence = (scrollContainerRef?: React.RefObject<HTML
       const now = Date.now();
       mousePositions.current.push({ x: e.clientX, y: e.clientY, time: now });
       
+      // Auto-Zen (Wake up on move)
+      document.body.classList.remove('zen-idle');
+      clearTimeout(dwellingTimeout.current);
+      
+      // Enter Zen Mode if idle for 4 seconds
+      dwellingTimeout.current = setTimeout(() => {
+          document.body.classList.add('zen-idle');
+          // Optional: if (mode === 'default') setMode('focus'); 
+          // But CSS approach is safer and smoother: 
+          // we add a global class `zen-idle` and we can style UI to vanish gently.
+      }, 4000);
+
       // Keep only last 2 seconds of mouse movements
       mousePositions.current = mousePositions.current.filter(p => now - p.time < 2000);
 

@@ -144,7 +144,22 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             <div className="markdown-body p-8 border border-zinc-200/80 rounded-[16px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
               <ReactMarkdown>{oracleResult}</ReactMarkdown>
             </div>
-            <div className="flex justify-end">
+            {/* Fluid Bridges */}
+            <div className="flex flex-wrap gap-2 mt-4">
+                 <button onClick={() => { sessionStorage.setItem('tebyan_time_query', input); handleTabChange('time-machine'); }} className="px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                     <Command className="w-4 h-4" />
+                     {language === 'ar' ? 'خذ هذه الفكرة لآلة الزمن' : 'Take to Time Machine'}
+                 </button>
+                 <button onClick={() => { sessionStorage.setItem('tebyan_current_query', input); handleTabChange('simulation'); }} className="px-4 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                     <Command className="w-4 h-4" />
+                     {language === 'ar' ? 'اختبرها في المحاكي' : 'Test in Simulator'}
+                 </button>
+                 <button onClick={() => { sessionStorage.setItem('tebyan_mindmap_query', input); handleTabChange('mindmap'); }} className="px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                     <Command className="w-4 h-4" />
+                     {language === 'ar' ? 'فككها في الخريطة الذهنية' : 'Breakdown in Mindmap'}
+                 </button>
+            </div>
+            <div className="flex justify-end mt-4">
               <button 
                 onClick={() => {
                   const item = { 

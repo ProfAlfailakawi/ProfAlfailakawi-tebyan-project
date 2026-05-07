@@ -5,6 +5,7 @@ import { cn } from '../lib/utils';
 import { universalOracle } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
 import { useCognitiveMode } from '../contexts/CognitiveModeContext';
+import { useAcoustics } from '../hooks/useAcoustics';
 
 export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange }: { isOpen: boolean, onClose: () => void, language: string, tabs: any[], handleTabChange: (tab: string) => void }) => {
   const [query, setQuery] = useState('');
@@ -36,9 +37,50 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
 
   const filteredTabs = query ? tabs.filter(t => !t.hidden && t.label.toLowerCase().includes(query.toLowerCase())) : [];
 
+  const { playSound } = useAcoustics();
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || isSearching) return;
+
+    // Omnicommand Intent Detection
+    const qLower = query.toLowerCase();
+    
+    // Simulation intent
+    if (qLower.includes('حاكي') || qLower.includes('محاكاة') || qLower.includes('simulate')) {
+        playSound('chime');
+        sessionStorage.setItem('tebyan_current_query', query);
+        handleTabChange('simulation');
+        onClose();
+        return;
+    }
+
+    // Time Machine intent
+    if (qLower.includes('زمن') || qLower.includes('استشرف') || qLower.includes('time machine') || qLower.includes('مستقبل')) {
+        playSound('chime');
+        sessionStorage.setItem('tebyan_time_query', query);
+        handleTabChange('time-machine');
+        onClose();
+        return;
+    }
+
+    // Mindmap intent
+    if (qLower.includes('خريطة') || qLower.includes('mindmap') || qLower.includes('تفكيك')) {
+        playSound('chime');
+        sessionStorage.setItem('tebyan_mindmap_query', query);
+        handleTabChange('mindmap');
+        onClose();
+        return;
+    }
+
+    // Oracle intent
+    if (qLower.includes('أوراكل') || qLower.includes('oracle')) {
+        playSound('chime');
+        sessionStorage.setItem('tebyan_current_query', query);
+        handleTabChange('gateway');
+        onClose();
+        return;
+    }
 
     setIsSearching(true);
     setResult(null);
