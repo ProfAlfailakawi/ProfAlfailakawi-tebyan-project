@@ -7,6 +7,14 @@ import './index.css';
 import { AuthProvider } from './components/AuthProvider';
 import AdminRoute from './components/AdminRoute';
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => {
+      console.log('SW registration failed: ', err);
+    });
+  });
+}
+
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
 createRoot(document.getElementById('root')!).render(
