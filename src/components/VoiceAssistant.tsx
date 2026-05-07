@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mic, MicOff, Loader2, Sparkles, X, Volume2, Activity } from 'lucide-react';
 import { universalOracle } from '../services/gemini';
+import { generateAudioForText } from '../services/qawlFaslAiService';
 import { cn } from '../lib/utils';
 
 export const VoiceAssistant = ({ language }: { language: string }) => {
@@ -15,7 +16,7 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
   
   const recognitionRef = useRef<any>(null);
   const transcriptRef = useRef('');
-  const synthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const initRecognition = () => {
     if (recognitionRef.current) return;
@@ -25,6 +26,7 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = true;
+      // You can set standard Arabic to help recognition, even if we speak back in dialect
       recognitionRef.current.lang = language === 'ar' ? 'ar-SA' : 'en-US';
 
       recognitionRef.current.onresult = (event: any) => {
@@ -62,19 +64,13 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
   };
 
   useEffect(() => {
-    // Warm up voices
-    const loadVoices = () => {
-      window.speechSynthesis.getVoices();
-    };
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.onvoiceschanged = null;
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
     };
   }, []);
 
@@ -100,7 +96,9 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
       setIsListening(true);
       try {
         recognitionRef.current?.start();
-        window.speechSynthesis.cancel();
+        if (audioRef.current) {
+           audioRef.current.pause();
+        }
         setIsSpeaking(false);
       } catch (e) {
         console.error("SpeechRecognition start error:", e);
@@ -115,34 +113,38 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
     if (!finalTranscript.trim()) return;
     setIsProcessing(true);
     try {
-      const gptResult = await universalOracle(
-        `أجب باختصار شديد ومباشر وبطريقة مسموعة للمستخدم (كأنك مساعد صوتي ذكي يتحدث). المستخدم قال المشكلة التالية: "${finalTranscript}".
-         اللغة: ${language === 'ar' ? 'العربية' : 'English'}`, 
-        'Voice Assistant', 
-        language
-      );
+      // Warm, affectionate, non-artificial persona in white dialect
+      const prompt = language === 'ar' 
+        ? `أنتِ صديقة أو مستشارة ذكية وحنونة جداً. أجيبي بكلمات قليلة ومباشرة بلهجة عامية بيضاء سهلة ولطيفة (نبرة دافئة وقريبة للقلب). المستخدم قال: "${finalTranscript}"`
+        : `You are a very warm, smart, and affectionate friend. Answer very briefly and directly in a comforting voice. The user said: "${finalTranscript}"`;
+
+      const gptResult = await universalOracle(prompt, 'Voice Assistant', language);
       setResponse(gptResult);
       
-      // Speak the response
-      const synth = window.speechSynthesis;
-      synth.cancel(); // Stop any current speech
-      const utter = new SpeechSynthesisUtterance(gptResult.replace(/[*#_]/g, '')); // Clean markdown for speech
-      utter.lang = language === 'ar' ? 'ar-SA' : 'en-US';
+      const cleanText = gptResult.replace(/[*#_`~]/g, '');
+      const audioUrl = await generateAudioForText(cleanText);
       
-      if (language === 'ar') {
-        const voices = synth.getVoices();
-        const preferredVoice = voices.find(v => v.lang.startsWith('ar') && v.name.includes('Female')) ||
-                              voices.find(v => v.lang.startsWith('ar') && (v.name.includes('Google') || v.name.includes('Premium'))) || 
-                              voices.find(v => v.lang.startsWith('ar'));
-        if (preferredVoice) utter.voice = preferredVoice;
+      if (audioUrl) {
+         if (audioRef.current) {
+             audioRef.current.pause();
+         }
+         audioRef.current = new Audio(audioUrl);
+         audioRef.current.onplay = () => setIsSpeaking(true);
+         audioRef.current.onended = () => setIsSpeaking(false);
+         await audioRef.current.play();
+      } else {
+          // Fallback to browser TTS if generation fails
+          const synth = window.speechSynthesis;
+          synth.cancel();
+          const utter = new SpeechSynthesisUtterance(cleanText);
+          utter.lang = language === 'ar' ? 'ar-SA' : 'en-US';
+          utter.onstart = () => setIsSpeaking(true);
+          utter.onend = () => setIsSpeaking(false);
+          synth.speak(utter);
       }
       
-      utter.onstart = () => setIsSpeaking(true);
-      utter.onend = () => setIsSpeaking(false);
-      utter.onerror = () => setIsSpeaking(false);
-      
-      synth.speak(utter);
     } catch (e) {
+      console.error(e);
       setResponse(language === 'ar' ? 'عذراً، حدث خطأ في الاتصال.' : 'Sorry, connection error.');
     } finally {
       setIsProcessing(false);
@@ -154,6 +156,9 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
         try {
           recognitionRef.current.stop();
         } catch (e) {}
+      }
+      if (audioRef.current) {
+          audioRef.current.pause();
       }
       window.speechSynthesis.cancel();
       setIsListening(false);
@@ -193,15 +198,17 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
              </button>
 
              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                 <div className="w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] animate-pulse"></div>
+                 <div className={cn("w-[500px] h-[500px] rounded-full blur-[100px] transition-all duration-1000", 
+                    isSpeaking ? "bg-emerald-500/30 scale-110 animate-pulse" : "bg-indigo-500/20"
+                 )}></div>
              </div>
 
              <div className="z-10 text-center mt-4 mb-12">
                  <h3 className="text-3xl font-black text-white/90">
-                     {language === 'ar' ? 'وضع العمق والتركيز' : 'Zen Deep Dive'}
+                     {language === 'ar' ? 'المساعد الحنون' : 'Warm Assistant'}
                  </h3>
                  <p className="text-zinc-500 text-lg mt-2">
-                     {language === 'ar' ? 'مساحة للتفكير العميق بعيدآ عن المشتتات' : 'A space for deep thinking away from distractions'}
+                     {language === 'ar' ? 'تحدث معي كصديق يسمعك بصدق' : 'Speak to me like a friend'}
                  </p>
              </div>
 
@@ -209,8 +216,8 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
                  <AnimatePresence mode="popLayout">
                     {isProcessing && (
                          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex flex-col items-center">
-                            <Loader2 className="w-16 h-16 text-indigo-400 animate-spin mb-6" />
-                            <p className="text-zinc-400 animate-pulse font-medium text-lg">{language === 'ar' ? 'أتعمق في المشهد...' : 'Deep diving...'}</p>
+                            <Loader2 className="w-16 h-16 text-emerald-400 animate-spin mb-6" />
+                            <p className="text-emerald-400/80 animate-pulse font-medium text-lg">{language === 'ar' ? 'أفكر في أفضل رد يريحك...' : 'Thinking of the best response...'}</p>
                          </motion.div>
                     )}
                     {response && !isProcessing && (
@@ -236,7 +243,7 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
                                             />
                                         ))}
                                     </div>
-                                    <p className="text-emerald-400 font-black animate-pulse text-lg tracking-widest uppercase">{language === 'ar' ? 'أنا أستمع لك... تفضل' : 'LISTENING...'}</p>
+                                    <p className="text-emerald-400 font-black animate-pulse text-lg tracking-widest uppercase">{language === 'ar' ? 'أنا أسمعك من قلبي... تفضل' : 'LISTENING...'}</p>
                                     {transcript && (
                                         <p className="text-white/60 font-medium text-2xl md:text-4xl px-4 mt-8">{transcript}</p>
                                     )}
@@ -244,7 +251,7 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
                             ) : transcript ? (
                                 <p className="text-3xl font-bold text-white/50 pb-4 mb-4">{transcript}</p>
                             ) : (
-                                <p className="text-zinc-600 italic text-2xl">{language === 'ar' ? 'بانتظار صوتك...' : 'Waiting for your voice...'}</p>
+                                <p className="text-zinc-600 italic text-2xl">{language === 'ar' ? 'اضغط الميكروفون وتحدث بحرية...' : 'Tap the mic and speak freely...'}</p>
                             )}
                          </motion.div>
                     )}
@@ -270,3 +277,4 @@ export const VoiceAssistant = ({ language }: { language: string }) => {
     </>
   );
 };
+
