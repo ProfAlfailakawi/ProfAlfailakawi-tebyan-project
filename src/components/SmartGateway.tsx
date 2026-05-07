@@ -1328,12 +1328,36 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         </h3>
         <div className="flex flex-col md:flex-row gap-6">
            <GravityCard 
-              content={language === 'ar' ? 'فكرة سريعة: استخدام الزنجار الرقمي في واجهة المستخدم يوفر تجربة دافئة' : 'Quick Idea: Using digital patina provides a warm UX.'}
+              content={language === 'ar' ? 
+                [
+                  'فكرة سريعة: استخدام الألفة الرقمية في واجهة المستخدم يوفر تجربة دافئة',
+                  'اقتباس: البساطة هي أقصى درجات التطور والمعرفة المستدامة',
+                  'ملاحظة: حفيف الأفكار يجعل القراءة وتيرة متناغمة وليست طباعة جامدة'
+                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3] 
+                : 
+                [
+                  'Quick Idea: Using digital familiarity provides a warm UX.',
+                  'Quote: Simplicity is the ultimate sophistication.',
+                  'Format Note: Typographic acoustics creates a harmonious reading pace.'
+                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3]
+              }
               weight="light"
               className="flex-1"
            />
            <GravityCard 
-              content={language === 'ar' ? 'فلسفة عميقة: الإنسان يتفاعل مع الأوزان الفيزيائية حتى في بيئة رقمية. كلما كان النص يحمل تفاصيل معقدة وحقائق ثقيلة، يجب أن يبدي المحرك الفيزيائي مقاومة سحب أعلى، مما يوهم العقل الباطن بأنه يحمل وزناً فكرياً.' : 'Deep Philosophy: Humans interact with physical weights even in a digital environment. The more complex the text, the higher the drag resistance should be.'}
+              content={language === 'ar' ? 
+                [
+                  'فلسفة عميقة: الإنسان يتفاعل مع الأوزان الفيزيائية حتى في بيئة رقمية. كلما كان النص يحمل تفاصيل معقدة وحقائق ثقيلة، يجب أن يبدي المحرك الفيزيائي مقاومة سحب أعلى، مما يوهم العقل الباطن بأنه يحمل وزناً فكرياً.',
+                  'تأمل: الذاكرة المكانية في التطبيقات تجعل المستخدم يشعر بالانتماء، بدلاً من الفوضى المستمرة، يمكن ترك "أطياف" ترشده لما بحث عنه مسبقاً بصمت ودون تشتيت مباشر.',
+                  'قاعدة معرفية: الكثافة المرنة تعني استجابة النظام لحيوية المستخدم. إذا كان مستعجلاً نعطيه الملخص العميق، وإذا كان هادئاً نفتح له الهوامش لتغوص في التفاصيل المعقدة ببطء وروية.'
+                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3]
+                : 
+                [
+                  'Deep Philosophy: Humans interact with physical weights even in a digital environment. The more complex the text, the higher the drag resistance should be.',
+                  'Reflection: Spatial memory in apps makes users feel a sense of belonging instead of constant chaos, using ghostly hints.',
+                  'Knowledge Rule: Elastic density means the system responds to user energy, summarizing when rushed and expanding when lingering.'
+                ][Math.floor(Date.now() / (1000 * 60 * 60 * 3)) % 3]
+              }
               weight="heavy"
               className="flex-1 md:max-w-md"
            />

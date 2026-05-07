@@ -93,7 +93,7 @@ const AppContent: React.FC = () => {
   const mainRef = useRef<HTMLElement>(null);
   
   // Ambient Intelligence Hook
-  const { isConfused } = useAmbientIntelligence();
+  const { isConfused } = useAmbientIntelligence(mainRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -264,10 +264,31 @@ const AppContent: React.FC = () => {
           {/* Spatial Ghosting (الذاكرة المكانية الوهمية) */}
           {activeTab === 'discover' && (
             <SpatialGhost 
-              message={language === 'ar' ? "في ديسمبر الماضي، كنت تبحث عن الذكاء والتطبيقات..." : "Last December, you searched for AI apps..."} 
+              message={language === 'ar' ? "في زيارتك السابقة، توقفت مطولاً عند مقال عن الوعي الاصطناعي.." : "During your last visit, you lingered on an article about artificial consciousness.."} 
               x="left-8" 
               y="top-1/3" 
             />
+          )}
+          {activeTab === 'mindmap' && (
+            <SpatialGhost 
+              message={language === 'ar' ? "هناك رابط خفي لم تكتشفه بعد بين الفلسفة والتكنولوجيا.." : "There is a hidden link you haven't discovered yet between philosophy and tech.."} 
+              x="right-10" 
+              y="top-1/4" 
+            />
+          )}
+          {activeTab === 'qawlfasl' && (
+             <SpatialGhost 
+               message={language === 'ar' ? "في الشهر الماضي، سألت عن معنى 'الحقيقة المطلقة'..." : "Last month, you asked for the meaning of 'absolute truth'..."} 
+               x="left-10" 
+               y="bottom-1/3" 
+             />
+          )}
+          {activeTab === 'mylibrary' && (
+             <SpatialGhost 
+               message={language === 'ar' ? "كتاب 'تأملات' لا يزال ينتظر أن تكمله منذ أسبوعين.." : "The book 'Meditations' is still waiting for you to finish it since two weeks ago.."} 
+               x="right-8" 
+               y="top-1/2" 
+             />
           )}
 
         <AnimatePresence>

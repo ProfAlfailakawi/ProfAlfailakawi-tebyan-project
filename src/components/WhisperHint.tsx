@@ -12,10 +12,14 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
     if (forceShow) {
        const hints = language === 'ar' ? [
           'يبدو أنك تبحث عن شيء محدد.. هل أساعدك؟',
-          'الماوس يتحرك بحيرة.. اضغط ⌘+K للبحث.'
+          'الماوس يتحرك بحيرة.. اضغط ⌘+K للبحث المباشر.',
+          'هل فقدت مسارك؟ دعني أرشدك للصفحة الرئيسية.',
+          'توقفت كثيراً هنا، هل أحلل لك هذه الشاشة؟'
        ] : [
-          'Seems you are looking for something.. Need help?',
-          'Mouse moving erratically.. Press Cmd+K to search.'
+          'Seems you are looking for a specific answer.. Need help?',
+          'Mouse moving erratically.. Press Cmd+K to search.',
+          'Lost your track? Let me guide you to home.',
+          'You paused here a lot, should I analyze this screen for you?'
        ];
        setHint(hints[Math.floor(Math.random() * hints.length)]);
        setShow(true);
@@ -39,12 +43,18 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
           'يبدو أنك تتأمل.. هل جربت الضغط على ⌘+K للبحث السريع؟',
           'هل تبحث عن إجابة حاسمة؟ اسأل "قول فصل".',
           'يمكن تجربة وضع التركيز لقراءة أعمق.',
-          'الخريطة الذهنية قد تساعدك في ربط هذه الأفكار.'
+          'الخريطة الذهنية قد تساعدك في ربط هذه الأفكار.',
+          'هل تود أن نقوم بجولة في مكتبتك الخاصة؟',
+          'أرى أنك تتأمل المكتوب.. هل تحب أن أستطرد في الشرح؟',
+          'هناك مقالات جديدة قد تلامس اهتماماتك الحالية..'
         ] : [
           'Pondering? Try Cmd+K for smart search.',
           'Looking for a decisive answer? Try Qawl Fasl.',
           'Try Focus Mode for deep reading.',
-          'The Mind Map might help you connect these ideas.'
+          'The Mind Map might help you connect these ideas.',
+          'Would you like to take a tour in your private library?',
+          'Dwelling on this text? Should I expand?',
+          'There are new articles that might touch your current interests..'
         ];
         setHint(hints[Math.floor(Math.random() * hints.length)]);
         setShow(true);

@@ -1,21 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCognitiveMode } from '../contexts/CognitiveModeContext';
 
-export const useAmbientIntelligence = () => {
+export const useAmbientIntelligence = (scrollContainerRef?: React.RefObject<HTMLElement>) => {
   const { mode, setMode } = useCognitiveMode();
   const [scrollState, setScrollState] = useState<'idle' | 'dwelling' | 'scrolling' | 'fast'>('idle');
   const [isConfused, setIsConfused] = useState(false);
 
-  const lastScrollY = useRef(window.scrollY);
+  const lastScrollY = useRef(0);
   const lastScrollTime = useRef(Date.now());
   const mousePositions = useRef<{x: number, y: number, time: number}[]>([]);
   const scrollTimeout = useRef<NodeJS.Timeout>();
   const dwellingTimeout = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (e: Event) => {
+      const target = e.target as HTMLElement;
+      // Determine if we are scrolling the main container or window
+      const currentScrollY = target.scrollTop ?? window.scrollY;
+      
       const now = Date.now();
-      const currentScrollY = window.scrollY;
       const deltaY = Math.abs(currentScrollY - lastScrollY.current);
       const deltaTime = now - lastScrollTime.current;
       
@@ -92,16 +95,17 @@ export const useAmbientIntelligence = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const container = scrollContainerRef?.current || window;
+    container.addEventListener('scroll', handleScroll as EventListener, { passive: true });
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      container.removeEventListener('scroll', handleScroll as EventListener);
       window.removeEventListener('mousemove', handleMouseMove);
       clearTimeout(scrollTimeout.current);
       clearTimeout(dwellingTimeout.current);
     };
-  }, [mode, setMode]);
+  }, [mode, setMode, scrollContainerRef]);
 
   return { scrollState, isConfused };
 };

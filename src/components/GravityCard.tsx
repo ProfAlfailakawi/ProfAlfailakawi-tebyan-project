@@ -24,8 +24,13 @@ export const GravityCard = ({ content, weight, className }: GravityCardProps) =>
   const rotateY = useTransform(x, [-100, 100], [-10, 10]);
 
   const handleDragEnd = (e: any, info: any) => {
-    // If dragged far enough to the right or bottom, "save" it
-    if (info.offset.x > 100 || info.offset.y > 100) {
+    // If dragged far enough in any direction, or with enough velocity, "save" it
+    if (
+      Math.abs(info.offset.x) > 40 || 
+      Math.abs(info.offset.y) > 40 || 
+      Math.abs(info.velocity.x) > 200 || 
+      Math.abs(info.velocity.y) > 200
+    ) {
       setSaved(true);
       // Subtle sensory flash (handled by UI state)
       setTimeout(() => setSaved(false), 2000);
@@ -36,7 +41,7 @@ export const GravityCard = ({ content, weight, className }: GravityCardProps) =>
     <motion.div
       drag
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={weight === 'heavy' ? 0.1 : 0.4} // Heavier is harder to drag
+      dragElastic={weight === 'heavy' ? 0.15 : 0.6} // Heavier is harder to drag
       dragTransition={{ bounceStiffness: physics.stiffness, bounceDamping: physics.damping }}
       onDragEnd={handleDragEnd}
       style={{ x, y, rotateX, rotateY }}
