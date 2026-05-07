@@ -25,7 +25,7 @@ import { MessagesFloatingButton } from './components/MessagesFloatingButton';
 import { VoiceAssistantFloatingButton } from './components/VoiceAssistantFloatingButton';
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
-import { PWAInstallPrompt } from './components/PWAInstallPrompt';
+import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt';
 import { SpatialGhost } from './components/SpatialGhost';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
@@ -336,6 +336,7 @@ const AppContent: React.FC = () => {
          </div>
 
          <div className="flex items-center gap-2 pointer-events-auto">
+           <PWAHeaderButton />
            {user ? (
              <UserMenu />
            ) : authReady && Object.keys(user || {}).length === 0 ? (
