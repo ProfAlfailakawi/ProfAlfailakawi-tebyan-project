@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, PlayCircle, BookOpen, Link, Share2, Volume2, Play, Pause, Loader2, Bookmark, BookmarkCheck, Ghost } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { qawlFaslService } from '../../../services/qawlFaslService';
-import { generateAudioForText, generatePodcastScript } from '../../../services/qawlFaslAiService';
 import { BreathingText } from '../../BreathingText';
 
 interface Props {
@@ -30,11 +29,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const [isSummoningShadow, setIsSummoningShadow] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [isAudioGenerating, setIsAudioGenerating] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
 
@@ -54,13 +48,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Reset audio state when question changes
-    if (audioRef.current && isPlaying) {
-        audioRef.current.pause();
-    }
-    setAudioUrl(null);
-    setIsPlaying(false);
-    setIsAudioGenerating(false);
 
     async function fetchData() {
       if (!questionId) return;
@@ -71,77 +58,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     fetchData();
   }, [questionId]);
   
-  const handlePlayAudio = async () => {
-    if (audioUrl && audioRef.current) {
-        if (isPlaying) {
-            audioRef.current.pause();
-        } else {
-            audioRef.current.play();
-        }
-        return;
-    }
-
-    if (isAudioGenerating || !question) return;
-
-    // Browser Speech Synthesis Fallback function
-    const playWithBrowserSynth = () => {
-      const synth = window.speechSynthesis;
-      if (synth.speaking) {
-        synth.cancel();
-        setIsPlaying(false);
-        return;
-      }
-
-      const textToSpeak = question.suggestedAnswer || question.quickSummary;
-      const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
-      
-      const voices = synth.getVoices();
-      if (language === 'ar') {
-          // Prefer high quality Arabic voices
-          const preferredVoice = voices.find(v => v.lang.startsWith('ar') && (v.name.includes('Google') || v.name.includes('Premium'))) || 
-                                voices.find(v => v.lang.startsWith('ar'));
-          if (preferredVoice) utterance.voice = preferredVoice;
-      }
-
-      utterance.onstart = () => setIsPlaying(true);
-      utterance.onend = () => setIsPlaying(false);
-      utterance.onerror = () => setIsPlaying(false);
-      
-      synth.speak(utterance);
-    };
-
-    try {
-        setIsAudioGenerating(true);
-        // Only attempt AI script if we have reason to believe it might work
-        const script = await generatePodcastScript(question);
-        
-        // Generate the audio based on the script
-        let url: string | null = null;
-        try {
-          url = await generateAudioForText(script);
-        } catch (audioErr) {
-          console.warn("AI Audio gen failed, falling back to browser synthesis");
-        }
-        
-        if (url) {
-            setAudioUrl(url);
-            setTimeout(() => {
-                if (audioRef.current) {
-                    audioRef.current.play();
-                }
-            }, 100);
-        } else {
-            playWithBrowserSynth();
-        }
-    } catch (e: any) {
-        console.warn("AI Path failed, using reliable browser fallback");
-        playWithBrowserSynth();
-    } finally {
-        setIsAudioGenerating(false);
-    }
-  };
-
   if (!question) {
     return (
         <div className="p-8 text-center font-medium text-[#5A5A40]">
@@ -155,17 +71,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   return (
     <div className="flex flex-col h-full bg-white/60 backdrop-blur-2xl min-h-[80vh] font-sans pb-24">
-      {/* Hidden Audio Element */}
-      {audioUrl && (
-        <audio 
-          ref={audioRef} 
-          src={audioUrl} 
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onEnded={() => setIsPlaying(false)}
-        />
-      )}
-
       {/* Header */}
       <div className="bg-white border-b border-[#EBEAE4] sticky top-0 z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="max-w-4xl mx-auto px-5 md:px-8 py-6 md:py-10 flex items-start gap-4 md:gap-6">
@@ -272,30 +177,13 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         {/* Quick Tab */}
         {activeTab === 'quick' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-            <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#EBEAE4] shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col md:flex-row gap-8 items-start md:items-center">
+            <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#EBEAE4] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <div className="flex-1">
                 <h3 className="text-xl font-black text-zinc-950 mb-4 flex items-center gap-2">
                    <Lightbulb className="text-zinc-600 w-6 h-6" /> الملخص السريع
                 </h3>
                 <p className="text-zinc-700 font-medium leading-[1.85] text-base md:text-xl">{question.quickSummary}</p>
               </div>
-              <button 
-                onClick={handlePlayAudio}
-                disabled={isAudioGenerating}
-                className={cn(
-                    "shrink-0 flex items-center justify-center gap-3 px-8 py-5 rounded-full font-bold transition-all shadow-[0_8px_20px_rgb(0,0,0,0.08)] active:scale-[0.98] text-lg w-full md:w-[340px]",
-                    isPlaying ? "bg-[#F2F0E9] text-[#5A5A40] border border-[#EACD9B]" : "bg-[#A68F58] text-white hover:bg-[#8F7948]",
-                    isAudioGenerating ? "opacity-75 cursor-wait" : ""
-                )}
-              >
-                {isAudioGenerating ? (
-                    <><Loader2 className="w-6 h-6 animate-spin" /> جاري التجهيز...</>
-                ) : isPlaying ? (
-                    <><Pause className="w-6 h-6" /> إيقاف الصوت</>
-                ) : (
-                    <><Volume2 className="w-6 h-6" /> استمع للإجابة (بودكاست قصة)</>
-                )}
-              </button>
             </div>
 
             {/* Devil's Advocate Shadow Button */}
@@ -488,7 +376,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 <Wrapper key={idx} {...props} className={cn("block bg-white rounded-[24px] p-6 border border-[#EBEAE4] shadow-[0_2px_8_rgba(0,0,0,0.04)] transition-all group", res.url ? "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#A68F58] cursor-pointer" : "")}>
                   <div className="flex flex-col gap-4">
                      <div className={cn("w-14 h-14 rounded-full bg-[#F2F0E9] flex items-center justify-center text-[#5A5A40] transition-colors", res.url ? "group-hover:text-white group-hover:bg-[#A68F58]" : "")}>
-                       {res.type === 'video' ? <PlayCircle className="w-7 h-7" /> : res.type === 'book' ? <BookOpen className="w-7 h-7" /> : res.type === 'study' ? <FileText className="w-7 h-7" /> : <Link className="w-7 h-7" />}
+                       {res.type === 'video' ? <Video className="w-7 h-7" /> : res.type === 'book' ? <BookOpen className="w-7 h-7" /> : res.type === 'study' ? <FileText className="w-7 h-7" /> : <Link className="w-7 h-7" />}
                      </div>
                      <div>
                        <h4 className={cn("font-bold text-[#2A2925] text-xl transition-colors", res.url ? "group-hover:text-[#A68F58]" : "")}>{res.title}</h4>

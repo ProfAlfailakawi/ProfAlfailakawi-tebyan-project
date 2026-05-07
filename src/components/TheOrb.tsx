@@ -5,23 +5,17 @@ import { cn } from '../lib/utils';
 
 interface TheOrbProps {
   onTap: () => void;
-  onSwipeUp: () => void;
   language: 'ar' | 'en';
 }
 
-export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onSwipeUp, language }) => {
+export const TheOrb: React.FC<TheOrbProps> = ({ onTap, language }) => {
   const [isHovered, setIsHovered] = useState(false);
   const controls = useAnimation();
   
   const handleDragEnd = (event: any, info: any) => {
-    // If swiped up over 30px
-    if (info.offset.y < -30) {
-      onSwipeUp();
-    } else {
-      // It was just a tap or minor drag
-      if (Math.abs(info.offset.y) < 10 && Math.abs(info.offset.x) < 10) {
-        onTap();
-      }
+    // If it was just a tap or minor drag
+    if (Math.abs(info.offset.y) < 20 && Math.abs(info.offset.x) < 20) {
+      onTap();
     }
     controls.start({ x: 0, y: 0 });
   };
@@ -36,7 +30,7 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onSwipeUp, language }) =>
         "absolute -top-12 left-1/2 -translate-x-1/2 transition-opacity duration-300 text-zinc-500 font-bold text-xs whitespace-nowrap pointer-events-none",
         isHovered ? "opacity-100" : "opacity-0"
       )}>
-          {language === 'ar' ? 'اسحب للأعلى للتحدث' : 'Swipe up to speak'}
+          {language === 'ar' ? 'العقل المدبر' : 'Mastermind'}
       </div>
       
       <motion.button

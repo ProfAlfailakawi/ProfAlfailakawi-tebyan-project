@@ -380,7 +380,6 @@ export default function AdminDashboard() {
 
       <TheOrb 
         onTap={() => navigate('/')}
-        onSwipeUp={() => navigate('/')}
         language="ar"
       />
     </div>

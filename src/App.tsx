@@ -18,11 +18,9 @@ import Login from './components/Login';
 import UserMenu from './components/UserMenu';
 import { signOut } from 'firebase/auth';
 import { GlobalCommand } from './components/GlobalCommand';
-import { VoiceAssistant } from './components/VoiceAssistant';
 import { GamificationBadge } from './components/GamificationBadge';
 import { TheOrb } from './components/TheOrb';
 import { MessagesFloatingButton } from './components/MessagesFloatingButton';
-import { VoiceAssistantFloatingButton } from './components/VoiceAssistantFloatingButton';
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
 import { SerendipityCompass } from './components/SerendipityCompass';
@@ -561,14 +559,11 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* --- Floating Global Brain Orb --- */}
       <TheOrb 
         language={language}
         onTap={() => setShowGlobalCommand(true)}
-        onSwipeUp={() => window.dispatchEvent(new Event('open_voice_assistant'))}
       />
       <MessagesFloatingButton />
-      <VoiceAssistantFloatingButton />
 
       <GlobalCommand 
         isOpen={showGlobalCommand} 
@@ -581,8 +576,6 @@ const AppContent: React.FC = () => {
       <SerendipityCompass language={language} contextTopic={initialContext || activeTab} />
 
       <PWAInstallPrompt />
-      <VoiceAssistant language={language} />
-
 
       </div>
   );
