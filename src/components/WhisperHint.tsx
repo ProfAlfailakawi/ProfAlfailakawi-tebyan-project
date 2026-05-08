@@ -11,15 +11,15 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
   useEffect(() => {
     if (forceShow) {
        const hints = language === 'ar' ? [
-          'يبدو أنك تبحث عن شيء محدد.. هل أساعدك؟',
-          'الماوس يتحرك بحيرة.. اضغط ⌘+K للبحث المباشر.',
-          'هل فقدت مسارك؟ دعني أرشدك للصفحة الرئيسية.',
-          'توقفت كثيراً هنا، هل أحلل لك هذه الشاشة؟'
+          'المعلومات هنا دسمة وتستحق التأمل.',
+          'تلميح: اضغط على ⌘+K للبحث السريع والوصول المباشر.',
+          'إذا فقدت مسارك، يمكنك العودة للصفحة الرئيسية في أي وقت.',
+          'استوقفتك هذه الشاشة، يبدو أن بها تفاصيل تهمك.'
        ] : [
-          'Seems you are looking for a specific answer.. Need help?',
-          'Mouse moving erratically.. Press Cmd+K to search.',
-          'Lost your track? Let me guide you to home.',
-          'You paused here a lot, should I analyze this screen for you?'
+          'The information here is dense and worth reflecting on.',
+          'Hint: Press Cmd+K for smart search and quick access.',
+          'If you lose your track, you can return to the home page anytime.',
+          'This screen paused you, seems it has details you care about.'
        ];
        setHint(hints[Math.floor(Math.random() * hints.length)]);
        setShow(true);
@@ -40,21 +40,21 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
       // If user is inactive for 10 seconds, show a whisper hint
       idleTimer = setTimeout(() => {
         const rawHints = language === 'ar' ? [
-          'يبدو أنك تتأمل.. هل جربت الضغط على ⌘+K للبحث السريع؟',
-          'هل تبحث عن إجابة حاسمة؟ اسأل "قول فصل".',
-          'يمكن تجربة وضع التركيز لقراءة أعمق.',
-          'الخريطة الذهنية قد تساعدك في ربط هذه الأفكار.',
-          'هل تود أن نقوم بجولة في مكتبتك الخاصة؟',
-          'أرى أنك تتأمل المكتوب.. هل تحب أن أستطرد في الشرح؟',
-          'هناك مقالات جديدة قد تلامس اهتماماتك الحالية..'
+          'أحياناً التوقف قليلاً يساعد في استيعاب المكتوب بشكل أعمق.',
+          'لإجابة تحسم الحيرة، تجربة "قول فصل" قد تكون مفيدة.',
+          'وضع التركيز يوفر بيئة قراءة خالية من المشتتات.',
+          'الخريطة الذهنية قادرة على تبسيط الأفكار المعقدة.',
+          'مكتبتك الخاصة تحفظ كل شيء وتنتظر عودتك لتنظيم أفكارك.',
+          'هناك تفاصيل بين السطور تستحق القراءة المتأنية..',
+          'هناك مقالات وحوارات سابقة قد تتقاطع مع اهتمامك الحالي..'
         ] : [
-          'Pondering? Try Cmd+K for smart search.',
-          'Looking for a decisive answer? Try Qawl Fasl.',
-          'Try Focus Mode for deep reading.',
-          'The Mind Map might help you connect these ideas.',
-          'Would you like to take a tour in your private library?',
-          'Dwelling on this text? Should I expand?',
-          'There are new articles that might touch your current interests..'
+          'Sometimes a short pause helps in absorbing the text deeper.',
+          'For a decisive answer, trying Qawl Fasl can be useful.',
+          'Focus Mode provides a distraction-free reading environment.',
+          'The Mind Map is capable of simplifying complex ideas.',
+          'Your private library saves everything and awaits your return.',
+          'There are details between the lines worth reading carefully..',
+          'There are articles and past dialogues that intersect with your interest..'
         ];
         const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
         const hints = isMobile ? rawHints.filter(h => !h.includes('⌘') && !h.includes('Cmd')) : rawHints;

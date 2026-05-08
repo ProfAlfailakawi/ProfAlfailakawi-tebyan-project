@@ -169,11 +169,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
             const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('line-clamp-1');
+            el?.classList.toggle('truncate');
             el?.classList.toggle('whitespace-normal');
           }}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className="text-content text-indigo-500 font-bold text-query line-clamp-1 truncate max-w-[100px] md:max-w-[200px] inline-block">
+            <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
                 "{lastInteraction.query}"
             </span>
             <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
@@ -182,11 +182,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
             const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('line-clamp-1');
+            el?.classList.toggle('truncate');
             el?.classList.toggle('whitespace-normal');
           }}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className="text-content text-indigo-500 font-bold text-query line-clamp-1 truncate max-w-[100px] md:max-w-[200px] inline-block">
+             <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
                 "{lastInteraction.query}"
             </span>
             <span>, is your coffee ready to continue? ☕</span>
@@ -223,8 +223,32 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       if (lastInteraction && lastInteraction.query) {
         arG = 'مساء التمكين والعمق';
         enG = 'Good afternoon, visionary';
-        arSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">أهلاً بك مجدداً.. توقفنا في المرة السابقة عند <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>، هل نكمل الاستكشاف؟ ☕</span>;
-        enSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">Welcome back.. last time we stopped at <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>, shall we continue exploring? ☕</span>;
+        arSub = (
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
+            const el = e.currentTarget.querySelector('.text-query');
+            el?.classList.toggle('truncate');
+            el?.classList.toggle('whitespace-normal');
+          }}>
+            <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
+            <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+                "{lastInteraction.query}"
+            </span>
+            <span>، هل نكمل الاستكشاف؟ ☕</span>
+          </div>
+        );
+        enSub = (
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
+            const el = e.currentTarget.querySelector('.text-query');
+            el?.classList.toggle('truncate');
+            el?.classList.toggle('whitespace-normal');
+          }}>
+            <span>Welcome back.. last time we stopped at</span>
+            <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+                "{lastInteraction.query}"
+            </span>
+            <span>, shall we continue exploring? ☕</span>
+          </div>
+        );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `مراجعة وتصحيح مسار قراراتي حول ذلك`, en: `Review and correct my path about this` },
@@ -254,8 +278,32 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       if (lastInteraction && lastInteraction.query) {
         arG = 'مساء التأمل والعمق';
         enG = 'Evening of reflection';
-        arSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">أهلاً بك مجدداً.. توقفنا في المرة السابقة عند <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>.. هل كان يوماً مثمراً؟ 🌟</span>;
-        enSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">Welcome back.. last time we stopped at <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>, how was your day? 🌟</span>;
+        arSub = (
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
+            const el = e.currentTarget.querySelector('.text-query');
+            el?.classList.toggle('truncate');
+            el?.classList.toggle('whitespace-normal');
+          }}>
+            <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
+             <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+                "{lastInteraction.query}"
+            </span>
+            <span>.. هل كان يوماً مثمراً؟ 🌟</span>
+          </div>
+        );
+        enSub = (
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
+            const el = e.currentTarget.querySelector('.text-query');
+            el?.classList.toggle('truncate');
+            el?.classList.toggle('whitespace-normal');
+          }}>
+            <span>Welcome back.. last time we stopped at</span>
+             <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+                "{lastInteraction.query}"
+            </span>
+            <span>, how was your day? 🌟</span>
+          </div>
+        );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `كيف أستعد للغد بذكاء حول هذه الفكرة؟`, en: `How to prepare for tomorrow smartly about this?` },
