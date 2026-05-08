@@ -7,12 +7,12 @@ import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 
 const personas = [
-  { id: 'parent', ar: 'الأم الحنونة', en: 'Tender Mother' },
-  { id: 'expert', ar: 'مستشارة حكيمة', en: 'Wise Counselor' },
-  { id: 'child', ar: 'طفل', en: 'Child' },
-  { id: 'student', ar: 'طالب', en: 'Student' },
-  { id: 'senior', ar: 'كبير سن', en: 'Senior' },
-  { id: 'government', ar: 'قائد', en: 'Leader' }
+  { id: 'parent', ar: 'الوالد الحنون / الوالدة الحنونة', en: 'Caring Parent' },
+  { id: 'expert', ar: 'مستشار حكيم / مستشارة حكيمة', en: 'Wise Counselor' },
+  { id: 'child', ar: 'طفل/طفلة', en: 'Child' },
+  { id: 'student', ar: 'طالب/طالبة', en: 'Student' },
+  { id: 'senior', ar: 'كبير/كبيرة سن', en: 'Senior' },
+  { id: 'government', ar: 'قائد/قائدة', en: 'Leader' }
 ];
 
 export const OracleTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {

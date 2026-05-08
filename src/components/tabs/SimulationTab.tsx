@@ -274,7 +274,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                          value={currentMessage}
                          onChange={e => setCurrentMessage(e.target.value)}
                          disabled={isLoading}
-                         placeholder={language === 'ar' ? "تحدث معه بحكمة..." : "Speak wisely..."}
+                         placeholder={language === 'ar' ? "تحدث بحكمة..." : "Speak wisely..."}
                          className="flex-1 bg-zinc-100 rounded-xl px-4 font-bold outline-none focus:ring-2 focus:ring-rose-500/50 focus:bg-white transition-all"
                        />
                        <button type="submit" disabled={isLoading || !currentMessage.trim()} className="bg-rose-500 text-white p-4 rounded-xl hover:bg-rose-600 disabled:opacity-50">

@@ -564,14 +564,18 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 {activeLabTool === 'artest' && (
                   <div className="space-y-6">
                     <div className="bg-indigo-50 border border-indigo-100 rounded-[24px] p-6 mb-8 text-indigo-800">
-                      <h3 className="font-bold text-lg mb-2">
+                      <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
+                        <Box className="w-5 h-5" />
                         {language === 'ar' ? 'بوابة تبيان للواقع المعزز (AR)' : 'Tibyan AR Gateway'}
                       </h3>
-                      <p className="font-medium text-sm">
+                      <p className="font-medium text-sm leading-relaxed">
                         {language === 'ar' 
-                          ? 'استعرض النماذج ثلاثية الأبعاد مباشرة في متصفحك، ثم اضغط على زر "عرض في الواقع" لفتح الكاميرا ووضع المجسم في بيئتك الحقيقية.' 
-                          : 'Preview 3D models directly in your browser, then click "View in AR" to open your camera and place the object in your real environment.'}
+                          ? 'استعرض النماذج ثلاثية الأبعاد مباشرة في متصفحك. إذا كنت تستخدم الهاتف، اضغط على زر "عرض في الواقع" لوضع المجسم في بيئتك.' 
+                          : 'Preview 3D models directly in your browser. On mobile, click "View in AR" to place the object in your environment.'}
                       </p>
+                      <div className="mt-4 p-3 bg-white/50 rounded-xl border border-indigo-100 text-[10px] md:text-xs font-black uppercase tracking-widest text-indigo-400">
+                         {language === 'ar' ? '💡 ملاحظة: يجب فتح التطبيق في المتصفح الخارجي (Chrome/Safari) ليظهر خيار AR على هاتفك.' : '💡 NOTE: Use an external browser (Chrome/Safari) on mobile for AR to work correctly.'}
+                      </div>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

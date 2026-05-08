@@ -58,7 +58,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         { id: 'memory', title: { ar: 'البصمة الفكرية', en: 'Cognitive Trace' }, icon: History, bgColor: 'bg-slate-700', prompt: 'حلل هذا القرار بناءً على سياق التفكير الاستراتيجي العميق ومبادئه: ' },
         { id: 'questions', title: { ar: 'محرك الأسئلة', en: 'Question Engine' }, icon: MessageSquareQuote, bgColor: 'bg-purple-600', prompt: 'ولد الأسئلة الليزرية الدقيقة التي كان يجب أن تُسأل ولم تُسأل حول هذا القرار: ' },
         { id: 'debate', title: { ar: 'الميزان الاستراتيجي', en: 'Strategic Scale' }, icon: Brain, bgColor: 'bg-cyan-600', prompt: 'ابنِ أقوى حجة مع، وأقوى حجة ضد، ثم احكم بينهما لهذا القرار بإنصاف: ' },
-        { id: 'butterfly', title: { ar: 'رؤية 360 درجة', en: '360 Horizon' }, icon: Sparkles, bgColor: 'bg-fuchsia-700', prompt: 'تخيل أنني اتخذت هذا القرار. محاكاة العواقب بعد 5 سنوات. أرجع الرد بصيغة JSON فقط JSON ONLY يحتوي على: { "magazineName": "FORBES 2030", "headline": "العنوان الرئيسي القوي", "subheadline": "عنوان فرعي يشرح الصدمة", "bulletPoints": ["نقطة 1", "نقطة 2", "نقطة 3"], "quote": "اقتباس مقولة عني" }. لا ترجع أي نص خارج الJSON. القرار هو: ' },
+        { id: 'butterfly', title: { ar: 'رؤية 360 درجة', en: '360 Horizon' }, icon: Sparkles, bgColor: 'bg-fuchsia-700', prompt: 'تخيل أنني اتخذت هذا القرار. محاكاة العواقب بعد 5 سنوات. أرجع الرد بصيغة JSON فقط JSON ONLY يحتوي على: { "magazineName": "FORBES 2030", "headline": "العنوان الرئيسي القوي", "subheadline": "عنوان فرعي يشرح الصدمة", "bulletPoints": ["نقطة 1", "نقطة 2", "نقطة 3"], "quote": "اقتباس مقولة ملهمة عن أثر القرار" }. لا ترجع أي نص خارج الJSON. القرار هو: ' },
         { id: 'vault', title: { ar: 'مرآة التحيزات', en: 'Bias Mirror' }, icon: Lock, bgColor: 'bg-stone-900', prompt: 'أنا سأتخذ هذا القرار. اصنع "مرآة قاسية" تكشف أين أقع بمصيدة الانحياز التأكيدي. حلل كيف سأندم وكيف سأفرح. أسلوبك قاسي جداً وواقعي: ' },
     ];
 
@@ -199,27 +199,27 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
                     
                     {result.tool === 'butterfly' && result.isJson ? (
-                        <div className="bg-zinc-950 text-white rounded-[48px] overflow-hidden shadow-2xl relative min-h-[500px] flex flex-col justify-end p-8 md:p-16 border-[12px] border-white ring-1 ring-zinc-200">
-                            <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000')] bg-cover bg-center grayscale"></div>
-                            <div className="absolute top-12 left-12 text-2xl font-black tracking-tighter text-white/40 border-b-4 border-rose-500 pb-2">
+                        <div className="bg-zinc-900 text-white rounded-[48px] overflow-hidden shadow-2xl relative min-h-[500px] flex flex-col justify-end p-8 md:p-16 border-[12px] border-zinc-800 ring-1 ring-white/10">
+                            <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000')] bg-cover bg-center grayscale px-10"></div>
+                            <div className="absolute top-12 left-12 text-2xl font-black tracking-tighter text-white/50 border-b-4 border-rose-500 pb-2">
                                 {result.content.magazineName}
                             </div>
                             <div className="relative z-10 space-y-8 mt-32">
-                                <h1 className="text-5xl md:text-8xl font-black leading-[0.9] text-white tracking-tighter drop-shadow-2xl italic">
+                                <h1 className="text-5xl md:text-8xl font-black leading-[0.9] text-white tracking-tighter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] italic">
                                     {result.content.headline}
                                 </h1>
-                                <p className="text-xl md:text-3xl font-bold text-rose-400 max-w-3xl leading-snug">
+                                <p className="text-xl md:text-3xl font-bold text-rose-300 max-w-3xl leading-snug drop-shadow-lg">
                                     {result.content.subheadline}
                                 </p>
-                                <div className="space-y-4 mt-12 bg-white/5 backdrop-blur-md p-8 rounded-3xl border border-white/10 max-w-xl">
+                                <div className="space-y-4 mt-12 bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/20 max-w-xl">
                                     {result.content.bulletPoints?.map((pt: string, i: number) => (
-                                        <div key={i} className="text-lg md:text-xl font-bold text-white/90 flex items-start gap-3">
-                                            <span className="text-rose-500 mt-1.5 shrink-0 w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)]"></span>
+                                        <div key={i} className="text-lg md:text-xl font-bold text-white flex items-start gap-3">
+                                            <span className="text-rose-500 mt-1.5 shrink-0 w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_15px_rgba(244,63,94,1)]"></span>
                                             {pt}
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-16 text-center pt-10 border-t border-white/10 text-2xl font-black tracking-tight text-white/50 italic font-serif">
+                                <div className="mt-16 text-center pt-10 border-t border-white/20 text-2xl font-black tracking-tight text-white/70 italic font-serif bg-black/40 backdrop-blur-sm rounded-2xl p-6">
                                     "{result.content.quote}"
                                 </div>
                             </div>
@@ -240,18 +240,22 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     ) : (
                         <div className={cn(
                             "p-8 md:p-12 rounded-[40px] border-4 shadow-xl space-y-8 bg-white transition-all",
-                            tools.find(t => t.id === result.tool)?.bgColor.replace('bg-', 'border-') || 'border-zinc-100'
+                            tools.find(t => t.id === result.tool)?.bgColor?.replace('bg-', 'border-') || 'border-zinc-200'
                         )}>
                             <div className="flex items-center justify-between border-b pb-8">
                                 <div className="flex items-center gap-4">
-                                    {tools.find(t => t.id === result.tool)?.icon && (
+                                    {tools.find(t => t.id === result.tool)?.icon ? (
                                         <div className={cn("p-4 rounded-3xl text-white shadow-lg", tools.find(t => t.id === result.tool)?.bgColor)}>
                                             {React.createElement(tools.find(t => t.id === result.tool)!.icon as any, {className: "w-8 h-8"})}
+                                        </div>
+                                    ) : (
+                                        <div className="p-4 rounded-3xl bg-rose-500 text-white shadow-lg">
+                                            <ShieldAlert className="w-8 h-8" />
                                         </div>
                                     )}
                                     <div>
                                         <h3 className="text-3xl md:text-5xl font-black tracking-tighter text-black uppercase">
-                                            {language === 'ar' ? tools.find(t => t.id === result.tool)?.title.ar : tools.find(t => t.id === result.tool)?.title.en}
+                                            {tools.find(t => t.id === result.tool)?.title[language] || (result.tool === 'Error' ? (language === 'ar' ? 'خطأ في التحليل' : 'Analysis Error') : result.tool)}
                                         </h3>
                                         <p className="text-zinc-500 font-bold mt-1 tracking-widest text-xs uppercase">
                                             {language === 'ar' ? 'مخرج التحليل الاستراتيجي النهائي' : 'FINAL STRATEGIC ANALYSIS OUTPUT'}

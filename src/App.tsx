@@ -486,6 +486,7 @@ const AppContent: React.FC = () => {
               initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }} 
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} 
               transition={{ duration: 0.4, type: 'spring', bounce: 0 }}
+              className="relative z-10"
             >
             <React.Suspense fallback={<TabFallback />}>
               {(() => {

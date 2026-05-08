@@ -94,17 +94,48 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
 
         {mindMapData && !isGenerating && (
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-50/80 border border-zinc-200/60 rounded-[24px] p-6 md:p-10 shadow-sm"
+            initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            className="bg-black border border-white/10 rounded-[40px] p-8 md:p-14 shadow-[0_20px_80px_rgba(0,0,0,0.5)] relative overflow-hidden"
             dir={language === 'ar' ? 'rtl' : 'ltr'}
           >
-            <div className="flex items-center gap-3 mb-8 pb-6 border-b border-zinc-200/50">
-              <Brain className="w-8 h-8 text-black" />
-              <h3 className="text-2xl font-bold m-0">{language === 'ar' ? 'التحليل الهيكلي' : 'Structural Analysis'}</h3>
-            </div>
-            <div className="prose prose-zinc max-w-none text-zinc-800 prose-headings:text-black prose-a:text-indigo-600 prose-li:marker:text-zinc-500">
-              <ReactMarkdown>{mindMapData}</ReactMarkdown>
+            {/* Subtle glow effect */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/2" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-10 pb-8 border-b border-white/10">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                    <Brain className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-black text-white m-0 tracking-tight">
+                      {language === 'ar' ? 'التحليل الهيكلي' : 'Structural Analysis'}
+                    </h3>
+                    <p className="text-zinc-500 text-sm font-bold mt-1">
+                      {language === 'ar' ? 'رؤية عميقة مسبارة' : 'In-depth probing vision'}
+                    </p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => {
+                    const blob = new Blob([mindMapData], { type: 'text/markdown' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `mindmap-${topic.slice(0, 20)}.md`;
+                    a.click();
+                  }}
+                  className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors group"
+                >
+                  <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </button>
+              </div>
+
+              <div className="prose prose-invert prose-indigo max-w-none prose-p:text-white prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-white prose-headings:font-black prose-li:text-white prose-li:marker:text-indigo-400 prose-strong:text-indigo-400">
+                <ReactMarkdown>{mindMapData}</ReactMarkdown>
+              </div>
             </div>
           </motion.div>
         )}

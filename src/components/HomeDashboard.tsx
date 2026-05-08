@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark, Box } from 'lucide-react';
+import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark, Box, Lock } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useGamification } from '../hooks/useGamification';
 import { generateDailyMission } from '../services/gemini';
@@ -54,9 +54,9 @@ const HubCard: React.FC<{
           {visibleItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => handleTabChange(item.id)}
+              onClick={(e) => { e.stopPropagation(); handleTabChange(item.id); }}
               className={cn(
-                "flex items-center gap-2 p-3 md:p-3 rounded-xl border transition-all group/item text-right active:scale-95",
+                "flex items-center gap-2 p-3 md:p-3 rounded-xl border transition-all group/item text-right active:scale-95 cursor-pointer",
                 inverted 
                   ? "bg-zinc-800/50 border-zinc-700/50 hover:border-white hover:bg-zinc-800 text-white" 
                   : "bg-zinc-50/50 border-zinc-100/50 hover:border-black hover:bg-white text-zinc-800"

@@ -352,10 +352,10 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               return (
                 <button 
                   key={category.id}
-                  onClick={() => onCategory(category.id)}
-                  className="group bg-white border border-zinc-200/60 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[160px] md:min-h-[220px] justify-between relative overflow-hidden"
+                  onClick={(e) => { e.stopPropagation(); onCategory(category.id); }}
+                  className="group bg-white border border-zinc-200/60 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[160px] md:min-h-[220px] justify-between relative overflow-hidden cursor-pointer active:scale-[0.98]"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50 rounded-full blur-2xl group-hover:bg-[#F5F5F0] transition-colors translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50 rounded-full blur-2xl group-hover:bg-[#F5F5F0] transition-colors translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                   <div className="relative z-10 w-full text-right w-full">
                     <h4 className="font-serif text-xl md:text-3xl text-black group-hover:text-[#5A5A40] transition-colors mb-2 md:mb-4">{category.title}</h4>
                     <p className="text-zinc-500 text-xs md:text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity absolute inset-x-0 w-full text-right transition-opacity duration-300">
