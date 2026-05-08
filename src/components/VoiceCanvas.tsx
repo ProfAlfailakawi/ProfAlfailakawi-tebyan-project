@@ -15,6 +15,12 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
   const { playSound } = useAcoustics();
 
   useEffect(() => {
+    const handleClose = () => onClose();
+    window.addEventListener('close_overlays', handleClose);
+    return () => window.removeEventListener('close_overlays', handleClose);
+  }, [onClose]);
+
+  useEffect(() => {
     if (isOpen) {
       setTranscript('');
       setResult(null);
@@ -125,6 +131,9 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
            className="fixed inset-0 z-[300] bg-black text-white p-6 md:p-12 overflow-y-auto flex flex-col items-center justify-center font-sans tracking-wide"
            dir={language === 'ar' ? 'rtl' : 'ltr'}
+           onClick={(e) => {
+             if (e.target === e.currentTarget) onClose();
+           }}
         >
            <button 
              onClick={onClose}

@@ -89,7 +89,7 @@ export default function AdminQawlFasl() {
       }));
     } catch (error: any) {
       if (error.code === "GEMINI_API_KEY_NOT_CONFIGURED") {
-          showAlert('يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة.');
+          showAlert('يبدو أن هناك تعثراً في الوصول، جرد العودة للوضع المجاني عبر الإعدادات وسأستمر معك.');
        } else {
          console.error(error);
          showAlert('حدث خطأ أثناء التوليد. الرجاء المحاولة مرة أخرى.');
@@ -296,7 +296,7 @@ export default function AdminQawlFasl() {
                 showAlert('تم توليد 5 مسودات جديدة!');
               } catch (e: any) {
                 if (e instanceof GeminiKeyMissingError) {
-                  showAlert('يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة.');
+                  showAlert('يبدو أن هناك تعثراً في الوصول، جرد العودة للوضع المجاني عبر الإعدادات وسأستمر معك.');
                 } else {
                   console.error(e);
                   showAlert('خطأ أثناء توليد المسودات.');

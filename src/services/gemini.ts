@@ -173,26 +173,30 @@ export function parseGeminiError(error: any, defaultMsg: string, lang: string = 
   const errorStr = JSON.stringify(error).toLowerCase();
   const errorMsg = (error?.message || "").toLowerCase();
   
-  if (errorStr.includes('api key') || error?.status === 401 || errorStr.includes("not configured") || errorMsg.includes("يبدو أنك قمت")) {
-    if (errorMsg.includes('يبدو أنك قمت')) {
-        return new Error(error.message);
-    }
-    return new Error(lang === 'ar' ? "يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة." : "Invalid API key. Please remove it from Settings to use the default free key.");
+  // Human-friendly default messages
+  let beautifulDefaultMessage = lang === 'ar' ? "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." : "It seems the idea needs a moment.. Try again.";
+  
+  if (defaultMsg && defaultMsg !== "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي." && !defaultMsg.includes("حدث خطأ")) {
+      beautifulDefaultMessage = defaultMsg;
+  }
+
+  if (errorStr.includes('api key') || errorStr.includes('gemini_api_key_not_configured') || error?.status === 401 || errorStr.includes("not configured") || errorMsg.includes("gemini_api_key_not_configured")) {
+    return new Error(lang === 'ar' ? "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." : "Could not access the engine now.. try again or check the key in settings.");
   }
   if (errorStr.includes('429') || errorStr.includes('credits depleted') || errorStr.includes('quota') || errorMsg.includes('429') || errorMsg.includes('quota') || errorStr.includes('resource_exhausted')) {
-    return new Error(lang === 'ar' ? "لقد تجاوزت حد الاستخدام المسموح به حالياً. النظام يحاول التحميل مرة أخرى تلقائياً، يرجى الانتظار." : "Usage quota exceeded. Retrying automatically, please wait.");
+    return new Error(lang === 'ar' ? "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." : "The idea needs an extra moment.. try again.");
   }
   if (errorStr.includes('503') || errorStr.includes('504') || errorMsg.includes('503') || errorMsg.includes('504') || 
       errorStr.includes('high demand') || errorMsg.includes('high demand') || 
       errorStr.includes('overloaded') || errorMsg.includes('overloaded') ||
       errorStr.includes('404') || errorMsg.includes('not found') ||
       error?.status === 'UNAVAILABLE' || error?.status === 'DEADLINE_EXCEEDED') {
-    return new Error(lang === 'ar' ? "خوادم الذكاء الاصطناعي لا تستجيب حالياً. جاري المحاولة مرة أخرى باستخدام نسخة مستقرة..." : "AI servers are not responding. Retrying with a stable version...");
+    return new Error(lang === 'ar' ? "لم أستطع إكمال التحليل الآن، لكن الفكرة محفوظة." : "I couldn't complete the analysis now, but the idea is saved.");
   }
   if (errorStr.includes('safety') || errorStr.includes('block') || errorStr.includes('finish_reason_safety') || errorMsg.includes('safety') || errorMsg.includes('blocked')) {
-    return new Error(lang === 'ar' ? "اعتذر منك، المحتوى المطلوب يتعارض مع سياسات الأمان أو لم يتمكن الذكاء الاصطناعي من إنتاجه لهذا السياق. يرجى تجربة صياغة مختلفة." : "I apologize, but the requested content was blocked by safety filters or couldn't be generated for this context. Please try a different wording.");
+    return new Error(lang === 'ar' ? "المحرك لم يلتقط المعنى بالكامل، جرّب صياغة أبسط." : "The engine didn't fully grasp the meaning, try a simpler phrasing.");
   }
-  return new Error(defaultMsg);
+  return new Error(beautifulDefaultMessage);
 }
 
 async function withRetry<T>(fn: () => Promise<T>, maxRetries = 4, initialDelay = 3000): Promise<T> {
@@ -305,7 +309,7 @@ export async function generateQuiz(topic: string) {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Quiz Error:", error);
-      throw parseGeminiError(error, "فشل توليد الاختبار.");
+      throw parseGeminiError(error, "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
     }
   });
 }
@@ -370,7 +374,7 @@ export async function generateSimulation(topic: string = 'Digital Transformation
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Simulation generation failed:", error);
-      throw parseGeminiError(error, "فشل توليد المحاكاة.");
+      throw parseGeminiError(error, "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
     }
   });
 }

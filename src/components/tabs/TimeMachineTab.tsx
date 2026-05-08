@@ -117,13 +117,13 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
                     <div className="space-y-3">
                        <div>
                          <div className="text-[10px] text-indigo-400 font-bold uppercase mb-1">{language === 'ar' ? 'طريقة التدريس' : 'Teaching Method'}</div>
-                         <div className="text-sm font-bold text-white/90 leading-relaxed markdown-inner">
+                         <div className="text-sm font-bold text-white/90 leading-relaxed prose prose-invert prose-sm max-w-none">
                             <ReactMarkdown>{e.teaching_method}</ReactMarkdown>
                          </div>
                        </div>
                        <div className="pt-2 border-t border-white/5">
                          <div className="text-[10px] text-indigo-400 font-bold uppercase mb-1">{language === 'ar' ? 'الأدوات' : 'Tools'}</div>
-                         <div className="text-xs font-bold text-indigo-200 markdown-inner">
+                         <div className="text-xs font-bold text-indigo-200 prose prose-invert prose-sm max-w-none">
                             <ReactMarkdown>{e.tools}</ReactMarkdown>
                          </div>
                        </div>

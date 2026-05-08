@@ -191,7 +191,7 @@ export default function AdminQawlFaslBulkGen() {
                 successCount++;
             } catch (error: any) {
                 if (error instanceof GeminiKeyMissingError) {
-                    addLog(`❌ يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة.`, 'error');
+                    addLog(`❌ يبدو أن هناك تعثراً في الوصول، جرد العودة للوضع المجاني عبر الإعدادات وسأستمر معك.`, 'error');
                 } else {
                     console.error(error);
                     addLog(`❌ Failed to process: ${error.message}`, 'error');

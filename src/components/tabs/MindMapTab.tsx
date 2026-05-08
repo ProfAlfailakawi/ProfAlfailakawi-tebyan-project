@@ -10,34 +10,36 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
   const [isGenerating, setIsGenerating] = useState(false);
   const [mindMapData, setMindMapData] = useState<string | null>(null);
 
-  React.useEffect(() => {
-    if (initialValue) {
-      setTopic(initialValue);
-      if (onValueUsed) onValueUsed();
-    }
-  }, [initialValue]);
-
-  const handleGenerate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!topic.trim()) return;
+  const handleGenerate = async (overrideTopic?: string) => {
+    const activeTopic = overrideTopic || topic;
+    if (!activeTopic.trim()) return;
 
     setIsGenerating(true);
     try {
-      const prompt = `قم ببناء 'خريطة ذهنية نصية متفرعة وشاملة' (شجرة هيكلية) حول الموضوع التالي: "${topic}". 
+      const prompt = `قم ببناء 'خريطة ذهنية نصية متفرعة وشاملة' (شجرة هيكلية) حول الموضوع التالي: "${activeTopic}". 
       استخدم تنسيق القوائم المتداخلة (Nested Lists) أو Markdown لتمثيل التفرعات الرئيسية والفرعية بوضوح شديد.
       أريد أن يكون التحليل عميقاً ومبنياً على أسس تربوية وعلمية قوية.
       تجنب الكتل النصية الطويلة. استخدم فقرات قصيرة جداً ومباشرة.
       اللغة المطلوبة: ${language === 'ar' ? 'العربية' : 'English'}`;
       
+      const { universalOracle } = await import('../../services/gemini');
       const result = await universalOracle(prompt, 'MindMap AI', language);
       setMindMapData(result);
     } catch (error) {
       console.error(error);
-      setMindMapData('حدث خطأ أثناء الاتصال بعقل النظام. يرجى المحاولة لاحقاً.');
+      setMindMapData(language === 'ar' ? 'تعثرت الأفكار قليلاً.. لنأخذ استراحة قصيرة ونحاول مرة أخرى؟' : 'Ideas got a bit stuck.. Shall we take a quick break and try again?');
     } finally {
       setIsGenerating(false);
     }
   };
+
+  React.useEffect(() => {
+    if (initialValue && !mindMapData && !isGenerating) {
+      setTopic(initialValue);
+      handleGenerate(initialValue);
+      if (onValueUsed) onValueUsed();
+    }
+  }, [initialValue, mindMapData, isGenerating, onValueUsed]);
 
   return (
     <div className="w-full space-y-8 px-2">
@@ -56,7 +58,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
       <div className="bg-white/60 backdrop-blur-2xl min-h-[60vh] rounded-[32px] overflow-hidden relative border border-white/40 shadow-sm p-8 md:p-12">
         <div className="max-w-4xl mx-auto space-y-12">
 
-        <form onSubmit={handleGenerate} className="relative z-10 flex flex-col md:flex-row gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <form onSubmit={(e) => { e.preventDefault(); handleGenerate(); }} className="relative z-10 flex flex-col md:flex-row gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="flex-1 relative">
             <input
               type="text"
@@ -94,14 +96,16 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-zinc-50/80 border border-zinc-200/60 rounded-[24px] p-6 md:p-10 shadow-sm markdown-body"
+            className="bg-zinc-50/80 border border-zinc-200/60 rounded-[24px] p-6 md:p-10 shadow-sm"
             dir={language === 'ar' ? 'rtl' : 'ltr'}
           >
             <div className="flex items-center gap-3 mb-8 pb-6 border-b border-zinc-200/50">
               <Brain className="w-8 h-8 text-black" />
               <h3 className="text-2xl font-bold m-0">{language === 'ar' ? 'التحليل الهيكلي' : 'Structural Analysis'}</h3>
             </div>
-            <ReactMarkdown>{mindMapData}</ReactMarkdown>
+            <div className="prose prose-zinc max-w-none text-zinc-800 prose-headings:text-black prose-a:text-indigo-600 prose-li:marker:text-zinc-500">
+              <ReactMarkdown>{mindMapData}</ReactMarkdown>
+            </div>
           </motion.div>
         )}
 

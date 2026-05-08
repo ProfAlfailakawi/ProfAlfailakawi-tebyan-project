@@ -125,7 +125,7 @@ export const ContactTab = ({ language }: { language: string }) => {
               <div className="bg-rose-50 text-rose-700 p-4 rounded-xl flex items-center gap-3">
                 <AlertCircle className="w-5 h-5 shrink-0" />
                 <p className="font-semibold text-sm">
-                  {language === 'ar' ? 'حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى لاحقاً.' : 'An error occurred while sending. Please try again later.'}
+                {language === 'ar' ? 'حدث تعثر بسيط، أعد المحاولة وسأكمل معك.' : 'A slight glitch occurred, retry and I will continue with you.'}
                 </p>
               </div>
             )}

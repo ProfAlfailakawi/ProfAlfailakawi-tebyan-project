@@ -124,6 +124,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
+  const [isQueryExpanded, setIsQueryExpanded] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
   const [showFollowUp, setShowFollowUp] = useState(false);
@@ -167,26 +168,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arG = 'صباح الوعي والتجدد';
         enG = 'Good morning, visionary';
         arSub = (
-          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
-            const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('truncate');
-            el?.classList.toggle('whitespace-normal');
-          }}>
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+            <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
           </div>
         );
         enSub = (
-          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
-            const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('truncate');
-            el?.classList.toggle('whitespace-normal');
-          }}>
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+             <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, is your coffee ready to continue? ☕</span>
@@ -224,26 +217,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arG = 'مساء التمكين والعمق';
         enG = 'Good afternoon, visionary';
         arSub = (
-          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
-            const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('truncate');
-            el?.classList.toggle('whitespace-normal');
-          }}>
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+            <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>، هل نكمل الاستكشاف؟ ☕</span>
           </div>
         );
         enSub = (
-          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
-            const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('truncate');
-            el?.classList.toggle('whitespace-normal');
-          }}>
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-            <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+            <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, shall we continue exploring? ☕</span>
@@ -279,26 +264,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arG = 'مساء التأمل والعمق';
         enG = 'Evening of reflection';
         arSub = (
-          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
-            const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('truncate');
-            el?.classList.toggle('whitespace-normal');
-          }}>
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-             <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+             <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>.. هل كان يوماً مثمراً؟ 🌟</span>
           </div>
         );
         enSub = (
-          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
-            const el = e.currentTarget.querySelector('.text-query');
-            el?.classList.toggle('truncate');
-            el?.classList.toggle('whitespace-normal');
-          }}>
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className="text-content text-indigo-500 font-bold text-query truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom">
+             <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, how was your day? 🌟</span>
@@ -331,7 +308,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       }
     }
     return { arG, enG, arSub, enSub, dynamicSuggests };
-  }, [lastInteraction]);
+  }, [lastInteraction, isQueryExpanded]);
   
   // React to initialQuery prop
   useEffect(() => {

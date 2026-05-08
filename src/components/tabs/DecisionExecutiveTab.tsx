@@ -67,11 +67,9 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         setIsLoading(true);
         setResult(null);
         try {
-            const response = await ai.models.generateContent({
-                model: "gemini-1.5-flash",
-                contents: [{ role: 'user', parts: [{ text: `${tool.prompt} ${dilemma}` }] }]
-            });
-            const content = response.response.text();
+            const prompt = `${tool.prompt} ${dilemma}`;
+            const { universalOracle } = await import('../../services/gemini');
+            const content = await universalOracle(prompt, 'Decision Executive', language);
             
             if (tool.id === 'butterfly') {
                 try {
@@ -86,8 +84,8 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
             } else {
                setResult({ tool: tool.id, content: content || 'No result' });
             }
-        } catch (e) {
-            setResult({ tool: 'Error', content: 'حدث خطأ. يرجى المحاولة لاحقاً.' });
+        } catch (e: any) {
+            setResult({ tool: 'Error', content: language === 'ar' ? `لقد اصطدمت الأفكار ببعضها.. يحتاج "العقل المدبر" إلى لحظة صفاء ذهني ليعاود ترتيبها. جرب التريث قليلاً ثم عاود الإرسال. (${e.message})` : `The thoughts have collided.. The Mastermind needs a moment of clarity to reorganize. Try pausing and resending. (${e.message})` });
         } finally {
             setIsLoading(false);
         }
@@ -200,9 +198,14 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                              </div>
                         </div>
                     ) : (
-                        <div className="bg-white p-8 rounded-3xl border shadow-sm space-y-4">
-                            <h3 className="text-xl font-black text-indigo-900 border-b pb-4">{result.tool}</h3>
-                            <div className="markdown-body prose max-w-none text-zinc-800">
+                        <div className={`p-8 rounded-3xl border shadow-sm space-y-4 ${tools.find(t => t.id === result.tool)?.bgColor.replace('bg-', 'bg-opacity-10 bg-')} border-zinc-200/50`}>
+                            <div className="flex items-center gap-3 border-b border-zinc-200/60 pb-4">
+                                {tools.find(t => t.id === result.tool)?.icon && React.createElement(tools.find(t => t.id === result.tool)!.icon as any, {className: `w-6 h-6 ${tools.find(t => t.id === result.tool)?.bgColor.replace('bg-', 'text-')}`})}
+                                <h3 className={`text-2xl font-black ${tools.find(t => t.id === result.tool)?.bgColor.replace('bg-', 'text-')}`}>
+                                    {language === 'ar' ? tools.find(t => t.id === result.tool)?.title.ar : tools.find(t => t.id === result.tool)?.title.en}
+                                </h3>
+                            </div>
+                            <div className="prose md:prose-lg max-w-none text-zinc-800 prose-headings:text-zinc-900 prose-strong:text-zinc-900 leading-relaxed font-serif rtl:font-sans py-4">
                               <ReactMarkdown>{result.content}</ReactMarkdown>
                             </div>
                         </div>

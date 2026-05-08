@@ -117,7 +117,14 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   };
 
   return (
-    <div className="w-full min-h-[80vh] overflow-hidden relative border border-transparent space-y-4 px-2">
+    <div 
+      className="w-full min-h-[80vh] overflow-hidden relative border border-transparent space-y-4 px-2"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && currentView !== 'home') {
+          goToHome();
+        }
+      }}
+    >
       <TabHeader 
         icon={MessageCircleQuestion}
         title={{ ar: 'قول فصل', en: 'Qawl Fasl' }}

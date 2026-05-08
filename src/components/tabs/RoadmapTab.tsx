@@ -13,12 +13,13 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleGenerate = async () => {
-    if (!goal.trim()) return;
+  const handleGenerate = async (currentGoal?: string) => {
+    const targetGoal = currentGoal || goal;
+    if (!targetGoal.trim()) return;
     setIsLoading(true);
     setError(null);
     try {
-      const data = await generateRoadmap(goal, language);
+      const data = await generateRoadmap(targetGoal, language);
       setRoadmap(data);
     } catch (err: any) {
       setError(err.message);
@@ -30,7 +31,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
   React.useEffect(() => {
     if (initialValue && !roadmap && !isLoading) {
       setGoal(initialValue);
-      handleGenerate();
+      handleGenerate(initialValue);
       if (onValueUsed) onValueUsed();
     }
   }, [initialValue, roadmap, isLoading, onValueUsed]);
@@ -70,7 +71,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
             />
           </div>
           <button 
-            onClick={handleGenerate}
+            onClick={() => handleGenerate()}
             disabled={isLoading || !goal.trim()}
             className="w-full py-6 bg-zinc-950 text-white hover:bg-zinc-800 rounded-[32px] font-black text-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl active:scale-[0.98] group"
           >

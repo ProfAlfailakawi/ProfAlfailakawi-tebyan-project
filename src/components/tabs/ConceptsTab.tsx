@@ -24,42 +24,41 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
 
   const [isBrutalMode, setIsBrutalMode] = React.useState(false);
 
-  React.useEffect(() => {
-    if (initialValue) {
-      setInput(initialValue);
-      if (onValueUsed) onValueUsed();
-    }
-  }, [initialValue]);
-
-  const handleSimplify = async (brutalMode = false) => {
-    if (!input.trim() || isLoading) return;
+  const handleSimplify = async (overrideInput?: string, brutalMode = false) => {
+    const activeInput = overrideInput || input;
+    if (!activeInput.trim() || isLoading) return;
     setIsLoading(true);
     setError(null);
     setIsBrutalMode(brutalMode);
     try {
       if (brutalMode) {
-        const { ai } = await import('../../services/gemini');
+        const { universalOracle } = await import('../../services/gemini');
         const prompt = language === 'ar' 
-          ? `أنت الآن "المحامي الشيطاني المتوحش". قاسي، مجرد من العواطف، ومنطقي لأبعد حد. مهمتك هي: 1. إيجاد الثغرات المنطقية. 2. تدمير الخطة وإظهار نقاط ضعفها. 3. لا تجامل أبداً. حلل هذه الفكرة وحطمها: ${input}`
-          : `You are now "The Brutal Devil's Advocate". Harsh, emotionless, and purely logical. Your mission: 1. Find logical loopholes. 2. Destroy this plan and show its weaknesses. 3. NEVER sugarcoat. Analyze and destroy this idea: ${input}`;
+          ? `أنت الآن "المحامي الشيطاني المتوحش". قاسي، مجرد من العواطف، ومنطقي لأبعد حد. مهمتك هي: 1. إيجاد الثغرات المنطقية. 2. تدمير الخطة وإظهار نقاط ضعفها. 3. لا تجامل أبداً. حلل هذه الفكرة وحطمها: ${activeInput}`
+          : `You are now "The Brutal Devil's Advocate". Harsh, emotionless, and purely logical. Your mission: 1. Find logical loopholes. 2. Destroy this plan and show its weaknesses. 3. NEVER sugarcoat. Analyze and destroy this idea: ${activeInput}`;
         
-        const response = await ai.models.generateContent({
-           model: 'gemini-1.5-pro',
-           contents: [{ role: 'user', parts: [{ text: prompt }] }],
-           config: { systemInstruction: "Be extremely brutal, logical, and point out all flaws mercilessly." }
-        });
-        setOutput(response.response.text());
+        const content = await universalOracle(prompt, 'Brutal Advocate', language);
+        setOutput(content);
       } else {
         const { simplifyConcept } = await import('../../services/gemini');
-        const res = await simplifyConcept(input);
+        const res = await simplifyConcept(activeInput);
         setOutput(res);
       }
     } catch (err: any) {
-      setError(err.message);
+      setError("يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  React.useEffect(() => {
+    if (initialValue && !output && !isLoading) {
+      setInput(initialValue);
+      // Auto-run simplify
+      handleSimplify(initialValue, false);
+      if (onValueUsed) onValueUsed();
+    }
+  }, [initialValue, output, isLoading, onValueUsed]);
 
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
@@ -85,7 +84,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       />
       <div className="flex gap-4">
         <button 
-          onClick={() => handleSimplify(false)} 
+          onClick={() => handleSimplify()} 
           disabled={isLoading}
           className={cn(
             "flex-1 py-4 rounded-xl font-semibold text-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
@@ -102,7 +101,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           )}
         </button>
         <button 
-          onClick={() => handleSimplify(true)} 
+          onClick={() => handleSimplify(undefined, true)} 
           disabled={isLoading}
           className={cn(
             "flex-1 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3",
@@ -133,7 +132,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           </motion.div>
         ) : output && (
           <div className="space-y-4">
-            <div className={cn("markdown-body p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-zinc-950 border-red-900/30 text-rose-100 prose-invert" : "bg-white border-zinc-200/80")}>
+            <div className={cn("prose md:prose-lg p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-zinc-950 border-red-900/30 text-zinc-300 prose-invert prose-headings:text-rose-400 prose-strong:text-rose-200 prose-ol:text-zinc-600 prose-ul:text-zinc-600 prose-li:marker:text-rose-600 prose-a:text-red-400 leading-relaxed font-serif rtl:font-sans py-8" : "bg-white border-zinc-200/80 prose-zinc font-serif rtl:font-sans py-8 leading-relaxed text-zinc-800")}>
               <ReactMarkdown>{output}</ReactMarkdown>
             </div>
             <button 

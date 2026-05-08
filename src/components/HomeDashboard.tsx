@@ -73,7 +73,7 @@ const HubCard: React.FC<{
                   inverted ? "text-zinc-400 group-hover/item:text-white" : "text-zinc-600 group-hover/item:text-black"
                 )} />
               </div>
-              <span className="text-xs md:text-[13px] font-bold tracking-tight truncate">{item.label}</span>
+              <span className={cn("text-xs md:text-[13px] font-black tracking-tight truncate", inverted ? "text-white" : "text-zinc-900", item.id === 'mindmap' && "text-indigo-950")}>{item.label}</span>
             </button>
           ))}
         </div>

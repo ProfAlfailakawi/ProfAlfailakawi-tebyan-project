@@ -6,7 +6,9 @@ import { useAuth } from './AuthProvider';
 import { Users, Trash2, Edit2, Shield, X, KeyRound, Save } from 'lucide-react';
 
 export default function AdminUsersDashboard() {
-  const { profile } = useAuth();
+  const { profile, user, loading: authLoading } = useAuth();
+  
+  const isAuthorized = profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -21,7 +23,7 @@ export default function AdminUsersDashboard() {
       // No need to alert success usually as onSnapshot will update the list
     } catch (error: any) {
       console.error(error);
-      alert('حدث خطأ أثناء الحذف.');
+      alert('تعذر حذف العميل، يرجى المحاولة لاحقاً.');
     }
   };
 
@@ -47,7 +49,7 @@ export default function AdminUsersDashboard() {
       setTimeout(() => closeEditModal(), 1500);
     } catch (error: any) {
       console.error(error);
-      setActionMessage('حدث خطأ أثناء الحفظ.');
+      setActionMessage('حدث تعثر بسيط في الحفظ، سنحاول مرة أخرى لاحقاً.');
     }
   };
 
@@ -58,11 +60,12 @@ export default function AdminUsersDashboard() {
       setActionMessage('تم إرسال رابط وإيميل إلى العميل لتغيير كلمة المرور الخاصة به.');
     } catch (error: any) {
       console.error(error);
-      setActionMessage('حدث خطأ أثناء إرسال البريد.');
+      setActionMessage('لم نتمكن من إرسال البريد الآن، يرجى المحاولة لاحقاً.');
     }
   };
 
   useEffect(() => {
+    if (authLoading) return;
     if (profile?.role === 'admin') {
       const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
         const usersList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -78,9 +81,9 @@ export default function AdminUsersDashboard() {
     } else {
       setLoading(false);
     }
-  }, [profile]);
+  }, [profile, authLoading]);
 
-  if (profile?.role !== 'admin') return <div className="p-10 text-center">غير مصرح لك بالوصول.</div>;
+  if (!isAuthorized) return <div className="p-10 text-center">غير مصرح لك بالوصول.</div>;
   
   return (
     <div className="p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen">
@@ -96,51 +99,53 @@ export default function AdminUsersDashboard() {
 
       {loading ? <p>جاري تحميل البيانات...</p> : (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <table className="w-full text-right text-sm">
-            <thead className="bg-slate-100 uppercase text-slate-500 font-bold">
-              <tr>
-                <th className="p-4">الاسم</th>
-                <th className="p-4">البريد الإلكتروني</th>
-                <th className="p-4">الدور</th>
-                <th className="p-4">إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.length === 0 ? (
+          <div className="overflow-x-auto w-full max-w-full">
+            <table className="w-full text-right text-sm min-w-[700px]">
+              <thead className="bg-slate-100 uppercase text-slate-500 font-bold">
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-slate-500 font-bold">لا يوجد مستخدمين مسجلين بعد.</td>
+                  <th className="p-4">الاسم</th>
+                  <th className="p-4">البريد الإلكتروني</th>
+                  <th className="p-4 whitespace-nowrap">الدور</th>
+                  <th className="p-4 whitespace-nowrap">إجراءات</th>
                 </tr>
-              ) : (
-                users.map((user: any) => (
-                  <tr key={user.id} className="border-t border-slate-100">
-                    <td className="p-4">{user.displayName || 'لا يوجد اسم'}</td>
-                    <td className="p-4 text-left font-mono" dir="ltr">{user.email}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="p-4 flex gap-2">
-                      <button 
-                        onClick={() => openEditModal(user)}
-                        className="text-slate-400 hover:text-blue-600"
-                        title="تعديل المستخدم"
-                      >
-                        <Edit2 size={16} />
-                      </button>
-                      <button 
-                        onClick={() => deleteUser(user.id)}
-                        className="text-slate-400 hover:text-rose-600"
-                        title="حذف المستخدم"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </td>
+              </thead>
+              <tbody>
+                {users.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="p-8 text-center text-slate-500 font-bold">لا يوجد مستخدمين مسجلين بعد.</td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  users.map((user: any) => (
+                    <tr key={user.id} className="border-t border-slate-100 whitespace-nowrap">
+                      <td className="p-4">{user.displayName || 'لا يوجد اسم'}</td>
+                      <td className="p-4 text-left font-mono" dir="ltr">{user.email}</td>
+                      <td className="p-4">
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}`}>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="p-4 flex gap-4 min-w-[120px]">
+                        <button 
+                          onClick={() => openEditModal(user)}
+                          className="text-slate-400 hover:text-blue-600 transition-colors p-1"
+                          title="تعديل المستخدم"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button 
+                          onClick={() => deleteUser(user.id)}
+                          className="text-slate-400 hover:text-rose-600 transition-colors p-1"
+                          title="حذف المستخدم"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

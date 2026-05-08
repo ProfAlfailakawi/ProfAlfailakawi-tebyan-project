@@ -87,7 +87,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         case 'workshop': setLabWorkshop(await generateWorkshop(labInput, language)); break;
       }
     } catch (err: any) {
-      setError(err.message);
+      setError("يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
     } finally {
       setIsLoading(false);
     }

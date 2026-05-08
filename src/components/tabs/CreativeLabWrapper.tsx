@@ -49,7 +49,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               transition={{ duration: 0.2 }}
               className="w-full h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar"
             >
-               {activeSubTab === 'lab' && <LabTab language={language} handleTabChange={handleTabChange} />}
+               {activeSubTab === 'lab' && <LabTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'concepts' && <ConceptsTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'mindmap' && <MindMapTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'story' && <StoryTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}

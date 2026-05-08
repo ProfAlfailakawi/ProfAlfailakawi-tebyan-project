@@ -211,9 +211,13 @@ export default function AdminQawlFaslUpload() {
           });
           
           await batch.commit();
-        } catch (err) {
+        } catch (err: any) {
           console.error(`Error generating for ${data.question}`, err);
-          // Continue to next on error
+          const errorStr = (err?.message || JSON.stringify(err)).toLowerCase();
+          if (errorStr.includes("api key") || errorStr.includes("gemini_api_key_not_configured")) {
+             throw err; // Stop the whole process if API key is the issue
+          }
+          // Continue to next on other errors
         }
 
         setGenProgress({ current: i + 1, total: unprocessed.length });
@@ -224,11 +228,12 @@ export default function AdminQawlFaslUpload() {
 
       alert('تم إنهاء التوليد.');
     } catch (e: any) {
-      if (e.code === "GEMINI_API_KEY_NOT_CONFIGURED") {
-        alert('يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة.');
+      const errorStr = (e?.message || JSON.stringify(e)).toLowerCase();
+      if (errorStr.includes("api key") || errorStr.includes("gemini_api_key_not_configured")) {
+        alert('لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات.');
       } else {
         console.error(e);
-        alert('حدث خطأ أثناء التوليد.');
+        alert('يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.');
       }
     } finally {
       setIsGenerating(false);

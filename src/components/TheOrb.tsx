@@ -31,7 +31,7 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
         onMouseLeave={() => setIsHovered(false)}
     >
       <div className={cn(
-        "absolute -top-12 left-1/2 -translate-x-1/2 transition-opacity duration-300 text-zinc-500 font-bold text-xs whitespace-nowrap pointer-events-none",
+        "absolute -top-12 left-1/2 -translate-x-1/2 transition-opacity duration-300 bg-zinc-800 text-white px-3 py-1.5 rounded-full shadow-lg font-bold text-xs whitespace-nowrap pointer-events-none",
         isHovered ? "opacity-100" : "opacity-0"
       )}>
           {language === 'ar' ? 'العقل المدبر' : 'Mastermind'}

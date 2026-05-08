@@ -4,7 +4,7 @@ import { Compass, Sparkles, X, Shuffle } from 'lucide-react';
 import { universalOracle } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
 
-export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language?: string, contextTopic?: string }) => {
+export const SerendipityCompass = ({ language = 'ar', contextTopic, handleTabChange }: { language?: string, contextTopic?: string, handleTabChange?: any }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [serendipityPath, setSerendipityPath] = useState('');
@@ -34,6 +34,12 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
     }
   };
 
+  React.useEffect(() => {
+    const handleClose = () => setIsOpen(false);
+    window.addEventListener('close_overlays', handleClose);
+    return () => window.removeEventListener('close_overlays', handleClose);
+  }, []);
+
   return (
     <>
       <button 
@@ -50,11 +56,12 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
 
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-black/40">
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 backdrop-blur-sm bg-black/40" onClick={() => setIsOpen(false)}>
             <motion.div 
                initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
                animate={{ opacity: 1, scale: 1, rotate: 0 }}
                exit={{ opacity: 0, scale: 0.9, rotate: 2 }}
+               onClick={(e) => e.stopPropagation()}
                className="bg-zinc-900 text-zinc-100 w-full max-w-2xl max-h-[85vh] rounded-[32px] p-1 border border-zinc-700 shadow-2xl overflow-hidden relative flex flex-col"
             >
                {/* Background cosmic effect */}
@@ -89,7 +96,29 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic }: { language
                                {language === 'ar' ? 'نقطة الانطلاق:' : 'Starting Point:'} <span className="text-white">{contextTopic}</span>
                            </div>
                            <div className="font-serif rtl:font-sans leading-loose text-lg md:text-xl text-zinc-100 [&_p]:text-zinc-100 [&_strong]:text-white [&_strong]:font-bold [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h3]:font-black [&_h3]:mt-6 [&_h3]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:text-zinc-100 [&_li]:mb-2">
-                               <ReactMarkdown>{serendipityPath}</ReactMarkdown>
+                               <ReactMarkdown
+                                 components={{
+                                   a: ({node, href, children, ...props}) => (
+                                     <a 
+                                       href={href} 
+                                       onClick={(e) => {
+                                         e.preventDefault();
+                                         if (handleTabChange && href) {
+                                           const tab = href.replace('/', '').toLowerCase();
+                                           handleTabChange(tab === 'dashboard' ? 'home' : tab, contextTopic);
+                                         }
+                                         setIsOpen(false);
+                                       }}
+                                       className="text-blue-400 hover:text-blue-300 underline underline-offset-4"
+                                       {...props}
+                                     >
+                                       {children}
+                                     </a>
+                                   )
+                                 }}
+                               >
+                                 {serendipityPath}
+                               </ReactMarkdown>
                            </div>
                        </div>
                    )}

@@ -175,7 +175,7 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       console.error("AI Analysis Error:", err);
-      setError("حدث خطأ أثناء تشغيل التحليل. خوادم الذكاء الاصطناعي مضغوطة حالياً، يرجى المحاولة لاحقاً.");
+      setError("نعتذر، خوادم الذكاء الاصطناعي مضغوطة قليلاً الآن، لنأخذ استراحة قصيرة ونعاود لاحقاً؟");
     } finally {
       setIsLoading(false);
     }

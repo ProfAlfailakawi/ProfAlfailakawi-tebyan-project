@@ -103,7 +103,7 @@ async function startServer() {
 
         const genAI = getGenAI();
         if (!genAI) {
-            return res.status(500).json({ error: "يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة." });
+            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
         }
 
         try {
@@ -135,7 +135,11 @@ async function startServer() {
             res.json({ audioData });
         } catch (error: any) {
             console.error("[Server] TTS Error:", error);
-            res.status(500).json({ error: error.message || "TTS Generation Failed" });
+            const errStr = (error.message || "").toLowerCase();
+            if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
+              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
+            }
+            res.status(500).json({ error: "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." });
         }
     });
 
@@ -158,7 +162,7 @@ async function startServer() {
 
         const genAI = getGenAI();
         if (!genAI) {
-            return res.status(500).json({ error: "يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة." });
+            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
         }
 
         try {
@@ -210,7 +214,14 @@ async function startServer() {
             res.json(aiResponse);
         } catch (error: any) {
             console.error("[Server] AI Error:", error);
-            res.status(500).json({ error: error.message || "AI Generation Failed" });
+            const errStr = (error.message || "").toLowerCase();
+            if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
+              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
+            }
+            if (errStr.includes("quota") || errStr.includes("429") || errStr.includes("resource_exhausted")) {
+              return res.status(500).json({ error: "المساحة المتاحة للذكاء ممتلئة حالياً، جرّب مرة أخرى بعد قليل." });
+            }
+            res.status(500).json({ error: "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." });
         }
     });
 

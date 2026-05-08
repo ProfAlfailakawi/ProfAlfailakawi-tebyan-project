@@ -120,7 +120,17 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
         </button>
      </div>
 
-     <div className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-blue-100 space-y-8 relative overflow-hidden">
+     <div 
+        className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-blue-100 space-y-8 relative overflow-hidden"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            if (simFeedback) setSimFeedback(null);
+            else if (rpRadar) setRpRadar(null);
+            else if (simulation) setSimulation(null);
+            else if (isRoleplaying) setIsRoleplaying(false);
+          }
+        }}
+      >
         
         {/* DECISION MODE */}
         {simMode === 'decision' && (

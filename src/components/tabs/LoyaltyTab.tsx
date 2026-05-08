@@ -378,7 +378,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                              alert('تم إضافة النقاط بنجاح!');
                            } catch(e) {
                              console.error(e);
-                             alert('حدث خطأ أثناء الإضافة');
+                             alert('تعذر إضافة النقاط الآن، يرجى المحاولة لاحقاً.');
                            }
                          }
                        }}

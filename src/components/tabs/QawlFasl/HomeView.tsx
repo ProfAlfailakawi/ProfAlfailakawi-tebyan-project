@@ -27,6 +27,22 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
     .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
     .slice(0, 10);
 
+  // Ensure categories are correctly loaded
+  const categoriesWithQuestions = React.useMemo(() => {
+    const map = new Map();
+    CATEGORIES.forEach(c => map.set(c.id, c));
+    questions.forEach(q => {
+      // Robust category identification using categoryId, categorySlug, or category (slugified)
+      const id = q.categoryId || q.categorySlug || (q.category ? q.category.replace(/\s+/g, '-').toLowerCase() : null);
+      if (id && !map.has(id)) {
+        map.set(id, { id, title: q.category || id });
+      } else if (id && map.has(id) && !map.get(id).title) {
+        map.set(id, { id, title: q.category || id });
+      }
+    });
+    return Array.from(map.values());
+  }, [questions]);
+
   // If no automatic daily items yet, fallback to deterministic random choice for variety
   const fallbackDaily = React.useMemo(() => {
     if (dailyQuestions.length > 0) return dailyQuestions;
@@ -65,11 +81,13 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
   const [isSearching, setIsSearching] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearchRecursive = async (query: string) => {
     if (query.trim().length > 2) {
       setIsSearching(true);
       setIsGenerating(false);
+      setError(null);
       try {
         const results = await qawlFaslService.searchQuestions(query);
         await qawlFaslService.logSearch(query, results.length > 0);
@@ -84,20 +102,20 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
             if (generatedQuestion.status === 'published') {
               onQuestion(generatedQuestion);
             } else {
-              alert('تم استلام مسألتك وسيتم مراجعتها من قبل مختصين قريباً نظراً لحساسية الموضوع. يمكنك تصفح قسم الطوارئ في هذه الأثناء.');
+              setError('تم استلام مسألتك وسيتم مراجعتها من قبل مختصين قريباً نظراً لحساسية الموضوع. يمكنك تصفح قسم الطوارئ في هذه الأثناء.');
               onEmergency();
             }
           } catch(err: any) {
-             if (err instanceof GeminiKeyMissingError || err?.name === "GeminiKeyMissingError" || (err?.message || "").includes("يبدو أنك قمت")) {
+             if (err instanceof GeminiKeyMissingError || err?.name === "GeminiKeyMissingError") {
                  console.warn("AI generation skipped: GEMINI_API_KEY_NOT_CONFIGURED");
-                 alert("يبدو أنك قمت بإضافة مفتاح API غير صالح في الإعدادات. الرجاء حذفه من (Settings) للتمكن من استخدام المفتاح المجاني الافتراضي للمنصة.");
+                 setError("يبدو أن هناك تعثراً في الوصول، جرب العودة للوضع المجاني عبر الإعدادات وسأستمر معك.");
              } else {
                  console.error("AI Gen error", err);
                  const errMsg = typeof err === 'string' ? err : JSON.stringify(err);
                  if(err?.message?.includes("exceeded your current quota") || err?.code === 429 || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED")) {
-                     alert("نعتذر، النظام يواجه ضغطاً كبيراً. يرجى المحاولة لاحقاً.");
+                     setError("يبدو أن الفكرة تحتاج لحظة إضافية.. جرّب مرة أخرى.");
                  } else {
-                     alert("حدث خطأ أثناء الاتصال بالخادم.");
+                     setError("يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
                  }
              }
              onEmergency();
@@ -174,6 +192,14 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 <div className="bg-[#F5F5F0] border border-zinc-200/80 px-8 py-4 rounded-full flex items-center gap-4 animate-pulse shadow-sm">
                   <div className="w-2 h-2 rounded-full bg-[#5A5A40] animate-bounce"></div>
                   <p className="text-[#5A5A40] font-bold md:text-lg">نقوم بتحليل السياق ونرتب لك الإجابة الدقيقة...</p>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="mt-8 flex justify-center">
+                <div className="bg-rose-50 border border-rose-200 px-8 py-4 rounded-full flex items-center gap-4 shadow-sm text-rose-800 font-bold text-center">
+                  {error}
                 </div>
               </div>
             )}
@@ -298,13 +324,16 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8">
-            {CATEGORIES.map(category => {
+            {categoriesWithQuestions.map((category: any) => {
               const count = questions.filter(q => 
                 q.categoryId === category.id || 
                 q.categorySlug === category.id ||
-                q.category === category.title
+                q.category === category.title ||
+                (q.category && q.category.replace(/\s+/g, '-').toLowerCase() === category.id)
               ).length;
               
+              if (count === 0 && !CATEGORIES.find(c => c.id === category.id)) return null;
+
               return (
                 <button 
                   key={category.id}

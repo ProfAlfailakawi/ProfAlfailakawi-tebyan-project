@@ -206,6 +206,10 @@ const AppContent: React.FC = () => {
     }
     setMobileMenuOpen(false);
     setSidebarOpen(false); // Force close
+    setShowGlobalCommand(false);
+    setShowVoiceCanvas(false);
+    // Dispatch event to close all other potential overlays (like Serendipity Compass)
+    window.dispatchEvent(new CustomEvent('close_overlays'));
     const actualTab = tab === 'home' || tab === 'discover' || (tab as string) === 'dashboard' ? 'home' : tab;
     if (checkAuth(actualTab as Tab)) {
       setIsLoading(false);
@@ -458,7 +462,15 @@ const AppContent: React.FC = () => {
           </div>
         )}
 
-        <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full">
+        <div 
+          className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full min-h-full cursor-default"
+          onClick={(e) => {
+            // If clicking the direct background of the tab area, return to home if not already there
+            if (e.target === e.currentTarget && activeTab !== 'home' && activeTab !== 'discover') {
+              handleTabChange('home');
+            }
+          }}
+        >
             <motion.div 
               key={activeTab} 
               initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }} 
@@ -470,45 +482,45 @@ const AppContent: React.FC = () => {
                 switch (activeTab) {
                   case 'home':
                   case 'discover':
-                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} onQueryUsed={() => setInitialContext('')} />;
+                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} />;
                   case 'strategicarena':
-                    return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'creativelab':
-                    return <CreativeLabWrapper handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <CreativeLabWrapper handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'knowledgecenter':
-                    return <KnowledgeCenterTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <KnowledgeCenterTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'oracle':
-                    return <OracleTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <OracleTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'concepts':
-                    return <ConceptsTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <ConceptsTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'quizzes':
-                    return <QuizTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <QuizTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'simulation':
-                    return <SimulationTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <SimulationTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'knowledgegraph':
                     return <KnowledgeGraphTab handleTabChange={handleTabChange} language={language} />;
                   case 'timemachine':
-                    return <TimeMachineTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <TimeMachineTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'council':
-                    return <CouncilTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <CouncilTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'mindmap':
-                    return <MindMapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <MindMapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'analytics':
                     return <AnalyticsTab handleTabChange={handleTabChange} language={language} />;
                   case 'loyalty':
                     return <LoyaltyTab handleTabChange={handleTabChange} language={language} />;
                   case 'roadmap':
-                    return <RoadmapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <RoadmapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'story':
-                    return <StoryTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <StoryTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'mylibrary':
                     return <MyLibraryTab language={language} handleTabChange={handleTabChange} />;
                   case 'lab':
-                    return <LabTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <LabTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'qawlfasl':
-                    return <QawlFaslTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <QawlFaslTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'decisionroom':
-                    return <DecisionExecutiveTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                    return <DecisionExecutiveTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'adminusers':
                     return (profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminUsersDashboard /> : null;
                   case 'adminqawlfasl':
@@ -586,7 +598,7 @@ const AppContent: React.FC = () => {
         handleTabChange={handleTabChange}
       />
 
-      <SerendipityCompass language={language} contextTopic={initialContext || activeTab} />
+      <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
 
       <PWAInstallPrompt />
 

@@ -86,7 +86,15 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
        onBack={() => handleTabChange('discover', '')}
        onClose={() => handleTabChange('discover', '', true)}
      />
-     <div className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 relative overflow-hidden">
+     <div 
+        className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 relative overflow-hidden"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            if (isFinished) reset();
+            else if (questions.length) reset();
+          }
+        }}
+      >
         {isLoading ? (
           <motion.div 
             initial={{ opacity: 0 }}

@@ -94,6 +94,16 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
     <div className="w-full bg-zinc-950 text-white min-h-[85vh] rounded-[32px] p-4 md:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.1)_0%,transparent_70%)] pointer-events-none"></div>
       
+      {/* Improved Exit Button */}
+      <button 
+        onClick={() => handleTabChange('home')} 
+        className="absolute top-4 end-4 md:top-8 md:end-8 z-50 px-6 py-3 bg-zinc-900 text-white rounded-full font-black text-sm tracking-widest shadow-xl flex items-center gap-2 border border-zinc-700 hover:bg-zinc-800 transition-all active:scale-95"
+        title={language === 'ar' ? 'العودة للرئيسية' : 'Go Home'}
+      >
+        <ArrowRight className={cn("w-5 h-5", language === 'ar' ? "" : "rotate-180")} />
+        {language === 'ar' ? 'الرجوع' : 'BACK'}
+      </button>
+
       {/* Left Content / Graph Area */}
       <div className="flex-1 flex flex-col relative z-10">
         <div className="mb-6">

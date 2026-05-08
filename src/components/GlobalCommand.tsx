@@ -15,6 +15,12 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
   const { mode, setMode } = useCognitiveMode();
 
   useEffect(() => {
+    const handleClose = () => onClose();
+    window.addEventListener('close_overlays', handleClose);
+    return () => window.removeEventListener('close_overlays', handleClose);
+  }, [onClose]);
+
+  useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
