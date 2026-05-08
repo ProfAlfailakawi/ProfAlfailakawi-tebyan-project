@@ -20,6 +20,7 @@ import { signOut } from 'firebase/auth';
 import { GlobalCommand } from './components/GlobalCommand';
 import { GamificationBadge } from './components/GamificationBadge';
 import { TheOrb } from './components/TheOrb';
+import { VoiceCanvas } from './components/VoiceCanvas';
 import { MessagesFloatingButton } from './components/MessagesFloatingButton';
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
@@ -66,9 +67,13 @@ const MyLibraryTab = React.lazy(() => import('./components/tabs/MyLibraryTab'));
 const ContactTab = React.lazy(() => import('./components/tabs/ContactTab').then(m => ({ default: m.ContactTab })));
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 
-type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom';
+const StrategicArenaTab = React.lazy(() => import('./components/tabs/StrategicArenaTab'));
+const CreativeLabWrapper = React.lazy(() => import('./components/tabs/CreativeLabWrapper'));
+const KnowledgeCenterTab = React.lazy(() => import('./components/tabs/KnowledgeCenterTab'));
 
-const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard'];
+type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter';
+
+const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter'];
 
 import DevPanel from './components/DevPanel';
 
@@ -88,6 +93,7 @@ const AppContent: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showGlobalCommand, setShowGlobalCommand] = useState(false);
+  const [showVoiceCanvas, setShowVoiceCanvas] = useState(false);
   const [initialContext, setInitialContext] = useState<string>('');
   const [showHeader, setShowHeader] = useState(true);
   const lastScrollTop = useRef(0);
@@ -175,9 +181,11 @@ const AppContent: React.FC = () => {
 
   const checkAuth = useCallback((tab: Tab) => {
     if (!authReady) {
-        // Just wait silently if auth is not ready instead of showing "loading"
         return false;
     }
+
+    if (tab === 'qawlfasl') return true;
+
     if (!user && protectedFeatures.includes(tab)) {
       const msg = language === 'ar' 
         ? "هذه الخدمة خاصة للمشتركين... يرجى التسجيل أو الدخول." 
@@ -216,22 +224,14 @@ const AppContent: React.FC = () => {
   }, [checkAuth, language, setMobileMenuOpen, setSidebarOpen, setIsLoading, setError, setInitialContext, setActiveTab]);
 
   const tabs = [
-    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار' : 'Decision Room', icon: Lock },
     { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search },
+    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار' : 'Decision Room', icon: Lock },
     { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion },
+    { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit },
+    { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
+    { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network },
     { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
-    { id: 'concepts', label: language === 'ar' ? 'هندسة الأفكار' : 'Idea Engineering', icon: Sparkles },
-    { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck },
-    { id: 'simulation', label: language === 'ar' ? 'المحاكي الميداني' : 'Simulator', icon: Gamepad2 },
-    { id: 'timemachine', label: language === 'ar' ? 'آلة الزمن' : 'Time Machine', icon: Hourglass },
-    { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
-    { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route },
     { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },
-    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
-    { id: 'lab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
-    { id: 'mindmap', label: language === 'ar' ? 'العقل المدبر' : 'Mastermind', icon: Network },
-    { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
-    { id: 'knowledgegraph', label: language === 'ar' ? 'الشبكة العصبية المعرفية' : 'Knowledge Graph', icon: Network },
     { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent, hidden: profile?.role !== 'admin' },
     { 
       id: 'adminusers', 
@@ -471,6 +471,12 @@ const AppContent: React.FC = () => {
                   case 'home':
                   case 'discover':
                     return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} onQueryUsed={() => setInitialContext('')} />;
+                  case 'strategicarena':
+                    return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                  case 'creativelab':
+                    return <CreativeLabWrapper handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
+                  case 'knowledgecenter':
+                    return <KnowledgeCenterTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
                   case 'oracle':
                     return <OracleTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
                   case 'concepts':
@@ -502,7 +508,7 @@ const AppContent: React.FC = () => {
                   case 'qawlfasl':
                     return <QawlFaslTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
                   case 'decisionroom':
-                    return <DecisionExecutiveTab handleTabChange={handleTabChange} language={language} />;
+                    return <DecisionExecutiveTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} onValueUsed={() => setInitialContext('')} />;
                   case 'adminusers':
                     return (profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminUsersDashboard /> : null;
                   case 'adminqawlfasl':
@@ -562,8 +568,15 @@ const AppContent: React.FC = () => {
       <TheOrb 
         language={language}
         onTap={() => setShowGlobalCommand(true)}
+        onDragUp={() => setShowVoiceCanvas(true)}
       />
       <MessagesFloatingButton />
+
+      <VoiceCanvas
+        isOpen={showVoiceCanvas}
+        onClose={() => setShowVoiceCanvas(false)}
+        language={language}
+      />
 
       <GlobalCommand 
         isOpen={showGlobalCommand} 

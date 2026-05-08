@@ -378,8 +378,9 @@ export default function AdminDashboard() {
         </div>
       </section>
 
-      <TheOrb 
+       <TheOrb 
         onTap={() => navigate('/')}
+        onDragUp={() => {}}
         language="ar"
       />
     </div>

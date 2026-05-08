@@ -5,16 +5,20 @@ import { cn } from '../lib/utils';
 
 interface TheOrbProps {
   onTap: () => void;
+  onDragUp: () => void;
   language: 'ar' | 'en';
 }
 
-export const TheOrb: React.FC<TheOrbProps> = ({ onTap, language }) => {
+export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => {
   const [isHovered, setIsHovered] = useState(false);
   const controls = useAnimation();
   
   const handleDragEnd = (event: any, info: any) => {
-    // If it was just a tap or minor drag
-    if (Math.abs(info.offset.y) < 20 && Math.abs(info.offset.x) < 20) {
+    // If dragged UP significantly
+    if (info.offset.y < -50) {
+      onDragUp();
+    } else if (Math.abs(info.offset.y) < 20 && Math.abs(info.offset.x) < 20) {
+      // Tap
       onTap();
     }
     controls.start({ x: 0, y: 0 });
@@ -39,7 +43,6 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, language }) => {
         dragElastic={0.2}
         onDragEnd={handleDragEnd}
         animate={controls}
-        initial={{ scale: 0 }}
         whileTap={{ scale: 0.95 }}
         className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-black text-white shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex items-center justify-center group border border-white/20 relative"
       >

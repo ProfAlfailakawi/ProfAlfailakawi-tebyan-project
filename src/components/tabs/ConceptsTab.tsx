@@ -22,6 +22,8 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
+  const [isBrutalMode, setIsBrutalMode] = React.useState(false);
+
   React.useEffect(() => {
     if (initialValue) {
       setInput(initialValue);
@@ -29,14 +31,29 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
     }
   }, [initialValue]);
 
-  const handleSimplify = async () => {
+  const handleSimplify = async (brutalMode = false) => {
     if (!input.trim() || isLoading) return;
     setIsLoading(true);
     setError(null);
+    setIsBrutalMode(brutalMode);
     try {
-      const { simplifyConcept } = await import('../../services/gemini');
-      const res = await simplifyConcept(input);
-      setOutput(res);
+      if (brutalMode) {
+        const { ai } = await import('../../services/gemini');
+        const prompt = language === 'ar' 
+          ? `أنت الآن "المحامي الشيطاني المتوحش". قاسي، مجرد من العواطف، ومنطقي لأبعد حد. مهمتك هي: 1. إيجاد الثغرات المنطقية. 2. تدمير الخطة وإظهار نقاط ضعفها. 3. لا تجامل أبداً. حلل هذه الفكرة وحطمها: ${input}`
+          : `You are now "The Brutal Devil's Advocate". Harsh, emotionless, and purely logical. Your mission: 1. Find logical loopholes. 2. Destroy this plan and show its weaknesses. 3. NEVER sugarcoat. Analyze and destroy this idea: ${input}`;
+        
+        const response = await ai.models.generateContent({
+           model: 'gemini-1.5-pro',
+           contents: [{ role: 'user', parts: [{ text: prompt }] }],
+           config: { systemInstruction: "Be extremely brutal, logical, and point out all flaws mercilessly." }
+        });
+        setOutput(response.response.text());
+      } else {
+        const { simplifyConcept } = await import('../../services/gemini');
+        const res = await simplifyConcept(input);
+        setOutput(res);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -57,33 +74,47 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6">
+    <div className={cn("rounded-[32px] p-8 border shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 transition-all duration-700", isBrutalMode ? "bg-black border-red-900/50" : "bg-white border-zinc-200/80")}>
       <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-4">
-        <h2 className="text-xl font-black tracking-tight text-black">{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
+        <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-red-500" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
       </div>
       <textarea 
         value={input} onChange={(e) => setInput(e.target.value)}
-        className="w-full p-6 h-40 bg-zinc-50 rounded-[16px] border border-zinc-200/80 focus:border-black focus:ring-4 focus:ring-zinc-100 outline-none font-medium placeholder:text-zinc-400 transition-all resize-none"
+        className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-zinc-900 border-red-900/40 text-red-100 placeholder:text-red-900 focus:border-red-600 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-zinc-400")}
         placeholder={language === 'ar' ? "أدخل المفهوم المعقد هنا..." : "Enter complex concept here..."}
       />
-      <button 
-        onClick={handleSimplify} 
-        disabled={isLoading}
-        title={language === 'ar' ? 'تبسيط المحتوى للنشر أو الفهم' : 'Simplify content for publishing or understanding'}
-        className={cn(
-          "w-full py-4 rounded-xl font-semibold text-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
-          isLoading ? "bg-zinc-200 text-zinc-500 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
-        )}
-      >
-         {isLoading ? (
-           <>
+      <div className="flex gap-4">
+        <button 
+          onClick={() => handleSimplify(false)} 
+          disabled={isLoading}
+          className={cn(
+            "flex-1 py-4 rounded-xl font-semibold text-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
+            isLoading ? "bg-zinc-200 text-zinc-500 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
+          )}
+        >
+          {isLoading ? (
+            <>
+              <RefreshCw className="w-5 h-5 animate-spin" />
+              <span>{language === 'ar' ? 'جاري التبسيط...' : 'Simplifying...'}</span>
+            </>
+          ) : (
+            <span>{language === 'ar' ? 'بسط المفهوم الآن' : 'Simplify Now'}</span>
+          )}
+        </button>
+        <button 
+          onClick={() => handleSimplify(true)} 
+          disabled={isLoading}
+          className={cn(
+            "flex-1 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3",
+            isLoading ? "bg-red-950 text-red-800 cursor-not-allowed" : "bg-red-600 text-white hover:bg-red-700 shadow-[0_0_20px_rgba(220,38,38,0.3)] cursor-pointer"
+          )}
+        >
+          {isLoading && isBrutalMode ? (
              <RefreshCw className="w-5 h-5 animate-spin" />
-             <span>{language === 'ar' ? 'جاري التبسيط...' : 'Simplifying...'}</span>
-           </>
-         ) : (
-           <span>{language === 'ar' ? 'بسط المفهوم الآن' : 'Simplify Now'}</span>
-         )}
-      </button>
+          ) : null}
+          <span>{language === 'ar' ? 'حطّم فكرتي 🩸' : 'Destroy My Idea 🩸'}</span>
+        </button>
+      </div>
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {isLoading ? (
@@ -102,7 +133,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           </motion.div>
         ) : output && (
           <div className="space-y-4">
-            <div className="markdown-body p-8 bg-white rounded-[16px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+            <div className={cn("markdown-body p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-zinc-950 border-red-900/30 text-rose-100 prose-invert" : "bg-white border-zinc-200/80")}>
               <ReactMarkdown>{output}</ReactMarkdown>
             </div>
             <button 

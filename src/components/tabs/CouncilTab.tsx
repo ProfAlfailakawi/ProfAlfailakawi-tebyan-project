@@ -11,6 +11,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
   const [activeConsultantIndex, setActiveConsultantIndex] = React.useState<number | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [isShadowCouncil, setIsShadowCouncil] = React.useState(false);
 
   React.useEffect(() => {
     if (initialValue && !councilData && !isLoading) {
@@ -26,7 +27,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
     setError(null);
     try {
       const { generateCouncilConsultation } = await import('../../services/gemini');
-      const data = await generateCouncilConsultation(councilTopic, language);
+      const data = await generateCouncilConsultation(councilTopic, language, isShadowCouncil ? 'shadow' : 'standard');
       setCouncilData(data);
       setActiveConsultantIndex(0);
       window.dispatchEvent(new CustomEvent('add_xp', { detail: { amount: 200 } }));
@@ -62,11 +63,33 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
         </div>
 
       <div className="flex flex-col gap-8 mt-6 p-6 bg-zinc-900/40 rounded-[32px] border border-zinc-800">
+        <div className="flex items-center justify-between mb-2">
+           <div className="flex items-center gap-3 bg-zinc-800/50 p-1.5 rounded-full border border-zinc-700/50">
+             <button 
+               onClick={() => setIsShadowCouncil(false)}
+               className={cn("px-4 py-2 rounded-full text-sm font-bold transition-all", !isShadowCouncil ? "bg-indigo-500 text-white" : "text-zinc-400 hover:text-white")}
+             >
+               {language === 'ar' ? 'المجلس القياسي' : 'Standard Council'}
+             </button>
+             <button 
+               onClick={() => setIsShadowCouncil(true)}
+               className={cn("px-4 py-2 rounded-full text-sm font-bold transition-all", isShadowCouncil ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.4)]" : "text-zinc-400 hover:text-white")}
+             >
+               {language === 'ar' ? 'مجلس الظل 🗡️' : 'Shadow Council 🗡️'}
+             </button>
+           </div>
+        </div>
+
         <div className="relative group shadow-xl rounded-[24px]">
           <input 
             value={councilTopic} 
             onChange={(e) => setCouncilTopic(e.target.value)} 
-            className="w-full bg-zinc-800 border-2 border-zinc-600 text-white placeholder-zinc-400 p-6 md:p-8 rounded-[24px] text-lg outline-none focus:border-indigo-400 focus:bg-zinc-800 focus:shadow-[0_0_30px_rgba(129,140,248,0.3)] hover:border-zinc-500 transition-all font-bold shadow-[inset_0_4px_12px_rgba(0,0,0,0.3)]" 
+            className={cn(
+               "w-full p-6 md:p-8 rounded-[24px] text-lg outline-none transition-all font-bold shadow-[inset_0_4px_12px_rgba(0,0,0,0.3)]",
+               isShadowCouncil 
+                 ? "bg-black border-2 border-red-900/50 text-red-100 placeholder-red-900/50 focus:border-red-500 focus:shadow-[0_0_30px_rgba(220,38,38,0.3)] hover:border-red-800"
+                 : "bg-zinc-800 border-2 border-zinc-600 text-white placeholder-zinc-400 focus:border-indigo-400 focus:bg-zinc-800 focus:shadow-[0_0_30px_rgba(129,140,248,0.3)] hover:border-zinc-500"
+            )}
             placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف هنا بدقة..." : "Type your question or describe the situation here..."} 
           />
         </div>
@@ -78,7 +101,9 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
             "w-full md:w-auto self-end md:px-12 py-5 rounded-[20px] font-black text-lg transition-all flex items-center justify-center gap-3 cursor-pointer",
             isLoading 
               ? "bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700" 
-              : "bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white shadow-[0_8px_30px_rgba(99,102,241,0.4)] hover:shadow-[0_12px_45px_rgba(99,102,241,0.6)] hover:-translate-y-1 border border-indigo-400/30"
+              : isShadowCouncil
+                ? "bg-red-600 hover:bg-red-500 text-white shadow-[0_8px_30px_rgba(220,38,38,0.4)] hover:shadow-[0_12px_45px_rgba(220,38,38,0.6)] border border-red-400/30"
+                : "bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white shadow-[0_8px_30px_rgba(99,102,241,0.4)] border border-indigo-400/30"
           )}
         >
           {isLoading ? (
@@ -89,7 +114,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
           ) : (
             <>
               <Users className="w-6 h-6" />
-              <span>{language === 'ar' ? 'استدعاء المجلس' : 'Summon Council'}</span>
+              <span>{isShadowCouncil ? (language === 'ar' ? 'استدعاء مجلس الظل' : 'Summon Shadow Council') : (language === 'ar' ? 'استدعاء المجلس' : 'Summon Council')}</span>
             </>
           )}
         </button>

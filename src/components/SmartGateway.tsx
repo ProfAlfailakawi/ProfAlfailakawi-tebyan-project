@@ -166,8 +166,32 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       if (lastInteraction && lastInteraction.query) {
         arG = 'صباح الوعي والتجدد';
         enG = 'Good morning, visionary';
-        arSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">أهلاً بك مجدداً.. توقفنا في المرة السابقة عند <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>، هل القهوة جاهزة لنكمل؟ ☕</span>;
-        enSub = <span className="inline-flex items-center gap-1 flex-wrap justify-center">Welcome back.. last time we stopped at <span className="group relative inline-flex cursor-pointer text-indigo-500 hover:text-indigo-600"><span className="truncate max-w-[100px] md:max-w-[200px] inline-block">"{lastInteraction.query}"</span><div className="absolute opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-xs p-2 rounded-lg bottom-full mb-1 left-1/2 -translate-x-1/2 whitespace-normal min-w-[200px] text-center pointer-events-none z-50 shadow-xl">{lastInteraction.query}</div></span>, is your coffee ready to continue? ☕</span>;
+        arSub = (
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
+            const el = e.currentTarget.querySelector('.text-query');
+            el?.classList.toggle('line-clamp-1');
+            el?.classList.toggle('whitespace-normal');
+          }}>
+            <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
+            <span className="text-content text-indigo-500 font-bold text-query line-clamp-1 truncate max-w-[100px] md:max-w-[200px] inline-block">
+                "{lastInteraction.query}"
+            </span>
+            <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
+          </div>
+        );
+        enSub = (
+          <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={(e) => {
+            const el = e.currentTarget.querySelector('.text-query');
+            el?.classList.toggle('line-clamp-1');
+            el?.classList.toggle('whitespace-normal');
+          }}>
+            <span>Welcome back.. last time we stopped at</span>
+             <span className="text-content text-indigo-500 font-bold text-query line-clamp-1 truncate max-w-[100px] md:max-w-[200px] inline-block">
+                "{lastInteraction.query}"
+            </span>
+            <span>, is your coffee ready to continue? ☕</span>
+          </div>
+        );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
             { ar: `ما الجديد اليوم في هذا السياق؟`, en: `What's new today in this context?` },
@@ -739,41 +763,41 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     
     // 2. Analysis (Expert Council)
     const analysisMatch = !q || q.includes('لماذا') || q.includes('سبب') || q.includes('تحليل') || q.includes('موقف') || q.includes('حالة') || q.includes('سياق') || q.includes('why') || q.includes('reason');
-    addPath('council', 'analysis', 'مجلس الخبراء', 'Expert Council', BrainCircuit, 'تحليل من عدة زوايا', 'Multi-angle analysis', 'لأن الموقف يتطلب فهماً عميقاً للسياق قبل اتخاذ القرار', 'Because the situation requires deep understanding of motives', analysisMatch ? 9 : 2);
+    addPath('strategicarena', 'analysis', 'الميدان الاستراتيجي', 'Strategic Arena', BrainCircuit, 'تحليل ومحاكاة استراتيجية', 'Analysis and simulation', 'ميدان متكامل لتحليل المواقف، المحاكاة، واستعراض الأبعاد الزمنية للقرارات', 'Integrated arena for situation analysis, simulation, and temporal dimensions', analysisMatch ? 12 : 3);
 
     // 2b. Predictive Radar
     const analyticsMatch = !q || q.includes('نبض') || q.includes('رادار') || q.includes('توقع') || q.includes('سلوك') || q.includes('متابعة') || q.includes('تحليل') || q.includes('بيانات') || q.includes('pulse') || q.includes('analytics') || q.includes('radar') || q.includes('analysis') || q.includes('data');
-    addPath('analytics', 'analysis', 'الرادار الاستباقي', 'Predictive Radar', Activity, 'متابعة حية للتطورات', 'Live monitoring', 'لقياس مدى التحسن في النتائج والتنبؤ بالسلوكيات القادمة', 'To measure improvement and predict upcoming behaviors', analyticsMatch ? 11 : 3);
+    addPath('knowledgecenter', 'analysis', 'مركز المعرفة', 'Knowledge Center', Activity, 'الرادار والنتائج', 'Predictive Radar & Analytics', 'لقياس مدى التحسن في النتائج والتنبؤ بالسلوكيات', 'To measure performance and behavior trends', analyticsMatch ? 11 : 3);
 
     // 3. Simulation (Simulator)
     const simMatch = !q || q.includes('تدريب') || q.includes('تجربة') || q.includes('حوار') || q.includes('مواجهة') || q.includes('كذب') || q.includes('عناد') || q.includes('angry') || q.includes('train') || q.includes('practice') || q.includes('تقمص') || q.includes('دور') || q.includes('roleplay');
-    addPath('simulation', 'simulation', 'تقمص الأدوار المباشر', 'Direct Roleplay', Gamepad2, 'تدريب واقعي قبل المواجهة', 'Pre-confrontation training', 'لأن المواجهة تحتاج ممارسة لضمان أفضل نتيجة', 'Because confrontation needs practice for the best result', simMatch ? 11 : 2);
+    addPath('strategicarena', 'simulation', 'الميدان الاستراتيجي', 'Strategic Arena', Gamepad2, 'تدريب واقعي ومحاكاة', 'Realistic training and simulation', 'لأن المواجهة تحتاج تدريب ومحاكاة لضمان أفضل نتيجة', 'Because confrontation needs simulation and practice', simMatch ? 11 : 3);
 
     // 4. Roadmap (Success Plan)
     const roadMatch = !q || q.includes('خطة') || q.includes('طريق') || q.includes('خطوات') || q.includes('برمجة') || q.includes('عناد') || q.includes('plan') || q.includes('steps') || q.includes('coding') || q.includes('program');
-    addPath('roadmap', 'roadmap', 'طريق النجاح', 'Success Roadmap', Route, 'خارطة طريق عملية', 'Step-by-step roadmap', 'لأن الموقف طويل الأمد ويحتاج خطة زمنية واضحة', 'Because the long-term situation needs a clear plan', roadMatch ? 11 : 2);
+    addPath('knowledgecenter', 'roadmap', 'مركز المعرفة', 'Knowledge Center', Route, 'خارطة طريق ونتائج', 'Roadmap and metrics', 'لأن الموقف يحتاج خطة زمنية واضحة ومتابعة دقيقة للنتائج', 'For clear timelines and performance metrics', roadMatch ? 11 : 3);
 
     // 5. Narrative (Storyteller)
     const storyMatch = !q || q.includes('قصة') || q.includes('شخص') || q.includes('حكاية') || q.includes('تبسيط') || q.includes('كذب') || q.includes('story') || q.includes('tell');
-    addPath('story', 'story', 'الراوي', 'The Narrative', MessageCircleQuestion, 'تحويل الموقف لقصة ملهمة', 'Turn situation into story', 'لأن القصص هي أسرع وسيلة لإيصال المعنى والتغيير', 'Because stories are the fastest way to convey meaning', storyMatch ? 7.5 : 2);
+    addPath('creativelab', 'story', 'المختبر الإبداعي', 'Creative Lab', MessageCircleQuestion, 'تحويل الموقف لقصة وفكرة', 'Turn into story/concept', 'لأن القصص والأفكار الإبداعية هي أسرع وسيلة لإيصال المعنى', 'Because stories and creative concepts are the fastest way to convey meaning', storyMatch ? 9 : 2);
 
     // 6. Innovation (Omni Counselor <button Concepts)
     const innovMatch = !q || q.includes('فكرة') || q.includes('جديد') || q.includes('ابتكار') || q.includes('تغيير') || q.includes('استراتيجية') || q.includes('innovation') || q.includes('creative') || q.includes('سؤال') || q.includes('مشورة');
     addPath('oracle', 'innovation', 'المستشار الكلي', 'Omni Counselor', Command, 'حوار استراتيجي شامل', 'Comprehensive cognitive dialogue', 'للحصول على مشورة حكيمة تدمج بين علوم السلوك والاستراتيجية', 'For wise advice integrating behavior and strategy', innovMatch ? 8.5 : 1.5);
-    addPath('concepts', 'innovation', 'هندسة الأفكار', 'Idea Engineering', Sparkles, 'تطوير وهيكلة مفاهيمك', 'Structure concepts', 'لأنك تحتاج إلى تفكيك الموقف أو الفكرة وبنائها بشكل منطقي', 'Because you need to deconstruct and build logic', innovMatch ? 7 : 1.5);
-    addPath('lab', 'innovation', 'المختبر الإبداعي', 'Discovery Lab', Zap, 'أدوات التصميم والحلول', 'Strategic design tools', 'لتحليل الأدوات المتاحة للموقف وابتكار وسائل جديدة للحل', 'To analyze available tools and innovate new ones', innovMatch ? 6 : 1);
+    addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Sparkles, 'هندسة الابتكار والأفكار', 'Idea & Innovation Engineering', 'لأنك تحتاج إلى تفكيك الموقف وابتكار وسائل جديدة للحل', 'To deconstruct the situation and innovate new solutions', innovMatch ? 8.5 : 2);
+    addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Zap, 'أدوات التصميم والحلول', 'Strategic design tools', 'لتحليل الأدوات المتاحة للموقف وابتكار وسائل جديدة للحل', 'To analyze available tools and innovate new ones', innovMatch ? 6 : 1);
     
     // 7. Visualization/Thinking Tools
     const thinkMatch = !q || q.includes('رسم') || q.includes('توضيح') || q.includes('بصري') || q.includes('هيكلة') || q.includes('think') || q.includes('map');
-    addPath('mindmap', 'thinking', 'العقل المدبر', 'Mastermind', Network, 'هيكلة بصرية للأفكار', 'Visual thought structure', 'لتنظيم شتات الأفكار في صورة واحدة واضحة', 'To organize thoughts in one clear visual', thinkMatch ? 7 : 1);
-    addPath('knowledgegraph', 'thinking', 'الشبكة العصبية المعرفية', 'Knowledge Graph', Network, 'روابط الأفكار المكتشفة', 'Neural knowledge structure', 'لاستكشاف كيف تترابط أبحاثك وأفكارك في شبكة واحدة', 'To explore how your research and ideas interconnect', thinkMatch ? 6.5 : 1);
-    addPath('timemachine', 'analysis', 'آلة الزمن', 'Time Machine', Hourglass, 'تأمل وحوار عبر الزمن', 'Journey through time', 'لفهم كيف تطور المفهوم عبر العصور وتوقع مستقبله', 'To understand how the concept evolved and predict its future', thinkMatch ? 5 : 1);
+    addPath('knowledgecenter', 'thinking', 'مركز المعرفة', 'Knowledge Center', Network, 'هيكلة بصرية للأفكار', 'Visual thought structure', 'لتنظيم شتات الأفكار واستكشاف الروابط المعرفية', 'To organize thoughts and explore knowledge connections', thinkMatch ? 8 : 2);
+    addPath('knowledgecenter', 'thinking', 'مركز المعرفة', 'Knowledge Center', Network, 'روابط الأفكار المكتشفة', 'Neural knowledge structure', 'لاستكشاف كيف تترابط أبحاثك وأفكارك في شبكة واحدة', 'To explore how your research and ideas interconnect', thinkMatch ? 8 : 2);
+    addPath('strategicarena', 'analysis', 'الميدان الاستراتيجي', 'Strategic Arena', Hourglass, 'تأمل وحوار عبر الزمن', 'Journey through time', 'لفهم كيف تطور المفهوم عبر العصور وتوقع مستقبله', 'To understand how the concept evolved and predict its future', thinkMatch ? 8 : 2);
     
     // 8. Specialized Labs
     const specializedMatch = !q || q.includes('قرار') || q.includes('خيار') || q.includes('أزمة') || q.includes('تنفيذي') || q.includes('استراتيجي') || q.includes('decision') || q.includes('strategic') || q.includes('executive');
     addPath('decisionroom', 'innovation', 'غرفة القرار', 'Decision Room', Lock, 'مختبر القرارات الاستراتيجية', 'Strategic decision lab', 'لتحليل الخيارات المعقدة واتخاذ قرارات مصيرية بناءً على محاور القوة والمخاطر', 'To analyze complex choices and make critical decisions', specializedMatch ? 12 : 2);
     
-    addPath('quizzes', 'roadmap', 'الاختبارات الذكية', 'Strategic Quizzes', ClipboardCheck, 'قياس الفجوة', 'Measure gap', 'للتأكد من استيعاب السياق أو المفهوم قبل البدء في التطبيق', 'To ensure core context is understood before applying', roadMatch ? 6 : 1);
+    addPath('knowledgecenter', 'roadmap', 'مركز المعرفة', 'Knowledge Center', ClipboardCheck, 'قياس الفجوة', 'Measure gap', 'للتأكد من استيعاب السياق أو المفهوم قبل البدء في التطبيق', 'To ensure core context is understood before applying', roadMatch ? 8 : 2);
     
 
     // Sort by weight descending

@@ -14,7 +14,8 @@ const labTools = [
   { id: 'mindmap', ar: 'خريطة ذهنية', en: 'Mind Map', tooltip: { ar: 'توليد خرائط ذهنية بصرية للمفاهيم المعقدة', en: 'Generate visual mind maps for complex concepts' } },
   { id: 'family', ar: 'التبسيط الشامل', en: 'Universal Explain', tooltip: { ar: 'تبسيط المعلومات المعقدة لشرحها لأي شخص', en: 'Simplify complex info for anyone' } },
   { id: 'career', ar: 'خريطة المهن', en: 'Career Map', tooltip: { ar: 'رسم مسارات مهنية مستقبلية مبنية على المهارات', en: 'Map future careers based on skills' } },
-  { id: 'workshop', ar: 'مصنع الورش', en: 'Workshop Factory', tooltip: { ar: 'تصميم ورش عمل ولقاءات تفاعلية متكاملة', en: 'Design complete interactive workshops' } }
+  { id: 'workshop', ar: 'مصنع الورش', en: 'Workshop Factory', tooltip: { ar: 'تصميم ورش عمل ولقاءات تفاعلية متكاملة', en: 'Design complete interactive workshops' } },
+  { id: 'artest', ar: 'الواقع المعزز (AR)', en: 'AR Test', tooltip: { ar: 'تجربة عرض المجسمات ثلاثية الأبعاد في الواقع', en: 'Test 3D AR models' } }
 ];
 
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
@@ -149,7 +150,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                       placeholder={language === 'ar' ? "الفكرة الثانية (مثال: الأمل)..." : "Concept B..."} 
                     />
                 </div>
-            ) : (
+            ) : activeLabTool === 'artest' ? null : (
                 <input 
                   value={labInput} 
                   onChange={(e) => setLabInput(e.target.value)} 
@@ -157,25 +158,28 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                   placeholder={language === 'ar' ? "أدخل الموضوع أو التحدي..." : "Enter topic or challenge..."} 
                 />
             )}
-           <button 
-             onClick={handleRunLabTool} 
-             disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
-             className={cn(
-               "md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
-               (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-indigo-600 to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
-             )}
-           >
-             {isLoading ? (
-               <>
-                 <RefreshCw className="w-5 h-5 animate-spin" />
-                 <span>{language === 'ar' ? 'جاري التحليل...' : 'Analyzing...'}</span>
-               </>
-             ) : activeLabTool === 'collider' ? (
-               <span>{language === 'ar' ? 'تصادم 💥' : 'COLLIDE 💥'}</span>
-             ) : (
-               <span>{language === 'ar' ? 'تشغيل المختبر' : 'Run Lab'}</span>
-             )}
-           </button>
+            
+            {activeLabTool !== 'artest' && (
+              <button 
+                onClick={handleRunLabTool} 
+                disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
+                className={cn(
+                  "md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
+                  (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-indigo-600 to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
+                )}
+              >
+                {isLoading ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                    <span>{language === 'ar' ? 'جاري التحليل...' : 'Analyzing...'}</span>
+                  </>
+                ) : activeLabTool === 'collider' ? (
+                  <span>{language === 'ar' ? 'تصادم 💥' : 'COLLIDE 💥'}</span>
+                ) : (
+                  <span>{language === 'ar' ? 'تشغيل المختبر' : 'Run Lab'}</span>
+                )}
+              </button>
+            )}
          </div>
   
          {error && <div className="text-rose-500 font-bold">{error}</div>}
@@ -542,6 +546,81 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          <span className="absolute -bottom-12 -right-8 text-8xl text-white/10 select-none">"</span>
                        </p>
                     </motion.div>
+                  </div>
+                )}
+                {activeLabTool === 'artest' && (
+                  <div className="space-y-6">
+                    <div className="bg-indigo-50 border border-indigo-100 rounded-[24px] p-6 mb-8 text-indigo-800">
+                      <h3 className="font-bold text-lg mb-2">
+                        {language === 'ar' ? 'تجربة الواقع المعزز (AR) - للاختبار فقط' : 'Augmented Reality (AR) Test - Testing Only'}
+                      </h3>
+                      <p className="font-medium text-sm">
+                        {language === 'ar' 
+                          ? 'استخدم هذه الميزة من خلال جهاز آيفون (سفاري) أو أندرويد لفتح الكاميرا وعرض المجسم في غرفتك. إذا لم تعجبك الخاصية أو لم تعمل بشكل جيد، إبلاغي لحذفها فوراً.' 
+                          : 'Use this feature from an iPhone (Safari) or Android to open the camera and view the object in your room. If you do not like it or it does not work well, let me know to delete it immediately.'}
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      
+                      {/* Apple Quick Look Example (iOS) */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col items-center text-center group"
+                      >
+                         <div className="w-24 h-24 mb-6 relative">
+                            <div className="absolute inset-0 bg-blue-100 rounded-full blur-xl group-hover:bg-indigo-200 transition-colors"></div>
+                            {/* Note: In a real scenario you would have a thumbnail image. Here we just use an emoji as placeholder */}
+                            <div className="w-full h-full bg-blue-50 border-2 border-blue-200 rounded-full flex items-center justify-center text-4xl relative z-10 shadow-sm">
+                              🎸
+                            </div>
+                         </div>
+                         <h4 className="text-xl font-bold mb-2">Fender Stratocaster</h4>
+                         <p className="text-zinc-500 font-medium text-sm mb-6">
+                           {language === 'ar' ? 'مجسم جيتار بصيغة USDZ مدعوم رسمياً لأجهزة iOS.' : 'Guitar model in USDZ format, officially supported for iOS.'}
+                         </p>
+                         
+                         {/* AR Link for iOS (AR Quick Look) */}
+                         <a 
+                           rel="ar" 
+                           href="https://developer.apple.com/augmented-reality/quick-look/models/stratocaster/fender_stratocaster.usdz"
+                           className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-[16px] font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"
+                         >
+                           <Zap className="w-4 h-4" />
+                           {language === 'ar' ? 'استعراض في غرفتي (iOS)' : 'View in my room (iOS)'}
+                         </a>
+                      </motion.div>
+
+                      {/* Android Scene Viewer Example - Web intent */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col items-center text-center group"
+                      >
+                         <div className="w-24 h-24 mb-6 relative">
+                            <div className="absolute inset-0 bg-emerald-100 rounded-full blur-xl group-hover:bg-emerald-200 transition-colors"></div>
+                            <div className="w-full h-full bg-emerald-50 border-2 border-emerald-200 rounded-full flex items-center justify-center text-4xl relative z-10 shadow-sm">
+                              🪑
+                            </div>
+                         </div>
+                         <h4 className="text-xl font-bold mb-2">Modern Chair</h4>
+                         <p className="text-zinc-500 font-medium text-sm mb-6">
+                           {language === 'ar' ? 'مجسم بصيغة GLB مدعوم رسميًا لأجهزة Android عن طريق Scene Viewer.' : 'GLB model officially supported for Android via Scene Viewer.'}
+                         </p>
+                         
+                         {/* AR Link for Android (Scene Viewer Intent) - linking to a reliable public glb */}
+                         <a 
+                           href="intent://arvr.google.com/scene-viewer/1.0?file=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb&mode=ar_only#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"
+                           className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[16px] font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
+                         >
+                           <Zap className="w-4 h-4" />
+                           {language === 'ar' ? 'استعراض في غرفتي (Android)' : 'View in my room (Android)'}
+                         </a>
+                      </motion.div>
+
+                    </div>
                   </div>
                 )}
               </>

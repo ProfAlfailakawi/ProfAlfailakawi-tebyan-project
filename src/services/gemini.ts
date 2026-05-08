@@ -1358,10 +1358,30 @@ Return JSON:
   });
 }
 
-export async function generateCouncilConsultation(topic: string, lang: string = 'ar') {
+export async function generateCouncilConsultation(topic: string, lang: string = 'ar', type: 'standard' | 'shadow' = 'standard') {
   return withRetry(async () => {
     try {
-      const prompt = `You are a supreme council of 5 experts. Analyze "${topic}".
+      const prompt = type === 'shadow'
+        ? `أنت تلعب دور "مجلس الظل التاريخي". اجعل "ستيف جوبز" و"سون تزو" و"ابن خلدون" يتجادلون بشراسة حول هذا الموضوع: "${topic}".
+Language: ${lang === 'ar' ? 'Arabic' : 'English'}.
+Arabic Tone: قاسي، عبقري، ومباشر.
+STRICT LAYOUT RULES:
+1. "council_discussion": Each speaker message must be MAX 2 lines. Speakers must be "ستيف جوبز", "سون تزو", "ابن خلدون". They must argue with each other.
+2. "consultants": 
+   - role: name of the historical figure.
+   - diagnosis: their specific view.
+   - advice: 3 harsh points.
+   - genius_hack: 1 extreme idea.
+3. "executive_verdict": 2 lines total summary from the "Master of Shadows".
+Return raw JSON:
+{
+  "council_discussion": [ { "speaker": "A", "message": "B" } ],
+  "consultants": [ { "role": "C", "diagnosis": "D", "advice": ["E"], "genius_hack": "F" } ],
+  "executive_verdict": "G",
+  "global_references": [],
+  "media_recommendations": []
+}`
+        : `You are a supreme council of 5 experts. Analyze "${topic}".
 Language: ${lang === 'ar' ? 'Arabic' : 'English'}.
 Arabic Tone: Use "White Dialect" (لهجة بيضاء كويتية/خليجية عامية مفهومة للجميع) - warm, natural, and friendly.
 STRICT LAYOUT RULES:

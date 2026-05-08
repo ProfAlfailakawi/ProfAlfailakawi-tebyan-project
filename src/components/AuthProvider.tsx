@@ -24,20 +24,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
-    // Safety timeout: stop loading after 10 seconds even if Firebase hangs
-    const timeout = setTimeout(() => {
-      if (loading) {
-        console.warn("Auth initialization timed out, forcing loading false");
-        setLoading(false);
-        setAuthReady(true);
-      }
-    }, 10000);
+    // We removed the aggressive 10s timeout here to avoid logging out users on slow PWA wakeups.
+    // Firebase will guarantee `onAuthStateChanged` fires when local persistence is resolved.
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      // Mark auth as ready (onAuthStateChanged fired)
       setAuthReady(true);
-      
       setUser(user);
+      
       if (user) {
         try {
           const userRef = doc(db, 'users', user.uid);
@@ -86,11 +79,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfile(null);
       }
       setLoading(false);
-      clearTimeout(timeout);
     });
     return () => {
       unsubscribe();
-      clearTimeout(timeout);
     };
   }, []);
 
