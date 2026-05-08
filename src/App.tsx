@@ -8,7 +8,7 @@ import {
   GraduationCap, Globe, Command, Sparkles, 
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
-  Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock
+  Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -71,7 +71,7 @@ const StrategicArenaTab = React.lazy(() => import('./components/tabs/StrategicAr
 const CreativeLabWrapper = React.lazy(() => import('./components/tabs/CreativeLabWrapper'));
 const KnowledgeCenterTab = React.lazy(() => import('./components/tabs/KnowledgeCenterTab'));
 
-type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter';
+type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar';
 
 const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary'];
 
@@ -197,7 +197,7 @@ const AppContent: React.FC = () => {
     return true;
   }, [authReady, language, user, showToast]);
 
-  const handleTabChange = useCallback((tab: Tab, context: string = '', exit: boolean = false) => {
+  const handleTabChange = useCallback((tab: Tab | 'ar', context: string = '', exit: boolean = false) => {
     if (exit) {
       localStorage.removeItem('tebyan_last_query');
       localStorage.removeItem('tebyan_last_has_searched');
@@ -210,13 +210,22 @@ const AppContent: React.FC = () => {
     setShowVoiceCanvas(false);
     // Dispatch event to close all other potential overlays (like Serendipity Compass)
     window.dispatchEvent(new CustomEvent('close_overlays'));
-    const actualTab = tab === 'home' || tab === 'discover' || (tab as string) === 'dashboard' ? 'home' : tab;
+    
+    let targetTab = tab as Tab;
+    let targetContext = context;
+
+    if (tab === 'ar') {
+      targetTab = 'lab';
+      targetContext = 'artest';
+    }
+
+    const actualTab = targetTab === 'home' || targetTab === 'discover' || (targetTab as string) === 'dashboard' ? 'home' : targetTab;
     if (checkAuth(actualTab as Tab)) {
       setIsLoading(false);
       setError(null);
-      setInitialContext(context);
+      setInitialContext(targetContext);
       setActiveTab(actualTab);
-      logEvent('feature_use', language, undefined, { feature: actualTab, context });
+      logEvent('feature_use', language, undefined, { feature: actualTab, context: targetContext });
       setTimeout(() => {
         window.scrollTo({ top: 0, behavior: 'auto' });
         document.documentElement.scrollTo({ top: 0, behavior: 'auto' });
@@ -229,10 +238,11 @@ const AppContent: React.FC = () => {
 
   const tabs = [
     { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search },
-    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار' : 'Decision Room', icon: Lock },
+    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock },
     { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion },
     { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit },
     { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
+    { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
     { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network },
     { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
     { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },

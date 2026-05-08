@@ -103,7 +103,7 @@ async function startServer() {
 
         const genAI = getGenAI();
         if (!genAI) {
-            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
+            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات." });
         }
 
         try {
@@ -137,9 +137,9 @@ async function startServer() {
             console.error("[Server] TTS Error:", error);
             const errStr = (error.message || "").toLowerCase();
             if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
-              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
+              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات." });
             }
-            res.status(500).json({ error: "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." });
+            res.status(500).json({ error: "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." });
         }
     });
 
@@ -162,7 +162,7 @@ async function startServer() {
 
         const genAI = getGenAI();
         if (!genAI) {
-            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
+            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات." });
         }
 
         try {
@@ -216,12 +216,12 @@ async function startServer() {
             console.error("[Server] AI Error:", error);
             const errStr = (error.message || "").toLowerCase();
             if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
-              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." });
+              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات." });
             }
             if (errStr.includes("quota") || errStr.includes("429") || errStr.includes("resource_exhausted")) {
-              return res.status(500).json({ error: "المساحة المتاحة للذكاء ممتلئة حالياً، جرّب مرة أخرى بعد قليل." });
+              return res.status(500).json({ error: "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." });
             }
-            res.status(500).json({ error: "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." });
+            res.status(500).json({ error: "يبدو أن معالجة هذه الفكرة تتطلب وقتاً أطول.. جرب صياغة أبسط أو العودة لاحقاً." });
         }
     });
 

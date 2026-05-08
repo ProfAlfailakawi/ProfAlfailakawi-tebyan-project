@@ -275,12 +275,18 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                       className="w-full flex items-center justify-center gap-3 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-black transition-all active:scale-[0.98] shadow-lg shadow-indigo-500/20"
                     >
                       <Search className="w-5 h-5" />
-                      {language === 'ar' ? 'إعادة استكشاف المفهوم' : 'Re-explore Concept'}
+                      {language === 'ar' ? 'استشارة تبيان العميقة' : 'Consult Tibyan Deeply'}
                     </button>
                     
-                    <p className="text-center text-[10px] text-zinc-500 font-bold uppercase tracking-tighter">
-                        {language === 'ar' ? 'اضغط للمتابعة في تبيان' : 'Click to continue in Tibyan'}
-                    </p>
+                    <button 
+                      onClick={() => executeSearch(selectedNode.label)}
+                      className="w-full py-2 group/tibyan bg-white/5 rounded-xl border border-white/5 hover:border-indigo-500/40 transition-all"
+                    >
+                      <p className="text-[12px] text-zinc-400 group-hover/tibyan:text-indigo-400 font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2">
+                          {language === 'ar' ? 'متابعة التحليل في تبيان' : 'CONTINUE ANALYSIS IN TIBYAN'}
+                          <ArrowRight className={cn("w-3 h-3", language === 'ar' ? "rotate-180" : "")} />
+                      </p>
+                    </button>
                   </div>
                 )}
               </div>

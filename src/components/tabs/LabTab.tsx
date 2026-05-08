@@ -5,6 +5,14 @@ import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'model-viewer': any;
+    }
+  }
+}
+
 const labTools = [
   { id: 'collider', ar: 'مُصادم الأفكار', en: 'Cognitive Collider', tooltip: { ar: 'دمج وتصادم الأفكار المتناقضة لتوليد أفكار جديدة', en: 'Collide contradicting ideas to generate new ones' } },
   { id: 'design', ar: 'تصميم استراتيجي', en: 'Strategic Design', tooltip: { ar: 'تصميم مسارات وخطط شاملة وممنهجة', en: 'Design systematic strategic paths' } },
@@ -28,10 +36,15 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
 
   React.useEffect(() => {
     if (initialValue) {
-      setLabInput(initialValue);
+      if (labTools.some(t => t.id === initialValue)) {
+        setActiveLabTool(initialValue);
+        resetAllLabResults();
+      } else {
+        setLabInput(initialValue);
+      }
       if (onValueUsed) onValueUsed();
     }
-  }, [initialValue]);
+  }, [initialValue, onValueUsed]);
   const [labPersonas, setLabPersonas] = React.useState<any[]>([]);
   const [labPodcast, setLabPodcast] = React.useState('');
   const [labUdl, setLabUdl] = React.useState<any[]>([]);
@@ -87,7 +100,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         case 'workshop': setLabWorkshop(await generateWorkshop(labInput, language)); break;
       }
     } catch (err: any) {
-      setError("يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
+      setError("أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
     } finally {
       setIsLoading(false);
     }
@@ -552,72 +565,82 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                   <div className="space-y-6">
                     <div className="bg-indigo-50 border border-indigo-100 rounded-[24px] p-6 mb-8 text-indigo-800">
                       <h3 className="font-bold text-lg mb-2">
-                        {language === 'ar' ? 'تجربة الواقع المعزز (AR) - للاختبار فقط' : 'Augmented Reality (AR) Test - Testing Only'}
+                        {language === 'ar' ? 'بوابة تبيان للواقع المعزز (AR)' : 'Tibyan AR Gateway'}
                       </h3>
                       <p className="font-medium text-sm">
                         {language === 'ar' 
-                          ? 'استخدم هذه الميزة من خلال جهاز آيفون (سفاري) أو أندرويد لفتح الكاميرا وعرض المجسم في غرفتك. إذا لم تعجبك الخاصية أو لم تعمل بشكل جيد، إبلاغي لحذفها فوراً.' 
-                          : 'Use this feature from an iPhone (Safari) or Android to open the camera and view the object in your room. If you do not like it or it does not work well, let me know to delete it immediately.'}
+                          ? 'استعرض النماذج ثلاثية الأبعاد مباشرة في متصفحك، ثم اضغط على زر "عرض في الواقع" لفتح الكاميرا ووضع المجسم في بيئتك الحقيقية.' 
+                          : 'Preview 3D models directly in your browser, then click "View in AR" to open your camera and place the object in your real environment.'}
                       </p>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      
-                      {/* Apple Quick Look Example (iOS) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {/* Integrated Model Viewer - Example 1 */}
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col items-center text-center group"
+                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group"
                       >
-                         <div className="w-24 h-24 mb-6 relative">
-                            <div className="absolute inset-0 bg-blue-100 rounded-full blur-xl group-hover:bg-indigo-200 transition-colors"></div>
-                            {/* Note: In a real scenario you would have a thumbnail image. Here we just use an emoji as placeholder */}
-                            <div className="w-full h-full bg-blue-50 border-2 border-blue-200 rounded-full flex items-center justify-center text-4xl relative z-10 shadow-sm">
-                              🎸
-                            </div>
+                         <div className="w-full h-80 bg-zinc-50 relative">
+                            <model-viewer
+                              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb"
+                              ios-src="https://developer.apple.com/augmented-reality/quick-look/models/stratocaster/fender_stratocaster.usdz"
+                              alt="A 3D model of a helmet"
+                              ar
+                              ar-modes="webxr scene-viewer quick-look"
+                              camera-controls
+                              poster="poster.webp"
+                              shadow-intensity="1"
+                              style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
+                            >
+                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform">
+                                   <Zap className="w-3 h-3" />
+                                   {language === 'ar' ? 'عرض في غرفتي' : 'View in my room'}
+                                </button>
+                            </model-viewer>
                          </div>
-                         <h4 className="text-xl font-bold mb-2">Fender Stratocaster</h4>
-                         <p className="text-zinc-500 font-medium text-sm mb-6">
-                           {language === 'ar' ? 'مجسم جيتار بصيغة USDZ مدعوم رسمياً لأجهزة iOS.' : 'Guitar model in USDZ format, officially supported for iOS.'}
-                         </p>
-                         
-                         {/* AR Link for iOS (AR Quick Look) */}
-                         <a 
-                           rel="ar" 
-                           href="https://developer.apple.com/augmented-reality/quick-look/models/stratocaster/fender_stratocaster.usdz"
-                           className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-[16px] font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"
-                         >
-                           <Zap className="w-4 h-4" />
-                           {language === 'ar' ? 'استعراض في غرفتي (iOS)' : 'View in my room (iOS)'}
-                         </a>
+                         <div className="p-6 border-t border-zinc-100">
+                            <h4 className="text-xl font-bold mb-2">
+                              {language === 'ar' ? 'خوذة الابتكار' : 'Innovation Helmet'}
+                            </h4>
+                            <p className="text-zinc-500 font-medium text-sm">
+                              {language === 'ar' ? 'نموذج تجريبي لاختبار دقة التفاصيل في بيئات مختلفة.' : 'A sample model to test detail accuracy in different environments.'}
+                            </p>
+                         </div>
                       </motion.div>
 
-                      {/* Android Scene Viewer Example - Web intent */}
+                      {/* Integrated Model Viewer - Example 2 */}
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col items-center text-center group"
+                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group"
                       >
-                         <div className="w-24 h-24 mb-6 relative">
-                            <div className="absolute inset-0 bg-emerald-100 rounded-full blur-xl group-hover:bg-emerald-200 transition-colors"></div>
-                            <div className="w-full h-full bg-emerald-50 border-2 border-emerald-200 rounded-full flex items-center justify-center text-4xl relative z-10 shadow-sm">
-                              🪑
-                            </div>
+                         <div className="w-full h-80 bg-zinc-50 relative">
+                            <model-viewer
+                              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb"
+                              alt="A 3D model of a duck"
+                              ar
+                              ar-modes="webxr scene-viewer quick-look"
+                              camera-controls
+                              auto-rotate
+                              shadow-intensity="1"
+                              style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
+                            >
+                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform">
+                                   <Zap className="w-3 h-3" />
+                                   {language === 'ar' ? 'عرض في غرفتي' : 'View in my room'}
+                                </button>
+                            </model-viewer>
                          </div>
-                         <h4 className="text-xl font-bold mb-2">Modern Chair</h4>
-                         <p className="text-zinc-500 font-medium text-sm mb-6">
-                           {language === 'ar' ? 'مجسم بصيغة GLB مدعوم رسميًا لأجهزة Android عن طريق Scene Viewer.' : 'GLB model officially supported for Android via Scene Viewer.'}
-                         </p>
-                         
-                         {/* AR Link for Android (Scene Viewer Intent) - linking to a reliable public glb */}
-                         <a 
-                           href="intent://arvr.google.com/scene-viewer/1.0?file=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb&mode=ar_only#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"
-                           className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-[16px] font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20"
-                         >
-                           <Zap className="w-4 h-4" />
-                           {language === 'ar' ? 'استعراض في غرفتي (Android)' : 'View in my room (Android)'}
-                         </a>
+                         <div className="p-6 border-t border-zinc-100">
+                            <h4 className="text-xl font-bold mb-2">
+                              {language === 'ar' ? 'البطة العلمية' : 'The Knowledge Duck'}
+                            </h4>
+                            <p className="text-zinc-500 font-medium text-sm">
+                              {language === 'ar' ? 'مجسم بسيط موجه للأطفال لتبسيط مفاهيم الكثافة والعوم.' : 'A simple model for kids to simplify concepts of density and buoyancy.'}
+                            </p>
+                         </div>
                       </motion.div>
 
                     </div>

@@ -30,17 +30,32 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
   // Ensure categories are correctly loaded
   const categoriesWithQuestions = React.useMemo(() => {
     const map = new Map();
+    // Initialize with standard categories
     CATEGORIES.forEach(c => map.set(c.id, c));
+    
     questions.forEach(q => {
-      // Robust category identification using categoryId, categorySlug, or category (slugified)
-      const id = q.categoryId || q.categorySlug || (q.category ? q.category.replace(/\s+/g, '-').toLowerCase() : null);
+      // Map mainCategory/category to standard category if possible
+      const catTitle = q.mainCategory || q.category;
+      const standardMatch = CATEGORIES.find(c => c.title === catTitle);
+      
+      const id = standardMatch?.id || q.categoryId || q.categorySlug || (q.category ? q.category.replace(/\s+/g, '-').toLowerCase() : null);
+      
       if (id && !map.has(id)) {
         map.set(id, { id, title: q.category || id });
       } else if (id && map.has(id) && !map.get(id).title) {
         map.set(id, { id, title: q.category || id });
       }
     });
-    return Array.from(map.values());
+
+    // Remove duplicates based on title to be extra safe
+    const uniqueByTitle = new Map();
+    Array.from(map.values()).forEach((cat: any) => {
+      if (!uniqueByTitle.has(cat.title)) {
+        uniqueByTitle.set(cat.title, cat);
+      }
+    });
+
+    return Array.from(uniqueByTitle.values());
   }, [questions]);
 
   // If no automatic daily items yet, fallback to deterministic random choice for variety
@@ -108,16 +123,16 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
           } catch(err: any) {
              if (err instanceof GeminiKeyMissingError || err?.name === "GeminiKeyMissingError") {
                  console.warn("AI generation skipped: GEMINI_API_KEY_NOT_CONFIGURED");
-                 setError("يبدو أن هناك تعثراً في الوصول، جرب العودة للوضع المجاني عبر الإعدادات وسأستمر معك.");
+                 setError("يبدو أن المفتاح الذكي غير مفعل في الإعدادات، سأعتمد على خبراتي المخزنة حالياً.");
              } else {
-                 console.error("AI Gen error", err);
+                 console.log("Status: AI analysis logic deferred", err?.message || "");
                  const errMsg = typeof err === 'string' ? err : JSON.stringify(err);
                  if(err?.message?.includes("exceeded your current quota") || err?.code === 429 || errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED")) {
-                     setError("يبدو أن الفكرة تحتاج لحظة إضافية.. جرّب مرة أخرى.");
+                     setError("أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
                  } else {
-                     setError("يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
+                     setError("يبدو أن معالجة هذه الفكرة تتطلب وقتاً أطول.. جرب صياغة أبسط أو العودة لاحقاً.");
                  }
-             }
+              }
              onEmergency();
           }
         }

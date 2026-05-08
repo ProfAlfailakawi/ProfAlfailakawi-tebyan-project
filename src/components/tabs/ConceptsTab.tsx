@@ -45,7 +45,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
         setOutput(res);
       }
     } catch (err: any) {
-      setError("يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
+      setError("أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
     } finally {
       setIsLoading(false);
     }
@@ -132,7 +132,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           </motion.div>
         ) : output && (
           <div className="space-y-4">
-            <div className={cn("prose md:prose-lg p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-zinc-950 border-red-900/30 text-zinc-300 prose-invert prose-headings:text-rose-400 prose-strong:text-rose-200 prose-ol:text-zinc-600 prose-ul:text-zinc-600 prose-li:marker:text-rose-600 prose-a:text-red-400 leading-relaxed font-serif rtl:font-sans py-8" : "bg-white border-zinc-200/80 prose-zinc font-serif rtl:font-sans py-8 leading-relaxed text-zinc-800")}>
+            <div className={cn("prose md:prose-lg p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-zinc-950 border-red-900/30 text-zinc-100 prose-invert prose-headings:text-rose-400 prose-strong:text-rose-200 prose-ol:text-zinc-400 prose-ul:text-zinc-400 prose-li:marker:text-rose-600 prose-a:text-red-400 leading-relaxed font-serif rtl:font-sans py-8" : "bg-white border-zinc-200/80 prose-zinc font-serif rtl:font-sans py-8 leading-relaxed text-zinc-800")}>
               <ReactMarkdown>{output}</ReactMarkdown>
             </div>
             <button 

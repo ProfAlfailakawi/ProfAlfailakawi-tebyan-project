@@ -399,9 +399,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="bg-white border border-[#EBEAE4] rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 text-center space-y-6">
                <p className="text-[#2A2925] font-bold text-xl">تم إعداد هذه الإجابة عبر مصادر موثوقة</p>
                <div className="flex justify-center gap-3 flex-wrap">
-                 {question.reviewStatus.educational === 'published' && <span className="bg-[#F2F0E9] text-[#5A5A40] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ تدقيق واعتماد الحالة</span>}
-                 {question.reviewStatus.religious === 'published' && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ التدقيق الشرعي</span>}
-                 {question.reviewStatus.sources === 'published' && <span className="bg-[#EAECE6] text-[#2A2925] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ المصادر والمراجع</span>}
+                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F2F0E9] text-[#5A5A40] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ تدقيق واعتماد الحالة</span>}
+                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ التدقيق الشرعي</span>}
+                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-[#2A2925] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ المصادر والمراجع</span>}
                </div>
 
                <div className="pt-8 border-t border-[#EBEAE4] mt-8">

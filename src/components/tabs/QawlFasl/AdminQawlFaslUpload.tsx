@@ -212,7 +212,7 @@ export default function AdminQawlFaslUpload() {
           
           await batch.commit();
         } catch (err: any) {
-          console.error(`Error generating for ${data.question}`, err);
+          console.error(`Status: AI Generation interrupted`, err);
           const errorStr = (err?.message || JSON.stringify(err)).toLowerCase();
           if (errorStr.includes("api key") || errorStr.includes("gemini_api_key_not_configured")) {
              throw err; // Stop the whole process if API key is the issue
@@ -230,10 +230,10 @@ export default function AdminQawlFaslUpload() {
     } catch (e: any) {
       const errorStr = (e?.message || JSON.stringify(e)).toLowerCase();
       if (errorStr.includes("api key") || errorStr.includes("gemini_api_key_not_configured")) {
-        alert('لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات.');
+        alert('لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات لمتابعة التوليد المجمع.');
       } else {
-        console.error(e);
-        alert('يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.');
+        console.error("Batch Gen Error", e);
+        alert('أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب المحاولة مرة أخرى بعد قليل.');
       }
     } finally {
       setIsGenerating(false);

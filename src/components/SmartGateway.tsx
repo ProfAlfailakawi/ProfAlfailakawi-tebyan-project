@@ -187,7 +187,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
-            { ar: `ما الجديد اليوم في هذا السياق؟`, en: `What's new today in this context?` },
+            { ar: `كيف أطور من مهاراتي اليوم؟`, en: `How can I develop my skills today?` },
             { ar: isWeekend ? `تلخيص تطورات الأسبوع` : `خطة عمل اليوم بناءً على ذلك`, en: isWeekend ? `Summarize weekly developments` : `Today's action plan based on this` },
             { ar: `منظور ممتع للقضية`, en: `A fun perspective on this` },
             { ar: `تفكيك المشكلة إلى خطوات بسيطة`, en: `Break down the problem into simple steps` },

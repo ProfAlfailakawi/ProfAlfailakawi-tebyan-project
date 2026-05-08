@@ -26,7 +26,10 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   React.useEffect(() => {
     if (initialValue) {
       setInput(initialValue);
-      // We don't auto-run oracle because it's expensive, but we pre-fill it
+      // Auto-run if prompted from another tab
+      setTimeout(() => {
+        if (runOracleRef.current) runOracleRef.current();
+      }, 300);
       if (onValueUsed) onValueUsed();
     }
   }, [initialValue]);

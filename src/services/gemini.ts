@@ -174,24 +174,24 @@ export function parseGeminiError(error: any, defaultMsg: string, lang: string = 
   const errorMsg = (error?.message || "").toLowerCase();
   
   // Human-friendly default messages
-  let beautifulDefaultMessage = lang === 'ar' ? "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." : "It seems the idea needs a moment.. Try again.";
+  let beautifulDefaultMessage = lang === 'ar' ? "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." : "Sorry, the engine is busy right now.. try again in a moment.";
   
   if (defaultMsg && defaultMsg !== "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي." && !defaultMsg.includes("حدث خطأ")) {
       beautifulDefaultMessage = defaultMsg;
   }
 
   if (errorStr.includes('api key') || errorStr.includes('gemini_api_key_not_configured') || error?.status === 401 || errorStr.includes("not configured") || errorMsg.includes("gemini_api_key_not_configured")) {
-    return new Error(lang === 'ar' ? "لم أستطع الوصول للمحرك الآن.. جرّب مرة أخرى أو تأكد من المفتاح في الإعدادات." : "Could not access the engine now.. try again or check the key in settings.");
+    return new Error(lang === 'ar' ? "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات." : "Could not access the engine now.. make sure the API key is activated in settings.");
   }
   if (errorStr.includes('429') || errorStr.includes('credits depleted') || errorStr.includes('quota') || errorMsg.includes('429') || errorMsg.includes('quota') || errorStr.includes('resource_exhausted')) {
-    return new Error(lang === 'ar' ? "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى." : "The idea needs an extra moment.. try again.");
+    return new Error(lang === 'ar' ? "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." : "Sorry, the engine is busy right now.. try again in a moment.");
   }
   if (errorStr.includes('503') || errorStr.includes('504') || errorMsg.includes('503') || errorMsg.includes('504') || 
       errorStr.includes('high demand') || errorMsg.includes('high demand') || 
       errorStr.includes('overloaded') || errorMsg.includes('overloaded') ||
       errorStr.includes('404') || errorMsg.includes('not found') ||
       error?.status === 'UNAVAILABLE' || error?.status === 'DEADLINE_EXCEEDED') {
-    return new Error(lang === 'ar' ? "لم أستطع إكمال التحليل الآن، لكن الفكرة محفوظة." : "I couldn't complete the analysis now, but the idea is saved.");
+    return new Error(lang === 'ar' ? "يبدو أن معالجة هذه الفكرة تتطلب وقتاً أطول.. جرب صياغة أبسط أو العودة لاحقاً." : "Processing this idea seems to take longer.. try a simpler phrasing or come back later.");
   }
   if (errorStr.includes('safety') || errorStr.includes('block') || errorStr.includes('finish_reason_safety') || errorMsg.includes('safety') || errorMsg.includes('blocked')) {
     return new Error(lang === 'ar' ? "المحرك لم يلتقط المعنى بالكامل، جرّب صياغة أبسط." : "The engine didn't fully grasp the meaning, try a simpler phrasing.");
@@ -309,7 +309,7 @@ export async function generateQuiz(topic: string) {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Quiz Error:", error);
-      throw parseGeminiError(error, "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
+      throw parseGeminiError(error, "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
     }
   });
 }
@@ -374,7 +374,7 @@ export async function generateSimulation(topic: string = 'Digital Transformation
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Simulation generation failed:", error);
-      throw parseGeminiError(error, "يبدو أن الفكرة تحتاج لحظة إضافية… جرّب مرة أخرى.");
+      throw parseGeminiError(error, "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
     }
   });
 }
@@ -814,25 +814,27 @@ export async function generateARSimulation(concept: string, lang: string = 'ar')
   });
 }
 
-export async function universalOracle(query: string, persona: string, lang: string = 'ar') {
+export async function universalOracle(query: string, persona: string = 'Tibyan Assistant', lang: string = 'ar') {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
     
     const systemInstruction = lang === 'ar' ? 
-      `أنتِ "امرأة حنونة ومستشارة حكيمة". تجنبي تماماً مناداة المستخدم أو المتلقين بـ (يا بناتي، يا أبنائي، يا ولدي، يا بنتي) أو أي مفردات مشابهة، وخاطبيهم بصفة عامة أو بدون مناداة.  تحدثي بلهجة بيضاء تميل للكويتية. الهيكل الإلزامي (امسحي أولاً، اقرئي لاحقاً):
-      1. الإجابة الجوهرية (سطر واحد عريض).
+      `أنتِ "تبيان" - مستشارة حكيمة واستراتيجية بلمسة حنونة. دورك الآن: ${persona}. تحدثي بلهجة بيضاء كويتية محببة. 
+      الهيكل الإلزامي:
+      1. الإجابة الجوهرية (سطر عريض).
       2. لماذا هذا مهم؟ (جملة واحدة).
-      3. الخطوات الميدانية (3-5 نقاط موجزة).
-      4. حكمة ذهبية (طريقة سرية سريعة).
-      5. مراجع سريعة (روابط واسماء فقط).
-      القواعد: لا فقرات، لا كلام أكاديمي، لغة هادئة وحنونة. يمكنكِ تقمص دور المستشارة التي تحاور وتوجه الجميع لتبسيط المعلومة أو تقديم العبرة بأسلوب قصصي حنون بصيغة عامة.` :
-      `You are the "Tender Wise Motherly Oracle". Strict Scan-First Structure:
+      3. الخطوات الميدانية (3-5 نقاط).
+      4. حكمة ذهبية.
+      5. مراجع سريعة.
+      القواعد: ممنوع الفقرات، ممنوع الكلام الأكاديمي، كوني مباشرة وحنونة.` :
+      `You are "Tibyan" - a wise strategic advisor with a warm touch. Your role now: ${persona}. 
+      Strict Structure:
       1. Core Answer (1 bold line).
       2. Why it matters? (1 sentence).
-      3. Action Steps (3-5 brief points).
-      4. Golden Wisdom (1 quick secret tip).
-      5. Fast Refs (Links/Names only).
-      Rules: No paragraphs, no academic jargon, calm and direct language with a warm tone.`;
+      3. Action Steps (3-5 points).
+      4. Golden Wisdom.
+      5. Fast Refs.
+      Rules: No paragraphs, no academic jargon, warm and direct.`;
 
 
     try {

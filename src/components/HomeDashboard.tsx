@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark } from 'lucide-react';
+import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark, Box } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useGamification } from '../hooks/useGamification';
 import { generateDailyMission } from '../services/gemini';
@@ -70,10 +70,16 @@ const HubCard: React.FC<{
               )}>
                 <item.icon className={cn(
                   "w-3.5 h-3.5 md:w-5 md:h-5",
-                  inverted ? "text-zinc-400 group-hover/item:text-white" : "text-zinc-600 group-hover/item:text-black"
+                  inverted 
+                    ? (item.id === 'mindmap' ? "text-indigo-300 group-hover/item:text-white" : "text-zinc-400 group-hover/item:text-white") 
+                    : (item.id === 'mindmap' ? "text-indigo-500 group-hover/item:text-indigo-600" : "text-zinc-600 group-hover/item:text-black")
                 )} />
               </div>
-              <span className={cn("text-xs md:text-[13px] font-black tracking-tight truncate", inverted ? "text-white" : "text-zinc-900", item.id === 'mindmap' && "text-indigo-950")}>{item.label}</span>
+              <span className={cn(
+                "text-xs md:text-[13px] font-black tracking-tight truncate", 
+                inverted ? "text-white" : "text-zinc-900", 
+                item.id === 'mindmap' && (inverted ? "text-indigo-200" : "text-indigo-600")
+              )}>{item.label}</span>
             </button>
           ))}
         </div>
@@ -182,6 +188,27 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        {/* AR FEATURE (NEW & PROMINENT) */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          onClick={() => handleTabChange('ar')}
+          className="group relative h-[200px] md:h-[240px] bg-white rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.04)] border-2 border-indigo-50 hover:border-black active:scale-[0.98] transition-all"
+        >
+           <div className="absolute top-0 left-0 w-full h-full bg-indigo-50/20 group-hover:bg-black group-hover:bg-opacity-5 transition-colors"></div>
+           <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+             <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-xl mb-4 group-hover:scale-110 transition-transform duration-500">
+               <Box className="w-8 h-8" />
+             </div>
+             <h3 className="text-xl md:text-2xl font-black text-black">
+               {language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR Experience'}
+             </h3>
+             <p className="text-zinc-500 text-sm font-bold mt-2">
+               {language === 'ar' ? 'استكشف المفاهيم في فضائك الحقيقي' : 'Explore concepts in your real space'}
+             </p>
+           </div>
+        </motion.button>
+
         {/* قول فصل - THE DECISIVE WORD (Unique Featured) */}
         {tabs.filter(t => t.id === 'qawlfasl').map((tab) => (
           <motion.button
@@ -226,7 +253,8 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           icon={BrainCircuit}
           items={[
             { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
-            { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 }
+            { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
+            { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock }
           ]}
           handleTabChange={handleTabChange}
           language={language}
