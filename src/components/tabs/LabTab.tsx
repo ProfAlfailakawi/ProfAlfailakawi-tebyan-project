@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Zap, RefreshCw } from 'lucide-react';
+import { Zap, RefreshCw, Box, Camera, Mic } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -23,7 +23,7 @@ const labTools = [
   { id: 'family', ar: 'التبسيط الشامل', en: 'Universal Explain', tooltip: { ar: 'تبسيط المعلومات المعقدة لشرحها لأي شخص', en: 'Simplify complex info for anyone' } },
   { id: 'career', ar: 'خريطة المهن', en: 'Career Map', tooltip: { ar: 'رسم مسارات مهنية مستقبلية مبنية على المهارات', en: 'Map future careers based on skills' } },
   { id: 'workshop', ar: 'مصنع الورش', en: 'Workshop Factory', tooltip: { ar: 'تصميم ورش عمل ولقاءات تفاعلية متكاملة', en: 'Design complete interactive workshops' } },
-  { id: 'artest', ar: 'الواقع المعزز (AR)', en: 'AR Test', tooltip: { ar: 'تجربة عرض المجسمات ثلاثية الأبعاد في الواقع', en: 'Test 3D AR models' } }
+  { id: 'artest', ar: 'مختبر تبيان للواقع المعزز (AR) ✨', en: 'Tibyan AR Lab ✨', tooltip: { ar: 'تجسيد الأفكار في عالمك الحقيقي عبر الواقع المعزز', en: 'Manifest ideas in your real world with AR' } }
 ];
 
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
@@ -54,6 +54,27 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labWorkshop, setLabWorkshop] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [permissionStatus, setPermissionStatus] = React.useState<'idle' | 'prompting' | 'granted' | 'denied'>('idle');
+
+  const requestPermissions = async () => {
+    setPermissionStatus('prompting');
+    try {
+      // Request camera and microphone
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      // Stop the stream immediately,เราแค่ต้องการให้เบราว์เซอร์ถาม
+      stream.getTracks().forEach(track => track.stop());
+      setPermissionStatus('granted');
+    } catch (err) {
+      console.error("Permission denied:", err);
+      setPermissionStatus('denied');
+    }
+  };
+
+  React.useEffect(() => {
+    if (activeLabTool === 'artest' && permissionStatus === 'idle') {
+      requestPermissions();
+    }
+  }, [activeLabTool, permissionStatus]);
 
   const resetAllLabResults = () => {
     setLabColliderResult(null);
@@ -561,13 +582,24 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     </motion.div>
                   </div>
                 )}
-                {activeLabTool === 'artest' && (
+                 {activeLabTool === 'artest' && (
                   <div className="space-y-6">
                     <div className="bg-indigo-50 border border-indigo-100 rounded-[24px] p-6 mb-8 text-indigo-800">
-                      <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-                        <Box className="w-5 h-5" />
-                        {language === 'ar' ? 'بوابة تبيان للواقع المعزز (AR)' : 'Tibyan AR Gateway'}
-                      </h3>
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <h3 className="font-bold text-lg flex items-center gap-2">
+                            <Box className="w-5 h-5" />
+                            {language === 'ar' ? 'بوابة تبيان للواقع المعزز (AR)' : 'Tibyan AR Gateway'}
+                        </h3>
+                        {permissionStatus !== 'granted' && (
+                            <button 
+                              onClick={requestPermissions}
+                              className="px-4 py-2 bg-indigo-600 text-white rounded-full text-xs font-black shadow-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                            >
+                                <Camera className="w-3 h-3" />
+                                {language === 'ar' ? 'تفعيل الكاميرا والميكروفون' : 'Enable Camera & Mic'}
+                            </button>
+                        )}
+                      </div>
                       <p className="font-medium text-sm leading-relaxed">
                         {language === 'ar' 
                           ? 'استعرض النماذج ثلاثية الأبعاد مباشرة في متصفحك. إذا كنت تستخدم الهاتف، اضغط على زر "عرض في الواقع" لوضع المجسم في بيئتك.' 

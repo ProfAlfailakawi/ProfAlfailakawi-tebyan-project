@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit } from 'lucide-react';
+import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit, Layout } from 'lucide-react';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
 
@@ -94,21 +94,26 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
     <div className="w-full bg-zinc-950 text-white min-h-[85vh] rounded-[32px] p-4 md:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.1)_0%,transparent_70%)] pointer-events-none"></div>
       
-      {/* Improved Exit Button */}
-      <button 
-        onClick={() => handleTabChange('home')} 
-        className="absolute top-4 end-4 md:top-8 md:end-8 z-50 px-6 py-3 bg-zinc-900 text-white rounded-full font-black text-sm tracking-widest shadow-xl flex items-center gap-2 border border-zinc-700 hover:bg-zinc-800 transition-all active:scale-95"
-        title={language === 'ar' ? 'العودة للرئيسية' : 'Go Home'}
-      >
-        <ArrowRight className={cn("w-5 h-5", language === 'ar' ? "" : "rotate-180")} />
-        {language === 'ar' ? 'الرجوع' : 'BACK'}
-      </button>
+      {/* Improved Exit Button - Repositioned for mobile to avoid overlap */}
+      <div className="absolute top-4 inset-x-4 md:top-8 md:end-8 md:start-auto z-50 flex justify-between md:justify-end pointer-events-none">
+        <div className="md:hidden" /> {/* Spacer for mobile */}
+        <button 
+          onClick={() => handleTabChange('home')} 
+          className="px-6 py-2.5 md:py-3 bg-zinc-900 border border-zinc-700 text-white rounded-full font-black text-[10px] md:text-sm tracking-widest shadow-2xl flex items-center gap-2 hover:bg-zinc-800 transition-all active:scale-95 pointer-events-auto"
+          title={language === 'ar' ? 'العودة للرئيسية' : 'Go Home'}
+        >
+          <ArrowRight className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "" : "rotate-180")} />
+          {language === 'ar' ? 'الرجوع' : 'BACK'}
+        </button>
+      </div>
 
       {/* Left Content / Graph Area */}
-      <div className="flex-1 flex flex-col relative z-10">
-        <div className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-black text-white flex items-center gap-3">
-                <Network className="w-8 h-8 text-indigo-400" />
+      <div className="flex-1 flex flex-col relative z-10 pt-32 md:pt-0">
+        <div className="mb-6 md:mb-10">
+            <h2 className="text-3xl md:text-5xl font-black text-white flex items-center gap-4 tracking-tighter italic">
+                <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/30">
+                  <Network className="w-10 h-10 md:w-16 md:h-16 text-indigo-400" />
+                </div>
                 {language === 'ar' ? 'الشبكة العصبية المعرفية' : 'Neural Knowledge Graph'}
             </h2>
             <p className="text-zinc-400 font-medium mt-2 max-w-xl">
@@ -118,13 +123,13 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             </p>
         </div>
 
-        <div className="flex-1 relative w-full h-full min-h-[500px] border border-white/10 rounded-[32px] bg-black/40 backdrop-blur-sm overflow-hidden flex items-center justify-center group">
+        <div className="flex-1 relative w-full h-full min-h-[500px] border border-white/10 rounded-[32px] bg-black/40 backdrop-blur-sm overflow-hidden flex items-center justify-center group z-0">
           <svg 
             width="100%" 
             height="100%" 
             viewBox="0 0 800 600" 
             preserveAspectRatio="xMidYMid meet"
-            className="touch-none"
+            className="touch-none absolute inset-0"
           >
             <defs>
               <filter id="glow">

@@ -199,41 +199,51 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
                     
                     {result.tool === 'butterfly' && result.isJson ? (
-                        <div className="bg-zinc-900 text-white rounded-[48px] overflow-hidden shadow-2xl relative min-h-[500px] flex flex-col justify-end p-8 md:p-16 border-[12px] border-zinc-800 ring-1 ring-white/10">
-                            <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000')] bg-cover bg-center grayscale px-10"></div>
-                            <div className="absolute top-12 left-12 text-2xl font-black tracking-tighter text-white/50 border-b-4 border-rose-500 pb-2">
+                        <div className="bg-zinc-950 text-white rounded-[40px] md:rounded-[64px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative min-h-[600px] md:min-h-[800px] flex flex-col justify-end p-8 md:p-20 border-[10px] md:border-[20px] border-zinc-900 ring-1 ring-white/20">
+                            <div className="absolute inset-0 opacity-50 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000')] bg-cover bg-center grayscale scale-110"></div>
+                            <div className="absolute top-8 left-8 md:top-16 md:left-16 text-xs md:text-xl font-black tracking-[0.4em] text-rose-500 border-b-2 md:border-b-4 border-rose-600 pb-2 uppercase drop-shadow-2xl">
                                 {result.content.magazineName}
                             </div>
-                            <div className="relative z-10 space-y-8 mt-32">
-                                <h1 className="text-5xl md:text-8xl font-black leading-[0.9] text-white tracking-tighter drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)] italic">
+                            <div className="relative z-10 space-y-6 md:space-y-8 max-w-5xl">
+                                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black leading-[1.0] tracking-tighter drop-shadow-[0_20px_50px_rgba(0,0,0,1)] italic uppercase text-white">
                                     {result.content.headline}
                                 </h1>
-                                <p className="text-xl md:text-3xl font-bold text-rose-300 max-w-3xl leading-snug drop-shadow-lg">
+                                <p className="text-xl md:text-3xl font-bold text-rose-400 max-w-3xl leading-relaxed drop-shadow-lg">
                                     {result.content.subheadline}
                                 </p>
-                                <div className="space-y-4 mt-12 bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/20 max-w-xl">
+                                <div className="space-y-3 md:space-y-5 bg-black/60 backdrop-blur-3xl p-8 md:p-10 rounded-[32px] md:rounded-[48px] border border-white/20 max-w-2xl mt-8 shadow-2xl">
                                     {result.content.bulletPoints?.map((pt: string, i: number) => (
-                                        <div key={i} className="text-lg md:text-xl font-bold text-white flex items-start gap-3">
-                                            <span className="text-rose-500 mt-1.5 shrink-0 w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_15px_rgba(244,63,94,1)]"></span>
+                                        <div key={i} className="text-base md:text-2xl font-bold text-white flex items-start gap-5">
+                                            <span className="text-rose-500 mt-2.5 shrink-0 w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_20px_rgba(244,63,94,1)]"></span>
                                             {pt}
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-16 text-center pt-10 border-t border-white/20 text-2xl font-black tracking-tight text-white/70 italic font-serif bg-black/40 backdrop-blur-sm rounded-2xl p-6">
+                                <div className="mt-12 md:mt-16 text-center pt-12 border-t border-white/20 text-xl md:text-2xl font-medium tracking-tight text-white italic font-serif leading-relaxed px-10 drop-shadow-xl">
                                     "{result.content.quote}"
                                 </div>
                             </div>
                         </div>
                     ) : result.tool === 'vault' ? (
-                        <div className="bg-stone-950 border-[10px] border-stone-800 p-8 md:p-16 rounded-[48px] shadow-2xl text-stone-300 relative overflow-hidden">
-                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-rose-500 to-transparent opacity-50"></div>
-                             <div className="flex items-center justify-center gap-4 mb-12">
-                               <Lock className="w-10 h-10 text-rose-600" />
-                               <span className="text-2xl font-black tracking-[0.2em] text-white underline decoration-rose-600 decoration-4 underline-offset-8">
+                        <div className="bg-stone-950 border-[6px] md:border-[12px] border-stone-900 p-8 md:p-24 rounded-[32px] md:rounded-[60px] shadow-2xl relative overflow-hidden text-zinc-100">
+                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
+                             <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-rose-600 to-transparent opacity-80"></div>
+                             
+                             <div className="flex flex-col items-center justify-center gap-6 mb-16 md:mb-24 relative z-10">
+                               <div className="p-6 bg-rose-600/10 rounded-3xl border-2 border-rose-600/30 shadow-[0_0_30px_rgba(225,29,72,0.1)]">
+                                 <Lock className="w-10 h-10 md:w-16 md:h-16 text-rose-500" />
+                               </div>
+                               <h2 className="text-3xl md:text-6xl font-black tracking-tighter text-white uppercase text-center drop-shadow-2xl">
                                   {language === 'ar' ? 'تقرير الانحيازات الاستبدادي' : 'DESPOTIC BIAS REPORT'}
-                               </span>
+                               </h2>
                              </div>
-                             <div className="markdown-body prose prose-invert max-w-none prose-p:text-xl prose-p:leading-relaxed prose-p:font-medium prose-headings:text-white prose-strong:text-rose-400 prose-a:text-rose-400">
+                             
+                             <div className="markdown-body prose prose-invert max-w-none relative z-10
+                                prose-p:!text-zinc-100 prose-p:text-xl md:prose-p:text-3xl prose-p:leading-relaxed prose-p:font-bold prose-p:mb-10
+                                prose-headings:!text-white prose-headings:font-black prose-headings:tracking-tighter prose-headings:mb-12 md:prose-headings:text-7xl
+                                prose-strong:!text-rose-400 prose-strong:font-black prose-strong:text-2xl md:prose-strong:text-4xl
+                                prose-li:!text-zinc-100 prose-li:text-xl md:prose-li:text-2xl prose-li:mb-4
+                                prose-blockquote:border-rose-600 prose-blockquote:bg-rose-900/20 prose-blockquote:p-10 md:prose-blockquote:p-16 prose-blockquote:rounded-[40px] prose-blockquote:!text-zinc-50 prose-blockquote:not-italic prose-blockquote:font-bold prose-blockquote:text-2xl md:prose-blockquote:text-4xl">
                                <ReactMarkdown>{result.content}</ReactMarkdown>
                              </div>
                         </div>
