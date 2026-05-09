@@ -261,8 +261,11 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 في لحظات الانفعال، نحتاج للهدوء والحكمة. قسم الطوارئ يوفر لك حلولاً سريعة ومجربة للمواقف والطوارئ الضاغطة.
               </p>
               <button 
-                onClick={onEmergency}
-                className="bg-white text-black px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_8px_30px_rgba(255,255,255,0.1)] relative z-50 cursor-pointer pointer-events-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEmergency();
+                }}
+                className="bg-white text-black px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_8px_30px_rgba(255,255,255,0.1)] cursor-pointer pointer-events-auto"
               >
                 <AlertCircle className="w-5 h-5 md:w-6 md:h-6" />
                 دليل الطوارئ
@@ -352,8 +355,11 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               return (
                 <button 
                   key={category.id}
-                  onClick={() => onCategory(category.id)}
-                  className="group bg-white border border-zinc-200/60 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[160px] md:min-h-[220px] justify-between relative overflow-hidden cursor-pointer active:scale-95 z-50 pointer-events-auto"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCategory(category.id);
+                  }}
+                  className="group bg-white border border-zinc-200/60 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[160px] md:min-h-[220px] justify-between relative overflow-hidden cursor-pointer active:scale-95"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50 rounded-full blur-2xl group-hover:bg-[#F5F5F0] transition-colors translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                   <div className="relative z-10 w-full text-right">

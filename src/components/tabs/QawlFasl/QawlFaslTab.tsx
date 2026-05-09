@@ -112,6 +112,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   };
 
   const goToCategory = (id: string) => {
+    console.log("goToCategory called with id:", id);
     setSelectedCategoryId(id);
     setCurrentView('category');
   };
@@ -139,7 +140,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
       <div className="rounded-[24px] md:rounded-[32px]">
         <AnimatePresence mode="wait">
         {currentView === 'home' && (
-          <motion.div key="home" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+          <motion.div key="home" className="pointer-events-auto" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
             <HomeView 
               lastViewedId={lastViewedId} 
               questions={questions} 
