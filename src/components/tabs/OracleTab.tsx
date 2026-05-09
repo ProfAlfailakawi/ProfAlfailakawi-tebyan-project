@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Command, RefreshCw, Bookmark, BookmarkCheck, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Command, RefreshCw, Bookmark, BookmarkCheck } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
@@ -22,46 +22,6 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   const [oracleResult, setOracleResult] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [suggestion, setSuggestion] = React.useState('');
-  const [isSuggesting, setIsSuggesting] = React.useState(false);
-
-  React.useEffect(() => {
-    const fetchSuggestion = async () => {
-      const trimmed = input.trim();
-      // Only suggest if input is long enough
-      if (trimmed.length < 3) {
-        setSuggestion('');
-        return;
-      }
-      
-      setIsSuggesting(true);
-      try {
-        const { generateSearchSuggestions } = await import('../../services/gemini');
-        const res = await generateSearchSuggestions(trimmed, language);
-        if (res && res !== trimmed) {
-          setSuggestion(res);
-        } else {
-          setSuggestion('');
-        }
-      } catch (err) {
-        console.error("Autocomplete error:", err);
-        setSuggestion('');
-      } finally {
-        setIsSuggesting(false);
-      }
-    };
-
-    const timer = setTimeout(() => {
-      if (input.trim().length >= 3 && !isLoading) {
-        fetchSuggestion();
-      } else {
-        setSuggestion('');
-        setIsSuggesting(false);
-      }
-    }, 600);
-
-    return () => clearTimeout(timer);
-  }, [input, language, isLoading]);
 
   React.useEffect(() => {
     if (initialValue) {
@@ -80,7 +40,6 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     if (!input.trim() || isLoading) return;
     setIsLoading(true);
     setError(null);
-    setSuggestion(''); // Clear suggestion when running
     try {
       const { universalOracle } = await import('../../services/gemini');
       const promptInstructed = `${input}\n\nيرجى تقديم الإجابة في نقاط قصيرة ومباشرة وفقرات صغيرة جداً لتسهيل القراءة على الهاتف.`;
@@ -149,69 +108,25 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
-            "w-full p-5 md:p-6 text-lg md:text-xl font-medium bg-zinc-50 placeholder:text-zinc-400 rounded-[16px] border-2 border-zinc-200/80 focus:border-black focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
-            language === 'ar' ? "pl-24 md:pl-32" : "pr-24 md:pr-32"
+            "w-full p-6 text-xl font-medium bg-zinc-50 placeholder:text-zinc-400 rounded-[16px] border-2 border-zinc-200/80 focus:border-black focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
+            language === 'ar' ? "pl-32" : "pr-32"
           )}
           placeholder={language === 'ar' ? "اسأل تبيان بأي لهجة..." : "Ask Tebyan..."}
         />
-        
-        {/* Smart Autocomplete Suggestion */}
-        <AnimatePresence>
-          {(suggestion || isSuggesting) && !isLoading && (
-            <motion.div
-              initial={{ opacity: 0, y: -5, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -5, scale: 0.95 }}
-              className={cn(
-                "absolute left-0 right-0 top-full mt-2 z-40 flex px-2 md:px-0",
-                language === 'ar' ? "justify-end md:justify-start" : "justify-start"
-              )}
-            >
-              {isSuggesting ? (
-                <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 text-zinc-500 shadow-xl border border-zinc-100">
-                  <RefreshCw className="w-3 h-3 animate-spin" />
-                  <span className="text-[10px] font-black tracking-widest uppercase">
-                    {language === 'ar' ? 'تبيان تستكشف...' : 'Tibyan Exploring...'}
-                  </span>
-                </div>
-              ) : suggestion && (
-                <button
-                  onClick={() => {
-                    setInput(prev => prev.trim() + ' ' + suggestion);
-                    setSuggestion('');
-                  }}
-                  className="bg-black text-white p-1 rounded-[22px] md:rounded-3xl flex items-center gap-3 pr-4 group shadow-2xl max-w-[95%] md:max-w-[90%] active:scale-95 transition-all border border-white/10"
-                >
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-zinc-800 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-                  </div>
-                  <div className="flex flex-col items-start overflow-hidden text-right py-1">
-                    <span className="text-[9px] text-emerald-400 font-black uppercase tracking-tighter opacity-80">
-                      {language === 'ar' ? 'تكملة ذكية' : 'Smart Completion'}
-                    </span>
-                    <div className="text-[11px] md:text-sm font-bold text-zinc-100 line-clamp-1 truncate">
-                      {suggestion}
-                    </div>
-                  </div>
-                </button>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
         <button 
           onClick={handleRunOracle} 
           disabled={isLoading}
           title={language === 'ar' ? 'تشغيل البحث الذكي' : 'Run smart search'}
           className={cn(
-            "absolute top-2 bottom-2 md:top-3 md:bottom-3 px-4 md:px-6 rounded-lg md:rounded-xl font-bold transition-all flex items-center justify-center gap-2",
-            language === 'ar' ? "left-2 md:left-3" : "right-2 md:right-3",
+            "absolute top-3 bottom-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
+            language === 'ar' ? "left-3" : "right-3",
             isLoading ? "bg-zinc-200 text-zinc-500 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           )}
         >
           {isLoading ? (
             <>
-              <RefreshCw className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
-              <span className="hidden md:inline">{language === 'ar' ? 'جاري...' : 'Thinking...'}</span>
+              <RefreshCw className="w-5 h-5 animate-spin" />
+              <span className="hidden md:inline">{language === 'ar' ? 'جاري التفكير...' : 'Thinking...'}</span>
             </>
           ) : (
             <span>{language === 'ar' ? 'تشغيل' : 'Run'}</span>

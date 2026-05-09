@@ -82,7 +82,7 @@ ai.models.generateContent = async (params: any & { skipCache?: boolean }) => {
   return result;
 };
 
-const DEFAULT_MODEL = "gemini-2.0-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 
 function tryRepairJson(json: string): string {
   let cleaned = json.trim();
@@ -1786,41 +1786,4 @@ export async function generateParadigmShifter(rule: string, lang: string = 'ar')
       throw parseGeminiError(error, "Paradigm Shifter unavailable");
     }
   });
-}
-
-export async function generateSearchSuggestions(partialInput: string, lang: string = 'ar') {
-  return withRetry(async () => {
-    // Force gemini-1.5-flash for maximum speed in autocomplete
-    const model = "gemini-1.5-flash"; 
-    const systemInstruction = lang === 'ar' 
-      ? `أنت مساعد ذكي في نظام تبيان. مهمتك إكمال الجملة التي يكتبها المستخدم بذكاء. 
-      القواعد:
-      - رد بالنص التكميلي فقط.
-      - لا تكرر ما كتبه المستخدم.
-      - اجعلها جملة قصيرة جداً ومفيدة.
-      - إذا كان الكلام غير مفهوم، رد بكلمة فارغة.`
-      : `You are an autocomplete assistant for Tebyan. Complete the user's sentence. 
-      Rules:
-      - Return ONLY the completion text.
-      - Do not repeat user input.
-      - Keep it very short.`;
-
-    try {
-      const response = await ai.models.generateContent({
-        model,
-        contents: [{ parts: [{ text: partialInput }] }],
-        config: { 
-          systemInstruction,
-          generationConfig: {
-            maxOutputTokens: 20,
-            temperature: 0.1
-          }
-        }
-      });
-      return response.text?.trim() || "";
-    } catch (error) {
-      console.error("Autocomplete API Error:", error);
-      return "";
-    }
-  }, 0, 0); // No retries for autocomplete to keep it ultra-fast
 }
