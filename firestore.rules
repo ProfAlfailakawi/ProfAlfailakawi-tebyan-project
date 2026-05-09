@@ -22,6 +22,35 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
+    match /qawl_fasl_questions/{document=**} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /qawl_fasl_generation_logs/{document=**} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /system_config/{document=**} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /search_trends/{document=**} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    match /missing_questions/{document=**} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /search_logs/{document=**} {
+      allow read: if isSignedIn();
+      allow create: if true;
+      allow update, delete: if isSignedIn();
+    }
+
     match /users/{userId} {
       allow get: if isSignedIn() && request.auth.uid == userId;
       allow list: if isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
@@ -43,6 +72,7 @@ service cloud.firestore {
         (resource.data.get('rootId', '') != '' && get(/databases/$(database)/documents/ripples/$(resource.data.rootId)).data.get('authorId', '') == request.auth.uid) ||
         (request.auth.token.get('email', '').toLower() == "alfailakawidrahmad@gmail.com") ||
         (request.auth.token.get('email', '').toLower() == "dr.ahmad@gmail.com") ||
+        (request.auth.token.get('email', '').toLower() == "dr.ahmad.alfailakawi@gmail.com") ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
       

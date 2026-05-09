@@ -121,6 +121,13 @@ const AppContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // Automatically check and run daily tasks when user is available
+    if (authReady && user) {
+      cronService.runDailyTasks();
+    }
+  }, [authReady, user]);
+
+  useEffect(() => {
     // Desktop: default closed behavior
     if (window.innerWidth >= 1024) {
         setSidebarOpen(false);
@@ -132,9 +139,6 @@ const AppContent: React.FC = () => {
     if (tabParam && tabs.some(t => t.id === tabParam) || ['adminusers', 'adminqawlfasl', 'adminmessages', 'loyalty'].includes(tabParam as string)) {
         setActiveTab(tabParam as Tab);
     }
-
-    // Automatically check and run daily tasks
-    cronService.runDailyTasks();
 
     // Digital Patina Simulation (Accelerated for demonstration)
     const visits = parseInt(localStorage.getItem('app_visits') || '0', 10) + 1;
