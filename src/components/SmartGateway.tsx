@@ -706,72 +706,75 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
   const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
 
+  const latestInputRef = useRef(query);
+  const requestIdRef = useRef(0);
+  const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
+
   useEffect(() => {
-    // 1. If query is too short, clear and stop
-    if (!query.trim() || query.length < 2) {
-      setSuggestion('');
+    const currentText = query.trim();
+
+    if (!currentText || currentText.length < 6) {
+      setSuggestion("");
       return;
     }
 
-    // 2. Clear current suggestion ONLY if it no longer matches the new query
-    // This avoids flickering while typing, but removes stale shadows immediately
-    setSuggestion(prev => {
-      if (prev && prev.toLowerCase().startsWith(query.toLowerCase()) && prev.length > query.length) {
-        return prev;
-      }
-      return '';
-    });
+    const requestId = ++requestIdRef.current;
 
-    let active = true;
-    const lowerQuery = query.toLowerCase();
-    
-    // 3. Static match (Instant Feedback)
-    const staticMatch = allPossibleQueries.find(s => 
-      s.toLowerCase().startsWith(lowerQuery) && s.length > query.length
-    );
-    
-    if (staticMatch) {
-      setSuggestion(staticMatch);
-      // We don't return here! We still allow the AI fallback to set a timer 
-      // in case AI has a better/longer "smart" completion, unless static match is long enough.
-    }
-
-    // 4. AI Autocomplete (Debounced)
     const timer = setTimeout(async () => {
-      // Don't trigger AI for very short queries or if we already have a long static match
-      if (!active || query.length < 5) return;
-      
       try {
+        setIsSuggestionLoading(true);
+        const textAtRequestTime = latestInputRef.current.trim();
+
+        if (!textAtRequestTime || textAtRequestTime.length < 6) {
+          setSuggestion("");
+          return;
+        }
+
+        const prompt = `
+أكمل الجملة التالية كمقترح بحث ذكي لتطبيق تبيان.
+
+النص الحالي:
+"${textAtRequestTime}"
+
+الشروط:
+- أكمل المعنى بناءً على النص الكامل الحالي
+- لا تغيّر نية المستخدم
+- استخدم نفس اللهجة والأسلوب
+- اجعل الاقتراح قصير ومفيد
+- لا تعطِ إجابة، فقط أكمل صياغة السؤال أو المشكلة
+- لا تكرر النص إذا كان كاملاً
+`;
+
         const response = await aiClient.models.generateContent({
           model: "gemini-3-flash-preview",
-          contents: `The user is typing in a search bar for a deep philosophical and behavioral consulting app. 
-          User is currently typing: "${query}"
-          Language: ${language === 'ar' ? 'Arabic' : 'English'}
-          
-          The app supports Modern Standard Arabic AND common dialects like Kuwaiti, Saudi, Gulf (Khaleeji), and Ammi.
-          Complete this sentence with ONE likely short query (max 6-8 words) that starts EXACTLY with the characters "${query}".
-          If the user started in a dialect, complete it in the SAME dialect.
-          Return ONLY the full completed string. No explanations. No quotes.`,
+          contents: prompt,
         });
-        
-        if (!active) return;
 
         const aiSuggestion = response.text?.trim() || '';
-        // Only update if it's better than current suggestion (or we have none) 
-        // and it starts with the query.
-        if (aiSuggestion && aiSuggestion.toLowerCase().startsWith(query.toLowerCase()) && aiSuggestion.length > query.length) {
-          setSuggestion(aiSuggestion);
+
+        // Validate stale request
+        if (
+          requestId !== requestIdRef.current ||
+          latestInputRef.current.trim() !== textAtRequestTime
+        ) {
+          return;
         }
-      } catch (err) {
-        console.warn('AI Autocomplete failed', err);
+
+        setSuggestion(aiSuggestion || "");
+      } catch (error) {
+        console.error("Smart autocomplete failed:", error);
+        setSuggestion("");
+      } finally {
+        if (requestId === requestIdRef.current) {
+          setIsSuggestionLoading(false);
+        }
       }
-    }, 600); // 600ms debounce for cleaner context
-    
+    }, 700);
+
     return () => {
-      active = false;
       clearTimeout(timer);
     };
-  }, [query, allPossibleQueries, aiClient, language]);
+  }, [query, aiClient]);
 
   const smartResponse = useMemo(() => {
     if (query.trim().length < 5) return null;
@@ -1030,7 +1033,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   ref={inputRef}
                   value={query}
                   onChange={(e) => {
-                    setQuery(e.target.value);
+                    const val = e.target.value;
+                    setQuery(val);
+                    latestInputRef.current = val;
+                    setSuggestion("");
                     onType();
                     if (hasSearched) setHasSearched(false);
                   }}
@@ -1089,6 +1095,33 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   <Search className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
+
+            {/* Smart Suggestion Button */}
+            <AnimatePresence>
+              {suggestion && suggestion !== query && (
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 5 }}
+                  type="button"
+                  onClick={() => {
+                    setQuery(suggestion);
+                    latestInputRef.current = suggestion;
+                    setSuggestion("");
+                    inputRef.current?.focus();
+                  }}
+                  className="mt-3 w-full max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-right text-sm text-slate-700 shadow-sm hover:bg-amber-100 transition"
+                >
+                  <div className="flex items-center justify-between">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <span className="block text-[10px] uppercase font-black text-amber-600 tracking-widest">
+                      {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
+                    </span>
+                  </div>
+                  <div className="mt-1 font-bold">{suggestion}</div>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
 
           <AnimatePresence>
