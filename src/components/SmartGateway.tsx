@@ -130,19 +130,19 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const [showFollowUp, setShowFollowUp] = useState(false);
 
   const loadingPhrasesAr = [
-      'أحلل ملايين النطاقات...',
-      'أحلل 15 مصدراً الآن...',
-      'أقوم بتصفية المتناقضات...',
-      'أستخرج الجوهر المتواري...',
-      'أبني لك الرؤية...'
+      'جاري تشريح الأبعاد الاستراتيجية...',
+      'فحص المسارات المحتملة للقرار...',
+      'تصفية التناقضات السلوكية...',
+      'استخراج الجوهر التفاوضي المفقود...',
+      'بناء خارطة الطريق الشاملة...'
   ];
 
   const loadingPhrasesEn = [
-      'Analyzing millions of nodes...',
-      'Scanning 15 core sources...',
-      'Filtering contradictions...',
-      'Extracting the hidden essence...',
-      'Constructing your vision...'
+      'Dissecting strategic dimensions...',
+      'Scanning potential decision paths...',
+      'Filtering behavioral contradictions...',
+      'Extracting hidden negotiation essence...',
+      'Constructing a comprehensive roadmap...'
   ];
 
   useEffect(() => {
@@ -187,13 +187,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
-            { ar: `كيف أطور من مهاراتي اليوم؟`, en: `How can I develop my skills today?` },
-            { ar: isWeekend ? `تلخيص تطورات الأسبوع` : `خطة عمل اليوم بناءً على ذلك`, en: isWeekend ? `Summarize weekly developments` : `Today's action plan based on this` },
-            { ar: `منظور ممتع للقضية`, en: `A fun perspective on this` },
-            { ar: `تفكيك المشكلة إلى خطوات بسيطة`, en: `Break down the problem into simple steps` },
-            { ar: `ما هي التحديات الخفية هنا؟`, en: `What are the hidden challenges here?` },
-            { ar: `استعراض أفكار خارج الصندوق`, en: `Explore out-of-the-box ideas` },
-            { ar: `تمرين بصري حول الموضوع`, en: `Visual exercise on the topic` }
+            { ar: `كيف أتعامل مع تمرد أو عناد الموظفين؟`, en: `How can I deal with team rebellion?` },
+            { ar: `أفضل طريقة لإيصال أخبار سيئة للإدارة؟`, en: `Best way to deliver bad news to management?` },
+            { ar: `تقييم مخاطر قرار توسع استراتيجي`, en: `Evaluate risks of a strategic expansion` },
+            { ar: `خطوات حل نزاع حاد بين شريكين`, en: `Steps to resolve severe conflict between partners` },
+            { ar: `كيف أعيد تحفيز فريق أصابه الإحباط؟`, en: `How to remotivate a frustrated team?` },
+            { ar: `التعامل مع عميل منفعل وغاضب جداً`, en: `Handling a very angry and frustrated client` },
+            { ar: `مراجعة خطة تراجع المبيعات المفاجئ`, en: `Reviewing sudden drop in sales plan` }
         ].sort(() => 0.5 - Math.random());
       } else {
         arG = 'صباح الوعي والتجدد';
@@ -201,15 +201,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = 'هل نلخص لك التحولات المعرفية لهذا الصباح؟';
         enSub = 'Shall we summarize the cognitive shifts this morning?';
         dynamicSuggests = [
-            { ar: `استعراض ملخص الأحداث العالمية`, en: `Global events summary` },
-            { ar: `بناء خريطة ذهنية لليوم`, en: `Build a daily mind map` },
-            { ar: `كيف أرتب أولوياتي بذكاء؟`, en: `How to prioritize smartly?` },
-            { ar: `تدريب على التركيز العميق`, en: `Deep focus practice` },
-            { ar: `مهارة صباحية سريعة جديدة`, en: `Quick new morning skill` },
-            { ar: `تحفيز فكري سريع لليوم`, en: `Quick intellectual boost for today` },
-            { ar: `كيف أتعامل مع مهام اليوم الصعبة؟`, en: `How to handle today's tough tasks?` },
-            { ar: `قراءة موجزة لكتاب ملهم`, en: `Brief read of an inspiring book` },
-            { ar: `تمرين تنفس وتخيل مبسط`, en: `Simple breathing and visualization exercise` }
+            { ar: `استعراض ملخص التطورات في سوق العمل`, en: `Global developments summary in labor market` },
+            { ar: `بناء خريطة تحفيز لفريق المبيعات`, en: `Build a daily strategic roadmap for sales` },
+            { ar: `كيف أرتب أولويات المؤسسة لتخطي الأزمة؟`, en: `How to prioritize organizational goals during crisis?` },
+            { ar: `تحليل فجوات الأداء الإداري والمهارات`, en: `Analyze management performance and skill gaps` },
+            { ar: `كيف أعالج مشكلة تسرب الكفاءات الوظيفية؟`, en: `How to treat employee turnover?` },
+            { ar: `تحليل آليات اتخاذ القرار في أوقات التعثر المالي`, en: `Analyzing decision-making under financial crisis` },
+            { ar: `كيف أدير أزمة تواصل مع شريك استراتيجي؟`, en: `How to handle a communication crisis with partner?` },
+            { ar: `مراجعة مؤشرات الأداء الحيوية بعد الفشل`, en: `Reviewing vital performance indicators after failure` }
         ].sort(() => 0.5 - Math.random()).slice(0, 6);
       }
     } else if (hour < 18) {
@@ -236,11 +235,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
-            { ar: `مراجعة وتصحيح مسار قراراتي حول ذلك`, en: `Review and correct my path about this` },
-            { ar: `تمرين سريع لإعادة شحن الطاقة`, en: `Quick recharge exercise` },
-            { ar: `كيف أتعامل مع ضغط العمل الآن؟`, en: `How to handle work stress now?` },
-            { ar: `توليد أفكار مستعصية لهذه الفكرة`, en: `Brainstorming ideas for this concept` },
-            { ar: `تحليل التحديات المعقدة فيها`, en: `Analyze complex challenges` }
+            { ar: `مراجعة وتصحيح مسار القرار الأخير`, en: `Review and correct my path about this` },
+            { ar: `طريقة احتواء استقالة مفاجئة`, en: `How to contain a sudden resignation` },
+            { ar: `كيف أتعامل مع ضغط تراجع الأرباح الآن؟`, en: `How to handle profit drop stress now?` },
+            { ar: `توليد أفكار لتسويق منتج متعثر`, en: `Brainstorming marketing for struggling product` },
+            { ar: `تحليل التحديات المعقدة في الاندماج`, en: `Analyze complex challenges in merger` }
         ].sort(() => 0.5 - Math.random()).slice(0, 6);
       } else {
           arG = 'منتصف يوم حافل';
@@ -248,15 +247,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           arSub = 'هل تحتاج لنقطة ارتكاز قبل اتخاذ قرارك القادم؟';
           enSub = 'Do you need a pivot point before your next decision?';
           dynamicSuggests = [
-              { ar: `اقتراح الموازنة بين الأولويات الحالية`, en: `Suggest balancing current priorities` },
-              { ar: `مراجعة وتصحيح مسار قراراتي اليوم`, en: `Review and correct my path today` },
-              { ar: `تمرين سريع لإعادة شحن الطاقة`, en: `Quick recharge exercise` },
-              { ar: `كيف أتعامل مع ضغط العمل الآن؟`, en: `How to handle work stress now?` },
-              { ar: `فكرة إبداعية تكسر الروتين`, en: `Creative idea to break the routine` },
-              { ar: `نصيحة للخروج من التشتت الذهني`, en: `Tip to escape mental distraction` },
-              { ar: `كيف أدير اجتماعاً بطريقة أفضل؟`, en: `How to run a meeting better?` },
-              { ar: `شرح لمفهوم إداري معقد`, en: `Explanation of a complex management concept` },
-              { ar: `توليد أفكار لمشروع مستعصي`, en: `Brainstorming ideas for a stuck project` }
+              { ar: `اقتراح الموازنة بين ميزانية التسويق والتشغيل`, en: `Suggest balancing marketing vs operations budget` },
+              { ar: `مراجعة وتصحيح مسار مشاريع اليوم`, en: `Review and correct my path today` },
+              { ar: `كيف أتعامل مع تمرد العمال ومطالبهم؟`, en: `How to deal with worker demands?` },
+              { ar: `كيف أتعامل مع ضغط تهديدات المنافس الجديد؟`, en: `How to handle threat of new competitor?` },
+              { ar: `فكرة إبداعية لحل مشكلة توفر الموارد`, en: `Creative idea to solve resources issue` },
+              { ar: `نصيحة للخروج من تعقّد الإجراءات الروتينية`, en: `Tip to escape complex bureaucratic procedures` },
+              { ar: `كيف أدير اجتماعاً عاصفاً بطريقة أفضل؟`, en: `How to run a chaotic meeting better?` },
+              { ar: `التعامل بحكمة مع تسريب أسرار العمل`, en: `Handling data leak with wisdom` },
+              { ar: `توليد حلول لمشروع ديون مستعصي`, en: `Brainstorming ideas for debt management` }
           ].sort(() => 0.5 - Math.random()).slice(0, 6);
       }
     } else {
@@ -283,11 +282,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         );
         dynamicSuggests = [
             { ar: `أكمل تحليل: ${lastInteraction.query}`, en: `Continue analyzing: ${lastInteraction.query}` },
-            { ar: `كيف أستعد للغد بذكاء حول هذه الفكرة؟`, en: `How to prepare for tomorrow smartly about this?` },
-            { ar: `حوار هادئ لتفريغ زحام الأفكار`, en: `Calm dialogue to unpack crowded thoughts` },
-            { ar: `تأملات في مجريات اليوم بهذا الشأن`, en: `Reflections on today's events regarding this` },
-            { ar: `قصة قصيرة للهدوء ما قبل النوم`, en: `Short story for pre-sleep calmness` },
-            { ar: `التغلب على التفكير المفرط بالليل`, en: `Overcoming overthinking at night` }
+            { ar: `كيف أستعد لمواجهة الخصم غداً بذكاء؟`, en: `How to prepare for opponent tomorrow smartly?` },
+            { ar: `حوار هادئ لحل أزمة ثقة مع فريق العمل`, en: `Calm dialogue to resolve team trust crisis` },
+            { ar: `تقييم خسائر اليوم وكيفية التعويض`, en: `Reflections on today's losses and compensation` },
+            { ar: `خطوات تأسيس بيئة عمل أكثر شفافية`, en: `Steps to build a more transparent work environment` },
+            { ar: `التغلب على التفكير المفرط بالخسارة`, en: `Overcoming overthinking of business loss` }
         ].sort(() => 0.5 - Math.random()).slice(0, 6);
       } else {
           arG = 'مساء التأمل والعمق';
@@ -295,15 +294,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           arSub = 'ما الذي يشغل حيز وعيك في نهاية هذا اليوم؟';
           enSub = 'What occupies your consciousness at the end of this day?';
           dynamicSuggests = [
-              { ar: `تأملات في مجريات اليوم`, en: `Reflections on today's events` },
-              { ar: `كيف أستعد للغد بذكاء؟`, en: `How to prepare for tomorrow smartly?` },
-              { ar: `تقييم ما أنجزته وما تعلمته`, en: `Evaluate accomplishments and learnings` },
-              { ar: `حوار هادئ لتفريغ زحام الأفكار`, en: `Calm dialogue to unpack crowded thoughts` },
-              { ar: `تلخيص فكرة قرأتها اليوم لاستيعابها`, en: `Summarize an idea read today for deeper grasp` },
-              { ar: `تحليل لتحدي واجهته اليوم`, en: `Analysis of a challenge faced today` },
-              { ar: `قصة قصيرة للهدوء ما قبل النوم`, en: `Short story for pre-sleep calmness` },
-              { ar: `اقتراح طريقة تنظيم للأسبوع القادم`, en: `Suggest an organization method for next week` },
-              { ar: `التغلب على التفكير المفرط بالليل`, en: `Overcoming overthinking at night` }
+              { ar: `تأملات استراتيجية في مخرجات الأزمة السابقة`, en: `Strategic reflections on today's crisis output` },
+              { ar: `التخطيط الاستباقي للأسوأ غداً`, en: `Proactive planning for the worst tomorrow` },
+              { ar: `تقييم الاستجابة למوقف تمرد الموظفين اليوم`, en: `Evaluate response to employee rebellion` },
+              { ar: `حوار منهجي لترتيب إغلاق الشراكة`, en: `Systematic dialogue for partnership closure` },
+              { ar: `استعراض أسباب رفض المشروع وسبل التعديل`, en: `Summarizing project rejection and pivoting` },
+              { ar: `تحليل استراتيجي لمنافس شرس ظهر اليوم`, en: `Strategic analysis of a new competitor seen today` },
+              { ar: `مراجعة أخلاقيات القرار في بيئة تسريح العمال`, en: `Review decision ethics in layoff environment` },
+              { ar: `كيفية بناء إرث مهني والنجاة من الإفلاس`, en: `How to survive bankruptcy and build a legacy` }
           ].sort(() => 0.5 - Math.random()).slice(0, 6);
       }
     }
@@ -666,19 +664,20 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, [query, language]);
 
   const ALL_CHIP_SUGGESTIONS = [
-    { ar: 'مديري يتجاهلني', en: 'My manager ignores me' },
-    { ar: 'شريكي لا يتعاون', en: 'My partner is uncooperative' },
-    { ar: 'قرار مصيري صعب', en: 'A difficult hard decision' },
-    { ar: 'توتر داخل الفريق', en: 'Tension within the team' },
-    { ar: 'عناد ومقاومة', en: 'Stubbornness & resistance' },
-    { ar: 'تردد في التغيير', en: 'Hesitation to change' },
-    { ar: 'صراع في العمل', en: 'Conflict at work' },
-    { ar: 'شخصية مستفزة', en: 'Provocative personality' },
-    { ar: 'لا يثق بنفسه', en: 'Lacks confidence' },
-    { ar: 'مقابلة صعبة', en: 'A tough interview' },
-    { ar: 'خوف من الفشل', en: 'Fear of failure' },
-    { ar: 'تشتت الانتباه', en: 'Scattered focus' },
-    { ar: 'أزمة ثقة', en: 'Crisis of trust' }
+    { ar: 'توسعة النشاط التجاري', en: 'Expanding business activity' },
+    { ar: 'إقناع المستثمرين بالمشروع', en: 'Persuading investors of the project' },
+    { ar: 'إدارة أزمة إعلامية مفاجئة', en: 'Managing a sudden media crisis' },
+    { ar: 'تحسين الثقافة المؤسسية', en: 'Improving corporate culture' },
+    { ar: 'الموازنة بين العقل والعاطفة', en: 'Balancing mind and emotion' },
+    { ar: 'ابتكار نموذج عمل تنافسي', en: 'Innovating a competitive business model' },
+    { ar: 'استراتيجيات التفاوض الصعب', en: 'Hard negotiation strategies' },
+    { ar: 'تحليل المنافسين بعمق', en: 'Deep competitor analysis' },
+    { ar: 'قرار مصيري بشأن المسار المهني', en: 'Critical career path decision' },
+    { ar: 'إدارة النزاعات داخل الفريق', en: 'Managing team conflicts' },
+    { ar: 'التعامل مع مقاومة التغيير', en: 'Dealing with resistance to change' },
+    { ar: 'بناء شراكة استراتيجية', en: 'Building a strategic partnership' },
+    { ar: 'قيادة التحول الرقمي', en: 'Leading digital transformation' },
+    { ar: 'رفع كفاءة الأداء التشغيلي', en: 'Increasing operational efficiency' }
   ];
 
   const chipSuggestions = useMemo(() => {

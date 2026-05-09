@@ -199,29 +199,53 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
                     
                     {result.tool === 'butterfly' && result.isJson ? (
-                        <div className="bg-zinc-950 text-white rounded-[40px] md:rounded-[64px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative min-h-[600px] md:min-h-[800px] flex flex-col justify-end p-8 md:p-20 border-[10px] md:border-[20px] border-zinc-900 ring-1 ring-white/20">
-                            <div className="absolute inset-0 opacity-50 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2000')] bg-cover bg-center grayscale scale-110"></div>
-                            <div className="absolute top-8 left-8 md:top-16 md:left-16 text-xs md:text-xl font-black tracking-[0.4em] text-rose-500 border-b-2 md:border-b-4 border-rose-600 pb-2 uppercase drop-shadow-2xl">
+                        <div className="bg-zinc-950 text-white rounded-[40px] md:rounded-[56px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative min-h-[500px] md:min-h-[700px] flex flex-col justify-end p-6 md:p-16 border-[8px] md:border-[16px] border-zinc-900 ring-1 ring-white/10">
+                            <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000')] bg-cover bg-center grayscale scale-105"></div>
+                            
+                            <div className="absolute top-6 left-6 md:top-12 md:left-12 text-[10px] md:text-sm font-black tracking-[0.3em] text-rose-500 border-b md:border-b-2 border-rose-600 pb-1 md:pb-2 uppercase drop-shadow-2xl z-20">
                                 {result.content.magazineName}
                             </div>
-                            <div className="relative z-10 space-y-6 md:space-y-8 max-w-5xl">
-                                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black leading-[1.0] tracking-tighter drop-shadow-[0_20px_50px_rgba(0,0,0,1)] italic uppercase text-white">
+                            
+                            <div className="relative z-10 space-y-4 md:space-y-6 max-w-4xl w-full">
+                                <motion.h1 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.0] tracking-tighter drop-shadow-2xl italic uppercase text-white"
+                                >
                                     {result.content.headline}
-                                </h1>
-                                <p className="text-xl md:text-3xl font-bold text-rose-400 max-w-3xl leading-relaxed drop-shadow-lg">
+                                </motion.h1>
+                                
+                                <motion.p 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.1 }}
+                                    className="text-lg md:text-xl lg:text-2xl font-bold text-rose-400 max-w-2xl leading-tight drop-shadow-lg"
+                                >
                                     {result.content.subheadline}
-                                </p>
-                                <div className="space-y-3 md:space-y-5 bg-black/60 backdrop-blur-3xl p-8 md:p-10 rounded-[32px] md:rounded-[48px] border border-white/20 max-w-2xl mt-8 shadow-2xl">
+                                </motion.p>
+                                
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className="space-y-2 md:space-y-3 bg-black/40 backdrop-blur-md p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-white/10 max-w-xl mt-4"
+                                >
                                     {result.content.bulletPoints?.map((pt: string, i: number) => (
-                                        <div key={i} className="text-base md:text-2xl font-bold text-white flex items-start gap-5">
-                                            <span className="text-rose-500 mt-2.5 shrink-0 w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_20px_rgba(244,63,94,1)]"></span>
+                                        <div key={i} className="text-sm md:text-base lg:text-lg font-bold text-white flex items-start gap-4">
+                                            <span className="text-rose-500 mt-1.5 shrink-0 w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,1)]"></span>
                                             {pt}
                                         </div>
                                     ))}
-                                </div>
-                                <div className="mt-12 md:mt-16 text-center pt-12 border-t border-white/20 text-xl md:text-2xl font-medium tracking-tight text-white italic font-serif leading-relaxed px-10 drop-shadow-xl">
+                                </motion.div>
+                                
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                    className="mt-8 md:mt-12 text-center pt-8 border-t border-white/10 text-base md:text-lg font-medium tracking-tight text-white italic leading-relaxed px-4 opacity-90"
+                                >
                                     "{result.content.quote}"
-                                </div>
+                                </motion.div>
                             </div>
                         </div>
                     ) : result.tool === 'vault' ? (

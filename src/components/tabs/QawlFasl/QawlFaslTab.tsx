@@ -118,7 +118,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
 
   return (
     <div 
-      className="w-full min-h-[80vh] overflow-hidden relative z-10 border border-transparent space-y-4 px-2"
+      className="w-full min-h-[80vh] relative z-10 border border-transparent space-y-4 px-2"
       onClick={(e) => {
         if (e.target === e.currentTarget && currentView !== 'home') {
           goToHome();
@@ -136,7 +136,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
         onBack={currentView !== 'home' ? goToHome : () => handleTabChange('discover', '')}
         onClose={handleExit}
       />
-      <div className="rounded-[24px] md:rounded-[32px] overflow-hidden">
+      <div className="rounded-[24px] md:rounded-[32px]">
         <AnimatePresence mode="wait">
         {currentView === 'home' && (
           <motion.div key="home" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>

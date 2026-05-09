@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, RefreshCw, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Sparkles, RefreshCw, Bookmark, BookmarkCheck, Box } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
@@ -82,7 +82,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
         className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-zinc-900 border-red-900/40 text-red-100 placeholder:text-red-900 focus:border-red-600 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-zinc-400")}
         placeholder={language === 'ar' ? "أدخل المفهوم المعقد هنا..." : "Enter complex concept here..."}
       />
-      <div className="flex gap-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <button 
           onClick={() => handleSimplify()} 
           disabled={isLoading}
@@ -100,6 +100,15 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
             <span>{language === 'ar' ? 'بسط المفهوم الآن' : 'Simplify Now'}</span>
           )}
         </button>
+        {handleTabChange && (
+          <button 
+            onClick={() => handleTabChange('ar')}
+            className="flex-1 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 cursor-pointer"
+          >
+            <Box className="w-5 h-5" />
+            <span>{language === 'ar' ? 'الواقع المعزز (AR)' : 'AR'}</span>
+          </button>
+        )}
         <button 
           onClick={() => handleSimplify(undefined, true)} 
           disabled={isLoading}

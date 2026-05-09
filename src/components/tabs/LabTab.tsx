@@ -61,7 +61,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     try {
       // Request camera and microphone
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      // Stop the stream immediately,เราแค่ต้องการให้เบราว์เซอร์ถาม
+      // Stop the stream immediately
       stream.getTracks().forEach(track => track.stop());
       setPermissionStatus('granted');
     } catch (err) {
@@ -309,7 +309,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                         className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-blue-200 transition-all"
                       >
                         <div className="w-12 h-12 bg-blue-50 rounded-[16px] flex items-center justify-center mb-6">
-                          <Zap className="text-blue-500 w-6 h-6" />
+                           <Zap className="text-blue-500 w-6 h-6" />
                         </div>
                         <h4 className="text-2xl font-bold text-black mb-3">{tool.name}</h4>
                         <p className="text-zinc-600 font-bold leading-relaxed mb-6">{tool.description}</p>
@@ -357,27 +357,27 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 )}
       
                 {activeLabTool === 'udl' && labUdl.length > 0 && (
-                  <div className="grid grid-cols-1 gap-4">
-                    {labUdl?.map((item: any, i: number) => (
-                      <motion.div 
-                        key={i} 
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white p-6 rounded-[24px] md:rounded-[32px] border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-emerald-100 transition-colors"
-                      >
-                        <div className="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold break-words text-wrap md:whitespace-nowrap shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                          {item.category}
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-bold text-black text-lg mb-1">{item.recommendation}</div>
-                          <div className="text-sm font-bold text-zinc-500">
-                            <span className="text-emerald-500 font-bold">{language === 'ar' ? 'الأثر:' : 'Impact:'}</span> {item.impact}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                   <div className="grid grid-cols-1 gap-4">
+                     {labUdl?.map((item: any, i: number) => (
+                       <motion.div 
+                         key={i} 
+                         initial={{ opacity: 0, x: -20 }}
+                         animate={{ opacity: 1, x: 0 }}
+                         transition={{ delay: i * 0.1 }}
+                         className="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white p-6 rounded-[24px] md:rounded-[32px] border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-emerald-100 transition-colors"
+                       >
+                         <div className="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold break-words text-wrap md:whitespace-nowrap shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                           {item.category}
+                         </div>
+                         <div className="flex-1">
+                           <div className="font-bold text-black text-lg mb-1">{item.recommendation}</div>
+                           <div className="text-sm font-bold text-zinc-500">
+                             <span className="text-emerald-500 font-bold">{language === 'ar' ? 'الأثر:' : 'Impact:'}</span> {item.impact}
+                           </div>
+                         </div>
+                       </motion.div>
+                     ))}
+                   </div>
                 )}
       
                 {activeLabTool === 'mindmap' && labMindMap && (
@@ -426,29 +426,29 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 )}
       
                 {activeLabTool === 'career' && labCareer.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {labCareer?.map((job: any, i: number) => (
-                      <motion.div 
-                        key={i} 
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-black transition-all group relative overflow-hidden"
-                      >
-                        <div className="absolute top-0 left-0 w-2 h-full bg-black transition-all group-hover:w-4"></div>
-                        <h4 className="text-2xl font-bold text-black mb-4 group-hover:text-black transition-colors">{job.title}</h4>
-                        <div className="space-y-6">
-                          <div>
-                            <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">{language === 'ar' ? 'المهارات المطلوبة' : 'Required Skills'}</div>
-                            <p className="text-sm font-bold text-zinc-600 leading-relaxed">{job.skills}</p>
-                          </div>
-                          <div className="bg-brand-emerald/5 p-4 rounded-[16px] border border-brand-emerald/10 text-xs font-bold text-brand-emerald text-center">
-                            <span className="bg-brand-emerald text-white px-2 py-0.5 rounded mr-1">🚀</span> {job.impact}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                     {labCareer?.map((job: any, i: number) => (
+                       <motion.div 
+                         key={i} 
+                         initial={{ opacity: 0, scale: 0.95 }}
+                         animate={{ opacity: 1, scale: 1 }}
+                         transition={{ delay: i * 0.1 }}
+                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-black transition-all group relative overflow-hidden"
+                       >
+                         <div className="absolute top-0 left-0 w-2 h-full bg-black transition-all group-hover:w-4"></div>
+                         <h4 className="text-2xl font-bold text-black mb-4 group-hover:text-black transition-colors">{job.title}</h4>
+                         <div className="space-y-6">
+                           <div>
+                             <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-2">{language === 'ar' ? 'المهارات المطلوبة' : 'Required Skills'}</div>
+                             <p className="text-sm font-bold text-zinc-600 leading-relaxed">{job.skills}</p>
+                           </div>
+                           <div className="bg-brand-emerald/5 p-4 rounded-[16px] border border-brand-emerald/10 text-xs font-bold text-brand-emerald text-center">
+                             <span className="bg-brand-emerald text-white px-2 py-0.5 rounded mr-1">🚀</span> {job.impact}
+                           </div>
+                         </div>
+                       </motion.div>
+                     ))}
+                   </div>
                 )}
       
                 {activeLabTool === 'workshop' && labWorkshop && (
@@ -510,8 +510,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        >
                           <div className="absolute top-0 right-0 p-8 text-6xl opacity-5 select-none">🧊</div>
                           <h4 className="text-2xl font-bold text-black mb-6 flex items-center gap-3">
-                            <span className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-black text-xl">🧊</span>
-                            {language === 'ar' ? 'كسر الجليد' : 'Ice Breaker'}
+                             <span className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-black text-xl">🧊</span>
+                             {language === 'ar' ? 'كسر الجليد' : 'Ice Breaker'}
                           </h4>
                           <p className="text-2xl md:text-3xl font-bold leading-tight text-black mb-4">"{labWorkshop?.icebreaker?.title}"</p>
                           <p className="text-zinc-500 font-bold leading-relaxed">{labWorkshop?.icebreaker?.description}</p>
@@ -524,12 +524,12 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        >
                           <div className="absolute top-0 right-0 p-8 text-6xl opacity-5 select-none">🤝</div>
                           <h4 className="text-2xl font-bold text-black mb-6 flex items-center gap-3">
-                            <span className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 text-xl">🤝</span>
-                            {language === 'ar' ? 'النشاط التفاعلي' : 'Interactive Activity'}
+                             <span className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 text-xl">🤝</span>
+                             {language === 'ar' ? 'النشاط التفاعلي' : 'Interactive Activity'}
                           </h4>
                           <h5 className="text-2xl font-bold text-black mb-3">{labWorkshop?.interactive_activity?.title}</h5>
                           <p className="text-zinc-500 font-bold leading-relaxed bg-emerald-50/50 p-6 rounded-[16px] border border-emerald-100/50 italic">
-                            {labWorkshop?.interactive_activity?.instructions}
+                             {labWorkshop?.interactive_activity?.instructions}
                           </p>
                        </motion.div>
                     </div>
@@ -588,40 +588,40 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                         <h3 className="font-bold text-lg flex items-center gap-2">
                             <Box className="w-5 h-5" />
-                            {language === 'ar' ? 'بوابة تبيان للواقع المعزز (AR)' : 'Tibyan AR Gateway'}
+                            {language === 'ar' ? 'الواقع المعزز (AR) - ما هي فائدته؟' : 'AR Experience - What is its purpose?'}
                         </h3>
                         {permissionStatus !== 'granted' && (
                             <button 
                               onClick={requestPermissions}
-                              className="px-4 py-2 bg-indigo-600 text-white rounded-full text-xs font-black shadow-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                              className="px-4 py-2 bg-indigo-600 text-white rounded-full text-xs font-black shadow-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors pointer-events-auto"
                             >
                                 <Camera className="w-3 h-3" />
-                                {language === 'ar' ? 'تفعيل الكاميرا والميكروفون' : 'Enable Camera & Mic'}
+                                {language === 'ar' ? 'تفعيل الكاميرا للواقع' : 'Enable Camera'}
                             </button>
                         )}
                       </div>
-                      <p className="font-medium text-sm leading-relaxed">
+                      <p className="font-medium text-sm leading-relaxed text-indigo-900">
                         {language === 'ar' 
-                          ? 'استعرض النماذج ثلاثية الأبعاد مباشرة في متصفحك. إذا كنت تستخدم الهاتف، اضغط على زر "عرض في الواقع" لوضع المجسم في بيئتك.' 
-                          : 'Preview 3D models directly in your browser. On mobile, click "View in AR" to place the object in your environment.'}
+                          ? 'استعرض النماذج ثلاثية الأبعاد بمتصفحك، نحن نؤمن أن رؤية الأفكار المعقدة كمجسمات ملموسة تعزز الفهم العميق والذاكرة البصرية الاستراتيجية. حالياً نحن نختبر التقنية بمجسمات بصرية لضمان التوافق مع أجهزة (Apple و Android). وسنقوم لاحقاً بربط المحرك لتحويل تحليلاتكم واستشاراتكم إلى مجسمات حقيقية تتأملونها في غرفكم.' 
+                          : 'Preview 3D models in your browser. Tangibilizing ideas enhances strategic visual memory. We are testing this engine with generic 3D assets to ensure mobile compatibility, and will soon connect it to dynamically-generated concepts.'}
                       </p>
-                      <div className="mt-4 p-3 bg-white/50 rounded-xl border border-indigo-100 text-[10px] md:text-xs font-black uppercase tracking-widest text-indigo-400">
-                         {language === 'ar' ? '💡 ملاحظة: يجب فتح التطبيق في المتصفح الخارجي (Chrome/Safari) ليظهر خيار AR على هاتفك.' : '💡 NOTE: Use an external browser (Chrome/Safari) on mobile for AR to work correctly.'}
+                      <div className="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-200 text-[10px] md:text-xs font-black uppercase tracking-widest text-[#5A5A40]">
+                         {language === 'ar' ? '💡 التوافقية: افتح التطبيق بمتصفح خارجي (استخدم Safari للآيفون أو Chrome للأندرويد) واضغط عرض في غرفتي.' : '💡 Compatibility: Use external browser (Safari/Chrome).'}
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pointer-events-auto">
                       {/* Integrated Model Viewer - Example 1 */}
                       <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group"
+                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group relative z-50"
                       >
                          <div className="w-full h-80 bg-zinc-50 relative">
                             <model-viewer
                               src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb"
-                              ios-src="https://developer.apple.com/augmented-reality/quick-look/models/stratocaster/fender_stratocaster.usdz"
-                              alt="A 3D model of a helmet"
+                              ios-src="https://developer.apple.com/augmented-reality/quick-look/models/cosmonaut/cosmonaut.usdz"
+                              alt="A 3D model representing the Explorer Vision"
                               ar
                               ar-modes="webxr scene-viewer quick-look"
                               camera-controls
@@ -629,18 +629,21 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                               shadow-intensity="1"
                               style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
                             >
-                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform">
+                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform cursor-pointer pointer-events-auto" />
+                            </model-viewer>
+                            <div className="absolute bottom-4 right-4 pointer-events-none">
+                                <div className="bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl">
                                    <Zap className="w-3 h-3" />
                                    {language === 'ar' ? 'عرض في غرفتي' : 'View in my room'}
-                                </button>
-                            </model-viewer>
+                                </div>
+                            </div>
                          </div>
                          <div className="p-6 border-t border-zinc-100">
                             <h4 className="text-xl font-bold mb-2">
-                              {language === 'ar' ? 'خوذة الابتكار' : 'Innovation Helmet'}
+                              {language === 'ar' ? 'تجربة ١: خوذة الاستكشاف' : 'Test 1: Explorer Helmet'}
                             </h4>
                             <p className="text-zinc-500 font-medium text-sm">
-                              {language === 'ar' ? 'نموذج تجريبي لاختبار دقة التفاصيل في بيئات مختلفة.' : 'A sample model to test detail accuracy in different environments.'}
+                              {language === 'ar' ? 'هذا المجسم لاختبار انعكاسات الإضاءة في الغرفة والتأكد من توافق التقنيات.' : 'A model to test lighting and shadows compatibility.'}
                             </p>
                          </div>
                       </motion.div>
@@ -650,12 +653,13 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group"
+                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group relative z-50"
                       >
                          <div className="w-full h-80 bg-zinc-50 relative">
                             <model-viewer
-                              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb"
-                              alt="A 3D model of a duck"
+                              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb"
+                              ios-src="https://developer.apple.com/augmented-reality/quick-look/models/retrotv/retrotv.usdz"
+                              alt="A 3D model of a Neural Hub"
                               ar
                               ar-modes="webxr scene-viewer quick-look"
                               camera-controls
@@ -663,18 +667,21 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                               shadow-intensity="1"
                               style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
                             >
-                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform">
+                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform cursor-pointer pointer-events-auto" />
+                            </model-viewer>
+                            <div className="absolute bottom-4 right-4 pointer-events-none">
+                                <div className="bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl">
                                    <Zap className="w-3 h-3" />
                                    {language === 'ar' ? 'عرض في غرفتي' : 'View in my room'}
-                                </button>
-                            </model-viewer>
+                                </div>
+                            </div>
                          </div>
                          <div className="p-6 border-t border-zinc-100">
                             <h4 className="text-xl font-bold mb-2">
-                              {language === 'ar' ? 'البطة العلمية' : 'The Knowledge Duck'}
+                              {language === 'ar' ? 'تجربة ٢: نافذة الابتكار (دعم Apple)' : 'Test 2: Innovation Window (Apple Support)'}
                             </h4>
                             <p className="text-zinc-500 font-medium text-sm">
-                              {language === 'ar' ? 'مجسم بسيط موجه للأطفال لتبسيط مفاهيم الكثافة والعوم.' : 'A simple model for kids to simplify concepts of density and buoyancy.'}
+                              {language === 'ar' ? 'هذا المجسم يعالج مشكلة ظهور الواقع المعزز على أجهزة (أبل iOS)، وتمت إضافة صيغة usdz.' : 'This model fixes AR display issues on Apple iOS devices by adding usdz format.'}
                             </p>
                          </div>
                       </motion.div>
