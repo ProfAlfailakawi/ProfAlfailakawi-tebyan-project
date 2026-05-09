@@ -27,8 +27,9 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
 
   React.useEffect(() => {
     const fetchSuggestion = async () => {
-      // Don't suggest for short inputs to save tokens/noise
-      if (input.trim().split(/\s+/).length < 2) {
+      const trimmed = input.trim();
+      // Only suggest if input is long enough
+      if (trimmed.length < 3) {
         setSuggestion('');
         return;
       }
@@ -36,10 +37,15 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       setIsSuggesting(true);
       try {
         const { generateSearchSuggestions } = await import('../../services/gemini');
-        const res = await generateSearchSuggestions(input, language);
-        setSuggestion(res);
+        const res = await generateSearchSuggestions(trimmed, language);
+        if (res && res !== trimmed) {
+          setSuggestion(res);
+        } else {
+          setSuggestion('');
+        }
       } catch (err) {
         console.error("Autocomplete error:", err);
+        setSuggestion('');
       } finally {
         setIsSuggesting(false);
       }
@@ -51,7 +57,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       } else {
         setSuggestion('');
       }
-    }, 800);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [input, language, isLoading]);
@@ -73,6 +79,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     if (!input.trim() || isLoading) return;
     setIsLoading(true);
     setError(null);
+    setSuggestion(''); // Clear suggestion when running
     try {
       const { universalOracle } = await import('../../services/gemini');
       const promptInstructed = `${input}\n\nيرجى تقديم الإجابة في نقاط قصيرة ومباشرة وفقرات صغيرة جداً لتسهيل القراءة على الهاتف.`;
@@ -149,34 +156,44 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         
         {/* Smart Autocomplete Suggestion */}
         <AnimatePresence>
-          {suggestion && !isLoading && (
+          {(suggestion || isSuggesting) && !isLoading && (
             <motion.div
               initial={{ opacity: 0, y: -5, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -5, scale: 0.95 }}
               className={cn(
-                "absolute left-0 right-0 top-full mt-2 z-20 flex",
-                language === 'ar' ? "justify-end" : "justify-start",
-                "sm:justify-start md:px-0"
+                "absolute left-0 right-0 top-full mt-2 z-40 flex px-2 md:px-0",
+                language === 'ar' ? "justify-end md:justify-start" : "justify-start"
               )}
             >
-              <button
-                onClick={() => {
-                  setInput(prev => prev.trim() + ' ' + suggestion);
-                  setSuggestion('');
-                }}
-                className="bg-zinc-900 text-white px-4 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-medium hover:bg-black transition-all flex items-center gap-2 md:gap-3 group shadow-xl max-w-[95%] md:max-w-[90%] active:scale-95 touch-manipulation border border-white/10"
-              >
-                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-500" />
+              {isSuggesting ? (
+                <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 text-zinc-500 shadow-xl border border-zinc-100">
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                  <span className="text-[10px] font-black tracking-widest uppercase">
+                    {language === 'ar' ? 'تبيان تستكشف...' : 'Tibyan Exploring...'}
+                  </span>
                 </div>
-                <div className="flex flex-col items-start overflow-hidden text-right">
-                   <span className="text-[9px] md:text-[10px] text-amber-500 font-bold uppercase tracking-widest mb-0.5 opacity-80">
-                    {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
-                   </span>
-                   <span className="line-clamp-1 text-right w-full truncate text-zinc-100">{suggestion}</span>
-                </div>
-              </button>
+              ) : suggestion && (
+                <button
+                  onClick={() => {
+                    setInput(prev => prev.trim() + ' ' + suggestion);
+                    setSuggestion('');
+                  }}
+                  className="bg-black text-white p-1 rounded-[22px] md:rounded-3xl flex items-center gap-3 pr-4 group shadow-2xl max-w-[95%] md:max-w-[90%] active:scale-95 transition-all border border-white/10"
+                >
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-zinc-800 flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+                  </div>
+                  <div className="flex flex-col items-start overflow-hidden text-right py-1">
+                    <span className="text-[9px] text-emerald-400 font-black uppercase tracking-tighter opacity-80">
+                      {language === 'ar' ? 'تكملة ذكية' : 'Smart Completion'}
+                    </span>
+                    <div className="text-[11px] md:text-sm font-bold text-zinc-100 line-clamp-1 truncate">
+                      {suggestion}
+                    </div>
+                  </div>
+                </button>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

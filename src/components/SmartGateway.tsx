@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, RefreshCw } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -98,6 +98,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
+  const [suggestion, setSuggestion] = useState('');
+  const [isSuggesting, setIsSuggesting] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   
   const [challengeIndex, setChallengeIndex] = useState(0);
@@ -131,6 +133,42 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const [isThinking, setIsThinking] = useState(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
   const [showFollowUp, setShowFollowUp] = useState(false);
+
+  useEffect(() => {
+    const fetchSuggestion = async () => {
+      const trimmed = query.trim();
+      if (trimmed.length < 3) {
+        setSuggestion('');
+        return;
+      }
+      
+      setIsSuggesting(true);
+      try {
+        const { generateSearchSuggestions } = await import('../services/gemini');
+        const res = await generateSearchSuggestions(trimmed, language);
+        if (res && res !== trimmed) {
+          setSuggestion(res);
+        } else {
+          setSuggestion('');
+        }
+      } catch (err) {
+        console.error("Autocomplete error:", err);
+        setSuggestion('');
+      } finally {
+        setIsSuggesting(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (query.trim() && !isThinking) {
+        fetchSuggestion();
+      } else {
+        setSuggestion('');
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [query, language, isThinking]);
 
   const loadingPhrasesAr = [
       'جاري تشريح الأبعاد الاستراتيجية...',
@@ -934,7 +972,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                <div className="absolute inset-0 bg-indigo-500/10 blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none" />
             )}
             <div className={cn(
-              "flex items-center w-full max-w-2xl rounded-3xl p-2 transition-all duration-300",
+              "flex items-center w-full max-w-2xl rounded-3xl p-1.5 md:p-2 transition-all duration-300",
               isFocused ? "shadow-xl border-zinc-300 ring-2 ring-zinc-100" : "shadow-sm border-zinc-200",
               getFluidStyles(),
               getFluidAmbient()
@@ -950,20 +988,68 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder={language === 'ar' ? 'ابدأ بالكتابة...' : 'Start typing...'}
-                className="flex-1 bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400"
+                className="flex-1 bg-transparent border-none outline-none p-3 md:p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 min-w-0"
                 autoFocus
               />
               
               <button 
                 type="submit"
                 className={cn(
-                  "bg-black text-white p-3 md:p-4 rounded-2xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
+                  "bg-black text-white p-2.5 md:p-4 rounded-2xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
                   query.length > 0 ? "opacity-100" : "opacity-30 pointer-events-none"
                 )}
               >
                   <Search className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
+
+            {/* Smart Autocomplete Suggestion */}
+            <AnimatePresence>
+              {(suggestion || isSuggesting) && !isThinking && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                  className={cn(
+                    "absolute left-0 right-0 top-full mt-2 z-40 flex px-4 md:px-0",
+                    language === 'ar' ? "justify-end md:justify-start" : "justify-start"
+                  )}
+                >
+                  {isSuggesting ? (
+                    <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl flex items-center gap-2 text-zinc-500 shadow-xl border border-zinc-100">
+                      <RefreshCw className="w-3 h-3 animate-spin" />
+                      <span className="text-[10px] font-black tracking-widest uppercase">
+                        {language === 'ar' ? 'تبيان تستكشف...' : 'Tibyan Exploring...'}
+                      </span>
+                    </div>
+                  ) : suggestion && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery(prev => prev.trim() + ' ' + suggestion);
+                        setSuggestion('');
+                      }}
+                      className="bg-black text-white p-1 rounded-[22px] md:rounded-3xl flex items-center gap-3 pr-4 group shadow-2xl max-w-full active:scale-95 transition-all border border-white/10"
+                    >
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-zinc-800 flex items-center justify-center shrink-0">
+                        <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+                      </div>
+                      <div className="flex flex-col items-start overflow-hidden text-right py-1">
+                        <span className="text-[9px] text-emerald-400 font-black uppercase tracking-tighter opacity-80">
+                          {language === 'ar' ? 'تكملة ذكية' : 'Smart Completion'}
+                        </span>
+                        <div className="text-[11px] md:text-sm font-bold text-zinc-100 line-clamp-1 truncate max-w-[200px] md:max-w-md">
+                          {suggestion}
+                        </div>
+                      </div>
+                      <div className="ml-2 w-6 h-6 rounded-full bg-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                         <Search className="w-3 h-3" />
+                      </div>
+                    </button>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <AnimatePresence>
@@ -1169,7 +1255,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             {(isThinking || hasSearched)  && (
                  <motion.div 
                     key="mobile-suggestions"
-                    className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
+                    className="md:hidden border-t px-4 py-8 space-y-8 bg-zinc-50/50"
                  >
                     {isThinking ? (
                         <div className="py-12 flex flex-col items-center justify-center gap-6">
