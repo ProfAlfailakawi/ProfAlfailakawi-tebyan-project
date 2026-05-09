@@ -22,8 +22,7 @@ const labTools = [
   { id: 'mindmap', ar: 'خريطة ذهنية', en: 'Mind Map', tooltip: { ar: 'توليد خرائط ذهنية بصرية للمفاهيم المعقدة', en: 'Generate visual mind maps for complex concepts' } },
   { id: 'family', ar: 'التبسيط الشامل', en: 'Universal Explain', tooltip: { ar: 'تبسيط المعلومات المعقدة لشرحها لأي شخص', en: 'Simplify complex info for anyone' } },
   { id: 'career', ar: 'خريطة المهن', en: 'Career Map', tooltip: { ar: 'رسم مسارات مهنية مستقبلية مبنية على المهارات', en: 'Map future careers based on skills' } },
-  { id: 'workshop', ar: 'مصنع الورش', en: 'Workshop Factory', tooltip: { ar: 'تصميم ورش عمل ولقاءات تفاعلية متكاملة', en: 'Design complete interactive workshops' } },
-  { id: 'artest', ar: 'مختبر تبيان للواقع المعزز (AR) ✨', en: 'Tibyan AR Lab ✨', tooltip: { ar: 'تجسيد الأفكار في عالمك الحقيقي عبر الواقع المعزز', en: 'Manifest ideas in your real world with AR' } }
+  { id: 'workshop', ar: 'مصنع الورش', en: 'Workshop Factory', tooltip: { ar: 'تصميم ورش عمل ولقاءات تفاعلية متكاملة', en: 'Design complete interactive workshops' } }
 ];
 
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
@@ -71,10 +70,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   };
 
   React.useEffect(() => {
-    if (activeLabTool === 'artest' && permissionStatus === 'idle') {
-      requestPermissions();
-    }
-  }, [activeLabTool, permissionStatus]);
+    // Only collider check if needed
+  }, [activeLabTool]);
 
   const resetAllLabResults = () => {
     setLabColliderResult(null);
@@ -193,7 +190,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 />
             )}
             
-            {activeLabTool !== 'artest' && (
+            {true && (
               <button 
                 onClick={handleRunLabTool} 
                 disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
@@ -582,114 +579,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     </motion.div>
                   </div>
                 )}
-                 {activeLabTool === 'artest' && (
-                  <div className="space-y-6">
-                    <div className="bg-indigo-50 border border-indigo-100 rounded-[24px] p-6 mb-8 text-indigo-800">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                        <h3 className="font-bold text-lg flex items-center gap-2">
-                            <Box className="w-5 h-5" />
-                            {language === 'ar' ? 'الواقع المعزز (AR) - ما هي فائدته؟' : 'AR Experience - What is its purpose?'}
-                        </h3>
-                        {permissionStatus !== 'granted' && (
-                            <button 
-                              onClick={requestPermissions}
-                              className="px-4 py-2 bg-indigo-600 text-white rounded-full text-xs font-black shadow-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors pointer-events-auto"
-                            >
-                                <Camera className="w-3 h-3" />
-                                {language === 'ar' ? 'تفعيل الكاميرا للواقع' : 'Enable Camera'}
-                            </button>
-                        )}
-                      </div>
-                      <p className="font-medium text-sm leading-relaxed text-indigo-900">
-                        {language === 'ar' 
-                          ? 'استعرض النماذج ثلاثية الأبعاد بمتصفحك، نحن نؤمن أن رؤية الأفكار المعقدة كمجسمات ملموسة تعزز الفهم العميق والذاكرة البصرية الاستراتيجية. حالياً نحن نختبر التقنية بمجسمات بصرية لضمان التوافق مع أجهزة (Apple و Android). وسنقوم لاحقاً بربط المحرك لتحويل تحليلاتكم واستشاراتكم إلى مجسمات حقيقية تتأملونها في غرفكم.' 
-                          : 'Preview 3D models in your browser. Tangibilizing ideas enhances strategic visual memory. We are testing this engine with generic 3D assets to ensure mobile compatibility, and will soon connect it to dynamically-generated concepts.'}
-                      </p>
-                      <div className="mt-4 p-3 bg-white/80 rounded-xl border border-indigo-200 text-[10px] md:text-xs font-black uppercase tracking-widest text-[#5A5A40]">
-                         {language === 'ar' ? '💡 التوافقية: افتح التطبيق بمتصفح خارجي (استخدم Safari للآيفون أو Chrome للأندرويد) واضغط عرض في غرفتي.' : '💡 Compatibility: Use external browser (Safari/Chrome).'}
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pointer-events-auto">
-                      {/* Integrated Model Viewer - Example 1 */}
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group relative z-50"
-                      >
-                         <div className="w-full h-80 bg-zinc-50 relative">
-                            <model-viewer
-                              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb"
-                              ios-src="https://developer.apple.com/augmented-reality/quick-look/models/cosmonaut/cosmonaut.usdz"
-                              alt="A 3D model representing the Explorer Vision"
-                              ar
-                              ar-modes="webxr scene-viewer quick-look"
-                              camera-controls
-                              poster="poster.webp"
-                              shadow-intensity="1"
-                              style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
-                            >
-                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform cursor-pointer pointer-events-auto" />
-                            </model-viewer>
-                            <div className="absolute bottom-4 right-4 pointer-events-none">
-                                <div className="bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl">
-                                   <Zap className="w-3 h-3" />
-                                   {language === 'ar' ? 'عرض في غرفتي' : 'View in my room'}
-                                </div>
-                            </div>
-                         </div>
-                         <div className="p-6 border-t border-zinc-100">
-                            <h4 className="text-xl font-bold mb-2">
-                              {language === 'ar' ? 'تجربة ١: خوذة الاستكشاف' : 'Test 1: Explorer Helmet'}
-                            </h4>
-                            <p className="text-zinc-500 font-medium text-sm">
-                              {language === 'ar' ? 'هذا المجسم لاختبار انعكاسات الإضاءة في الغرفة والتأكد من توافق التقنيات.' : 'A model to test lighting and shadows compatibility.'}
-                            </p>
-                         </div>
-                      </motion.div>
-
-                      {/* Integrated Model Viewer - Example 2 */}
-                      <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="bg-white rounded-[32px] overflow-hidden border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col group relative z-50"
-                      >
-                         <div className="w-full h-80 bg-zinc-50 relative">
-                            <model-viewer
-                              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb"
-                              ios-src="https://developer.apple.com/augmented-reality/quick-look/models/retrotv/retrotv.usdz"
-                              alt="A 3D model of a Neural Hub"
-                              ar
-                              ar-modes="webxr scene-viewer quick-look"
-                              camera-controls
-                              auto-rotate
-                              shadow-intensity="1"
-                              style={{ width: '100%', height: '100%', backgroundColor: 'transparent' }}
-                            >
-                                <button slot="ar-button" className="absolute bottom-4 right-4 bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl active:scale-95 transition-transform cursor-pointer pointer-events-auto" />
-                            </model-viewer>
-                            <div className="absolute bottom-4 right-4 pointer-events-none">
-                                <div className="bg-black text-white px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-xl">
-                                   <Zap className="w-3 h-3" />
-                                   {language === 'ar' ? 'عرض في غرفتي' : 'View in my room'}
-                                </div>
-                            </div>
-                         </div>
-                         <div className="p-6 border-t border-zinc-100">
-                            <h4 className="text-xl font-bold mb-2">
-                              {language === 'ar' ? 'تجربة ٢: نافذة الابتكار (دعم Apple)' : 'Test 2: Innovation Window (Apple Support)'}
-                            </h4>
-                            <p className="text-zinc-500 font-medium text-sm">
-                              {language === 'ar' ? 'هذا المجسم يعالج مشكلة ظهور الواقع المعزز على أجهزة (أبل iOS)، وتمت إضافة صيغة usdz.' : 'This model fixes AR display issues on Apple iOS devices by adding usdz format.'}
-                            </p>
-                         </div>
-                      </motion.div>
-
-                    </div>
-                  </div>
-                )}
-              </>
+             </>
             )}
          </div>
        </div>

@@ -9,7 +9,10 @@ import { StoryTab } from './StoryTab';
 import { RippleEffectTab } from './RippleEffectTab';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
-  const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story' | 'ripple'>('lab');
+  const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story' | 'ripple'>(() => {
+    if (window.location.search.includes('ripple=')) return 'ripple';
+    return 'lab';
+  });
 
   const tabs = [
     { id: 'lab', label: language === 'ar' ? 'المختبر الأصلي' : 'Original Lab', icon: Zap },

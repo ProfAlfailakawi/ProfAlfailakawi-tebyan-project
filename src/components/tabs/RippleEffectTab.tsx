@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, UserCircle, Activity } from 'lucide-react';
+import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, UserCircle, Activity, Trash2, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { generateARSimulation } from '../../services/gemini'; // Dummy just for import if needed
+import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../lib/firebase';
+
+const ripplesCollection = collection(db, 'ripples');
 
 interface RippleNode {
     id: string;
     text: string;
     author: string;
+    authorId?: string;
     type: 'seed' | 'branch' | 'implementation';
     children: RippleNode[];
     likes: number;
@@ -19,6 +23,7 @@ const DUMMY_RIPPLES: RippleNode[] = [
         id: '1',
         text: 'مقهى يجمع بين العمل ومكتبة صوتية هادئة',
         author: 'أنت',
+        authorId: 'dummy-1',
         type: 'seed',
         likes: 142,
         timestamp: 'قبل يومين',
@@ -27,6 +32,7 @@ const DUMMY_RIPPLES: RippleNode[] = [
                 id: '1-1',
                 text: 'إضافة غرف عزل صوتي للاجتماعات الصغيرة',
                 author: 'أحمد سعيد',
+                authorId: 'dummy-2',
                 type: 'branch',
                 likes: 56,
                 timestamp: 'قبل يوم',
@@ -35,6 +41,7 @@ const DUMMY_RIPPLES: RippleNode[] = [
                         id: '1-1-1',
                         text: 'تطبيق لحجز الغرف بالساعة',
                         author: 'فريق CodeLabs',
+                        authorId: 'dummy-3',
                         type: 'implementation',
                         likes: 89,
                         timestamp: 'منذ 5 ساعات',
@@ -46,6 +53,7 @@ const DUMMY_RIPPLES: RippleNode[] = [
                 id: '1-2',
                 text: 'توفير اشتراكات شهرية للقهوة مع مساحة العمل',
                 author: 'سارة خالد',
+                authorId: 'dummy-4',
                 type: 'branch',
                 likes: 34,
                 timestamp: 'قبل 12 ساعة',
@@ -57,6 +65,7 @@ const DUMMY_RIPPLES: RippleNode[] = [
         id: '2',
         text: 'تطبيق يساعد في تنظيف البيئة بمقابل نقاط مكافآت',
         author: 'مستخدم_١٩٨',
+        authorId: 'dummy-5',
         type: 'seed',
         likes: 412,
         timestamp: 'قبل أسبوع',
@@ -65,6 +74,7 @@ const DUMMY_RIPPLES: RippleNode[] = [
                 id: '2-1',
                 text: 'التعاون مع السوبرماركت لاستبدال النقاط بمقاضي',
                 author: 'نور الدين',
+                authorId: 'dummy-6',
                 type: 'branch',
                 likes: 120,
                 timestamp: 'قبل 4 أيام',
@@ -75,32 +85,131 @@ const DUMMY_RIPPLES: RippleNode[] = [
 ];
 
 export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
-    const [ripples, setRipples] = useState<RippleNode[]>(DUMMY_RIPPLES);
+    const [ripplesFlat, setRipplesFlat] = useState<any[]>([]);
+    const [search, setSearch] = useState('');
     const [newIdea, setNewIdea] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-    const handleDropIdea = () => {
+    useEffect(() => {
+        if (toast) {
+            const timer = setTimeout(() => setToast(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast]);
+
+    useEffect(() => {
+        const q = query(ripplesCollection, orderBy('timestamp', 'desc'));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            setRipplesFlat(data);
+        });
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetId = urlParams.get('ripple');
+        if (targetId && ripplesFlat.length > 0) {
+            setTimeout(() => {
+                const element = document.getElementById(`ripple-${targetId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    element.classList.add('ring-4', 'ring-emerald-500', 'ring-offset-8');
+                    setTimeout(() => {
+                        element.classList.remove('ring-4', 'ring-emerald-500', 'ring-offset-8');
+                    }, 3000);
+                }
+            }, 500);
+        }
+    }, [ripplesFlat]);
+
+    // Helper to build tree from flat list
+    const buildTree = (nodes: any[]): RippleNode[] => {
+        const map = new Map();
+        nodes.forEach(node => map.set(node.id, { ...node, children: [] }));
+        const tree: RippleNode[] = [];
+        nodes.forEach(node => {
+            if (node.parentId && map.has(node.parentId)) {
+                map.get(node.parentId).children.push(map.get(node.id));
+            } else {
+                tree.push(map.get(node.id));
+            }
+        });
+        return tree;
+    };
+
+    const ripples = buildTree(ripplesFlat);
+
+    const handleDropIdea = async () => {
         if (!newIdea.trim()) return;
         setIsSubmitting(true);
-        setTimeout(() => {
-            const newRipple: RippleNode = {
-                id: Date.now().toString(),
+        try {
+            await addDoc(ripplesCollection, {
                 text: newIdea,
-                author: language === 'ar' ? 'أنت' : 'You',
+                author: auth.currentUser?.displayName || 'Anonymous',
+                authorId: auth.currentUser?.uid || 'anon',
                 type: 'seed',
                 likes: 0,
-                timestamp: language === 'ar' ? 'الآن' : 'Just now',
-                children: []
-            };
-            setRipples([newRipple, ...ripples]);
+                timestamp: new Date().toISOString(),
+                parentId: null
+            });
             setNewIdea('');
+        } catch (error) {
+            console.error("Error adding idea:", error);
+        } finally {
             setIsSubmitting(false);
-        }, 1500);
+        }
+    };
+
+    const handleLike = async (node: RippleNode) => {
+        if (!auth.currentUser) return;
+        const likeRef = doc(db, 'ripples', node.id, 'likes', auth.currentUser.uid);
+        const likeSnap = await getDoc(likeRef);
+        
+        if (!likeSnap.exists()) {
+            await setDoc(likeRef, { userId: auth.currentUser.uid });
+            await updateDoc(doc(db, 'ripples', node.id), { likes: increment(1) });
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        try {
+            await deleteDoc(doc(db, 'ripples', id));
+            setToast({ message: language === 'ar' ? 'تم الحذف بنجاح' : 'Deleted successfully', type: 'success' });
+        } catch (error) {
+            console.error("Error deleting:", error);
+            setToast({ message: language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Error deleting', type: 'error' });
+        }
+    };
+
+    const handleAddReply = async (parentId: string, text: string) => {
+        try {
+            await addDoc(ripplesCollection, {
+                text,
+                author: auth.currentUser?.displayName || 'Anonymous',
+                authorId: auth.currentUser?.uid || 'anon',
+                type: 'branch',
+                likes: 0,
+                timestamp: new Date().toISOString(),
+                parentId
+            });
+        } catch (error) {
+            console.error("Error replying:", error);
+        }
     };
 
     const RippleNodeComponent = ({ node, level = 0 }: { node: RippleNode; level?: number }) => {
+        // For visibility: user is owner (new data), or admin, or old data owner (fallback)
+        const isUserIdea = node.authorId === auth.currentUser?.uid || 
+                          (node.author === (language === 'ar' ? 'أنت' : 'You') && !node.authorId) ||
+                          auth.currentUser?.email?.toLowerCase().includes('alfailakawidrahmad') || 
+                          auth.currentUser?.email?.toLowerCase().includes('dr.ahmad');
+        const [showReply, setShowReply] = useState(false);
+        const [replyText, setReplyText] = useState('');
+
         return (
-            <div className="relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+            <div className="relative" id={`ripple-${node.id}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
                 <div className={cn(
                     "relative z-10 flex gap-4 md:gap-6 group",
                     level === 0 ? "mb-8" : "mb-6 mt-4"
@@ -118,7 +227,7 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                         node.type === 'seed' ? "bg-indigo-600 border-indigo-200 text-white" :
                         node.type === 'branch' ? "bg-emerald-500 border-emerald-200 text-white" :
                         "bg-amber-500 border-amber-200 text-white",
-                        level > 0 && (language === 'ar' ? "mr-12" : "ml-12") // Indent
+                        level > 0 && (language === 'ar' ? "mr-12" : "ml-12")
                     )}>
                         {node.type === 'seed' ? <Globe className="w-5 h-5" /> : 
                          node.type === 'branch' ? <Network className="w-5 h-5" /> :
@@ -150,16 +259,52 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                          
                          <div className="flex items-center justify-between border-t border-zinc-50 pt-3">
                              <div className="flex items-center gap-4 text-xs font-bold text-zinc-500">
-                                 <div className="flex items-center gap-1 hover:text-rose-500 cursor-pointer transition-colors">
+                                 <button onClick={() => handleLike(node)} className="flex items-center gap-1 hover:text-rose-500 cursor-pointer transition-colors">
                                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                                      {node.likes}
-                                 </div>
-                                 <div className="flex items-center gap-1 hover:text-indigo-500 cursor-pointer transition-colors">
+                                 </button>
+                                 <button onClick={() => setShowReply(!showReply)} className="flex items-center gap-1 hover:text-indigo-500 cursor-pointer transition-colors">
+                                     <Network className="w-4 h-4" />
+                                     {language === 'ar' ? 'تطوير' : 'Branch'}
+                                 </button>
+                                 <button onClick={() => {
+                                     const baseUrl = window.location.origin + window.location.pathname;
+                                     const params = new URLSearchParams(window.location.search);
+                                     params.set('tab', 'creativelab');
+                                     params.set('ripple', node.id);
+                                     navigator.clipboard.writeText(baseUrl + '?' + params.toString());
+                                     setToast({ message: language === 'ar' ? 'تم نسخ الرابط الحصري' : 'Direct link copied!', type: 'success' });
+                                 }} className="flex items-center gap-2 hover:text-emerald-500 cursor-pointer transition-colors px-2 py-1 bg-zinc-50 rounded-lg">
                                      <Share2 className="w-4 h-4" />
-                                     {language === 'ar' ? 'بناء على هذه الفكرة' : 'Branch out'}
-                                 </div>
+                                     {language === 'ar' ? 'مشاركة' : 'Share'}
+                                 </button>
+                                 {isUserIdea && (
+                                     <button 
+                                         onClick={() => {
+                                             if(window.confirm(language === 'ar' ? 'هل أنت متأكد من الحذف؟' : 'Are you sure you want to delete?')) {
+                                                handleDelete(node.id);
+                                             }
+                                         }} 
+                                         className="flex items-center gap-1 hover:text-rose-600 font-bold cursor-pointer transition-colors px-2 py-1 bg-rose-50 rounded-lg text-rose-500"
+                                     >
+                                        <Trash2 className="w-4 h-4" />
+                                        {language === 'ar' ? 'حذف' : 'Delete'}
+                                     </button>
+                                 )}
                              </div>
                          </div>
+                         {showReply && (
+                             <div className="mt-4 flex gap-2">
+                                <input value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 bg-zinc-50 rounded-lg p-2 text-sm" placeholder={language === 'ar' ? "اكتب تطويرك هنا..." : "Write your improvement here..."} />
+                                <button onClick={() => {
+                                    if(replyText.trim()) {
+                                        handleAddReply(node.id, replyText);
+                                        setReplyText('');
+                                        setShowReply(false);
+                                    }
+                                }} className="bg-black text-white px-4 py-2 rounded-lg text-xs font-bold">{language === 'ar' ? 'إرسال' : 'Send'}</button>
+                             </div>
+                         )}
                     </motion.div>
                 </div>
                 
@@ -177,6 +322,24 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-12">
+            {/* Local Toast */}
+            <AnimatePresence>
+                {toast && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className={cn(
+                            "fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-2xl shadow-2xl font-bold flex items-center gap-3",
+                            toast.type === 'success' ? "bg-emerald-600 text-white" : "bg-rose-600 text-white"
+                        )}
+                    >
+                        {toast.type === 'success' ? <Sparkles className="w-5 h-5 text-emerald-200" /> : <X className="w-5 h-5 text-rose-200" />}
+                        {toast.message}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Header */}
             <div className="text-center space-y-4">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-black tracking-widest uppercase mb-4 shadow-sm border border-emerald-100">
@@ -240,15 +403,13 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                         {language === 'ar' ? 'الأفكار النشطة' : 'Active Ripples'}
                     </h3>
                     <div className="flex gap-2">
-                        <button className="p-2 text-zinc-400 hover:text-black rounded-lg hover:bg-zinc-100 transition-colors">
-                            <Search className="w-5 h-5" />
-                        </button>
+                        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={language === 'ar' ? 'بحث...' : 'Search...'} className="bg-zinc-100 p-2 rounded-lg text-sm" />
                     </div>
                 </div>
 
                 <div className="relative z-10">
                     <AnimatePresence>
-                        {ripples.map((node) => (
+                        {ripples.filter(n => n.text.includes(search)).map((node) => (
                             <RippleNodeComponent key={node.id} node={node} />
                         ))}
                     </AnimatePresence>

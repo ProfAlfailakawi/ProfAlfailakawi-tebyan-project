@@ -1,76 +1,25 @@
 {
   "entities": {
-    "User": {
-      "title": "User",
-      "description": "User profile with role",
+    "ripple": {
+      "title": "Ripple",
+      "description": "An idea node in the ripple effect tree",
       "type": "object",
       "properties": {
-        "email": { "type": "string", "format": "email" },
-        "displayName": { "type": "string" },
-        "role": { "type": "string", "enum": ["admin", "user"] },
-        "createdAt": { "type": "string", "format": "date-time" }
+        "id": { "type": "string" },
+        "text": { "type": "string" },
+        "author": { "type": "string" },
+        "type": { "type": "string", "enum": ["seed", "branch", "implementation"] },
+        "likes": { "type": "number" },
+        "timestamp": { "type": "string" },
+        "parentId": { "type": "string" }
       },
-      "required": ["email", "role", "createdAt"]
-    },
-    "QawlFaslQuestion": {
-      "title": "QawlFaslQuestion",
-      "description": "Question definition for the Qawl Fasl feature",
-      "type": "object",
-      "properties": {
-        "question": { "type": "string" },
-        "category": { "type": "string" },
-        "categorySlug": { "type": "string" },
-        "keywords": { "type": "array", "items": { "type": "string" } },
-        "ageGroups": { "type": "array", "items": { "type": "string" } },
-        "riskLevel": { "type": "string", "enum": ["low", "medium", "high"] },
-        "status": { "type": "string", "enum": ["draft", "review", "published"] },
-        "createdAt": { "type": "number" },
-        "updatedAt": { "type": "number" },
-        "reviewStatus": {
-          "type": "object",
-          "properties": {
-            "educational": { "type": "string" },
-            "religious": { "type": "string" },
-            "sources": { "type": "string" }
-          }
-        }
-      },
-      "required": ["question", "category", "categorySlug", "ageGroups", "riskLevel", "status", "createdAt", "updatedAt", "reviewStatus"]
-    },
-    "AnalyticsEvent": {
-      "title": "AnalyticsEvent",
-      "description": "Anonymous analytics event for tracking search queries and feature usage",
-      "type": "object",
-      "properties": {
-        "type": { "type": "string", "enum": ["search", "path_select", "feature_use"] },
-        "query": { "type": "string" },
-        "metadata": { "type": "object" },
-        "timestamp": { "type": "number" },
-        "language": { "type": "string" }
-      },
-      "required": ["type", "timestamp", "language"]
+      "required": ["id", "text", "author", "type", "likes"]
     }
   },
   "firestore": {
-    "/users/{userId}": {
-      "schema": "User",
-      "description": "User profile collection"
-    },
-    "/qawl_fasl_questions/{questionId}": {
-      "schema": "QawlFaslQuestion",
-      "description": "Questions and answers for Qawl Fasl"
-    },
-    "/qawl_fasl_backup_before_reset/{backupId}": {
-      "schema": "QawlFaslQuestion",
-      "description": "Backup of questions before reset"
-    },
-    "/qawl_fasl_generation_logs/{logId}": {
-      "schema": "object",
-      "description": "Logs for daily and instant generation"
-    },
-    "/analytics/{eventId}": {
-      "schema": "AnalyticsEvent",
-      "description": "Anonymous usage analytics"
+    "/ripples/{rippleId}": {
+      "schema": "ripple",
+      "description": "All ripple nodes"
     }
   }
 }

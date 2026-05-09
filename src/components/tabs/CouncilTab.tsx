@@ -85,7 +85,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
             value={councilTopic} 
             onChange={(e) => setCouncilTopic(e.target.value)} 
             className={cn(
-               "w-full p-6 md:p-10 rounded-[32px] text-xl md:text-2xl outline-none transition-all font-black text-right",
+               "w-full p-4 md:p-10 rounded-2xl md:rounded-[32px] text-base md:text-2xl outline-none transition-all font-black text-right",
                isShadowCouncil 
                  ? "bg-black border-2 border-red-900 text-red-100 placeholder-red-900/40 focus:border-red-500 focus:shadow-[0_0_40px_rgba(220,38,38,0.2)]"
                  : "bg-zinc-800 border-2 border-zinc-700 text-white placeholder-zinc-500 focus:border-indigo-400 focus:bg-zinc-850"
