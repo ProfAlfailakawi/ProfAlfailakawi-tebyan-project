@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion } from 'motion/react';
-import { Command, RefreshCw, Bookmark, BookmarkCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Command, RefreshCw, Bookmark, BookmarkCheck, Sparkles } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
@@ -22,6 +22,39 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   const [oracleResult, setOracleResult] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [suggestion, setSuggestion] = React.useState('');
+  const [isSuggesting, setIsSuggesting] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchSuggestion = async () => {
+      // Don't suggest for short inputs to save tokens/noise
+      if (input.trim().split(/\s+/).length < 2) {
+        setSuggestion('');
+        return;
+      }
+      
+      setIsSuggesting(true);
+      try {
+        const { generateSearchSuggestions } = await import('../../services/gemini');
+        const res = await generateSearchSuggestions(input, language);
+        setSuggestion(res);
+      } catch (err) {
+        console.error("Autocomplete error:", err);
+      } finally {
+        setIsSuggesting(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      if (input.trim() && !isLoading) {
+        fetchSuggestion();
+      } else {
+        setSuggestion('');
+      }
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [input, language, isLoading]);
 
   React.useEffect(() => {
     if (initialValue) {
@@ -108,25 +141,59 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
-            "w-full p-6 text-xl font-medium bg-zinc-50 placeholder:text-zinc-400 rounded-[16px] border-2 border-zinc-200/80 focus:border-black focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
-            language === 'ar' ? "pl-32" : "pr-32"
+            "w-full p-5 md:p-6 text-lg md:text-xl font-medium bg-zinc-50 placeholder:text-zinc-400 rounded-[16px] border-2 border-zinc-200/80 focus:border-black focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
+            language === 'ar' ? "pl-24 md:pl-32" : "pr-24 md:pr-32"
           )}
           placeholder={language === 'ar' ? "اسأل تبيان بأي لهجة..." : "Ask Tebyan..."}
         />
+        
+        {/* Smart Autocomplete Suggestion */}
+        <AnimatePresence>
+          {suggestion && !isLoading && (
+            <motion.div
+              initial={{ opacity: 0, y: -5, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -5, scale: 0.95 }}
+              className={cn(
+                "absolute left-0 right-0 top-full mt-2 z-20 flex",
+                language === 'ar' ? "justify-end" : "justify-start",
+                "sm:justify-start md:px-0"
+              )}
+            >
+              <button
+                onClick={() => {
+                  setInput(prev => prev.trim() + ' ' + suggestion);
+                  setSuggestion('');
+                }}
+                className="bg-zinc-900 text-white px-4 py-2 md:py-2.5 rounded-xl md:rounded-2xl text-xs md:text-sm font-medium hover:bg-black transition-all flex items-center gap-2 md:gap-3 group shadow-xl max-w-[95%] md:max-w-[90%] active:scale-95 touch-manipulation border border-white/10"
+              >
+                <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-3.5 h-3.5 md:w-4 md:h-4 text-amber-500" />
+                </div>
+                <div className="flex flex-col items-start overflow-hidden text-right">
+                   <span className="text-[9px] md:text-[10px] text-amber-500 font-bold uppercase tracking-widest mb-0.5 opacity-80">
+                    {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
+                   </span>
+                   <span className="line-clamp-1 text-right w-full truncate text-zinc-100">{suggestion}</span>
+                </div>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <button 
           onClick={handleRunOracle} 
           disabled={isLoading}
           title={language === 'ar' ? 'تشغيل البحث الذكي' : 'Run smart search'}
           className={cn(
-            "absolute top-3 bottom-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
-            language === 'ar' ? "left-3" : "right-3",
+            "absolute top-2 bottom-2 md:top-3 md:bottom-3 px-4 md:px-6 rounded-lg md:rounded-xl font-bold transition-all flex items-center justify-center gap-2",
+            language === 'ar' ? "left-2 md:left-3" : "right-2 md:right-3",
             isLoading ? "bg-zinc-200 text-zinc-500 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           )}
         >
           {isLoading ? (
             <>
-              <RefreshCw className="w-5 h-5 animate-spin" />
-              <span className="hidden md:inline">{language === 'ar' ? 'جاري التفكير...' : 'Thinking...'}</span>
+              <RefreshCw className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
+              <span className="hidden md:inline">{language === 'ar' ? 'جاري...' : 'Thinking...'}</span>
             </>
           ) : (
             <span>{language === 'ar' ? 'تشغيل' : 'Run'}</span>

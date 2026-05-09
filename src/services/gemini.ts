@@ -1787,3 +1787,39 @@ export async function generateParadigmShifter(rule: string, lang: string = 'ar')
     }
   });
 }
+
+export async function generateSearchSuggestions(partialInput: string, lang: string = 'ar') {
+  return withRetry(async () => {
+    const model = "gemini-2.0-flash"; 
+    const systemInstruction = lang === 'ar' 
+      ? `أنت مساعد ذكي متخصص في إكمال الجمل لصالح نظام "تبيان". 
+      المستخدم يكتب مشكلة أو استفسار، وعليك اقتراح جملة واحدة فقط تكمل فكرته بذكاء وحكمة.
+      القواعد:
+      - اقترح جملة واحدة فقط ومركزة جداً.
+      - لا تكرر الكلمات التي كتبها المستخدم.
+      - اجعل الاقتراح يبدو كاستكمال طبيعي للجملة أو سؤال حكيم يفتح آفاقاً للحل.
+      - لا تستخدم علامات ترقيم زائدة في البداية إلا إذا كانت ضرورية للسياق.
+      - إذا كان النص غير مفهوم أو قصير جداً (أقل من كلمة واحدة)، لا تقترح شيئاً.
+      - الرد يجب أن يكون النص المقترح لتكملة الجملة فقط بدون مقدمات.`
+      : `You are an intelligent autocomplete assistant for "Tebyan".
+      The user is typing a problem or query, and you should suggest one sentence that intelligently completes their thought.
+      Rules:
+      - Suggest only one focused completion.
+      - Do not repeat the words the user already wrote.
+      - The suggestion should feel like a natural continuation or a wise follow-up question.
+      - If the text is nonsensical or too short, suggest nothing.
+      - Return only the completion text without any introduction.`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: [{ parts: [{ text: partialInput }] }],
+        config: { systemInstruction }
+      });
+      return response.text?.trim() || "";
+    } catch (error) {
+      console.error("Suggestion Error:", error);
+      return "";
+    }
+  }, 1, 1000); 
+}
