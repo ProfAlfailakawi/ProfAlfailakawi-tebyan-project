@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, UserCircle, Activity, Trash2, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc, writeBatch } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 
@@ -13,6 +13,7 @@ interface RippleNode {
     text: string;
     author: string;
     authorId?: string;
+    rootId?: string;
     type: 'seed' | 'branch' | 'implementation';
     children: RippleNode[];
     likes: number;
@@ -146,7 +147,7 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
         if (!newIdea.trim()) return;
         setIsSubmitting(true);
         try {
-            await addDoc(ripplesCollection, {
+            const docRef = await addDoc(ripplesCollection, {
                 text: newIdea,
                 author: auth.currentUser?.displayName || 'Anonymous',
                 authorId: auth.currentUser?.uid || 'anon',
@@ -155,6 +156,8 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                 timestamp: new Date().toISOString(),
                 parentId: null
             });
+            // Set rootId to its own ID for seeds
+            await updateDoc(docRef, { rootId: docRef.id });
             setNewIdea('');
         } catch (error) {
             console.error("Error adding idea:", error);
@@ -176,16 +179,37 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
 
     const handleDelete = async (id: string) => {
         try {
-            await deleteDoc(doc(db, 'ripples', id));
-            setToast({ message: language === 'ar' ? 'تم الحذف بنجاح' : 'Deleted successfully', type: 'success' });
+            const batch = writeBatch(db);
+            
+            // Function to recursively find all children IDs
+            const getDescendantIds = (parentId: string, flatList: any[]): string[] => {
+                const children = flatList.filter(node => node.parentId === parentId);
+                let ids = children.map(c => c.id);
+                children.forEach(child => {
+                    ids = [...ids, ...getDescendantIds(child.id, flatList)];
+                });
+                return ids;
+            };
+
+            const allToDelete = [id, ...getDescendantIds(id, ripplesFlat)];
+            
+            allToDelete.forEach(docId => {
+                batch.delete(doc(db, 'ripples', docId));
+            });
+
+            await batch.commit();
+            setToast({ message: language === 'ar' ? 'تم حذف الغصن بالكامل بنجاح' : 'Entire branch deleted successfully', type: 'success' });
         } catch (error) {
             handleFirestoreError(error, OperationType.DELETE, `ripples/${id}`);
-            setToast({ message: language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Error deleting', type: 'error' });
+            setToast({ message: language === 'ar' ? 'حدث خطأ أثناء الحذف المتسلسل' : 'Error during cascading delete', type: 'error' });
         }
     };
 
     const handleAddReply = async (parentId: string, text: string) => {
         try {
+            const parent = ripplesFlat.find(r => r.id === parentId);
+            const rootId = parent?.rootId || parentId;
+
             await addDoc(ripplesCollection, {
                 text,
                 author: auth.currentUser?.displayName || 'Anonymous',
@@ -193,7 +217,8 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                 type: 'branch',
                 likes: 0,
                 timestamp: new Date().toISOString(),
-                parentId
+                parentId,
+                rootId
             });
         } catch (error) {
             console.error("Error replying:", error);
@@ -201,8 +226,10 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
     };
 
     const RippleNodeComponent = ({ node, level = 0 }: { node: RippleNode; level?: number }) => {
-        // For visibility: user is owner (new data), or admin, or old data owner (fallback)
+        // For visibility: user is owner, or admin, or owner of the root node
+        const rootOwnerId = node.rootId ? ripplesFlat.find(r => r.id === node.rootId)?.authorId : null;
         const isUserIdea = node.authorId === auth.currentUser?.uid || 
+                          (rootOwnerId === auth.currentUser?.uid && !!rootOwnerId) ||
                           (node.author === (language === 'ar' ? 'أنت' : 'You') && !node.authorId) ||
                           auth.currentUser?.email?.toLowerCase().includes('alfailakawidrahmad') || 
                           auth.currentUser?.email?.toLowerCase().includes('dr.ahmad');
@@ -282,7 +309,10 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                                  {isUserIdea && (
                                      <button 
                                          onClick={() => {
-                                             if(window.confirm(language === 'ar' ? 'هل أنت متأكد من الحذف؟' : 'Are you sure you want to delete?')) {
+                                             const warning = language === 'ar' 
+                                                ? 'هل أنت متأكد؟ سيتم حذف هذه الفكرة وجميع التطويرات المتفرعة منها بشكل نهائي.' 
+                                                : 'Are you sure? This will permanently delete this idea and ALL branches branching from it.';
+                                             if(window.confirm(warning)) {
                                                 handleDelete(node.id);
                                              }
                                          }} 

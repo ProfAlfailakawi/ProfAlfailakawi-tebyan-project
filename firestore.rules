@@ -40,6 +40,7 @@ service cloud.firestore {
       allow update: if isSignedIn();
       allow delete: if isSignedIn() && (
         request.auth.uid == resource.data.get('authorId', '') || 
+        (resource.data.get('rootId', '') != '' && get(/databases/$(database)/documents/ripples/$(resource.data.rootId)).data.get('authorId', '') == request.auth.uid) ||
         (request.auth.token.get('email', '').toLower() == "alfailakawidrahmad@gmail.com") ||
         (request.auth.token.get('email', '').toLower() == "dr.ahmad@gmail.com") ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
