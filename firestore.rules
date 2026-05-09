@@ -10,7 +10,7 @@ service cloud.firestore {
     function isSignedIn() { return request.auth != null; }
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
     function isValidRipple(data) {
-      return data.text is string && data.text.size() <= 1000 &&
+      return data.text is string && data.text.size() <= 200000 &&
              data.type in ['seed', 'branch', 'implementation'] &&
              data.likes is number &&
              data.timestamp is string &&
@@ -36,7 +36,7 @@ service cloud.firestore {
     match /ripples/{rippleId} {
       allow list: if true; // Publicly readable for the community board
       allow get: if true;
-      allow create: if isSignedIn() && isValidRipple(request.resource.data);
+      allow create: if isValidRipple(request.resource.data);
       allow update: if isSignedIn();
       allow delete: if isSignedIn() && (
         request.auth.uid == resource.data.get('authorId', '') || 

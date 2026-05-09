@@ -145,6 +145,10 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
 
     const handleDropIdea = async () => {
         if (!newIdea.trim()) return;
+        if (newIdea.length > 200) {
+            setToast({ message: language === 'ar' ? 'الفكرة طويلة جداً، حاول تقسيمها.' : 'Idea is too long, please try splitting it.', type: 'error' });
+            return;
+        }
         setIsSubmitting(true);
         try {
             const docRef = await addDoc(ripplesCollection, {
@@ -235,31 +239,27 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                           auth.currentUser?.email?.toLowerCase().includes('dr.ahmad');
         const [showReply, setShowReply] = useState(false);
         const [replyText, setReplyText] = useState('');
+        const [expanded, setExpanded] = useState(false);
+
+        const isLongText = node.text.length > 200;
+        const displayText = !isLongText || expanded ? node.text : node.text.slice(0, 200) + '...';
 
         return (
             <div className="relative" id={`ripple-${node.id}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
                 <div className={cn(
-                    "relative z-10 flex gap-4 md:gap-6 group",
-                    level === 0 ? "mb-8" : "mb-6 mt-4"
+                    "relative z-10 flex gap-3 md:gap-6 group",
+                    level === 0 ? "mb-6 md:mb-8" : "mb-4 md:mb-6 mt-3 md:mt-4"
                 )}>
-                    {level > 0 && (
-                        <div className={cn(
-                            "absolute top-6 bottom-[-30px] w-0.5 bg-zinc-200",
-                            language === 'ar' ? "right-6" : "left-6"
-                        )} />
-                    )}
-                    
                     {/* Node Icon */}
                     <div className={cn(
-                        "w-12 h-12 rounded-full shrink-0 flex items-center justify-center shadow-lg border-2 z-10 transition-transform group-hover:scale-110",
+                        "w-10 h-10 md:w-12 md:h-12 rounded-full shrink-0 flex items-center justify-center shadow-lg border-2 z-10 transition-transform group-hover:scale-110",
                         node.type === 'seed' ? "bg-indigo-600 border-indigo-200 text-white" :
                         node.type === 'branch' ? "bg-emerald-500 border-emerald-200 text-white" :
-                        "bg-amber-500 border-amber-200 text-white",
-                        level > 0 && (language === 'ar' ? "mr-12" : "ml-12")
+                        "bg-amber-500 border-amber-200 text-white"
                     )}>
-                        {node.type === 'seed' ? <Globe className="w-5 h-5" /> : 
-                         node.type === 'branch' ? <Network className="w-5 h-5" /> :
-                         <Activity className="w-5 h-5" />}
+                        {node.type === 'seed' ? <Globe className="w-4 h-4 md:w-5 md:h-5" /> : 
+                         node.type === 'branch' ? <Network className="w-4 h-4 md:w-5 md:h-5" /> :
+                         <Activity className="w-4 h-4 md:w-5 md:h-5" />}
                     </div>
 
                     {/* Content Card */}
@@ -267,32 +267,42 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                         initial={{ opacity: 0, x: language === 'ar' ? -20 : 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         className={cn(
-                            "flex-1 bg-white p-5 rounded-[24px] border border-zinc-100 shadow-sm transition-all hover:shadow-md",
+                            "flex-1 bg-white p-4 md:p-5 rounded-2xl md:rounded-[24px] border border-zinc-100 shadow-sm transition-all hover:shadow-md",
                             node.type === 'seed' ? "ring-1 ring-indigo-50" : ""
                         )}
                     >
-                         <div className="flex items-center justify-between gap-4 mb-3">
-                             <div className="flex items-center gap-2">
-                                 <UserCircle className="w-5 h-5 text-zinc-400" />
-                                 <span className="font-bold text-sm text-zinc-700">{node.author}</span>
-                                 <span className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded-full text-zinc-500 font-bold uppercase tracking-widest">
+                         <div className="flex items-center justify-between gap-2 md:gap-4 mb-3">
+                             <div className="flex items-center gap-2 flex-wrap">
+                                 <UserCircle className="w-4 h-4 md:w-5 md:h-5 text-zinc-400" />
+                                 <span className="font-bold text-xs md:text-sm text-zinc-700">{node.author}</span>
+                                 <span className="text-[9px] md:text-[10px] bg-zinc-100 px-2 py-0.5 rounded-full text-zinc-500 font-bold uppercase tracking-widest hidden sm:inline-block">
                                      {node.type === 'seed' ? (language === 'ar' ? 'البذرة الأولى' : 'Origin Seed') : 
                                       node.type === 'branch' ? (language === 'ar' ? 'تطوير' : 'Evolution') : 
                                       (language === 'ar' ? 'تطبيق عملي' : 'Implementation')}
                                  </span>
                              </div>
-                             <span className="text-xs text-zinc-400 font-medium">{node.timestamp}</span>
+                             <span className="text-[10px] md:text-xs text-zinc-400 font-medium whitespace-nowrap">{node.timestamp}</span>
                          </div>
-                         <p className="text-base text-zinc-800 leading-relaxed font-medium mb-4">{node.text}</p>
+                         <p 
+                             className={cn("text-sm md:text-base text-zinc-800 leading-relaxed font-medium mb-4 whitespace-pre-wrap", isLongText && "cursor-pointer")} 
+                             onClick={() => isLongText && setExpanded(!expanded)}
+                         >
+                             {displayText}
+                             {isLongText && (
+                                 <span className={cn("text-xs font-bold transition-colors ml-1", expanded ? "text-zinc-400" : "text-indigo-500 hover:text-indigo-600")}>
+                                     {expanded ? (language === 'ar' ? 'عرض أقل' : 'Show less') : (language === 'ar' ? 'قراءة المزيد' : 'Read more')}
+                                 </span>
+                             )}
+                         </p>
                          
                          <div className="flex items-center justify-between border-t border-zinc-50 pt-3">
-                             <div className="flex items-center gap-4 text-xs font-bold text-zinc-500">
+                             <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs font-bold text-zinc-500">
                                  <button onClick={() => handleLike(node)} className="flex items-center gap-1 hover:text-rose-500 cursor-pointer transition-colors">
                                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                                      {node.likes}
                                  </button>
                                  <button onClick={() => setShowReply(!showReply)} className="flex items-center gap-1 hover:text-indigo-500 cursor-pointer transition-colors">
-                                     <Network className="w-4 h-4" />
+                                     <Network className="w-3 h-3 md:w-4 md:h-4" />
                                      {language === 'ar' ? 'تطوير' : 'Branch'}
                                  </button>
                                  <button onClick={() => {
@@ -302,9 +312,9 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                                      params.set('ripple', node.id);
                                      navigator.clipboard.writeText(baseUrl + '?' + params.toString());
                                      setToast({ message: language === 'ar' ? 'تم نسخ الرابط الحصري' : 'Direct link copied!', type: 'success' });
-                                 }} className="flex items-center gap-2 hover:text-emerald-500 cursor-pointer transition-colors px-2 py-1 bg-zinc-50 rounded-lg">
-                                     <Share2 className="w-4 h-4" />
-                                     {language === 'ar' ? 'مشاركة' : 'Share'}
+                                 }} className="flex items-center gap-1 md:gap-2 hover:text-emerald-500 cursor-pointer transition-colors px-2 py-1 bg-zinc-50 rounded-lg">
+                                     <Share2 className="w-3 h-3 md:w-4 md:h-4" />
+                                     <span className="hidden sm:inline">{language === 'ar' ? 'مشاركة' : 'Share'}</span>
                                  </button>
                                  {isUserIdea && (
                                      <button 
@@ -318,30 +328,39 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                                          }} 
                                          className="flex items-center gap-1 hover:text-rose-600 font-bold cursor-pointer transition-colors px-2 py-1 bg-rose-50 rounded-lg text-rose-500"
                                      >
-                                        <Trash2 className="w-4 h-4" />
-                                        {language === 'ar' ? 'حذف' : 'Delete'}
+                                        <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                                        <span className="hidden sm:inline">{language === 'ar' ? 'حذف' : 'Delete'}</span>
                                      </button>
                                  )}
                              </div>
                          </div>
                          {showReply && (
-                             <div className="mt-4 flex gap-2">
-                                <input value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 bg-zinc-50 rounded-lg p-2 text-sm" placeholder={language === 'ar' ? "اكتب تطويرك هنا..." : "Write your improvement here..."} />
+                             <div className="mt-4 flex gap-2 w-full">
+                                <input value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-zinc-50 rounded-lg p-2 md:p-3 text-xs md:text-sm border border-zinc-200 outline-none focus:ring-1 focus:ring-zinc-400" placeholder={language === 'ar' ? "اكتب تطويرك هنا..." : "Write your improvement here..."} />
                                 <button onClick={() => {
                                     if(replyText.trim()) {
                                         handleAddReply(node.id, replyText);
                                         setReplyText('');
                                         setShowReply(false);
                                     }
-                                }} className="bg-black text-white px-4 py-2 rounded-lg text-xs font-bold">{language === 'ar' ? 'إرسال' : 'Send'}</button>
+                                }} className="bg-black text-white px-3 md:px-4 py-2 rounded-lg text-[10px] md:text-xs font-bold whitespace-nowrap">{language === 'ar' ? 'إرسال' : 'Send'}</button>
                              </div>
                          )}
                     </motion.div>
                 </div>
                 
-                {/* Children */}
+                {/* Children Wrapper */}
                 {node.children && node.children.length > 0 && (
-                    <div className="relative">
+                    <div className={cn(
+                        "relative",
+                        language === 'ar' ? "pr-10 md:pr-14" : "pl-10 md:pl-14"
+                    )}>
+                        {/* Connecting Line from Parent Icon to Children */}
+                        <div className={cn(
+                            "absolute top-[-24px] bottom-6 w-[2px] bg-zinc-200 rounded-full",
+                            language === 'ar' ? "right-[19px] md:right-[23px]" : "left-[19px] md:left-[23px]"
+                        )} />
+                        
                         {node.children.map((child) => (
                             <RippleNodeComponent key={child.id} node={child} level={level + 1} />
                         ))}
@@ -405,6 +424,18 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                         placeholder={language === 'ar' ? "فكرتي هي..." : "My idea is..."}
                         className="w-full bg-zinc-50 border-none rounded-2xl p-4 text-lg font-medium text-black focus:ring-2 focus:ring-emerald-500 outline-none resize-none h-32 placeholder:text-zinc-300"
                     />
+                    <div className="flex justify-between items-center text-xs font-bold text-zinc-400 px-1">
+                        <span>{newIdea.length} {language === 'ar' ? 'حرف' : 'characters'}</span>
+                        {newIdea.length > 200 && (
+                            <motion.span 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="text-emerald-600"
+                            >
+                                {language === 'ar' ? 'فكرة عميقة! حاول تحويلها لبذرة، ثم أضف فروعاً للأجزاء الأخرى!' : 'Deep idea! Try converting to seed, then add branches for the rest!'}
+                            </motion.span>
+                        )}
+                    </div>
                     <div className="flex justify-end mt-2">
                         <button 
                             onClick={handleDropIdea}

@@ -1,3 +1,4 @@
+import { GoogleGenAI } from "@google/genai";
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box } from 'lucide-react';
@@ -670,20 +671,20 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, [query, language]);
 
   const ALL_CHIP_SUGGESTIONS = [
-    { ar: 'توسعة النشاط التجاري', en: 'Expanding business activity' },
-    { ar: 'إقناع المستثمرين بالمشروع', en: 'Persuading investors of the project' },
-    { ar: 'إدارة أزمة إعلامية مفاجئة', en: 'Managing a sudden media crisis' },
-    { ar: 'تحسين الثقافة المؤسسية', en: 'Improving corporate culture' },
-    { ar: 'الموازنة بين العقل والعاطفة', en: 'Balancing mind and emotion' },
-    { ar: 'ابتكار نموذج عمل تنافسي', en: 'Innovating a competitive business model' },
-    { ar: 'استراتيجيات التفاوض الصعب', en: 'Hard negotiation strategies' },
-    { ar: 'تحليل المنافسين بعمق', en: 'Deep competitor analysis' },
-    { ar: 'قرار مصيري بشأن المسار المهني', en: 'Critical career path decision' },
-    { ar: 'إدارة النزاعات داخل الفريق', en: 'Managing team conflicts' },
-    { ar: 'التعامل مع مقاومة التغيير', en: 'Dealing with resistance to change' },
-    { ar: 'بناء شراكة استراتيجية', en: 'Building a strategic partnership' },
-    { ar: 'قيادة التحول الرقمي', en: 'Leading digital transformation' },
-    { ar: 'رفع كفاءة الأداء التشغيلي', en: 'Increasing operational efficiency' }
+    { ar: 'ابني يدخن وعمره 15 سنة، كيف أتصرف؟', en: 'My son is smoking and he is 15, what should I do?' },
+    { ar: 'كيف أتعامل مع ابني المراهق العنيد؟', en: 'How to deal with my stubborn teenage son?' },
+    { ar: 'ابني يكذب علي باستمرار، ما الحل؟', en: 'My son lies to me constantly, what is the solution?' },
+    { ar: 'طفلي يرفض الذهاب للمدرسة ويتمارض', en: 'My child refuses to go to school and fakes illness' },
+    { ar: 'إدمان الأطفال على الألعاب الإلكترونية', en: 'Childrens addiction to electronic games' },
+    { ar: 'كيف أغرس الصدق والأمانة في أطفالي؟', en: 'How to instill honesty and integrity in my children?' },
+    { ar: 'توسعة النشاط التجاري المتعثر', en: 'Expanding a struggling business' },
+    { ar: 'إقناع المستثمرين بتمويل المشروع', en: 'Persuading investors to fund the project' },
+    { ar: 'إدارة أزمة ثقة حادة داخل الفريق', en: 'Managing a severe trust crisis within the team' },
+    { ar: 'الموازنة بين العقل والعاطفة في القرار', en: 'Balancing mind and emotion in decisions' },
+    { ar: 'ابتكار نموذج عمل تنافسي وجريء', en: 'Innovating a competitive and bold business model' },
+    { ar: 'استراتيجيات التفاوض مع طرف عنيد', en: 'Negotiation strategies with a stubborn party' },
+    { ar: 'تحليل المنافسين وتوقع خطواتهم القادمة', en: 'Analyzing competitors and predicting their next moves' },
+    { ar: 'قرار مصيري بشأن تغيير المسار المهني', en: 'Critical decision about career path change' }
   ];
 
   const chipSuggestions = useMemo(() => {
@@ -700,17 +701,50 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return Array.from(new Set(list)).filter(s => typeof s === 'string' && s.length > 0);
   }, [language, proactiveInsights.dynamicSuggests, searchHistory]);
 
+  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
+
   useEffect(() => {
     if (!query.trim() || query.length < 2) {
       setSuggestion('');
       return;
     }
     const lowerQuery = query.toLowerCase();
-    const match = allPossibleQueries.find(s => 
+    
+    // First try static match
+    const staticMatch = allPossibleQueries.find(s => 
       s.toLowerCase().startsWith(lowerQuery) && s.length > query.length
     );
-    setSuggestion(match || '');
-  }, [query, allPossibleQueries]);
+    
+    if (staticMatch) {
+      setSuggestion(staticMatch);
+    } else {
+      // AI Autocomplete Fallback with Debounce
+      const timer = setTimeout(async () => {
+        if (query.length < 5) return; // Don't trigger for very short custom queries
+        
+        try {
+          const response = await aiClient.models.generateContent({
+            model: "gemini-3-flash-preview",
+            contents: `The user is typing in a search bar for a deep philosophical and behavioral consulting app. 
+            User typed: "${query}"
+            Language: ${language === 'ar' ? 'Arabic' : 'English'}
+            
+            Complete this sentence with ONE likely short query (max 6-8 words) that starts EXACTLY with "${query}".
+            Return ONLY the full completed string. No explanations. No quotes.`,
+          });
+          
+          const aiSuggestion = response.text?.trim() || '';
+          if (aiSuggestion && aiSuggestion.toLowerCase().startsWith(query.toLowerCase()) && aiSuggestion.length > query.length) {
+            setSuggestion(aiSuggestion);
+          }
+        } catch (err) {
+          console.warn('AI Autocomplete failed', err);
+        }
+      }, 400); // 400ms debounce
+      
+      return () => clearTimeout(timer);
+    }
+  }, [query, allPossibleQueries, aiClient, language]);
 
   const smartResponse = useMemo(() => {
     if (query.trim().length < 5) return null;
