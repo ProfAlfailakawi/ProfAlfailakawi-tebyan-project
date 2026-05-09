@@ -4,6 +4,7 @@ import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, UserCircle,
 import { cn } from '../../lib/utils';
 import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
+import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 
 const ripplesCollection = collection(db, 'ripples');
 
@@ -178,7 +179,7 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
             await deleteDoc(doc(db, 'ripples', id));
             setToast({ message: language === 'ar' ? 'تم الحذف بنجاح' : 'Deleted successfully', type: 'success' });
         } catch (error) {
-            console.error("Error deleting:", error);
+            handleFirestoreError(error, OperationType.DELETE, `ripples/${id}`);
             setToast({ message: language === 'ar' ? 'حدث خطأ أثناء الحذف' : 'Error deleting', type: 'error' });
         }
     };
