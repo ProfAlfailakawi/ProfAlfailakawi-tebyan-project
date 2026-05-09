@@ -964,7 +964,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               getFluidStyles(),
               getFluidAmbient()
             )}>
-              <div className="flex-1 relative flex items-center">
+              <div className="flex-1 relative flex items-center overflow-hidden">
                 <input
                   ref={inputRef}
                   value={query}
@@ -974,40 +974,48 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     if (hasSearched) setHasSearched(false);
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === 'Tab' && suggestion) {
-                      e.preventDefault();
-                      setQuery(suggestion);
-                      setSuggestion('');
+                    if ((e.key === 'Tab' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') && suggestion) {
+                      if (e.currentTarget.selectionStart === query.length) {
+                        e.preventDefault();
+                        setQuery(suggestion);
+                        setSuggestion('');
+                      }
                     }
                   }}
                   onFocus={() => setIsFocused(true)}
-                  onBlur={() => {
-                    // Small delay to allow clicking the suggestion button
-                    setTimeout(() => setIsFocused(false), 200);
-                  }}
+                  onBlur={() => setIsFocused(false)}
                   placeholder={language === 'ar' ? 'ابدأ بالكتابة...' : 'Start typing...'}
-                  className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10"
+                  className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10 relative"
+                  dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
+                <AnimatePresence>
                 {suggestion && isFocused && (
-                  <div className={cn(
-                    "absolute inset-0 p-4 text-base md:text-xl font-bold pointer-events-none select-none flex items-center overflow-hidden whitespace-nowrap",
-                    language === 'ar' ? "text-right" : "text-left"
-                  )}>
-                     <span className="opacity-0">{query}</span>
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className={cn(
+                    "absolute inset-0 p-4 text-base md:text-xl font-bold pointer-events-none select-none flex items-center overflow-hidden whitespace-nowrap z-20",
+                    language === 'ar' ? "text-right flex-row" : "text-left flex-row"
+                  )}
+                  style={{ direction: language === 'ar' ? 'rtl' : 'ltr' }}>
+                     <span className="opacity-0 whitespace-pre">{query}</span>
                      <button
                        type="button"
-                       onClick={() => {
+                       onMouseDown={(e) => {
+                         e.preventDefault();
                          setQuery(suggestion);
                          setSuggestion('');
                          inputRef.current?.focus();
                        }}
-                       className="text-zinc-300 pointer-events-auto hover:text-indigo-400 transition-colors cursor-pointer"
+                       className="text-zinc-400/80 pointer-events-auto hover:text-indigo-500 transition-colors cursor-pointer outline-none relative before:absolute before:-inset-2 before:content-['']"
                      >
                        {suggestion.slice(query.length)}
                      </button>
-                  </div>
+                  </motion.div>
                 )}
+                </AnimatePresence>
               </div>
               
               <button 
