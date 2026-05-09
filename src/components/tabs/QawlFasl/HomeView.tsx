@@ -188,14 +188,31 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="عن ماذا تود استشارتنا اليوم؟"
-                  className="w-full bg-transparent py-4 px-6 md:py-6 md:px-8 text-xl md:text-2xl font-bold text-black placeholder:text-zinc-400 outline-none pr-14 md:pr-16"
+                  className="w-full bg-transparent py-4 px-6 md:py-6 md:px-8 text-xl md:text-2xl font-bold text-black placeholder:text-zinc-400 outline-none pr-14 md:pr-24"
                  />
-                 <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-400 w-7 h-7 md:w-8 md:h-8 group-focus-within:text-black transition-colors" />
+                 <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-400 w-7 h-7 md:w-8 md:h-8 group-focus-within:text-black transition-colors pointer-events-none" />
+                 
+                 {searchQuery && (
+                   <button
+                     type="button"
+                     onClick={() => {
+                       setSearchQuery('');
+                       setIsSearching(false);
+                       setIsGenerating(false);
+                       setError(null);
+                     }}
+                     className="absolute right-14 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-rose-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors z-10"
+                   >
+                     <title>إلغاء البحث</title>
+                     <span className="sr-only">إلغاء البحث</span>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                   </button>
+                 )}
                  
                  <button 
                   type="submit" 
                   disabled={isSearching || isGenerating} 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-black hover:bg-zinc-800 text-white px-6 md:px-10 py-3 md:py-4 rounded-[20px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-black hover:bg-zinc-800 text-white px-6 md:px-10 py-3 md:py-4 rounded-[20px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50 z-10"
                  >
                    {isSearching ? 'جاري البحث...' : 'اكتشف'}
                  </button>

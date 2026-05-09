@@ -100,15 +100,6 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
             <span>{language === 'ar' ? 'بسط المفهوم الآن' : 'Simplify Now'}</span>
           )}
         </button>
-        {handleTabChange && (
-          <button 
-            onClick={() => handleTabChange('ar')}
-            className="flex-1 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 cursor-pointer"
-          >
-            <Box className="w-5 h-5" />
-            <span>{language === 'ar' ? 'الواقع المعزز (AR)' : 'AR'}</span>
-          </button>
-        )}
         <button 
           onClick={() => handleSimplify(undefined, true)} 
           disabled={isLoading}

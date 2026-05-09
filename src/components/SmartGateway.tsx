@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -86,6 +86,8 @@ const colorMap: Record<string, string> = {
   violet: '#8b5cf6'
 };
 
+import { useFluidTyping } from '../hooks/useFluidTyping';
+
 interface SmartGatewayProps {
   language: 'ar' | 'en';
   handleTabChange: (id: any, context?: string) => void;
@@ -94,6 +96,7 @@ interface SmartGatewayProps {
 
 export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed }) => {
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
+  const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
   const [isFocused, setIsFocused] = useState(false);
   
@@ -931,14 +934,17 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                <div className="absolute inset-0 bg-indigo-500/10 blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none" />
             )}
             <div className={cn(
-              "flex items-center w-full max-w-2xl bg-white border border-zinc-200 rounded-3xl p-2 transition-all duration-300",
-              isFocused ? "shadow-xl border-zinc-300 ring-2 ring-zinc-100" : "shadow-sm border-zinc-200"
+              "flex items-center w-full max-w-2xl rounded-3xl p-2 transition-all duration-300",
+              isFocused ? "shadow-xl border-zinc-300 ring-2 ring-zinc-100" : "shadow-sm border-zinc-200",
+              getFluidStyles(),
+              getFluidAmbient()
             )}>
               <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
+                  onType();
                   if (hasSearched) setHasSearched(false);
                 }}
                 onFocus={() => setIsFocused(true)}
@@ -1411,6 +1417,23 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               ? 'ابدأ بحفظ الإجابات.'
                               : 'Start saving answers.'
                           )}
+                      </p>
+                  </div>
+              </div>
+          </div>
+
+          <div className="flex-1 p-8 bg-black rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-black transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ar')}>
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/40 to-fuchsia-900/20 group-hover:opacity-100 transition-opacity"></div>
+              <div className="flex items-center gap-6 text-right relative z-10">
+                  <div className="w-16 h-16 rounded-[24px] bg-white/10 flex items-center justify-center text-white shadow-sm border border-white/20 transform group-hover:scale-110 transition-transform">
+                      <Box className="w-8 h-8" />
+                  </div>
+                  <div className="text-right">
+                      <h3 className="text-xl font-black text-white mb-1">
+                          {language === 'ar' ? 'فضاء تبيان الممتد (AR)' : 'Tibyan AR Space'}
+                      </h3>
+                      <p className="text-zinc-400 font-bold text-sm">
+                          {language === 'ar' ? 'تجسيد الأفكار في عالمك الحقيقي' : 'Materialize concepts in your real world'}
                       </p>
                   </div>
               </div>

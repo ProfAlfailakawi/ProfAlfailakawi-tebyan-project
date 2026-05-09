@@ -88,6 +88,8 @@ const HubCard: React.FC<{
   );
 };
 
+import { NeuralTree } from './NeuralTree';
+
 export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[], handleTabChange: (id: string) => void, language: string }) => {
   const { state, addXp } = useGamification();
   const [mission, setMission] = useState<any>(null);
@@ -152,7 +154,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </header>
 
       {/* Daily Mission */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-white relative overflow-hidden shadow-lg" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-white relative overflow-hidden shadow-lg mb-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-[80px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex-1 w-full">
@@ -187,24 +189,33 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           </div>
       </div>
 
+      <div className="mb-6">
+        <NeuralTree language={language} />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         {/* AR FEATURE (NEW & PROMINENT) */}
         <motion.button
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           onClick={() => handleTabChange('ar')}
-          className="group relative h-[200px] md:h-[240px] bg-white rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.04)] border-2 border-indigo-50 hover:border-black active:scale-[0.98] transition-all"
+          className="group relative h-[200px] md:h-[240px] bg-gradient-to-br from-indigo-950 via-purple-900 to-black rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(79,70,229,0.4)] border border-indigo-400/30 active:scale-[0.98] transition-all"
         >
-           <div className="absolute top-0 left-0 w-full h-full bg-indigo-50/20 group-hover:bg-black group-hover:bg-opacity-5 transition-colors"></div>
+           <motion.div 
+             animate={{ opacity: [0.1, 0.4, 0.1], scale: [1, 1.5, 1], rotate: [0, 90, 0] }} 
+             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+             className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4"
+           />
+           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-             <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-xl mb-4 group-hover:scale-110 transition-transform duration-500">
+             <div className="w-16 h-16 bg-white/10 backdrop-blur-xl text-white rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all duration-500 border border-white/20">
                <Box className="w-8 h-8" />
              </div>
-             <h3 className="text-xl md:text-2xl font-black text-black">
-               {language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR Experience'}
+             <h3 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">
+               {language === 'ar' ? 'فضاء تبيان الممتد (AR)' : 'Tibyan Extended Space (AR)'}
              </h3>
-             <p className="text-zinc-500 text-sm font-bold mt-2">
-               {language === 'ar' ? 'استكشف المفاهيم في فضائك الحقيقي' : 'Explore concepts in your real space'}
+             <p className="text-indigo-200 text-sm font-bold mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
+               {language === 'ar' ? 'تجسيد الأفكار في عالمك الحقيقي' : 'Materialize concepts in your real world'}
              </p>
            </div>
         </motion.button>

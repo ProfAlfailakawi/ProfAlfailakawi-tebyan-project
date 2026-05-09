@@ -24,6 +24,12 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   const [questions, setQuestions] = useState<QawlFaslQuestion[]>(fallbackMock);
   const [lastViewedId, setLastViewedId] = useState<string | null>(null);
 
+  const [consumedQuery, setConsumedQuery] = useState(false);
+
+  useEffect(() => {
+    setConsumedQuery(false);
+  }, [initialValue]);
+
   useEffect(() => {
     // Trigger daily generation if needed
     qawlFaslService.triggerDailyGenerationIfNecessary().catch(err => {
@@ -41,7 +47,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
         setCurrentView('home');
       }
     }
-  }, [initialValue, currentView]);
+  }, [initialValue]);
 
   useEffect(() => {
     const saved = localStorage.getItem('lastViewedQawlFaslId');
@@ -74,7 +80,13 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTo({ top: 0, behavior: 'auto' });
+      document.body.scrollTo({ top: 0, behavior: 'auto' });
+      const mainEl = document.querySelector('main');
+      if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'auto' });
+    }, 50);
   }, [currentView, selectedQuestionId, selectedCategoryId]);
 
   const goToHome = () => setCurrentView('home');
@@ -146,8 +158,8 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
               onEmergency={goToEmergency} 
               onQuestion={goToQuestion} 
               onCategory={goToCategory} 
-              initialValue={initialValue}
-              onValueUsed={onValueUsed}
+              initialValue={consumedQuery ? undefined : initialValue}
+              onValueUsed={() => setConsumedQuery(true)}
             />
           </motion.div>
         )}

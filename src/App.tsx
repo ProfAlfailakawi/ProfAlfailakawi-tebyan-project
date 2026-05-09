@@ -70,6 +70,7 @@ const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const StrategicArenaTab = React.lazy(() => import('./components/tabs/StrategicArenaTab'));
 const CreativeLabWrapper = React.lazy(() => import('./components/tabs/CreativeLabWrapper'));
 const KnowledgeCenterTab = React.lazy(() => import('./components/tabs/KnowledgeCenterTab'));
+const ARTab = React.lazy(() => import('./components/tabs/ARTab'));
 
 type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar';
 
@@ -213,11 +214,6 @@ const AppContent: React.FC = () => {
     
     let targetTab = tab as Tab;
     let targetContext = context;
-
-    if (tab === 'ar') {
-      targetTab = 'lab';
-      targetContext = 'artest';
-    }
 
     const actualTab = targetTab === 'home' || targetTab === 'discover' || (targetTab as string) === 'dashboard' ? 'home' : targetTab;
     if (checkAuth(actualTab as Tab)) {
@@ -498,6 +494,8 @@ const AppContent: React.FC = () => {
                     return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'creativelab':
                     return <CreativeLabWrapper handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
+                  case 'ar':
+                    return <ARTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'knowledgecenter':
                     return <KnowledgeCenterTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'oracle':
