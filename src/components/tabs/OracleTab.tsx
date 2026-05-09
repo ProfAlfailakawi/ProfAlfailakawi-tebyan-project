@@ -52,12 +52,13 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     };
 
     const timer = setTimeout(() => {
-      if (input.trim() && !isLoading) {
+      if (input.trim().length >= 3 && !isLoading) {
         fetchSuggestion();
       } else {
         setSuggestion('');
+        setIsSuggesting(false);
       }
-    }, 500);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [input, language, isLoading]);

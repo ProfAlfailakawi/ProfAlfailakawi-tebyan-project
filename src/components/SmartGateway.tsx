@@ -160,12 +160,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     };
 
     const timer = setTimeout(() => {
-      if (query.trim() && !isThinking) {
+      // Don't suggest if already thinking or searching
+      if (query.trim().length >= 3 && !isThinking) {
         fetchSuggestion();
       } else {
         setSuggestion('');
+        setIsSuggesting(false);
       }
-    }, 500);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [query, language, isThinking]);

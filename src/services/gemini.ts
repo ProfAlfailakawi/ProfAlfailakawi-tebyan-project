@@ -1790,33 +1790,37 @@ export async function generateParadigmShifter(rule: string, lang: string = 'ar')
 
 export async function generateSearchSuggestions(partialInput: string, lang: string = 'ar') {
   return withRetry(async () => {
-    const model = DEFAULT_MODEL; 
+    // Force gemini-1.5-flash for maximum speed in autocomplete
+    const model = "gemini-1.5-flash"; 
     const systemInstruction = lang === 'ar' 
-      ? `أنت مساعد ذكي في لوحة مفاتيح نظام "تبيان". 
-      المستخدم يكتب مشكلة أو جملة، ومهمتك هي التنبؤ بتكملة ذكية وحكيمة للجملة كخيار واحد فقط.
-      القواعد الصارمة:
-      - الرد يجب أن يكون التكملة المقترحة فقط (بدون تكرار ما كتبه المستخدم).
-      - اجعل التكملة جملة وحدة قصيرة ومفيدة.
-      - لا تضع علامات ترقيم زائدة في البداية.
-      - إذا كان النص المكتوب غير واضح، لا تقترح شيئاً.
-      مثال: إذا كتب "ابني يدخن"، التكملة المقترحة: "وعمره صغير، كيف أتعامل معه بهدوء؟"`
-      : `You are an intelligent autocomplete assistant for "Tebyan" smart search.
-      Predict a smart and helpful completion for the user's sentence.
-      Strict Rules:
-      - Return ONLY the suggested completion text (do not repeat the user's input).
-      - keep it as one short sentence.
-      - No intro, no explanation, just the completion.`;
+      ? `أنت مساعد ذكي في نظام تبيان. مهمتك إكمال الجملة التي يكتبها المستخدم بذكاء. 
+      القواعد:
+      - رد بالنص التكميلي فقط.
+      - لا تكرر ما كتبه المستخدم.
+      - اجعلها جملة قصيرة جداً ومفيدة.
+      - إذا كان الكلام غير مفهوم، رد بكلمة فارغة.`
+      : `You are an autocomplete assistant for Tebyan. Complete the user's sentence. 
+      Rules:
+      - Return ONLY the completion text.
+      - Do not repeat user input.
+      - Keep it very short.`;
 
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: [{ parts: [{ text: `The user wrote: "${partialInput}". Suggest a completion.` }] }],
-        config: { systemInstruction }
+        contents: [{ parts: [{ text: partialInput }] }],
+        config: { 
+          systemInstruction,
+          generationConfig: {
+            maxOutputTokens: 20,
+            temperature: 0.1
+          }
+        }
       });
       return response.text?.trim() || "";
     } catch (error) {
-      console.error("Suggestion Error:", error);
+      console.error("Autocomplete API Error:", error);
       return "";
     }
-  }, 1, 1000); 
+  }, 0, 0); // No retries for autocomplete to keep it ultra-fast
 }
