@@ -475,15 +475,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     const lowQ = q.toLowerCase();
     
     // Urgent / Risk / Emergency / Defense
-    const urgentWords = ['عاجل', 'خطر', 'مصيبة', 'مشكلة كبيرة', 'كارثة', 'طوارئ', 'انقذني', 'urgent', 'danger', 'crisis', 'emergency', 'help', 'save me'];
+    const urgentWords = ['عاجل', 'خطر', 'مصيبة', 'مشكلة كبيرة', 'كارثة', 'طوارئ', 'انقذني', 'شسوي', 'الحقوني', 'طاحت', 'urgent', 'danger', 'crisis', 'emergency', 'help', 'save me'];
     if (urgentWords.some(w => lowQ.includes(w))) return { type: 'urgent', intent: 'rescue', emotion: 'panic' };
     
     // Emotional / Psychological Conflict / Needs Safety
-    const emotionalWords = ['كذب', 'يخفي', 'خوف', 'قلق', 'توتر', 'مكتئب', 'حزين', 'lie', 'hide', 'fear', 'anxiety', 'stress', 'depressed', 'sad'];
+    const emotionalWords = ['كذب', 'يخفي', 'خوف', 'قلق', 'توتر', 'مكتئب', 'حزين', 'ضايق خلقي', 'مهموم', 'مخنوق', 'lie', 'hide', 'fear', 'anxiety', 'stress', 'depressed', 'sad'];
     if (emotionalWords.some(w => lowQ.includes(w))) return { type: 'emotional', intent: 'safety', emotion: 'vulnerability' };
 
     // Behavioral / Aggression / Resistance / Expression
-    const behavioralWords = ['غضب', 'يصارخ', 'عناد', 'يرفض', 'تحدي', 'يضرب', 'angry', 'scream', 'stubborn', 'refuse', 'challenge', 'hit', 'frustrated'];
+    const behavioralWords = ['غضب', 'يصارخ', 'عناد', 'يرفض', 'تحدي', 'يضرب', 'يعاند', 'ما يسمع', 'نجرة', 'يقهر', 'angry', 'scream', 'stubborn', 'refuse', 'challenge', 'hit', 'frustrated'];
     if (behavioralWords.some(w => lowQ.includes(w))) return { type: 'behavioral', intent: 'expression', emotion: 'frustration' };
 
     // Strategic / Planning / Decision / Development
@@ -671,8 +671,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, [query, language]);
 
   const ALL_CHIP_SUGGESTIONS = [
-    { ar: 'ابني يدخن وعمره 15 سنة، كيف أتصرف؟', en: 'My son is smoking and he is 15, what should I do?' },
+    { ar: 'ابني يدخن وعمره 15 سنة، شسوي؟', en: 'My son is smoking and he is 15, what should I do?' },
     { ar: 'كيف أتعامل مع ابني المراهق العنيد؟', en: 'How to deal with my stubborn teenage son?' },
+    { ar: 'ولدي ما يسمع الكلام وكله يعاندني بالبيت', en: 'My son doesnt listen and always rebels at home' },
+    { ar: 'رفيجي بالدوام وايد يذم فيني قفاي، شلون أتصرف؟', en: 'My friend at work backbites me, how to behave?' },
+    { ar: 'مديري بالدوام وايد يضغطني وشايل علي، شالحل؟', en: 'My boss pressures me and has a grudge, what is the solution?' },
     { ar: 'ابني يكذب علي باستمرار، ما الحل؟', en: 'My son lies to me constantly, what is the solution?' },
     { ar: 'طفلي يرفض الذهاب للمدرسة ويتمارض', en: 'My child refuses to go to school and fakes illness' },
     { ar: 'إدمان الأطفال على الألعاب الإلكترونية', en: 'Childrens addiction to electronic games' },
@@ -729,7 +732,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             User typed: "${query}"
             Language: ${language === 'ar' ? 'Arabic' : 'English'}
             
+            The app supports Modern Standard Arabic AND common dialects like Kuwaiti, Saudi, Gulf (Khaleeji), and Ammi.
             Complete this sentence with ONE likely short query (max 6-8 words) that starts EXACTLY with "${query}".
+            If the user started in a dialect, complete it in the SAME dialect.
             Return ONLY the full completed string. No explanations. No quotes.`,
           });
           
