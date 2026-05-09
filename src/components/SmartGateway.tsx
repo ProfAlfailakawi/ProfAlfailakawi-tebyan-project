@@ -98,6 +98,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
+  const [suggestion, setSuggestion] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   
   const [challengeIndex, setChallengeIndex] = useState(0);
@@ -620,6 +621,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     setTimeout(() => {
       setIsThinking(false);
       setHasSearched(true);
+      setSuggestion('');
       sessionStorage.setItem('tebyan_current_has_searched', 'true');
       setSelectionFeedback('');
       localStorage.setItem(cacheKey, 'true'); // Flag it as "seen" to speed up next time
@@ -641,6 +643,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     logEvent('path_select', language, q, { pathId: id });
     
     setSelectionFeedback('');
+    setSuggestion('');
     
     onPathSelect(id, q);
   };
@@ -686,6 +689,28 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const chipSuggestions = useMemo(() => {
     return [...ALL_CHIP_SUGGESTIONS].sort(() => 0.5 - Math.random()).slice(0, 7);
   }, []);
+
+  const allPossibleQueries = useMemo(() => {
+    const list = [
+      ...ALL_CHIP_SUGGESTIONS.map(s => language === 'ar' ? s.ar : s.en),
+      ...DAILY_CHALLENGES.map(c => language === 'ar' ? c.titleAr : c.titleEn),
+      ...proactiveInsights.dynamicSuggests.map(s => language === 'ar' ? s.ar : s.en),
+      ...searchHistory
+    ];
+    return Array.from(new Set(list)).filter(s => typeof s === 'string' && s.length > 0);
+  }, [language, proactiveInsights.dynamicSuggests, searchHistory]);
+
+  useEffect(() => {
+    if (!query.trim() || query.length < 2) {
+      setSuggestion('');
+      return;
+    }
+    const lowerQuery = query.toLowerCase();
+    const match = allPossibleQueries.find(s => 
+      s.toLowerCase().startsWith(lowerQuery) && s.length > query.length
+    );
+    setSuggestion(match || '');
+  }, [query, allPossibleQueries]);
 
   const smartResponse = useMemo(() => {
     if (query.trim().length < 5) return null;
@@ -939,20 +964,51 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               getFluidStyles(),
               getFluidAmbient()
             )}>
-              <input
-                ref={inputRef}
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  onType();
-                  if (hasSearched) setHasSearched(false);
-                }}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder={language === 'ar' ? 'ابدأ بالكتابة...' : 'Start typing...'}
-                className="flex-1 bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400"
-                autoFocus
-              />
+              <div className="flex-1 relative flex items-center">
+                <input
+                  ref={inputRef}
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    onType();
+                    if (hasSearched) setHasSearched(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Tab' && suggestion) {
+                      e.preventDefault();
+                      setQuery(suggestion);
+                      setSuggestion('');
+                    }
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => {
+                    // Small delay to allow clicking the suggestion button
+                    setTimeout(() => setIsFocused(false), 200);
+                  }}
+                  placeholder={language === 'ar' ? 'ابدأ بالكتابة...' : 'Start typing...'}
+                  className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10"
+                  autoFocus
+                />
+                {suggestion && isFocused && (
+                  <div className={cn(
+                    "absolute inset-0 p-4 text-base md:text-xl font-bold pointer-events-none select-none flex items-center overflow-hidden whitespace-nowrap",
+                    language === 'ar' ? "text-right" : "text-left"
+                  )}>
+                     <span className="opacity-0">{query}</span>
+                     <button
+                       type="button"
+                       onClick={() => {
+                         setQuery(suggestion);
+                         setSuggestion('');
+                         inputRef.current?.focus();
+                       }}
+                       className="text-zinc-300 pointer-events-auto hover:text-indigo-400 transition-colors cursor-pointer"
+                     >
+                       {suggestion.slice(query.length)}
+                     </button>
+                  </div>
+                )}
+              </div>
               
               <button 
                 type="submit"
