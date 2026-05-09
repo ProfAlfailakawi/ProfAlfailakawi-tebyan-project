@@ -707,48 +707,70 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
 
   useEffect(() => {
+    // 1. If query is too short, clear and stop
     if (!query.trim() || query.length < 2) {
       setSuggestion('');
       return;
     }
+
+    // 2. Clear current suggestion ONLY if it no longer matches the new query
+    // This avoids flickering while typing, but removes stale shadows immediately
+    setSuggestion(prev => {
+      if (prev && prev.toLowerCase().startsWith(query.toLowerCase()) && prev.length > query.length) {
+        return prev;
+      }
+      return '';
+    });
+
+    let active = true;
     const lowerQuery = query.toLowerCase();
     
-    // First try static match
+    // 3. Static match (Instant Feedback)
     const staticMatch = allPossibleQueries.find(s => 
       s.toLowerCase().startsWith(lowerQuery) && s.length > query.length
     );
     
     if (staticMatch) {
       setSuggestion(staticMatch);
-    } else {
-      // AI Autocomplete Fallback with Debounce
-      const timer = setTimeout(async () => {
-        if (query.length < 5) return; // Don't trigger for very short custom queries
-        
-        try {
-          const response = await aiClient.models.generateContent({
-            model: "gemini-3-flash-preview",
-            contents: `The user is typing in a search bar for a deep philosophical and behavioral consulting app. 
-            User typed: "${query}"
-            Language: ${language === 'ar' ? 'Arabic' : 'English'}
-            
-            The app supports Modern Standard Arabic AND common dialects like Kuwaiti, Saudi, Gulf (Khaleeji), and Ammi.
-            Complete this sentence with ONE likely short query (max 6-8 words) that starts EXACTLY with "${query}".
-            If the user started in a dialect, complete it in the SAME dialect.
-            Return ONLY the full completed string. No explanations. No quotes.`,
-          });
-          
-          const aiSuggestion = response.text?.trim() || '';
-          if (aiSuggestion && aiSuggestion.toLowerCase().startsWith(query.toLowerCase()) && aiSuggestion.length > query.length) {
-            setSuggestion(aiSuggestion);
-          }
-        } catch (err) {
-          console.warn('AI Autocomplete failed', err);
-        }
-      }, 400); // 400ms debounce
-      
-      return () => clearTimeout(timer);
+      // We don't return here! We still allow the AI fallback to set a timer 
+      // in case AI has a better/longer "smart" completion, unless static match is long enough.
     }
+
+    // 4. AI Autocomplete (Debounced)
+    const timer = setTimeout(async () => {
+      // Don't trigger AI for very short queries or if we already have a long static match
+      if (!active || query.length < 5) return;
+      
+      try {
+        const response = await aiClient.models.generateContent({
+          model: "gemini-3-flash-preview",
+          contents: `The user is typing in a search bar for a deep philosophical and behavioral consulting app. 
+          User is currently typing: "${query}"
+          Language: ${language === 'ar' ? 'Arabic' : 'English'}
+          
+          The app supports Modern Standard Arabic AND common dialects like Kuwaiti, Saudi, Gulf (Khaleeji), and Ammi.
+          Complete this sentence with ONE likely short query (max 6-8 words) that starts EXACTLY with the characters "${query}".
+          If the user started in a dialect, complete it in the SAME dialect.
+          Return ONLY the full completed string. No explanations. No quotes.`,
+        });
+        
+        if (!active) return;
+
+        const aiSuggestion = response.text?.trim() || '';
+        // Only update if it's better than current suggestion (or we have none) 
+        // and it starts with the query.
+        if (aiSuggestion && aiSuggestion.toLowerCase().startsWith(query.toLowerCase()) && aiSuggestion.length > query.length) {
+          setSuggestion(aiSuggestion);
+        }
+      } catch (err) {
+        console.warn('AI Autocomplete failed', err);
+      }
+    }, 600); // 600ms debounce for cleaner context
+    
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, [query, allPossibleQueries, aiClient, language]);
 
   const smartResponse = useMemo(() => {
