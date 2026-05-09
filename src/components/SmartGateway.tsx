@@ -98,15 +98,21 @@ interface SmartGatewayProps {
 export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed }) => {
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
+  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
-  const [suggestion, setSuggestion] = useState('');
+  const [searchValue, setSearchValue] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
+  const [smartSuggestion, setSmartSuggestion] = useState("");
+  const suggestion = smartSuggestion;
+  const setSuggestion = setSmartSuggestion;
+  const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
+  const latestInputRef = useRef(searchValue);
+  const requestIdRef = useRef(0);
   const [isFocused, setIsFocused] = useState(false);
   
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [insightIndexList, setInsightIndexList] = useState(0);
 
   useEffect(() => {
-    // Generate randomly purely on load so it changes every time the user refreshes
     setChallengeIndex(Math.floor(Math.random() * DAILY_CHALLENGES.length));
     setInsightIndexList(Math.floor(Math.random() * PLATFORM_INSIGHTS.length));
   }, []);
@@ -118,7 +124,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
   useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      // Ignore if user is already in an input/textarea, or it's a meta key
       if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key.length === 1) {
@@ -128,6 +133,78 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
+
+  const handleSearchInputChange = (value: string) => {
+    setSearchValue(value);
+    latestInputRef.current = value;
+    setSmartSuggestion("");
+    setQuery(value);
+    onType();
+    if (hasSearched) setHasSearched(false);
+    
+    if (!value || value.trim().length < 6) return;
+  };
+
+  useEffect(() => {
+    const currentText = searchValue.trim();
+    if (!currentText || currentText.length < 6) {
+      setSmartSuggestion("");
+      return;
+    }
+
+    const requestId = ++requestIdRef.current;
+    
+    const timer = setTimeout(async () => {
+      try {
+        setIsSuggestionLoading(true);
+        const textAtRequestTime = latestInputRef.current.trim();
+        
+        if (!textAtRequestTime || textAtRequestTime.length < 6) {
+          setSmartSuggestion("");
+          return;
+        }
+        
+        const prompt = `
+أكمل الجملة التالية كمقترح بحث ذكي لتطبيق تبيان.
+النص الحالي:
+"${textAtRequestTime}"
+الشروط:
+- أكمل المعنى بناءً على النص الكامل الحالي
+- لا تغيّر نية المستخدم
+- استخدم نفس اللهجة والأسلوب
+- اجعل الاقتراح قصير ومفيد
+- لا تعطِ إجابة، فقط أكمل صياغة السؤال أو المشكلة
+- لا تكرر النص إذا كان كاملاً
+`;
+        const response = await aiClient.models.generateContent({
+          model: "gemini-3-flash-preview",
+          contents: prompt,
+        });
+
+        const suggestion = response.text?.trim() || "";
+
+        if (
+          requestId !== requestIdRef.current ||
+          latestInputRef.current.trim() !== textAtRequestTime
+        ) {
+          return;
+        }
+
+        setSmartSuggestion(suggestion || "");
+      } catch (error) {
+        console.error("Smart autocomplete failed:", error);
+        setSmartSuggestion("");
+      } finally {
+        if (requestId === requestIdRef.current) {
+          setIsSuggestionLoading(false);
+        }
+      }
+    }, 700);
+    
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchValue, aiClient]);
 
   const [isQueryExpanded, setIsQueryExpanded] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
@@ -704,12 +781,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return Array.from(new Set(list)).filter(s => typeof s === 'string' && s.length > 0);
   }, [language, proactiveInsights.dynamicSuggests, searchHistory]);
 
-  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
-
-  const latestInputRef = useRef(query);
-  const requestIdRef = useRef(0);
-  const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
-
   useEffect(() => {
     const currentText = query.trim();
 
@@ -1031,58 +1102,41 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               <div className="flex-1 relative flex items-center overflow-hidden">
                 <input
                   ref={inputRef}
-                  value={query}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setQuery(val);
-                    latestInputRef.current = val;
-                    setSuggestion("");
-                    onType();
-                    if (hasSearched) setHasSearched(false);
-                  }}
+                  value={searchValue}
+                  onChange={(e) => handleSearchInputChange(e.target.value)}
+                  placeholder={language === 'ar' ? "اكتب سؤالك أو مشكلتك..." : "Type your question or problem..."}
                   onKeyDown={(e) => {
-                    if ((e.key === 'Tab' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') && suggestion) {
-                      if (e.currentTarget.selectionStart === query.length) {
+                    if ((e.key === 'Tab' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion) {
+                      if (e.currentTarget.selectionStart === searchValue.length) {
                         e.preventDefault();
-                        setQuery(suggestion);
-                        setSuggestion('');
+                        setSearchValue(smartSuggestion);
+                        setSmartSuggestion('');
                       }
                     }
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  placeholder={language === 'ar' ? 'ابدأ بالكتابة...' : 'Start typing...'}
                   className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10 relative"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
-                <AnimatePresence>
-                {suggestion && isFocused && (
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className={cn(
-                    "absolute inset-0 p-4 text-base md:text-xl font-bold pointer-events-none select-none flex items-center overflow-hidden whitespace-nowrap z-20",
-                    language === 'ar' ? "text-right flex-row" : "text-left flex-row"
-                  )}
-                  style={{ direction: language === 'ar' ? 'rtl' : 'ltr' }}>
-                     <span className="opacity-0 whitespace-pre">{query}</span>
-                     <button
-                       type="button"
-                       onMouseDown={(e) => {
-                         e.preventDefault();
-                         setQuery(suggestion);
-                         setSuggestion('');
-                         inputRef.current?.focus();
-                       }}
-                       className="text-zinc-400/80 pointer-events-auto hover:text-indigo-500 transition-colors cursor-pointer outline-none relative before:absolute before:-inset-2 before:content-['']"
-                     >
-                       {suggestion.slice(query.length)}
-                     </button>
-                  </motion.div>
-                )}
-                </AnimatePresence>
+              
+              {smartSuggestion && smartSuggestion !== searchValue && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchValue(smartSuggestion);
+                    setSmartSuggestion("");
+                    setQuery(smartSuggestion);
+                  }}
+                  className="mt-3 w-full rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-right text-sm text-slate-700 shadow-sm hover:bg-amber-100 transition"
+                >
+                  <span className="block text-xs text-amber-600 mb-1">
+                    {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
+                  </span>
+                  {smartSuggestion}
+                </button>
+              )}
               </div>
               
               <button 

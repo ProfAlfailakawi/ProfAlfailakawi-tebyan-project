@@ -319,9 +319,16 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                                  {isUserIdea && (
                                      <button 
                                          onClick={() => {
-                                             const warning = language === 'ar' 
-                                                ? 'هل أنت متأكد؟ سيتم حذف هذه الفكرة وجميع التطويرات المتفرعة منها بشكل نهائي.' 
-                                                : 'Are you sure? This will permanently delete this idea and ALL branches branching from it.';
+                                             let warning = '';
+                                             if (language === 'ar') {
+                                                 warning = node.type === 'seed' 
+                                                     ? 'هل أنت متأكد؟ سيتم حذف هذه الفكرة الأساسية وجميع التطويرات المتفرعة منها بشكل نهائي.'
+                                                     : 'هل أنت متأكد؟ سيتم حذف هذا التطوير وجميع الفروع التابعة له.';
+                                             } else {
+                                                 warning = node.type === 'seed'
+                                                     ? 'Are you sure? This will permanently delete the core idea and ALL branches branching from it.'
+                                                     : 'Are you sure? This will delete this development and all its sub-branches.';
+                                             }
                                              if(window.confirm(warning)) {
                                                 handleDelete(node.id);
                                              }
