@@ -126,31 +126,75 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                         <div className="relative z-10 flex items-center justify-between bg-zinc-50/50 -mx-2 -mb-2 p-2 rounded-2xl">
                             <div className="flex flex-wrap items-center gap-1 md:gap-2">
                                 <button onClick={() => {
+                                    if (!auth.currentUser) {
+                                        setToast({ 
+                                            message: language === 'ar' ? '🚀 سجل دخولك الآن لتنضم لعائلتنا وتساهم بتطوير الأفكار!' : '🚀 Log in now to join our family and help evolve ideas!', 
+                                            type: 'error' 
+                                        });
+                                        return;
+                                    }
                                     handleLike(node);
                                 }} 
-                                disabled={!auth.currentUser}
-                                className={cn("flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200", !auth.currentUser && "opacity-50 cursor-not-allowed")}>
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2 rounded-xl font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent", 
+                                    !auth.currentUser 
+                                        ? "text-zinc-300 bg-zinc-50/50" 
+                                        : "text-zinc-500 hover:text-rose-500 hover:bg-white hover:ring-zinc-200"
+                                )}>
                                     <svg className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                                     <span className="text-sm">{node.likes}</span>
                                 </button>
                                 <button onClick={() => {
+                                    if (!auth.currentUser) {
+                                        setToast({ 
+                                            message: language === 'ar' ? '💡 الأفكار العظيمة تبدأ بتسجيل الدخول! انضم إلينا لتطوير هذه الفكرة.' : '💡 Great ideas start with a login! Join us to evolve this idea.', 
+                                            type: 'error' 
+                                        });
+                                        return;
+                                    }
                                     setShowReply(!showReply);
                                 }} 
-                                disabled={!auth.currentUser}
-                                className={cn("flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200", !auth.currentUser && "opacity-50 cursor-not-allowed")}>
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2 rounded-xl font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent",
+                                    !auth.currentUser 
+                                        ? "text-zinc-300 bg-zinc-50/50" 
+                                        : "text-zinc-500 hover:text-indigo-600 hover:bg-white hover:ring-zinc-200"
+                                )}>
                                     <Network className="w-4 h-4 md:w-5 md:h-5" />
                                     <span className="text-sm">{language === 'ar' ? 'تطوير الفكرة' : 'Branch out'}</span>
                                 </button>
                                 <button onClick={() => {
-                                    const baseUrl = window.location.origin + window.location.pathname;
-                                    const params = new URLSearchParams(window.location.search);
-                                    params.set('tab', 'creativelab');
-                                    params.set('ripple', node.id);
-                                    navigator.clipboard.writeText(baseUrl + '?' + params.toString());
-                                    setToast({ message: language === 'ar' ? 'تم نسخ الرابط الحصري' : 'Direct link copied!', type: 'success' });
-                                }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-emerald-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                    try {
+                                        const baseUrl = window.location.origin + window.location.pathname;
+                                        const params = new URLSearchParams(window.location.search);
+                                        params.set('tab', 'ripple');
+                                        params.set('ripple', node.id);
+                                        const shareUrl = baseUrl + '?' + params.toString();
+                                        
+                                        navigator.clipboard.writeText(shareUrl).then(() => {
+                                             setToast({ 
+                                                message: language === 'ar' ? '✅ تم نسخ الرابط بنجاح.. انشر الإلهام!' : '✅ Link copied successfully.. Spread the inspiration!', 
+                                                type: 'success' 
+                                            });
+                                        }).catch(() => {
+                                             // Fallback for some browsers
+                                             const input = document.createElement('input');
+                                             input.value = shareUrl;
+                                             document.body.appendChild(input);
+                                             input.select();
+                                             document.execCommand('copy');
+                                             document.body.removeChild(input);
+                                             setToast({ 
+                                                message: language === 'ar' ? '✅ تم نسخ الرابط!' : '✅ Link copied!', 
+                                                type: 'success' 
+                                            });
+                                        });
+                                    } catch (err) {
+                                        console.error("Share error:", err);
+                                    }
+                                }} className="flex items-center gap-2 bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold cursor-pointer transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
                                     <Share2 className="w-4 h-4 md:w-5 md:h-5" />
-                                    <span className="hidden sm:inline text-sm">{language === 'ar' ? 'مشاركة' : 'Share'}</span>
+                                    <span className="text-sm">{language === 'ar' ? 'شارك الفكرة' : 'Share Idea'}</span>
                                 </button>
                             </div>
                             
@@ -270,13 +314,16 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
             if (!auth.currentUser) return;
             
             try {
-                // Remove bad data
+                // Remove bad data pointed out in image
                 const badTimestamps = ['2026-05-09T11:42:36.875Z', '2026-05-09T11:42:59.174Z'];
+                const badTexts = ['التربية', 'التعليم'];
                 const snapshot = await getDocs(ripplesCollection);
                 
                 for (const docSnap of snapshot.docs) {
                     const data = docSnap.data();
-                    if (badTimestamps.includes(data.timestamp)) {
+                    const cleanText = data.text?.trim();
+                    const includesBadText = badTexts.some(t => cleanText === t || cleanText?.startsWith(t + ' #'));
+                    if (badTimestamps.includes(data.timestamp) || includesBadText) {
                         await deleteDoc(docSnap.ref);
                     }
                 }
@@ -285,14 +332,24 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
                 const snapshotAfter = await getDocs(ripplesCollection);
                 if (snapshotAfter.empty) {
                      const { seedData } = await import('../../data/seedData');
+                     const idMap: Record<string, string> = {};
+                     
                      for (const item of seedData) {
+                        const actualParentId = item.parentId ? idMap[item.parentId] : null;
                         const docRef = await addDoc(ripplesCollection, {
                              ...item,
-                             parentId: null,
+                             parentId: actualParentId,
                              likes: item.likes || 0,
                              timestamp: new Date().toISOString()
                         });
-                        await updateDoc(docRef, { rootId: docRef.id });
+                        idMap[item.authorId || item.text.slice(0, 10)] = docRef.id;
+                        
+                        let rootId = docRef.id;
+                        if (actualParentId) {
+                            const parentDoc = await getDoc(doc(db, 'ripples', actualParentId));
+                            rootId = parentDoc.data()?.rootId || actualParentId;
+                        }
+                        await updateDoc(docRef, { rootId });
                      }
                 }
             } catch (err) {
@@ -304,7 +361,17 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
         
         const q = query(ripplesCollection, orderBy('timestamp', 'desc'));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const badTimestamps = ['2026-05-09T11:42:36.875Z', '2026-05-09T11:42:59.174Z'];
+            const badTexts = ['التربية', 'التعليم', 'Education'];
+            
+            const data = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .filter((item: any) => {
+                    const cleanText = item.text?.trim();
+                    const isBadTimestamp = badTimestamps.includes(item.timestamp);
+                    const isBadText = badTexts.some(t => cleanText === t || cleanText?.startsWith(t + ' #'));
+                    return !isBadTimestamp && !isBadText;
+                });
             setRipplesFlat(data);
         });
         return unsubscribe;
@@ -371,7 +438,10 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
 
     const handleDropIdea = async () => {
         if (!auth.currentUser) {
-            setToast({ message: language === 'ar' ? '✨ يا هلا بك! سجل دخولك لتشارك في الشبكة وتزرع بذرتك الأولى.' : '✨ Welcome! Please log in to plant your first idea seed.', type: 'error' });
+            setToast({ 
+                message: language === 'ar' ? '🚀 رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' : '🚀 A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.', 
+                type: 'error' 
+            });
             return;
         }
         if (!newIdea.trim()) return;
@@ -530,6 +600,24 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
                         <Sparkles className="w-4 h-4" />
                         {language === 'ar' ? 'ازرع بذرة فكرة مفتوحة المصدر' : 'PLANT AN OPEN SOURCE SEED'}
                     </label>
+
+                    {!auth.currentUser && (
+                        <motion.div 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl flex items-center gap-3 text-emerald-800"
+                        >
+                            <div className="bg-emerald-500 p-2 rounded-full text-white shrink-0">
+                                <Plus className="w-4 h-4" />
+                            </div>
+                            <p className="text-sm font-bold flex-1">
+                                {language === 'ar' 
+                                    ? '🚀 رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' 
+                                    : '🚀 A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.'}
+                            </p>
+                        </motion.div>
+                    )}
+
                     <textarea 
                         value={newIdea}
                         onChange={(e) => setNewIdea(e.target.value)}
@@ -551,8 +639,11 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
                     <div className="flex justify-end gap-2 mt-4">
                         <button 
                             onClick={handleDropIdea}
-                            disabled={!newIdea.trim() || isSubmitting}
-                            className="group relative overflow-hidden bg-zinc-900 text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-3 hover:bg-black active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-zinc-900/20"
+                            disabled={isSubmitting || (auth.currentUser && !newIdea.trim())}
+                            className={cn(
+                                "group relative overflow-hidden text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-zinc-900/20",
+                                !auth.currentUser ? "bg-emerald-600 hover:bg-emerald-700" : "bg-zinc-900 hover:bg-black"
+                            )}
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-emerald-500 opacity-0 group-hover:opacity-20 transition-opacity" />
                             {isSubmitting ? (

@@ -83,12 +83,108 @@ import { SmartGateway } from './components/SmartGateway';
 import { logEvent } from './services/analyticsService';
 import { cronService } from './services/cronService';
 
+const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 'ar' | 'en' }) => {
+    const quotes = language === 'ar' ? [
+        "مكان تتبلور فيه الأفكار..",
+        "ابحث عن العمق في كل فكرة..",
+        "اصنع تأثيراً يمتد طويلاً..",
+        "مرحباً بك في عالم التبيان..",
+        "الأفكار العظيمة تحتاج مساحة للتنفس.."
+    ] : [
+        "Where ideas crystallize..",
+        "Find depth in every thought..",
+        "Create an impact that lasts..",
+        "Welcome to the world of Tabyan..",
+        "Great ideas need space to breathe.."
+    ];
+
+    const [randomQuote] = useState(() => quotes[Math.floor(Math.random() * quotes.length)]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            onFinish();
+        }, 2500);
+        return () => clearTimeout(timer);
+    }, [onFinish]);
+
+    return (
+        <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+            className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center overflow-hidden"
+        >
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 90, 0],
+                        opacity: [0.03, 0.08, 0.03]
+                    }}
+                    transition={{ duration: 15, repeat: Infinity }}
+                    className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-emerald-500 rounded-full blur-[120px]"
+                />
+                <motion.div 
+                    animate={{ 
+                        scale: [1, 1.3, 1],
+                        rotate: [0, -90, 0],
+                        opacity: [0.03, 0.05, 0.03]
+                    }}
+                    transition={{ duration: 20, repeat: Infinity, delay: 2 }}
+                    className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-indigo-500 rounded-full blur-[100px]"
+                />
+            </div>
+
+            <div className="relative flex flex-col items-center gap-8">
+                <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    className="relative"
+                >
+                    <div className="w-24 h-24 md:w-32 md:h-32 bg-black rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-black/20 rotate-12">
+                        <Globe className="w-12 h-12 md:w-16 md:h-16 text-white -rotate-12" />
+                    </div>
+                </motion.div>
+
+                <div className="text-center space-y-3">
+                    <motion.h1 
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                        className="text-4xl md:text-6xl font-black text-black tracking-tighter"
+                    >
+                        تبيان
+                    </motion.h1>
+                    <motion.p 
+                        initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 1.2, duration: 0.8 }}
+                        className="text-zinc-400 font-medium flex items-center justify-center gap-2"
+                    >
+                        {randomQuote}
+                    </motion.p>
+                </div>
+
+                <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-48 h-0.5 bg-zinc-100 overflow-hidden rounded-full">
+                    <motion.div 
+                        initial={{ x: '-100%' }}
+                        animate={{ x: '100%' }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        className="h-full bg-black w-1/2"
+                    />
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, loading, authReady } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'error' | 'success' } | null>(null);
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
+  const [showSplash, setShowSplash] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
@@ -280,6 +376,10 @@ const AppContent: React.FC = () => {
 
   return (
         <div className={cn("h-[100dvh] bg-zinc-50 font-sans flex flex-col overflow-hidden text-zinc-900 selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+          <AnimatePresence>
+            {showSplash && <SplashScreen key="splash" onFinish={() => setShowSplash(false)} language={language} />}
+          </AnimatePresence>
+          
           <ThoughtNebula />
           <WhisperHint language={language} forceShow={isConfused} />
           
