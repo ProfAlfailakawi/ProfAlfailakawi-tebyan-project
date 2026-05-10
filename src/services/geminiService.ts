@@ -63,3 +63,46 @@ export const findSoulMatch = async (userPosts: string[], language: 'ar' | 'en') 
     return null;
   }
 };
+
+export const getIdeaSerendipity = async (ideaA: string, ideaB: string, language: 'ar' | 'en') => {
+  const systemInstruction = language === 'ar'
+    ? "أنت محرك اكتشاف صدفة (Serendipity). ادمج بين فكرتين مختلفتين تماماً في مجالات مختلفة، واطرح فكرة هجينة مبتكرة تربط بينهما بطريقة غير تقليدية وغير متوقعة. اجعل النص مختصراً ملهماً."
+    : "You are a serendipity engine. Merge two completely different ideas from different fields, and propose an innovative hybrid idea that connects them in an unconventional and unexpected way. Keep the text concise and inspiring.";
+    
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: `Idea A: ${ideaA}\nIdea B: ${ideaB}`,
+      config: { systemInstruction, temperature: 0.9 },
+    });
+    return response.text;
+  } catch (error) { return null; }
+};
+
+export const analyzeTrends = async (ideas: string[], language: 'ar' | 'en') => {
+  const systemInstruction = language === 'ar'
+    ? "حلل هذه الأفكار واستخرج 'اتجاهات النسيج' (Fabric Trends) الأكثر نضجاً والتي تتطور بوضوح عبر التفاعلات التطويرية. لخص هذه الاتجاهات بتركيز."
+    : "Analyze these ideas and extract the most mature 'Fabric Trends' that are clearly evolving through branch interactions. Summarize these trends concisely.";
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: ideas.join("\n---\n"),
+      config: { systemInstruction, temperature: 0.7 },
+    });
+    return response.text;
+  } catch (error) { return null; }
+};
+
+export const generateMindMap = async (text: string, language: 'ar' | 'en') => {
+    const systemInstruction = language === 'ar'
+      ? "لخص هذا النص في خريطة ذهنية نصية متفرعة (هيكل شجري) لسهولة الفهم."
+      : "Summarize this text into a branched text mind-map (tree structure) for easy understanding.";
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: text,
+        config: { systemInstruction, temperature: 0.6 },
+      });
+      return response.text;
+    } catch (error) { return null; }
+  };

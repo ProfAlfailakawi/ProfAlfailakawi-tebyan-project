@@ -8,6 +8,7 @@ import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 import { refineIdea, translateWithContext } from '../../services/geminiService';
 import { seedData } from '../../data/seedData';
 import { NebulaTab } from './NebulaTab';
+import { InsightsPanel } from './InsightsPanel';
 
 const ripplesCollection = collection(db, 'ripples');
 
@@ -375,6 +376,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
     const [isTimeCapsule, setIsTimeCapsule] = useState(false);
     const [activeView, setActiveView] = useState<'list' | 'nebula'>('list');
     const [dailyPrompt, setDailyPrompt] = useState<any>(null);
+    const [showInsights, setShowInsights] = useState(false);
     
     // Seed Data Integration Logic (SMART RULE)
     const combinedRipples = useMemo(() => {
@@ -782,6 +784,16 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             <div className="fixed inset-0 bg-zinc-50 z-[-2]" />
             <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wMikiLz48L3N2Zz4=')] opacity-50 z-[-1] pointer-events-none" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-b from-indigo-100/50 to-transparent blur-[120px] pointer-events-none z-[-1]" />
+            
+            <button 
+                onClick={() => setShowInsights(true)}
+                className="fixed right-6 bottom-6 z-50 bg-mood-primary text-white p-4 rounded-full shadow-lg"
+            >
+                <Sparkles />
+            </button>
+            <AnimatePresence>
+                {showInsights && <InsightsPanel ideas={combinedRipples} onClose={() => setShowInsights(false)} language={language} handleTabChange={handleTabChange} />}
+            </AnimatePresence>
 
             <button
                 onClick={() => handleTabChange('home')}
