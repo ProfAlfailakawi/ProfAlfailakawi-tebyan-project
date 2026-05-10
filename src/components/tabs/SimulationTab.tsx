@@ -55,10 +55,24 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
 
   React.useEffect(() => {
     if (initialValue && chatHistory.length === 0 && !isRoleplaying && !isLoading && !simulation) {
-      setSimTopic(initialValue);
-      setRpTopic(initialValue);
-      setSimMode('decision'); // Default simulator mode
-      startDecisionSimulation(initialValue);
+      if (initialValue.startsWith('[ROLEPLAY]')) {
+        const cleanTopic = initialValue.replace('[ROLEPLAY]', '');
+        setSimTopic(cleanTopic);
+        setRpTopic(cleanTopic);
+        setSimMode('roleplay');
+        const activeTopic = cleanTopic || rpTopic;
+        setChatHistory([]);
+        setRpRadar(null);
+        setIsRoleplaying(true);
+        handleRoleplaySend(language === 'ar' 
+          ? 'ابدأ المحادثة فورا دون مقدمات، وبناء على الموقف، باشر بالحديث بشكل مباشر (سواء بهجوم أو رد فعل غاضب أو سؤال مستفز).' 
+          : 'Start the conversation immediately based on the situation with an aggressive or provocative start without intro.', activeTopic);
+      } else {
+        setSimTopic(initialValue);
+        setRpTopic(initialValue);
+        setSimMode('decision'); // Default simulator mode
+        startDecisionSimulation(initialValue);
+      }
       if (onValueUsed) onValueUsed();
     }
   }, [initialValue]);

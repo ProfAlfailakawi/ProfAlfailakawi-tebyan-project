@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X } from 'lucide-react';
+import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc, writeBatch } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
@@ -191,11 +191,23 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                         
                         <div className="relative z-10 flex items-center justify-between bg-zinc-50/50 -mx-2 -mb-2 p-2 rounded-2xl">
                             <div className="flex flex-wrap items-center gap-1 md:gap-2">
-                                <button onClick={() => handleLike(node)} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                <button onClick={() => {
+                                    if (!auth.currentUser) {
+                                        setToast({ message: language === 'ar' ? 'يرجى تسجيل الدخول أولاً.' : 'Please login first.', type: 'error' });
+                                        return;
+                                    }
+                                    handleLike(node);
+                                }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
                                     <svg className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                                     <span className="text-sm">{node.likes}</span>
                                 </button>
-                                <button onClick={() => setShowReply(!showReply)} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                <button onClick={() => {
+                                    if (!auth.currentUser) {
+                                        setToast({ message: language === 'ar' ? 'يرجى تسجيل الدخول أولاً لتطوير الفكرة.' : 'Please login to branch out.', type: 'error' });
+                                        return;
+                                    }
+                                    setShowReply(!showReply);
+                                }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
                                     <Network className="w-4 h-4 md:w-5 md:h-5" />
                                     <span className="text-sm">{language === 'ar' ? 'تطوير الفكرة' : 'Branch out'}</span>
                                 </button>
@@ -295,19 +307,32 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
     );
 });
 
-export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
+export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' | 'en', handleTabChange: (tab: any, context?: string, exit?: boolean) => void }) => {
     const [ripplesFlat, setRipplesFlat] = useState<any[]>([]);
-    const [search, setSearch] = useState('');
+    const [filterMyIdeas, setFilterMyIdeas] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [showAllCategories, setShowAllCategories] = useState(false); 
     const [newIdea, setNewIdea] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-    useEffect(() => {
-        if (toast) {
-            const timer = setTimeout(() => setToast(null), 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [toast]);
+    const tagFrequencies = useMemo(() => {
+        const freq: Record<string, number> = {};
+        ripplesFlat.forEach(node => {
+            const matches = node.text.match(/#(\w+)/g) || [];
+            matches.forEach(tag => {
+                freq[tag] = (freq[tag] || 0) + 1;
+            });
+        });
+        return freq;
+    }, [ripplesFlat]);
+
+    const sortedTags = useMemo(() => {
+        return Object.entries(tagFrequencies)
+            .sort((a, b) => b[1] - a[1])
+            .map(e => e[0]);
+    }, [tagFrequencies]);
+    
+    const displayTags = showAllCategories ? sortedTags : sortedTags.slice(0, 10);
 
     useEffect(() => {
         const q = query(ripplesCollection, orderBy('timestamp', 'desc'));
@@ -317,6 +342,42 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
         });
         return unsubscribe;
     }, []);
+
+    // Helper to build tree from flat list
+    const buildTree = (nodes: any[]): RippleNode[] => {
+        const map = new Map();
+        nodes.forEach(node => map.set(node.id, { ...node, children: [] }));
+        const tree: RippleNode[] = [];
+        nodes.forEach(node => {
+            if (node.parentId && map.has(node.parentId)) {
+                map.get(node.parentId).children.push(map.get(node.id));
+            } else {
+                tree.push(map.get(node.id));
+            }
+        });
+        return tree;
+    };
+
+    // Filter and Search logic
+    const filteredRipples = ripplesFlat.filter(node => {
+        if (filterMyIdeas && node.authorId !== auth.currentUser?.uid) return false;
+        if (selectedCategory && !node.text.includes(selectedCategory)) return false;
+        if (searchQuery && !node.text.toLowerCase().includes(searchQuery.toLowerCase()) && !node.author.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        return true;
+    });
+
+    const ripples = buildTree(filteredRipples);
+
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+    useEffect(() => {
+        if (toast) {
+            const timer = setTimeout(() => setToast(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toast]);
 
     const hasScrolledRef = useRef(false);
 
@@ -338,24 +399,14 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
         }
     }, [ripplesFlat]);
 
-    // Helper to build tree from flat list
-    const buildTree = (nodes: any[]): RippleNode[] => {
-        const map = new Map();
-        nodes.forEach(node => map.set(node.id, { ...node, children: [] }));
-        const tree: RippleNode[] = [];
-        nodes.forEach(node => {
-            if (node.parentId && map.has(node.parentId)) {
-                map.get(node.parentId).children.push(map.get(node.id));
-            } else {
-                tree.push(map.get(node.id));
-            }
-        });
-        return tree;
-    };
 
-    const ripples = buildTree(ripplesFlat);
+
 
     const handleDropIdea = async () => {
+        if (!auth.currentUser) {
+            setToast({ message: language === 'ar' ? 'يرجى تسجيل الدخول أو الاشتراك لتزرع فكرتك.' : 'Please login to plant your idea.', type: 'error' });
+            return;
+        }
         if (!newIdea.trim()) return;
         if (newIdea.length > 200) {
             setToast({ message: language === 'ar' ? 'الفكرة طويلة جداً، حاول تقسيمها.' : 'Idea is too long, please try splitting it.', type: 'error' });
@@ -390,6 +441,8 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
         if (!likeSnap.exists()) {
             await setDoc(likeRef, { userId: auth.currentUser.uid });
             await updateDoc(doc(db, 'ripples', node.id), { likes: increment(1) });
+            // Mock email notification
+            console.log(`[Email Notification] تم التفاعل مع فكرتك في تبيان: تم عمل Like على فكرتك "${node.text.slice(0,20)}"`);
         }
     };
 
@@ -436,6 +489,8 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                 parentId,
                 rootId
             });
+            // Mock email notification
+            console.log("[Email Notification] تم التفاعل مع فكرتك في تبيان: تم إضافة تطوير على فكرتك");
         } catch (error) {
             console.error("Error replying:", error);
         }
@@ -451,7 +506,7 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-b from-indigo-100/50 to-transparent blur-[120px] pointer-events-none z-[-1]" />
 
             <button
-                onClick={() => window.history.back()}
+                onClick={() => handleTabChange('home')}
                 className="absolute top-8 left-4 p-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors z-20 flex items-center gap-2"
             >
                 <ArrowLeft className="w-5 h-5" />
@@ -484,7 +539,7 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                     <Network className="w-4 h-4 text-emerald-500" />
                     <span>{language === 'ar' ? 'الشبكة الاجتماعية للأفكار' : 'Social Network of Ideas'}</span>
                 </motion.div>
-                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600">
+                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
                     {language === 'ar' ? 'التأثير المتسلسل' : 'The Ripple Effect'}
                 </h2>
                 <p className="text-zinc-500 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
@@ -553,21 +608,46 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                         <Activity className="w-8 h-8 text-indigo-500" />
                         {language === 'ar' ? 'موجات الأفكار النشطة' : 'Active Ripples'}
                     </h3>
-                    <div className="flex gap-2 w-full sm:w-auto">
+                    <div className="w-full sm:w-auto flex flex-col gap-3">
                         <div className="relative w-full sm:w-72">
                             <Search className={cn("absolute top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400", language === 'ar' ? "right-3" : "left-3")} />
                             <input 
-                                value={search} onChange={(e) => setSearch(e.target.value)} 
+                                value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                                 placeholder={language === 'ar' ? 'ابحث في العقول...' : 'Search in minds...'} 
                                 className={cn("w-full bg-white border border-zinc-200 px-4 py-3 rounded-full text-sm font-medium shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all", language === 'ar' ? "pr-10" : "pl-10")} 
                             />
+                        </div>
+                        <div className="flex gap-2 items-center flex-wrap">
+                            <button 
+                                onClick={() => setFilterMyIdeas(!filterMyIdeas)}
+                                className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", filterMyIdeas ? "bg-indigo-600 text-white" : "bg-zinc-200 text-zinc-700")}
+                            >
+                                {language === 'ar' ? 'أفكاري فقط' : 'My ideas only'}
+                            </button>
+                            {displayTags.map(cat => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
+                                    className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", selectedCategory === cat ? "bg-emerald-600 text-white" : "bg-zinc-200 text-zinc-700")}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
+                            {sortedTags.length > 10 && (
+                                <button
+                                    onClick={() => setShowAllCategories(!showAllCategories)}
+                                    className="px-3 py-1 rounded-full text-xs font-bold transition-all bg-zinc-100 text-zinc-500 hover:bg-zinc-200 flex items-center gap-1"
+                                >
+                                    {showAllCategories ? <><ChevronUp className="w-3 h-3" /> ...</> : <><ChevronDown className="w-3 h-3" /> +</>}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 <div className="relative z-10">
                     <AnimatePresence>
-                        {ripples.filter(n => n.text.includes(search)).map((node) => (
+                        {ripples.map((node) => (
                             <RippleNodeComponent 
                                 key={node.id} 
                                 node={node} 

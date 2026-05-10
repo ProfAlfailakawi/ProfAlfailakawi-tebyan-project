@@ -75,7 +75,7 @@ const ARTab = React.lazy(() => import('./components/tabs/ARTab'));
 
 type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar' | 'ripple';
 
-const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary', 'ripple'];
+const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary'];
 
 import DevPanel from './components/DevPanel';
 
@@ -203,7 +203,7 @@ const AppContent: React.FC = () => {
     return true;
   }, [authReady, language, user, showToast]);
 
-  const handleTabChange = useCallback((tab: Tab | 'ar', context: string = '', exit: boolean = false) => {
+  const handleTabChange = useCallback((tab: Tab | 'ar' | 'simulation_roleplay', context: string = '', exit: boolean = false) => {
     if (exit) {
       localStorage.removeItem('tebyan_last_query');
       localStorage.removeItem('tebyan_last_has_searched');
@@ -217,8 +217,13 @@ const AppContent: React.FC = () => {
     // Dispatch event to close all other potential overlays (like Serendipity Compass)
     window.dispatchEvent(new CustomEvent('close_overlays'));
     
-    let targetTab = tab as Tab;
+    let targetTab = tab as any;
     let targetContext = context;
+
+    if (targetTab === 'simulation_roleplay') {
+      targetTab = 'simulation';
+      targetContext = '[ROLEPLAY]' + context;
+    }
 
     const actualTab = targetTab === 'home' || targetTab === 'discover' || (targetTab as string) === 'dashboard' ? 'home' : targetTab;
     if (checkAuth(actualTab as Tab)) {
@@ -331,9 +336,9 @@ const AppContent: React.FC = () => {
       <motion.header 
          animate={{ y: showHeader ? 0 : -100 }}
          transition={{ duration: 0.3, ease: "easeInOut" }}
-         className="fixed top-0 left-0 right-0 z-40 bg-transparent px-6 py-4 flex items-center justify-between pointer-events-none"
+         className="fixed top-0 left-0 right-0 z-40 bg-transparent px-8 py-4 flex items-center justify-between pointer-events-none"
       >
-         <div className="flex items-center gap-4 pointer-events-auto">
+         <div className="flex items-center gap-6 pointer-events-auto">
            <button 
              onClick={() => handleTabChange('home')}
              className="flex items-center gap-3 transition-transform active:scale-95"
@@ -520,7 +525,7 @@ const AppContent: React.FC = () => {
                   case 'mindmap':
                     return <MindMapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'ripple':
-                    return <RippleEffectTab language={language} />;
+                    return <RippleEffectTab language={language} handleTabChange={handleTabChange} />;
                   case 'analytics':
                     return <AnalyticsTab handleTabChange={handleTabChange} language={language} />;
                   case 'loyalty':

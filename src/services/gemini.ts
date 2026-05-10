@@ -241,7 +241,8 @@ export async function simplifyConcept(concept: string) {
 - لا تستخدمي فقرات أبداً.
 - كل نقطة لا تتجاوز سطرين.
 - اجعلي المحتوى قابلاً للقراءة في أقل من 5 ثوانٍ.
-استخدمي Markdown.`;
+استخدمي Markdown.
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -276,7 +277,8 @@ export async function generateQuiz(topic: string) {
 - options: مصفوفة من 4 خيارات للـ multiple، وخيارين (صح، خطأ) للـ boolean. للـ fill ضع خيارات محتملة.
 - answer: الإجابة الصحيحة (يجب أن تطابق تماماً أحد الخيارات في options).
 
-اجعل الأسئلة تتدرج في الصعوبة من الفهم إلى التحليل.`;
+اجعل الأسئلة تتدرج في الصعوبة من الفهم إلى التحليل.
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -320,13 +322,15 @@ export async function generateSimulation(topic: string = 'Digital Transformation
       - الفكرة: جوهر التحدي في سطر.
       - 3 خيارات (decisions) واضحة ومتباينة.
       - لكل خيار: أثر (impact) حاسم ومختصر جداً (بدون شرح مطول).
-      القواعد: ممنوع الفقرات، ممنوع اللغة الأكاديمية.` :
+      القواعد: ممنوع الفقرات، ممنوع اللغة الأكاديمية.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `Create a dynamic interactive scenario simulation based on "Scan-first" design:
       - Scenario: Very focused (1-2 sentences).
       - Key idea: Core challenge in 1 line.
       - 3 multi-angled decisions.
       - Each choice: Decisive, concise impact (no long explanations).
-      Rules: No long paragraphs, no academic language.`;
+      Rules: No long paragraphs, no academic language.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -394,7 +398,8 @@ export async function generateTimeMachineJourney(concept: string, lang: string =
       - tools: الأدوات والتقنيات المستخدمة (استخدم Markdown).
       
       في النهاية، قدم 'summary' فلسفياً للرحلة يربط الماضي بالمستقبل.
-      الرد يجب أن يكون JSON فقط.` :
+      الرد يجب أن يكون JSON فقط.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `You are a leading futurist and educational historian. Use your Time Machine to take the user on a deep cognitive journey showing how the teaching of the following concept has evolved and will evolve: '${concept}'.
       Precisely cover 4 key timestamps:
       1. Pre-Industrial & Traditional (Direct Mimicry/Traditional methods).
@@ -409,7 +414,8 @@ export async function generateTimeMachineJourney(concept: string, lang: string =
       - tools: Tools and technologies used (Use Markdown).
       
       Conclude with a philosophical 'summary' linking past to future.
-      Return strictly as JSON.`;
+      Return strictly as JSON.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -458,14 +464,16 @@ export async function explainSimply(concept: string, level: string, lang: string
       - الفكرة المفتاحية (سطر واحد).
       - 3-5 نقاط موجزة (Bullet points).
       - نصيحة أو تنبيه (سطر واحد).
-      القواعد: ممنوع الفقرات الطويلة، ممنوع الوعظ، اعتمدي الوضوح الميداني بأسلوبكِ الحنون.`
+      القواعد: ممنوع الفقرات الطويلة، ممنوع الوعظ، اعتمدي الوضوح الميداني بأسلوبكِ الحنون.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`
       : `You are a tender and wise motherly counselor. Explain: ${concept} for: ${level}.
       Structure for scan-first reading:
       - Bold Headline (1 line).
       - Key idea (1 sentence).
       - 3-5 concise bullet points.
       - Short tip/warning (1 line).
-      Rules: No long paragraphs, no lecturing, focus on practical action with a warm tone.`;
+      Rules: No long paragraphs, no lecturing, focus on practical action with a warm tone.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -488,12 +496,14 @@ export async function analyzeSystemBehaviors(toolName: string, lang: string = 'a
       - الفوائد: (3 نقاط قصيرة).
       - المخاطر: (نقطتان).
       - النصيحة الذهبية: (سطر واحد).
-      القواعد: اختصار شديد، وضوح تام، لغة إنسانية حنونة ومباشرة.`
+      القواعد: اختصار شديد، وضوح تام، لغة إنسانية حنونة ومباشرة.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`
       : `You are a warm behavior analyst. Analyze: ${toolName}. Structure:
       - Benefits: (3 short points).
       - Risks: (2 points).
       - Golden Tip: (1 line).
-      Rules: Ultra-concise, total clarity, direct human language with a caring tone.`;
+      Rules: Ultra-concise, total clarity, direct human language with a caring tone.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -524,8 +534,10 @@ export async function careerCompass(skills: string, lang: string = 'ar') {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
     const systemInstruction = lang === 'ar'
-      ? `أنت مستشار مهني. اقترح 3 مهن بناءً على: ${skills}. أرجع JSON فقط.`
-      : `You are a career consultant. Suggest 3 careers based on: ${skills}. Return JSON only.`;
+      ? `أنت مستشار مهني. اقترح 3 مهن بناءً على: ${skills}. أرجع JSON فقط.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`
+      : `You are a career consultant. Suggest 3 careers based on: ${skills}. Return JSON only.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -558,7 +570,8 @@ export async function careerCompass(skills: string, lang: string = 'ar') {
 export async function generateInstructionalDesign(topic: string, level: string) {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
-    const systemInstruction = `أنت خبير في الهندسة الاستراتيجية (Strategic Design). إرجع النتيجة حصراً بصيغة JSON.`;
+    const systemInstruction = `أنت خبير في الهندسة الاستراتيجية (Strategic Design). إرجع النتيجة حصراً بصيغة JSON.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -597,7 +610,8 @@ export async function generateInstructionalDesign(topic: string, level: string) 
 export async function scoutTools(goal: string) {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
-    const systemInstruction = `أنت خبير تكنولوجي واستراتيجي. اقترح 6 أدوات تقنية أو حلول متنوعة (مجانية ومدفوعة) لتحقيق هذا الهدف: ${goal}. وضح بدقة لماذا اخترت كل أداة في هذا السياق. JSON فقط.`;
+    const systemInstruction = `أنت خبير تكنولوجي واستراتيجي. اقترح 6 أدوات تقنية أو حلول متنوعة (مجانية ومدفوعة) لتحقيق هذا الهدف: ${goal}. وضح بدقة لماذا اخترت كل أداة في هذا السياق. JSON فقط.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -633,7 +647,8 @@ export async function generatePersonas(context: string) {
     const model = DEFAULT_MODEL;
     const systemInstruction = `أنت خبير في السلوك الإنساني وعلم النفس. أنشئ 3 شخصيات (Personas) لتمثيل أفراد مختلفين متأثرين في سياق: ${context}.
 لكل شخصية وضح بعمق: الاسم، العمر، نمط التفكير، التحديات النفسية والعملية، والاحتياجات الأساسية.
-أرجع النتيجة بصيغة JSON.`;
+أرجع النتيجة بصيغة JSON.
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -671,9 +686,11 @@ export async function generatePodcastScript(content: string, lang: string = 'ar'
     const systemInstruction = lang === 'ar' ?
       `أنتِ "امرأة حنونة ومستشارة". تجنبي تماماً مناداة المستخدم أو المتلقين بـ (يا بناتي، يا أبنائي، يا ولدي، يا بنتي) أو أي مفردات مشابهة، وخاطبيهم بصفة عامة أو بدون مناداة.  حولي هذا المحتوى إلى حوار حنون وشيق بلهجة بيضاء كويتية: ${content}.
       اجعلي الحوار بصيغة عامة وحنونة لتبسيط المفاهيم.
-      أرجعي النتيجة كـ Markdown نصي.` :
+      أرجعي النتيجة كـ Markdown نصي.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `You are a warm motherly advisor. Turn this content into a tender dialogue: ${content}.
-      Format as Markdown.`;
+      Format as Markdown.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({

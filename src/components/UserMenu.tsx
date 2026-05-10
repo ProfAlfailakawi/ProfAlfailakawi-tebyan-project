@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LogOut, User as UserIcon, Shield, LayoutDashboard } from 'lucide-react';
-import { auth } from '../lib/firebase';
+import { auth, db } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
@@ -61,6 +61,28 @@ export default function UserMenu() {
             <div className="px-4 py-3 border-b border-zinc-50 bg-zinc-50/50">
               <p className="text-sm font-bold text-zinc-900 truncate">{profile.displayName || 'مستخدم'}</p>
               <p dir="ltr" className="text-xs text-zinc-500 font-medium capitalize truncate text-end">{profile.email || profile.role}</p>
+              
+              {!profile.email && (
+                <div className="mt-3 flex flex-col gap-2">
+                    <input 
+                        type="email"
+                        placeholder="أدخل بريدك الإلكتروني"
+                        className="text-xs p-2 rounded-lg border border-zinc-200 outline-none focus:ring-1 focus:ring-indigo-500"
+                        onBlur={async (e) => {
+                            if(e.target.value.includes('@')) {
+                                try {
+                                    const { doc, updateDoc } = await import('firebase/firestore');
+                                    await updateDoc(doc(db, 'users', user!.uid), { email: e.target.value });
+                                    window.location.reload(); // Refresh to update profile
+                                } catch (e) {
+                                  console.error("Error saving email", e);
+                                }
+                            }
+                        }}
+                    />
+                    <p className="text-[10px] text-amber-600 font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
+                </div>
+              )}
             </div>
 
             <div className="p-1.5 flex flex-col gap-1">

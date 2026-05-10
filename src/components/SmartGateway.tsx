@@ -16,31 +16,31 @@ const DAILY_CHALLENGES = [
         titleAr: 'كيف تدير صراعاً حاداً بين أفراد فريقك أو عائلتك؟',
         titleEn: 'How to manage severe conflict among your team or family?',
         query: 'كيف أتعامل مع توتر حاد وصدام بين شخصين في فريقي؟',
-        path: 'simulation'
+        path: 'simulation_roleplay'
     },
     {
         titleAr: 'ماذا تفعل إذا انهارت خطتك في اللحظة الأخيرة؟',
         titleEn: 'What to do if your plan falls apart at the last minute?',
         query: 'خطة مهمة جداً فشلت فجأة، كيف ألملم الوضع وأتخذ قراراً؟',
-        path: 'simulation'
+        path: 'simulation_roleplay'
     },
   {
       titleAr: 'كيف تتصرف مع عميل أو شريك غاضب جداً؟',
       titleEn: 'How do you handle a very angry client or partner?',
       query: 'كيف أتصرف بذكاء مع شخص منفعل وغاضب يهاجمني الآن؟',
-      path: 'simulation'
+      path: 'simulation_roleplay'
   },
   {
       titleAr: 'كيف تتخذ قراراً صعباً وسط ضغوط متضاربة؟',
       titleEn: 'How to make a difficult decision amid conflicting pressures?',
       query: 'أواجه قراراً معقداً ولا أعرف من أين أبدأ أو كيف أوازن المخاطر؟',
-      path: 'simulation'
+      path: 'simulation_roleplay'
   },
     {
         titleAr: 'كيف تقنع طرفاً عنيداً بتوجه جديد دون صدام؟',
         titleEn: 'How to convince a stubborn party without a clash?',
         query: 'كيف أقنع شخصاً عنيداً بتغيير المسار وتجربة شيء جديد؟',
-        path: 'simulation'
+        path: 'simulation_roleplay'
     }
 ];
 
@@ -504,6 +504,21 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     setShowFollowUp(false);
   };
 
+  const clearSearch = () => {
+    setHasSearched(false);
+    setSearchValue("");
+    setQuery("");
+    sessionStorage.setItem('tebyan_current_query', "");
+    sessionStorage.setItem('tebyan_current_has_searched', 'false');
+    setSmartSuggestion("");
+  };
+
+  useEffect(() => {
+    if (searchValue.trim() === "") {
+        setHasSearched(false);
+    }
+  }, [searchValue]);
+
     const onPathSelect = (id: any, query: string) => {
     console.log('[SmartGateway] onPathSelect called:', id, query);
     // Usage Tracking for personalization
@@ -791,8 +806,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   ];
 
   const chipSuggestions = useMemo(() => {
-    return [...ALL_CHIP_SUGGESTIONS].sort(() => 0.5 - Math.random()).slice(0, 7);
-  }, []);
+    const history = JSON.parse(localStorage.getItem('tibyan_search_history') || '[]');
+    const filtered = ALL_CHIP_SUGGESTIONS.filter(s => !history.includes(language === 'ar' ? s.ar : s.en));
+    return [...(filtered.length > 0 ? filtered : ALL_CHIP_SUGGESTIONS)].sort(() => 0.5 - Math.random()).slice(0, 7);
+  }, [language]);
 
   const allPossibleQueries = useMemo(() => {
     const list = [
@@ -1210,6 +1227,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 exit={{ opacity: 0, height: 0 }}
                 className="border-t border-zinc-100 mt-2 p-4 hidden md:block space-y-4"
               >
+                <div className="flex justify-center mb-4">
+                    <button onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
+                        {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
+                    </button>
+                </div>
                 {isThinking ? (
                   <div className="py-12 flex flex-col items-center justify-center gap-6">
                     <div className="relative w-full max-w-sm h-20 flex flex-col items-center justify-center overflow-hidden gap-4">
@@ -1384,6 +1406,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     key="mobile-suggestions"
                     className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
                  >
+                    <div className="flex justify-center mb-2">
+                      <button onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
+                          {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
+                      </button>
+                    </div>
                     {isThinking ? (
                         <div className="py-12 flex flex-col items-center justify-center gap-6">
                            <div className="relative w-full max-w-sm h-20 flex flex-col items-center justify-center overflow-hidden gap-4">
@@ -1543,8 +1570,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       </div>
       </div>
 
-      {/* Daily Challenge & Insights Section */}
-      <div className="emotion-hide mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+      {!hasSearched && (
+        <>
+          {/* Daily Challenge & Insights Section */}
+          <div className="emotion-hide mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         <motion.div
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
@@ -1686,6 +1715,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               </div>
           </div>
       </motion.div>
+        </>
+      )}
       {/* Gravity of Intent Demonstration */}
 
     </div>

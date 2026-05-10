@@ -54,7 +54,10 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                          timeEra === 2 ? Math.min(6, activeHistory.length) : 
                          activeHistory.length;
 
+    const uniqueNodes = new Map();
     activeHistory.slice(0, visibleCount).forEach((query, index) => {
+        if (uniqueNodes.has(query)) return;
+
         const angle = (index / visibleCount) * Math.PI * 2;
         // Make radius change with time, but also vary a bit
         const baseRadius = 180 * scaleFactor;
@@ -62,25 +65,21 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         const x = centerX + Math.cos(angle) * (timeEra === 4 ? radius + (Math.random() * 20 - 10) : radius);
         const y = centerY + Math.sin(angle) * (timeEra === 4 ? radius + (Math.random() * 20 - 10) : radius);
 
-        n.push({ 
+        const newNode = { 
             id: index + 1, 
             x, 
             y, 
             label: query, 
             type: 'node',
             category: index % 3 === 0 ? 'concept' : index % 3 === 1 ? 'scientific' : 'philosophical'
-        });
+        };
+        uniqueNodes.set(query, newNode);
+        n.push(newNode);
         
-        e.push({ source: 0, target: index + 1, type: 'primary' });
+        e.push({ source: 0, target: newNode.id, type: 'primary' });
         
-        if (index > 0 && timeEra >= 2) {
-            e.push({ source: index + 1, target: index, type: 'secondary' });
-        }
-        if (index === visibleCount - 1 && visibleCount > 2 && timeEra >= 3) {
-            e.push({ source: index + 1, target: 1, type: 'secondary' });
-        }
-        if (timeEra === 4 && index % 2 === 0 && index + 2 <= visibleCount) {
-            e.push({ source: index + 1, target: index + 2, type: 'secondary' });
+        if (n.length > 2 && timeEra >= 2) { // Adjusted indices reference to use the unique node IDs
+             e.push({ source: newNode.id, target: n[n.length-2].id, type: 'secondary' });
         }
     });
 
@@ -143,11 +142,11 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)] pointer-events-none"></div>
       <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay"></div>
       
-      <div className="absolute top-4 inset-x-4 md:top-8 md:end-8 md:start-auto z-50 flex justify-between md:justify-end pointer-events-none">
+      <div className="absolute top-4 inset-x-4 md:top-8 md:end-8 md:start-auto z-50 flex justify-between md:justify-end">
         <div className="md:hidden" />
         <button 
-          onClick={() => handleTabChange('home')} 
-          className="px-6 py-2.5 md:py-3 bg-zinc-900 border border-zinc-700 text-white rounded-full font-black text-[10px] md:text-sm tracking-widest shadow-2xl flex items-center gap-2 hover:bg-zinc-800 transition-all active:scale-95 pointer-events-auto"
+          onClick={() => handleTabChange('home', '', true)} 
+          className="px-6 py-2.5 md:py-3 bg-zinc-900 border border-zinc-700 text-white rounded-full font-black text-[10px] md:text-sm tracking-widest shadow-2xl flex items-center gap-2 hover:bg-zinc-800 transition-all active:scale-95 pointer-events-auto cursor-pointer"
         >
           <ArrowRight className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "" : "rotate-180")} />
           {language === 'ar' ? 'الرجوع' : 'BACK'}
@@ -155,7 +154,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
       </div>
 
       <div className="flex-1 flex flex-col relative z-10 pt-32 md:pt-0">
-        <div className="mb-6 md:mb-10">
+        <div className="mb-6 md:mb-10 pl-2">
             <h2 className="text-3xl md:text-5xl font-black text-white flex gap-4 tracking-tighter italic">
                 <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 flex items-center justify-center">
                   <Network className="w-10 h-10 md:w-16 md:h-16 text-indigo-400" />
@@ -287,6 +286,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     filter="url(#glow)"
                   />
                   
+                  <title>{node.label}</title>
+                  
                   {node.type === 'core' && (
                     <motion.circle 
                       r="50" 
@@ -326,7 +327,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     fontWeight={isSelected || node.type === 'core' || isGolden ? "900" : "bold"}
                     className="select-none pointer-events-none drop-shadow-md"
                   >
-                    {node.label.length > 25 ? node.label.substring(0, 25) + '...' : node.label}
+                    {isSelected ? node.label : (node.label.length > 25 ? node.label.substring(0, 25) + '...' : node.label)}
                   </motion.text>
                 </motion.g>
               );
