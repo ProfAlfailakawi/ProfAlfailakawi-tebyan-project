@@ -377,8 +377,14 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
     const [activeView, setActiveView] = useState<'list' | 'nebula'>('list');
     const [dailyPrompt, setDailyPrompt] = useState<any>(null);
     const [showInsights, setShowInsights] = useState(false);
-    
-    // Seed Data Integration Logic (SMART RULE)
+    const [limitCount, setLimitCount] = useState(10);
+    const [showBackToTop, setShowBackToTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => setShowBackToTop(window.scrollY > 300);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
     const combinedRipples = useMemo(() => {
         // Find existing real data IDs to avoid overlap (though unlikely)
         const realIds = new Set(ripplesFlat.map(r => r.id));
@@ -584,7 +590,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
          };
          fetchDailyPrompt();
          
-         const q = query(ripplesCollection, orderBy('timestamp', 'desc'));
+         const q = query(ripplesCollection, orderBy('timestamp', 'desc'), limit(limitCount));
          const unsubscribe = onSnapshot(q, (snapshot) => {
              const badTimestamps = ['2026-05-09T11:42:36.875Z', '2026-05-09T11:42:59.174Z'];
              const badTexts = ['التربية', 'التعليم', 'Education'];
@@ -600,7 +606,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
              setRipplesFlat(data);
          });
          return unsubscribe;
-     }, []);
+     }, [limitCount]);
 
     // Helper to build tree from flat list
     const buildTree = (nodes: any[]): RippleNode[] => {
@@ -779,18 +785,33 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
 
 
     return (
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-12 md:py-20 space-y-16">
+        <div id="ripple-top-anchor" className="relative max-w-5xl mx-auto px-4 sm:px-6 py-12 md:py-20 space-y-16">
             {/* Soft ambient background */}
             <div className="fixed inset-0 bg-zinc-50 z-[-2]" />
             <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wMikiLz48L3N2Zz4=')] opacity-50 z-[-1] pointer-events-none" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-b from-indigo-100/50 to-transparent blur-[120px] pointer-events-none z-[-1]" />
             
-            <button 
-                onClick={() => setShowInsights(true)}
-                className="fixed right-6 bottom-6 z-50 bg-mood-primary text-white p-4 rounded-full shadow-lg"
-            >
-                <Sparkles />
-            </button>
+            {/* Back to top tool (visible on scroll) */}
+            {showBackToTop && (
+                <div className="fixed bottom-6 right-6 z-50">
+                     <button 
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        className="bg-zinc-800 text-white p-3 rounded-full shadow-lg hover:bg-zinc-700"
+                    >
+                        <ChevronUp />
+                    </button>
+                </div>
+            )}
+            
+            {/* Insights tool (Always visible top-left) */}
+            <div className="fixed top-20 left-6 z-50">
+                <button 
+                    onClick={() => setShowInsights(true)}
+                    className="bg-mood-primary text-white p-4 rounded-full shadow-lg"
+                >
+                    <Sparkles />
+                </button>
+            </div>
             <AnimatePresence>
                 {showInsights && <InsightsPanel ideas={combinedRipples} onClose={() => setShowInsights(false)} language={language} handleTabChange={handleTabChange} />}
             </AnimatePresence>
@@ -1073,6 +1094,12 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                         onFocusMode={onFocusMode}
                                     />
                                 ))}
+                                <button 
+                                    onClick={() => setLimitCount(prev => prev + 50)}
+                                    className="w-full text-center py-4 text-zinc-500 font-bold hover:text-mood-primary border-t border-zinc-200"
+                                >
+                                    {language === 'ar' ? 'تحميل المزيد من الأفكار...' : 'Load more ideas...'}
+                                </button>
                             </motion.div>
                         ) : (
                             <motion.div 

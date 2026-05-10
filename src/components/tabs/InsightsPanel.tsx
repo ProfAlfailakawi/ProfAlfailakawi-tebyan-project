@@ -28,8 +28,8 @@ export const InsightsPanel = ({ ideas, onClose, language, handleTabChange }: { i
             
             <div className="space-y-4">
                <button onClick={() => runAction('trends', null)} className="w-full bg-zinc-900 text-white p-3 rounded-lg flex items-center gap-2 text-sm"><TrendingUp size={16}/> {language === 'ar' ? 'تحليل الاتجاهات' : 'Analyze Trends'}</button>
-               <button onClick={() => handleTabChange('knowledgeGraph')} className="w-full bg-zinc-100 text-black p-3 rounded-lg flex items-center gap-2 text-sm"><Network size={16}/> {language === 'ar' ? 'الخريطة الحية' : 'Live Knowledge Graph'}</button>
-               <button onClick={() => handleTabChange('mindMap', ideas[0].text)} className="w-full bg-zinc-100 text-black p-3 rounded-lg flex items-center gap-2 text-sm"><BrainCircuit size={16}/> {language === 'ar' ? 'التكثيف المعرفي' : 'AI Mind-Mapping'}</button>
+               <button onClick={() => handleTabChange('KnowledgeGraphTab')} className="w-full bg-zinc-100 text-black p-3 rounded-lg flex items-center gap-2 text-sm"><Network size={16}/> {language === 'ar' ? 'الخريطة الحية' : 'Live Knowledge Graph'}</button>
+               <button onClick={() => handleTabChange('MindMapTab', ideas[0]?.text)} className="w-full bg-zinc-100 text-black p-3 rounded-lg flex items-center gap-2 text-sm"><BrainCircuit size={16}/> {language === 'ار' ? 'التكثيف المعرفي' : 'AI Mind-Mapping'}</button>
             </div>
 
             {isLoading && <Loader2 className="animate-spin mt-4" />}

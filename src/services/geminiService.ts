@@ -27,7 +27,7 @@ export const refineIdea = async (idea: string, language: 'ar' | 'en') => {
 export const translateWithContext = async (text: string, targetLang: 'ar' | 'en') => {
   const systemInstruction = targetLang === 'ar'
     ? "أنت مترجم ثقافي خبير. لا تترجم الكلمات حرفياً بل انقل 'المعنى الثقافي' والعمق الفلسفي للنص إلى العربية. إذا كان هناك مصطلح لا يُترجم بسهولة، استخدم أقرب مرادف ثقافي عميق. قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة."
-    : "You are an expert cultural translator. Do not translate literally; convey the 'cultural meaning' and philosophical depth of the text into English. If a concept like 'Muru'ah' is used, translate it to its closest deep cultural equivalent. Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.";
+    : "You are an expert cultural translator. Convey the 'cultural meaning' and philosophical depth of the text. Keep the translation concise, guiding, and neutral. Do not use literal translation.";
 
   try {
     const response = await ai.models.generateContent({
