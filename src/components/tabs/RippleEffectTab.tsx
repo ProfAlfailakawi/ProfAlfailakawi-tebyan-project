@@ -201,7 +201,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                 className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-mood-primary hover:opacity-80 transition-colors"
                             >
                                 {isTranslating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
-                                {translatedText ? (language === 'ar' ? 'الأصل' : 'Original') : (language === 'ar' ? 'الجسر' : 'Bridge')}
+                                {translatedText ? (language === 'ar' ? 'العودة للأصل' : 'Show Original') : (language === 'ar' ? 'جسر اللغات' : 'Cultural Bridge')}
                             </button>
                         </div>
                         
@@ -381,7 +381,6 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
     const [showBackToTop, setShowBackToTop] = useState(false);
 
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'auto' });
         const handleScroll = () => setShowBackToTop(window.scrollY > 300);
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -794,12 +793,12 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             
             {/* Back to top tool (visible on scroll) */}
             {showBackToTop && (
-                <div className="fixed bottom-8 right-8 z-[100]">
+                <div className="fixed bottom-6 right-6 z-50">
                      <button 
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        className="bg-black/90 text-white p-4 rounded-full shadow-2xl hover:bg-zinc-800 transition-all active:scale-90 border border-white/20"
+                        className="bg-zinc-800 text-white p-3 rounded-full shadow-lg hover:bg-zinc-700"
                     >
-                        <ChevronUp size={24} />
+                        <ChevronUp />
                     </button>
                 </div>
             )}
@@ -1120,29 +1119,6 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         )}
                     </AnimatePresence>
                 </div>
-            </div>
-
-            {/* Back to top tool (visible on scroll) */}
-            {showBackToTop && (
-                <div className="fixed bottom-32 right-8 z-[100]">
-                     <button 
-                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                        className="bg-black/90 text-white p-4 rounded-full shadow-2xl hover:bg-zinc-800 transition-all active:scale-90 border border-white/20"
-                    >
-                        <ChevronUp size={24} />
-                    </button>
-                </div>
-            )}
-            
-            {/* Insights tool (Always visible top-left for easy access) */}
-            <div className="fixed top-24 left-8 z-50">
-                <button 
-                    onClick={() => setShowInsights(true)}
-                    className="bg-mood-primary text-white p-4 rounded-full shadow-xl shadow-mood-glow hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
-                    title={language === 'ar' ? 'تحليل الأفكار' : 'Analyze Ideas'}
-                >
-                    <Sparkles className="w-6 h-6" />
-                </button>
             </div>
         </div>
     );

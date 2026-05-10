@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import fs from "fs";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import rateLimit from "express-rate-limit";
@@ -51,7 +50,7 @@ function hashString(str: string) {
 
 async function startServer() {
     const app = express();
-    const PORT = 3000; // Hardcoded to 3000 as per infrastructure requirements
+    const PORT = process.env.PORT || 3000;
 
     app.set('trust proxy', 1);
     
@@ -75,13 +74,15 @@ async function startServer() {
 
     // Health Endpoint
     app.get("/api/health", (req, res) => {
-        res.json({ 
-            status: "ok", 
+        let rawGemini = process.env.GEMINI_API_KEY;
+        
+        res.json({
+            status: "ok",
             env: process.env.NODE_ENV || 'development',
-            path: __dirname,
-            cwd: process.cwd(),
-            geminiKeyExists: !!process.env.GEMINI_API_KEY,
-            googleApiKeyExists: !!process.env.GOOGLE_API_KEY
+            geminiKeyExists: !!rawGemini,
+            rawGeminiValue: rawGemini,
+            googleApiKeyExists: !!process.env.GOOGLE_API_KEY,
+            googleApiKeyValue: process.env.GOOGLE_API_KEY ? 'exists' : 'missing'
         });
     });
 
@@ -108,7 +109,7 @@ async function startServer() {
         try {
             console.log(`[Server] Generating TTS for text: "${text.substring(0, 50)}..."`);
             
-            const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-tts-preview" });
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-tts" });
             
             const result = await model.generateContent({
               contents: [{ role: 'user', parts: [{ text }] }],
@@ -166,11 +167,11 @@ async function startServer() {
 
         try {
             // Model Aliasing - Use stable models but allow newer versions
-            let finalModel = modelName || "gemini-3-flash-preview";
+            let finalModel = modelName || "gemini-2.5-flash";
             // If it's a generic "gemini" or a 1.0/1.5 model, upgrade it. 
             // But if it specifies 2.0, 3.1 etc., respect it.
-            if (finalModel === "gemini" || finalModel === "gemini-1.5-flash" || finalModel === "gemini-2.5-flash") {
-                finalModel = "gemini-3-flash-preview";
+            if (finalModel === "gemini" || finalModel === "gemini-1.5-flash") {
+                finalModel = "gemini-2.5-flash";
             }
 
             const generationConfig: any = {};
@@ -225,10 +226,7 @@ async function startServer() {
     });
 
     // Vite Integration
-    const isProduction = process.env.NODE_ENV === "production" || fs.existsSync(path.join(process.cwd(), 'dist', 'index.html'));
-    
-    if (!isProduction) {
-        console.log("[Server] Starting in Development Mode...");
+    if (process.env.NODE_ENV !== "production") {
         const { createServer: createViteServer } = await import("vite");
         const vite = await createViteServer({
             server: { middlewareMode: true },
@@ -238,45 +236,23 @@ async function startServer() {
     } else {
         // In production, esbuild output is dist/server.js
         // The frontend builds into dist/
-        const distPath = __dirname.endsWith('dist') ? __dirname : path.join(process.cwd(), 'dist');
+        // Since server.js is inside dist/, __dirname will be /app/applet/dist/
+        const distPath = path.resolve(__dirname);
         console.log(`[Server] Production mode: Serving static files from ${distPath}`);
         
-        const indexPath = path.join(distPath, 'index.html');
-        
-        if (!fs.existsSync(indexPath)) {
-            console.error(`[Server] CRITICAL: index.html not found at ${indexPath}`);
-            console.log(`[Server] Current directory contents: ${fs.readdirSync(process.cwd()).join(', ')}`);
-            if (fs.existsSync(distPath)) {
-                console.log(`[Server] Dist directory contents: ${fs.readdirSync(distPath).join(', ')}`);
-            }
-        }
-
         app.use(express.static(distPath, {
           index: false // We handle index.html manually below
         }));
         
         app.get('*', (req, res) => {
+            const indexPath = path.join(distPath, 'index.html');
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
-            
-            if (!fs.existsSync(indexPath)) {
-                return res.status(500).send(`
-                    <html>
-                        <body style="font-family:sans-serif; padding: 40px; text-align: center;">
-                            <h1>System Notice</h1>
-                            <p>Application is initializing or index file is missing.</p>
-                            <p style="color: #666; font-size: 12px;">Path: ${indexPath}</p>
-                            <button onclick="window.location.reload()">Reload Page</button>
-                        </body>
-                    </html>
-                `);
-            }
-
             res.sendFile(indexPath, (err) => {
                 if (err) {
-                    console.error(`[Server] Error sending index.html:`, err);
-                    res.status(500).send("Server Error: Failed to serve application.");
+                    console.error(`[Server] Error sending index.html from ${indexPath}:`, err);
+                    res.status(500).send("Index file not found. Please run build.");
                 }
             });
         });
