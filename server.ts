@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import rateLimit from "express-rate-limit";
@@ -225,8 +226,19 @@ async function startServer() {
         }
     });
 
+    // API routes FIRST
+    app.get("/api/health", (req, res) => {
+        res.json({ 
+            status: "ok", 
+            env: process.env.NODE_ENV,
+            path: __dirname,
+            cwd: process.cwd()
+        });
+    });
+
     // Vite Integration
     if (process.env.NODE_ENV !== "production") {
+        console.log("[Server] Starting in Development Mode...");
         const { createServer: createViteServer } = await import("vite");
         const vite = await createViteServer({
             server: { middlewareMode: true },
@@ -236,23 +248,27 @@ async function startServer() {
     } else {
         // In production, esbuild output is dist/server.js
         // The frontend builds into dist/
-        // Since server.js is inside dist/, __dirname will be /app/applet/dist/
-        const distPath = path.resolve(__dirname);
+        const distPath = __dirname.endsWith('dist') ? __dirname : path.join(process.cwd(), 'dist');
         console.log(`[Server] Production mode: Serving static files from ${distPath}`);
         
+        const indexPath = path.join(distPath, 'index.html');
+        
+        if (!fs.existsSync(indexPath)) {
+            console.error(`[Server] WARNING: index.html not found at ${indexPath}`);
+        }
+
         app.use(express.static(distPath, {
           index: false // We handle index.html manually below
         }));
         
         app.get('*', (req, res) => {
-            const indexPath = path.join(distPath, 'index.html');
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
             res.sendFile(indexPath, (err) => {
                 if (err) {
-                    console.error(`[Server] Error sending index.html from ${indexPath}:`, err);
-                    res.status(500).send("Index file not found. Please run build.");
+                    console.error(`[Server] Error sending index.html from ${indexPath} for URL ${req.url}:`, err);
+                    res.status(500).send(`Server Error: Index file not found at ${indexPath}. Please run build.`);
                 }
             });
         });
