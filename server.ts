@@ -254,7 +254,11 @@ async function startServer() {
         const indexPath = path.join(distPath, 'index.html');
         
         if (!fs.existsSync(indexPath)) {
-            console.error(`[Server] WARNING: index.html not found at ${indexPath}`);
+            console.error(`[Server] CRITICAL: index.html not found at ${indexPath}`);
+            console.log(`[Server] Current directory contents: ${fs.readdirSync(process.cwd()).join(', ')}`);
+            if (fs.existsSync(distPath)) {
+                console.log(`[Server] Dist directory contents: ${fs.readdirSync(distPath).join(', ')}`);
+            }
         }
 
         app.use(express.static(distPath, {
@@ -265,10 +269,24 @@ async function startServer() {
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             res.setHeader('Pragma', 'no-cache');
             res.setHeader('Expires', '0');
+            
+            if (!fs.existsSync(indexPath)) {
+                return res.status(500).send(`
+                    <html>
+                        <body style="font-family:sans-serif; padding: 40px; text-align: center;">
+                            <h1>System Notice</h1>
+                            <p>Application is initializing or index file is missing.</p>
+                            <p style="color: #666; font-size: 12px;">Path: ${indexPath}</p>
+                            <button onclick="window.location.reload()">Reload Page</button>
+                        </body>
+                    </html>
+                `);
+            }
+
             res.sendFile(indexPath, (err) => {
                 if (err) {
-                    console.error(`[Server] Error sending index.html from ${indexPath} for URL ${req.url}:`, err);
-                    res.status(500).send(`Server Error: Index file not found at ${indexPath}. Please run build.`);
+                    console.error(`[Server] Error sending index.html:`, err);
+                    res.status(500).send("Server Error: Failed to serve application.");
                 }
             });
         });

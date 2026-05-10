@@ -1121,6 +1121,29 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     </AnimatePresence>
                 </div>
             </div>
+
+            {/* Back to top tool (visible on scroll) */}
+            {showBackToTop && (
+                <div className="fixed bottom-32 right-8 z-[100]">
+                     <button 
+                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        className="bg-black/90 text-white p-4 rounded-full shadow-2xl hover:bg-zinc-800 transition-all active:scale-90 border border-white/20"
+                    >
+                        <ChevronUp size={24} />
+                    </button>
+                </div>
+            )}
+            
+            {/* Insights tool (Always visible top-left for easy access) */}
+            <div className="fixed top-24 left-8 z-50">
+                <button 
+                    onClick={() => setShowInsights(true)}
+                    className="bg-mood-primary text-white p-4 rounded-full shadow-xl shadow-mood-glow hover:scale-110 active:scale-95 transition-all flex items-center justify-center"
+                    title={language === 'ar' ? 'تحليل الأفكار' : 'Analyze Ideas'}
+                >
+                    <Sparkles className="w-6 h-6" />
+                </button>
+            </div>
         </div>
     );
 };
