@@ -86,6 +86,215 @@ const DUMMY_RIPPLES: RippleNode[] = [
     }
 ];
 
+type RippleNodeComponentProps = {
+    node: RippleNode;
+    level?: number;
+    language: 'ar' | 'en';
+    ripplesFlat: any[];
+    auth: any;
+    handleLike: (node: RippleNode) => void;
+    handleDelete: (id: string) => void;
+    handleAddReply: (parentId: string, text: string) => void;
+    setToast: (toast: any) => void;
+};
+
+const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat, auth, handleLike, handleDelete, handleAddReply, setToast }: RippleNodeComponentProps) => {
+    // For visibility: user is owner, or admin, or owner of the root node
+    const rootOwnerId = node.rootId ? ripplesFlat.find(r => r.id === node.rootId)?.authorId : null;
+    const isUserIdea = node.authorId === auth.currentUser?.uid || 
+                        (rootOwnerId === auth.currentUser?.uid && !!rootOwnerId) ||
+                        (node.author === (language === 'ar' ? 'أنت' : 'You') && !node.authorId) ||
+                        auth.currentUser?.email?.toLowerCase().includes('alfailakawidrahmad') || 
+                        auth.currentUser?.email?.toLowerCase().includes('dr.ahmad');
+    const [showReply, setShowReply] = useState(false);
+    const [replyText, setReplyText] = useState('');
+    const [expanded, setExpanded] = useState(false);
+    const isSelectedRipple = new URLSearchParams(window.location.search).get('ripple') === node.id;
+
+    const isLongText = node.text.length > 200;
+    const displayText = !isLongText || expanded ? node.text : node.text.slice(0, 200) + '...';
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+            className="relative" 
+            id={`ripple-${node.id}`} 
+            dir={language === 'ar' ? 'rtl' : 'ltr'}
+        >
+            <div className={cn(
+                "relative z-10 flex gap-4 md:gap-6 group",
+                level === 0 ? "mb-8 md:mb-10" : "mb-6 md:mb-8 mt-4"
+            )}>
+                {level > 0 && (
+                    <div className={cn(
+                        "absolute top-5 md:top-6 w-6 md:w-8 h-8 rounded-bl-3xl border-b-2 border-l-2 border-zinc-200 z-0 opacity-50",
+                        language === 'ar' ? "right-[-28px] md:right-[-38px] border-l-0 border-r-2 rounded-bl-none rounded-br-3xl" : "left-[-28px] md:left-[-38px]"
+                    )} style={{ transform: 'translateY(-100%)' }} />
+                )}
+
+                {/* Node Icon */}
+                <div className={cn(
+                    "relative w-12 h-12 md:w-14 md:h-14 rounded-full shrink-0 flex items-center justify-center shadow-lg border-4 z-10 transition-transform group-hover:scale-105",
+                    node.type === 'seed' ? "bg-indigo-50 border-indigo-100 text-indigo-600 shadow-indigo-500/20" :
+                    node.type === 'branch' ? "bg-emerald-50 border-emerald-100 text-emerald-600 shadow-emerald-500/20" :
+                    "bg-amber-50 border-amber-100 text-amber-600 shadow-amber-500/20"
+                )}>
+                    {node.type === 'seed' && <div className="absolute inset-0 rounded-full animate-ping bg-indigo-400 opacity-20" />}
+                    {node.type === 'seed' ? <Globe className="w-5 h-5 md:w-6 md:h-6" /> : 
+                        node.type === 'branch' ? <Network className="w-5 h-5 md:w-6 md:h-6" /> :
+                        <Activity className="w-5 h-5 md:w-6 md:h-6" />}
+                </div>
+
+                {/* Content Card */}
+                <motion.div 
+                    initial={{ opacity: 0, x: language === 'ar' ? -20 : 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={cn(
+                        "flex-1 bg-white/70 backdrop-blur-sm p-5 md:p-6 rounded-[24px] md:rounded-[32px] border border-white shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden",
+                        node.type === 'seed' ? "ring-2 ring-indigo-50/50 shadow-indigo-900/5" : "shadow-zinc-900/5",
+                        isSelectedRipple ? "ring-4 ring-emerald-500 shadow-emerald-500/20 scale-[1.02]" : ""
+                    )}
+                >
+                        {node.type === 'seed' && <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full blur-[40px] pointer-events-none" />}
+                        <div className="relative z-10 flex items-center justify-between gap-2 md:gap-4 mb-4 border-b border-zinc-100/80 pb-3">
+                            <div className="flex items-center gap-3 flex-wrap">
+                                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm ring-1 ring-zinc-900/5">
+                                    <UserCircle className="w-4 h-4 md:w-5 md:h-5 text-zinc-400" />
+                                    <span className="font-bold text-xs md:text-sm text-zinc-700">{node.author}</span>
+                                </div>
+                                <span className={cn(
+                                    "text-[10px] md:text-[11px] px-3 py-1 rounded-full font-black uppercase tracking-widest",
+                                    node.type === 'seed' ? "bg-indigo-50 text-indigo-600" :
+                                    node.type === 'branch' ? "bg-emerald-50 text-emerald-600" :
+                                    "bg-amber-50 text-amber-600"
+                                )}>
+                                    {node.type === 'seed' ? (language === 'ar' ? 'البذرة الأولى' : 'Origin Seed') : 
+                                    node.type === 'branch' ? (language === 'ar' ? 'تطوير' : 'Evolution') : 
+                                    (language === 'ar' ? 'تطبيق عملي' : 'Implementation')}
+                                </span>
+                            </div>
+                            <span className="text-[10px] md:text-xs text-zinc-400 font-bold whitespace-nowrap bg-zinc-50 px-2 py-1 rounded-lg">{node.timestamp}</span>
+                        </div>
+                        <p 
+                            className={cn("text-base md:text-lg text-zinc-800 leading-relaxed font-semibold mb-6 whitespace-pre-wrap relative z-10", isLongText && "cursor-pointer")} 
+                            onClick={() => isLongText && setExpanded(!expanded)}
+                        >
+                            {displayText}
+                            {isLongText && (
+                                <span className={cn("text-sm font-bold transition-colors ml-2", expanded ? "text-zinc-400" : "text-indigo-500 hover:text-indigo-600")}>
+                                    {expanded ? (language === 'ar' ? 'عرض أقل' : 'Show less') : (language === 'ar' ? 'قراءة المزيد' : 'Read more')}
+                                </span>
+                            )}
+                        </p>
+                        
+                        <div className="relative z-10 flex items-center justify-between bg-zinc-50/50 -mx-2 -mb-2 p-2 rounded-2xl">
+                            <div className="flex flex-wrap items-center gap-1 md:gap-2">
+                                <button onClick={() => handleLike(node)} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                    <svg className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                                    <span className="text-sm">{node.likes}</span>
+                                </button>
+                                <button onClick={() => setShowReply(!showReply)} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                    <Network className="w-4 h-4 md:w-5 md:h-5" />
+                                    <span className="text-sm">{language === 'ar' ? 'تطوير الفكرة' : 'Branch out'}</span>
+                                </button>
+                                <button onClick={() => {
+                                    const baseUrl = window.location.origin + window.location.pathname;
+                                    const params = new URLSearchParams(window.location.search);
+                                    params.set('tab', 'creativelab');
+                                    params.set('ripple', node.id);
+                                    navigator.clipboard.writeText(baseUrl + '?' + params.toString());
+                                    setToast({ message: language === 'ar' ? 'تم نسخ الرابط الحصري' : 'Direct link copied!', type: 'success' });
+                                }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-emerald-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                    <Share2 className="w-4 h-4 md:w-5 md:h-5" />
+                                    <span className="hidden sm:inline text-sm">{language === 'ar' ? 'مشاركة' : 'Share'}</span>
+                                </button>
+                            </div>
+                            
+                            {isUserIdea && (
+                                <button 
+                                    onClick={() => {
+                                        let warning = '';
+                                        if (language === 'ar') {
+                                            warning = node.type === 'seed' 
+                                                ? 'هل أنت متأكد؟ سيتم حذف هذه الفكرة الأساسية وجميع التطويرات المتفرعة منها بشكل نهائي.'
+                                                : 'هل أنت متأكد؟ سيتم حذف هذا التطوير وجميع الفروع التابعة له.';
+                                        } else {
+                                            warning = node.type === 'seed'
+                                                ? 'Are you sure? This will permanently delete the core idea and ALL branches branching from it.'
+                                                : 'Are you sure? This will delete this development and all its sub-branches.';
+                                        }
+                                        if(window.confirm(warning)) {
+                                            handleDelete(node.id);
+                                        }
+                                    }} 
+                                    className="flex items-center gap-2 hover:bg-rose-50 px-3 py-2 rounded-xl text-zinc-400 hover:text-rose-600 font-bold cursor-pointer transition-all"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="hidden sm:inline text-sm">{language === 'ar' ? 'حذف' : 'Delete'}</span>
+                                </button>
+                            )}
+                        </div>
+                        
+                        <AnimatePresence>
+                            {showReply && (
+                                <motion.div 
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: 'auto', opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className="mt-4 flex gap-3 w-full bg-indigo-50/50 p-3 rounded-2xl border border-indigo-100"
+                                    style={{ overflow: 'hidden' }}
+                                >
+                                    <input autoFocus value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-white rounded-xl p-3 md:p-4 text-sm md:text-base font-medium shadow-inner border border-zinc-200/60 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 transition-all placeholder:text-zinc-400" placeholder={language === 'ar' ? "كيف يمكن تطوير أو تطبيق هذه الفكرة؟" : "How can this idea be evolved?"} />
+                                    <button onClick={() => {
+                                        if(replyText.trim()) {
+                                            handleAddReply(node.id, replyText);
+                                            setReplyText('');
+                                            setShowReply(false);
+                                        }
+                                    }} className="bg-indigo-600 text-white px-6 rounded-xl text-sm font-bold whitespace-nowrap hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-600/20">{language === 'ar' ? 'إضافة للشبكة' : 'Add to Network'}</button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
+            </div>
+            
+            {/* Children Wrapper */}
+            {node.children && node.children.length > 0 && (
+                <div className={cn(
+                    "relative",
+                    language === 'ar' ? "pr-12 md:pr-16" : "pl-12 md:pl-16"
+                )}>
+                    {/* Connecting Line from Parent Icon to Children */}
+                    <div className={cn(
+                        "absolute top-[-24px] bottom-10 w-[3px] rounded-full opacity-30",
+                        language === 'ar' ? "right-[22px] md:right-[26px]" : "left-[22px] md:left-[26px]",
+                        node.children[0]?.type === 'branch' ? "bg-gradient-to-b from-indigo-500 to-emerald-500" : "bg-gradient-to-b from-emerald-500 to-amber-500"
+                    )} />
+                    
+                    <AnimatePresence>
+                        {node.children.map((child) => (
+                            <RippleNodeComponent 
+                                key={child.id} 
+                                node={child} 
+                                level={level + 1}
+                                language={language}
+                                ripplesFlat={ripplesFlat}
+                                auth={auth}
+                                handleLike={handleLike}
+                                handleDelete={handleDelete}
+                                handleAddReply={handleAddReply}
+                                setToast={setToast}
+                            />
+                        ))}
+                    </AnimatePresence>
+                </div>
+            )}
+        </motion.div>
+    );
+});
+
 export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
     const [ripplesFlat, setRipplesFlat] = useState<any[]>([]);
     const [search, setSearch] = useState('');
@@ -232,192 +441,7 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
         }
     };
 
-    const RippleNodeComponent = ({ node, level = 0 }: { node: RippleNode; level?: number }) => {
-        // For visibility: user is owner, or admin, or owner of the root node
-        const rootOwnerId = node.rootId ? ripplesFlat.find(r => r.id === node.rootId)?.authorId : null;
-        const isUserIdea = node.authorId === auth.currentUser?.uid || 
-                          (rootOwnerId === auth.currentUser?.uid && !!rootOwnerId) ||
-                          (node.author === (language === 'ar' ? 'أنت' : 'You') && !node.authorId) ||
-                          auth.currentUser?.email?.toLowerCase().includes('alfailakawidrahmad') || 
-                          auth.currentUser?.email?.toLowerCase().includes('dr.ahmad');
-        const [showReply, setShowReply] = useState(false);
-        const [replyText, setReplyText] = useState('');
-        const [expanded, setExpanded] = useState(false);
-        const isSelectedRipple = new URLSearchParams(window.location.search).get('ripple') === node.id;
 
-        const isLongText = node.text.length > 200;
-        const displayText = !isLongText || expanded ? node.text : node.text.slice(0, 200) + '...';
-
-        return (
-            <motion.div 
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                className="relative" 
-                id={`ripple-${node.id}`} 
-                dir={language === 'ar' ? 'rtl' : 'ltr'}
-            >
-                <div className={cn(
-                    "relative z-10 flex gap-4 md:gap-6 group",
-                    level === 0 ? "mb-8 md:mb-10" : "mb-6 md:mb-8 mt-4"
-                )}>
-                    {level > 0 && (
-                        <div className={cn(
-                            "absolute top-5 md:top-6 w-6 md:w-8 h-8 rounded-bl-3xl border-b-2 border-l-2 border-zinc-200 z-0 opacity-50",
-                            language === 'ar' ? "right-[-28px] md:right-[-38px] border-l-0 border-r-2 rounded-bl-none rounded-br-3xl" : "left-[-28px] md:left-[-38px]"
-                        )} style={{ transform: 'translateY(-100%)' }} />
-                    )}
-
-                    {/* Node Icon */}
-                    <div className={cn(
-                        "relative w-12 h-12 md:w-14 md:h-14 rounded-full shrink-0 flex items-center justify-center shadow-lg border-4 z-10 transition-transform group-hover:scale-105",
-                        node.type === 'seed' ? "bg-indigo-50 border-indigo-100 text-indigo-600 shadow-indigo-500/20" :
-                        node.type === 'branch' ? "bg-emerald-50 border-emerald-100 text-emerald-600 shadow-emerald-500/20" :
-                        "bg-amber-50 border-amber-100 text-amber-600 shadow-amber-500/20"
-                    )}>
-                        {node.type === 'seed' && <div className="absolute inset-0 rounded-full animate-ping bg-indigo-400 opacity-20" />}
-                        {node.type === 'seed' ? <Globe className="w-5 h-5 md:w-6 md:h-6" /> : 
-                         node.type === 'branch' ? <Network className="w-5 h-5 md:w-6 md:h-6" /> :
-                         <Activity className="w-5 h-5 md:w-6 md:h-6" />}
-                    </div>
-
-                    {/* Content Card */}
-                    <motion.div 
-                        initial={{ opacity: 0, x: language === 'ar' ? -20 : 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className={cn(
-                            "flex-1 bg-white/70 backdrop-blur-sm p-5 md:p-6 rounded-[24px] md:rounded-[32px] border border-white shadow-xl transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden",
-                            node.type === 'seed' ? "ring-2 ring-indigo-50/50 shadow-indigo-900/5" : "shadow-zinc-900/5",
-                            isSelectedRipple ? "ring-4 ring-emerald-500 shadow-emerald-500/20 scale-[1.02]" : ""
-                        )}
-                    >
-                         {node.type === 'seed' && <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full blur-[40px] pointer-events-none" />}
-                         <div className="relative z-10 flex items-center justify-between gap-2 md:gap-4 mb-4 border-b border-zinc-100/80 pb-3">
-                             <div className="flex items-center gap-3 flex-wrap">
-                                 <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm ring-1 ring-zinc-900/5">
-                                     <UserCircle className="w-4 h-4 md:w-5 md:h-5 text-zinc-400" />
-                                     <span className="font-bold text-xs md:text-sm text-zinc-700">{node.author}</span>
-                                 </div>
-                                 <span className={cn(
-                                     "text-[10px] md:text-[11px] px-3 py-1 rounded-full font-black uppercase tracking-widest",
-                                     node.type === 'seed' ? "bg-indigo-50 text-indigo-600" :
-                                     node.type === 'branch' ? "bg-emerald-50 text-emerald-600" :
-                                     "bg-amber-50 text-amber-600"
-                                  )}>
-                                     {node.type === 'seed' ? (language === 'ar' ? 'البذرة الأولى' : 'Origin Seed') : 
-                                      node.type === 'branch' ? (language === 'ar' ? 'تطوير' : 'Evolution') : 
-                                      (language === 'ar' ? 'تطبيق عملي' : 'Implementation')}
-                                 </span>
-                             </div>
-                             <span className="text-[10px] md:text-xs text-zinc-400 font-bold whitespace-nowrap bg-zinc-50 px-2 py-1 rounded-lg">{node.timestamp}</span>
-                         </div>
-                         <p 
-                             className={cn("text-base md:text-lg text-zinc-800 leading-relaxed font-semibold mb-6 whitespace-pre-wrap relative z-10", isLongText && "cursor-pointer")} 
-                             onClick={() => isLongText && setExpanded(!expanded)}
-                         >
-                             {displayText}
-                             {isLongText && (
-                                 <span className={cn("text-sm font-bold transition-colors ml-2", expanded ? "text-zinc-400" : "text-indigo-500 hover:text-indigo-600")}>
-                                     {expanded ? (language === 'ar' ? 'عرض أقل' : 'Show less') : (language === 'ar' ? 'قراءة المزيد' : 'Read more')}
-                                 </span>
-                             )}
-                         </p>
-                         
-                         <div className="relative z-10 flex items-center justify-between bg-zinc-50/50 -mx-2 -mb-2 p-2 rounded-2xl">
-                             <div className="flex flex-wrap items-center gap-1 md:gap-2">
-                                 <button onClick={() => handleLike(node)} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
-                                     <svg className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                                     <span className="text-sm">{node.likes}</span>
-                                 </button>
-                                 <button onClick={() => setShowReply(!showReply)} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
-                                     <Network className="w-4 h-4 md:w-5 md:h-5" />
-                                     <span className="text-sm">{language === 'ar' ? 'تطوير الفكرة' : 'Branch out'}</span>
-                                 </button>
-                                 <button onClick={() => {
-                                     const baseUrl = window.location.origin + window.location.pathname;
-                                     const params = new URLSearchParams(window.location.search);
-                                     params.set('tab', 'creativelab');
-                                     params.set('ripple', node.id);
-                                     navigator.clipboard.writeText(baseUrl + '?' + params.toString());
-                                     setToast({ message: language === 'ar' ? 'تم نسخ الرابط الحصري' : 'Direct link copied!', type: 'success' });
-                                 }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-emerald-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
-                                     <Share2 className="w-4 h-4 md:w-5 md:h-5" />
-                                     <span className="hidden sm:inline text-sm">{language === 'ar' ? 'مشاركة' : 'Share'}</span>
-                                 </button>
-                             </div>
-                             
-                             {isUserIdea && (
-                                 <button 
-                                     onClick={() => {
-                                         let warning = '';
-                                         if (language === 'ar') {
-                                             warning = node.type === 'seed' 
-                                                 ? 'هل أنت متأكد؟ سيتم حذف هذه الفكرة الأساسية وجميع التطويرات المتفرعة منها بشكل نهائي.'
-                                                 : 'هل أنت متأكد؟ سيتم حذف هذا التطوير وجميع الفروع التابعة له.';
-                                         } else {
-                                             warning = node.type === 'seed'
-                                                 ? 'Are you sure? This will permanently delete the core idea and ALL branches branching from it.'
-                                                 : 'Are you sure? This will delete this development and all its sub-branches.';
-                                         }
-                                         if(window.confirm(warning)) {
-                                            handleDelete(node.id);
-                                         }
-                                     }} 
-                                     className="flex items-center gap-2 hover:bg-rose-50 px-3 py-2 rounded-xl text-zinc-400 hover:text-rose-600 font-bold cursor-pointer transition-all"
-                                 >
-                                    <Trash2 className="w-4 h-4" />
-                                    <span className="hidden sm:inline text-sm">{language === 'ar' ? 'حذف' : 'Delete'}</span>
-                                 </button>
-                             )}
-                         </div>
-                         
-                         <AnimatePresence>
-                             {showReply && (
-                                 <motion.div 
-                                     initial={{ height: 0, opacity: 0 }}
-                                     animate={{ height: 'auto', opacity: 1 }}
-                                     exit={{ height: 0, opacity: 0 }}
-                                     className="mt-4 flex gap-3 w-full bg-indigo-50/50 p-3 rounded-2xl border border-indigo-100"
-                                     style={{ overflow: 'hidden' }}
-                                 >
-                                    <input autoFocus value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-white rounded-xl p-3 md:p-4 text-sm md:text-base font-medium shadow-inner border border-zinc-200/60 outline-none focus:border-indigo-400 focus:ring-4 focus:ring-indigo-400/20 transition-all placeholder:text-zinc-400" placeholder={language === 'ar' ? "كيف يمكن تطوير أو تطبيق هذه الفكرة؟" : "How can this idea be evolved?"} />
-                                    <button onClick={() => {
-                                        if(replyText.trim()) {
-                                            handleAddReply(node.id, replyText);
-                                            setReplyText('');
-                                            setShowReply(false);
-                                        }
-                                    }} className="bg-indigo-600 text-white px-6 rounded-xl text-sm font-bold whitespace-nowrap hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-600/20">{language === 'ar' ? 'إضافة للشبكة' : 'Add to Network'}</button>
-                                 </motion.div>
-                             )}
-                         </AnimatePresence>
-                    </motion.div>
-                </div>
-                
-                {/* Children Wrapper */}
-                {node.children && node.children.length > 0 && (
-                    <div className={cn(
-                        "relative",
-                        language === 'ar' ? "pr-12 md:pr-16" : "pl-12 md:pl-16"
-                    )}>
-                        {/* Connecting Line from Parent Icon to Children */}
-                        <div className={cn(
-                            "absolute top-[-24px] bottom-10 w-[3px] rounded-full opacity-30",
-                            language === 'ar' ? "right-[22px] md:right-[26px]" : "left-[22px] md:left-[26px]",
-                            node.children[0]?.type === 'branch' ? "bg-gradient-to-b from-indigo-500 to-emerald-500" : "bg-gradient-to-b from-emerald-500 to-amber-500"
-                        )} />
-                        
-                        <AnimatePresence mode="popLayout">
-                            {node.children.map((child) => (
-                                <RippleNodeComponent key={child.id} node={child} level={level + 1} />
-                            ))}
-                        </AnimatePresence>
-                    </div>
-                )}
-            </motion.div>
-        );
-    };
 
     return (
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-12 md:py-20 space-y-16">
@@ -542,9 +566,19 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
                 </div>
 
                 <div className="relative z-10">
-                    <AnimatePresence mode="popLayout">
+                    <AnimatePresence>
                         {ripples.filter(n => n.text.includes(search)).map((node) => (
-                            <RippleNodeComponent key={node.id} node={node} />
+                            <RippleNodeComponent 
+                                key={node.id} 
+                                node={node} 
+                                language={language}
+                                ripplesFlat={ripplesFlat}
+                                auth={auth}
+                                handleLike={handleLike}
+                                handleDelete={handleDelete}
+                                handleAddReply={handleAddReply}
+                                setToast={setToast}
+                            />
                         ))}
                     </AnimatePresence>
                 </div>
