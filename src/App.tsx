@@ -8,12 +8,14 @@ import {
   GraduationCap, Globe, Command, Sparkles, 
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
-  Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box
+  Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box,
+  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 import { useAuth } from './components/AuthProvider';
-import { auth } from './lib/firebase';
+import { auth, db } from './lib/firebase';
+import { query, collection, where, limit, getDocs } from 'firebase/firestore';
 import Login from './components/Login';
 import UserMenu from './components/UserMenu';
 import { signOut } from 'firebase/auth';
@@ -75,6 +77,8 @@ const ARTab = React.lazy(() => import('./components/tabs/ARTab'));
 
 type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar' | 'ripple';
 
+type Mood = 'default' | 'revolutionary' | 'calm' | 'melancholic' | 'optimistic';
+
 const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary'];
 
 import DevPanel from './components/DevPanel';
@@ -82,6 +86,8 @@ import DevPanel from './components/DevPanel';
 import { SmartGateway } from './components/SmartGateway';
 import { logEvent } from './services/analyticsService';
 import { cronService } from './services/cronService';
+import { LighthouseMode } from './components/LighthouseMode';
+import { translateWithContext, findSoulMatch } from './services/geminiService';
 
 const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 'ar' | 'en' }) => {
     const quotes = language === 'ar' ? [
@@ -121,7 +127,7 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
                         opacity: [0.03, 0.08, 0.03]
                     }}
                     transition={{ duration: 15, repeat: Infinity }}
-                    className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-emerald-500 rounded-full blur-[120px]"
+                    className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-mood-secondary rounded-full blur-[120px]"
                 />
                 <motion.div 
                     animate={{ 
@@ -130,7 +136,7 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
                         opacity: [0.03, 0.05, 0.03]
                     }}
                     transition={{ duration: 20, repeat: Infinity, delay: 2 }}
-                    className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-indigo-500 rounded-full blur-[100px]"
+                    className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-mood-primary rounded-full blur-[100px]"
                 />
             </div>
 
@@ -178,6 +184,8 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
     );
 };
 
+import { LivingIcon } from './components/LivingIcon';
+
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, loading, authReady } = useAuth();
@@ -194,6 +202,25 @@ const AppContent: React.FC = () => {
   const [showVoiceCanvas, setShowVoiceCanvas] = useState(false);
   const [initialContext, setInitialContext] = useState<string>('');
   const [showHeader, setShowHeader] = useState(true);
+  const [isMoodHudOpen, setIsMoodHudOpen] = useState(false);
+  const [currentMood, setCurrentMood] = useState<Mood>('default');
+  const [prevMood, setPrevMood] = useState<Mood>('default');
+  const [showMoodTransition, setShowMoodTransition] = useState(false);
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-mood', currentMood);
+    if (currentMood !== prevMood) {
+      setShowMoodTransition(true);
+      const timer = setTimeout(() => {
+        setShowMoodTransition(false);
+        setPrevMood(currentMood);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentMood, prevMood]);
+  const [lighthouseIdea, setLighthouseIdea] = useState<{ text: string; author: string } | null>(null);
+  const [soulTwinMsg, setSoulTwinMsg] = useState<string | null>(null);
+  const [isAnalyzingTwin, setIsAnalyzingTwin] = useState(false);
   const lastScrollTop = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
   
@@ -377,9 +404,34 @@ const AppContent: React.FC = () => {
   return (
         <div className={cn("h-[100dvh] bg-zinc-50 font-sans flex flex-col overflow-hidden text-zinc-900 selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <AnimatePresence>
+            {lighthouseIdea && (
+              <LighthouseMode 
+                idea={lighthouseIdea} 
+                onClose={() => setLighthouseIdea(null)} 
+                language={language}
+              />
+            )}
             {showSplash && <SplashScreen key="splash" onFinish={() => setShowSplash(false)} language={language} />}
           </AnimatePresence>
           
+          {/* Dynamic Background Glow Overlay */}
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="absolute top-0 right-0 w-full h-full bg-mood-glow blur-[120px] transition-colors duration-1000 opacity-30" />
+          </div>
+          
+          {/* Liquid Mood Pour Transition */}
+          <AnimatePresence>
+            {showMoodTransition && (
+              <motion.div
+                initial={{ clipPath: 'circle(0% at 50% 90%)', opacity: 0 }}
+                animate={{ clipPath: 'circle(150% at 50% 90%)', opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="fixed inset-0 z-[100] pointer-events-none bg-mood-primary opacity-20"
+              />
+            )}
+          </AnimatePresence>
+
           <ThoughtNebula />
           <WhisperHint language={language} forceShow={isConfused} />
           
@@ -443,10 +495,10 @@ const AppContent: React.FC = () => {
              onClick={() => handleTabChange('home')}
              className="flex items-center gap-3 transition-transform active:scale-95"
            >
-             <div className="w-10 h-10 bg-black rounded-2xl flex items-center justify-center text-white shadow-xl shadow-black/10">
-               <Globe className="w-5 h-5" />
+             <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700">
+               <LivingIcon icon={Globe} mood={currentMood} type="home" className="w-5 h-5" />
              </div>
-             <span className="font-black text-xl text-black tracking-tighter">تبيان</span>
+             <span className="font-black text-xl text-black tracking-tighter transition-colors group-hover:text-mood-primary">تبيان</span>
            </button>
            
            {/* <button 
@@ -495,7 +547,7 @@ const AppContent: React.FC = () => {
                   onClick={() => { handleTabChange('home'); setMobileMenuOpen(false); }}
                   className="flex items-center gap-3 active:scale-95 transition-transform text-right"
                 >
-                  <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-mood-primary rounded-lg flex items-center justify-center shadow-lg shadow-mood-glow">
                     <Globe className="w-4 h-4 text-white" />
                   </div>
                   <span className="font-bold text-lg text-black">تبيان</span>
@@ -511,7 +563,7 @@ const AppContent: React.FC = () => {
                     onClick={() => { handleTabChange(tab.id as Tab); setMobileMenuOpen(false); }}
                     className={cn(
                       "w-full flex flex-wrap md:flex-nowrap items-center gap-4 px-4 py-4 rounded-2xl font-medium transition-colors text-right relative",
-                      activeTab === tab.id ? "bg-black text-white shadow-lg shadow-black/10" : "text-zinc-600 hover:bg-zinc-100 hover:text-black"
+                      activeTab === tab.id ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-600 hover:bg-zinc-100 hover:text-black"
                     )}
                   >
                     <tab.icon className={cn("w-5 h-5", activeTab === tab.id ? "text-white" : "text-zinc-400")} />
@@ -594,12 +646,13 @@ const AppContent: React.FC = () => {
               transition={{ duration: 0.4, type: 'spring', bounce: 0 }}
               className="relative z-10"
             >
+            <div className="absolute -top-10 left-12 w-32 h-32 bg-mood-glow rounded-full blur-[80px] pointer-events-none opacity-50" />
             <React.Suspense fallback={<TabFallback />}>
               {(() => {
                 switch (activeTab) {
                   case 'home':
                   case 'discover':
-                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} />;
+                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} />;
                   case 'strategicarena':
                     return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'creativelab':
@@ -625,7 +678,7 @@ const AppContent: React.FC = () => {
                   case 'mindmap':
                     return <MindMapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'ripple':
-                    return <RippleEffectTab language={language} handleTabChange={handleTabChange} />;
+                    return <RippleEffectTab language={language} handleTabChange={handleTabChange} onFocusMode={(idea) => setLighthouseIdea(idea)} />;
                   case 'analytics':
                     return <AnalyticsTab handleTabChange={handleTabChange} language={language} />;
                   case 'loyalty':
@@ -665,8 +718,99 @@ const AppContent: React.FC = () => {
                <span className="font-bold text-zinc-500 tracking-tight">تبيان</span>
              </div>
              <p className="text-[13px] font-medium">نظامك لفهم العالم &copy; {new Date().getFullYear()}</p>
-             <div className="mt-4 flex flex-col items-center gap-1 opacity-50 scale-75">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase">Version 3.2.0.Release</span>
+             <div className="mt-8 flex flex-col items-center gap-6">
+                 <div className="flex flex-col items-center gap-4 py-8 border-t border-zinc-100/50 w-full max-w-xs transition-all duration-700">
+                  <div className="flex flex-col items-center gap-1 mb-2">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-mood-primary/70 animate-pulse">
+                      {language === 'ar' ? 'بوصلة الوجدان' : 'MOOD COMPASS'}
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => setIsMoodHudOpen(!isMoodHudOpen)}
+                    className={cn(
+                      "flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 group relative overflow-hidden active:scale-95",
+                      isMoodHudOpen ? "bg-mood-primary text-white shadow-[0_0_30px_rgba(var(--mood-primary),0.3)]" : "bg-white border border-zinc-100 text-zinc-400 hover:text-mood-primary hover:border-mood-primary/30 shadow-sm"
+                    )}
+                  >
+                    <LivingIcon icon={Compass} mood={currentMood} type="settings" className={cn("w-4 h-4 transition-all duration-1000", isMoodHudOpen ? "rotate-[360deg] scale-110" : "rotate-0 transform group-hover:rotate-45")} />
+                    <span className="text-[10px] font-black uppercase tracking-widest">{language === 'ar' ? 'بوصلة الوجدان' : 'Mood Compass'}</span>
+                  </button>
+
+                  <AnimatePresence>
+                    {isMoodHudOpen && (
+                      <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                        className="flex items-center gap-2 p-2 bg-white/95 backdrop-blur-xl border border-zinc-200/60 rounded-[24px] shadow-2xl mt-4"
+                      >
+                        <button 
+                            onClick={() => { setCurrentMood('revolutionary'); setIsMoodHudOpen(false); }}
+                            className={cn("p-3 rounded-xl transition-all", currentMood === 'revolutionary' ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-400 hover:bg-zinc-50")}
+                            title={language === 'ar' ? 'ثوري' : 'Revolutionary'}
+                        >
+                            <LivingIcon icon={Zap} mood="revolutionary" className="w-5 h-5" />
+                        </button>
+                        <button 
+                            onClick={() => { setCurrentMood('calm'); setIsMoodHudOpen(false); }}
+                            className={cn("p-3 rounded-xl transition-all", currentMood === 'calm' ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-400 hover:bg-zinc-50")}
+                            title={language === 'ar' ? 'هادئ' : 'Calm'}
+                        >
+                            <LivingIcon icon={Moon} mood="calm" className="w-5 h-5" />
+                        </button>
+                        <button 
+                            onClick={() => { setCurrentMood('melancholic'); setIsMoodHudOpen(false); }}
+                            className={cn("p-3 rounded-xl transition-all", currentMood === 'melancholic' ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-400 hover:bg-zinc-50")}
+                            title={language === 'ar' ? 'عميق' : 'Melancholic'}
+                        >
+                            <LivingIcon icon={Heart} mood="melancholic" className="w-5 h-5" />
+                        </button>
+                        <button 
+                            onClick={() => { setCurrentMood('optimistic'); setIsMoodHudOpen(false); }}
+                            className={cn("p-3 rounded-xl transition-all", currentMood === 'optimistic' ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-400 hover:bg-zinc-50")}
+                            title={language === 'ar' ? 'متفائل' : 'Optimistic'}
+                        >
+                            <LivingIcon icon={Sun} mood="optimistic" className="w-5 h-5" />
+                        </button>
+                        <div className="w-px h-8 bg-zinc-100 mx-1" />
+                        <button 
+                            onClick={async () => {
+                              if (!user) {
+                                 showToast(language === 'ar' ? 'سجل دخولك لتجد توأمك الفكري' : 'Sign in to find your intellectual twin', 'info');
+                                 setShowLogin(true);
+                                 return;
+                              }
+                              setIsAnalyzingTwin(true);
+                              try {
+                                const q = query(collection(db, 'ripples'), where('authorId', '==', user.uid), limit(5));
+                                const snap = await getDocs(q);
+                                const posts = snap.docs.map(d => d.data().text);
+                                if (posts.length < 2) {
+                                  showToast(language === 'ar' ? 'انشر بذوراً أكثر لنحلل نمطك الفكري!' : 'Post more seeds to analyze your pattern!', 'info');
+                                  return;
+                                }
+                                const res = await findSoulMatch(posts, language);
+                                if (res) setSoulTwinMsg(res);
+                              } finally {
+                                setIsAnalyzingTwin(false);
+                              }
+                            }}
+                            className={cn("p-3 rounded-xl transition-all relative group", isAnalyzingTwin ? "bg-zinc-50" : "bg-zinc-900 text-white")}
+                        >
+                            {isAnalyzingTwin ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                              <>
+                                <Brain className="w-5 h-5 relative z-10" />
+                                <div className="absolute inset-0 bg-mood-primary opacity-0 group-hover:opacity-20 transition-opacity rounded-xl" />
+                              </>
+                            )}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
+                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">Version 3.2.0.Release</span>
+                </div>
              </div>
           </footer>
         </div>
@@ -720,6 +864,27 @@ const AppContent: React.FC = () => {
       />
 
       <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
+
+      <AnimatePresence>
+          {soulTwinMsg && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="fixed bottom-32 z-50 left-8 right-8 md:left-auto md:right-8 md:w-96 p-6 bg-white border border-zinc-200 rounded-[32px] shadow-3xl overflow-hidden"
+              >
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-emerald-500" />
+                  <button onClick={() => setSoulTwinMsg(null)} className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600"><X className="w-5 h-5" /></button>
+                  <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                          <Sparkles className="w-5 h-5" />
+                      </div>
+                      <h4 className="font-black text-sm uppercase tracking-widest">{language === 'ar' ? 'توأم الروح الفكري' : 'INTELLECTUAL TWIN'}</h4>
+                  </div>
+                  <p className="text-zinc-700 font-bold leading-relaxed">{soulTwinMsg}</p>
+              </motion.div>
+          )}
+      </AnimatePresence>
 
       <PWAInstallPrompt />
 

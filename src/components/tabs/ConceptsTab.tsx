@@ -41,7 +41,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
         setOutput(content);
       } else {
         const { simplifyConcept } = await import('../../services/gemini');
-        const res = await simplifyConcept(activeInput);
+        const res = await simplifyConcept(activeInput, language);
         setOutput(res);
       }
     } catch (err: any) {

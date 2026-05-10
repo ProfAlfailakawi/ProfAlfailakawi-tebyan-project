@@ -15,6 +15,8 @@ declare global {
 
 const labTools = [
   { id: 'collider', ar: 'مُصادم الأفكار', en: 'Cognitive Collider', tooltip: { ar: 'دمج وتصادم الأفكار المتناقضة لتوليد أفكار جديدة', en: 'Collide contradicting ideas to generate new ones' } },
+  { id: 'symbols', ar: 'توليد الرموز', en: 'Symbol Generation', tooltip: { ar: 'تحويل المفاهيم المجردة إلى رموز بصرية تعبيرية', en: 'Transform abstract concepts into expressive visual symbols' } },
+  { id: 'sound', ar: 'صوت الأفكار', en: 'Visual Sound', tooltip: { ar: 'تحويل ترددات الأفكار إلى تمثيلات بصرية موجية', en: 'Transform idea frequencies into visual waveforms' } },
   { id: 'design', ar: 'تصميم استراتيجي', en: 'Strategic Design', tooltip: { ar: 'تصميم مسارات وخطط شاملة وممنهجة', en: 'Design systematic strategic paths' } },
   { id: 'scout', ar: 'كشاف الأدوات', en: 'Tool Scout', tooltip: { ar: 'البحث عن أفضل الأدوات التقنية المناسبة لاحتياجاتك', en: 'Find best tech tools for your needs' } },
   { id: 'personas', ar: 'تحليل الشخصيات', en: 'Persona Analysis', tooltip: { ar: 'تحليل شخصيات الأفراد والدوافع النفسية', en: 'Analyze personas and psychological motives' } },
@@ -51,6 +53,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labFamilyExplanation, setLabFamilyExplanation] = React.useState('');
   const [labCareer, setLabCareer] = React.useState<any[]>([]);
   const [labWorkshop, setLabWorkshop] = React.useState<any>(null);
+  const [labSymbol, setLabSymbol] = React.useState<any>(null);
+  const [labSound, setLabSound] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [permissionStatus, setPermissionStatus] = React.useState<'idle' | 'prompting' | 'granted' | 'denied'>('idle');
@@ -84,6 +88,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabFamilyExplanation(''); 
     setLabCareer([]); 
     setLabWorkshop(null);
+    setLabSymbol(null);
+    setLabSound(null);
   };
 
   const handleRunLabTool = async () => {
@@ -116,6 +122,24 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         case 'family': setLabFamilyExplanation(await explainSimply(labInput, 'شخص غير خبير', language) || ''); break;
         case 'career': setLabCareer(await careerCompass(labInput, language)); break;
         case 'workshop': setLabWorkshop(await generateWorkshop(labInput, language)); break;
+        case 'symbols':
+          const symbolRes = await universalOracle(
+            `حول المفهوم "${labInput}" إلى رمز بصري مجرد. ارجع النتيجة كـ JSON: { "symbolName": "اسم الرمز", "description": "وصف دقيق للشكل المكون له", "significance": "دلالته الفلسفية" }`,
+            'Symbolic Architect', language
+          );
+          try {
+            let json = symbolRes.trim();
+            if (json.startsWith('```json')) json = json.replace(/```json\n?/, '').replace(/```$/, '');
+            setLabSymbol(JSON.parse(json));
+          } catch(e) { setLabSymbol({ symbolName: labInput, description: symbolRes }); }
+          break;
+        case 'sound':
+          setLabSound({
+            frequency: Math.floor(Math.random() * 500) + 200,
+            amplitude: Math.floor(Math.random() * 80) + 20,
+            complexity: Math.floor(Math.random() * 10) + 1
+          });
+          break;
       }
     } catch (err: any) {
       setError("أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
@@ -235,7 +259,80 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                </motion.div>
             ) : (
               <>
-                {activeLabTool === 'collider' && labColliderResult && (
+                {activeLabTool === 'symbols' && labSymbol && (
+                   <motion.div 
+                     initial={{ scale: 0.8, opacity: 0 }}
+                     animate={{ scale: 1, opacity: 1 }}
+                     className="flex flex-col items-center gap-8 py-12 bg-zinc-50 rounded-[40px] border border-zinc-100"
+                   >
+                     <div className="relative w-48 h-48 flex items-center justify-center">
+                        <motion.div 
+                           animate={{ 
+                             rotate: [0, 90, 180, 270, 360],
+                             borderRadius: ["30% 70% 70% 30% / 30% 30% 70% 70%", "50% 50% 20% 80% / 25% 80% 20% 75%"]
+                           }}
+                           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                           className="w-full h-full bg-black/5 border-2 border-black/10 backdrop-blur-sm"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                           <Box className="w-12 h-12 text-black" />
+                        </div>
+                     </div>
+                     <div className="text-center space-y-4 max-w-xl px-6">
+                        <h3 className="text-3xl font-black text-black uppercase tracking-tight">{labSymbol.symbolName}</h3>
+                        <p className="text-zinc-500 font-bold leading-relaxed italic">"{labSymbol.description}"</p>
+                        <div className="pt-4 border-t border-zinc-200">
+                           <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">{language === 'ar' ? 'الدلالة الفلسفية' : 'PHILOSOPHICAL SIGNIFICANCE'}</p>
+                           <p className="text-sm font-bold text-black mt-2">{labSymbol.significance}</p>
+                        </div>
+                     </div>
+                   </motion.div>
+                 )}
+
+                 {activeLabTool === 'sound' && labSound && (
+                   <motion.div 
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="bg-black text-white p-12 rounded-[40px] flex flex-col items-center gap-12 overflow-hidden relative"
+                   >
+                     <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+                     
+                     <div className="flex gap-1 h-32 items-center relative z-10">
+                        {[...Array(30)].map((_, i) => (
+                           <motion.div 
+                              key={i}
+                              animate={{ 
+                                height: [20, Math.random() * 120 + 20, 20],
+                                backgroundColor: i % 2 === 0 ? "rgba(var(--mood-primary-rgb), 1)" : "rgba(255,255,255,0.4)"
+                              }}
+                              transition={{ 
+                                duration: 0.5 + Math.random() * 0.5, 
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                              }}
+                              className="w-1 bg-white/20 rounded-full"
+                           />
+                        ))}
+                     </div>
+
+                     <div className="text-center space-y-4 relative z-10">
+                        <div className="text-[10px] font-black text-white/40 uppercase tracking-[0.5em]">{language === 'ar' ? 'التردد الإدراكي للمفهوم' : 'CONCEPT COGNITIVE FREQUENCY'}</div>
+                        <h4 className="text-4xl md:text-6xl font-black tracking-tighter text-white italic">{labInput}</h4>
+                        <div className="flex gap-8 justify-center mt-6">
+                           <div className="text-center">
+                              <div className="text-[10px] text-white/30 font-bold">{language === 'ar' ? 'التردد' : 'Frequency'}</div>
+                              <div className="text-lg font-black text-mood-primary">{labSound.frequency}Hz</div>
+                           </div>
+                           <div className="text-center">
+                              <div className="text-[10px] text-white/30 font-bold">{language === 'ar' ? 'السعة' : 'Amplitude'}</div>
+                              <div className="text-lg font-black text-mood-secondary">{labSound.amplitude}Db</div>
+                           </div>
+                        </div>
+                     </div>
+                   </motion.div>
+                 )}
+
+                 {activeLabTool === 'collider' && labColliderResult && (
                   <motion.div 
                      initial={{ scale: 0.9, opacity: 0 }}
                      animate={{ scale: 1, opacity: 1 }}

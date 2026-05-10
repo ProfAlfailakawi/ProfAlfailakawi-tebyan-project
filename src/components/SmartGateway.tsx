@@ -49,44 +49,40 @@ const PLATFORM_INSIGHTS = [
         titleAr: 'أكثر التحديات الإنسانية هذا الأسبوع',
         titleEn: 'Top human challenges this week',
         items: [
-            { labelAr: 'إدارة الغضب', labelEn: 'Anger Management', pct: '70%', color: 'bg-emerald-500' },
-            { labelAr: 'صناعة القرار', labelEn: 'Decision Making', pct: '85%', color: 'bg-indigo-500' }
+            { labelAr: 'إدارة الغضب', labelEn: 'Anger Management', pct: '70%', color: 'bg-mood-secondary' },
+            { labelAr: 'صناعة القرار', labelEn: 'Decision Making', pct: '85%', color: 'bg-mood-primary' }
         ]
     },
     {
         titleAr: 'تحديات التواصل الحديثة',
         titleEn: 'Modern Communication Challenges',
         items: [
-            { labelAr: 'القلق والمخاوف', labelEn: 'Anxiety & Fears', pct: '60%', color: 'bg-rose-500' },
-            { labelAr: 'الإقناع والتفاوض', labelEn: 'Persuasion & Negotiation', pct: '75%', color: 'bg-blue-500' }
+            { labelAr: 'القلق والمخاوف', labelEn: 'Anxiety & Fears', pct: '60%', color: 'bg-mood-primary/60' },
+            { labelAr: 'الإقناع والتفاوض', labelEn: 'Persuasion & Negotiation', pct: '75%', color: 'bg-mood-secondary/60' }
         ]
     },
     {
         titleAr: 'مواقف صعبة شائعة اليوم',
         titleEn: 'Common Difficult Situations Today',
         items: [
-            { labelAr: 'العناد المفرط', labelEn: 'Extreme Stubbornness', pct: '80%', color: 'bg-orange-500' },
-            { labelAr: 'رفض التغيير', labelEn: 'Resistance to Change', pct: '50%', color: 'bg-purple-500' }
+            { labelAr: 'العناد المفرط', labelEn: 'Extreme Stubbornness', pct: '80%', color: 'bg-mood-primary/80' },
+            { labelAr: 'رفض التغيير', labelEn: 'Resistance to Change', pct: '50%', color: 'bg-mood-secondary/40' }
         ]
     },
     {
         titleAr: 'محاور الذكاء العاطفي',
         titleEn: 'Emotional Intelligence Focus',
         items: [
-            { labelAr: 'حل النزاعات', labelEn: 'Conflict Resolution', pct: '65%', color: 'bg-teal-500' },
-            { labelAr: 'التواصل الفعال', labelEn: 'Effective Communication', pct: '90%', color: 'bg-pink-500' }
+            { labelAr: 'حل النزاعات', labelEn: 'Conflict Resolution', pct: '65%', color: 'bg-mood-secondary/80' },
+            { labelAr: 'التواصل الفعال', labelEn: 'Effective Communication', pct: '90%', color: 'bg-mood-primary/40' }
         ]
     }
 ];
 
 const colorMap: Record<string, string> = {
-  indigo: '#6366f1',
-  emerald: '#10b981',
-  blue: '#3b82f6',
-  amber: '#f59e0b',
-  zinc: '#71717a',
-  rose: '#f43f5e',
-  violet: '#8b5cf6'
+  mood: 'var(--mood-primary)',
+  secondary: 'var(--mood-secondary)',
+  zinc: '#71717a'
 };
 
 import { useFluidTyping } from '../hooks/useFluidTyping';
@@ -95,9 +91,76 @@ interface SmartGatewayProps {
   language: 'ar' | 'en';
   handleTabChange: (id: any, context?: string) => void;
   tabs: any[];
+  mood?: string;
 }
 
-export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed }) => {
+const getMoodTypography = (mood: string) => {
+  switch (mood) {
+    case 'revolutionary':
+      return "font-black italic skew-x-[-10deg] tracking-tight transition-all duration-700";
+    case 'calm':
+      return "font-light tracking-widest italic opacity-80 font-sans transition-all duration-1000";
+    case 'melancholic':
+      return "font-medium tracking-tight opacity-70 underline underline-offset-4 decoration-current transition-all duration-1000";
+    case 'optimistic':
+      return "font-bold tracking-normal uppercase transition-all duration-500";
+    default:
+      return "font-bold tracking-tight transition-all";
+  }
+};
+
+const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
+  if (mood === 'melancholic') {
+    return (
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={`drop-${i}`}
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ 
+              y: [null, 200, 600], 
+              opacity: [0, 0.4, 0],
+              x: (10 + Math.random() * 80) + '%'
+            }}
+            transition={{ 
+              duration: 10 + Math.random() * 8, 
+              repeat: Infinity,
+              delay: i * 1.5 
+            }}
+            className="absolute top-0 w-[1px] h-40 bg-gradient-to-b from-transparent via-mood-primary/30 to-transparent blur-[1px]"
+          />
+        ))}
+      </div>
+    );
+  }
+  if (mood === 'revolutionary') {
+    return (
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={`spark-${i}`}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ 
+              scale: [0, 1.5, 0], 
+              opacity: [0, 0.8, 0],
+              x: (Math.random() * 100) + '%',
+              y: (Math.random() * 100) + '%'
+            }}
+            transition={{ 
+              duration: 1.5 + Math.random() * 1.5, 
+              repeat: Infinity,
+              delay: i * 0.3 
+            }}
+            className="absolute w-1 h-1 bg-mood-primary rounded-full shadow-[0_0_8px_rgba(var(--mood-primary-rgb),0.8)]"
+          />
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
+export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood }) => {
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
   const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
@@ -255,7 +318,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+            <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
@@ -264,7 +327,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+             <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, is your coffee ready to continue? ☕</span>
@@ -303,7 +366,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+            <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>، هل نكمل الاستكشاف؟ ☕</span>
@@ -312,7 +375,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-            <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+            <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, shall we continue exploring? ☕</span>
@@ -350,7 +413,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-             <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+             <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>.. هل كان يوماً مثمراً؟ 🌟</span>
@@ -359,7 +422,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className={`text-content text-indigo-500 font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+             <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, how was your day? 🌟</span>
@@ -1124,6 +1187,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         </AnimatePresence>
         
       <div className="relative z-20 flex flex-col items-center justify-center min-h-[40vh]">
+        <MoodBackgroundEffect mood={mood || 'default'} />
         <form 
           onSubmit={handleSubmit}
           className="w-full max-w-4xl flex flex-col items-center"
@@ -1131,7 +1195,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           <div className="w-full relative flex flex-col items-center mt-12 mb-12 group">
 
             {isThinking && (
-               <div className="absolute inset-0 bg-indigo-500/10 blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none" />
+               <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
             )}
             <div className={cn(
               "flex items-center w-full max-w-2xl rounded-3xl p-2 transition-all duration-300",
@@ -1202,7 +1266,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute -top-14 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-8 py-3 rounded-full text-sm font-black shadow-2xl z-50 whitespace-nowrap"
+                className="absolute -top-14 left-1/2 -translate-x-1/2 bg-mood-primary text-white px-8 py-3 rounded-full text-sm font-black shadow-2xl z-50 whitespace-nowrap transition-colors duration-700"
               >
                 {selectionFeedback}
               </motion.div>
@@ -1213,7 +1277,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute -top-12 left-1/2 -translate-x-1/2 bg-rose-500 text-white px-6 py-2 rounded-full text-xs font-black shadow-xl"
+                className="absolute -top-12 left-1/2 -translate-x-1/2 bg-rose-600 text-white px-6 py-2 rounded-full text-xs font-black shadow-xl"
               >
                 {errorMsg}
               </motion.div>
@@ -1228,7 +1292,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 className="border-t border-zinc-100 mt-2 p-4 hidden md:block space-y-4"
               >
                 <div className="flex justify-center mb-4">
-                    <button onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
+                    <button onClick={clearSearch} className="px-6 py-2 bg-mood-primary/10 hover:bg-mood-primary/20 text-mood-primary rounded-full font-bold text-sm transition-all duration-500">
                         {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
                     </button>
                 </div>
@@ -1253,15 +1317,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl mb-4"
+                                    className="p-4 bg-mood-secondary/5 border border-mood-secondary/10 rounded-2xl mb-4"
                                 >
                                     <div className="flex items-center gap-2 mb-2 justify-center">
-                                        <Sparkles className="w-4 h-4 text-emerald-500" />
-                                        <span className="text-[11px] leading-[1.6] font-black text-emerald-600 uppercase tracking-widest">
+                                        <Sparkles className="w-4 h-4 text-mood-secondary" />
+                                        <span className="text-[11px] leading-[1.6] font-black text-mood-secondary uppercase tracking-widest">
                                             {language === 'ar' ? 'استنتاج أولي' : 'Initial Insight'}
                                         </span>
                                     </div>
-                                    <p className="text-emerald-900 font-bold text-sm leading-relaxed">
+                                    <p className="text-mood-secondary font-bold text-sm leading-relaxed">
                                         {smartResponse}
                                     </p>
                                 </motion.div>
@@ -1297,7 +1361,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               {/* Focus Layer: Primary Suggestion */}
                               {primarySuggestion  && (
                                   <div className="space-y-4">
-                                      <div className="px-4 py-2 text-[11px] font-black text-emerald-600 uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
+                                      <div className="px-4 py-2 text-[11px] font-black text-mood-primary uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
                                           <div className="flex items-center gap-2">
                                            <span>{language === 'ar' ? 'المسار الأنسب لمطابقتك' : 'YOUR STRONGEST MATCH'}</span>
                                            <Zap className="w-3 h-3" />
@@ -1307,7 +1371,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                       <button
                                         type="button"
                                         onClick={() => handlePathSelect(primarySuggestion.id, query)}
-                                        className="w-full flex-col md:flex-row flex md:items-center justify-between p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all group text-right border active:scale-[0.98] bg-black text-white hover:bg-zinc-900 border-black shadow-2xl relative overflow-hidden"
+                                        className="w-full flex-col md:flex-row flex md:items-center justify-between p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all group text-right border active:scale-[0.98] bg-mood-primary text-white hover:opacity-90 border-mood-primary shadow-2xl shadow-mood-glow relative overflow-hidden"
                                       >
                                          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 relative z-10 w-full md:w-auto">
                                              <div className="w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[32px] bg-white/10 flex items-center justify-center transition-all group-hover:scale-110 shrink-0 self-end md:self-auto">
@@ -1323,7 +1387,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                              </div>
                                          </div>
                                          <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right">
-                                            <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-white/10 px-6 md:px-8 py-3 md:py-3 rounded-full md:group-hover:bg-emerald-500 transition-all">
+                                            <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-white/10 px-6 md:px-8 py-3 md:py-3 rounded-full md:group-hover:bg-mood-secondary transition-all">
                                                <span className="font-bold text-sm">{language === 'ar' ? 'البدء' : 'Start'}</span>
                                                <ArrowLeft className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "group-hover:-translate-x-2" : "rotate-180 group-hover:translate-x-2")} />
                                             </div>
@@ -1551,20 +1615,29 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         {/* Dynamic Suggestion Chips */}
         <div className="mt-8 flex overflow-x-auto pb-4 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full">
             {proactiveInsights.dynamicSuggests.map((chip, idx) => (
-                <button
-                    key={idx}
-                    onClick={() => {
-                        setQuery(language === 'ar' ? chip.ar : chip.en);
-                        handleSubmit(undefined, language === 'ar' ? chip.ar : chip.en);
-                        setIsFocused(true);
-                    }}
-                    className={cn(
-                        "px-4 py-2 rounded-full border border-zinc-200 text-sm font-bold transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer",
-                        "bg-white text-zinc-500 hover:border-black hover:text-black"
-                    )}
-                >
-                    {language === 'ar' ? chip.ar : chip.en}
-                </button>
+                    <button
+                        key={idx}
+                        onClick={() => {
+                            setQuery(language === 'ar' ? chip.ar : chip.en);
+                            handleSubmit(undefined, language === 'ar' ? chip.ar : chip.en);
+                            setIsFocused(true);
+                        }}
+                        className={cn(
+                            "px-5 py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
+                            "bg-white text-zinc-500 hover:border-mood-primary hover:text-mood-primary",
+                            mood ? getMoodTypography(mood) : "font-bold text-sm"
+                        )}
+                    >
+                        <span className="relative z-10">{language === 'ar' ? chip.ar : chip.en}</span>
+                        {mood === 'revolutionary' && (
+                          <motion.div 
+                            initial={{ x: '-100%' }}
+                            animate={{ x: '100%' }}
+                            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-mood-primary/10 to-transparent skew-x-[-20deg]"
+                          />
+                        )}
+                    </button>
             ))}
         </div>
       </div>
@@ -1578,7 +1651,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           className="bg-indigo-600 rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-white relative overflow-hidden group"
+           className="bg-mood-primary rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-white relative overflow-hidden group shadow-lg shadow-mood-glow"
         >
             <div className="relative z-10">
                 <div className="flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full w-fit mb-4 md:mb-6">
@@ -1588,12 +1661,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 <h3 className="text-xl md:text-2xl font-black mb-3 md:mb-4">
                     {language === 'ar' ? currentChallenge.titleAr : currentChallenge.titleEn}
                 </h3>
-                <p className="text-indigo-100 text-xs md:text-sm mb-6 md:mb-8 leading-relaxed">
+                <p className="text-white/80 text-xs md:text-sm mb-6 md:mb-8 leading-relaxed">
                     {language === 'ar' ? 'تحدَّ نفسك في المحاكي اليوم' : 'Challenge yourself in the simulator today'}
                 </p>
                 <button 
                     onClick={() => onPathSelect(currentChallenge.path as any, currentChallenge.query)}
-                    className="w-full py-3 md:py-4 bg-white text-indigo-600 rounded-xl md:rounded-2xl font-black text-sm md:text-base hover:bg-emerald-400 hover:text-white transition-all shadow-lg active:scale-95"
+                    className="w-full py-3 md:py-4 bg-white text-mood-primary rounded-xl md:rounded-2xl font-black text-sm md:text-base hover:bg-mood-secondary hover:text-white transition-all shadow-lg active:scale-95"
                 >
                     {language === 'ar' ? 'ابدأ التحدي' : 'Start Challenge'}
                 </button>
@@ -1681,10 +1754,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               </div>
           </div> */}
 
-          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-indigo-500/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
+          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-mood-primary/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-screen pointer-events-none group-hover:opacity-30 transition-opacity"></div>
               <div className="flex items-center gap-6 text-right relative z-10">
-                  <div className="w-16 h-16 rounded-[24px] bg-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-sm border border-indigo-500/30 transform group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 rounded-[24px] bg-mood-primary/20 flex items-center justify-center text-mood-primary shadow-sm border border-mood-primary/30 transform group-hover:scale-110 transition-transform">
                       <Network className="w-8 h-8" />
                   </div>
                   <div className="text-right">
@@ -1698,18 +1771,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               </div>
           </div>
 
-          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-rose-500/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ripple')}>
+          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-mood-secondary/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ripple')}>
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-screen pointer-events-none group-hover:opacity-30 transition-opacity"></div>
               <div className="flex items-center gap-6 text-right relative z-10">
-                  <div className="w-16 h-16 rounded-[24px] bg-rose-500/20 flex items-center justify-center text-rose-400 shadow-sm border border-rose-500/30 transform group-hover:scale-110 transition-transform">
+                  <div className="w-16 h-16 rounded-[24px] bg-mood-secondary/20 flex items-center justify-center text-mood-secondary shadow-sm border border-mood-secondary/30 transform group-hover:scale-110 transition-transform">
                       <Waves className="w-8 h-8" />
                   </div>
                   <div className="text-right">
                       <h3 className="text-xl font-black text-white mb-1">
-                          {language === 'ar' ? 'التأثير المتسلسل' : 'Ripple Effect'}
+                          {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                       </h3>
                       <p className="text-zinc-400 font-bold text-sm">
-                          {language === 'ar' ? 'العواقب غير المتوقعة لأفكارك' : 'Unexpected consequences'}
+                          {language === 'ar' ? 'نمو الأفكار وترابطها المستمر' : 'Continuous growth and interconnection'}
                       </p>
                   </div>
               </div>

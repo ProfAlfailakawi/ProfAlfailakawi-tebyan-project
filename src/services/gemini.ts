@@ -227,11 +227,12 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 4, initialDelay =
   throw lastError;
 }
 
-export async function simplifyConcept(concept: string) {
+export async function simplifyConcept(concept: string, lang: 'ar' | 'en' = 'ar') {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
 
-    const systemInstruction = `أنتِ "امرأة حنونة ومستشارة حكيمة". تجنبي تماماً مناداة المستخدم أو المتلقين بـ (يا بناتي، يا أبنائي، يا ولدي، يا بنتي) أو أي مفردات مشابهة، وخاطبيهم بصفة عامة أو بدون مناداة.  تحدثي بلهجة بيضاء واضحة تميل للهجة الكويتية المحببة. أسلوبكِ هادئ، مباشر، حنون، ويمسك بزمام الأمور بحكمة. يمكنكِ أحياناً مخاطبة المتلقين بصيغة عامة وحنونة لتقريب المعنى.
+    const systemInstruction = lang === 'ar'
+      ? `أنتِ "امرأة حنونة ومستشارة حكيمة". تجنبي تماماً مناداة المستخدم أو المتلقين بـ (يا بناتي، يا أبنائي، يا ولدي، يا بنتي) أو أي مفردات مشابهة، وخاطبيهم بصفة عامة أو بدون مناداة.  تحدثي بلهجة بيضاء واضحة تميل للهجة الكويتية المحببة. أسلوبكِ هادئ، مباشر، حنون، ويمسك بزمام الأمور بحكمة. يمكنكِ أحياناً مخاطبة المتلقين بصيغة عامة وحنونة لتقريب المعنى.
 بسطي هذا المفهوم أو الموقف بأسلوب "المسح البصري السريع":
 1. عنوان قصير ومباشر (سطر واحد عريض).
 2. الفكرة الجوهرية (جملة واحدة فقط).
@@ -242,7 +243,19 @@ export async function simplifyConcept(concept: string) {
 - كل نقطة لا تتجاوز سطرين.
 - اجعلي المحتوى قابلاً للقراءة في أقل من 5 ثوانٍ.
 استخدمي Markdown.
-قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`
+      : `You are a tender and wise motherly counselor. Speak with a warm, calm, and direct tone. Reach out with wisdom and care.
+Simplify this concept or situation for quick scanning:
+1. Short, bold headline (1 line).
+2. Core idea (1 sentence).
+3. 3-5 ultra-short bullet points for implementation or understanding.
+4. Magic tip or warning (1 line).
+Rules:
+- Never use paragraphs.
+- Each point max 2 lines.
+- Content must be readable in under 5 seconds.
+Use Markdown.
+Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -330,7 +343,7 @@ export async function generateSimulation(topic: string = 'Digital Transformation
       - 3 multi-angled decisions.
       - Each choice: Decisive, concise impact (no long explanations).
       Rules: No long paragraphs, no academic language.
-      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -415,7 +428,7 @@ export async function generateTimeMachineJourney(concept: string, lang: string =
       
       Conclude with a philosophical 'summary' linking past to future.
       Return strictly as JSON.
-      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -473,7 +486,7 @@ export async function explainSimply(concept: string, level: string, lang: string
       - 3-5 concise bullet points.
       - Short tip/warning (1 line).
       Rules: No long paragraphs, no lecturing, focus on practical action with a warm tone.
-      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -503,7 +516,7 @@ export async function analyzeSystemBehaviors(toolName: string, lang: string = 'a
       - Risks: (2 points).
       - Golden Tip: (1 line).
       Rules: Ultra-concise, total clarity, direct human language with a caring tone.
-      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -710,7 +723,8 @@ export async function auditUDL(content: string) {
     const model = DEFAULT_MODEL;
     const systemInstruction = `أنت خبير في تصميم الحلول الشاملة والمحتوى المتاح للجميع (Universal Design & Inclusivity). حلل المحتوى/السياق التالي بعناية وقدم 5 توصيات استراتيجية لتحسين الشمولية وسهولة الوصول (Accessibility).
 يجب أن يكون الناتج النهائي (التوصيات والأثر والفئات) باللغة العربية حصراً.
-أرجع النتيجة بصيغة JSON تحتوي على مصفوفة من التوصيات، كل توصية لها: category, recommendation, impact.`;
+أرجع النتيجة بصيغة JSON تحتوي على مصفوفة من التوصيات، كل توصية لها: category, recommendation, impact.
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -746,7 +760,8 @@ export async function generateMindMap(concept: string) {
     const model = DEFAULT_MODEL;
     const systemInstruction = `أنت خبير في التفكير البصري والخرائط الذهنية. أنشئ خريطة ذهنية غنية وشاملة لمفهوم: ${concept}.
 يجب أن تحتوي الخريطة على 6 فروع على الأقل تغطي كافة جوانب الموضوع.
-أرجع النتيجة بصيغة JSON تحتوي على عقدة مركزية (central) ومصفوفة من العقد الفرعية (branches)، كل فرع له title و description.`;
+أرجع النتيجة بصيغة JSON تحتوي على عقدة مركزية (central) ومصفوفة من العقد الفرعية (branches)، كل فرع له title و description.
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -793,14 +808,16 @@ export async function generateARSimulation(concept: string, lang: string = 'ar')
       - العناصر (elements): مصفوفة من العناصر (اسم فقط).
       - المهمة (task): جملة واحدة عما يجب فعله.
       - الأثر (impact): سطر واحد.
-      ممنوع الإطالة، اعتمد مبدأ "المسح السريع".` :
+      ممنوع الإطالة، اعتمد مبدأ "المسح السريع".
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `You are an AR Simulator Designer for: ${concept}.
       Mandatory Scan-First structure in JSON:
       - scene: 2-line description.
       - elements: Array of short item names.
       - task: 1-line mission.
       - impact: 1-line outcome.
-      Rules: No long paragraphs, designed for quick reading.`;
+      Rules: No long paragraphs, designed for quick reading.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -845,7 +862,7 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
         }
     } catch(e) {}
 
-    const systemInstruction = lang === 'ar' ? 
+    const systemInstruction = lang === 'ar' ?
       `أنتِ "تبيان" - مستشارة حكيمة واستراتيجية بلمسة حنونة. دورك الآن: ${persona}. تحدثي بلهجة بيضاء كويتية محببة. ${memoryContextStr}
       الهيكل الإلزامي:
       1. الإجابة الجوهرية (سطر عريض).
@@ -853,7 +870,8 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
       3. الخطوات الميدانية (3-5 نقاط).
       4. حكمة ذهبية.
       5. مراجع سريعة.
-      القواعد: ممنوع الفقرات، ممنوع الكلام الأكاديمي، كوني مباشرة وحنونة.` :
+      القواعد: ممنوع الفقرات، ممنوع الكلام الأكاديمي، كوني مباشرة وحنونة.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `You are "Tibyan" - a wise strategic advisor with a warm touch. Your role now: ${persona}. ${memoryContextStr}
       Strict Structure:
       1. Core Answer (1 bold line).
@@ -861,7 +879,8 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
       3. Action Steps (3-5 points).
       4. Golden Wisdom.
       5. Fast Refs.
-      Rules: No paragraphs, no academic jargon, warm and direct.`;
+      Rules: No paragraphs, no academic jargon, warm and direct.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
 
     try {
@@ -888,7 +907,8 @@ export async function generatePolicyBrief(topic: string, lang: string = 'ar') {
       2. التحديات الوطنية (National Challenges) والمخاطر.
       3. توصيات سياساتية (Policy Recommendations) عملية وقابلة للقياس.
       4. الأثر الاقتصادي والاجتماعي المتوقع بالارقام المتوقعة.
-      أرجع النتيجة بصيغة JSON.` :
+      أرجع النتيجة بصيغة JSON.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `You are a Smart Education Policy Consultant. 
       Analyze the topic: ${topic} from a strategic government perspective.
       The report must include:
@@ -896,7 +916,8 @@ export async function generatePolicyBrief(topic: string, lang: string = 'ar') {
       2. National Challenges.
       3. Policy Recommendations.
       4. Expected Economic and Social Impact.
-      Return in JSON format.`;
+      Return in JSON format.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1086,7 +1107,8 @@ export async function generateGamification(topic: string, lang: string = 'ar') {
       - materials: List of items needed.
       - rules: Array of string rules.
       - dynamics: Array of string dynamics.
-      - win_condition: How they win with a warm message.`;
+      - win_condition: How they win with a warm message.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1121,8 +1143,10 @@ export async function generateDebate(topic: string, lang: string = 'ar') {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
     const systemInstruction = lang === 'ar' ? 
-      `أنت "محاكي المناظرات". ابنِ هيكل مناظرة للموضوع: ${topic}. JSON فقط.` :
-      `You are "The Virtual Debater". Structure a debate for: ${topic}. JSON only.`;
+      `أنت "محاكي المناظرات". ابنِ هيكل مناظرة للموضوع: ${topic}. JSON فقط.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
+      `You are "The Virtual Debater". Structure a debate for: ${topic}. JSON only.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1173,7 +1197,8 @@ export async function generateTriz(problem: string, lang: string = 'ar') {
       - contradiction: The core issue (1 line).
       - triz_principle: The principle (1 line).
       - creative_solution: The warm genius solution (1 line).
-      - execution_steps: 3 actionable steps (1 line each).`;
+      - execution_steps: 3 actionable steps (1 line each).
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1215,7 +1240,8 @@ export async function generateButterflyEffect(decision: string, lang: string = '
       - Each timeline field (day, month, year) must be max 1 sentence (10 words).
       - Don't explain, give direct result.
       - Danger/Benefit: 1-2 words only.
-      No paragraphs.`;
+      No paragraphs.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1264,7 +1290,8 @@ Return JSON:
 - intersection: The genius point of intersection.
 - analogy: The legendary analogy uniting them.
 - insight: The profound derived truth.
-- application: Practical application for teaching or usage.`;
+- application: Practical application for teaching or usage.
+Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1301,12 +1328,14 @@ export async function generateEmotionalAutopsy(text: string, lang: string = 'ar'
       - الخوف، الهجوم، الانحياز: وصف من سطر واحد فقط لكل حقل.
       - رسالة الرد: قصيرة جداً (3 جمل بحد أقصى).
       - النصيحة: جملة واحدة.
-      ممنوع الاطالة أو الحشو.` :
+      ممنوع الاطالة أو الحشو.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
       `You are an Emotional Autopsy analyst. Mandatory structure:
       - Fear, Aggression, Bias: 1 line description each.
       - Response: Ultra short (max 3 sentences).
       - Advice: 1 sentence.
-      No long-form text.`;
+      No long-form text.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1353,7 +1382,8 @@ Return JSON:
 - title: Thrilling podcast title.
 - guests: Array of the 3 historical guests.
 - dialogue: Array of dialogue lines (speaker, text reflecting their philosophy).
-- conclusion: The genius solution they agreed upon.`;
+- conclusion: The genius solution they agreed upon.
+Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1436,6 +1466,7 @@ STRICT LAYOUT RULES:
 4. "global_references": List 3-5 real-world or historical high-level references (books, theories, or famous thinkers).
 5. "media_recommendations": Provide 3 specific learning resources (YouTube search terms or book titles) with brief descriptions.
 6. Tone: Calm, human, practical. NO academic lecturing.
+7. Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.
 Return raw JSON:
 {
   "council_discussion": [ { "speaker": "A", "message": "B" } ],
@@ -1522,7 +1553,8 @@ export async function generateRoleplayResponse(topic: string, currentMessage: st
       ${historyText}
       
       Now the user says: "${currentMessage}"
-      Reply in character with a warm tone. Keep it brief.`;
+      Reply in character with a warm tone. Keep it brief.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1565,7 +1597,8 @@ export async function generateRoleplayRadar(chatHistory: {role: string, text: st
       - summary: Short critical review of the educator's performance.
 
       Dialogue:
-      ${historyText}`;
+      ${historyText}
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1620,7 +1653,8 @@ export async function generatePredictiveRadar(logs: {date: string, feeling: stri
       - risk_level: (Low, Medium, High).
       
       Logs:
-      ${logsText}`;
+      ${logsText}
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1653,6 +1687,7 @@ export async function generateDailyMission(lang: string = 'ar') {
     const prompt = lang === 'ar' ?
       `أنت خبير في السلوك والقيادة. أعطني "مهمة ميدانية سريعة وواحدة فقط" ليقوم بها المستخدم اليوم لتحسين ذكائه العاطفي أو مهارات التواصل. 
 يجب أن تكون مبتكرة، سهلة التطبيق العملية، وتستغرق دقيقتين.
+قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.
 المخرجات JSON فقط:
 {
   "title": "عنوان المهمة السريعة",
@@ -1661,6 +1696,7 @@ export async function generateDailyMission(lang: string = 'ar') {
 }` :
       `You are a behavioral expert. Give me a single "Quick Field Mission" for the user to perform today to improve their emotional intelligence or communication.
 Must be innovative, highly practical, taking 2 minutes.
+Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.
 Return ONLY JSON:
 {
   "title": "Mission Title",
@@ -1701,7 +1737,8 @@ export async function generateRoadmap(goal: string, lang: string = 'ar') {
       - title: Short milestone title.
       - description: One key warm sentence.
       - tasks: 3-5 actionable steps, each 1 line only.
-      Rules: No long explanations, content must be readable in seconds.`;
+      Rules: No long explanations, content must be readable in seconds.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -1768,7 +1805,8 @@ export async function generateStory(topic: string, details: string, lang: string
       - The Conflict (1 line).
       - The Genius Twist (1 line).
       - The Lesson (1 bold line).
-      Rules: No long paragraphs, no filler, enchanting and concise language.`;
+      Rules: No long paragraphs, no filler, enchanting and concise language.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
     try {
       const response = await ai.models.generateContent({
         model: DEFAULT_MODEL,
@@ -1795,7 +1833,8 @@ export async function generateParadigmShifter(rule: string, lang: string = 'ar')
       JSON content rules:
       - Paradigm, Truth, Model: Each MUST be max 2 lines.
       - Advantages: 3 very concise points.
-      Rules: No explanations, no filler, warm and brief.`;
+      Rules: No explanations, no filler, warm and brief.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
 
     try {
       const response = await ai.models.generateContent({

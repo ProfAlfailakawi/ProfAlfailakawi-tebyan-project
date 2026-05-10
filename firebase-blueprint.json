@@ -8,18 +8,37 @@
         "id": { "type": "string" },
         "text": { "type": "string" },
         "author": { "type": "string" },
+        "authorId": { "type": "string" },
+        "rootId": { "type": "string" },
         "type": { "type": "string", "enum": ["seed", "branch", "implementation"] },
         "likes": { "type": "number" },
         "timestamp": { "type": "string" },
-        "parentId": { "type": "string" }
+        "parentId": { "type": "string" },
+        "isTimeCapsule": { "type": "boolean" },
+        "unlockDate": { "type": "string", "format": "date-time" },
+        "unlockBranchCount": { "type": "number" }
       },
-      "required": ["id", "text", "author", "type", "likes"]
+      "required": ["text", "author", "type", "likes", "timestamp"]
+    },
+    "daily_prompt": {
+      "title": "Daily Prompt",
+      "description": "Daily deep thought question",
+      "type": "object",
+      "properties": {
+        "question": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["question", "date"]
     }
   },
   "firestore": {
     "/ripples/{rippleId}": {
       "schema": "ripple",
       "description": "All ripple nodes"
+    },
+    "/daily_prompts/{promptId}": {
+      "schema": "daily_prompt",
+      "description": "Daily questions for the community"
     }
   }
 }

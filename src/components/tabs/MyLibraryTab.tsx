@@ -1,33 +1,82 @@
 import React from 'react';
 import { useUser } from '../../contexts/UserContext';
 import { motion } from 'motion/react';
-import { LibraryBig } from 'lucide-react';
+import { LibraryBig, Shirt, Trash2, ArrowUpRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import ReactMarkdown from 'react-markdown';
+
+const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
+  const counts = items.reduce((acc: any, item: any) => {
+    const type = (item && typeof item === 'object' ? item.type : 'item') || 'item';
+    acc[type] = (acc[type] || 0) + 1;
+    return acc;
+  }, {});
+
+  const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
+    'qawlfasl': { color: 'bg-emerald-500', labelAr: 'قول فصل', labelEn: 'Decision' },
+    'oracle': { color: 'bg-indigo-500', labelAr: 'المستشار', labelEn: 'Oracle' },
+    'concept': { color: 'bg-amber-500', labelAr: 'الأفكار', labelEn: 'Concepts' },
+    'roadmap': { color: 'bg-rose-500', labelAr: 'المسار', labelEn: 'Roadmap' },
+    'item': { color: 'bg-zinc-500', labelAr: 'مادة', labelEn: 'Items' }
+  };
+
+  return (
+    <div className="flex flex-wrap gap-4 mb-16 justify-center">
+       {Object.entries(counts).map(([type, count]: [any, any]) => (
+         <motion.div
+           key={type}
+           initial={{ scale: 0 }}
+           animate={{ scale: 1 }}
+           whileHover={{ y: -5, scale: 1.05 }}
+           className={cn(
+             "px-6 py-4 rounded-[32px] flex items-center gap-4 shadow-xl border-4 border-white text-white",
+             typeData[type]?.color || 'bg-zinc-500'
+           )}
+         >
+           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-black text-xl">
+             {count}
+           </div>
+           <span className="font-black text-xs uppercase tracking-[0.2em]">
+             {language === 'ar' ? (typeData[type]?.labelAr || type) : (typeData[type]?.labelEn || type)}
+           </span>
+         </motion.div>
+       ))}
+    </div>
+  );
+};
 
 const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string, handleTabChange?: (id: string, context?: string) => void }) => {
     const { preferences, removeFromLibrary } = useUser();
     
     return (
-        <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">المكتبة المفضلة</h2>
+        <div className="p-6 pb-32">
+            <div className="flex items-center justify-between mb-12">
+                <div className="space-y-1">
+                  <h2 className="text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
+                  <p className="text-zinc-500 font-bold text-sm tracking-widest uppercase">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
+                </div>
                 {handleTabChange && (
                     <button 
                         onClick={() => handleTabChange('discover')}
-                        className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 rounded-xl text-sm font-bold transition-all"
+                        className="px-6 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-2xl text-sm font-black transition-all flex items-center gap-2"
                     >
-                        {language === 'ar' ? 'رجوع' : 'Back'}
+                        {language === 'ar' ? 'الرجوع للداش بورد' : 'Back to Dashboard'}
                     </button>
                 )}
             </div>
+
+            {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length > 0 && (
+              <MoodCloud items={preferences.savedLibrary} language={language} />
+            )}
+
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-20 text-zinc-400">
-                    <LibraryBig className="w-16 h-16 mb-4 opacity-20" />
-                    <p className="font-bold">{language === 'ar' ? 'لا توجد نصائح محفوظة في المكتبة حالياً.' : 'No saved items in your library yet.'}</p>
+                <div className="flex flex-col items-center justify-center py-32 text-zinc-400 bg-zinc-50 rounded-[48px] border border-dashed border-zinc-200">
+                    <LibraryBig className="w-24 h-24 mb-6 opacity-10" />
+                    <p className="font-black text-xl mb-2">{language === 'ar' ? 'الذاكرة فارغة حالياً' : 'Your memory is currently empty'}</p>
+                    <p className="text-sm font-bold opacity-60">{language === 'ar' ? 'ابدأ في حفظ الأفكار والقرارات لتراها هنا.' : 'Start saving ideas and decisions to see them here.'}</p>
                 </div>
             ) : (
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
                         let content = '';
                         let title = '';
@@ -102,21 +151,34 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                                         {type === 'oracle' ? <ReactMarkdown>{content.substring(0, 300) + (content.length > 300 ? '...' : '')}</ReactMarkdown> : content}
                                     </div>
                                 </div>
-                                <div className="flex gap-2 relative z-10">
-                                  <button 
-                                      onClick={() => removeFromLibrary(item)}
-                                      className="flex-1 py-3 bg-zinc-50 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 rounded-2xl text-xs font-black transition-all border border-transparent hover:border-rose-100"
-                                  >
-                                      {language === 'ar' ? 'حذف' : 'Remove'}
-                                  </button>
+                                <div className="flex flex-col gap-2 relative z-10">
+                                  <div className="flex gap-2">
+                                    <button 
+                                        onClick={() => removeFromLibrary(item)}
+                                        className="flex-1 py-3 bg-zinc-50 text-zinc-400 hover:bg-rose-50 hover:text-rose-600 rounded-2xl text-xs font-black transition-all border border-transparent hover:border-rose-100 flex items-center justify-center gap-2"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        {language === 'ar' ? 'حذف' : 'Remove'}
+                                    </button>
+                                    <button 
+                                        onClick={() => {
+                                          alert(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.');
+                                        }}
+                                        className="flex-1 py-3 bg-zinc-950 text-white hover:bg-black rounded-2xl text-xs font-black transition-all flex items-center justify-center gap-2"
+                                    >
+                                        <Shirt className="w-3.5 h-3.5" />
+                                        {language === 'ar' ? 'ارتداء' : 'Wear'}
+                                    </button>
+                                  </div>
                                   {tabId && (
                                     <button 
                                         onClick={() => {
-                                          if (handleTabChange) handleTabChange(tabId, title); // Simplified navigation attempt
+                                          if (handleTabChange) handleTabChange(tabId, title);
                                         }}
-                                        className="flex-1 py-3 bg-black text-white hover:bg-zinc-800 rounded-2xl text-xs font-black transition-all"
+                                        className="w-full py-4 bg-mood-primary text-white hover:opacity-90 rounded-2xl text-sm font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-mood-glow"
                                     >
-                                        {language === 'ar' ? 'العودة' : 'Return'}
+                                        <ArrowUpRight className="w-4 h-4" />
+                                        {language === 'ar' ? 'العودة لمساحة الفكر' : 'Return to Thought Space'}
                                     </button>
                                   )}
                                 </div>

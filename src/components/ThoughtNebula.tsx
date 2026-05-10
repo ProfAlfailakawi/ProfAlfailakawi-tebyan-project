@@ -51,8 +51,19 @@ export const ThoughtNebula = () => {
 
       ctx.clearRect(0, 0, width, height);
       
-      const themeColor = timeTheme === 'evening' ? '210, 150, 80' : '80, 120, 210';
-      const secondaryColor = timeTheme === 'evening' ? '220, 100, 120' : '150, 80, 220';
+      // Get mood colors from document
+      const style = getComputedStyle(document.documentElement);
+      const moodPrimary = style.getPropertyValue('--mood-primary').trim() || '#6366f1';
+      const moodSecondary = style.getPropertyValue('--mood-secondary').trim() || '#10b981';
+
+      // Convert hex to rgb if needed for alpha support (simpler to just use CSS vars directly if we were in CSS, but in canvas we parse)
+      const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '99, 102, 241';
+      };
+
+      const themeColor = hexToRgb(moodPrimary);
+      const secondaryColor = hexToRgb(moodSecondary);
 
       hueOffset += 0.1;
 

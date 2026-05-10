@@ -8,52 +8,80 @@ service cloud.firestore {
 
     // Helper: Validations
     function isSignedIn() { return request.auth != null; }
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.get('email', '').toLower() == "alfailakawidrahmad@gmail.com" ||
+        request.auth.token.get('email', '').toLower() == "dr.ahmad@gmail.com" ||
+        request.auth.token.get('email', '').toLower() == "dr.ahmad.alfailakawi@gmail.com"
+      );
+    }
+    
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    
     function isValidRipple(data) {
-      return data.text is string && data.text.size() <= 200000 &&
+      return data.text is string && data.text.size() <= 2000 &&
              data.type in ['seed', 'branch', 'implementation'] &&
              data.likes is number &&
              data.timestamp is string &&
-             (data.parentId == null || data.parentId is string);
+             (data.parentId == null || data.parentId is string) &&
+             (data.authorId == null || data.authorId is string) &&
+             (data.rootId == null || data.rootId is string) &&
+             (data.isTimeCapsule == null || data.isTimeCapsule is bool) &&
+             (data.unlockDate == null || data.unlockDate is string) &&
+             (data.unlockBranchCount == null || data.unlockBranchCount is number);
     }
     
+    match /daily_prompts/{promptId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /system_settings/{document=**} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow write: if isAdmin();
     }
 
     match /qawl_fasl_questions/{document=**} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow write: if isAdmin();
     }
 
     match /qawl_fasl_generation_logs/{document=**} {
-      allow read, write: if isSignedIn();
+      allow read, write: if isAdmin();
     }
 
     match /system_config/{document=**} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    
+    match /system_configs/{document=**} {
+      allow read, write: if isAdmin();
     }
 
     match /search_trends/{document=**} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow write: if isAdmin();
     }
 
     match /missing_questions/{document=**} {
-      allow read, write: if isSignedIn();
+      allow read, write: if isAdmin();
     }
 
     match /search_logs/{document=**} {
-      allow read: if isSignedIn();
+      allow read: if isAdmin();
       allow create: if true;
-      allow update, delete: if isSignedIn();
+    }
+    
+    match /ai_logs/{document=**} {
+      allow read: if isAdmin();
+      allow create: if true;
     }
 
     match /users/{userId} {
       allow get: if isSignedIn() && request.auth.uid == userId;
-      allow list: if isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      allow list: if isAdmin();
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow update: if isSignedIn() && request.auth.uid == userId;
     }
@@ -63,18 +91,20 @@ service cloud.firestore {
     }
 
     match /ripples/{rippleId} {
-      allow list: if true; // Publicly readable for the community board
+      allow list: if true;
       allow get: if true;
-      allow create: if isValidRipple(request.resource.data);
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn() && (
+      allow create: if isSignedIn() && isValidRipple(request.resource.data) && (request.resource.data.authorId == request.auth.uid || request.resource.data.authorId == null);
+      allow update: if (isSignedIn() && (
+        // Like action
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']) && request.resource.data.likes == resource.data.likes + 1) ||
+        // Owner edit
+        (request.auth.uid == resource.data.authorId && isValidRipple(request.resource.data))
+      )) || isAdmin();
+      
+      allow delete: if (isSignedIn() && (
         request.auth.uid == resource.data.get('authorId', '') || 
-        (resource.data.get('rootId', '') != '' && get(/databases/$(database)/documents/ripples/$(resource.data.rootId)).data.get('authorId', '') == request.auth.uid) ||
-        (request.auth.token.get('email', '').toLower() == "alfailakawidrahmad@gmail.com") ||
-        (request.auth.token.get('email', '').toLower() == "dr.ahmad@gmail.com") ||
-        (request.auth.token.get('email', '').toLower() == "dr.ahmad.alfailakawi@gmail.com") ||
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
-      );
+        (resource.data.get('rootId', '') != '' && get(/databases/$(database)/documents/ripples/$(resource.data.rootId)).data.get('authorId', '') == request.auth.uid)
+      )) || isAdmin();
       
       match /likes/{userId} {
         allow read: if true;
