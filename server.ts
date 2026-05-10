@@ -51,7 +51,7 @@ function hashString(str: string) {
 
 async function startServer() {
     const app = express();
-    const PORT = process.env.PORT || 3000;
+    const PORT = 3000; // Hardcoded to 3000 as per infrastructure requirements
 
     app.set('trust proxy', 1);
     
@@ -75,15 +75,13 @@ async function startServer() {
 
     // Health Endpoint
     app.get("/api/health", (req, res) => {
-        let rawGemini = process.env.GEMINI_API_KEY;
-        
-        res.json({
-            status: "ok",
+        res.json({ 
+            status: "ok", 
             env: process.env.NODE_ENV || 'development',
-            geminiKeyExists: !!rawGemini,
-            rawGeminiValue: rawGemini,
-            googleApiKeyExists: !!process.env.GOOGLE_API_KEY,
-            googleApiKeyValue: process.env.GOOGLE_API_KEY ? 'exists' : 'missing'
+            path: __dirname,
+            cwd: process.cwd(),
+            geminiKeyExists: !!process.env.GEMINI_API_KEY,
+            googleApiKeyExists: !!process.env.GOOGLE_API_KEY
         });
     });
 
@@ -110,7 +108,7 @@ async function startServer() {
         try {
             console.log(`[Server] Generating TTS for text: "${text.substring(0, 50)}..."`);
             
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-tts" });
+            const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-tts-preview" });
             
             const result = await model.generateContent({
               contents: [{ role: 'user', parts: [{ text }] }],
@@ -168,11 +166,11 @@ async function startServer() {
 
         try {
             // Model Aliasing - Use stable models but allow newer versions
-            let finalModel = modelName || "gemini-2.5-flash";
+            let finalModel = modelName || "gemini-3-flash-preview";
             // If it's a generic "gemini" or a 1.0/1.5 model, upgrade it. 
             // But if it specifies 2.0, 3.1 etc., respect it.
-            if (finalModel === "gemini" || finalModel === "gemini-1.5-flash") {
-                finalModel = "gemini-2.5-flash";
+            if (finalModel === "gemini" || finalModel === "gemini-1.5-flash" || finalModel === "gemini-2.5-flash") {
+                finalModel = "gemini-3-flash-preview";
             }
 
             const generationConfig: any = {};
@@ -226,18 +224,10 @@ async function startServer() {
         }
     });
 
-    // API routes FIRST
-    app.get("/api/health", (req, res) => {
-        res.json({ 
-            status: "ok", 
-            env: process.env.NODE_ENV,
-            path: __dirname,
-            cwd: process.cwd()
-        });
-    });
-
     // Vite Integration
-    if (process.env.NODE_ENV !== "production") {
+    const isProduction = process.env.NODE_ENV === "production" || fs.existsSync(path.join(process.cwd(), 'dist', 'index.html'));
+    
+    if (!isProduction) {
         console.log("[Server] Starting in Development Mode...");
         const { createServer: createViteServer } = await import("vite");
         const vite = await createViteServer({
