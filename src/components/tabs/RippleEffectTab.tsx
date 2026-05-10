@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, UserCircle, Activity, Trash2, X } from 'lucide-react';
+import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc, writeBatch } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
@@ -378,7 +378,14 @@ export const RippleEffectTab = ({ language }: { language: 'ar' | 'en' }) => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8 space-y-12">
+        <div className="relative max-w-4xl mx-auto px-4 py-8 space-y-12">
+            <button
+                onClick={() => window.history.back()}
+                className="absolute top-8 left-4 p-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors z-20 flex items-center gap-2"
+            >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="text-sm font-bold hidden md:inline">{language === 'ar' ? 'رجوع' : 'Back'}</span>
+            </button>
             {/* Local Toast */}
             <AnimatePresence>
                 {toast && (

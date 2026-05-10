@@ -1120,14 +1120,21 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
-              
-              {smartSuggestion && smartSuggestion !== searchValue && (
-                <button
+              </div>
+
+              {/* Smart Suggestion Button */}
+              <AnimatePresence>
+                {smartSuggestion && smartSuggestion !== searchValue && (
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 5 }}
                   type="button"
                   onClick={() => {
                     setSearchValue(smartSuggestion);
                     setSmartSuggestion("");
                     setQuery(smartSuggestion);
+                    inputRef.current?.focus();
                   }}
                   className="mt-3 w-full rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-right text-sm text-slate-700 shadow-sm hover:bg-amber-100 transition"
                 >
@@ -1135,9 +1142,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
                   </span>
                   {smartSuggestion}
-                </button>
+                </motion.button>
               )}
-              </div>
+              </AnimatePresence>
+
               
               <button 
                 type="submit"
@@ -1150,32 +1158,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               </button>
             </div>
 
-            {/* Smart Suggestion Button */}
-            <AnimatePresence>
-              {suggestion && suggestion !== query && (
-                <motion.button
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 5 }}
-                  type="button"
-                  onClick={() => {
-                    setQuery(suggestion);
-                    latestInputRef.current = suggestion;
-                    setSuggestion("");
-                    inputRef.current?.focus();
-                  }}
-                  className="mt-3 w-full max-w-2xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-right text-sm text-slate-700 shadow-sm hover:bg-amber-100 transition"
-                >
-                  <div className="flex items-center justify-between">
-                    <Sparkles className="w-4 h-4 text-amber-500" />
-                    <span className="block text-[10px] uppercase font-black text-amber-600 tracking-widest">
-                      {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
-                    </span>
-                  </div>
-                  <div className="mt-1 font-bold">{suggestion}</div>
-                </motion.button>
-              )}
-            </AnimatePresence>
           </div>
 
           <AnimatePresence>
