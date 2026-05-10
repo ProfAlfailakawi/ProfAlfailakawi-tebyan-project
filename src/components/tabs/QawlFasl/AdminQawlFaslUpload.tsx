@@ -230,7 +230,7 @@ export default function AdminQawlFaslUpload() {
     } catch (e: any) {
       const errorStr = (e?.message || JSON.stringify(e)).toLowerCase();
       if (errorStr.includes("api key") || errorStr.includes("gemini_api_key_not_configured")) {
-        alert('لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات لمتابعة التوليد المجمع.');
+        alert('عذراً، محرك الذكاء الاصطناعي غير متصل حالياً للمتابعة في التوليد المجمع.');
       } else {
         console.error("Batch Gen Error", e);
         alert('أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب المحاولة مرة أخرى بعد قليل.');

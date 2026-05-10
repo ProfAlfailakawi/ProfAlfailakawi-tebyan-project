@@ -243,7 +243,7 @@ const AppContent: React.FC = () => {
     { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion },
     { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit },
     { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
-    { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
+    // { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
     { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network },
     { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
     { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },

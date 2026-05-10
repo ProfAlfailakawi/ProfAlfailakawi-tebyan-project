@@ -24,13 +24,14 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
   const [rpRadar, setRpRadar] = useState<any>(null);
   const [isRoleplaying, setIsRoleplaying] = useState(false);
 
-  const startDecisionSimulation = async () => {
-    if (!simTopic.trim() || isLoading) return;
+  const startDecisionSimulation = async (topicToUse?: string) => {
+    const topic = topicToUse || simTopic;
+    if (!topic.trim() || isLoading) return;
     setIsLoading(true);
     setError(null);
     try {
       const { generateSimulation } = await import('../../services/gemini');
-      const s = await generateSimulation(simTopic, language);
+      const s = await generateSimulation(topic, language);
       setSimulation(s);
       setSimFeedback(null);
     } catch (err: any) {
@@ -53,14 +54,14 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
   };
 
   React.useEffect(() => {
-    if (initialValue && chatHistory.length === 0 && !isRoleplaying && !isLoading) {
+    if (initialValue && chatHistory.length === 0 && !isRoleplaying && !isLoading && !simulation) {
       setSimTopic(initialValue);
       setRpTopic(initialValue);
-      setSimMode('roleplay');
-      startRoleplay(initialValue);
+      setSimMode('decision'); // Default simulator mode
+      startDecisionSimulation(initialValue);
       if (onValueUsed) onValueUsed();
     }
-  }, [initialValue, chatHistory.length, isRoleplaying, isLoading, onValueUsed]);
+  }, [initialValue]);
 
   const handleRoleplaySend = async (overrideMessage?: string, overrideTopic?: string) => {
     const msg = overrideMessage || currentMessage;
@@ -167,7 +168,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-bold border-2 rounded-[16px] outline-none focus:border-blue-500" 
                     placeholder={language === 'ar' ? "مثال: دمج الأجهزة المحمولة..." : "Example: Integrating mobile devices..."} 
                   />
-                  <button onClick={startDecisionSimulation} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-black text-white hover:bg-zinc-800 font-bold shadow-lg transition-all cursor-pointer">
+                  <button onClick={() => startDecisionSimulation()} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-black text-white hover:bg-zinc-800 font-bold shadow-lg transition-all cursor-pointer">
                     {language === 'ar' ? 'بدء' : 'Start'}
                   </button>
                 </div>

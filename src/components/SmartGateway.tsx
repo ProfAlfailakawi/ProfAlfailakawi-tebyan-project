@@ -1635,7 +1635,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               </div>
           </div>
 
-          <div className="flex-1 p-8 bg-black rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-black transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ar')}>
+        {/* <div className="flex-1 p-8 bg-black rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-black transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ar')}>
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/40 to-fuchsia-900/20 group-hover:opacity-100 transition-opacity"></div>
               <div className="flex items-center gap-6 text-right relative z-10">
                   <div className="w-16 h-16 rounded-[24px] bg-white/10 flex items-center justify-center text-white shadow-sm border border-white/20 transform group-hover:scale-110 transition-transform">
@@ -1650,7 +1650,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                       </p>
                   </div>
               </div>
-          </div>
+          </div> */}
 
           <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-indigo-500/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
               <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-screen pointer-events-none group-hover:opacity-30 transition-opacity"></div>

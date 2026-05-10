@@ -173,30 +173,26 @@ export function parseGeminiError(error: any, defaultMsg: string, lang: string = 
   const errorStr = JSON.stringify(error).toLowerCase();
   const errorMsg = (error?.message || "").toLowerCase();
   
-  // Human-friendly default messages
-  let beautifulDefaultMessage = lang === 'ar' ? "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." : "Sorry, the engine is busy right now.. try again in a moment.";
-  
-  if (defaultMsg && defaultMsg !== "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي." && !defaultMsg.includes("حدث خطأ")) {
-      beautifulDefaultMessage = defaultMsg;
-  }
+  // Use the provided custom context message as the base
+  let returnMessage = defaultMsg || (lang === 'ar' ? "أعتذر، المحرك مشغول حالياً.. جرّب مرة أخرى." : "Sorry, the engine is busy right now.. try again.");
 
   if (errorStr.includes('api key') || errorStr.includes('gemini_api_key_not_configured') || error?.status === 401 || errorStr.includes("not configured") || errorMsg.includes("gemini_api_key_not_configured")) {
-    return new Error(lang === 'ar' ? "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات." : "Could not access the engine now.. make sure the API key is activated in settings.");
+    return new Error(returnMessage);
   }
   if (errorStr.includes('429') || errorStr.includes('credits depleted') || errorStr.includes('quota') || errorMsg.includes('429') || errorMsg.includes('quota') || errorStr.includes('resource_exhausted')) {
-    return new Error(lang === 'ar' ? "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." : "Sorry, the engine is busy right now.. try again in a moment.");
+    return new Error(returnMessage);
   }
   if (errorStr.includes('503') || errorStr.includes('504') || errorMsg.includes('503') || errorMsg.includes('504') || 
       errorStr.includes('high demand') || errorMsg.includes('high demand') || 
       errorStr.includes('overloaded') || errorMsg.includes('overloaded') ||
       errorStr.includes('404') || errorMsg.includes('not found') ||
       error?.status === 'UNAVAILABLE' || error?.status === 'DEADLINE_EXCEEDED') {
-    return new Error(lang === 'ar' ? "يبدو أن معالجة هذه الفكرة تتطلب وقتاً أطول.. جرب صياغة أبسط أو العودة لاحقاً." : "Processing this idea seems to take longer.. try a simpler phrasing or come back later.");
+    return new Error(returnMessage);
   }
   if (errorStr.includes('safety') || errorStr.includes('block') || errorStr.includes('finish_reason_safety') || errorMsg.includes('safety') || errorMsg.includes('blocked')) {
-    return new Error(lang === 'ar' ? "المحرك لم يلتقط المعنى بالكامل، جرّب صياغة أبسط." : "The engine didn't fully grasp the meaning, try a simpler phrasing.");
+    return new Error(lang === 'ar' ? "المحرك لم يلتقط المعنى بالكامل بسبب قيود الأمان، جرّب صياغة أبسط." : "The engine didn't fully grasp the meaning due to safety filters, try a simpler phrasing.");
   }
-  return new Error(beautifulDefaultMessage);
+  return new Error(returnMessage);
 }
 
 async function withRetry<T>(fn: () => Promise<T>, maxRetries = 4, initialDelay = 3000): Promise<T> {
@@ -259,7 +255,7 @@ export async function simplifyConcept(concept: string) {
       return response.text || "عذراً، لم أتمكن من معالجة هذا المحتوى حالياً.";
     } catch (error) {
       console.error("Gemini Error:", error);
-      throw parseGeminiError(error, "حدث خطأ أثناء الاتصال بالذكاء الاصطناعي.");
+      throw parseGeminiError(error, "المستشارة مشغولة حالياً بترتيب أفكارها.. يرجى المحاولة بعد قليل.");
     }
   });
 }
@@ -309,7 +305,7 @@ export async function generateQuiz(topic: string) {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Quiz Error:", error);
-      throw parseGeminiError(error, "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
+      throw parseGeminiError(error, "مصمم الاختبارات يراجع الأوراق حالياً.. تفضل بزيارتنا بعد قليل.");
     }
   });
 }
@@ -374,7 +370,7 @@ export async function generateSimulation(topic: string = 'Digital Transformation
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Simulation generation failed:", error);
-      throw parseGeminiError(error, "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
+      throw parseGeminiError(error, "المحاكي بدأ للتو دورتَه.. يرجى استدعاؤه مرة أخرى.");
     }
   });
 }
@@ -447,7 +443,7 @@ export async function generateTimeMachineJourney(concept: string, lang: string =
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Time Machine Error:", error);
-      throw parseGeminiError(error, "فشل توليد رحلة آلة الزمن.");
+      throw parseGeminiError(error, "آلة الزمن في مرحلة إعادة الشحن الآن.. بانتظارك بعد قليل.");
     }
   });
 }
@@ -479,7 +475,7 @@ export async function explainSimply(concept: string, level: string, lang: string
       });
       return response.text;
     } catch (error) {
-      throw parseGeminiError(error, "Failed to explain simply.");
+      throw parseGeminiError(error, "أعتذر، المستشارة في جلسة تفكير عميقة الآن.. حاوِل مرة أخرى.");
     }
   });
 }
@@ -519,7 +515,7 @@ export async function analyzeSystemBehaviors(toolName: string, lang: string = 'a
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-       throw parseGeminiError(error, "Analysis failed.");
+      throw parseGeminiError(error, "محلل السلوك يجمع بياناته حالياً.. يرجى الانتظار والمحاولة لاحقاً.");
     }
   });
 }
@@ -554,7 +550,7 @@ export async function careerCompass(skills: string, lang: string = 'ar') {
       const cleaned = tryRepairJson(response.text || "[]");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "Career mapping failed.");
+      throw parseGeminiError(error, "البوصلة المهنية تعيد ضبط اتجاهاتها.. تفضل باستدعائها قريباً.");
     }
   });
 }
@@ -593,7 +589,7 @@ export async function generateInstructionalDesign(topic: string, level: string) 
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل توليد خطة التصميم.");
+      throw parseGeminiError(error, "المهندس الاستراتيجي يخطط حالياً للخطوة التالية.. يرجى المراجعة لاحقاً.");
     }
   });
 }
@@ -627,7 +623,7 @@ export async function scoutTools(goal: string) {
       const cleaned = tryRepairJson(response.text || "[]");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل العثور على أدوات.");
+      throw parseGeminiError(error, "خبراء التقنية في جولة استكشافية الآن.. عُد بعد قليل.");
     }
   });
 }
@@ -664,7 +660,7 @@ export async function generatePersonas(context: string) {
       const cleaned = tryRepairJson(response.text || "[]");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل توليد الشخصيات.");
+      throw parseGeminiError(error, "مختبر الشخصيات يدرس النماذج حالياً.. يرجى استدعاؤه مجدداً.");
     }
   });
 }
@@ -687,7 +683,7 @@ export async function generatePodcastScript(content: string, lang: string = 'ar'
       });
       return response.text;
     } catch (error) {
-      throw parseGeminiError(error, "فشل توليد نص البودكاست.");
+      throw parseGeminiError(error, "الاستوديو مشغول بتسجيل حلقة أخرى.. انتظر دورك بعد قليل.");
     }
   });
 }
@@ -723,7 +719,7 @@ export async function auditUDL(content: string) {
       const cleaned = tryRepairJson(response.text || "[]");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل تدقيق المحتوى.");
+      throw parseGeminiError(error, "فريق التدقيق يراجع معايير الشمولية حالياً.. جرب مرة أخرى قريباً.");
     }
   });
 }
@@ -765,7 +761,7 @@ export async function generateMindMap(concept: string) {
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل توليد الخريطة الذهنية.");
+      throw parseGeminiError(error, "خرائط العقل تتشكل حالياً في خلفية المحرك.. يرجى المحاولة بعد قليل.");
     }
   });
 }
@@ -810,7 +806,7 @@ export async function generateARSimulation(concept: string, lang: string = 'ar')
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "Failed to generate AR simulation.");
+      throw parseGeminiError(error, "نظارات الواقع المعزز قيد المعايرة الآن.. انتظر لحظات وجرّب.");
     }
   });
 }
@@ -859,7 +855,7 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
       });
       return response.text;
     } catch (error) {
-      throw parseGeminiError(error, "Oracle failed to respond.");
+      throw parseGeminiError(error, "المستشار الكلي في خلوة تأملية الآن.. يرجى استدعاؤه لاحقاً.");
     }
   });
 }
@@ -906,7 +902,7 @@ export async function generatePolicyBrief(topic: string, lang: string = 'ar') {
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "Policy analysis failed.");
+      throw parseGeminiError(error, "محلل السياسات يدرس المعطيات الحالية.. جرب حظك بعد قليل.");
     }
   });
 }
@@ -937,7 +933,7 @@ export async function generateShortVideo(prompt: string) {
       return operation.response?.generatedVideos?.[0]?.video?.uri;
     } catch (error) {
       console.error("Video Generation Error:", error);
-      throw parseGeminiError(error, "فشل إنشاء الفيديو.");
+      throw parseGeminiError(error, "استوديو المونتاج يقوم بمعالجة بصرية ثقيلة.. يرجى الانتظار.");
     }
   });
 }
@@ -970,7 +966,7 @@ export async function generateIllustrativeImage(prompt: string) {
       return data;
     } catch (error) {
       console.error("Image Desc Error:", error);
-      throw parseGeminiError(error, "فشل وصف الصورة.");
+      throw parseGeminiError(error, "عدسة المحلل البصري قيد التنظيف.. يرجى إعادة المحاولة.");
     }
   });
 }
@@ -1049,7 +1045,7 @@ export async function generateWorkshop(topic: string, lang: string = 'ar') {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Workshop generation failed:", error);
-      throw parseGeminiError(error, "فشل في استدعاء مصنع الورش.");
+      throw parseGeminiError(error, "مصنع الورش يعمل بكامل طاقته الآن.. تفضل بالعودة قريباً.");
     }
   });
 }
@@ -1099,7 +1095,7 @@ export async function generateGamification(topic: string, lang: string = 'ar') {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Gamification failed:", error);
-      throw parseGeminiError(error, "Game engine unavailable");
+      throw parseGeminiError(error, "محرك الألعاب في منتصف جولة حماسية.. استعد وحاول بعد قليل.");
     }
   });
 }
@@ -1140,7 +1136,7 @@ export async function generateDebate(topic: string, lang: string = 'ar') {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Debater failed:", error);
-      throw parseGeminiError(error, "Debater unavailable");
+      throw parseGeminiError(error, "المحاور في خضم مناظرة شرسة الآن.. يرجى استدعاؤه لاحقاً.");
     }
   });
 }
@@ -1184,7 +1180,7 @@ export async function generateTriz(problem: string, lang: string = 'ar') {
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("TRIZ failed:", error);
-      throw parseGeminiError(error, "TRIZ Solver unavailable");
+      throw parseGeminiError(error, "خبير تريز (TRIZ) يعالج تناقضاً معقداً.. جرب مرة أخرى قريباً.");
     }
   });
 }
@@ -1229,7 +1225,7 @@ export async function generateButterflyEffect(decision: string, lang: string = '
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Butterfly Effect error:", error);
-      throw parseGeminiError(error, "Simulator unavailable");
+      throw parseGeminiError(error, "المحاكي مشغول بدراسة الأثر المتسلسل.. انتظر قليلاً.");
     }
   });
 }
@@ -1275,7 +1271,7 @@ Return JSON:
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Polymath error:", error);
-      throw parseGeminiError(error, "Polymath unavailable");
+      throw parseGeminiError(error, "العالم الموسوعي يقرأ مجلداً جديداً.. يرجى مقاطعته بعد قليل.");
     }
   });
 }
@@ -1318,7 +1314,7 @@ export async function generateEmotionalAutopsy(text: string, lang: string = 'ar'
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Autopsy error:", error);
-      throw parseGeminiError(error, "Autopsy unavailable");
+      throw parseGeminiError(error, "غرفة التشريح مشغولة بدراسة حالة سابقة.. تفضل بالانتظار.");
     }
   });
 }
@@ -1373,7 +1369,7 @@ Return JSON:
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Podcast error:", error);
-      throw parseGeminiError(error, "Podcast unavailable");
+      throw parseGeminiError(error, "مذيع البودكاست يأخذ استراحة صوتية.. نلتقي بعد قليل.");
     }
   });
 }
@@ -1487,7 +1483,7 @@ Return raw JSON:
       return JSON.parse(cleaned);
     } catch (e: any) {
       console.error("Council Tab Error:", e);
-      throw parseGeminiError(e, "فشل إنشاء توصيات المجلس.");
+      throw parseGeminiError(e, "المجلس بدأ للتو يجتمع .. يرجى استدعاؤه مرة أخرى.");
     }
   });
 }
@@ -1520,7 +1516,7 @@ export async function generateRoleplayResponse(topic: string, currentMessage: st
       } as any);
       return response.text || "";
     } catch (error) {
-      throw parseGeminiError(error, "فشل في تشغيل المحاكي.");
+      throw parseGeminiError(error, "المحاكي يقوم بإنشاء السيناريو الخاص بك.. يرجى المحاولة بعد قليل.");
     }
   });
 }
@@ -1577,7 +1573,7 @@ export async function generateRoleplayRadar(chatHistory: {role: string, text: st
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "الرادار فشل.");
+      throw parseGeminiError(error, "شاشة الرادار تلتقط تشويشاً عالياً.. يرجى إعادة المسح.");
     }
   });
 }
@@ -1630,7 +1626,7 @@ export async function generatePredictiveRadar(logs: {date: string, feeling: stri
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-       throw parseGeminiError(error, "فشل الرادار التنبؤي.");
+       throw parseGeminiError(error, "الرادار التنبؤي يعيد ضبط دوائره الاستراتيجية.. يرجى المحاولة تكراراً.");
     }
   });
 }
@@ -1667,7 +1663,7 @@ Return ONLY JSON:
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل في توليد المهمة اليومية.");
+      throw parseGeminiError(error, "مولّد المهام اليومية يجهّز تحدياته الحالية.. انتظرنا غداً، أو بعد قليل.");
     }
   });
 }
@@ -1720,7 +1716,7 @@ export async function generateRoadmap(goal: string, lang: string = 'ar') {
       const cleaned = tryRepairJson(response.text || "{}");
       return JSON.parse(cleaned);
     } catch (error) {
-      throw parseGeminiError(error, "فشل في إنشاء الخريطة.");
+      throw parseGeminiError(error, "مخطط المسار الاستراتيجي يراجع البوصلة.. جرب بعد لحظات.");
     }
   });
 }
@@ -1764,7 +1760,7 @@ export async function generateStory(topic: string, details: string, lang: string
       });
       return response.text || "";
     } catch (error) {
-      throw parseGeminiError(error, "فشل في إنشاء القصة");
+      throw parseGeminiError(error, "الراوي ينسج خيوط حبكة جديدة.. تفضل لاحقاً للاستماع.");
     }
   });
 }
@@ -1806,7 +1802,7 @@ export async function generateParadigmShifter(rule: string, lang: string = 'ar')
       return JSON.parse(cleaned);
     } catch (error) {
       console.error("Shifter error:", error);
-      throw parseGeminiError(error, "Paradigm Shifter unavailable");
+      throw parseGeminiError(error, "مُهندس التحولات يدرس الإطار الحالي.. يرجى محاولة قلب الطاولة بعد قليل.");
     }
   });
 }
