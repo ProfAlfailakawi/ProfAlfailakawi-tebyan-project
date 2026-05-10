@@ -71,6 +71,38 @@ html.theme-evening .bg-white {
   background-color: #fdfbf7;
 }
 
+/* Emotion-Based UI */
+body.emotion-stress {
+  background-color: #f0fdf4 !important;
+  transition: background-color 2s ease-in-out, color 2s ease-in-out;
+}
+body.emotion-stress .bg-zinc-50, 
+body.emotion-stress .bg-white,
+body.emotion-stress .bg-zinc-950 {
+  background-color: transparent !important;
+  transition: background-color 2s ease-in-out;
+}
+body.emotion-stress .emotion-hide {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 1s ease-in-out;
+}
+
+body.emotion-creative {
+  background-color: #fffbeb !important;
+  transition: background-color 2s ease-in-out, color 2s ease-in-out;
+}
+body.emotion-creative .bg-zinc-50, 
+body.emotion-creative .bg-white,
+body.emotion-creative .bg-zinc-950 {
+  background-color: transparent !important;
+  transition: background-color 2s ease-in-out;
+}
+body.emotion-creative * {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+
 /* 
   Elastic Density (الكثافة المرنة)
   Adjust layout dynamically based on scroll speed and interaction.

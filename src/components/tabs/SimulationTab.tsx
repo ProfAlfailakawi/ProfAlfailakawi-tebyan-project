@@ -91,6 +91,18 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
       const radar = await generateRoleplayRadar(chatHistory, language);
       setRpRadar(radar);
       setIsRoleplaying(false);
+      
+      try {
+          const memoryContext = {
+              type: 'roleplay',
+              topic: rpTopic,
+              radar,
+              chatSummary: chatHistory.length > 2 ? chatHistory.slice(-2) : chatHistory,
+              date: new Date().toISOString()
+          };
+          localStorage.setItem('tibyan_cognitive_memory', JSON.stringify(memoryContext));
+      } catch(e) {}
+      
     } catch(err: any) {
       setError(err.message);
     } finally {
@@ -172,6 +184,18 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     {simulation.decisions?.map((decision: any, i: number) => (
                       <button key={i} onClick={() => {
                          setSimFeedback(decision);
+                         try {
+                           const memoryContext = {
+                               type: 'decision',
+                               topic: simTopic,
+                               action: decision.action,
+                               consequence: decision.consequence,
+                               isCorrect: decision.isCorrect,
+                               insight: decision.insight,
+                               date: new Date().toISOString()
+                           };
+                           localStorage.setItem('tibyan_cognitive_memory', JSON.stringify(memoryContext));
+                         } catch(e) {}
                          if (decision.isCorrect) {
                            window.dispatchEvent(new CustomEvent('add_xp', { detail: { amount: 150 } }));
                          } else {

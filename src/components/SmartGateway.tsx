@@ -5,6 +5,8 @@ import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowL
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
+import { detectEmotion } from '../services/gemini';
+
 import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
 import { TypographicAcoustic } from './TypographicAcoustic';
@@ -147,34 +149,37 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
   useEffect(() => {
     const currentText = searchValue.trim();
-    if (!currentText || currentText.length < 6) {
+    if (currentText.length < 6) {
       setSmartSuggestion("");
       return;
     }
 
     const requestId = ++requestIdRef.current;
+    const textForThisRequest = currentText;
     
-    const timer = setTimeout(async () => {
+    const timer = window.setTimeout(async () => {
       try {
         setIsSuggestionLoading(true);
-        const textAtRequestTime = latestInputRef.current.trim();
+        const latestText = latestInputRef.current.trim();
         
-        if (!textAtRequestTime || textAtRequestTime.length < 6) {
-          setSmartSuggestion("");
-          return;
-        }
+        if (latestText !== textForThisRequest) return;
         
         const prompt = `
-أكمل الجملة التالية كمقترح بحث ذكي لتطبيق تبيان.
-النص الحالي:
-"${textAtRequestTime}"
-الشروط:
-- أكمل المعنى بناءً على النص الكامل الحالي
+أنت محرك اقتراح ذكي داخل تطبيق تبيان.
+
+المستخدم كتب النص التالي: "${latestText}"
+
+المطلوب:
+- أكمل صياغة النص كمقترح بحث فقط
+- لا تجب على السؤال
+- لا تعط نصيحة
 - لا تغيّر نية المستخدم
 - استخدم نفس اللهجة والأسلوب
-- اجعل الاقتراح قصير ومفيد
-- لا تعطِ إجابة، فقط أكمل صياغة السؤال أو المشكلة
-- لا تكرر النص إذا كان كاملاً
+- اجعل الاقتراح امتداداً طبيعياً للجملة
+- إذا النص واضح ومكتمل، حسّنه قليلاً فقط
+- لا تعتمد على أول كلمة، اعتمد على النص الكامل الحالي فقط
+
+أرجع جملة واحدة فقط.
 `;
         const response = await aiClient.models.generateContent({
           model: "gemini-3-flash-preview",
@@ -183,16 +188,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
         const suggestion = response.text?.trim() || "";
 
-        if (
-          requestId !== requestIdRef.current ||
-          latestInputRef.current.trim() !== textAtRequestTime
-        ) {
-          return;
-        }
+        if (requestId !== requestIdRef.current) return;
+        if (latestInputRef.current.trim() !== latestText) return;
 
-        setSmartSuggestion(suggestion || "");
+        if (suggestion && suggestion !== latestText) {
+          setSmartSuggestion(suggestion);
+        }
       } catch (error) {
-        console.error("Smart autocomplete failed:", error);
+        console.error("Smart search suggestion error:", error);
         setSmartSuggestion("");
       } finally {
         if (requestId === requestIdRef.current) {
@@ -202,7 +205,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     }, 700);
     
     return () => {
-      clearTimeout(timer);
+      window.clearTimeout(timer);
     };
   }, [searchValue, aiClient]);
 
@@ -528,6 +531,22 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const [hasSearched, setHasSearched] = useState(() => sessionStorage.getItem('tebyan_current_has_searched') === 'true');
   const [errorMsg, setErrorMsg] = useState('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [emotion, setEmotion] = useState<'neutral'|'stress'|'creative'>('neutral');
+
+  useEffect(() => {
+    if (emotion === 'stress') {
+        document.body.classList.add('emotion-stress');
+        document.body.classList.remove('emotion-creative');
+    } else if (emotion === 'creative') {
+        document.body.classList.add('emotion-creative');
+        document.body.classList.remove('emotion-stress');
+    } else {
+        document.body.classList.remove('emotion-stress', 'emotion-creative');
+    }
+    return () => {
+        document.body.classList.remove('emotion-stress', 'emotion-creative');
+    }
+  }, [emotion]);
 
   useEffect(() => {
     const history = localStorage.getItem('tebyan_search_history');
@@ -676,6 +695,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     // Analytics: Log search
     logEvent('search', language, activeQuery);
     addToHistory(activeQuery);
+
+    detectEmotion(activeQuery).then(emo => {
+      setEmotion(emo);
+    }).catch(console.error);
 
     // Caching check
     const cacheKey = `tebyan_cache_v1_${activeQuery.trim().toLowerCase()}`;
@@ -1106,10 +1129,20 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   onChange={(e) => handleSearchInputChange(e.target.value)}
                   placeholder={language === 'ar' ? "اكتب سؤالك أو مشكلتك..." : "Type your question or problem..."}
                   onKeyDown={(e) => {
-                    if ((e.key === 'Tab' || e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion) {
+                    if ((e.key === 'Tab' || e.key === 'Enter') && smartSuggestion && smartSuggestion.startsWith(searchValue)) {
+                      e.preventDefault();
+                      setSearchValue(smartSuggestion);
+                      latestInputRef.current = smartSuggestion;
+                      setQuery(smartSuggestion);
+                      setSmartSuggestion('');
+                    } else if (e.key === 'Enter') {
+                      // Let normal submit take over
+                    } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion && smartSuggestion.startsWith(searchValue)) {
                       if (e.currentTarget.selectionStart === searchValue.length) {
                         e.preventDefault();
                         setSearchValue(smartSuggestion);
+                        latestInputRef.current = smartSuggestion;
+                        setQuery(smartSuggestion);
                         setSmartSuggestion('');
                       }
                     }
@@ -1120,31 +1153,17 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
+                
+                {smartSuggestion && smartSuggestion.startsWith(searchValue) && (
+                  <div 
+                    className="pointer-events-none absolute inset-0 flex items-center px-4 text-base md:text-xl font-bold z-0"
+                    dir={language === 'ar' ? 'rtl' : 'ltr'}
+                  >
+                    <span className="invisible whitespace-pre">{searchValue}</span>
+                    <span className="whitespace-pre text-zinc-300">{smartSuggestion.slice(searchValue.length)}</span>
+                  </div>
+                )}
               </div>
-
-              {/* Smart Suggestion Button */}
-              <AnimatePresence>
-                {smartSuggestion && smartSuggestion !== searchValue && (
-                <motion.button
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 5 }}
-                  type="button"
-                  onClick={() => {
-                    setSearchValue(smartSuggestion);
-                    setSmartSuggestion("");
-                    setQuery(smartSuggestion);
-                    inputRef.current?.focus();
-                  }}
-                  className="mt-3 w-full rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-right text-sm text-slate-700 shadow-sm hover:bg-amber-100 transition"
-                >
-                  <span className="block text-xs text-amber-600 mb-1">
-                    {language === 'ar' ? 'اقتراح ذكي' : 'Smart Suggestion'}
-                  </span>
-                  {smartSuggestion}
-                </motion.button>
-              )}
-              </AnimatePresence>
 
               
               <button 
@@ -1525,7 +1544,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       </div>
 
       {/* Daily Challenge & Insights Section */}
-      <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+      <div className="emotion-hide mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         <motion.div
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
@@ -1590,7 +1609,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch gap-4 md:gap-8"
+          className="emotion-hide mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch gap-4 md:gap-8"
       >
           <div className="flex-1 p-8 bg-[#F6F5F0] rounded-[32px] border border-[#EBEAE4] flex flex-col justify-between gap-6 hover:border-[#A68F58]/40 transition-colors group cursor-pointer" onClick={() => handleTabChange('mylibrary')}>
               <div className="flex items-center gap-6 text-right">

@@ -819,8 +819,21 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
     
+    let memoryContextStr = "";
+    try {
+        const memMatch = localStorage.getItem('tibyan_cognitive_memory');
+        if (memMatch) {
+            const mem = JSON.parse(memMatch);
+            if (lang === 'ar') {
+                memoryContextStr = `\n[ملاحظة هامة جداً للمستشار: للمستخدم ذاكرة سابقة من المحاكي الميداني يجب الإشارة إليها بشكل ذكي ولطيف لربط الأحداث. الذاكرة السابقة: ${JSON.stringify(mem)}]`;
+            } else {
+                memoryContextStr = `\n[CRITICAL NOTE FOR ADVISOR: The user has a previous memory from the field simulator. You MUST refer to it intelligently and gently to connect events. Previous memory: ${JSON.stringify(mem)}]`;
+            }
+        }
+    } catch(e) {}
+
     const systemInstruction = lang === 'ar' ? 
-      `أنتِ "تبيان" - مستشارة حكيمة واستراتيجية بلمسة حنونة. دورك الآن: ${persona}. تحدثي بلهجة بيضاء كويتية محببة. 
+      `أنتِ "تبيان" - مستشارة حكيمة واستراتيجية بلمسة حنونة. دورك الآن: ${persona}. تحدثي بلهجة بيضاء كويتية محببة. ${memoryContextStr}
       الهيكل الإلزامي:
       1. الإجابة الجوهرية (سطر عريض).
       2. لماذا هذا مهم؟ (جملة واحدة).
@@ -828,7 +841,7 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
       4. حكمة ذهبية.
       5. مراجع سريعة.
       القواعد: ممنوع الفقرات، ممنوع الكلام الأكاديمي، كوني مباشرة وحنونة.` :
-      `You are "Tibyan" - a wise strategic advisor with a warm touch. Your role now: ${persona}. 
+      `You are "Tibyan" - a wise strategic advisor with a warm touch. Your role now: ${persona}. ${memoryContextStr}
       Strict Structure:
       1. Core Answer (1 bold line).
       2. Why it matters? (1 sentence).
@@ -1368,8 +1381,17 @@ Return JSON:
 export async function generateCouncilConsultation(topic: string, lang: string = 'ar', type: 'standard' | 'shadow' = 'standard') {
   return withRetry(async () => {
     try {
+      let memoryContextStr = "";
+      try {
+          const memMatch = localStorage.getItem('tibyan_cognitive_memory');
+          if (memMatch) {
+              const mem = JSON.parse(memMatch);
+              memoryContextStr = `\n[NOTE FOR ADVISORS: The user has a previous memory from the field simulator: ${JSON.stringify(mem)}. You MUST implicitly weave this past behavior/reaction into your advice to make it deeply personalized and continuous.]\n`;
+          }
+      } catch(e) {}
+
       const prompt = type === 'shadow'
-        ? `أنت تلعب دور "مجلس الظل التاريخي". اجعل "ستيف جوبز" و"سون تزو" و"ابن خلدون" يتجادلون بشراسة حول هذا الموضوع: "${topic}".
+        ? `أنت تلعب دور "مجلس الظل التاريخي". اجعل "ستيف جوبز" و"سون تزو" و"ابن خلدون" يتجادلون بشراسة حول هذا الموضوع: "${topic}".${memoryContextStr}
 Language: ${lang === 'ar' ? 'Arabic' : 'English'}.
 Arabic Tone: قاسي، عبقري، ومباشر.
 STRICT LAYOUT RULES:
@@ -1388,7 +1410,7 @@ Return raw JSON:
   "global_references": [],
   "media_recommendations": []
 }`
-        : `You are a supreme council of 5 experts. Analyze "${topic}".
+        : `You are a supreme council of 5 experts. Analyze "${topic}".${memoryContextStr}
 Language: ${lang === 'ar' ? 'Arabic' : 'English'}.
 Arabic Tone: Use "White Dialect" (لهجة بيضاء كويتية/خليجية عامية مفهومة للجميع) - warm, natural, and friendly.
 STRICT LAYOUT RULES:
@@ -1785,6 +1807,32 @@ export async function generateParadigmShifter(rule: string, lang: string = 'ar')
     } catch (error) {
       console.error("Shifter error:", error);
       throw parseGeminiError(error, "Paradigm Shifter unavailable");
+    }
+  });
+}
+
+export async function detectEmotion(query: string): Promise<'stress' | 'creative' | 'neutral'> {
+  return withRetry(async () => {
+    try {
+      const prompt = `Analyze this user query and classify their emotional state/intent into ONE of these exactly: "stress", "creative", or "neutral".
+      - "stress": The user is under pressure, anxious, facing a crisis, overwhelmed, or very angry.
+      - "creative": The user is brainstorming, looking for ideas, energetic, thinking out of the box, or exploring new possibilities.
+      - "neutral": Neither of the above, just a standard question, logic, or analysis.
+      Only return the exact word.
+      
+      Query: "${query}"`;
+      
+      const response = await ai.models.generateContent({
+        model: DEFAULT_MODEL,
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      });
+      
+      const text = (response.text || "").trim().toLowerCase();
+      if (text.includes("stress")) return "stress";
+      if (text.includes("creative")) return "creative";
+      return "neutral";
+    } catch(err) {
+      return "neutral"; // fallback
     }
   });
 }
