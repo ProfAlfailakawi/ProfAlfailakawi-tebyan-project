@@ -696,6 +696,7 @@ export async function auditUDL(content: string) {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
     const systemInstruction = `أنت خبير في تصميم الحلول الشاملة والمحتوى المتاح للجميع (Universal Design & Inclusivity). حلل المحتوى/السياق التالي بعناية وقدم 5 توصيات استراتيجية لتحسين الشمولية وسهولة الوصول (Accessibility).
+يجب أن يكون الناتج النهائي (التوصيات والأثر والفئات) باللغة العربية حصراً.
 أرجع النتيجة بصيغة JSON تحتوي على مصفوفة من التوصيات، كل توصية لها: category, recommendation, impact.`;
 
     try {

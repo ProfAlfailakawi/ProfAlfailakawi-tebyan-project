@@ -9,8 +9,7 @@ import { StoryTab } from './StoryTab';
 import { RippleEffectTab } from './RippleEffectTab';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
-  const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story' | 'ripple'>(() => {
-    if (window.location.search.includes('ripple=')) return 'ripple';
+  const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story'>(() => {
     return 'lab';
   });
 
@@ -18,8 +17,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
     { id: 'lab', label: language === 'ar' ? 'المختبر الأصلي' : 'Original Lab', icon: Zap },
     { id: 'concepts', label: language === 'ar' ? 'هندسة الأفكار' : 'Idea Engineering', icon: Sparkles },
     { id: 'mindmap', label: language === 'ar' ? 'خريطة العقل' : 'Mind Map', icon: Network },
-    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
-    { id: 'ripple', label: language === 'ar' ? 'التأثير المتسلسل' : 'Ripple Effect', icon: Waves }
+    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig }
   ];
 
   return (
@@ -58,7 +56,6 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                {activeSubTab === 'concepts' && <ConceptsTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'mindmap' && <MindMapTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'story' && <StoryTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
-               {activeSubTab === 'ripple' && <RippleEffectTab language={language} />}
             </motion.div>
          </AnimatePresence>
       </div>

@@ -8,11 +8,10 @@ import { AnalyticsTab } from './AnalyticsTab';
 import { RoadmapTab } from './RoadmapTab';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
-  const [activeSubTab, setActiveSubTab] = useState<'quizzes' | 'knowledgegraph' | 'analytics' | 'roadmap'>('quizzes');
+  const [activeSubTab, setActiveSubTab] = useState<'quizzes' | 'analytics' | 'roadmap'>('quizzes');
 
   const tabs = [
     { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck },
-    { id: 'knowledgegraph', label: language === 'ar' ? 'الشبكة العصبية' : 'Knowledge Graph', icon: Network },
     { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
     { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route }
   ];
@@ -50,7 +49,6 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               className="w-full h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar"
             >
                {activeSubTab === 'quizzes' && <QuizTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
-               {activeSubTab === 'knowledgegraph' && <KnowledgeGraphTab language={language} handleTabChange={handleTabChange} />}
                {activeSubTab === 'analytics' && <AnalyticsTab language={language} handleTabChange={handleTabChange} />}
                {activeSubTab === 'roadmap' && <RoadmapTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
             </motion.div>

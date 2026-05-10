@@ -62,6 +62,7 @@ const AnalyticsTab = React.lazy(() => import('./components/tabs/AnalyticsTab').t
 const LoyaltyTab = React.lazy(() => import('./components/tabs/LoyaltyTab').then(m => ({ default: m.LoyaltyTab })));
 const RoadmapTab = React.lazy(() => import('./components/tabs/RoadmapTab').then(m => ({ default: m.RoadmapTab })));
 const StoryTab = React.lazy(() => import('./components/tabs/StoryTab').then(m => ({ default: m.StoryTab })));
+const RippleEffectTab = React.lazy(() => import('./components/tabs/RippleEffectTab').then(m => ({ default: m.RippleEffectTab })));
 const DecisionExecutiveTab = React.lazy(() => import('./components/tabs/DecisionExecutiveTab').then(m => ({ default: m.DecisionExecutiveTab })));
 const MyLibraryTab = React.lazy(() => import('./components/tabs/MyLibraryTab'));
 const ContactTab = React.lazy(() => import('./components/tabs/ContactTab').then(m => ({ default: m.ContactTab })));
@@ -72,9 +73,9 @@ const CreativeLabWrapper = React.lazy(() => import('./components/tabs/CreativeLa
 const KnowledgeCenterTab = React.lazy(() => import('./components/tabs/KnowledgeCenterTab'));
 const ARTab = React.lazy(() => import('./components/tabs/ARTab'));
 
-type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar';
+type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar' | 'ripple';
 
-const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary'];
+const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary', 'ripple'];
 
 import DevPanel from './components/DevPanel';
 
@@ -518,6 +519,8 @@ const AppContent: React.FC = () => {
                     return <CouncilTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'mindmap':
                     return <MindMapTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
+                  case 'ripple':
+                    return <RippleEffectTab language={language} />;
                   case 'analytics':
                     return <AnalyticsTab handleTabChange={handleTabChange} language={language} />;
                   case 'loyalty':

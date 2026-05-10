@@ -247,7 +247,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.3)] flex items-center justify-center mb-10">
                             <Zap className="w-10 h-10 text-white animate-pulse" />
                          </div>
-                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white [&_p]:text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_strong]:text-indigo-300 [&_li]:text-white/90">
+                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white [&_p]:!text-white [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_strong]:!text-indigo-300 [&_li]:!text-white/90">
                             <ReactMarkdown>{labColliderResult}</ReactMarkdown>
                          </div>
                      </div>

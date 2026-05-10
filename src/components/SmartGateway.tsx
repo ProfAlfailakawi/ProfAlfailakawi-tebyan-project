@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -22,18 +22,18 @@ const DAILY_CHALLENGES = [
         query: 'خطة مهمة جداً فشلت فجأة، كيف ألملم الوضع وأتخذ قراراً؟',
         path: 'simulation'
     },
-    {
-        titleAr: 'كيف تتصرف مع عميل أو شريك غاضب جداً؟',
-        titleEn: 'How do you handle a very angry client or partner?',
-        query: 'كيف أتصرف بذكاء مع شخص منفعل وغاضب يهاجمني الآن؟',
-        path: 'council'
-    },
-    {
-        titleAr: 'كيف تتخذ قراراً صعباً وسط ضغوط متضاربة؟',
-        titleEn: 'How to make a difficult decision amid conflicting pressures?',
-        query: 'أواجه قراراً معقداً ولا أعرف من أين أبدأ أو كيف أوازن المخاطر؟',
-        path: 'oracle'
-    },
+  {
+      titleAr: 'كيف تتصرف مع عميل أو شريك غاضب جداً؟',
+      titleEn: 'How do you handle a very angry client or partner?',
+      query: 'كيف أتصرف بذكاء مع شخص منفعل وغاضب يهاجمني الآن؟',
+      path: 'simulation'
+  },
+  {
+      titleAr: 'كيف تتخذ قراراً صعباً وسط ضغوط متضاربة؟',
+      titleEn: 'How to make a difficult decision amid conflicting pressures?',
+      query: 'أواجه قراراً معقداً ولا أعرف من أين أبدأ أو كيف أوازن المخاطر؟',
+      path: 'simulation'
+  },
     {
         titleAr: 'كيف تقنع طرفاً عنيداً بتوجه جديد دون صدام؟',
         titleEn: 'How to convince a stubborn party without a clash?',
@@ -1590,7 +1590,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-6 md:mt-8 flex flex-col md:flex-row items-stretch justify-between gap-4 md:gap-8"
+          className="mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch gap-4 md:gap-8"
       >
           <div className="flex-1 p-8 bg-[#F6F5F0] rounded-[32px] border border-[#EBEAE4] flex flex-col justify-between gap-6 hover:border-[#A68F58]/40 transition-colors group cursor-pointer" onClick={() => handleTabChange('mylibrary')}>
               <div className="flex items-center gap-6 text-right">
@@ -1624,10 +1624,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   </div>
                   <div className="text-right">
                       <h3 className="text-xl font-black text-white mb-1">
-                          {language === 'ar' ? 'فضاء تبيان الممتد (AR)' : 'Tibyan AR Space'}
+                          {language === 'ar' ? 'فضاء تبيان (AR)' : 'Tibyan AR Space'}
                       </h3>
                       <p className="text-zinc-400 font-bold text-sm">
-                          {language === 'ar' ? 'تجسيد الأفكار في عالمك الحقيقي' : 'Materialize concepts in your real world'}
+                          {language === 'ar' ? 'تجسيد الأفكار' : 'Materialize concepts'}
                       </p>
                   </div>
               </div>
@@ -1641,10 +1641,27 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   </div>
                   <div className="text-right">
                       <h3 className="text-xl font-black text-white mb-1">
-                          {language === 'ar' ? 'الشبكة العصبية المعرفية' : 'Knowledge Graph'}
+                          {language === 'ar' ? 'الشبكة العصبية' : 'Knowledge Graph'}
                       </h3>
                       <p className="text-zinc-400 font-bold text-sm">
-                          {language === 'ar' ? 'اكتشف كيف يتبلور وعيك وترتبط أفكارك' : 'Discover how your consciousness forms and ideas connect'}
+                          {language === 'ar' ? 'ارتباط الأفكار بوعيك' : 'How ideas connect'}
+                      </p>
+                  </div>
+              </div>
+          </div>
+
+          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-rose-500/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ripple')}>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-screen pointer-events-none group-hover:opacity-30 transition-opacity"></div>
+              <div className="flex items-center gap-6 text-right relative z-10">
+                  <div className="w-16 h-16 rounded-[24px] bg-rose-500/20 flex items-center justify-center text-rose-400 shadow-sm border border-rose-500/30 transform group-hover:scale-110 transition-transform">
+                      <Waves className="w-8 h-8" />
+                  </div>
+                  <div className="text-right">
+                      <h3 className="text-xl font-black text-white mb-1">
+                          {language === 'ar' ? 'التأثير المتسلسل' : 'Ripple Effect'}
+                      </h3>
+                      <p className="text-zinc-400 font-bold text-sm">
+                          {language === 'ar' ? 'العواقب غير المتوقعة لأفكارك' : 'Unexpected consequences'}
                       </p>
                   </div>
               </div>
