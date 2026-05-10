@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc, writeBatch } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc, writeBatch, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 
 const ripplesCollection = collection(db, 'ripples');
 
-interface RippleNode {
+type RippleNode = {
     id: string;
     text: string;
     author: string;
@@ -18,73 +18,7 @@ interface RippleNode {
     children: RippleNode[];
     likes: number;
     timestamp: string;
-}
-
-const DUMMY_RIPPLES: RippleNode[] = [
-    {
-        id: '1',
-        text: 'مقهى يجمع بين العمل ومكتبة صوتية هادئة',
-        author: 'أنت',
-        authorId: 'dummy-1',
-        type: 'seed',
-        likes: 142,
-        timestamp: 'قبل يومين',
-        children: [
-            {
-                id: '1-1',
-                text: 'إضافة غرف عزل صوتي للاجتماعات الصغيرة',
-                author: 'أحمد سعيد',
-                authorId: 'dummy-2',
-                type: 'branch',
-                likes: 56,
-                timestamp: 'قبل يوم',
-                children: [
-                    {
-                        id: '1-1-1',
-                        text: 'تطبيق لحجز الغرف بالساعة',
-                        author: 'فريق CodeLabs',
-                        authorId: 'dummy-3',
-                        type: 'implementation',
-                        likes: 89,
-                        timestamp: 'منذ 5 ساعات',
-                        children: []
-                    }
-                ]
-            },
-            {
-                id: '1-2',
-                text: 'توفير اشتراكات شهرية للقهوة مع مساحة العمل',
-                author: 'سارة خالد',
-                authorId: 'dummy-4',
-                type: 'branch',
-                likes: 34,
-                timestamp: 'قبل 12 ساعة',
-                children: []
-            }
-        ]
-    },
-    {
-        id: '2',
-        text: 'تطبيق يساعد في تنظيف البيئة بمقابل نقاط مكافآت',
-        author: 'مستخدم_١٩٨',
-        authorId: 'dummy-5',
-        type: 'seed',
-        likes: 412,
-        timestamp: 'قبل أسبوع',
-        children: [
-            {
-                id: '2-1',
-                text: 'التعاون مع السوبرماركت لاستبدال النقاط بمقاضي',
-                author: 'نور الدين',
-                authorId: 'dummy-6',
-                type: 'branch',
-                likes: 120,
-                timestamp: 'قبل 4 أيام',
-                children: []
-            }
-        ]
-    }
-];
+};
 
 type RippleNodeComponentProps = {
     node: RippleNode;
@@ -192,22 +126,18 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                         <div className="relative z-10 flex items-center justify-between bg-zinc-50/50 -mx-2 -mb-2 p-2 rounded-2xl">
                             <div className="flex flex-wrap items-center gap-1 md:gap-2">
                                 <button onClick={() => {
-                                    if (!auth.currentUser) {
-                                        setToast({ message: language === 'ar' ? 'يرجى تسجيل الدخول أولاً.' : 'Please login first.', type: 'error' });
-                                        return;
-                                    }
                                     handleLike(node);
-                                }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                }} 
+                                disabled={!auth.currentUser}
+                                className={cn("flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-500 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200", !auth.currentUser && "opacity-50 cursor-not-allowed")}>
                                     <svg className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                                     <span className="text-sm">{node.likes}</span>
                                 </button>
                                 <button onClick={() => {
-                                    if (!auth.currentUser) {
-                                        setToast({ message: language === 'ar' ? 'يرجى تسجيل الدخول أولاً لتطوير الفكرة.' : 'Please login to branch out.', type: 'error' });
-                                        return;
-                                    }
                                     setShowReply(!showReply);
-                                }} className="flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200">
+                                }} 
+                                disabled={!auth.currentUser}
+                                className={cn("flex items-center gap-2 hover:bg-white px-3 py-2 rounded-xl text-zinc-500 hover:text-indigo-600 font-bold cursor-pointer transition-all shadow-sm ring-1 ring-transparent hover:ring-zinc-200", !auth.currentUser && "opacity-50 cursor-not-allowed")}>
                                     <Network className="w-4 h-4 md:w-5 md:h-5" />
                                     <span className="text-sm">{language === 'ar' ? 'تطوير الفكرة' : 'Branch out'}</span>
                                 </button>
@@ -335,6 +265,43 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
     const displayTags = showAllCategories ? sortedTags : sortedTags.slice(0, 10);
 
     useEffect(() => {
+        // Seed and Cleanup once
+        const initData = async () => {
+            if (!auth.currentUser) return;
+            
+            try {
+                // Remove bad data
+                const badTimestamps = ['2026-05-09T11:42:36.875Z', '2026-05-09T11:42:59.174Z'];
+                const snapshot = await getDocs(ripplesCollection);
+                
+                for (const docSnap of snapshot.docs) {
+                    const data = docSnap.data();
+                    if (badTimestamps.includes(data.timestamp)) {
+                        await deleteDoc(docSnap.ref);
+                    }
+                }
+
+                // Seed if empty after cleanup
+                const snapshotAfter = await getDocs(ripplesCollection);
+                if (snapshotAfter.empty) {
+                     const { seedData } = await import('../../data/seedData');
+                     for (const item of seedData) {
+                        const docRef = await addDoc(ripplesCollection, {
+                             ...item,
+                             parentId: null,
+                             likes: item.likes || 0,
+                             timestamp: new Date().toISOString()
+                        });
+                        await updateDoc(docRef, { rootId: docRef.id });
+                     }
+                }
+            } catch (err) {
+                // Silently handle if rules block deletion
+                console.warn("Init data/cleanup skip:", err);
+            }
+        };
+        initData();
+        
         const q = query(ripplesCollection, orderBy('timestamp', 'desc'));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -404,7 +371,7 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
 
     const handleDropIdea = async () => {
         if (!auth.currentUser) {
-            setToast({ message: language === 'ar' ? 'يرجى تسجيل الدخول أو الاشتراك لتزرع فكرتك.' : 'Please login to plant your idea.', type: 'error' });
+            setToast({ message: language === 'ar' ? '✨ يا هلا بك! سجل دخولك لتشارك في الشبكة وتزرع بذرتك الأولى.' : '✨ Welcome! Please log in to plant your first idea seed.', type: 'error' });
             return;
         }
         if (!newIdea.trim()) return;
@@ -581,7 +548,7 @@ export const RippleEffectTab = ({ language, handleTabChange }: { language: 'ar' 
                             </motion.span>
                         )}
                     </div>
-                    <div className="flex justify-end mt-4">
+                    <div className="flex justify-end gap-2 mt-4">
                         <button 
                             onClick={handleDropIdea}
                             disabled={!newIdea.trim() || isSubmitting}
