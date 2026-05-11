@@ -703,7 +703,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         setTimeout(() => {
             setIsThinking(false);
             handleTabChange(navMatch.id as any);
-        }, 600); // short transition effect
+        }, 100); // ultra fast transition effect
         return;
     }
 
@@ -725,7 +725,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     sessionStorage.setItem('tebyan_current_has_searched', 'false');
     
     // Performance: Faster analysis if cached, or just reduced base delay
-    const delay = 50; // Ultra fast, no fake loading delay 
+    const delay = 5; // Ultra fast, almost no fake loading delay 
+
     
     setTimeout(() => {
         // Phase 2: Show initial insight if available
