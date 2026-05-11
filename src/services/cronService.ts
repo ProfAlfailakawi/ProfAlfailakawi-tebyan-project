@@ -13,43 +13,67 @@ export const cronService = {
       const shouldRun = await runTransaction(db, async (transaction) => {
         let cronDoc;
         try {
+          console.log('[Cron] Transaction: Getting cron_state...');
           cronDoc = await transaction.get(cronRef);
-        } catch (error) {
+        } catch (error: any) {
+           console.error('[Cron] Transaction: Get failed:', error);
            handleFirestoreError(error, OperationType.GET, 'system_settings/cron_state');
         }
         
         if (!cronDoc.exists()) {
-          transaction.set(cronRef, { lastDailyQawlFasl: today });
+          console.log('[Cron] Transaction: Document doesn\'t exist, setting new state...');
+          try {
+            transaction.set(cronRef, { lastDailyQawlFasl: today });
+          } catch (err) {
+            console.error('[Cron] Transaction: set call failed:', err);
+            throw err;
+          }
           return true;
         } else {
           const data = cronDoc.data();
+          console.log('[Cron] Transaction: Current state is:', data.lastDailyQawlFasl);
           if (data.lastDailyQawlFasl !== today) {
-            transaction.update(cronRef, { lastDailyQawlFasl: today });
+            console.log('[Cron] Transaction: Updating state to:', today);
+            try {
+              transaction.update(cronRef, { lastDailyQawlFasl: today });
+            } catch (err) {
+              console.error('[Cron] Transaction: update call failed:', err);
+              throw err;
+            }
             return true;
           }
         }
+        console.log('[Cron] Transaction: No action needed.');
         return false;
       });
 
       if (shouldRun) {
         console.log('[Cron] Triggering daily tasks for:', today);
         // Fire and forget, running in background
-        Promise.all([
-          qawlFaslService.generateDailyQawlFaslQuestions(),
-          qawlFaslService.analyzeSearchLogs(),
-          qawlFaslService.autoGenerateMissingDrafts()
-        ]).then(() => {
+        const tasks = [
+          { name: 'generateDailyQawlFaslQuestions', fn: () => qawlFaslService.generateDailyQawlFaslQuestions() },
+          { name: 'analyzeSearchLogs', fn: () => qawlFaslService.analyzeSearchLogs() },
+          { name: 'autoGenerateMissingDrafts', fn: () => qawlFaslService.autoGenerateMissingDrafts() }
+        ];
+
+        Promise.all(tasks.map(t => 
+          t.fn().catch(err => {
+            console.error(`[Cron] Task "${t.name}" failed:`, err);
+            throw err; // Re-throw to be caught by the main Promise.all
+          })
+        )).then(() => {
             console.log('[Cron] Daily background generation and analytics completed.');
         }).catch(err => {
-            console.error('[Cron] Daily background tasks failed:', err);
+            console.error('[Cron] Daily background tasks total failure:', err);
             // Revert the date so someone else can attempt later
-            setDoc(cronRef, { lastDailyQawlFasl: 'failed' }, { merge: true }).catch(e => handleFirestoreError(e, OperationType.WRITE, 'system_settings/cron_state'));
+            setDoc(cronRef, { lastDailyQawlFasl: 'failed' }, { merge: true })
+              .catch(e => console.error('[Cron] Failed to revert state:', e));
         });
       } else {
         console.log('[Cron] Daily tasks have already been triggered today.');
       }
-    } catch (error) {
-      console.error('[Cron] Failed to check/run daily tasks:', error);
+    } catch (error: any) {
+      console.error('[Cron] Failed to check/run daily tasks:', error?.message || error);
     }
   }
 };

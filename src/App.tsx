@@ -245,11 +245,11 @@ const AppContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Automatically check and run daily tasks when user is available
-    if (authReady && user) {
+    // Automatically check and run daily tasks when user is available and is an admin
+    if (authReady && user && profile?.role === 'admin') {
       cronService.runDailyTasks();
     }
-  }, [authReady, user]);
+  }, [authReady, user, profile]);
 
   useEffect(() => {
     // Desktop: default closed behavior

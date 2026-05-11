@@ -50,9 +50,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           if (userSnap.exists()) {
             const profileData = userSnap.data() as UserProfile;
-            const isAdminEmail = user.email?.toLowerCase() === 'alfailakawidrahmad@gmail.com' || user.email?.toLowerCase() === 'dr.ahmad.alfailakawi@gmail.com';
+            const isAdminEmail = [
+              'alfailakawidrahmad@gmail.com',
+              'dr.ahmad@gmail.com',
+              'dr.ahmad.alfailakawi@gmail.com'
+            ].includes(user.email?.toLowerCase() || '');
             if (isAdminEmail) {
               profileData.role = 'admin';
+              
+              // Self-register in admins collection for reliable firestore rules check
+              try {
+                const adminRef = doc(db, 'admins', user.uid);
+                const adminSnap = await getDoc(adminRef);
+                if (!adminSnap.exists()) {
+                  await setDoc(adminRef, { 
+                    email: user.email, 
+                    registeredAt: serverTimestamp(),
+                    source: 'self-registration'
+                  });
+                  console.log("Admin self-registration successful");
+                }
+              } catch (adminErr) {
+                console.warn("Admin self-registration failed:", adminErr);
+              }
+
               if (userSnap.data().role !== 'admin') {
                 try {
                   await setDoc(userRef, { ...profileData, role: 'admin' });
@@ -64,12 +85,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
             setProfile(profileData);
           } else {
+            const isNewAdminEmail = ([
+                'alfailakawidrahmad@gmail.com',
+                'dr.ahmad@gmail.com',
+                'dr.ahmad.alfailakawi@gmail.com'
+              ].includes(user.email?.toLowerCase() || ''));
+            
             const newProfile: UserProfile = {
               email: user.email || '',
-              role: (user.email?.toLowerCase() === 'alfailakawidrahmad@gmail.com' || user.email?.toLowerCase() === 'dr.ahmad.alfailakawi@gmail.com') ? 'admin' : 'user',
+              role: isNewAdminEmail ? 'admin' : 'user',
               displayName: user.displayName || 'New User',
               photoURL: user.photoURL || null
             };
+
+            if (isNewAdminEmail) {
+              try {
+                const adminRef = doc(db, 'admins', user.uid);
+                await setDoc(adminRef, { 
+                  email: user.email, 
+                  registeredAt: serverTimestamp(),
+                  source: 'self-registration-new'
+                });
+                console.log("New Admin self-registration successful");
+              } catch (adminErr) {
+                console.warn("New Admin self-registration failed:", adminErr);
+              }
+            }
+
             try {
               await setDoc(userRef, { ...newProfile, createdAt: serverTimestamp() });
               setProfile(newProfile);
@@ -80,9 +122,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           console.error("Failed to fetch user profile, falling back to local info:", error);
+          const isAdminEmail = [
+            'alfailakawidrahmad@gmail.com',
+            'dr.ahmad@gmail.com',
+            'dr.ahmad.alfailakawi@gmail.com'
+          ].includes(user.email?.toLowerCase() || '');
+
           setProfile({
             email: user.email || '',
-            role: (user.email?.toLowerCase() === 'alfailakawidrahmad@gmail.com' || user.email?.toLowerCase() === 'dr.ahmad.alfailakawi@gmail.com') ? 'admin' : 'user',
+            role: isAdminEmail ? 'admin' : 'user',
             displayName: user.displayName || 'New User',
             photoURL: user.photoURL || null
           });

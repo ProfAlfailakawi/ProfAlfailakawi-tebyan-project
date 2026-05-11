@@ -10,15 +10,15 @@ service cloud.firestore {
     function isSignedIn() { return request.auth != null; }
     function isAdmin() {
       return isSignedIn() && (
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        request.auth.token.get('email', '').toLower() == "alfailakawidrahmad@gmail.com" ||
-        request.auth.token.get('email', '').toLower() == "dr.ahmad@gmail.com" ||
-        request.auth.token.get('email', '').toLower() == "dr.ahmad.alfailakawi@gmail.com"
+        request.auth.token.get('email', '').lower() == "alfailakawidrahmad@gmail.com" ||
+        request.auth.token.get('email', '').lower() == "dr.ahmad@gmail.com" ||
+        request.auth.token.get('email', '').lower() == "dr.ahmad.alfailakawi@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
     
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
-    
+
     function isValidRipple(data) {
       return data.text is string && data.text.size() <= 2000 &&
              data.type in ['seed', 'branch', 'implementation'] &&
@@ -32,12 +32,12 @@ service cloud.firestore {
              (data.unlockBranchCount == null || data.unlockBranchCount is number);
     }
     
-    match /daily_prompts/{promptId} {
+    match /system_settings/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if docId == 'cron_state' || isAdmin();
     }
 
-    match /system_settings/{document=**} {
+    match /daily_prompts/{document=**} {
       allow read: if true;
       allow write: if isAdmin();
     }
@@ -88,6 +88,11 @@ service cloud.firestore {
 
     match /admins/{userId} {
       allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if isSignedIn() && request.auth.uid == userId && (
+        request.auth.token.get('email', '').lower() == "alfailakawidrahmad@gmail.com" ||
+        request.auth.token.get('email', '').lower() == "dr.ahmad@gmail.com" ||
+        request.auth.token.get('email', '').lower() == "dr.ahmad.alfailakawi@gmail.com"
+      );
     }
 
     match /ripples/{rippleId} {
