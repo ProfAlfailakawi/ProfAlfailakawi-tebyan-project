@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "prebuild": "node scripts/check-env-usage.js"
+    "prebuild": "node scripts/check-env-usage.cjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
