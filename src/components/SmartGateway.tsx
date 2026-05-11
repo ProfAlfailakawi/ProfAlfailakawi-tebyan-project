@@ -10,6 +10,7 @@ import { detectEmotion } from '../services/gemini';
 import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
 import { TypographicAcoustic } from './TypographicAcoustic';
+import { AdvancedCognitiveAnalysis } from './AdvancedCognitiveAnalysis';
 
 const DAILY_CHALLENGES = [
     {
@@ -1323,6 +1324,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                       </div>
                                   </div>
                               )}
+
+                              {/* NEW: DEEP COGNITIVE ANALYSIS */}
+                              <AdvancedCognitiveAnalysis query={query} language={language} />
                           </div>
 
                           {/* Alternative Paths */}
@@ -1500,6 +1504,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               </div>
                            </div>
                         )}
+
+                        {/* NEW: DEEP COGNITIVE ANALYSIS MOBILE */}
+                        <div className="px-1">
+                           <AdvancedCognitiveAnalysis query={query} language={language} />
+                        </div>
                       </div>
                     )}
                  </motion.div>
