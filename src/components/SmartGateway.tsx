@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -160,18 +160,19 @@ const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
   return null;
 };
 
+import { useSmartSearch } from '../hooks/useSmartSearch';
+
 export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood }) => {
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
-  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
   const [searchValue, setSearchValue] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
-  const [smartSuggestion, setSmartSuggestion] = useState("");
+  
+  const { smartSuggestion, isSuggestionLoading, setSmartSuggestion } = useSmartSearch(searchValue);
   const suggestion = smartSuggestion;
   const setSuggestion = setSmartSuggestion;
-  const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
+
   const latestInputRef = useRef(searchValue);
-  const requestIdRef = useRef(0);
   const [isFocused, setIsFocused] = useState(false);
   
   const [challengeIndex, setChallengeIndex] = useState(0);
@@ -206,71 +207,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     setQuery(value);
     onType();
     if (hasSearched) setHasSearched(false);
-    
-    if (!value || value.trim().length < 6) return;
   };
-
-  useEffect(() => {
-    const currentText = searchValue.trim();
-    if (currentText.length < 6) {
-      setSmartSuggestion("");
-      return;
-    }
-
-    const requestId = ++requestIdRef.current;
-    const textForThisRequest = currentText;
-    
-    const timer = window.setTimeout(async () => {
-      try {
-        setIsSuggestionLoading(true);
-        const latestText = latestInputRef.current.trim();
-        
-        if (latestText !== textForThisRequest) return;
-        
-        const prompt = `
-أنت محرك اقتراح ذكي داخل تطبيق تبيان.
-
-المستخدم كتب النص التالي: "${latestText}"
-
-المطلوب:
-- أكمل صياغة النص كمقترح بحث فقط
-- لا تجب على السؤال
-- لا تعط نصيحة
-- لا تغيّر نية المستخدم
-- استخدم نفس اللهجة والأسلوب
-- اجعل الاقتراح امتداداً طبيعياً للجملة
-- إذا النص واضح ومكتمل، حسّنه قليلاً فقط
-- لا تعتمد على أول كلمة، اعتمد على النص الكامل الحالي فقط
-
-أرجع جملة واحدة فقط.
-`;
-        const response = await aiClient.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: prompt,
-        });
-
-        const suggestion = response.text?.trim() || "";
-
-        if (requestId !== requestIdRef.current) return;
-        if (latestInputRef.current.trim() !== latestText) return;
-
-        if (suggestion && suggestion !== latestText) {
-          setSmartSuggestion(suggestion);
-        }
-      } catch (error) {
-        console.error("Smart search suggestion error:", error);
-        setSmartSuggestion("");
-      } finally {
-        if (requestId === requestIdRef.current) {
-          setIsSuggestionLoading(false);
-        }
-      }
-    }, 700);
-    
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [searchValue, aiClient]);
 
   const [isQueryExpanded, setIsQueryExpanded] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
@@ -884,72 +821,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return Array.from(new Set(list)).filter(s => typeof s === 'string' && s.length > 0);
   }, [language, proactiveInsights.dynamicSuggests, searchHistory]);
 
-  useEffect(() => {
-    const currentText = query.trim();
-
-    if (!currentText || currentText.length < 6) {
-      setSuggestion("");
-      return;
-    }
-
-    const requestId = ++requestIdRef.current;
-
-    const timer = setTimeout(async () => {
-      try {
-        setIsSuggestionLoading(true);
-        const textAtRequestTime = latestInputRef.current.trim();
-
-        if (!textAtRequestTime || textAtRequestTime.length < 6) {
-          setSuggestion("");
-          return;
-        }
-
-        const prompt = `
-أكمل الجملة التالية كمقترح بحث ذكي لتطبيق تبيان.
-
-النص الحالي:
-"${textAtRequestTime}"
-
-الشروط:
-- أكمل المعنى بناءً على النص الكامل الحالي
-- لا تغيّر نية المستخدم
-- استخدم نفس اللهجة والأسلوب
-- اجعل الاقتراح قصير ومفيد
-- لا تعطِ إجابة، فقط أكمل صياغة السؤال أو المشكلة
-- لا تكرر النص إذا كان كاملاً
-`;
-
-        const response = await aiClient.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: prompt,
-        });
-
-        const aiSuggestion = response.text?.trim() || '';
-
-        // Validate stale request
-        if (
-          requestId !== requestIdRef.current ||
-          latestInputRef.current.trim() !== textAtRequestTime
-        ) {
-          return;
-        }
-
-        setSuggestion(aiSuggestion || "");
-      } catch (error) {
-        console.error("Smart autocomplete failed:", error);
-        setSuggestion("");
-      } finally {
-        if (requestId === requestIdRef.current) {
-          setIsSuggestionLoading(false);
-        }
-      }
-    }, 700);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [query, aiClient]);
-
   const smartResponse = useMemo(() => {
     if (query.trim().length < 5) return null;
     const q = query.toLowerCase();
@@ -1067,12 +938,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     const roadMatch = !q || q.includes('خطة') || q.includes('طريق') || q.includes('خطوات') || q.includes('برمجة') || q.includes('عناد') || q.includes('plan') || q.includes('steps') || q.includes('coding') || q.includes('program');
     addPath('knowledgecenter', 'roadmap', 'مركز المعرفة', 'Knowledge Center', Route, 'خارطة طريق ونتائج', 'Roadmap and metrics', 'لأن الموقف يحتاج خطة زمنية واضحة ومتابعة دقيقة للنتائج', 'For clear timelines and performance metrics', roadMatch ? 11 : 3);
 
-    // 5. Narrative (Storyteller)
-    const storyMatch = !q || q.includes('قصة') || q.includes('شخص') || q.includes('حكاية') || q.includes('تبسيط') || q.includes('كذب') || q.includes('story') || q.includes('tell');
-    addPath('creativelab', 'story', 'المختبر الإبداعي', 'Creative Lab', MessageCircleQuestion, 'تحويل الموقف لقصة وفكرة', 'Turn into story/concept', 'لأن القصص والأفكار الإبداعية هي أسرع وسيلة لإيصال المعنى', 'Because stories and creative concepts are the fastest way to convey meaning', storyMatch ? 9 : 2);
-
     // 6. Innovation (Omni Counselor <button Concepts)
     const innovMatch = !q || q.includes('فكرة') || q.includes('جديد') || q.includes('ابتكار') || q.includes('تغيير') || q.includes('استراتيجية') || q.includes('innovation') || q.includes('creative') || q.includes('سؤال') || q.includes('مشورة');
+
+    // 5. Narrative (Storyteller)
+    const storyMatch = !q || q.includes('قصة') || q.includes('شخص') || q.includes('حكاية') || q.includes('تبسيط') || q.includes('كذب') || q.includes('story') || q.includes('tell');
+    addPath('creativelab_story', 'story', 'الراوي', 'Story Weaver', MessageCircleQuestion, 'تحويل الموقف لقصة وفكرة', 'Turn into story/concept', 'لأن القصص والأفكار الإبداعية هي أسرع وسيلة لإيصال المعنى', 'Because stories and creative concepts are the fastest way to convey meaning', storyMatch ? 9 : 2);
+    addPath('truthmanuscript', 'innovation', 'المخطوطة القديمة', 'Truth Manuscript', ScrollText, 'حكمة عميقة ومخفية', 'Deep ancient wisdom', 'لأنك تبحث عن المعنى الخفي في ظلمات النسيان', 'Because you seek the hidden meaning in the depths', innovMatch ? 8.5 : 2);
+
     addPath('oracle', 'innovation', 'المستشار الكلي', 'Omni Counselor', Command, 'حوار استراتيجي شامل', 'Comprehensive cognitive dialogue', 'للحصول على مشورة حكيمة تدمج بين علوم السلوك والاستراتيجية', 'For wise advice integrating behavior and strategy', innovMatch ? 8.5 : 1.5);
     addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Sparkles, 'هندسة الابتكار والأفكار', 'Idea & Innovation Engineering', 'لأنك تحتاج إلى تفكيك الموقف وابتكار وسائل جديدة للحل', 'To deconstruct the situation and innovate new solutions', innovMatch ? 8.5 : 2);
     addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Zap, 'أدوات التصميم والحلول', 'Strategic design tools', 'لتحليل الأدوات المتاحة للموقف وابتكار وسائل جديدة للحل', 'To analyze available tools and innovate new ones', innovMatch ? 6 : 1);
@@ -1210,7 +1083,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   onChange={(e) => handleSearchInputChange(e.target.value)}
                   placeholder={language === 'ar' ? "اكتب سؤالك أو مشكلتك..." : "Type your question or problem..."}
                   onKeyDown={(e) => {
-                    if ((e.key === 'Tab' || e.key === 'Enter') && smartSuggestion && smartSuggestion.startsWith(searchValue)) {
+                    if ((e.key === 'Tab' || e.key === 'Enter') && smartSuggestion) {
                       e.preventDefault();
                       setSearchValue(smartSuggestion);
                       latestInputRef.current = smartSuggestion;
@@ -1218,7 +1091,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                       setSmartSuggestion('');
                     } else if (e.key === 'Enter') {
                       // Let normal submit take over
-                    } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion && smartSuggestion.startsWith(searchValue)) {
+                    } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion) {
                       if (e.currentTarget.selectionStart === searchValue.length) {
                         e.preventDefault();
                         setSearchValue(smartSuggestion);
@@ -1257,6 +1130,27 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   <Search className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
+            
+            {/* Auto-suggest rewrite pill */}
+            {smartSuggestion && !smartSuggestion.startsWith(searchValue) && isFocused && (
+              <div className="absolute top-full mt-2 w-full max-w-2xl px-2 z-20 flex justify-start">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault(); // Prevent blur
+                      setSearchValue(smartSuggestion);
+                      latestInputRef.current = smartSuggestion;
+                      setQuery(smartSuggestion);
+                      setSmartSuggestion('');
+                    }}
+                    className="flex items-center gap-2 bg-mood-primary text-white text-xs md:text-sm px-4 py-2 rounded-full shadow-lg transition-all"
+                  >
+                     <span className="opacity-80 flex-shrink-0">{language === 'ar' ? 'هل تقصد:' : 'Did you mean:'}</span> 
+                     <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
+                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
+                  </button>
+              </div>
+            )}
 
           </div>
 

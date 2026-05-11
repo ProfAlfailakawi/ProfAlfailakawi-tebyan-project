@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowRight, Search, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import { ExpandableText } from '../../ui/ExpandableText';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
+import { useSmartSearch } from '../../../hooks/useSmartSearch';
 
 interface Props {
   questions: QawlFaslQuestion[];
@@ -13,6 +14,10 @@ interface Props {
 export default function EmergencyView({ questions, onBack, onQuestion }: Props) {
   const [search, setSearch] = useState('');
   const [ageFilter, setAgeFilter] = useState<string | null>(null);
+  
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { smartSuggestion, setSmartSuggestion, isSuggestionLoading } = useSmartSearch(search);
 
   const filteredQuestions = questions.filter(q => {
     const qText = q.question || q.title || '';
@@ -43,14 +48,63 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
         {/* Filters */}
         <div className="space-y-6 max-w-4xl mx-auto">
           <div className="relative shadow-[0_10px_30px_rgb(0,0,0,0.04)] rounded-[24px]">
-            <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-[#A3A19C] w-5 h-5 md:w-6 md:h-6" />
+            <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-[#A3A19C] w-5 h-5 md:w-6 md:h-6 z-10" />
             <input 
+              ref={inputRef}
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onKeyDown={(e) => {
+                if ((e.key === 'Tab' || e.key === 'Enter') && smartSuggestion) {
+                  e.preventDefault();
+                  setSearch(smartSuggestion);
+                  setSmartSuggestion('');
+                } else if (e.key === 'Enter') {
+                  // normal
+                } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion) {
+                  if (e.currentTarget.selectionStart === search.length) {
+                    e.preventDefault();
+                    setSearch(smartSuggestion);
+                    setSmartSuggestion('');
+                  }
+                }
+              }}
               placeholder="ابحث عن سؤال... (مثال: تنمر، خوف)"
-              className="w-full bg-white border border-[#EBEAE4] rounded-[24px] py-4 px-5 pr-14 md:py-5 md:px-6 md:pr-14 text-base md:text-lg text-[#2A2925] font-bold focus:border-[#5A5A40] outline-none placeholder:text-[#A3A19C] transition-colors"
+              className="w-full bg-transparent border border-[#EBEAE4] rounded-[24px] py-4 px-5 pr-14 md:py-5 md:px-6 md:pr-14 text-base md:text-lg text-[#2A2925] font-bold focus:border-[#5A5A40] outline-none placeholder:text-[#A3A19C] transition-colors relative z-10"
             />
+            {/* Background for text */}
+            <div className="absolute inset-0 bg-white rounded-[24px] z-0 pointer-events-none border border-[#EBEAE4]"></div>
+            
+            {smartSuggestion && smartSuggestion.startsWith(search) && (
+              <div 
+                className="pointer-events-none absolute inset-0 flex items-center pr-14 md:pr-14 text-base md:text-lg font-bold z-0"
+                dir="rtl"
+              >
+                <span className="invisible whitespace-pre">{search}</span>
+                <span className="whitespace-pre text-zinc-300">{smartSuggestion.slice(search.length)}</span>
+              </div>
+            )}
+            
+            {/* Auto-suggest rewrite pill */}
+            {smartSuggestion && !smartSuggestion.startsWith(search) && isFocused && (
+              <div className="absolute top-full mt-2 w-full px-2 z-20 flex justify-start">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setSearch(smartSuggestion);
+                      setSmartSuggestion('');
+                    }}
+                    className="flex items-center gap-2 bg-[#5A5A40] text-white text-xs md:text-sm px-4 py-2 rounded-full shadow-lg transition-all border border-black/10"
+                  >
+                     <span className="opacity-80 flex-shrink-0">هل تقصد:</span> 
+                     <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
+                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
+                  </button>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-4 no-scrollbar">

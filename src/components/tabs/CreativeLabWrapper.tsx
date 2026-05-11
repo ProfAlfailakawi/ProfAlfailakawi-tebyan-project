@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Zap, Sparkles, Network, LibraryBig, Waves } from 'lucide-react';
+import { Zap, Sparkles, Network, LibraryBig, ScrollText } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { LabTab } from './LabTab';
 import { ConceptsTab } from './ConceptsTab';
 import { MindMapTab } from './MindMapTab';
 import { StoryTab } from './StoryTab';
 import { RippleEffectTab } from './RippleEffectTab';
+import { TruthManuscriptTab } from './TruthManuscriptTab';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
-  const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story'>(() => {
+  const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story' | 'manuscript'>(() => {
     return 'lab';
   });
 
@@ -17,7 +18,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
     { id: 'lab', label: language === 'ar' ? 'المختبر الأصلي' : 'Original Lab', icon: Zap },
     { id: 'concepts', label: language === 'ar' ? 'هندسة الأفكار' : 'Idea Engineering', icon: Sparkles },
     { id: 'mindmap', label: language === 'ar' ? 'خريطة العقل' : 'Mind Map', icon: Network },
-    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig }
+    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
+    { id: 'manuscript', label: language === 'ar' ? 'المخطوطة القديمة' : 'Lost Manuscript', icon: ScrollText }
   ];
 
   return (
@@ -56,6 +58,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                {activeSubTab === 'concepts' && <ConceptsTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'mindmap' && <MindMapTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'story' && <StoryTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
+               {activeSubTab === 'manuscript' && <TruthManuscriptTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} />}
             </motion.div>
          </AnimatePresence>
       </div>

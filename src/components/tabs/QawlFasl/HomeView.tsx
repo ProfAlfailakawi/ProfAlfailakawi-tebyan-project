@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, AlertCircle, Library, ShieldAlert, ArrowRight, PlayCircle, Heart } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { CATEGORIES, MAIN_CATEGORIES, QawlFaslQuestion } from './types';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
+import { useSmartSearch } from '../../../hooks/useSmartSearch';
 
 interface Props {
   onEmergency: () => void;
@@ -17,6 +18,10 @@ interface Props {
 
 export default function HomeView({ onEmergency, onQuestion, onCategory, lastViewedId, questions, initialValue, onValueUsed }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { smartSuggestion, setSmartSuggestion, isSuggestionLoading } = useSmartSearch(searchQuery);
+
   const [trendingSearches, setTrendingSearches] = useState<any[]>([]);
 
   const lastViewedQuestion = lastViewedId ? questions.find(q => q.id === lastViewedId) : null;
@@ -184,13 +189,42 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
             <form onSubmit={handleSearch} className="group relative">
                <div className="relative flex items-center shadow-xl rounded-[32px] bg-white border-2 border-zinc-100 focus-within:border-black transition-all p-2 md:p-3">
                  <input 
+                  ref={inputRef}
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  onKeyDown={(e) => {
+                    if ((e.key === 'Tab' || e.key === 'Enter') && smartSuggestion) {
+                      e.preventDefault();
+                      setSearchQuery(smartSuggestion);
+                      setSmartSuggestion('');
+                    } else if (e.key === 'Enter') {
+                      // allow submit
+                    } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion) {
+                      if (e.currentTarget.selectionStart === searchQuery.length) {
+                        e.preventDefault();
+                        setSearchQuery(smartSuggestion);
+                        setSmartSuggestion('');
+                      }
+                    }
+                  }}
                   placeholder="عن ماذا تود استشارتنا اليوم؟"
-                  className="w-full bg-transparent py-4 px-6 md:py-6 md:px-8 text-xl md:text-2xl font-bold text-black placeholder:text-zinc-400 outline-none pr-14 md:pr-24"
+                  className="w-full bg-transparent py-4 px-6 md:py-6 md:px-8 text-xl md:text-2xl font-bold text-black placeholder:text-zinc-400 outline-none pr-14 md:pr-24 relative z-10"
                  />
-                 <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-400 w-7 h-7 md:w-8 md:h-8 group-focus-within:text-black transition-colors pointer-events-none" />
+                 
+                 {smartSuggestion && smartSuggestion.startsWith(searchQuery) && (
+                   <div 
+                     className="pointer-events-none absolute inset-0 flex items-center pr-14 md:pr-24 text-xl md:text-2xl font-bold z-0"
+                     dir="rtl"
+                   >
+                     <span className="invisible whitespace-pre">{searchQuery}</span>
+                     <span className="whitespace-pre text-zinc-300">{smartSuggestion.slice(searchQuery.length)}</span>
+                   </div>
+                 )}
+
+                 <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-400 w-7 h-7 md:w-8 md:h-8 group-focus-within:text-black transition-colors pointer-events-none z-10" />
                  
                  {searchQuery && (
                    <button
@@ -217,6 +251,25 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                    {isSearching ? 'جاري البحث...' : 'اكتشف'}
                  </button>
                </div>
+               
+               {/* Auto-suggest rewrite pill */}
+               {smartSuggestion && !smartSuggestion.startsWith(searchQuery) && isFocused && (
+                 <div className="absolute top-full mt-2 w-full px-2 z-20 flex justify-start">
+                     <button
+                       type="button"
+                       onMouseDown={(e) => {
+                         e.preventDefault();
+                         setSearchQuery(smartSuggestion);
+                         setSmartSuggestion('');
+                       }}
+                       className="flex items-center gap-2 bg-[#5A5A40] text-white text-xs md:text-sm px-4 py-2 rounded-full shadow-lg transition-all border border-black/10"
+                     >
+                        <span className="opacity-80 flex-shrink-0">هل تقصد:</span> 
+                        <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
+                        <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
+                     </button>
+                 </div>
+               )}
             </form>
 
             {isGenerating && (

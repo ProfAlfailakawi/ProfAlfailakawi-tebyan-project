@@ -74,12 +74,13 @@ const StrategicArenaTab = React.lazy(() => import('./components/tabs/StrategicAr
 const CreativeLabWrapper = React.lazy(() => import('./components/tabs/CreativeLabWrapper'));
 const KnowledgeCenterTab = React.lazy(() => import('./components/tabs/KnowledgeCenterTab'));
 const ARTab = React.lazy(() => import('./components/tabs/ARTab'));
+const TruthManuscriptTab = React.lazy(() => import('./components/tabs/TruthManuscriptTab'));
 
-type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar' | 'ripple';
+type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar' | 'ripple' | 'truthmanuscript';
 
 type Mood = 'default' | 'revolutionary' | 'calm' | 'melancholic' | 'optimistic';
 
-const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary'];
+const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary', 'truthmanuscript'];
 
 import DevPanel from './components/DevPanel';
 
@@ -372,6 +373,7 @@ const AppContent: React.FC = () => {
     { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit },
     { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
     // { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
+    { id: 'truthmanuscript', label: language === 'ar' ? 'مخطوطة الحقيقة' : 'Truth Manuscript', icon: Sparkles },
     { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network },
     { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
     { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },
@@ -659,6 +661,8 @@ const AppContent: React.FC = () => {
                     return <CreativeLabWrapper handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'ar':
                     return <ARTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
+                  case 'truthmanuscript':
+                    return <TruthManuscriptTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'knowledgecenter':
                     return <KnowledgeCenterTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'oracle':
