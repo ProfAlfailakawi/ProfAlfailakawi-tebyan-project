@@ -16,7 +16,7 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
   const [manuscriptContent, setManuscriptContent] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [localQuery, setLocalQuery] = useState(initialValue || '');
-  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' }), []);
+  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' }), []);
 
   const generateWisdom = async (query: string) => {
     setIsLoading(true);
