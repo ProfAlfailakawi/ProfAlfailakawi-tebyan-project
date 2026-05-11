@@ -1,22 +1,43 @@
-import { GoogleGenAI } from "@google/genai";
+import process from "node:process";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 async function run() {
-  const ai = new GoogleGenAI({ apiKey: "AIzaSyCDBmspCIjcnrOyWcr8iR0P7ddT4kiF-io" });
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("Missing GEMINI_API_KEY");
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
   try {
-    const response = await ai.models.generateContent({
+    const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-preview-tts",
-      contents: "hi",
-      config: {
+    });
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: "hi" }] }],
+      generationConfig: {
+        // @ts-ignore
         responseModalities: ["AUDIO"],
         speechConfig: {
           voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: "Aoede" }
-          }
-        }
-      }
+            prebuiltVoiceConfig: { voiceName: "Aoede" },
+          },
+        },
+      } as any,
     });
-    console.log("Success! Audio length:", response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data?.length);
+
+    const audioData = (
+      result.response.candidates?.[0]?.content?.parts?.find((p: any) =>
+        p?.inlineData?.mimeType?.startsWith("audio/")
+      ) as any
+    )?.inlineData?.data;
+
+    console.log("Success! Audio length via generative-ai:", audioData?.length);
   } catch (e) {
     console.error("Error:", e);
   }
 }
+
 run();
