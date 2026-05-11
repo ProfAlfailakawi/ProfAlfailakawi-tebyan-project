@@ -5,7 +5,7 @@ export function useSmartSearch(searchValue: string, minLength: number = 6, overr
   const [smartSuggestion, setSmartSuggestion] = useState("");
   const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
   const latestInputRef = useRef(searchValue);
-  const apiKey = overrideApiKey || process.env.GEMINI_API_KEY || '';
+  const apiKey = overrideApiKey || import.meta.env.VITE_GEMINI_API_KEY || '';
   const aiClient = useMemo(() => new GoogleGenAI({ apiKey }), [apiKey]);
   const requestIdRef = useRef(0);
 
