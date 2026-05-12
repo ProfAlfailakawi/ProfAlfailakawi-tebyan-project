@@ -246,7 +246,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                       {tab.label}
                    </h3>
                    <p className="text-emerald-50/70 text-sm md:text-base font-medium max-w-[220px] leading-relaxed">
-                      {language === 'ar' ? 'الميزة الجوهرية في كل مشروع تعليمي' : 'The essential difference in every project'}
+                      {language === 'ar' ? 'الميزة الجوهرية في كل مشروع' : 'The essential difference in every project'}
                    </p>
                 </div>
                 <div className="flex items-center gap-2 md:gap-3 text-white font-black text-sm md:text-lg">

@@ -41,6 +41,14 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
     }
   }, [initialValue, mindMapData, isGenerating, onValueUsed]);
 
+  React.useEffect(() => {
+    if (!isGenerating && mindMapData) {
+       setTimeout(() => {
+           document.getElementById('mindmap-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }, 100);
+    }
+  }, [isGenerating, mindMapData]);
+
   return (
     <div className="w-full space-y-8 px-2">
       <TabHeader 
@@ -94,6 +102,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
 
         {mindMapData && !isGenerating && (
           <motion.div 
+            id="mindmap-results"
             initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             className="bg-black border border-white/10 rounded-[40px] p-8 md:p-14 shadow-[0_20px_80px_rgba(0,0,0,0.5)] relative overflow-hidden"

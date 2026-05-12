@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useMotionValue } from 'motion/react';
 import { Sparkles, Network, Globe, Maximize2, MousePointer2, ZoomIn, ZoomOut, Info } from 'lucide-react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
@@ -20,7 +20,16 @@ type IdeaNode = {
 export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', onViewDetails: (nodeId: string) => void }) => {
     const [ripples, setRipples] = useState<any[]>([]);
     const [selectedNode, setSelectedNode] = useState<IdeaNode | null>(null);
-    const [zoom, setZoom] = useState(1);
+    const [zoom, setZoom] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768 ? 0.4 : 1);
+    
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const resetView = () => {
+        x.set(0);
+        y.set(0);
+        setZoom(typeof window !== 'undefined' && window.innerWidth < 768 ? 0.4 : 1);
+    };
 
     useEffect(() => {
         const q = query(collection(db, 'ripples'), orderBy('timestamp', 'desc'));
@@ -75,19 +84,26 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
 
             {/* Zoom Controls */}
             <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
+                <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
+                    <Maximize2 className="w-5 h-5" />
+                </button>
                 <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                     <ZoomIn className="w-5 h-5" />
                 </button>
-                <button onClick={() => setZoom(prev => Math.max(prev - 0.2, 0.5))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
+                <button onClick={() => setZoom(prev => Math.max(prev - 0.2, 0.3))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                     <ZoomOut className="w-5 h-5" />
                 </button>
             </div>
 
             {/* Map Container */}
-            <div className="w-full h-full p-8 relative overflow-hidden" dir="ltr">
+            <div className="w-full h-full p-8 relative overflow-hidden cursor-move touch-none" dir="ltr">
                 <motion.div 
+                    drag
+                    dragConstraints={{ left: -1000, right: 1000, top: -1000, bottom: 1000 }}
+                    dragElastic={0.1}
                     animate={{ scale: zoom }}
-                    className="relative w-[800px] h-[800px] mx-auto origin-center"
+                    style={{ x, y }}
+                    className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -ml-[400px] -mt-[400px] origin-center"
                 >
                     <svg className="absolute inset-0 w-full h-full pointer-events-none overflow-visible">
                         {nodes.map(node => {

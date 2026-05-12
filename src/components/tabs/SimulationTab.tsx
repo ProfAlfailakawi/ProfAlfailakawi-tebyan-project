@@ -125,6 +125,17 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
     }
   };
 
+  React.useEffect(() => {
+    if (!isLoading) {
+      setTimeout(() => {
+        if (simFeedback) document.getElementById('simulation-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        else if (simulation) document.getElementById('simulation-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        else if (rpRadar) document.getElementById('rp-radar-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        else if (isRoleplaying && chatHistory.length > 0) document.getElementById('rp-chat-bottom')?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 100);
+    }
+  }, [isLoading, simulation, simFeedback, rpRadar, chatHistory.length, isRoleplaying]);
+
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
      <TabHeader 
@@ -174,7 +185,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
               </motion.div>
             ) : !simulation ? (
               <div className="space-y-6">
-                <p className="text-zinc-500 font-bold">{language === 'ar' ? 'أدخل تحدياً تعليمياً وسأقوم بوضعك في موقف يتطلب قراراً حكيماً.' : 'Enter an educational challenge and I will put you in a situation that requires a wise decision.'}</p>
+                <p className="text-zinc-500 font-bold">{language === 'ar' ? 'أدخل تحدياً وسأقوم بوضعك في موقف يتطلب قراراً حكيماً.' : 'Enter a challenge and I will put you in a situation that requires a wise decision.'}</p>
                 <div className="flex flex-col md:flex-row gap-4 w-full">
                   <input 
                     value={simTopic} 
@@ -189,7 +200,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                 {error && <div className="text-rose-500 font-bold">{error}</div>}
               </div>
             ) : (
-              <div className="space-y-8">
+              <div id="simulation-results" className="space-y-8">
                 <div className="p-8 bg-blue-50 rounded-[24px] md:rounded-[32px] border-2 border-blue-100">
                   <h3 className="text-2xl font-bold text-blue-900 leading-relaxed">{simulation.scenario}</h3>
                 </div>
@@ -225,7 +236,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     ))}
                   </div>
                 ) : (
-                  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
+                  <motion.div id="simulation-feedback" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
                      <div className={cn("p-8 rounded-[24px] md:rounded-[32px] border-4", simFeedback.isCorrect ? "bg-emerald-50 border-emerald-200" : "bg-orange-50 border-orange-200")}>
                         <h4 className="text-2xl font-bold mb-4">{simFeedback.isCorrect ? (language === 'ar' ? 'أحسنتم!' : 'Well Done!') : (language === 'ar' ? 'تحليل النتيجة' : 'Result Analysis')}</h4>
                         <p className="text-lg font-bold text-zinc-700 leading-relaxed">{simFeedback.impact}</p>
@@ -306,6 +317,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                          </div>
                        )}
                        {error && <div className="text-rose-500 font-bold text-center bg-rose-50 p-2 rounded-lg">{error}</div>}
+                       <div id="rp-chat-bottom" />
                     </div>
                     
                     <form onSubmit={(e) => { e.preventDefault(); handleRoleplaySend(); }} className="flex gap-2 p-4 bg-white border border-zinc-200 rounded-b-[24px]">
@@ -322,7 +334,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     </form>
                  </div>
               ) : rpRadar ? (
-                 <div className="space-y-8 animate-in fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                 <div id="rp-radar-results" className="space-y-8 animate-in fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <div className="text-center space-y-2">
                        <ShieldAlert className="w-12 h-12 text-rose-500 mx-auto" />
                        <h2 className="text-3xl font-black text-black">{language === 'ar' ? 'الرادار التحليلي للسلوك' : 'Behavioral Radar'}</h2>

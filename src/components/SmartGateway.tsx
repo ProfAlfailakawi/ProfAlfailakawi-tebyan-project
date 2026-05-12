@@ -201,6 +201,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
+  const [hasSearched, setHasSearched] = useState(() => sessionStorage.getItem('tebyan_current_has_searched') === 'true');
+
   const handleSearchInputChange = (value: string) => {
     setSearchValue(value);
     latestInputRef.current = value;
@@ -214,6 +216,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const [isThinking, setIsThinking] = useState(false);
   const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
   const [showFollowUp, setShowFollowUp] = useState(false);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const loadingPhrasesAr = [
       'جاري تشريح الأبعاد الاستراتيجية...',
@@ -548,9 +551,20 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     handleTabChange(id, query);
   };
 
-  const [hasSearched, setHasSearched] = useState(() => sessionStorage.getItem('tebyan_current_has_searched') === 'true');
   const [errorMsg, setErrorMsg] = useState('');
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  
+  useEffect(() => {
+    if (hasSearched && !isThinking) {
+        setTimeout(() => {
+            const el = window.innerWidth < 768 
+               ? document.getElementById('mobile-results') 
+               : document.getElementById('desktop-results');
+            el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+  }, [hasSearched, isThinking]);
+
   const [emotion, setEmotion] = useState<'neutral'|'stress'|'creative'>('neutral');
 
   useEffect(() => {
@@ -1186,6 +1200,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
             {(isThinking || hasSearched)  && (
               <motion.div
+                id="desktop-results"
                 key="desktop-suggestions"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -1371,6 +1386,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             {/* Mobile simplified results */}
             {(isThinking || hasSearched)  && (
                  <motion.div 
+                    id="mobile-results"
                     key="mobile-suggestions"
                     className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
                  >

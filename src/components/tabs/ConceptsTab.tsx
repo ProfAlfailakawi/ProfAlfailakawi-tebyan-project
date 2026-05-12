@@ -60,6 +60,14 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
     }
   }, [initialValue, output, isLoading, onValueUsed]);
 
+  React.useEffect(() => {
+    if (!isLoading && output) {
+       setTimeout(() => {
+           document.getElementById('concepts-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }, 100);
+    }
+  }, [isLoading, output]);
+
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
@@ -131,7 +139,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
             </div>
           </motion.div>
         ) : output && (
-          <div className="space-y-4">
+          <div id="concepts-results" className="space-y-4">
             <div className={cn("prose md:prose-lg p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-zinc-950 border-red-900/30 text-zinc-100 prose-invert prose-headings:text-rose-400 prose-strong:text-rose-200 prose-ol:text-zinc-400 prose-ul:text-zinc-400 prose-li:marker:text-rose-600 prose-a:text-red-400 leading-relaxed font-serif rtl:font-sans py-8" : "bg-white border-zinc-200/80 prose-zinc font-serif rtl:font-sans py-8 leading-relaxed text-zinc-800")}>
               <ReactMarkdown>{output}</ReactMarkdown>
             </div>

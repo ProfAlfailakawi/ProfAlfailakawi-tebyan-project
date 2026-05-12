@@ -74,6 +74,14 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     setError(null);
   };
 
+  React.useEffect(() => {
+    if (!isLoading && oracleResult) {
+       setTimeout(() => {
+           document.getElementById('oracle-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }, 100);
+    }
+  }, [isLoading, oracleResult]);
+
   return (
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
@@ -150,7 +158,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             </div>
           </motion.div>
         ) : oracleResult && (
-          <div className="space-y-4">
+          <div id="oracle-results" className="space-y-4">
             <div className="markdown-body p-8 border border-zinc-200/80 rounded-[16px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
               <ReactMarkdown>{oracleResult}</ReactMarkdown>
             </div>

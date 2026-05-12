@@ -36,6 +36,14 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
     }
   }, [initialValue, roadmap, isLoading, onValueUsed]);
 
+  React.useEffect(() => {
+    if (!isLoading && roadmap) {
+       setTimeout(() => {
+           document.getElementById('roadmap-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }, 100);
+    }
+  }, [isLoading, roadmap]);
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 max-h-[90vh] overflow-y-auto px-4 sm:px-6 pb-20 custom-scrollbar relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
@@ -90,6 +98,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         )}
       </div>
 
+      <div id="roadmap-results">
       <AnimatePresence mode="wait">
         {roadmap && !isLoading && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
@@ -223,6 +232,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </motion.div>
 
   );

@@ -148,6 +148,14 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     }
   };
 
+  React.useEffect(() => {
+    if (!isLoading && (labSymbol || labColliderResult || labWorkshop || labDesign || labScout.length > 0 || labPersonas.length > 0 || labUdl.length > 0 || labMindMap || labFamilyExplanation || labCareer.length > 0 || labSound)) {
+       setTimeout(() => {
+           document.getElementById('lab-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }, 100);
+    }
+  }, [isLoading, labSymbol, labColliderResult, labWorkshop, labDesign, labScout, labPersonas, labUdl, labMindMap, labFamilyExplanation, labCareer, labSound]);
+
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
        <TabHeader 
@@ -239,7 +247,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   
          {error && <div className="text-rose-500 font-bold">{error}</div>}
   
-         <div className="space-y-8 animate-in fade-in slide-in-from-top-4 relative min-h-[200px]">
+         <div id="lab-results" className="space-y-8 animate-in fade-in slide-in-from-top-4 relative min-h-[200px]">
             {isLoading ? (
                <motion.div 
                  initial={{ opacity: 0 }}
@@ -254,7 +262,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    {language === 'ar' ? 'جاري التحليل والابتكار...' : 'Analyzing & Innovating...'}
                  </div>
                  <p className="text-zinc-400 font-bold max-w-md text-center text-sm px-6">
-                   {language === 'ar' ? 'نقوم حالياً باستخدام محركات الذكاء الاصطناعي لإنشاء مخرجات تعليمية دقيقة ومخصصة لك.' : 'We are utilizing AI engines to create precise and customized educational outputs for you.'}
+                   {language === 'ar' ? 'نقوم حالياً باستخدام محركات الذكاء الاصطناعي لإنشاء مخرجات دقيقة ومخصصة لك.' : 'We are utilizing AI engines to create precise and customized outputs for you.'}
                  </p>
                </motion.div>
             ) : (
@@ -441,7 +449,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                                 <div className="text-sm font-bold text-zinc-700">{p.challenges}</div>
                              </div>
                              <div className="bg-indigo-50/30 p-4 rounded-[16px] border border-indigo-100/30">
-                                <div className="text-[10px] font-bold text-indigo-400 uppercase mb-2">{language === 'ar' ? 'الاحتياجات التعليمية' : 'Educational Needs'}</div>
+                                <div className="text-[10px] font-bold text-indigo-400 uppercase mb-2">{language === 'ar' ? 'الاحتياجات الأساسية' : 'Core Needs'}</div>
                                 <div className="text-sm font-bold text-indigo-700 font-bold">🎯 {p.needs}</div>
                              </div>
                           </div>
@@ -568,7 +576,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          animate={{ y: 0, opacity: 1 }}
                          className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
                        >
-                          <h4 className="text-xl font-bold text-zinc-400 uppercase tracking-widest mb-6">🎯 {language === 'ar' ? 'الأهداف التعليمية' : 'Learning Objectives'}</h4>
+                          <h4 className="text-xl font-bold text-zinc-400 uppercase tracking-widest mb-6">🎯 {language === 'ar' ? 'الأهداف الرئيسية' : 'Core Objectives'}</h4>
                           <ul className="space-y-4">
                              {labWorkshop?.objectives?.map((obj: string, i: number) => (
                                <li key={i} className="flex flex-wrap gap-4 items-center bg-zinc-50 p-4 rounded-[16px] border border-zinc-100 font-bold text-zinc-700 transform transition-transform hover:translate-x-2">

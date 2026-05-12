@@ -101,6 +101,14 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         }
     };
 
+    useEffect(() => {
+        if (!isLoading && result) {
+            setTimeout(() => {
+                document.getElementById('decision-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    }, [isLoading, result]);
+
     return (
         <div className="space-y-8 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -188,8 +196,9 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
               ))}
            </div>
 
-           <AnimatePresence>
-            {isLoading && (
+           <div id="decision-results">
+             <AnimatePresence>
+              {isLoading && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4 py-20 text-indigo-600">
                     <Loader2 className="w-12 h-12 animate-spin" />
                     <p className="font-black text-xs tracking-widest">{language === 'ar' ? 'تبيان تقوم بالمعالجة الاستراتيجية والتحليل العميق...' : 'TIBYAN PROCESSING STRATEGIC ANALYSIS...'}</p>
@@ -199,10 +208,10 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
                     
                     {result.tool === 'butterfly' && result.isJson ? (
-                        <div className="bg-zinc-950 text-white rounded-[40px] md:rounded-[56px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative min-h-[500px] md:min-h-[700px] flex flex-col justify-end p-6 md:p-16 border-[8px] md:border-[16px] border-zinc-900 ring-1 ring-white/10">
+                        <div className="bg-zinc-950 text-white rounded-[40px] md:rounded-[56px] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative min-h-[500px] md:min-h-[700px] flex flex-col justify-end p-8 md:p-16 border-[8px] md:border-[16px] border-zinc-900 ring-1 ring-white/10">
                             <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000')] bg-cover bg-center grayscale scale-105"></div>
                             
-                            <div className="absolute top-6 left-6 md:top-12 md:left-12 text-[10px] md:text-sm font-black tracking-[0.3em] text-rose-500 border-b md:border-b-2 border-rose-600 pb-1 md:pb-2 uppercase drop-shadow-2xl z-20">
+                            <div className="absolute top-8 left-8 md:top-12 md:left-12 text-[10px] md:text-sm font-black tracking-[0.3em] text-rose-500 border-b md:border-b-2 border-rose-600 pb-1 md:pb-2 uppercase drop-shadow-2xl z-20">
                                 {result.content.magazineName}
                             </div>
                             
@@ -210,7 +219,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                 <motion.h1 
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.0] tracking-tighter drop-shadow-2xl italic uppercase text-white"
+                                    className="text-3xl md:text-5xl lg:text-7xl font-black leading-[1.1] md:leading-[1.0] tracking-tighter drop-shadow-2xl italic uppercase text-white break-words"
                                 >
                                     {result.content.headline}
                                 </motion.h1>
@@ -219,7 +228,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.1 }}
-                                    className="text-lg md:text-xl lg:text-2xl font-bold text-rose-400 max-w-2xl leading-tight drop-shadow-lg"
+                                    className="text-base md:text-xl lg:text-2xl font-bold text-rose-400 max-w-2xl leading-normal drop-shadow-lg"
                                 >
                                     {result.content.subheadline}
                                 </motion.p>
@@ -328,6 +337,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 </motion.div>
             )}
            </AnimatePresence>
+           </div>
         </div>
     );
 };

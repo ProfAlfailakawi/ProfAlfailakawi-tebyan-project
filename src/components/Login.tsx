@@ -73,7 +73,7 @@ export default function Login() {
               {isSignUp ? 'إنشاء حساب جديد' : 'تسجيل الدخول'}
             </h1>
             <p className="text-zinc-500 font-medium tracking-wide text-xs md:text-sm">
-              مرحباً بك/بِكِ في منصة الابتكار التعليمي
+              مرحباً بك/بِكِ في منصة تبيان
             </p>
           </div>
 

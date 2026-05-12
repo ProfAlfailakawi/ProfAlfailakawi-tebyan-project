@@ -14,10 +14,18 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
         onValueUsed();
     }
   }, [initialValue, onValueUsed]);
-  
+
   const [timeMachineData, setTimeMachineData] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!isLoading && timeMachineData) {
+       setTimeout(() => {
+           document.getElementById('time-machine-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+       }, 100);
+    }
+  }, [isLoading, timeMachineData]);
 
   const loadTimeMachine = async () => {
     setIsLoading(true);
@@ -98,7 +106,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
              </div>
            </motion.div>
          ) : timeMachineData && (
-           <div className="space-y-12 animate-in fade-in duration-700">
+           <div id="time-machine-results" className="space-y-12 animate-in fade-in duration-700">
            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
              <div className="absolute top-1/2 left-0 right-0 h-1 bg-indigo-500/30 -translate-y-1/2 hidden md:block"></div>
              {timeMachineData.eras?.map((e: any, i: number) => (
