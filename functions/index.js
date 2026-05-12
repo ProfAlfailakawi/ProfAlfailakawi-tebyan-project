@@ -45,7 +45,11 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
 
     const genAI = getGenAI();
     if (!genAI) {
-        return res.status(500).json({ error: "AI Service not configured on Cloud Functions" });
+        if (process.env.NODE_ENV !== "production") {
+            return res.json({ text: "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم." });
+        } else {
+            return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
+        }
     }
 
     try {
@@ -87,6 +91,14 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
         res.json({ text: responseText });
     } catch (error) {
         console.error("AI Error:", error);
+        const errStr = (error.message || "").toLowerCase();
+        if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
+            if (process.env.NODE_ENV !== "production") {
+                return res.json({ text: "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم." });
+            } else {
+                return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
+            }
+        }
         res.status(500).json({ error: error.message || "AI Generation Failed" });
     }
 });
