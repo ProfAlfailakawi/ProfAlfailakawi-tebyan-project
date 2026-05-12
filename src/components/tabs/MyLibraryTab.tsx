@@ -60,7 +60,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                         onClick={() => handleTabChange('discover')}
                         className="px-6 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-2xl text-sm font-black transition-all flex items-center gap-2"
                     >
-                        {language === 'ar' ? 'الرجوع للداش بورد' : 'Back to Dashboard'}
+                        {language === 'ar' ? 'العودة للصفحة الرئيسية' : 'Return to Home Page'}
                     </button>
                 )}
             </div>

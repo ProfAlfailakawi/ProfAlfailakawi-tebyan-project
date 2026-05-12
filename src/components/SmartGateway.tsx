@@ -506,6 +506,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
   const clearSearch = () => {
     setHasSearched(false);
+    setIsThinking(false);
     setSearchValue("");
     setQuery("");
     sessionStorage.setItem('tebyan_current_query', "");
@@ -516,6 +517,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   useEffect(() => {
     if (searchValue.trim() === "") {
         setHasSearched(false);
+        setIsThinking(false);
+        setQuery("");
+        setSmartSuggestion("");
     }
   }, [searchValue]);
 
@@ -1186,7 +1190,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               >
                 <div className="flex justify-center mb-4">
                     <button type="button" onClick={clearSearch} className="px-6 py-2 bg-mood-primary/10 hover:bg-mood-primary/20 text-mood-primary rounded-full font-bold text-sm transition-all duration-500">
-                        {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
+                        {language === 'ar' ? 'العودة للصفحة الرئيسية' : 'Return to Home Page'}
                     </button>
                 </div>
                 {isThinking ? (
@@ -1368,7 +1372,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                  >
                     <div className="flex justify-center mb-2">
                       <button type="button" onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
-                          {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
+                          {language === 'ar' ? 'العودة للصفحة الرئيسية' : 'Return to Home Page'}
                       </button>
                     </div>
                     {isThinking ? (
@@ -1519,8 +1523,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     <button
                         key={idx}
                         onClick={() => {
-                            setQuery(language === 'ar' ? chip.ar : chip.en);
-                            handleSubmit(undefined, language === 'ar' ? chip.ar : chip.en);
+                            const val = language === 'ar' ? chip.ar : chip.en;
+                            setSearchValue(val);
+                            latestInputRef.current = val;
+                            setQuery(val);
+                            handleSubmit(undefined, val);
                             setIsFocused(true);
                         }}
                         className={cn(
