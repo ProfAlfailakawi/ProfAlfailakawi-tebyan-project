@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Zap, RefreshCw, Box, Camera, Mic } from 'lucide-react';
+import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -57,6 +57,49 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labSound, setLabSound] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
+  const playIdeaSound = React.useCallback((freq: number, amp: number, type: string) => {
+    try {
+      const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtxClass) return;
+      
+      const audioCtx = new AudioCtxClass();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      // Normalize wave type
+      const validTypes: OscillatorType[] = ['sine', 'square', 'sawtooth', 'triangle'];
+      const normalizedType = type.toLowerCase() as OscillatorType;
+      oscillator.type = validTypes.includes(normalizedType) ? normalizedType : 'sine';
+      
+      oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      // Enveloping (Fade in/out to avoid popping)
+      const volume = (amp / 100) * 0.2; // Keep it safe for ears
+      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.1);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2);
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 2);
+    } catch (e) {
+      console.error("Audio Synthesis error:", e);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (labSound && !isLoading) {
+      // Auto-play on first load
+      const timer = setTimeout(() => {
+        playIdeaSound(labSound.frequency, labSound.amplitude, labSound.waveType);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [labSound, isLoading, playIdeaSound]);
+
   const [permissionStatus, setPermissionStatus] = React.useState<'idle' | 'prompting' | 'granted' | 'denied'>('idle');
 
   const requestPermissions = async () => {
@@ -283,23 +326,23 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                         </div>
                      </div>
                      <div className="text-center space-y-6 max-w-xl px-6">
-                        <div className="space-y-2">
-                          <h3 className={cn(
-                            "text-4xl font-black text-black tracking-tight",
-                            language === 'en' && "uppercase"
-                          )}>
-                            {labSymbol.symbolName}
-                          </h3>
-                          <div className="h-1 w-20 bg-black mx-auto rounded-full" />
+                         <div className="space-y-3">
+                           <h3 className={cn(
+                             "text-4xl md:text-5xl font-black text-black tracking-tight",
+                             language === 'en' && "uppercase"
+                           )}>
+                             {labSymbol.symbolName}
+                           </h3>
+                           <div className="h-1.5 w-24 bg-black mx-auto rounded-full opacity-20" />
                         </div>
-                        <p className="text-zinc-600 font-bold leading-relaxed italic text-lg px-4 block">
+                        <p className="text-zinc-600 font-bold leading-relaxed italic text-xl px-8 block">
                            {labSymbol.description}
                         </p>
-                        <div className="pt-6 border-t border-zinc-200/60 mt-4">
-                           <div className="inline-block px-4 py-1 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] mb-4 rounded-full">
-                              {language === 'ar' ? 'الدلالة الفلسفية عميقة' : 'DEEP PHILOSOPHICAL SIGNIFICANCE'}
+                        <div className="pt-8 border-t border-zinc-200/60 mt-6 w-full">
+                           <div className="inline-block px-5 py-1.5 bg-zinc-100 text-zinc-500 text-[10px] font-black uppercase tracking-[0.2em] mb-4 rounded-full border border-zinc-200">
+                              {language === 'ar' ? 'البعد الفلسفي' : 'PHILOSOPHICAL ESSENCE'}
                            </div>
-                           <p className="text-base font-bold text-black leading-relaxed">{labSymbol.significance}</p>
+                           <p className="text-lg font-bold text-black leading-relaxed max-w-lg mx-auto">{labSymbol.significance}</p>
                         </div>
                      </div>
                    </motion.div>
@@ -314,13 +357,13 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none"></div>
                      
                      <div className="w-full max-w-lg space-y-4 text-center mb-4 relative z-20">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10 text-xs text-white/60 font-bold">
-                           <Zap className="w-3 h-3 text-brand-emerald" />
-                           {language === 'ar' ? 'فلسفة الأداة: لكل فكرة تردد ورنين في العقل' : 'Tool Logic: Every idea has a frequency and resonance'}
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 text-xs text-brand-emerald font-black tracking-wide">
+                           <Zap className="w-3 h-3" />
+                           {language === 'ar' ? 'رنين الأفكار: لكل فكرة بصمة صوتية في الوعي' : 'IDEA RESONANCE: EVERY CONCEPT HAS A SONIC SIGNATURE'}
                         </div>
                      </div>
 
-                     <div className="flex gap-1.5 h-40 items-center relative z-10 group">
+                     <div className="flex gap-1.5 h-40 items-center relative z-10 group cursor-pointer" onClick={() => playIdeaSound(labSound.frequency, labSound.amplitude, labSound.waveType)}>
                         {[...Array(40)].map((_, i) => (
                            <motion.div 
                               key={i}
@@ -337,35 +380,43 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                               className="w-1.5 bg-white/20 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.1)]"
                            />
                         ))}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded-3xl backdrop-blur-md">
+                           <div className="bg-white text-black p-4 rounded-full shadow-2xl scale-75 group-hover:scale-100 transition-transform">
+                              <Play className="w-8 h-8 fill-current" />
+                           </div>
+                        </div>
                      </div>
 
                      <div className="text-center space-y-6 relative z-10">
                         <div className="space-y-2">
                            <div className="text-[11px] font-black text-white/40 uppercase tracking-[0.4em]">
-                              {language === 'ar' ? 'البصمة الصوتية للمفهوم' : 'SONIC SIGNATURE OF CONCEPT'}
+                              {language === 'ar' ? 'الرنين الإدراكي' : 'COGNITIVE RESONANCE'}
                            </div>
                            <h4 className="text-5xl md:text-7xl font-black tracking-tighter text-white italic drop-shadow-xl">
                               {labInput}
                            </h4>
                         </div>
 
-                        <div className="max-w-md mx-auto p-6 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md">
-                           <p className="text-lg font-bold text-white/90 leading-relaxed italic">
+                        <div className="max-w-md mx-auto p-8 bg-white/5 rounded-[32px] border border-white/10 backdrop-blur-md shadow-2xl">
+                           <p className="text-xl font-bold text-white/90 leading-relaxed italic">
                               "{labSound.sonicDescription}"
                            </p>
                         </div>
 
                         <div className="grid grid-cols-3 gap-4 md:gap-8 justify-center mt-6">
+                           <button 
+                             onClick={() => playIdeaSound(labSound.frequency, labSound.amplitude, labSound.waveType)}
+                             className="bg-white text-black p-4 rounded-2xl border border-white/20 hover:bg-zinc-200 transition-all flex flex-col items-center justify-center group shadow-xl"
+                           >
+                              <Volume2 className="w-5 h-5 mb-1 group-hover:scale-110 transition-transform" />
+                              <div className="text-[10px] font-black uppercase">{language === 'ar' ? 'استماع' : 'LISTEN'}</div>
+                           </button>
                            <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                              <div className="text-[10px] text-white/30 font-bold uppercase mb-1">{language === 'ar' ? 'التردد' : 'Pitch'}</div>
+                              <div className="text-[10px] text-zinc-500 font-black uppercase mb-1">{language === 'ar' ? 'التردد' : 'PITCH'}</div>
                               <div className="text-xl font-black text-white">{labSound.frequency}<span className="text-[10px] ml-0.5 opacity-50">Hz</span></div>
                            </div>
                            <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                              <div className="text-[10px] text-white/30 font-bold uppercase mb-1">{language === 'ar' ? 'الرنين' : 'Resonance'}</div>
-                              <div className="text-xl font-black text-white">{labSound.amplitude}<span className="text-[10px] ml-0.5 opacity-50">Db</span></div>
-                           </div>
-                           <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
-                              <div className="text-[10px] text-white/30 font-bold uppercase mb-1">{language === 'ar' ? 'النمط' : 'Wave'}</div>
+                              <div className="text-[10px] text-zinc-500 font-black uppercase mb-1">{language === 'ar' ? 'النمط' : 'WAVE'}</div>
                               <div className="text-base font-black text-white truncate">{labSound.waveType}</div>
                            </div>
                         </div>
