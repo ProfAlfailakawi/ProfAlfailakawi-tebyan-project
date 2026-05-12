@@ -10,6 +10,7 @@ import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
 import { TypographicAcoustic } from './TypographicAcoustic';
 import { AdvancedCognitiveAnalysis } from './AdvancedCognitiveAnalysis';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const DAILY_CHALLENGES = [
     {
@@ -1079,21 +1080,24 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               getFluidStyles(),
               getFluidAmbient()
             )}>
-              <div className="flex-1 relative flex items-center overflow-hidden">
-                <input
-                  ref={inputRef}
+              <div className="flex-1 relative flex overflow-hidden flex-col justify-center">
+                <TextareaAutosize
+                  ref={inputRef as any}
                   value={searchValue}
+                  minRows={1}
+                  maxRows={4}
                   onChange={(e) => handleSearchInputChange(e.target.value)}
                   placeholder={language === 'ar' ? "اكتب سؤالك أو مشكلتك..." : "Type your question or problem..."}
                   onKeyDown={(e) => {
-                    if ((e.key === 'Tab' || e.key === 'Enter') && smartSuggestion) {
+                    if ((e.key === 'Tab' || (e.key === 'Enter' && !e.shiftKey)) && smartSuggestion) {
                       e.preventDefault();
                       setSearchValue(smartSuggestion);
                       latestInputRef.current = smartSuggestion;
                       setQuery(smartSuggestion);
                       setSmartSuggestion('');
-                    } else if (e.key === 'Enter') {
-                      // Let normal submit take over
+                    } else if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit(undefined, searchValue);
                     } else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && smartSuggestion) {
                       if (e.currentTarget.selectionStart === searchValue.length) {
                         e.preventDefault();
@@ -1106,18 +1110,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10 relative"
+                  className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10 relative resize-none leading-relaxed"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
                 
                 {smartSuggestion && smartSuggestion.startsWith(searchValue) && (
                   <div 
-                    className="pointer-events-none absolute inset-0 flex items-center px-4 text-base md:text-xl font-bold z-0"
+                    className="pointer-events-none absolute inset-0 p-4 text-base md:text-xl font-bold z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
                     dir={language === 'ar' ? 'rtl' : 'ltr'}
                   >
-                    <span className="invisible whitespace-pre">{searchValue}</span>
-                    <span className="whitespace-pre text-zinc-300">{smartSuggestion.slice(searchValue.length)}</span>
+                    <span className="invisible">{searchValue}</span>
+                    <span className="text-zinc-300">{smartSuggestion.slice(searchValue.length)}</span>
                   </div>
                 )}
               </div>
