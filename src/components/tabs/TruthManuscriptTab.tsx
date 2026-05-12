@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
+import { proxyGenerateContent } from '../../lib/aiProxy';
 
 export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initialValue }: { language: 'ar' | 'en', handleTabChange: any, initialValue?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,17 +27,12 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
 تجنب أي كلمات معاصرة، استخدم أسلوباً بلاغياً يلامس الروح.
 لا تضع مقدمات بل ادخل في الحكمة مباشرة.`;
 
-      const response = await fetch('/api/ai/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: "gemini-3-flash-preview",
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        })
+      const response = await proxyGenerateContent({
+        model: "gemini-3-flash-preview",
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
       });
-      const data = await response.json();
 
-      setManuscriptContent(data.text || 'لم نجد شيئاً في ظلمات النسيان..');
+      setManuscriptContent(response.text || 'لم نجد شيئاً في ظلمات النسيان..');
       resetCanvas();
     } catch (error) {
       console.error(error);

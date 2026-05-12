@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { proxyGenerateContent } from '../lib/aiProxy';
 
 export function useSmartSearch(searchValue: string, minLength: number = 6) {
   const [smartSuggestion, setSmartSuggestion] = useState("");
@@ -62,20 +63,15 @@ export function useSmartSearch(searchValue: string, minLength: number = 6) {
 نص المستخدم:
 ${latestText}`;
 
-        const response = await fetch('/api/ai/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: "gemini-3-flash-preview",
-            contents: [{ role: 'user', parts: [{ text: prompt }] }],
-            config: {
-              responseMimeType: "application/json",
-            }
-          })
+        const response = await proxyGenerateContent({
+          model: "gemini-3-flash-preview",
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          config: {
+            responseMimeType: "application/json",
+          }
         });
 
-        const data = await response.json();
-        let suggestion = data.text?.trim() || "";
+        let suggestion = response.text?.trim() || "";
         
         try {
           const parsed = JSON.parse(suggestion);
