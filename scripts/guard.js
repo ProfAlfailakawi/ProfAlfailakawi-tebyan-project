@@ -3,7 +3,13 @@ import { execSync } from "node:child_process";
 const forbiddenPatterns = [
   "process.env.GEMINI_API_KEY",
   "process.env.API_KEY",
-  "process.env.VITE_GEMINI_API_KEY"
+  "process.env.VITE_GEMINI_API_KEY",
+  "import.meta.env.VITE_GEMINI_API_KEY",
+  "new GoogleGenAI",
+  "apiKey: ''",
+  'apiKey: ""',
+  "apiKey: undefined",
+  "apiKey: void 0"
 ];
 
 let failed = false;
@@ -23,7 +29,8 @@ for (const pattern of forbiddenPatterns) {
 
 if (failed) {
   console.error("This is a Vite browser app.");
-  console.error("Use import.meta.env.VITE_GEMINI_API_KEY inside src/ instead of process.env.*.");
+  console.error("Do not use Gemini API keys in frontend code.");
+  console.error("Send requests to /api/ai/generate instead.");
   process.exit(1);
 }
 

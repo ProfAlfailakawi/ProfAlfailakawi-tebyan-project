@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollText, Sparkles, Wand2, RefreshCw } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
-import { GoogleGenAI } from "@google/genai";
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 
@@ -16,7 +15,6 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
   const [manuscriptContent, setManuscriptContent] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [localQuery, setLocalQuery] = useState(initialValue || '');
-  const aiClient = useMemo(() => new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || '' }), []);
 
   const generateWisdom = async (query: string) => {
     setIsLoading(true);
@@ -28,12 +26,17 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
 تجنب أي كلمات معاصرة، استخدم أسلوباً بلاغياً يلامس الروح.
 لا تضع مقدمات بل ادخل في الحكمة مباشرة.`;
 
-      const response = await aiClient.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: prompt,
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: "gemini-3-flash-preview",
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        })
       });
+      const data = await response.json();
 
-      setManuscriptContent(response.text || 'لم نجد شيئاً في ظلمات النسيان..');
+      setManuscriptContent(data.text || 'لم نجد شيئاً في ظلمات النسيان..');
       resetCanvas();
     } catch (error) {
       console.error(error);

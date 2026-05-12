@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { GoogleGenAI } from "@google/genai";
 
-export function useSmartSearch(searchValue: string, minLength: number = 6, overrideApiKey?: string) {
+export function useSmartSearch(searchValue: string, minLength: number = 6) {
   const [smartSuggestion, setSmartSuggestion] = useState("");
   const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
   const latestInputRef = useRef(searchValue);
-  const apiKey = overrideApiKey || import.meta.env.VITE_GEMINI_API_KEY || '';
-  const aiClient = useMemo(() => new GoogleGenAI({ apiKey }), [apiKey]);
   const requestIdRef = useRef(0);
 
   useEffect(() => {
@@ -65,15 +62,21 @@ export function useSmartSearch(searchValue: string, minLength: number = 6, overr
 نص المستخدم:
 ${latestText}`;
 
-        const response = await aiClient.models.generateContent({
-          model: "gemini-3-flash-preview",
-          contents: prompt,
-          config: {
-            responseMimeType: "application/json",
-          }
+        const response = await fetch('/api/ai/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: "gemini-3-flash-preview",
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            config: {
+              responseMimeType: "application/json",
+            }
+          })
         });
 
-        let suggestion = response.text?.trim() || "";
+        const data = await response.json();
+        let suggestion = data.text?.trim() || "";
+        
         try {
           const parsed = JSON.parse(suggestion);
           if (parsed && parsed.refined_query) {
@@ -105,7 +108,7 @@ ${latestText}`;
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [searchValue, minLength, aiClient]);
+  }, [searchValue, minLength]);
 
   return { smartSuggestion, isSuggestionLoading, setSmartSuggestion };
 }
