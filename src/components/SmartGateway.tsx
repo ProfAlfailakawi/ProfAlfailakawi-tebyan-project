@@ -944,8 +944,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
     // 5. Narrative (Storyteller)
     const storyMatch = !q || q.includes('قصة') || q.includes('شخص') || q.includes('حكاية') || q.includes('تبسيط') || q.includes('كذب') || q.includes('story') || q.includes('tell');
-    addPath('creativelab_story', 'story', 'الراوي', 'Story Weaver', MessageCircleQuestion, 'تحويل الموقف لقصة وفكرة', 'Turn into story/concept', 'لأن القصص والأفكار الإبداعية هي أسرع وسيلة لإيصال المعنى', 'Because stories and creative concepts are the fastest way to convey meaning', storyMatch ? 9 : 2);
-    addPath('truthmanuscript', 'innovation', 'المخطوطة القديمة', 'Truth Manuscript', ScrollText, 'حكمة عميقة ومخفية', 'Deep ancient wisdom', 'لأنك تبحث عن المعنى الخفي في ظلمات النسيان', 'Because you seek the hidden meaning in the depths', innovMatch ? 8.5 : 2);
 
     addPath('oracle', 'innovation', 'المستشار الكلي', 'Omni Counselor', Command, 'حوار استراتيجي شامل', 'Comprehensive cognitive dialogue', 'للحصول على مشورة حكيمة تدمج بين علوم السلوك والاستراتيجية', 'For wise advice integrating behavior and strategy', innovMatch ? 8.5 : 1.5);
     addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Sparkles, 'هندسة الابتكار والأفكار', 'Idea & Innovation Engineering', 'لأنك تحتاج إلى تفكيك الموقف وابتكار وسائل جديدة للحل', 'To deconstruct the situation and innovate new solutions', innovMatch ? 8.5 : 2);
@@ -1187,7 +1185,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 className="border-t border-zinc-100 mt-2 p-4 hidden md:block space-y-4"
               >
                 <div className="flex justify-center mb-4">
-                    <button onClick={clearSearch} className="px-6 py-2 bg-mood-primary/10 hover:bg-mood-primary/20 text-mood-primary rounded-full font-bold text-sm transition-all duration-500">
+                    <button type="button" onClick={clearSearch} className="px-6 py-2 bg-mood-primary/10 hover:bg-mood-primary/20 text-mood-primary rounded-full font-bold text-sm transition-all duration-500">
                         {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
                     </button>
                 </div>
@@ -1369,7 +1367,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
                  >
                     <div className="flex justify-center mb-2">
-                      <button onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
+                      <button type="button" onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
                           {language === 'ar' ? 'الرجوع للداش بورد' : 'Return to Dashboard'}
                       </button>
                     </div>
