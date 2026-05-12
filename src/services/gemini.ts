@@ -467,6 +467,97 @@ export async function generateTimeMachineJourney(concept: string, lang: string =
   });
 }
 
+export async function generateSymbol(concept: string, lang: string = 'ar') {
+  return withRetry(async () => {
+    const model = DEFAULT_MODEL;
+    const systemInstruction = lang === 'ar' ?
+      `أنت "معماري الرموز" (Symbolic Architect). حول المفهوم أو الموقف التالي إلى رمز بصري مجرد يعبر عن جوهره العميق: '${concept}'.
+      النتيجة يجب أن تكون باللغة العربية حصراً داخل JSON.
+      القواعد للمخرجات:
+      - symbolName: اسم فني للرمز.
+      - description: وصف دقيق وبليغ للشكل الهندسي والرمزي المكون له.
+      - significance: الدلالة الفلسفية والروحية لهذا الرمز.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
+      `You are the "Symbolic Architect". Transform the following concept into an abstract visual symbol: '${concept}'.
+      Result must be in English within JSON.
+      Fields:
+      - symbolName: Artistic name of the symbol.
+      - description: Eloquent description of its geometric and symbolic form.
+      - significance: Philosophical and spiritual significance.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: [{ parts: [{ text: concept }] }],
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              symbolName: { type: Type.STRING },
+              description: { type: Type.STRING },
+              significance: { type: Type.STRING }
+            },
+            required: ["symbolName", "description", "significance"]
+          }
+        }
+      });
+      const cleaned = tryRepairJson(response.text || "{}");
+      return JSON.parse(cleaned);
+    } catch (error) {
+      throw parseGeminiError(error, "معماري الرموز يرسم الآن لوحته الخاصة.. يرجى الانتظار.");
+    }
+  });
+}
+
+export async function generateIdeaSound(concept: string, lang: string = 'ar') {
+  return withRetry(async () => {
+    const model = DEFAULT_MODEL;
+    const systemInstruction = lang === 'ar' ?
+      `أنت "خبير الصوت الإدراكي" (Cognitive Sound Expert). تخيل أن الفكرة لها تردد فيزيائي ورنين عقلي. قم بـ "تحويل" المفهوم التالي إلى بصمة صوتية: '${concept}'.
+      أرجع JSON بالقيم التالية:
+      - frequency: رقم يمثل التردد بين (100 - 1000) يمثل حدة الفكرة.
+      - amplitude: رقم يمثل السعة بين (10 - 100) يمثل قوة تأثيرها.
+      - waveType: نوع الموجه (Sine, Square, Sawtooth, Triangle).
+      - sonicDescription: وصف بليغ ومختصر (سطر واحد) لكيف يبدو صوت هذه الفكرة فلسفياً.
+      قاعدة أسلوبية نهائية: حوّل النص ولا تخاطب المستخدم بصيغة مذكر أو مؤنث، ويفضل استخدام صياغة إرشادية أو جماعية هادئة.` :
+      `You are a "Cognitive Sound Expert". Imagine a concept has a physical frequency and mental resonance. "Sonify" the following idea into a sonic signature: '${concept}'.
+      Return JSON with:
+      - frequency: (100 - 1000) representing pitch/sharpness.
+      - amplitude: (10 - 100) representing impact/volume.
+      - waveType: (Sine, Square, Sawtooth, Triangle).
+      - sonicDescription: Brief (1-line) description of how this concept "sounds" philosophically.
+      Style Rule: Do not address the user directly as male or female; use descriptive, neutral, and guiding language.`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: [{ parts: [{ text: concept }] }],
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              frequency: { type: Type.INTEGER },
+              amplitude: { type: Type.INTEGER },
+              waveType: { type: Type.STRING },
+              sonicDescription: { type: Type.STRING }
+            },
+            required: ["frequency", "amplitude", "waveType", "sonicDescription"]
+          }
+        }
+      });
+      const cleaned = tryRepairJson(response.text || "{}");
+      return JSON.parse(cleaned);
+    } catch (error) {
+      throw parseGeminiError(error, "خبير الصوت يعاير رنين الأفكار الآن.. حاوِل مجدداً.");
+    }
+  });
+}
+
 export async function explainSimply(concept: string, level: string, lang: string = 'ar') {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;
