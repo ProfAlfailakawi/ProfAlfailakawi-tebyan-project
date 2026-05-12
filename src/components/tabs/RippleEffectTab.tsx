@@ -90,8 +90,8 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
             )}>
                 {level > 0 && (
                     <div className={cn(
-                        "absolute top-5 md:top-6 w-6 md:w-8 h-8 rounded-bl-3xl border-b-2 border-l-2 border-zinc-200 z-0 opacity-50",
-                        language === 'ar' ? "right-[-28px] md:right-[-38px] border-l-0 border-r-2 rounded-bl-none rounded-br-3xl" : "left-[-28px] md:left-[-38px]"
+                        "absolute top-5 md:top-6 w-4 md:w-8 h-8 rounded-bl-3xl border-b-2 border-l-2 border-zinc-200 z-0 opacity-50",
+                        language === 'ar' ? "right-[-18px] md:right-[-38px] border-l-0 border-r-2 rounded-bl-none rounded-br-3xl" : "left-[-18px] md:left-[-38px]"
                     )} style={{ transform: 'translateY(-100%)' }} />
                 )}
 
@@ -332,7 +332,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
             {node.children && node.children.length > 0 && (
                 <div className={cn(
                     "relative",
-                    language === 'ar' ? "pr-12 md:pr-16" : "pl-12 md:pl-16"
+                    language === 'ar' ? "pr-6 md:pr-16" : "pl-6 md:pl-16"
                 )}>
                     {/* Connecting Line from Parent Icon to Children */}
                     <div className={cn(
@@ -1069,7 +1069,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     </div>
                 </div>
 
-                <div className="relative z-10">
+                <div className="relative z-10 w-full overflow-x-auto pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
                     <AnimatePresence mode="wait">
                         {activeView === 'list' ? (
                             <motion.div 
@@ -1077,7 +1077,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="space-y-8"
+                                className="space-y-8 min-w-[320px]"
                             >
                                 {ripples.map((node) => (
                                     <RippleNodeComponent 

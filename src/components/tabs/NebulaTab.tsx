@@ -84,8 +84,9 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
 
             {/* Zoom Controls */}
             <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
-                <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
+                <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
                     <Maximize2 className="w-5 h-5" />
+                    <span className="text-[10px] font-bold hidden group-hover:inline md:hidden">{language === 'ar' ? 'عرض كامل' : 'Fit View'}</span>
                 </button>
                 <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                     <ZoomIn className="w-5 h-5" />
@@ -118,9 +119,9 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                     x2={parent.x}
                                     y2={parent.y}
                                     stroke="url(#lineGradient)"
-                                    strokeWidth="1"
+                                    strokeWidth={zoom < 0.5 ? "2" : "1"}
                                     initial={{ pathLength: 0, opacity: 0 }}
-                                    animate={{ pathLength: 1, opacity: 0.2 }}
+                                    animate={{ pathLength: 1, opacity: 0.3 }}
                                     transition={{ duration: 2 }}
                                 />
                             );
@@ -154,6 +155,14 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                 style={{ width: node.size, height: node.size }}
                             >
                                 <div className="w-1 h-1 bg-white rounded-full animate-ping" />
+                                
+                                {/* Label */}
+                                <div className={cn(
+                                    "absolute top-full mt-2 whitespace-nowrap text-[10px] sm:text-xs font-bold text-white/40 group-hover:text-white group-hover:bg-black/50 px-2 py-1 rounded-full transition-all",
+                                    language === 'ar' ? "right-1/2 translate-x-1/2" : "left-1/2 -translate-x-1/2"
+                                )}>
+                                    {node.text.slice(0, 15)}...
+                                </div>
                             </motion.button>
                         ))}
                     </AnimatePresence>
