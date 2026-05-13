@@ -75,8 +75,10 @@ ${latestText}`;
         
         try {
           const parsed = JSON.parse(suggestion);
-          if (parsed && parsed.refined_query) {
+          if (parsed && typeof parsed.refined_query === 'string') {
              suggestion = parsed.refined_query.trim();
+          } else {
+             suggestion = ""; // Fallback if no valid refined_query
           }
         } catch (e) {
           console.error("Failed to parse JSON for smart suggestion:", e, suggestion);

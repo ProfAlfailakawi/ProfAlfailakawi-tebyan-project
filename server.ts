@@ -163,7 +163,10 @@ async function startServer() {
         const genAI = getGenAI();
         if (!genAI) {
             if (process.env.NODE_ENV !== "production") {
-                return res.json({ text: "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم." });
+                const wantsJson = config?.responseMimeType === "application/json";
+                const isArray = config?.responseSchema?.type === 'ARRAY';
+                const mockResponse = wantsJson ? (isArray ? "[]" : "{}") : "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم.";
+                return res.json({ text: mockResponse });
             } else {
                 return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
             }
@@ -221,7 +224,10 @@ async function startServer() {
             const errStr = (error.message || "").toLowerCase();
             if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
                 if (process.env.NODE_ENV !== "production") {
-                    return res.json({ text: "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم." });
+                    const wantsJson = config?.responseMimeType === "application/json";
+                    const isArray = config?.responseSchema?.type === 'ARRAY';
+                    const mockResponse = wantsJson ? (isArray ? "[]" : "{}") : "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم.";
+                    return res.json({ text: mockResponse });
                 } else {
                     return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
                 }

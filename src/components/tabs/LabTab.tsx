@@ -15,6 +15,7 @@ declare global {
 
 const labTools = [
   { id: 'collider', ar: 'مُصادم الأفكار', en: 'Cognitive Collider', tooltip: { ar: 'دمج وتصادم الأفكار المتناقضة لتوليد أفكار جديدة', en: 'Collide contradicting ideas to generate new ones' } },
+  { id: 'collision', ar: 'مرايا العقول', en: 'Perspectives Collision', tooltip: { ar: 'مجلس افتراضي يناقش فكرتك من زوايا متضاربة ومتكاملة', en: 'Virtual council discussing your idea from conflicting angles' } },
   { id: 'symbols', ar: 'توليد الرموز', en: 'Symbol Factory', tooltip: { ar: 'تحويل المفاهيم المجردة إلى رموز بصرية تعبيرية عميقة', en: 'Transform abstract concepts into profound visual symbols' } },
   { id: 'sound', ar: 'صوت الأفكار', en: 'Idea Echo', tooltip: { ar: 'تحويل ترددات ورنين الأفكار إلى تمثيلات بصرية موجية', en: 'Transform idea frequencies and resonance into visual waveforms' } },
   { id: 'design', ar: 'تصميم استراتيجي', en: 'Strategic Design', tooltip: { ar: 'تصميم مسارات وخطط شاملة وممنهجة', en: 'Design systematic strategic paths' } },
@@ -55,6 +56,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labWorkshop, setLabWorkshop] = React.useState<any>(null);
   const [labSymbol, setLabSymbol] = React.useState<any>(null);
   const [labSound, setLabSound] = React.useState<any>(null);
+  const [labCollision, setLabCollision] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -133,6 +135,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabWorkshop(null);
     setLabSymbol(null);
     setLabSound(null);
+    setLabCollision(null);
   };
 
   const handleRunLabTool = async () => {
@@ -143,7 +146,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
       const { 
         generateInstructionalDesign, scoutTools, generatePersonas, auditUDL,
         generateMindMap, explainSimply, careerCompass, generateWorkshop, universalOracle,
-        generateSymbol, generateIdeaSound
+        generateSymbol, generateIdeaSound, generatePerspectivesCollision
       } = await import('../../services/gemini');
       resetAllLabResults();
       switch (activeLabTool) {
@@ -171,6 +174,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
           break;
         case 'sound':
           setLabSound(await generateIdeaSound(labInput, language));
+          break;
+        case 'collision':
+          setLabCollision(await generatePerspectivesCollision(labInput, language));
           break;
       }
     } catch (err: any) {
@@ -354,6 +360,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      animate={{ opacity: 1, y: 0 }}
                      className="bg-zinc-900 text-white p-8 md:p-12 rounded-[40px] flex flex-col items-center gap-10 overflow-hidden relative shadow-2xl border border-white/5"
                    >
+                     {/* ... sound UI ... */}
                      <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none"></div>
                      
                      <div className="w-full max-w-lg space-y-4 text-center mb-4 relative z-20">
@@ -421,6 +428,60 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                            </div>
                         </div>
                      </div>
+                   </motion.div>
+                 )}
+
+                 {activeLabTool === 'collision' && labCollision && (
+                   <motion.div 
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="bg-zinc-50 rounded-[40px] p-8 md:p-12 border border-zinc-200"
+                   >
+                      <div className="text-center mb-12">
+                         <div className="inline-block px-4 py-1.5 bg-black text-white rounded-full text-xs font-bold mb-4 uppercase tracking-widest">
+                           {language === 'ar' ? 'مجلس مرايا العقول' : 'COUNCIL OF MIRRORS'}
+                         </div>
+                         <h3 className="text-3xl font-black text-black">
+                           "{labInput}"
+                         </h3>
+                      </div>
+
+                      <div className="space-y-6 mb-12">
+                         {labCollision.dialogue?.map((msg: any, i: number) => (
+                           <motion.div 
+                             key={i}
+                             initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
+                             animate={{ opacity: 1, x: 0 }}
+                             transition={{ delay: i * 0.2 }}
+                             className={cn(
+                               "flex flex-col gap-2 p-6 rounded-[24px] max-w-2xl",
+                               i % 2 === 0 ? "bg-white border border-zinc-100 shadow-sm self-start ml-auto" : "bg-zinc-900 text-white border border-black self-end mr-auto"
+                             )}
+                           >
+                             <div className="flex items-center gap-3 mb-2">
+                               <div className="w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center font-bold text-lg text-black">
+                                 {msg.character?.[0]}
+                               </div>
+                               <div>
+                                 <div className={cn("font-black text-lg", i % 2 !== 0 && "text-white")}>{msg.character}</div>
+                                 <div className={cn("text-xs font-bold", i % 2 === 0 ? "text-zinc-500" : "text-zinc-400")}>{msg.role}</div>
+                               </div>
+                             </div>
+                             <p className="font-medium leading-relaxed italic">
+                               "{msg.message}"
+                             </p>
+                           </motion.div>
+                         ))}
+                      </div>
+
+                      <div className="bg-mood-primary/10 rounded-[32px] p-8 border border-mood-primary/20 text-center">
+                         <div className="text-mood-primary text-sm font-black uppercase tracking-widest mb-4">
+                           {language === 'ar' ? 'الخلاصة الجوهرية' : 'SYNTHESIS'}
+                         </div>
+                         <p className="text-xl font-bold text-black leading-relaxed">
+                           {labCollision.synthesis}
+                         </p>
+                      </div>
                    </motion.div>
                  )}
 

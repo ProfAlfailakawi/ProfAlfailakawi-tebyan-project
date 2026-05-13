@@ -558,6 +558,69 @@ export async function generateIdeaSound(concept: string, lang: string = 'ar') {
   });
 }
 
+export async function generatePerspectivesCollision(concept: string, lang: string = 'ar') {
+  return withRetry(async () => {
+    const model = DEFAULT_MODEL;
+    const systemInstruction = lang === 'ar' ?
+      `أنت "مخرج الجلسات الفلسفية". المستخدم سيطرح فكرة أو قراراً. مهمتك هي تكوين "مجلس افتراضي" يضم شخصيات من مدارس التفكير المختلفة (مثل: الفيلسوف المتأمل، الرأسمالي البراغماتي، والفنان المتمرد).
+      اكتب نقاشاً حياً يتدفق بينهم حول هذه الفكرة لتوسيع مدارك المستخدم.
+      النتيجة يجب أن تكون كـ JSON فقط بالصيغة التالية:
+      {
+        "dialogue": [
+          { "character": "الفيلسوف", "role": "المتأمل للأبعاد البعيدة", "message": "نص رسالته" },
+          { "character": "الرأسمالي", "role": "البحث عن القيمة والفائدة", "message": "نص رسالته" },
+          { "character": "الفنان", "role": "الإبداع والكسر الروتيني", "message": "نص رسالته" }
+        ],
+        "synthesis": "خلاصة مكثفة تجمع بين زواياهم المتضاربة لتصنع نظرة متكاملة."
+      }` :
+      `You are the "Director of Philosophical Sessions". The user will present an idea. Form a "virtual council" of different personas (e.g., The Philosopher, The Pragmatic Capitalist, The Rebellious Artist).
+      Write a lively debate among them.
+      Return JSON only with:
+      {
+        "dialogue": [
+          { "character": "The Philosopher", "role": "seeking deep meaning", "message": "..." },
+          { "character": "The Capitalist", "role": "focusing on value and pragmatism", "message": "..." },
+          { "character": "The Artist", "role": "looking for creative disruption", "message": "..." }
+        ],
+        "synthesis": "A bold summary synthesizing their opposing views."
+      }`;
+
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: [{ parts: [{ text: concept }] }],
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              dialogue: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    character: { type: Type.STRING },
+                    role: { type: Type.STRING },
+                    message: { type: Type.STRING }
+                  },
+                  required: ["character", "role", "message"]
+                }
+              },
+              synthesis: { type: Type.STRING }
+            },
+            required: ["dialogue", "synthesis"]
+          }
+        }
+      });
+      const cleaned = tryRepairJson(response.text || "{}");
+      return JSON.parse(cleaned);
+    } catch (error) {
+      throw parseGeminiError(error, "تعذر جمع المجلس الافتراضي الآن.. حاول لاحقاً.");
+    }
+  });
+}
+
 export async function explainSimply(concept: string, level: string, lang: string = 'ar') {
   return withRetry(async () => {
     const model = DEFAULT_MODEL;

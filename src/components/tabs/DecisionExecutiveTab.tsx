@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight } from 'lucide-react';
+import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight, Scale } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { ai, universalOracle } from '../../services/gemini';
@@ -52,6 +52,8 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
     const tools: AnalysisTool[] = [
         { id: 'decision', title: { ar: 'القرار التنفيذي', en: 'Executive Decision' }, icon: Lock, bgColor: 'bg-black', prompt: 'حول هذه الموقف لقرار تنفيذي حاسم ومسؤول: ' },
         { id: 'consequences', title: { ar: 'موجات العواقب', en: 'Consequence Waves' }, icon: GitBranch, bgColor: 'bg-indigo-600', prompt: 'حلل العواقب من الدرجة الأولى والثانية والثالثة لهذا القرار: ' },
+        { id: 'doubt', title: { ar: 'ميزان اليقين', en: 'Gravity of Doubt' }, icon: Scale, bgColor: 'bg-zinc-800', prompt: 'قم بتحليل درجة اليقين والشك في هذا القرار. أرجع JSON فقط بالشكل التالي: { "certainty": 70, "doubt": 30, "certaintyArguments": ["حجة 1", "حجة 2"], "doubtArguments": ["حجة 1", "حجة 2"], "verdict": "الحكم النهائي" }. لا ترجع أي نص خارج JSON. القرار هو: ' },
+        { id: 'capsule', title: { ar: 'كبسولة الزمن للقرارات', en: 'Time Capsule' }, icon: Hourglass, bgColor: 'bg-amber-900', prompt: 'قم بإعداد كبسولة زمنية لهذا القرار تفتح بعد سنة. أرجع JSON فقط بالشكل التالي: { "targetDate": "2027", "projectedOutcome": "النتيجة المتوقعة العظمى", "messageToFutureSelf": "رسالة قاسية أو محفزة لنفسك في المستقبل", "sealedConfidence": 85 }. لا ترجع نصاً خارج JSON. القرار هو: ' },
         { id: 'council', title: { ar: 'مجلس العقول', en: 'Council of Minds' }, icon: Users, bgColor: 'bg-emerald-600', prompt: 'حلل هذا القرار كفيلسوف، اقتصادي، قانوني، استراتيجي، وخصم: ' },
         { id: 'collapse', title: { ar: 'اختبار الاختراق فكرياً', en: 'Red Team Test' }, icon: ShieldAlert, bgColor: 'bg-rose-600', prompt: 'قم بدور "الفريق الأحمر" وحاول تدمير هذا القرار فكرياً واكشف نقاط ضعفه القاتلة: ' },
         { id: 'hidden', title: { ar: 'الخيوط الخفية', en: 'Hidden Threads' }, icon: Eye, bgColor: 'bg-amber-600', prompt: 'اكشف أصحاب المصلحة والنفوذ والمخاطر الصامتة لهذا القرار: ' },
@@ -80,7 +82,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
             
             if (!content) throw new Error("No response from Oracle");
 
-            if (tool.id === 'butterfly') {
+            if (tool.id === 'butterfly' || tool.id === 'doubt' || tool.id === 'capsule') {
                 try {
                     let jsonStr = content.trim();
                     if (jsonStr.startsWith('```json')) jsonStr = jsonStr.replace(/```json\n?/, '');
@@ -88,7 +90,13 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     if (jsonStr.endsWith('```')) jsonStr = jsonStr.replace(/```$/, '');
                     setResult({ tool: tool.id, content: JSON.parse(jsonStr), isJson: true });
                 } catch(e) {
-                    setResult({ tool: tool.id, content: { magazineName: 'Future Link', headline: 'تم استشراف المستقبل', subheadline: 'الذكاء حلل الأثر البعيد للقرار', bulletPoints: [content.substring(0, 100) + '...'], quote: 'تبيان استكشف الأثر.' }, isJson: true });
+                    if (tool.id === 'butterfly') {
+                        setResult({ tool: tool.id, content: { magazineName: 'Future Link', headline: 'تم استشراف المستقبل', subheadline: 'الذكاء حلل الأثر البعيد للقرار', bulletPoints: [content.substring(0, 100) + '...'], quote: 'تبيان استكشف الأثر.' }, isJson: true });
+                    } else if (tool.id === 'capsule') {
+                        setResult({ tool: tool.id, content: { targetDate: 'بعد عام', projectedOutcome: 'مجهول', messageToFutureSelf: 'الكبسولة معطوبة.', sealedConfidence: 50 }, isJson: true });
+                    } else {
+                        setResult({ tool: tool.id, content: { certainty: 50, doubt: 50, certaintyArguments: ["البيانات غير كافية لليقين"], doubtArguments: ["الغموض الاستراتيجي يعيق التحليل"], verdict: "تعذر الحساب بدقة" }, isJson: true });
+                    }
                 }
             } else {
                setResult({ tool: tool.id, content: content });
@@ -257,7 +265,105 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                 </motion.div>
                             </div>
                         </div>
-                    ) : result.tool === 'vault' ? (
+                     ) : result.tool === 'doubt' && result.isJson ? (
+                         <div className="bg-zinc-900 border border-zinc-800 p-8 md:p-16 rounded-[40px] shadow-2xl relative overflow-hidden">
+                             <div className="flex flex-col md:flex-row items-center gap-12 max-w-4xl mx-auto">
+                                 {/* Scale Visual */}
+                                 <div className="flex-1 w-full flex flex-col items-center justify-center relative">
+                                    <div className="w-1 h-32 bg-zinc-700 mx-auto"></div>
+                                    <motion.div 
+                                        initial={{ rotate: 0 }}
+                                        animate={{ rotate: (result.content.certainty - 50) * 0.4 }}
+                                        transition={{ type: 'spring', damping: 10, stiffness: 50 }}
+                                        className="w-full max-w-xs h-2 bg-gradient-to-r from-emerald-500 to-rose-500 rounded-full relative Origin-center"
+                                    >
+                                        <div className="absolute -top-16 -left-8 w-16 h-16 rounded-full border-2 border-emerald-500/50 bg-emerald-500/10 flex items-center justify-center">
+                                            <span className="text-emerald-400 font-black">{result.content.certainty}%</span>
+                                        </div>
+                                        <div className="absolute -top-16 -right-8 w-16 h-16 rounded-full border-2 border-rose-500/50 bg-rose-500/10 flex items-center justify-center">
+                                            <span className="text-rose-400 font-black">{result.content.doubt}%</span>
+                                        </div>
+                                    </motion.div>
+                                    <div className="mt-12 text-center">
+                                        <div className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-2">
+                                            {language === 'ar' ? 'ميزان اليقين' : 'GRAVITY OF DOUBT'}
+                                        </div>
+                                        <h3 className="text-3xl font-black text-white">
+                                            {result.content.verdict}
+                                        </h3>
+                                    </div>
+                                 </div>
+
+                                 {/* Arguments */}
+                                 <div className="flex-1 w-full space-y-8">
+                                     <div>
+                                        <h4 className="text-emerald-400 font-black tracking-widest text-sm uppercase mb-4 mb-4 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                            {language === 'ar' ? 'ركائز اليقين' : 'Pillars of Certainty'}
+                                        </h4>
+                                        <ul className="space-y-3">
+                                            {result.content.certaintyArguments?.map((arg: string, i: number) => (
+                                                <li key={i} className="text-zinc-300 text-sm font-medium leading-relaxed">
+                                                    {arg}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                     </div>
+                                     <div className="w-full h-px bg-zinc-800"></div>
+                                     <div>
+                                        <h4 className="text-rose-400 font-black tracking-widest text-sm uppercase mb-4 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-rose-500"></div>
+                                            {language === 'ar' ? 'أثقال الشك' : 'Weights of Doubt'}
+                                        </h4>
+                                        <ul className="space-y-3">
+                                            {result.content.doubtArguments?.map((arg: string, i: number) => (
+                                                <li key={i} className="text-zinc-300 text-sm font-medium leading-relaxed">
+                                                    {arg}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     ) : result.tool === 'capsule' && result.isJson ? (
+                         <div className="bg-gradient-to-b from-amber-900 to-black p-8 md:p-16 rounded-[40px] shadow-2xl relative overflow-hidden text-center text-amber-50">
+                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-overlay"></div>
+                             
+                             <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+                                 <motion.div 
+                                    initial={{ y: -20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ duration: 1 }}
+                                    className="w-24 h-24 mb-8 text-amber-400 bg-black/50 rounded-full flex items-center justify-center border border-amber-500/30 shadow-[0_0_50px_rgba(251,191,36,0.2)]"
+                                 >
+                                     <Hourglass className="w-12 h-12" />
+                                 </motion.div>
+                                 <h2 className="text-sm font-black uppercase tracking-[0.4em] text-amber-500 mb-4">
+                                     {language === 'ar' ? 'كبسولة الزمن مختومة' : 'TIME CAPSULE SEALED'}
+                                 </h2>
+                                 <p className="text-2xl md:text-4xl font-bold mb-12 italic leading-relaxed">
+                                     "{result.content.messageToFutureSelf}"
+                                 </p>
+                                 
+                                 <div className="grid grid-cols-2 gap-4 w-full">
+                                     <div className="bg-black/40 border border-amber-900/50 p-6 rounded-3xl">
+                                         <div className="text-[10px] text-amber-500 uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'تاريخ الفتح' : 'UNLOCK DATE'}</div>
+                                         <div className="text-xl font-bold">{result.content.targetDate}</div>
+                                     </div>
+                                     <div className="bg-black/40 border border-amber-900/50 p-6 rounded-3xl">
+                                         <div className="text-[10px] text-amber-500 uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'مستوى الثقة وقت الختم' : 'SEALED CONFIDENCE'}</div>
+                                         <div className="text-xl font-bold">{result.content.sealedConfidence}%</div>
+                                     </div>
+                                 </div>
+                                 
+                                 <div className="mt-8 bg-black/40 border border-amber-900/50 p-6 rounded-3xl w-full text-left" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                                     <div className="text-[10px] text-amber-500 uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'النتيجة المتوقعة' : 'PROJECTED OUTCOME'}</div>
+                                     <div className="text-lg font-medium leading-relaxed">{result.content.projectedOutcome}</div>
+                                 </div>
+                             </div>
+                         </div>
+                     ) : result.tool === 'vault' ? (
                         <div className="bg-stone-950 border-[6px] md:border-[12px] border-stone-900 p-8 md:p-24 rounded-[32px] md:rounded-[60px] shadow-2xl relative overflow-hidden text-zinc-100">
                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
                              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-rose-600 to-transparent opacity-80"></div>

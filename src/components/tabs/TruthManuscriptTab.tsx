@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ScrollText, Sparkles, Wand2, RefreshCw } from 'lucide-react';
+import { ScrollText, Sparkles, Wand2, RefreshCw, Eye, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
 import ReactMarkdown from 'react-markdown';
@@ -16,6 +16,57 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
   const [manuscriptContent, setManuscriptContent] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [localQuery, setLocalQuery] = useState(initialValue || '');
+  const [isZenMode, setIsZenMode] = useState(false);
+
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const oscillatorNodeRef = useRef<OscillatorNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+
+  const playAmbientSound = () => {
+    try {
+      const AudioCtxClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtxClass) return;
+      if (!audioCtxRef.current) audioCtxRef.current = new AudioCtxClass();
+      const ctx = audioCtxRef.current;
+      
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(136.1, ctx.currentTime); // "OM" frequency approx
+      
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 3); // fade in to very quiet
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+
+      oscillatorNodeRef.current = osc;
+      gainNodeRef.current = gain;
+    } catch (e) { console.error(e); }
+  };
+
+  const stopAmbientSound = () => {
+    if (gainNodeRef.current && audioCtxRef.current) {
+      gainNodeRef.current.gain.linearRampToValueAtTime(0, audioCtxRef.current.currentTime + 2);
+      setTimeout(() => {
+        if (oscillatorNodeRef.current) {
+          oscillatorNodeRef.current.stop();
+          oscillatorNodeRef.current.disconnect();
+        }
+      }, 2000);
+    }
+  };
+
+  useEffect(() => {
+    if (isZenMode) {
+      playAmbientSound();
+    } else {
+      stopAmbientSound();
+    }
+    return stopAmbientSound;
+  }, [isZenMode]);
 
   const generateWisdom = async (query: string) => {
     setIsLoading(true);
@@ -272,15 +323,24 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
                     {isRevealed && (
                       <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="mt-12 flex flex-col items-center gap-6">
                           <Wand2 className="w-8 h-8 text-amber-800 opacity-50" />
-                          <a 
-                             href={`mailto:?subject=حكمة بليغة من مخطوطة الحقيقة الضائعة&body=${encodeURIComponent(manuscriptContent || '')}`}
-                             className="flex items-center gap-2 bg-amber-900 text-amber-50 px-6 py-3 rounded-full shadow-lg hover:bg-amber-800 transition-all font-bold group"
-                          >
-                             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                             </svg>
-                             إرسال إلى بريدي
-                          </a>
+                          <div className="flex flex-wrap gap-4 justify-center">
+                            <button
+                               onClick={() => setIsZenMode(true)}
+                               className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full shadow-lg hover:bg-zinc-800 transition-all font-bold group"
+                            >
+                               <Eye className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                               {language === 'ar' ? 'وضع التأمل العميق' : 'Zen Reading Mode'}
+                            </button>
+                            <a 
+                               href={`mailto:?subject=حكمة بليغة من مخطوطة الحقيقة الضائعة&body=${encodeURIComponent(manuscriptContent || '')}`}
+                               className="flex items-center gap-2 bg-amber-900 text-amber-50 px-6 py-3 rounded-full shadow-lg hover:bg-amber-800 transition-all font-bold group"
+                            >
+                               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                               </svg>
+                               إرسال إلى بريدي
+                            </a>
+                          </div>
                       </motion.div>
                     )}
                 </div>
@@ -304,6 +364,36 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
              </div>
           )}
       </div>
+
+      <AnimatePresence>
+        {isZenMode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-black/95 backdrop-blur-3xl overflow-y-auto"
+          >
+            <button
+              onClick={() => setIsZenMode(false)}
+              className="fixed top-8 right-8 z-50 p-4 text-white/50 hover:text-white transition-colors rounded-full hover:bg-white/10"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <div className="max-w-4xl mx-auto py-20 text-center">
+              <ReactMarkdown 
+                 className="markdown-body text-2xl md:text-5xl leading-loose font-bold text-white/90 drop-shadow-2xl"
+                 components={{
+                     p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, auto', lineHeight: '2.5' }} className="mb-12 drop-shadow-lg opacity-80" {...props} />
+                 }}
+              >
+                  {manuscriptContent || ''}
+              </ReactMarkdown>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </motion.div>
   );
 });

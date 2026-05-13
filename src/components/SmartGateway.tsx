@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -175,6 +175,39 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
   const latestInputRef = useRef(searchValue);
   const [isFocused, setIsFocused] = useState(false);
+  
+  const EPHEMERAL_WISDOMS = useMemo(() => [
+    { ar: 'الشك هو بداية اليقين.. لا تخف من إعادة النظر في قناعاتك اليوم.', en: 'Doubt is the beginning of certainty.. don\'t fear reconsidering your convictions today.' },
+    { ar: 'القرار الذي تتجنبه هو غالباً القرار الذي تحتاجه.', en: 'The decision you are avoiding is often the one you need.' },
+    { ar: 'ليس كل تراجع فشل، بعض التراجعات هي إعادة تموضع.', en: 'Not every retreat is a failure; some are repositioning.' },
+    { ar: 'عندما تتساوى الخيارات، اختر الخيار الذي يوسع آفاقك.', en: 'When options are equal, choose the one that expands your horizons.' },
+    { ar: 'الصمت في بعض الحوارات هو أقوى إجابة.', en: 'Silence in some dialogues is the most powerful answer.' },
+    { ar: 'لا تقيم قراراً جيداً بناءً على نتيجة سيئة حدثت بالصدفة.', en: 'Do not judge a good decision by a bad outcome that happened by chance.' },
+    { ar: 'الخوف من اتخاذ القرار أسوأ من القرار الخاطئ.', en: 'The fear of making a decision is worse than making a wrong one.' }
+  ], []);
+
+  const [ephemeralTime, setEphemeralTime] = useState({ m: 9, s: 59 });
+  const [wisdomIndex, setWisdomIndex] = useState(0);
+
+  useEffect(() => {
+    const updateEphemeralTimer = () => {
+        const now = new Date();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        
+        const m = 9 - (minutes % 10);
+        const s = 59 - seconds;
+        
+        setEphemeralTime({ m, s });
+        setWisdomIndex(Math.floor(now.getTime() / (10 * 60 * 1000)) % EPHEMERAL_WISDOMS.length);
+    };
+    
+    updateEphemeralTimer();
+    const interval = setInterval(updateEphemeralTimer, 1000);
+    return () => clearInterval(interval);
+  }, [EPHEMERAL_WISDOMS.length]);
+
+  const currentWisdom = EPHEMERAL_WISDOMS[wisdomIndex];
   
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [insightIndexList, setInsightIndexList] = useState(0);
@@ -1075,6 +1108,58 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     </div>
                 </motion.div>
             )}
+
+            {showFollowUp && lastInteraction && !hasSearched && (
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="mb-8 bg-emerald-50 border border-emerald-100 p-6 rounded-[32px] shadow-lg space-y-4 text-emerald-900 group relative overflow-hidden"
+                >
+                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-200/50 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+                    <div className="relative z-10">
+                        <div className="flex items-center justify-between mb-2">
+                            <button onClick={() => setShowFollowUp(false)} className="text-emerald-400 hover:text-emerald-900 transition-colors">
+                                <X className="w-5 h-5" />
+                            </button>
+                            <h4 className="font-black flex items-center gap-2">
+                                <span>{language === 'ar' ? 'سؤال للاطمئنان..' : 'Checking in..'}</span>
+                                <Sparkles className="w-4 h-4 text-emerald-500" />
+                            </h4>
+                        </div>
+                        <p className="font-bold text-sm md:text-base mb-4 leading-relaxed bg-white/40 p-4 rounded-2xl border border-white/50 backdrop-blur-sm">
+                            {language === 'ar' ? 'في المرة السابقة، فكرنا معاً حول هذا الموضوع:' : 'Last time, we thought through this topic:'}
+                            <br/>
+                            <span className="italic text-emerald-700 mt-2 block break-words opacity-80">"{lastInteraction.query}"</span>
+                        </p>
+                        <p className="font-bold text-sm">
+                            {language === 'ar' ? 'هل سارت الأمور على ما يرام؟ هل احتجت للمزيد من الدعم؟' : 'Did things go well? Do you need more support?'}
+                        </p>
+                        <div className="flex items-center gap-3 mt-4">
+                            <button 
+                                onClick={() => handleFollowUpFeedback('success')}
+                                className="flex-1 bg-white border border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold transition-all shadow-sm active:scale-95"
+                            >
+                                {language === 'ar' ? 'ممتاز، خطونا خطوة للأمام 👍' : 'Great, took a step forward 👍'}
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    handleFollowUpFeedback('fail');
+                                    setSearchValue(language === 'ar' ? "في موضوع المرة السابقة، واجهت مشكلة إضافية وهي: " : "Regarding the previous topic, I faced another issue: ");
+                                    latestInputRef.current = (language === 'ar' ? "في موضوع المرة السابقة، واجهت مشكلة إضافية وهي: " : "Regarding the previous topic, I faced another issue: ");
+                                }}
+                                className="flex-1 bg-white border border-rose-200 hover:border-rose-500 hover:bg-rose-50 text-rose-700 py-3 rounded-xl font-bold transition-all shadow-sm active:scale-95"
+                            >
+                                {language === 'ar' ? 'ما زلت أواجه تحدياً 💬' : 'Still facing a challenge 💬'}
+                            </button>
+                        </div>
+                        <div className="absolute top-4 left-4 flex items-center gap-1 opacity-50 px-2 py-1 bg-emerald-100 rounded-md">
+                            <Activity className="w-3 h-3" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">{language === 'ar' ? 'سحر المتابعة' : 'FOLLOW-UP MAGIC'}</span>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
         </AnimatePresence>
         
       <div className="relative z-20 flex flex-col items-center justify-center min-h-[40vh]">
@@ -1573,6 +1658,40 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
       {!hasSearched && (
         <>
+          {/* Ephemeral Wisdom Feature (FOMO) */}
+          <div className="mt-8">
+             <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-zinc-900 border border-zinc-800 rounded-3xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl relative overflow-hidden group"
+             >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="flex items-center gap-4 z-10 w-full md:w-auto">
+                    <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
+                        <Sparkles className="w-5 h-5 animate-pulse" />
+                    </div>
+                    <div className="text-right">
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-sm">
+                                {language === 'ar' ? 'رسالة سريعة الزوال' : 'Ephemeral Wisdom'}
+                            </span>
+                        </div>
+                        <p className="text-sm md:text-base font-bold text-white">
+                            {language === 'ar' ? currentWisdom.ar : currentWisdom.en}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto">
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
+                    <div className="text-xl md:text-2xl font-mono font-black text-white/90">
+                        {String(ephemeralTime.m).padStart(2, '0')}:{String(ephemeralTime.s).padStart(2, '0')}
+                    </div>
+                </div>
+             </motion.div>
+          </div>
+
+
+
           {/* Daily Challenge & Insights Section */}
           <div className="emotion-hide mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         <motion.div
