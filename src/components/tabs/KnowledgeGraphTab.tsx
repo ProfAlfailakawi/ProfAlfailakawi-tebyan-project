@@ -155,12 +155,12 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
       <div className="flex-1 flex flex-col relative z-10 pt-32 md:pt-0">
         <div className="mb-6 md:mb-10 pl-2">
-            <h2 className="text-3xl md:text-5xl font-black text-white flex gap-4 tracking-tighter italic">
-                <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 flex items-center justify-center">
+            <h2 className="text-3xl md:text-5xl font-black text-white flex items-center gap-4 tracking-tighter italic">
+                <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 flex items-center justify-center shrink-0">
                   <Network className="w-10 h-10 md:w-16 md:h-16 text-indigo-400" />
                 </div>
-                <div>
-                  <div className="bg-gradient-to-r from-white to-indigo-400 bg-clip-text text-transparent">
+                <div className="flex-1 min-w-0 pb-1 pt-1">
+                  <div className="bg-gradient-to-r from-white to-indigo-400 bg-clip-text text-transparent leading-tight">
                     {language === 'ar' ? 'البصمة المعرفية' : 'Cognitive Blueprint'}
                   </div>
                   <div className="text-sm md:text-lg text-indigo-400 font-bold not-italic tracking-normal mt-1">

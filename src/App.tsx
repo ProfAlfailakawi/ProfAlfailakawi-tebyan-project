@@ -110,14 +110,14 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
     useEffect(() => {
         const timer = setTimeout(() => {
             onFinish();
-        }, 2500);
+        }, 1800);
         return () => clearTimeout(timer);
     }, [onFinish]);
 
     return (
         <motion.div 
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+            exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
             className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center overflow-hidden"
         >
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
