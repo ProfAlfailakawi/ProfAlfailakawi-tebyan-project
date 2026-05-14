@@ -186,6 +186,7 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
 };
 
 import { LivingIcon } from './components/LivingIcon';
+import { WhispersOfTheVoid } from './components/WhispersOfTheVoid';
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
@@ -226,7 +227,7 @@ const AppContent: React.FC = () => {
   const mainRef = useRef<HTMLElement>(null);
   
   // Ambient Intelligence Hook
-  const { isConfused } = useAmbientIntelligence(mainRef);
+  const { isConfused, isZen, intensity } = useAmbientIntelligence(mainRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -417,10 +418,18 @@ const AppContent: React.FC = () => {
           </AnimatePresence>
           
           {/* Background Elements (Volume & Texture) */}
-          <div className="fixed inset-0 pointer-events-none z-0 flex flex-col">
+          <div className="fixed inset-0 pointer-events-none z-0 flex flex-col transition-opacity duration-1000" style={{ opacity: Math.max(0.2, intensity * 1.2) }}>
               <div className="absolute inset-0 bg-noise mix-blend-multiply opacity-40"></div>
-              <div className="absolute top-0 right-0 w-full h-full bg-mood-glow blur-[120px] transition-colors duration-1000 opacity-30 mix-blend-normal" />
+              <div 
+                  className="absolute top-0 right-0 w-full h-full blur-[120px] transition-all duration-1000 mix-blend-normal" 
+                  style={{ 
+                      backgroundColor: intensity > 0.8 ? 'rgba(251, 146, 60, 0.25)' : 'var(--mood-glow)',
+                      transform: `scale(${1 + intensity * 0.15})`
+                  }} 
+              />
           </div>
+          
+          <WhispersOfTheVoid isZen={isZen} language={language} />
           
           {/* Liquid Mood Pour Transition */}
           <AnimatePresence>

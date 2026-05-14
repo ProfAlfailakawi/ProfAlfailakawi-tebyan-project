@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight, Scale } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { IntellectualKintsugi } from '../common/IntellectualKintsugi';
 import { ai, universalOracle } from '../../services/gemini';
 import ReactMarkdown from 'react-markdown';
 
@@ -16,10 +17,13 @@ type AnalysisTool = {
 
 export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue = '', onValueUsed }: { language: 'ar' | 'en', handleTabChange: any, initialValue?: string, onValueUsed?: () => void }) => {
     const [dilemma, setDilemma] = useState(initialValue);
+    const [dilemmaHistory, setDilemmaHistory] = useState<string[]>([]);
+    const lastSubmittedDilemma = useRef(initialValue);
 
     useEffect(() => {
         if (initialValue) {
             setDilemma(initialValue);
+            lastSubmittedDilemma.current = initialValue;
             if (onValueUsed) onValueUsed();
         }
     }, [initialValue, onValueUsed]);
@@ -74,6 +78,14 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
             }
             return;
         }
+        
+        if (dilemma !== lastSubmittedDilemma.current) {
+            if (lastSubmittedDilemma.current) {
+                setDilemmaHistory(prev => [...prev, lastSubmittedDilemma.current]);
+            }
+            lastSubmittedDilemma.current = dilemma;
+        }
+
         setIsLoading(true);
         setResult(null);
         try {
@@ -140,6 +152,23 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 {language === 'ar' ? 'العودة للاستكشاف' : 'Back to Discover'}
              </button>
            </div>
+
+           <AnimatePresence>
+             {lastSubmittedDilemma.current && dilemma !== lastSubmittedDilemma.current && (
+               <motion.div 
+                 initial={{ opacity: 0, height: 0, marginBottom: 0 }} 
+                 animate={{ opacity: 1, height: 'auto', marginBottom: 32 }} 
+                 exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                 className="overflow-hidden"
+               >
+                 <IntellectualKintsugi 
+                    oldText={lastSubmittedDilemma.current} 
+                    newText={dilemma} 
+                    language={language} 
+                 />
+               </motion.div>
+             )}
+           </AnimatePresence>
 
            <div className="relative group/input">
              <div className="absolute -top-3 right-6 z-20 px-4 py-1 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg group-focus-within/input:bg-rose-600 transition-colors">
