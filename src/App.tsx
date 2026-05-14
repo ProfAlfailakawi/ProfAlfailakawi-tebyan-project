@@ -813,7 +813,7 @@ const AppContent: React.FC = () => {
                   </AnimatePresence>
                 </div>
                 <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
-                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">Version 4.0.0.Release</span>
+                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">Version 2.5.0.Release</span>
                 </div>
              </div>
           </footer>
