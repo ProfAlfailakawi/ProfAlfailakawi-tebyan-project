@@ -1758,7 +1758,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="emotion-hide mt-10 md:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch gap-6 md:gap-8 mb-16"
+          className="emotion-hide mt-10 md:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 md:gap-8 mb-16"
       >
           <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] hover:border-zinc-200 transition-all duration-500 group cursor-pointer" onClick={() => handleTabChange('mylibrary')}>
               <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
@@ -1801,19 +1801,19 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               </div>
           </div>
 
-          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-mood-secondary/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ripple')}>
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-screen pointer-events-none group-hover:opacity-30 transition-opacity"></div>
-              <div className="flex items-center gap-6 text-right relative z-10">
-                  <div className="w-16 h-16 rounded-[24px] bg-mood-secondary/20 flex items-center justify-center text-mood-secondary shadow-sm border border-mood-secondary/30 transform group-hover:scale-110 transition-transform">
-                      <Waves className="w-8 h-8" />
-                  </div>
+          <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgba(var(--mood-secondary-rgb),0.1)] hover:border-mood-secondary/30 transition-all duration-500 group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ripple')}>
+              <div className="absolute inset-0 bg-mood-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+              <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
                   <div className="text-right">
-                      <h3 className="text-xl font-black text-white mb-1">
+                      <h3 className="text-xl md:text-2xl font-black text-black mb-2 tracking-tight">
                           {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                       </h3>
-                      <p className="text-zinc-400 font-bold text-sm">
+                      <p className="text-zinc-500 font-bold text-sm leading-relaxed">
                           {language === 'ar' ? 'نمو الأفكار وترابطها المستمر' : 'Continuous growth and interconnection'}
                       </p>
+                  </div>
+                  <div className="w-16 h-16 rounded-[24px] bg-mood-secondary/10 flex items-center justify-center text-mood-secondary border border-mood-secondary/20 shadow-sm transform group-hover:scale-105 transition-transform shrink-0">
+                      <Waves className="w-8 h-8 opacity-80" />
                   </div>
               </div>
           </div>

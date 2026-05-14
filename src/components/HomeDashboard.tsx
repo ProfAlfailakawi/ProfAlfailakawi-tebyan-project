@@ -25,63 +25,73 @@ const HubCard: React.FC<{
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className={cn(
-        "group rounded-[24px] md:rounded-[32px] p-4 md:p-6 border transition-all flex flex-col justify-between relative overflow-hidden",
-        inverted ? "bg-zinc-900 border-zinc-800" : "bg-white border-zinc-200/60 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:border-black hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
+        "group rounded-[32px] md:rounded-[40px] p-6 md:p-8 border transition-all duration-500 flex flex-col justify-between relative overflow-hidden",
+        inverted ? "bg-zinc-950 border-zinc-800 hover:shadow-[0_20px_60px_rgba(255,255,255,0.05)] hover:border-zinc-700" : "bg-white border-zinc-100 hover:shadow-[0_20px_60px_rgba(0,0,0,0.06)] hover:border-zinc-200"
       )}
       style={{ textAlign: language === 'ar' ? 'right' : 'left' }}
     >
-      <div className="relative z-10 w-full">
-        <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-5">
+      <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/0 to-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+      <div className="relative z-10 w-full flex flex-col h-full">
+        {/* Header section */}
+        <div className="flex items-start gap-4 md:gap-5 mb-8">
            <div className={cn(
-             "w-10 h-10 md:w-12 md:h-12 rounded-[14px] md:rounded-[18px] flex items-center justify-center transition-all shadow-sm shrink-0 border",
-             inverted ? "bg-zinc-800 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-100 text-zinc-900 group-hover:bg-black group-hover:text-white"
+             "w-12 h-12 md:w-14 md:h-14 rounded-[20px] flex items-center justify-center transition-transform duration-500 shadow-sm shrink-0 border transform group-hover:scale-105",
+             inverted ? "bg-zinc-800/80 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-100 text-zinc-900"
            )}>
-             <Icon className="w-5 h-5 md:w-6 md:h-6" />
+             <Icon className={cn("w-6 h-6 md:w-7 md:h-7 opacity-80")} />
            </div>
-           <div>
+           <div className="pt-1">
              <h3 className={cn(
-               "text-base md:text-xl font-black leading-tight tracking-tighter",
-               inverted ? "text-white" : "text-black"
+               "text-xl md:text-2xl font-black leading-tight tracking-tight mb-2",
+               inverted ? "text-white" : "text-zinc-900"
              )}>{title}</h3>
              <p className={cn(
-               "text-[10px] md:text-xs font-medium mt-0.5 leading-relaxed",
-               inverted ? "text-zinc-500" : "text-zinc-400"
+               "text-xs md:text-sm font-medium leading-relaxed max-w-[280px]",
+               inverted ? "text-zinc-400" : "text-zinc-500"
              )}>{description}</p>
            </div>
         </div>
         
-        <div className={cn("grid gap-2 w-full", visibleItems.length > 1 ? "grid-cols-2" : "grid-cols-1")}>
-          {visibleItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={(e) => { e.stopPropagation(); handleTabChange(item.id); }}
-              className={cn(
-                "flex items-center gap-2 p-3 md:p-3 rounded-xl border transition-all group/item text-right active:scale-95 cursor-pointer",
-                inverted 
-                  ? "bg-zinc-800/50 border-zinc-700/50 hover:border-white hover:bg-zinc-800 text-white" 
-                  : "bg-zinc-50/50 border-zinc-100/50 hover:border-black hover:bg-white text-zinc-800"
-              )}
-            >
-              <div className={cn(
-                "w-6 h-6 md:w-7 md:h-7 rounded-lg flex items-center justify-center shadow-sm transition-all shrink-0 border",
-                inverted 
-                  ? "bg-zinc-700/50 border-zinc-600/50 group-hover/item:border-white group-hover/item:bg-zinc-700" 
-                  : "bg-zinc-100/50 border-zinc-200/50 group-hover/item:border-black group-hover/item:bg-white"
-              )}>
-                <item.icon className={cn(
-                  "w-3.5 h-3.5 md:w-5 md:h-5",
+        {/* Action items */}
+        <div className="mt-auto">
+          <div className="grid gap-3 w-full grid-cols-1">
+            {visibleItems.map((item, idx) => (
+              <button
+                key={item.id}
+                onClick={(e) => { e.stopPropagation(); handleTabChange(item.id); }}
+                className={cn(
+                  "flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group/item text-right hover:-translate-y-0.5",
                   inverted 
-                    ? (item.id === 'mindmap' ? "text-indigo-300 group-hover/item:text-white" : "text-zinc-400 group-hover/item:text-white") 
-                    : (item.id === 'mindmap' ? "text-indigo-500 group-hover/item:text-indigo-600" : "text-zinc-600 group-hover/item:text-black")
-                )} />
-              </div>
-              <span className={cn(
-                "text-xs md:text-[13px] font-black tracking-tight truncate", 
-                inverted ? "text-white" : "text-zinc-900", 
-                item.id === 'mindmap' && (inverted ? "text-indigo-200" : "text-indigo-600")
-              )}>{item.label}</span>
-            </button>
-          ))}
+                    ? "bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 shadow-[0_4px_20px_rgb(0,0,0,0.2)]" 
+                    : "bg-[#FAFAFA] border border-zinc-100 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] shadow-sm"
+                )}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-colors",
+                  inverted 
+                    ? "bg-zinc-800 border-zinc-700 group-hover/item:bg-zinc-700" 
+                    : "bg-white border-zinc-100 group-hover/item:border-zinc-200"
+                )}>
+                  <item.icon className={cn(
+                    "w-5 h-5 transition-colors",
+                    inverted ? "text-zinc-400 group-hover/item:text-white" : "text-zinc-400 group-hover/item:text-zinc-900"
+                  )} />
+                </div>
+                <div className="flex-1 flex items-center justify-between min-w-0">
+                  <span className={cn(
+                    "text-sm font-black tracking-tight truncate", 
+                    inverted ? "text-zinc-200 group-hover/item:text-white" : "text-zinc-700 group-hover/item:text-zinc-900"
+                  )}>{item.label}</span>
+                  <div className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center transition-all",
+                    inverted ? "bg-zinc-800 text-zinc-500 group-hover/item:text-white" : "bg-zinc-100 text-zinc-400 group-hover/item:text-zinc-900"
+                  )}>
+                    <ArrowLeft className={cn("w-3 h-3 text-current", language === 'ar' ? "" : "rotate-180")} />
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>

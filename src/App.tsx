@@ -591,7 +591,7 @@ const AppContent: React.FC = () => {
                       {(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
                         <button 
                           onClick={() => {
-                            handleTabChange('adminusers');
+                            handleTabChange('admindashboard');
                           }}
                           className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-900 text-white rounded-[20px] text-base font-bold shadow-lg transition-all active:scale-[0.98]"
                         >

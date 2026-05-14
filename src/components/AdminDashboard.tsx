@@ -212,16 +212,18 @@ export default function AdminDashboard() {
             </button>
           </div>
           
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
               {adminActions.map((action, i) => (
                   <button 
                       key={i} 
-                      onClick={() => navigate(action.link)} 
-                      className="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-slate-200 flex items-center gap-2 md:gap-3 hover:border-indigo-300 hover:bg-slate-50 transition-colors focus:ring-2 focus:ring-indigo-500/50 outline-none active:scale-95" 
+                      onClick={() => window.location.href = action.link} 
+                      className="group bg-white p-6 md:p-8 rounded-[24px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col items-center justify-center gap-4 hover:border-indigo-200 hover:shadow-[0_12px_40px_rgb(99,102,241,0.08)] hover:-translate-y-1 transition-all duration-300 focus:ring-2 focus:ring-indigo-500/50 outline-none active:scale-95" 
                       title={action.title}
                   >
-                      <action.icon className="w-6 h-6 shrink-0 text-indigo-600" />
-                      <span className="font-bold text-sm md:text-base whitespace-nowrap">{action.title}</span>
+                      <div className="w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 flex items-center justify-center transition-all duration-300">
+                          <action.icon className="w-7 h-7" />
+                      </div>
+                      <span className="font-black text-slate-700 group-hover:text-slate-900 transition-colors text-base md:text-lg">{action.title}</span>
                   </button>
               ))}
           </div>
@@ -271,22 +273,23 @@ export default function AdminDashboard() {
       {costStats && (
         <section className="mb-12">
             <h2 className="text-2xl font-bold mb-6 text-slate-800 flex items-center gap-2"><BarChart4 className="w-6 h-6 text-indigo-500" /> توفير تكلفة الذكاء الاصطناعي (AI Cost Engine)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                    <p className="text-slate-500 mb-1 font-medium">إجمالي الطلبات</p>
-                    <h3 className="text-3xl font-black text-slate-800">{costStats.totalCalls}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-white p-8 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col justify-between">
+                    <p className="text-slate-500 mb-2 font-bold text-sm tracking-widest uppercase">إجمالي الطلبات</p>
+                    <h3 className="text-4xl font-black text-slate-800 tracking-tight">{costStats.totalCalls}</h3>
                 </div>
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                    <p className="text-rose-500 mb-1 font-medium">مكالمات الذكاء الاصطناعي (تكلفة)</p>
-                    <h3 className="text-3xl font-black text-rose-600">{costStats.aiCalls}</h3>
+                <div className="bg-white p-8 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-rose-100 flex flex-col justify-between">
+                    <p className="text-rose-400 mb-2 font-bold text-sm tracking-widest uppercase">مكالمات الذكاء الاصطناعي (تكلفة)</p>
+                    <h3 className="text-4xl font-black text-rose-600 tracking-tight">{costStats.aiCalls}</h3>
                 </div>
-                <div className="bg-emerald-50 p-6 rounded-3xl shadow-sm border border-emerald-200">
-                    <p className="text-emerald-600 mb-1 font-bold">الطلبات الموفرة (قاعدة معرفة + ذاكرة)</p>
-                    <h3 className="text-3xl font-black text-emerald-700">{costStats.cacheHits + costStats.kbHits}</h3>
+                <div className="bg-emerald-50 p-8 rounded-[32px] shadow-[0_4px_20px_rgb(16,185,129,0.05)] border border-emerald-100 flex flex-col justify-between">
+                    <p className="text-emerald-600 mb-2 font-bold text-sm tracking-widest uppercase truncate">الطلبات الموفرة (ذاكرة)</p>
+                    <h3 className="text-4xl font-black text-emerald-700 tracking-tight">{costStats.cacheHits + costStats.kbHits}</h3>
                 </div>
-                <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-3xl shadow-sm border border-indigo-700 text-white">
-                    <p className="text-indigo-100 mb-1 font-bold">نسبة التوفير الكلية</p>
-                    <h3 className="text-4xl font-black">{costStats.savedPercentage}٪</h3>
+                <div className="bg-slate-900 p-8 rounded-[32px] shadow-xl border border-slate-800 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div className="absolute inset-0 bg-indigo-500/10 blur-xl rounded-full scale-150 rotate-45 transform" />
+                    <p className="text-slate-400 mb-2 font-bold text-sm tracking-widest uppercase relative z-10">نسبة التوفير الكلية</p>
+                    <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight relative z-10">{costStats.savedPercentage}٪</h3>
                 </div>
             </div>
             <p className="mt-4 text-sm text-slate-500 font-medium">* يتم استخدام خوارزمية التطابق الدلالي وقاعدة المعرفة لمنع استدعاء API بشكل متكرر على نفس الأسئلة.</p>
