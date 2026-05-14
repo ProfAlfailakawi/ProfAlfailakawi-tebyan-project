@@ -1041,26 +1041,26 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-8 py-2 flex flex-col min-h-0">
       {/* Hero / Search Section - Pulled higher, balanced */}
-      <div className="flex flex-col mt-2 md:mt-4 mb-8 md:mb-12">
+      <div className="flex flex-col mt-4 md:mt-8 mb-10 md:mb-16">
         
         {/* Title Section always visible */}
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-4 md:mb-6"
+            className="text-center mb-6 md:mb-8"
           >
              <header className="text-center">
         
                 <motion.div
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
-                   className="text-zinc-500 font-bold text-sm mb-2"
+                   className="text-zinc-400 font-bold text-xs md:text-sm tracking-widest uppercase mb-3 md:mb-4"
                 >
                    {language === 'ar' ? proactiveInsights.arSub : proactiveInsights.enSub}
                 </motion.div>
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-black tracking-tighter leading-[0.9] mb-4 md:mb-6">
+                <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-black text-black tracking-tighter leading-[0.85] mb-5 md:mb-8">
                   {language === 'ar' ? proactiveInsights.arG.split(' ')[0] : proactiveInsights.enG.split(' ')[0]}<br/>
-                  <span className="text-zinc-400 italic">
+                  <span className="text-zinc-300 italic">
                       {language === 'ar' 
                           ? proactiveInsights.arG.split(' ').slice(1).join(' ') 
                           : proactiveInsights.enG.split(' ').slice(1).join(' ')}
@@ -1174,8 +1174,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
             )}
             <div className={cn(
-              "flex items-center w-full max-w-2xl rounded-3xl p-2 transition-all duration-300",
-              isFocused ? "shadow-xl border-zinc-300 ring-2 ring-zinc-100" : "shadow-sm border-zinc-200",
+              "flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-500",
+              isFocused ? "shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-zinc-200 ring-4 ring-zinc-100 bg-white" : "shadow-sm border-zinc-200 bg-white/80",
               getFluidStyles(),
               getFluidAmbient()
             )}>
@@ -1209,18 +1209,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  className="w-full bg-transparent border-none outline-none p-4 text-base md:text-xl font-bold text-black placeholder:text-zinc-400 z-10 relative resize-none leading-relaxed"
+                  className="w-full bg-transparent border-none outline-none px-6 py-4 text-lg md:text-2xl font-bold tracking-tight text-black placeholder:text-zinc-300 z-10 relative resize-none leading-relaxed"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
                 
                 {smartSuggestion && smartSuggestion.startsWith(searchValue) && (
                   <div 
-                    className="pointer-events-none absolute inset-0 p-4 text-base md:text-xl font-bold z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
+                    className="pointer-events-none absolute inset-0 px-6 py-4 text-lg md:text-2xl font-bold tracking-tight z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
                     dir={language === 'ar' ? 'rtl' : 'ltr'}
                   >
                     <span className="invisible">{searchValue}</span>
-                    <span className="text-zinc-300">{smartSuggestion.slice(searchValue.length)}</span>
+                    <span className="text-zinc-200">{smartSuggestion.slice(searchValue.length)}</span>
                   </div>
                 )}
               </div>
@@ -1229,11 +1229,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               <button 
                 type="submit"
                 className={cn(
-                  "bg-black text-white p-3 md:p-4 rounded-2xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
-                  query.length > 0 ? "opacity-100" : "opacity-30 pointer-events-none"
+                  "bg-black text-white w-14 h-14 md:w-16 md:h-16 rounded-[20px] transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
+                  query.length > 0 ? "opacity-100 shadow-xl shadow-black/10" : "opacity-30 pointer-events-none"
                 )}
               >
-                  <Search className="w-5 h-5 md:w-6 md:h-6" />
+                  <Search className="w-6 h-6 md:w-7 md:h-7" />
               </button>
             </div>
             
@@ -1411,18 +1411,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                                key={`sec-${s.id}`}
                                                type="button"
                                                onClick={() => handlePathSelect(s.id, query)}
-                                               className="flex items-center justify-between p-4 rounded-[24px] transition-all group text-right border bg-white border-zinc-200 hover:border-black active:scale-95 shadow-sm"
+                                               className="flex items-center justify-between p-5 rounded-[24px] transition-all duration-300 group text-right border bg-white border-zinc-100 hover:border-zinc-300 active:scale-95 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-0.5"
                                              >
                                               <div className="flex items-center gap-4">
-                                                  <div className="w-10 h-10 rounded-[16px] bg-zinc-100 text-zinc-400 group-hover:bg-black group-hover:text-white transition-all flex items-center justify-center">
+                                                  <div className="w-12 h-12 rounded-[16px] bg-zinc-50 border border-zinc-100 text-zinc-400 group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all duration-300 flex items-center justify-center">
                                                       <Icon className="w-5 h-5" />
                                                   </div>
                                                   <div className="text-right">
-                                                      <h4 className="text-sm font-black text-black">{s.label}</h4>
-                                                      <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
+                                                      <h4 className="text-sm font-black text-zinc-900">{s.label}</h4>
+                                                      <p className="text-xs leading-relaxed text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                                   </div>
                                               </div>
-                                              <ArrowLeft className={cn("w-4 h-4 text-zinc-300 group-hover:text-black", language === 'ar' ? "" : "rotate-180")} />
+                                              <ArrowLeft className={cn("w-4 h-4 text-zinc-300 group-hover:text-zinc-900 transition-colors", language === 'ar' ? "" : "rotate-180")} />
                                              </button>
                                            );
                                         })}
@@ -1447,14 +1447,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                        key={`alt-${s.id}`}
                                        type="button"
                                        onClick={() => handlePathSelect(s.id, query)}
-                                       className="w-full flex items-center gap-3 p-3 rounded-[20px] transition-all group text-right bg-zinc-50 border border-transparent hover:border-zinc-200 active:scale-95"
+                                       className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-zinc-100/50 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
                                      >
-                                       <div className="w-8 h-8 rounded-xl bg-white text-zinc-400 flex items-center justify-center shadow-sm group-hover:text-black">
+                                       <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-zinc-400 flex items-center justify-center shadow-sm group-hover:text-black group-hover:border-zinc-300 transition-colors shrink-0">
                                          <Icon className="w-4 h-4" />
                                        </div>
-                                       <div className="text-right flex-1 min-w-0">
-                                          <div className="font-bold text-xs text-zinc-800 truncate">{s.label}</div>
-                                          <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
+                                       <div className="text-right flex-1 min-w-0 break-words w-full">
+                                          <div className="font-black text-sm text-zinc-800 truncate mb-0.5">{s.label}</div>
+                                          <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2 w-full">{s.desc}</p>
                                        </div>
                                      </button>
                                    );
@@ -1595,14 +1595,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                       <div 
                                          key={`mob-rest-${s.id}`} 
                                          onClick={() => handlePathSelect(s.id, query)} 
-                                         className="flex flex-col items-start gap-3 p-4 bg-white rounded-[24px] border border-zinc-100 hover:border-black active:scale-95 transition-all group cursor-pointer"
+                                         className="flex flex-col items-start gap-4 p-5 bg-white rounded-[24px] border border-zinc-100/80 hover:border-zinc-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95 transition-all group cursor-pointer"
                                       >
-                                         <div className="w-8 h-8 rounded-[12px] bg-zinc-50 text-zinc-400 group-hover:bg-black group-hover:text-white transition-all flex items-center justify-center">
+                                         <div className="w-10 h-10 rounded-[14px] bg-zinc-50 border border-zinc-100 text-zinc-400 group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
                                             <Icon className="w-4 h-4" />
                                          </div>
                                          <div className="text-right">
-                                            <div className="font-bold text-[11px] text-zinc-800">{s.label}</div>
-                                            <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
+                                            <div className="font-black text-[13px] text-zinc-900 mb-1">{s.label}</div>
+                                            <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2">{s.desc}</p>
                                          </div>
                                       </div>
                                     );
@@ -1663,27 +1663,27 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-zinc-900 border border-zinc-800 rounded-3xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl relative overflow-hidden group"
+                className="bg-black border border-zinc-800 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_rgba(0,0,0,0.15)] relative overflow-hidden group"
              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="flex items-center gap-4 z-10 w-full md:w-auto">
-                    <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
-                        <Sparkles className="w-5 h-5 animate-pulse" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800/20 rounded-full blur-[80px] pointer-events-none" />
+                <div className="flex items-center gap-5 z-10 w-full md:w-auto">
+                    <div className="w-14 h-14 rounded-[20px] bg-zinc-900 text-zinc-300 border border-zinc-800 flex items-center justify-center shrink-0">
+                        <Sparkles className="w-6 h-6 animate-pulse opacity-70" />
                     </div>
                     <div className="text-right">
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-sm">
+                        <div className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800">
                                 {language === 'ar' ? 'رسالة سريعة الزوال' : 'Ephemeral Wisdom'}
                             </span>
                         </div>
-                        <p className="text-sm md:text-base font-bold text-white">
+                        <p className="text-base md:text-lg font-bold text-zinc-100 leading-relaxed tracking-tight max-w-xl">
                             {language === 'ar' ? currentWisdom.ar : currentWisdom.en}
                         </p>
                     </div>
                 </div>
-                <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto">
-                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
-                    <div className="text-xl md:text-2xl font-mono font-black text-white/90">
+                <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto mt-4 md:mt-0">
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
+                    <div className="text-2xl md:text-3xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900 px-4 py-2 rounded-2xl border border-zinc-800 shadow-inner">
                         {String(ephemeralTime.m).padStart(2, '0')}:{String(ephemeralTime.s).padStart(2, '0')}
                     </div>
                 </div>
@@ -1693,61 +1693,61 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
 
           {/* Daily Challenge & Insights Section */}
-          <div className="emotion-hide mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+          <div className="emotion-hide mt-10 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         <motion.div
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           className="bg-mood-primary rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-white relative overflow-hidden group shadow-lg shadow-mood-glow"
+           className="bg-mood-primary rounded-[32px] md:rounded-[48px] p-8 md:p-10 text-white relative overflow-hidden group shadow-[0_24px_60px_rgba(var(--mood-primary-rgb),0.2)]"
         >
             <div className="relative z-10">
-                <div className="flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full w-fit mb-4 md:mb-6">
-                    <Gamepad2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                    <span className="text-[11px] leading-[1.6] uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full w-fit mb-6 md:mb-8 backdrop-blur-md border border-white/10">
+                    <Gamepad2 className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black mb-3 md:mb-4">
+                <h3 className="text-2xl md:text-3xl font-black mb-4 md:mb-5 leading-tight tracking-tight">
                     {language === 'ar' ? currentChallenge.titleAr : currentChallenge.titleEn}
                 </h3>
-                <p className="text-white/80 text-xs md:text-sm mb-6 md:mb-8 leading-relaxed">
+                <p className="text-white/80 text-sm md:text-base mb-8 md:mb-10 leading-relaxed font-medium">
                     {language === 'ar' ? 'تحدَّ نفسك في المحاكي اليوم' : 'Challenge yourself in the simulator today'}
                 </p>
                 <button 
                     onClick={() => onPathSelect(currentChallenge.path as any, currentChallenge.query)}
-                    className="w-full py-3 md:py-4 bg-white text-mood-primary rounded-xl md:rounded-2xl font-black text-sm md:text-base hover:bg-mood-secondary hover:text-white transition-all shadow-lg active:scale-95"
+                    className="w-full py-4 md:py-5 bg-white text-mood-primary rounded-2xl md:rounded-[24px] font-black text-sm md:text-lg hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95"
                 >
                     {language === 'ar' ? 'ابدأ التحدي' : 'Start Challenge'}
                 </button>
             </div>
             {/* Abstract background element */}
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
+            <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-white/10 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-1000 pointer-events-none" />
         </motion.div>
 
         <motion.div
            initial={{ opacity: 0, x: -20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           className="bg-white rounded-[24px] md:rounded-[40px] p-6 md:p-8 border border-zinc-200 flex flex-col justify-between"
+           className="bg-white rounded-[32px] md:rounded-[48px] p-8 md:p-10 border border-zinc-100 flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] transition-shadow duration-500"
         >
             <div>
-                <div className="flex items-center gap-2 px-3 py-1 bg-zinc-100 text-zinc-500 rounded-full w-fit mb-4 md:mb-6">
-                    <BrainCircuit className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                    <span className="text-[11px] leading-[1.6] uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
+                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-50 text-zinc-500 rounded-full w-fit mb-6 md:mb-8 border border-zinc-100">
+                    <BrainCircuit className="w-4 h-4 md:w-5 md:h-5" />
+                    <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
                 </div>
-                <h3 className="text-lg md:text-xl font-black text-black mb-4">
+                <h3 className="text-xl md:text-2xl font-black text-black mb-6 tracking-tight">
                     {language === 'ar' ? currentInsight.titleAr : currentInsight.titleEn}
                 </h3>
-                <div className="space-y-3 md:space-y-4">
+                <div className="space-y-4 md:space-y-5">
                     {currentInsight.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-3 md:p-3 bg-zinc-50 rounded-xl">
-                            <span className="text-xs md:text-sm font-bold text-zinc-700">{language === 'ar' ? item.labelAr : item.labelEn}</span>
-                            <div className="h-1 md:h-1.5 w-16 md:w-24 bg-zinc-200 rounded-full overflow-hidden">
-                                 <div className={`h-full ${item.color} w-[${item.pct}]`} style={{ width: item.pct }} />
+                        <div key={idx} className="flex items-center justify-between p-4 md:p-5 bg-zinc-50/80 rounded-2xl border border-zinc-100/50 hover:bg-zinc-50 transition-colors">
+                            <span className="text-sm md:text-base font-bold text-zinc-700">{language === 'ar' ? item.labelAr : item.labelEn}</span>
+                            <div className="h-1.5 md:h-2 w-20 md:w-32 bg-zinc-200/60 rounded-full overflow-hidden shadow-inner">
+                                 <div className={`h-full ${item.color} w-[${item.pct}] rounded-full`} style={{ width: item.pct }} />
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-            <p className="mt-6 md:mt-8 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center">
+            <p className="mt-8 md:mt-12 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center border-t border-zinc-100 pt-6">
                 {language === 'ar' ? 'تحليل 2000 حالة' : 'Based on 2000 cases'}
             </p>
         </motion.div>
@@ -1758,18 +1758,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="emotion-hide mt-6 md:mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch gap-4 md:gap-8"
+          className="emotion-hide mt-10 md:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch gap-6 md:gap-8 mb-16"
       >
-          <div className="flex-1 p-8 bg-[#F6F5F0] rounded-[32px] border border-[#EBEAE4] flex flex-col justify-between gap-6 hover:border-[#A68F58]/40 transition-colors group cursor-pointer" onClick={() => handleTabChange('mylibrary')}>
-              <div className="flex items-center gap-6 text-right">
-                  <div className="w-16 h-16 rounded-[24px] bg-white flex items-center justify-center text-[#A68F58] shadow-sm transform group-hover:-translate-y-1 transition-transform">
-                      <LibraryBig className="w-8 h-8" />
-                  </div>
+          <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] hover:border-zinc-200 transition-all duration-500 group cursor-pointer" onClick={() => handleTabChange('mylibrary')}>
+              <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
                   <div className="text-right">
-                      <h3 className="text-xl font-black text-[#2A2925] mb-1">
+                      <h3 className="text-xl md:text-2xl font-black text-black mb-2 tracking-tight">
                           {language === 'ar' ? 'مكتبتك المفضلة' : 'Your Favorite Library'}
                       </h3>
-                      <p className="text-[#6B6A65] font-bold text-sm">
+                      <p className="text-zinc-500 font-bold text-sm leading-relaxed">
                           {preferences.savedLibrary && preferences.savedLibrary.length > 0 ? (
                             language === 'ar' 
                               ? `لديك ${preferences.savedLibrary.length} مادة محفوظة للرجوع إليها.` 
@@ -1781,39 +1778,25 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           )}
                       </p>
                   </div>
+                  <div className="w-16 h-16 rounded-[24px] bg-white flex items-center justify-center text-zinc-900 border border-zinc-100 shadow-sm transform group-hover:-translate-y-1 transition-transform shrink-0">
+                      <LibraryBig className="w-8 h-8 opacity-80" />
+                  </div>
               </div>
           </div>
 
-        {/* <div className="flex-1 p-8 bg-black rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-black transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ar')}>
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/40 to-fuchsia-900/20 group-hover:opacity-100 transition-opacity"></div>
-              <div className="flex items-center gap-6 text-right relative z-10">
-                  <div className="w-16 h-16 rounded-[24px] bg-white/10 flex items-center justify-center text-white shadow-sm border border-white/20 transform group-hover:scale-110 transition-transform">
-                      <Box className="w-8 h-8" />
-                  </div>
+          <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgba(var(--mood-primary-rgb),0.1)] hover:border-mood-primary/30 transition-all duration-500 group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
+              <div className="absolute inset-0 bg-mood-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+              <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
                   <div className="text-right">
-                      <h3 className="text-xl font-black text-white mb-1">
-                          {language === 'ar' ? 'فضاء تبيان (AR)' : 'Tibyan AR Space'}
-                      </h3>
-                      <p className="text-zinc-400 font-bold text-sm">
-                          {language === 'ar' ? 'تجسيد الأفكار' : 'Materialize concepts'}
-                      </p>
-                  </div>
-              </div>
-          </div> */}
-
-          <div className="flex-1 p-8 bg-zinc-950 rounded-[32px] border border-zinc-800 flex flex-col justify-between gap-6 hover:border-mood-primary/50 transition-colors group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 mix-blend-screen pointer-events-none group-hover:opacity-30 transition-opacity"></div>
-              <div className="flex items-center gap-6 text-right relative z-10">
-                  <div className="w-16 h-16 rounded-[24px] bg-mood-primary/20 flex items-center justify-center text-mood-primary shadow-sm border border-mood-primary/30 transform group-hover:scale-110 transition-transform">
-                      <Network className="w-8 h-8" />
-                  </div>
-                  <div className="text-right">
-                      <h3 className="text-xl font-black text-white mb-1">
+                      <h3 className="text-xl md:text-2xl font-black text-black mb-2 tracking-tight">
                           {language === 'ar' ? 'الشبكة العصبية' : 'Knowledge Graph'}
                       </h3>
-                      <p className="text-zinc-400 font-bold text-sm">
+                      <p className="text-zinc-500 font-bold text-sm leading-relaxed">
                           {language === 'ar' ? 'ارتباط الأفكار بوعيك' : 'How ideas connect'}
                       </p>
+                  </div>
+                  <div className="w-16 h-16 rounded-[24px] bg-mood-primary/10 flex items-center justify-center text-mood-primary border border-mood-primary/20 shadow-sm transform group-hover:scale-105 transition-transform shrink-0">
+                      <Network className="w-8 h-8 opacity-80" />
                   </div>
               </div>
           </div>
