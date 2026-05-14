@@ -70,10 +70,44 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
             )}
 
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-32 text-zinc-400 bg-zinc-50 rounded-[48px] border border-dashed border-zinc-200">
-                    <LibraryBig className="w-24 h-24 mb-6 opacity-10" />
-                    <p className="font-black text-xl mb-2">{language === 'ar' ? 'جدار الحكمة فارغ حالياً' : 'Your Gallery is currently empty'}</p>
-                    <p className="text-sm font-bold opacity-60">{language === 'ar' ? 'ابدأ في حفظ الأفكار والقرارات لتُعرض هنا كلوحات.' : 'Start saving ideas and decisions to see them displayed here.'}</p>
+                <div className="flex flex-col items-center justify-center min-h-[400px] py-20 text-zinc-400 bg-white shadow-sm rounded-[48px] border border-zinc-100 relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-zinc-50 to-white pointer-events-none" />
+                    
+                    {/* Artistic Line Drawing Animation */}
+                    <div className="relative w-40 h-40 mb-10 flex items-center justify-center">
+                        <motion.svg width="120" height="120" viewBox="0 0 120 120" className="absolute opacity-20">
+                            <motion.path 
+                                d="M60 10 C 20 10, 10 50, 60 110 C 110 50, 100 10, 60 10 Z"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                initial={{ pathLength: 0 }}
+                                animate={{ pathLength: 1 }}
+                                transition={{ duration: 4, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
+                            />
+                            <motion.circle 
+                                cx="60" cy="60" r="30"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1"
+                                strokeDasharray="4 4"
+                                initial={{ rotate: 0 }}
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 20, ease: "linear", repeat: Infinity }}
+                            />
+                        </motion.svg>
+                        
+                        <div className="relative bg-white rounded-3xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.06)] border border-zinc-100 group-hover:-translate-y-2 transition-transform duration-700">
+                             <LibraryBig className="w-12 h-12 text-zinc-300" strokeWidth={1} />
+                        </div>
+                    </div>
+
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                        <p className="font-serif text-2xl mb-3 text-zinc-800">{language === 'ar' ? 'مساحتك الفكرية تتشكل...' : 'Your intellectual space is forming...'}</p>
+                        <p className="text-[13px] font-medium opacity-60 text-zinc-500 max-w-[260px] leading-relaxed">
+                            {language === 'ar' ? 'لم تنقش أي فكرة بعد. كل حكمة تحفظها ستُصبح جزءاً من هذا النسيج.' : 'No ideas etched yet. Every wisdom you save will become part of this fabric.'}
+                        </p>
+                    </div>
                 </div>
             ) : (
                 <div className="relative w-full h-[65vh] bg-white rounded-[40px] shadow-2xl border border-zinc-200 overflow-hidden flex flex-col pt-12 items-center">

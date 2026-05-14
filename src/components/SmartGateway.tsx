@@ -1663,27 +1663,29 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-black border border-zinc-800 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_rgba(0,0,0,0.15)] relative overflow-hidden group"
+                whileHover={{ scale: 1.01, y: -2 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="bg-black/90 backdrop-blur-xl border border-zinc-800/80 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:shadow-[0_30px_80px_rgba(0,0,0,0.4)]"
              >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800/20 rounded-full blur-[80px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
                 <div className="flex items-center gap-5 z-10 w-full md:w-auto">
-                    <div className="w-14 h-14 rounded-[20px] bg-zinc-900 text-zinc-300 border border-zinc-800 flex items-center justify-center shrink-0">
-                        <Sparkles className="w-6 h-6 animate-pulse opacity-70" />
+                    <div className="w-14 h-14 rounded-[20px] bg-zinc-900/80 text-zinc-300 border border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
+                        <Sparkles className="w-6 h-6 animate-pulse opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                     </div>
                     <div className="text-right">
                         <div className="flex items-center gap-2 mb-2">
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 bg-zinc-900 px-3 py-1 rounded-full border border-zinc-800">
+                            <span className="text-sm font-serif italic text-zinc-400">
                                 {language === 'ar' ? 'رسالة سريعة الزوال' : 'Ephemeral Wisdom'}
                             </span>
                         </div>
-                        <p className="text-base md:text-lg font-bold text-zinc-100 leading-relaxed tracking-tight max-w-xl">
+                        <p className="text-base md:text-lg font-serif text-white/90 leading-relaxed max-w-xl">
                             {language === 'ar' ? currentWisdom.ar : currentWisdom.en}
                         </p>
                     </div>
                 </div>
                 <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto mt-4 md:mt-0">
                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
-                    <div className="text-2xl md:text-3xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900 px-4 py-2 rounded-2xl border border-zinc-800 shadow-inner">
+                    <div className="text-2xl md:text-3xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900/50 backdrop-blur-md px-4 py-2 rounded-2xl border border-zinc-800/50 shadow-inner">
                         {String(ephemeralTime.m).padStart(2, '0')}:{String(ephemeralTime.s).padStart(2, '0')}
                     </div>
                 </div>
@@ -1698,14 +1700,16 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           className="bg-mood-primary rounded-[32px] md:rounded-[48px] p-8 md:p-10 text-white relative overflow-hidden group shadow-[0_24px_60px_rgba(var(--mood-primary-rgb),0.2)]"
+           whileHover={{ scale: 1.01, y: -2 }}
+           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+           className="bg-mood-primary/95 backdrop-blur-xl rounded-[32px] md:rounded-[48px] p-8 md:p-10 text-white relative overflow-hidden group shadow-[0_24px_60px_rgba(var(--mood-primary-rgb),0.25)] hover:shadow-[0_30px_80px_rgba(var(--mood-primary-rgb),0.35)]"
         >
             <div className="relative z-10">
                 <div className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full w-fit mb-6 md:mb-8 backdrop-blur-md border border-white/10">
-                    <Gamepad2 className="w-4 h-4 md:w-5 md:h-5" />
+                    <Gamepad2 className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
                     <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black mb-4 md:mb-5 leading-tight tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-serif mb-4 md:mb-5 leading-tight tracking-tight">
                     {language === 'ar' ? currentChallenge.titleAr : currentChallenge.titleEn}
                 </h3>
                 <p className="text-white/80 text-sm md:text-base mb-8 md:mb-10 leading-relaxed font-medium">
@@ -1713,41 +1717,48 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 </p>
                 <button 
                     onClick={() => onPathSelect(currentChallenge.path as any, currentChallenge.query)}
-                    className="w-full py-4 md:py-5 bg-white text-mood-primary rounded-2xl md:rounded-[24px] font-black text-sm md:text-lg hover:shadow-xl hover:-translate-y-1 transition-all active:scale-95"
+                    className="w-full py-4 md:py-5 bg-white/90 backdrop-blur-md text-mood-primary rounded-2xl md:rounded-[24px] font-black text-sm md:text-lg hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all active:scale-95 border border-white"
                 >
                     {language === 'ar' ? 'ابدأ التحدي' : 'Start Challenge'}
                 </button>
             </div>
             {/* Abstract background element */}
-            <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-white/10 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-1000 pointer-events-none" />
+            <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-white/20 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-1000 pointer-events-none" />
         </motion.div>
 
         <motion.div
            initial={{ opacity: 0, x: -20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           className="bg-white rounded-[32px] md:rounded-[48px] p-8 md:p-10 border border-zinc-100 flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] transition-shadow duration-500"
+           whileHover={{ scale: 1.01, y: -2 }}
+           transition={{ type: "spring", stiffness: 300, damping: 20 }}
+           className="bg-white/80 backdrop-blur-xl rounded-[32px] md:rounded-[48px] p-8 md:p-10 border border-zinc-100/50 flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.08)] transition-all duration-500"
         >
             <div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-50 text-zinc-500 rounded-full w-fit mb-6 md:mb-8 border border-zinc-100">
-                    <BrainCircuit className="w-4 h-4 md:w-5 md:h-5" />
+                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-50/50 text-zinc-500 rounded-full w-fit mb-6 md:mb-8 border border-zinc-100/50 backdrop-blur-md">
+                    <BrainCircuit className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
                     <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
                 </div>
-                <h3 className="text-xl md:text-2xl font-black text-black mb-6 tracking-tight">
+                <h3 className="text-xl md:text-2xl font-serif text-black mb-6 tracking-tight leading-tight">
                     {language === 'ar' ? currentInsight.titleAr : currentInsight.titleEn}
                 </h3>
                 <div className="space-y-4 md:space-y-5">
                     {currentInsight.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-4 md:p-5 bg-zinc-50/80 rounded-2xl border border-zinc-100/50 hover:bg-zinc-50 transition-colors">
+                        <div key={idx} className="flex items-center justify-between p-4 md:p-5 bg-zinc-50/50 rounded-2xl border border-zinc-100/30 hover:bg-zinc-50 transition-colors backdrop-blur-sm">
                             <span className="text-sm md:text-base font-bold text-zinc-700">{language === 'ar' ? item.labelAr : item.labelEn}</span>
-                            <div className="h-1.5 md:h-2 w-20 md:w-32 bg-zinc-200/60 rounded-full overflow-hidden shadow-inner">
-                                 <div className={`h-full ${item.color} w-[${item.pct}] rounded-full`} style={{ width: item.pct }} />
+                            <div className="h-1.5 md:h-2 w-20 md:w-32 bg-zinc-200/40 rounded-full overflow-hidden shadow-inner flex shrink-0">
+                                 <motion.div 
+                                    className={`h-full ${item.color} rounded-full`} 
+                                    initial={{ width: 0 }}
+                                    whileInView={{ width: item.pct }}
+                                    transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                                 />
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-            <p className="mt-8 md:mt-12 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center border-t border-zinc-100 pt-6">
+            <p className="mt-8 md:mt-12 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center border-t border-zinc-100/50 pt-6">
                 {language === 'ar' ? 'تحليل 2000 حالة' : 'Based on 2000 cases'}
             </p>
         </motion.div>

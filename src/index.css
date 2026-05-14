@@ -15,7 +15,9 @@
   --color-brand-accent: #000000;
   --color-brand-bg: #FAFAFA;
   --mood-primary: #6366f1;
+  --mood-primary-rgb: 99, 102, 241;
   --mood-secondary: #10b981;
+  --mood-secondary-rgb: 16, 185, 129;
   --mood-glow: rgba(99, 102, 241, 0.15);
   transition: --mood-primary 0.8s ease, --mood-secondary 0.8s ease, --mood-glow 0.8s ease;
 }
@@ -52,13 +54,13 @@
   --mood-glow: rgba(245, 158, 11, 0.2);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: "Alexandria", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Amiri", serif;
+  --font-sans: 'Alexandria', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Amiri', 'Playfair Display', ui-serif, Georgia, serif;
   
   --color-brand-primary: #000000;
   --color-brand-accent: #000000;
@@ -86,6 +88,10 @@
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
 }
 
 @layer base {

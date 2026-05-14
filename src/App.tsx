@@ -416,9 +416,10 @@ const AppContent: React.FC = () => {
             {showSplash && <SplashScreen key="splash" onFinish={() => setShowSplash(false)} language={language} />}
           </AnimatePresence>
           
-          {/* Dynamic Background Glow Overlay */}
-          <div className="fixed inset-0 pointer-events-none z-0">
-            <div className="absolute top-0 right-0 w-full h-full bg-mood-glow blur-[120px] transition-colors duration-1000 opacity-30" />
+          {/* Background Elements (Volume & Texture) */}
+          <div className="fixed inset-0 pointer-events-none z-0 flex flex-col">
+              <div className="absolute inset-0 bg-noise mix-blend-multiply opacity-40"></div>
+              <div className="absolute top-0 right-0 w-full h-full bg-mood-glow blur-[120px] transition-colors duration-1000 opacity-30 mix-blend-normal" />
           </div>
           
           {/* Liquid Mood Pour Transition */}
@@ -870,22 +871,61 @@ const AppContent: React.FC = () => {
       <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
 
       <AnimatePresence>
+          {isAnalyzingTwin && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6"
+              >
+                 <motion.div 
+                   initial={{ scale: 0.9, opacity: 0 }}
+                   animate={{ scale: 1, opacity: 1 }}
+                   exit={{ scale: 0.9, opacity: 0 }}
+                   className="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-[40px] p-10 flex flex-col items-center justify-center relative overflow-hidden shadow-2xl"
+                 >
+                    {/* Artistic Particle/Wave Animation */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-emerald-500/10 animate-pulse pointer-events-none" />
+                    <div className="w-24 h-24 relative mb-8">
+                       <motion.div 
+                         initial={{ rotate: 0 }}
+                         animate={{ rotate: 360 }}
+                         transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                         className="absolute inset-0 border-[2px] border-dashed border-zinc-700 rounded-full"
+                       />
+                       <motion.div 
+                         initial={{ rotate: 360 }}
+                         animate={{ rotate: 0 }}
+                         transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                         className="absolute inset-2 border-[1px] border-zinc-600 rounded-full opacity-60"
+                       />
+                       <div className="absolute inset-4 bg-zinc-900 rounded-full flex items-center justify-center border border-zinc-800 shadow-inner">
+                           <Brain className="w-8 h-8 text-indigo-400 animate-pulse" />
+                       </div>
+                    </div>
+                    <h4 className="font-serif text-white text-xl mb-3">{language === 'ar' ? 'نقرأ نسيجك الفكري...' : 'Reading your thought fabric...'}</h4>
+                    <p className="text-zinc-500 text-sm text-center font-medium leading-relaxed">
+                        {language === 'ar' ? 'نقارن نبضاتك مع آلاف العقول بحثاً عن توأم روحك' : 'Comparing your pulses with thousands of minds...'}
+                    </p>
+                 </motion.div>
+              </motion.div>
+          )}
           {soulTwinMsg && (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="fixed bottom-32 z-50 left-8 right-8 md:left-auto md:right-8 md:w-96 p-6 bg-white border border-zinc-200 rounded-[32px] shadow-3xl overflow-hidden"
+                className="fixed bottom-32 z-50 left-8 right-8 md:left-auto md:right-8 md:w-[400px] p-8 bg-zinc-950 border border-zinc-800 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.4)] overflow-hidden"
               >
                   <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-emerald-500" />
-                  <button onClick={() => setSoulTwinMsg(null)} className="absolute top-4 right-4 p-2 text-zinc-400 hover:text-zinc-600"><X className="w-5 h-5" /></button>
-                  <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                          <Sparkles className="w-5 h-5" />
+                  <button onClick={() => setSoulTwinMsg(null)} className="absolute top-6 right-6 p-2 text-zinc-500 hover:text-white transition-colors"><X className="w-5 h-5" /></button>
+                  <div className="flex items-center gap-4 mb-6">
+                      <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-[18px] flex items-center justify-center text-indigo-400 shadow-inner">
+                          <Sparkles className="w-6 h-6" strokeWidth={1.5} />
                       </div>
-                      <h4 className="font-black text-sm uppercase tracking-widest">{language === 'ar' ? 'توأم الروح الفكري' : 'INTELLECTUAL TWIN'}</h4>
+                      <h4 className="font-serif text-white text-lg">{language === 'ar' ? 'توأم الروح الفكري' : 'Intellectual Twin'}</h4>
                   </div>
-                  <p className="text-zinc-700 font-bold leading-relaxed">{soulTwinMsg}</p>
+                  <p className="text-zinc-400 font-serif leading-relaxed text-[15px]">{soulTwinMsg}</p>
               </motion.div>
           )}
       </AnimatePresence>
