@@ -444,7 +444,10 @@ export const qawlFaslService = {
     },
   
     async updateMissingQuestionStatus(id: string, status: string, suggestedQuestion?: string, generatedAnswer?: string) {
-      await updateDoc(doc(db, 'missing_questions', id), { status, suggestedQuestion, generatedAnswer });
+      const updateData: any = { status };
+      if (suggestedQuestion !== undefined) updateData.suggestedQuestion = suggestedQuestion;
+      if (generatedAnswer !== undefined) updateData.generatedAnswer = generatedAnswer;
+      await updateDoc(doc(db, 'missing_questions', id), updateData);
     },
   
     async autoGenerateMissingDrafts() {
@@ -457,12 +460,14 @@ export const qawlFaslService = {
             const data = docRef.data();
             const content = await this.handleMissingSearchPublishing(data.query);
             
-            await updateDoc(doc(db, 'missing_questions', docRef.id), { 
+            const updateData: any = {
                status: 'published_or_draft',
-               source: 'AI-instant',
-               suggestedQuestion: content.question, 
-               generatedAnswer: content.quickSummary
-            });
+               source: 'AI-instant'
+            };
+            if (content.question !== undefined) updateData.suggestedQuestion = content.question;
+            if (content.quickSummary !== undefined) updateData.generatedAnswer = content.quickSummary;
+            
+            await updateDoc(doc(db, 'missing_questions', docRef.id), updateData);
             
             // Artificial delay to prevent triggering API rate limits
             await new Promise(resolve => setTimeout(resolve, 4000));

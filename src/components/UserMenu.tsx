@@ -102,6 +102,11 @@ export default function UserMenu() {
               <button 
                 onClick={() => {
                   setIsOpen(false);
+                  localStorage.removeItem('tebyan_memory');
+                  localStorage.removeItem('tebyan_sage_progress');
+                  localStorage.removeItem('tibyan_search_history');
+                  localStorage.removeItem('tebyan_search_history');
+                  localStorage.removeItem('tebyan_usage_stats');
                   auth.signOut();
                 }}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-zinc-600 hover:bg-rose-50 hover:text-rose-600 transition-colors w-full text-start group"

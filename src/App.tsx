@@ -611,7 +611,14 @@ const AppContent: React.FC = () => {
                       )}
                       
                       <button 
-                        onClick={() => signOut(auth)} 
+                        onClick={() => {
+                          localStorage.removeItem('tebyan_memory');
+                          localStorage.removeItem('tebyan_sage_progress');
+                          localStorage.removeItem('tibyan_search_history');
+                          localStorage.removeItem('tebyan_search_history');
+                          localStorage.removeItem('tebyan_usage_stats');
+                          signOut(auth);
+                        }} 
                         className="w-full flex items-center justify-center gap-3 py-4 bg-rose-600 text-white hover:bg-rose-700 rounded-[20px] text-base font-black shadow-lg shadow-rose-200 transition-all active:scale-[0.98]"
                       >
                         <LogOut className="w-5 h-5" />

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { initializeAuth, browserLocalPersistence } from 'firebase/auth';
+import { getAuth, initializeAuth, browserLocalPersistence } from 'firebase/auth';
 import { initializeFirestore } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
@@ -8,7 +8,5 @@ export const db = initializeFirestore(app, {
   experimentalForceLongPolling: true
 }, firebaseConfig.firestoreDatabaseId);
 
-export const auth = initializeAuth(app, {
-  persistence: browserLocalPersistence
-});
+export const auth = getAuth(app);
 

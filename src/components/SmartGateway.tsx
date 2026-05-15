@@ -4,6 +4,7 @@ import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowL
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
+import { useAuth } from '../components/AuthProvider';
 import { detectEmotion } from '../services/gemini';
 
 import { GravityCard } from './GravityCard';
@@ -165,6 +166,7 @@ import { useSmartSearch } from '../hooks/useSmartSearch';
 
 export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood }) => {
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
+  const { user } = useAuth();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
   const [searchValue, setSearchValue] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
