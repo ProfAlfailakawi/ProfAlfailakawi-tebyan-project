@@ -27,18 +27,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // We removed the aggressive 10s timeout here to avoid logging out users on slow PWA wakeups.
     // Firebase will guarantee `onAuthStateChanged` fires when local persistence is resolved.
 
-    const testConnection = async () => {
-      try {
-        const { doc, getDocFromServer } = await import('firebase/firestore');
-        await getDocFromServer(doc(db, 'system_settings', 'connection'));
-      } catch (error) {
-        if(error instanceof Error && error.message.includes('the client is offline')) {
-          console.error("Please check your Firebase configuration.");
-        }
-      }
-    };
-    testConnection();
-
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setAuthReady(true);
       setUser(user);
