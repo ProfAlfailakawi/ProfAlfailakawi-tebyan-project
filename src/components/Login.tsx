@@ -37,8 +37,13 @@ export default function Login() {
     try {
       await signInWithPopup(auth, provider);
     } catch (error: any) {
+      console.error("Apple Login Error:", error);
       if (error.code !== 'auth/popup-closed-by-user') {
-        setError("حدث خطأ أثناء تسجيل الدخول بحساب Apple.");
+        if (error.code === 'auth/operation-not-allowed') {
+          setError("لم يتم تفعيل تسجيل دخول Apple في لوحة تحكم Firebase.");
+        } else {
+          setError(`حدث خطأ أثناء تسجيل الدخول بحساب Apple: ${error.message}`);
+        }
       }
     }
   };
