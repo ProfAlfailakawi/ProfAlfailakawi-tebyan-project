@@ -74,17 +74,15 @@ async function startServer() {
 
     // Health Endpoint
     app.get("/api/health", (req, res) => {
-        let rawGemini = process.env.GEMINI_API_KEY;
-        
-        res.json({
-            status: "ok",
-            env: process.env.NODE_ENV || 'development',
-            geminiKeyExists: !!rawGemini,
-            rawGeminiValue: rawGemini,
-            googleApiKeyExists: !!process.env.GOOGLE_API_KEY,
-            googleApiKeyValue: process.env.GOOGLE_API_KEY ? 'exists' : 'missing'
-        });
+    res.json({
+        status: "ok",
+        env: process.env.NODE_ENV || "development",
+        geminiKeyExists: !!process.env.GEMINI_API_KEY,
+        geminiKeyStatus: process.env.GEMINI_API_KEY ? "configured" : "missing",
+        googleApiKeyExists: !!process.env.GOOGLE_API_KEY,
+        googleApiKeyStatus: process.env.GOOGLE_API_KEY ? "configured" : "missing"
     });
+});
 
     // AI Rate Limiter (Increased substantially to prevent blocking)
     const aiRateLimit = rateLimit({
