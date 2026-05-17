@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   signInWithPopup, 
   GoogleAuthProvider, 
-  OAuthProvider,
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword 
 } from 'firebase/auth';
@@ -25,25 +24,6 @@ export default function Login() {
     } catch (error: any) {
       if (error.code !== 'auth/popup-closed-by-user') {
         setError("حدث خطأ أثناء تسجيل الدخول بحساب جوجل.");
-      }
-    }
-  };
-
-  const handleAppleLogin = async () => {
-    const provider = new OAuthProvider('apple.com');
-    // Apple suggests adding scopes if you need name and email.
-    provider.addScope('email');
-    provider.addScope('name');
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error: any) {
-      console.error("Apple Login Error:", error);
-      if (error.code !== 'auth/popup-closed-by-user') {
-        if (error.code === 'auth/operation-not-allowed') {
-          setError("لم يتم تفعيل تسجيل دخول Apple في لوحة تحكم Firebase.");
-        } else {
-          setError(`حدث خطأ أثناء تسجيل الدخول بحساب Apple: ${error.message}`);
-        }
       }
     }
   };
@@ -194,15 +174,6 @@ export default function Login() {
               تسجيل الدخول باستخدام جوجل
             </button>
 
-            <button 
-              onClick={handleAppleLogin}
-              className="w-full py-3.5 md:py-4 bg-black border border-black hover:bg-zinc-800 text-white rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all flex items-center justify-center gap-2 md:gap-3 text-sm md:text-base"
-            >
-              <svg viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 md:w-5 h-5 fill-current">
-                <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.3 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.3zM34.4 120.5A110.1 110.1 0 0 1 73 15.6c43.1-39.7 94.6-25 94.6-25s-14.7 49-62 89A109.8 109.8 0 0 1 34.4 120.5z" />
-              </svg>
-              تسجيل الدخول باستخدام Apple
-            </button>
           </div>
 
           <div className="text-center pb-2">
