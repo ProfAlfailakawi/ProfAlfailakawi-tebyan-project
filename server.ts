@@ -7,7 +7,7 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import cors from "cors";
 
-dotenv.config({ override: true });
+dotenv.config({ override: false });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

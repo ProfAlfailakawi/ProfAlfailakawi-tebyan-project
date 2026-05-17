@@ -8,3 +8,4 @@ dist/
 functions/.env
 functions/node_modules/
 functions/firebase-debug.log
+.env.*
