@@ -9,18 +9,12 @@
     "rewrites": [
       {
         "source": "/api/**",
-        "run": {
-          "serviceId": "tebyan-api",
-          "region": "us-central1"
-        }
+        "function": "api"
       },
       {
         "source": "**",
         "destination": "/index.html"
       }
     ]
-  },
-  "firestore": {
-    "rules": "firestore.rules"
   }
 }

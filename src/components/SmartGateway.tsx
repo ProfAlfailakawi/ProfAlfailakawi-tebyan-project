@@ -488,20 +488,26 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     const savedMemory = localStorage.getItem('tebyan_memory');
     const savedProgress = localStorage.getItem('tebyan_sage_progress');
 
-    if (savedMemory) {
-      const data = JSON.parse(savedMemory);
-      setLastInteraction(data);
-      const lastTime = new Date(data.timestamp).getTime();
-      const now = new Date().getTime();
-      if (now - lastTime > 3600000 && !data.followedUp) {
-        setShowFollowUp(true);
-      }
-    }
-
     if (savedProgress) {
       setSageProgress(JSON.parse(savedProgress));
     }
-  }, []);
+
+    if (savedMemory) {
+      const data = JSON.parse(savedMemory);
+      setLastInteraction(data);
+      if (user) {
+        const lastTime = new Date(data.timestamp).getTime();
+        const now = new Date().getTime();
+        if (now - lastTime > 3600000 && !data.followedUp) {
+          setShowFollowUp(true);
+        } else {
+          setShowFollowUp(false);
+        }
+      } else {
+        setShowFollowUp(false);
+      }
+    }
+  }, [user]);
 
   const updateSageProgress = (pointsToAdd: number, statKey?: keyof typeof sageProgress.stats) => {
     setSageProgress(prev => {
