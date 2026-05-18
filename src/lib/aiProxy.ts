@@ -26,15 +26,28 @@ export async function proxyGenerateContent(params: {
   // استخدام الرابط الأساسي للخادم إذا كان معرفاً في 환경 الإنتاج، وإلا استخدام مسار نسبي
   const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
   
-  const response = await fetch(`${baseUrl}/api/ai/generate`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(modifiedParams),
-  });
+  // we use root-relative path for /api calls, which is safest in a container
+  const apiPath = `/api/ai/generate`;
+
+  let response;
+  try {
+    response = await fetch(apiPath, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(modifiedParams),
+    });
+  } catch (fetchError: any) {
+    console.error('[AI Proxy] Fetch failed:', fetchError);
+    throw new Error('تحقق من اتصالك بالإنترنت، لم أتمكن من الوصول للمحرك.');
+  }
 
   const contentType = response.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {
-    throw new Error('يبدو أنك تستخدم النسخة المرفوعة (Static) والتي لا تحتوي على خادم (Backend) لدعم الذكاء الاصطناعي. يرجى التأكد من تشغيل التطبيق في بيئة تدعم خادم Node.js.');
+    // If we got HTML, log the start of it for debugging
+    const htmlSnippet = await response.text();
+    console.warn('[AI Proxy] Received non-JSON response:', htmlSnippet.substring(0, 200));
+    
+    throw new Error('يبدو أن هناك ضغطاً على الخادم حالياً. يرجى الانتظار قليلاً ثم المحاولة مرة أخرى.');
   }
 
   if (!response.ok) {
@@ -58,13 +71,20 @@ export async function proxyGenerateAudio(params: {
   text: string;
   voiceName?: string;
 }) {
-  const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
-  
-  const response = await fetch(`${baseUrl}/api/ai/audio`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(params),
-  });
+  // we use root-relative path for /api calls
+  const apiPath = `/api/ai/audio`;
+
+  let response;
+  try {
+    response = await fetch(apiPath, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+  } catch (err) {
+    console.error('[AI Proxy] Audio fetch failed:', err);
+    throw new Error('تحقق من اتصالك بالإنترنت، لم أتمكن من طلب الملف الصوتي.');
+  }
 
   const contentType = response.headers.get('content-type');
   if (!contentType || !contentType.includes('application/json')) {

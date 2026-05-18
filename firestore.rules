@@ -9,10 +9,14 @@ service cloud.firestore {
     // Helper: Validations
     function isSignedIn() { return request.auth != null; }
     function isAdmin() {
+      let email = request.auth.token.get('email', '').lower();
       return isSignedIn() && (
-        request.auth.token.get('email', '').lower() == "alfailakawidrahmad@gmail.com" ||
-        request.auth.token.get('email', '').lower() == "dr.ahmad@gmail.com" ||
-        request.auth.token.get('email', '').lower() == "dr.ahmad.alfailakawi@gmail.com" ||
+        email in [
+          "alfailakawidrahmad@gmail.com",
+          "alfailakawidrahmad@outlook.com",
+          "dr.ahmad@gmail.com",
+          "dr.ahmad.alfailakawi@gmail.com"
+        ] ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
@@ -34,12 +38,12 @@ service cloud.firestore {
     
     match /system_settings/{docId} {
       allow read: if true;
-      allow write: if docId == 'cron_state' || isAdmin();
+      allow write: if isSignedIn() && (docId == 'cron_state' || isAdmin());
     }
 
     match /daily_prompts/{document=**} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isSignedIn() && isAdmin();
     }
 
     match /qawl_fasl_questions/{document=**} {
@@ -117,8 +121,9 @@ service cloud.firestore {
       }
     }
     
-    match /analytics/{docId} {
-        allow write: if true;
+    match /analytics/{document=**} {
+        allow read: if isAdmin();
+        allow create: if true;
     }
   }
 }

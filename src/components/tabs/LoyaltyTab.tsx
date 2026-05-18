@@ -23,7 +23,12 @@ interface Customer {
   role: string;
 }
 
+import { useAuth } from '../AuthProvider';
+
 export const LoyaltyTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
+  const { user, profile } = useAuth();
+  const isAdmin = profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+  
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,15 +40,15 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
   // Real-time listener for users
   useEffect(() => {
+    // If not admin, we only care about ourselves, but we'll fetch all if admin
     const unsub = onSnapshot(collection(db, 'users'), (snap) => {
       const list = snap.docs.map(d => {
         const data = d.data();
-        // Calculate status locally if not set (Simulated logic based on data)
         const lastOrder = data.lastOrderDate?.toDate() || new Date(0);
         const diffDays = Math.floor((new Date().getTime() - lastOrder.getTime()) / (1000 * 3600 * 24));
         
         let status: Customer['status'] = 'Active';
-        if (data.role === 'admin') status = 'VIP'; // Just an example
+        if (data.role === 'admin') status = 'VIP'; 
         else if (data.points > 1000) status = 'VIP';
         else if (diffDays > 30) status = 'Inactive';
         else if (diffDays > 14) status = 'At Risk';
@@ -66,6 +71,106 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
     });
     return () => unsub();
   }, []);
+
+  const myLoyaltyData = useMemo(() => {
+    return customers.find(c => c.id === user?.uid) || {
+      id: user?.uid || '',
+      displayName: user?.displayName || 'أنت',
+      email: user?.email || '',
+      points: 0,
+      totalSpent: 0,
+      status: 'New'
+    } as any;
+  }, [customers, user]);
+
+  if (!isAdmin) {
+    return (
+      <div className="w-full bg-white min-h-screen rounded-[32px] p-6 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <TabHeader 
+          icon={TicketPercent}
+          title={{ ar: 'محفظة الولاء والجوائز', en: 'Loyalty Wallet' }}
+          description={{ 
+              ar: 'رصيدك الحالي، مكافآتك، والكوبونات المتاحة لك.', 
+              en: 'Your current balance, rewards, and available coupons.' 
+          }}
+          language={language}
+          onBack={() => handleTabChange('home')}
+        />
+
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Points Card */}
+            <div className="bg-gradient-to-br from-indigo-900 to-indigo-950 rounded-[32px] p-8 text-white shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/20 blur-[60px] translate-x-1/4 -translate-y-1/4" />
+                <div className="relative z-10">
+                    <div className="flex items-center gap-3 opacity-60 mb-6">
+                        <Crown className="w-5 h-5 text-amber-400" />
+                        <span className="text-xs font-black uppercase tracking-widest">{language === 'ar' ? 'رصيد النقاط' : 'Points Balance'}</span>
+                    </div>
+                    <div className="flex items-baseline gap-2 mb-2">
+                        <span className="text-6xl font-black">{myLoyaltyData.points}</span>
+                        <span className="text-xl font-bold opacity-60">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
+                    </div>
+                    <p className="text-indigo-200 text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
+                    
+                    <div className="mt-10 pt-8 border-t border-white/10 flex items-center justify-between">
+                        <div>
+                            <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
+                            <p className="text-lg font-black tracking-tight">KWD {myLoyaltyData.totalSpent}</p>
+                        </div>
+                        <div className="bg-white/10 px-4 py-2 rounded-xl text-xs font-black">
+                            {myLoyaltyData.status}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Coupons Card */}
+            <div className="bg-white rounded-[32px] border-2 border-zinc-100 p-8 flex flex-col justify-between">
+                <div>
+                   <h3 className="text-xl font-black mb-6">{language === 'ar' ? 'مكافآتك المتاحة' : 'Your Available Rewards'}</h3>
+                   <div className="space-y-4">
+                      <div className="flex items-center gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 border-dashed">
+                         <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500">
+                            <TicketPercent className="w-6 h-6" />
+                         </div>
+                         <div>
+                            <p className="text-sm font-black text-emerald-900">{language === 'ar' ? 'خصم 15% على الاستشارة القادمة' : '15% Off Your Next Consult'}</p>
+                            <p className="text-[10px] text-emerald-700 font-bold">{language === 'ar' ? 'كود: TIBYAN15' : 'Code: TIBYAN15'}</p>
+                         </div>
+                      </div>
+                      <div className="flex items-center gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 opacity-50 grayscale">
+                         <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-zinc-400">
+                            <Gift className="w-6 h-6" />
+                         </div>
+                         <div>
+                            <p className="text-sm font-black text-zinc-900">{language === 'ar' ? 'هدية "كتاب الحكمة"' : 'Book of Wisdom Gift'}</p>
+                            <p className="text-[10px] text-zinc-500 font-bold">{language === 'ar' ? 'متاح عند وصولك لـ 500 نقطة' : 'Available at 500 PTS'}</p>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+                <button className="w-full mt-8 py-4 bg-zinc-900 text-white rounded-2xl font-black shadow-lg hover:bg-black transition-all">
+                    {language === 'ar' ? 'استبدال النقاط' : 'Redeem Points'}
+                </button>
+            </div>
+        </div>
+
+        {/* History Section */}
+        <div className="mt-12">
+            <h3 className="text-xl font-black mb-6 flex items-center gap-3">
+                <History className="w-5 h-5 text-indigo-500" />
+                {language === 'ar' ? 'تاريخ العمليات' : 'Points History'}
+            </h3>
+            <div className="bg-zinc-50 rounded-2xl border border-zinc-200 overflow-hidden">
+                <div className="p-6 flex flex-col items-center justify-center text-zinc-400 text-sm italic font-medium gap-2">
+                    <Sparkles className="w-6 h-6 opacity-20" />
+                    <p>{language === 'ar' ? 'سيتم عرض تاريخ عمليات كسب واسترداد النقاط هنا لاحقاً.' : 'Points earning and redemption history will appear here.'}</p>
+                </div>
+            </div>
+        </div>
+      </div>
+    );
+  }
 
   const filteredCustomers = useMemo(() => {
     return customers

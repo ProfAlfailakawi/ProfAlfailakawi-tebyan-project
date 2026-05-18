@@ -10,42 +10,41 @@ export const cronService = {
       const cronRef = doc(db, 'system_settings', 'cron_state');
       
       // Use a transaction to ensure only one client performs the heavy generation per day
-      const shouldRun = await runTransaction(db, async (transaction) => {
-        let cronDoc;
-        try {
-          console.log('[Cron] Transaction: Getting cron_state...');
-          cronDoc = await transaction.get(cronRef);
-        } catch (error: any) {
-           console.error('[Cron] Transaction: Get failed:', error);
-           handleFirestoreError(error, OperationType.GET, 'system_settings/cron_state');
-        }
-        
-        if (!cronDoc.exists()) {
-          console.log('[Cron] Transaction: Document doesn\'t exist, setting new state...');
+      const shouldRunCheck = async () => {
           try {
-            transaction.set(cronRef, { lastDailyQawlFasl: today });
-          } catch (err) {
-            console.error('[Cron] Transaction: set call failed:', err);
-            throw err;
+              return await runTransaction(db, async (transaction) => {
+                let cronDoc;
+                try {
+                  console.log('[Cron] Transaction: Getting cron_state...');
+                  cronDoc = await transaction.get(cronRef);
+                } catch (error: any) {
+                   console.error('[Cron] Transaction: Get failed:', error?.message || error);
+                   return false; // Exit transaction early
+                }
+                
+                if (!cronDoc.exists()) {
+                  transaction.set(cronRef, { lastDailyQawlFasl: today });
+                  return true;
+                } else {
+                  const data = cronDoc.data();
+                  if (data.lastDailyQawlFasl !== today) {
+                    transaction.update(cronRef, { lastDailyQawlFasl: today });
+                    return true;
+                  }
+                }
+                return false;
+              });
+          } catch (e: any) {
+              if (e?.message?.includes('permission')) {
+                  console.warn('[Cron] Lacking permissions for state-check. Skipping background tasks.');
+              } else {
+                  console.error('[Cron] Transaction failed:', e);
+              }
+              return false;
           }
-          return true;
-        } else {
-          const data = cronDoc.data();
-          console.log('[Cron] Transaction: Current state is:', data.lastDailyQawlFasl);
-          if (data.lastDailyQawlFasl !== today) {
-            console.log('[Cron] Transaction: Updating state to:', today);
-            try {
-              transaction.update(cronRef, { lastDailyQawlFasl: today });
-            } catch (err) {
-              console.error('[Cron] Transaction: update call failed:', err);
-              throw err;
-            }
-            return true;
-          }
-        }
-        console.log('[Cron] Transaction: No action needed.');
-        return false;
-      });
+      };
+
+      const shouldRun = await shouldRunCheck();
 
       if (shouldRun) {
         console.log('[Cron] Triggering daily tasks for:', today);

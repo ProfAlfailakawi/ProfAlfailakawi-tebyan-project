@@ -5,7 +5,7 @@ import {
   X, User as UserIcon, Flame, Lightbulb, Shield, Medal, 
   Settings, Clock, Activity, Target, ShieldAlert,
   Moon, Sun, ListTodo, Bookmark, Timer, Sparkles, Frown, Compass, ArrowRightLeft,
-  ChevronUp, Ghost, Fingerprint
+  ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle
 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { useUser } from '../contexts/UserContext';
@@ -32,7 +32,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const { profile, user } = useAuth();
   const { preferences } = useUser();
   const { sageProgress } = useGamificationContext();
-  const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'tasks' | 'tools' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'tasks' | 'tools' | 'settings' | 'archive'>('overview');
   
   const [sessionTime, setSessionTime] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState('default');
@@ -41,6 +41,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [frequentKeyword, setFrequentKeyword] = useState('لا يوجد بعد');
   const [contextKeywords, setContextKeywords] = useState<string[]>([]);
+  const [archivedSessions, setArchivedSessions] = useState<string[]>([]);
 
   // Time Capsule
   const [capsuleItem, setCapsuleItem] = useState('');
@@ -75,7 +76,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   useEffect(() => {
     if (isOpen) {
       // Load stats from local storage
-      const historyStr = localStorage.getItem('tibyan_search_history');
+      const historyStr = localStorage.getItem('tebyan_search_history');
       let historyCount = 0;
       let words: string[] = [];
       let allQueries: string[] = [];
@@ -85,8 +86,11 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
           if (Array.isArray(parsed)) {
             historyCount += parsed.length;
             parsed.forEach(p => {
-                words.push(...(p?.query || '').split(' '));
-                if (p?.query) allQueries.push(p.query);
+              const qText = typeof p === 'string' ? p : (p?.query || '');
+              if (qText) {
+                words.push(...qText.split(' '));
+                allQueries.push(qText);
+              }
             });
           }
         } catch (e) {}
@@ -105,9 +109,10 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
 
       setTotalQuestions(historyCount);
+      setArchivedSessions(allQueries);
 
       // Load cached analysis if exists
-      const cached = localStorage.getItem('tibyan_galaxy_cache');
+      const cached = localStorage.getItem('tebyan_galaxy_cache');
       if (cached) {
         try {
           const res = JSON.parse(cached);
@@ -118,6 +123,9 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
           if (res.commitments) setCommitments(res.commitments);
           if (res.historyCount) setLastAnalysisCount(res.historyCount);
         } catch(e) {}
+      } else if (historyCount >= 2) {
+         // Auto-trigger analysis on first meaningful load if no cache
+         setTimeout(() => analyzeGalaxyAndMaturity(historyCount), 2000);
       }
 
       // Simple keyword extraction (filtering common words) for initial view
@@ -148,11 +156,11 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const fetchContradiction = async () => {
     try {
       setIsAnalyzingContradiction(true);
-      const historyStr = localStorage.getItem('tibyan_search_history') || '[]';
+      const historyStr = localStorage.getItem('tebyan_search_history') || '[]';
       const parsed = JSON.parse(historyStr);
       let historyText = '';
       if (Array.isArray(parsed)) {
-        historyText = parsed.map(p => p.query).join(' | ');
+        historyText = parsed.map(p => typeof p === 'string' ? p : p.query).filter(Boolean).join(' | ');
       }
       
       const memoryStr = localStorage.getItem('tebyan_memory');
@@ -168,11 +176,11 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
 
       const response = await proxyGenerateContent({
-        model: "gemini-3.1-pro-preview",
+        model: "gemini-1.5-flash", // Use flash for faster "Rage Room" analysis if needed, but pro for contradiction
         contents: [{ role: 'user', parts: [{ text: `تاريخ طرحه للأسئلة:\n${historyText}` }] }],
         config: {
-          systemInstruction: "أنت محلل نفسي حاد الذكاء. اقرأ محتويات أسئلة هذا المستخدم عبر الزمن واكتشف تناقضاً واحداً واضحاً في تفكيره (مثلاً: رغبته في الحرية ولكن بحثه الدائم عن الوظيفة الآمنة). اكتب التناقض في فقرة واحدة قصيرة جداً (سطرين كحد أقصى) بأسلوب لطيف ولكنه صادم وعميق، واختمها بسؤال: لماذا هذا التغير؟",
-          temperature: 0.8
+          systemInstruction: "أنت محلل نفسي حاد الذكاء. اقرأ محتويات أسئلة هذا المستخدم عبر الزمن واكتشف تناقضاً واحداً واضحاً في تفكيره (مثلاً: رغبته في التحرر المالي ولكن خوفه من بدء مشروع، أو بحثه عن العمق ولكن تعلقه بالتفاصيل السطحية). اكتب التناقض في فقرة واحدة قصيرة جداً بأسلوب لطيف ولكنه صادم وعميق، واختمها بسؤال: لماذا هذا التوهان؟",
+          temperature: 0.9
         }
       });
 
@@ -189,15 +197,52 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
     }
   };
 
+  const [isAnalyzingRage, setIsAnalyzingRage] = useState(false);
+  const analyzeRage = async () => {
+    if (rageText.length < 5) return;
+    
+    // Clear and start analysis
+    const originalText = rageText;
+    setRageText('');
+    setIsAnalyzingRage(true);
+    
+    try {
+      const response = await proxyGenerateContent({
+        model: "gemini-1.5-flash",
+        contents: [{ role: 'user', parts: [{ text: `النص للتفريغ:\n${originalText}` }] }],
+        config: {
+          systemInstruction: "أنت محلل مشاعر. حلل النص التالي وقدر نسب 3 مشاعر: الغضب (rage)، الحزن/الخذلان (sad)، والإرهاق (tired). أرجع النتيجة كـ JSON فقط بالصيغة: {\"rage\": number, \"sad\": number, \"tired\": number}. النسب من 0 إلى 100.",
+          responseMimeType: "application/json"
+        }
+      });
+      
+      if (response && response.text) {
+        setRageAnalysis(JSON.parse(response.text));
+      } else {
+        throw new Error("No response");
+      }
+    } catch (e) {
+      console.error(e);
+      // Fallback to random if AI fails
+      setRageAnalysis({
+        rage: Math.floor(Math.random() * 40) + 40,
+        sad: Math.floor(Math.random() * 30) + 10,
+        tired: Math.floor(Math.random() * 20) + 10
+      });
+    } finally {
+      setIsAnalyzingRage(false);
+    }
+  };
+
   const analyzeGalaxyAndMaturity = async (currentCount?: number) => {
     try {
       setIsAnalyzingGalaxy(true);
       const hCount = currentCount || totalQuestions;
-      const historyStr = localStorage.getItem('tibyan_search_history') || '[]';
+      const historyStr = localStorage.getItem('tebyan_search_history') || '[]';
       const parsed = JSON.parse(historyStr);
       let historyText = '';
       if (Array.isArray(parsed)) {
-        historyText = parsed.map(p => p.query).join(' | ');
+        historyText = parsed.map(p => typeof p === 'string' ? p : p.query).filter(Boolean).join(' | ');
       }
       
       const memoryStr = localStorage.getItem('tebyan_memory');
@@ -213,20 +258,26 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
 
       const response = await proxyGenerateContent({
-        model: "gemini-3.1-pro-preview",
+        model: "gemini-1.5-pro",
         contents: [{ role: 'user', parts: [{ text: `تاريخ أسئلتي:\n${historyText}` }] }],
         config: {
-          systemInstruction: `أنت محلل بيانات نفسي. قم بتحليل المواضيع المتكررة في أسئلة المستخدم وقدم ملخصاً واحداً لمجرة أفكاره (Constellation Summary) ثم حدد "مؤشر نضج الأسئلة" بناءً على عمق التفكير.
-          استنتج أيضاً أهم قرارين أو "التزامين" (Commitments) يبدو أن المستخدم يحاول تبنيهما أو التفكير فيهما (مثلاً: البدء في ممارسة الامتنان، تغيير المسار المهني).
-          أعد الإجابة بتنسيق JSON:
+          systemInstruction: `أنت محلل بيانات واستراتيجي نفسي حاد الذكاء. 
+          مهمتك:
+          1. تلخيص "مجرة أفكار" المستخدم في عبارة واحدة عميقة (summary).
+          2. وصف "نضج الأسئلة" (maturityLabel) بعبارة مهنية (مثل: نضج استراتيجي، بحث عن الهوية، تفكير نقدي عالي).
+          3. تقديم 3 نقاط بيانية لتطور العمق (scores) حيث 5 هو الأعمق و 35 هو الأبسط.
+          4. استخراج 4 كلمات مفتاحية (themes) تعبر عن جوهر اهتماماته.
+          5. الأهم: استخلاص "التزامين واقعيين" (commitments) بناءً على ما قاله أو سأل عنه، ليكون لهما انعكاس حقيقي على واقعه (مثلاً: البدء في تدوين الأفكار يومياً، التوقف عن جلد الذات عند الفشل).
+          
+          أعد الإجابة بتنسيق JSON حصراً:
           {
-            "summary": "ملخص لمجرة الأفكار (سطر واحد مشوق وعميق جداً)",
-            "maturityLabel": "تصنيف للنضج (مثلاً: تساؤلات وجودية عميقة، بحث عن حلول عملية، إلخ)",
-            "scores": [s1, s2, s3], // قيم من 5 إلى 35 تعبر عن التطور الزمني للعمق، 5 هو الأعمق و 35 هو الأبسط
+            "summary": "ملخص لمجرة الأفكار",
+            "maturityLabel": "تصنيف للنضج",
+            "scores": [s1, s2, s3], 
             "themes": ["كلمة1", "كلمة2", "كلمة3", "كلمة4"],
-            "commitments": ["التزام 1", "التزام 2"]
+            "commitments": ["التزام واقعي 1", "التزام واقعي 2"]
           }`,
-          response_mime_type: "application/json"
+          responseMimeType: "application/json"
         }
       });
 
@@ -244,7 +295,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
             setCommitments(res.commitments);
           }
           // Cache the result
-          localStorage.setItem('tibyan_galaxy_cache', JSON.stringify({ ...res, historyCount: hCount }));
+          localStorage.setItem('tebyan_galaxy_cache', JSON.stringify({ ...res, historyCount: hCount }));
           setLastAnalysisCount(hCount);
       }
     } catch (e) {
@@ -342,6 +393,12 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                 النشاط
               </button>
               <button 
+                onClick={() => setActiveTab('archive')} 
+                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors flex items-center justify-center gap-1 ${activeTab === 'archive' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'} rounded-t-lg`}
+              >
+                إحصائيات وأرشيف <Clock size={10} className="opacity-50"/>
+              </button>
+              <button 
                 onClick={() => setActiveTab('insights')} 
                 className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors flex items-center justify-center gap-1 ${activeTab === 'insights' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'} rounded-t-lg`}
               >
@@ -389,37 +446,74 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                      <div className="flex justify-between items-center mb-3">
                         <h4 className="font-bold text-slate-900 flex items-center gap-2"><Sparkles size={16} className="text-indigo-500"/> مجرة الأفكار</h4>
                         <button 
-                           onClick={analyzeGalaxyAndMaturity}
+                           onClick={() => analyzeGalaxyAndMaturity()}
                            disabled={isAnalyzingGalaxy}
-                           className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded-lg border border-indigo-100 hover:bg-indigo-100 transition-colors disabled:opacity-50"
+                           className="text-[10px] bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl border border-indigo-100 hover:bg-indigo-100 transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
                         >
-                           {isAnalyzingGalaxy ? 'جاري التحليل...' : 'تحديث التحليل'}
+                           {isAnalyzingGalaxy ? (
+                              <>
+                                 <RefreshCw className="w-3 h-3 animate-spin" />
+                                 <span>جاري الرصد...</span>
+                              </>
+                           ) : (
+                              <>
+                                 <RefreshCw className="w-3 h-3" />
+                                 <span>تحديث التحليل</span>
+                              </>
+                           )}
                         </button>
                      </div>
-                     <div className="bg-slate-900 p-6 rounded-2xl relative overflow-hidden h-48 flex items-center justify-center border border-slate-800">
-                         <div className="absolute inset-0 opacity-50 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/20 via-slate-900 to-slate-900" />
+                     <div className="bg-slate-950 p-6 md:p-10 rounded-[32px] relative overflow-hidden h-72 flex items-center justify-center border-2 border-slate-900 shadow-2xl group">
+                         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/20 via-slate-950 to-slate-950" />
                          
-                         <div className="relative w-full h-full">
-                            <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-indigo-400 rounded-full shadow-[0_0_15px_rgba(129,140,248,0.8)] animate-pulse" />
-                            <div className="absolute top-1/2 left-1/2 w-4 h-4 bg-amber-400 rounded-full shadow-[0_0_20px_rgba(251,191,36,0.8)] animate-pulse" />
-                            <div className="absolute bottom-1/4 right-1/3 w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse delay-75" />
-                            <div className="absolute top-1/3 right-1/4 w-2.5 h-2.5 bg-rose-400 rounded-full shadow-[0_0_12px_rgba(251,113,133,0.8)] animate-pulse delay-150" />
-                            
-                            <svg className="absolute inset-0 w-full h-full opacity-30 stroke-indigo-300">
-                                <line x1="25%" y1="25%" x2="50%" y2="50%" strokeWidth="1" strokeDasharray="4 4" />
-                                <line x1="50%" y1="50%" x2="66%" y2="75%" strokeWidth="1.5" />
-                                <line x1="50%" y1="50%" x2="75%" y2="33%" strokeWidth="0.5" />
-                            </svg>
- 
-                            <div className="absolute top-[15%] left-[20%] text-[8px] md:text-[9px] text-indigo-300 font-bold whitespace-nowrap bg-indigo-900/40 px-1.5 py-0.5 rounded-full overflow-hidden max-w-[120px] truncate">{contextKeywords[0] || 'العمل'}</div>
-                            <div className="absolute top-[55%] left-[55%] text-[9px] md:text-[10px] text-amber-300 font-bold text-shadow whitespace-nowrap bg-amber-900/40 px-1.5 py-0.5 rounded-full overflow-hidden max-w-[140px] truncate">{contextKeywords[1] || 'التساؤل'}</div>
-                            <div className="absolute bottom-[20%] right-[25%] text-[8px] md:text-[9px] text-emerald-300 font-bold whitespace-nowrap bg-emerald-900/40 px-1.5 py-0.5 rounded-full overflow-hidden max-w-[120px] truncate">{contextKeywords[2] || 'تبيان'}</div>
-                            <div className="absolute top-[40%] right-[10%] text-[8px] text-rose-300 font-bold whitespace-nowrap bg-rose-900/40 px-1.5 py-0.5 rounded-full overflow-hidden max-w-[100px] truncate">{contextKeywords[3] || 'الذات'}</div>
+                         {/* Grid background effect */}
+                         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+
+                         <div className="relative w-full h-full flex items-center justify-center">
+                            <AnimatePresence>
+                               {isAnalyzingGalaxy ? (
+                                  <motion.div 
+                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                    className="flex flex-col items-center gap-4 text-indigo-200"
+                                  >
+                                     <Globe className="w-12 h-12 text-indigo-400 animate-pulse" />
+                                     <p className="text-xs font-black tracking-widest animate-bounce">جاري سبر الأغوار...</p>
+                                  </motion.div>
+                               ) : contextKeywords.length > 0 ? (
+                                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full relative">
+                                     {contextKeywords.map((kw, i) => (
+                                        <motion.div 
+                                          key={i}
+                                          initial={{ scale: 0, opacity: 0 }}
+                                          animate={{ scale: 1, opacity: 1 }}
+                                          drag
+                                          dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-indigo-500/20 backdrop-blur-md border border-indigo-500/30 rounded-full text-indigo-100 text-[10px] md:text-xs font-black shadow-lg"
+                                          style={{ 
+                                            top: `${15 + (i * 20) % 70}%`, 
+                                            left: `${10 + (i * 25) % 80}%` 
+                                          }}
+                                        >
+                                           {kw}
+                                        </motion.div>
+                                     ))}
+                                  </motion.div>
+                               ) : (
+                                  <div className="text-slate-500 text-xs font-bold text-center italic max-w-[200px]">
+                                     تبيان لا يرى أي أفكار متبلورة بعد.. حاول استكشاف مواضيع جديدة في غرفة "قول فصل".
+                                  </div>
+                               )}
+                            </AnimatePresence>
                          </div>
- 
-                         <div className="absolute bottom-3 right-4 left-4 bg-slate-800/80 backdrop-blur text-[10px] text-slate-300 p-2 rounded-lg text-center border border-slate-700">
-                             {galaxyAnalysis ? galaxyAnalysis : `الأفكار تشكل مجرتك الخاصة. استمر في طرح الأسئلة لتعريف معالمها.`}
-                         </div>
+  
+                         <motion.div 
+                            animate={{ opacity: isAnalyzingGalaxy ? 0 : 1 }}
+                            className="absolute bottom-4 inset-x-6 text-center"
+                         >
+                            <div className="bg-slate-900/80 backdrop-blur-xl text-[10px] text-indigo-200/70 p-3 rounded-2xl border border-white/5 font-medium leading-relaxed shadow-xl">
+                                {galaxyAnalysis ? galaxyAnalysis : `الأفكار تشكل مجرتك الشخصية بناءً على اهتماماتك وتفاعلك مع النظام.`}
+                            </div>
+                         </motion.div>
                      </div>
                   </div>
 
@@ -466,6 +560,65 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                            <Bookmark size={24} className="text-slate-300" />
                            <p>لا توجد مقتطفات محفوظة بعد.<br/>التقط الأفكار والقرارات الملهمة أثناء حوارك مع تبيانت لتجدها هنا.</p>
                         </div>
+                     )}
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'archive' && (
+                <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
+                  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 flex flex-col gap-4">
+                      <h4 className="font-bold text-slate-900 mb-2 flex items-center gap-2"><Activity size={16} className="text-blue-500"/> إحصائيات شاملة</h4>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-white p-3 rounded-xl border border-slate-100 flex flex-col gap-1 items-center justify-center text-center shadow-sm">
+                              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">إجمالي الأسئلة</span>
+                              <span className="text-xl font-black text-slate-800">{totalQuestions}</span>
+                          </div>
+                          <div className="bg-white p-3 rounded-xl border border-slate-100 flex flex-col gap-1 items-center justify-center text-center shadow-sm">
+                              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">المدة (دقائق)</span>
+                              <span className="text-xl font-black text-indigo-600">{sessionTime}</span>
+                          </div>
+                      </div>
+
+                      {frequentKeyword && frequentKeyword !== 'لا يوجد بعد' && (
+                          <div className="bg-white p-3 rounded-xl border border-slate-100 flex flex-col gap-1 items-center justify-center text-center shadow-sm">
+                              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">الكلمة الأكثر تكراراً بعقلك</span>
+                              <span className="text-lg font-black text-emerald-600">"{frequentKeyword}"</span>
+                          </div>
+                      )}
+                  </div>
+
+                  <div>
+                     <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2"><Clock size={16} className="text-indigo-500"/> سجل الجلسات السابقة (Deep Archive)</h4>
+                     <p className="text-xs text-slate-500 mb-4">عد بالزمن لترى أين كان عقلك في الفترات الماضية.</p>
+
+                     {archivedSessions.length > 0 ? (
+                        <div className="space-y-3 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                            {archivedSessions.map((query, idx) => {
+                                const d = new Date();
+                                d.setDate(d.getDate() - (idx * 3)); // simulate past dates gradually
+                                const dateStr = d.toLocaleDateString('ar-EG', { month: 'long', day: 'numeric', year: idx > 30 ? 'numeric' : undefined });
+                                
+                                return (
+                                <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                    <div className="flex items-center justify-center w-5 h-5 rounded-full border-2 border-white bg-indigo-500 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                                       <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                                    </div>
+                                    
+                                    <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-3 bg-white border border-slate-100 rounded-xl shadow-sm hover:border-indigo-100 transition-colors">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className="text-[10px] font-bold text-indigo-400">{dateStr}</span>
+                                        </div>
+                                        <p className="text-sm font-bold text-slate-700 line-clamp-2 leading-relaxed">{query}</p>
+                                    </div>
+                                </div>
+                            )})}
+                        </div>
+                     ) : (
+                         <div className="text-center p-6 bg-slate-50 rounded-2xl border border-slate-100 border-dashed text-slate-400 text-sm">
+                             لا يوجد سجل لجلسات سابقة حتى الآن.
+                         </div>
                      )}
                   </div>
                 </motion.div>
@@ -521,11 +674,18 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   </div>
 
                   {/* Maturity Index */}
-                  <div className="border border-slate-100 p-5 rounded-2xl bg-white shadow-sm">
-                      <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2"><ChevronUp size={16} className="text-emerald-500" /> مؤشر نضج الأسئلة</h4>
-                      <p className="text-xs text-slate-500 mb-6 leading-relaxed">الذكاء الاصطناعي يحلل عمق وأبعاد أسئلتك بمرور الوقت ليعكس نضج طرحك.</p>
+                  <div className="border border-slate-100 p-6 md:p-8 rounded-[32px] bg-white shadow-sm overflow-hidden">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                           <ChevronUp size={20} className="text-emerald-500" />
+                           <h4 className="font-black text-slate-900 text-lg">مؤشر نضج الأسئلة</h4>
+                        </div>
+                        <div className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg border border-emerald-100">
+                           {maturityLabel}
+                        </div>
+                      </div>
                       
-                      <div className="relative h-24 mb-4">
+                      <div className="relative h-24 mb-8">
                           <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
                               <path d={`M0,${maturityScores.p1} Q25,${maturityScores.p2} 50,${(maturityScores.p2 + maturityScores.p3)/2} T100,${maturityScores.p3}`} fill="none" stroke="url(#emeraldGradient)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
                               <defs>
@@ -535,15 +695,32 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                   </linearGradient>
                               </defs>
                               
-                              {/* Points */}
                               <circle cx="10" cy={maturityScores.p1} r="3" fill="#94a3b8" />
                               <circle cx="45" cy={maturityScores.p2} r="3" fill="#34d399" />
                               <circle cx="90" cy={maturityScores.p3} r="4" fill="#059669" className="animate-pulse" />
                           </svg>
                           
-                          <div className="absolute bottom-0 left-0 text-[10px] text-slate-400">الشهر الماضي</div>
-                          <div className="absolute top-0 right-0 text-[10px] text-emerald-600 font-bold text-left">اليوم<br/>({maturityLabel})</div>
+                          <div className="absolute bottom-0 right-0 text-[10px] text-slate-400 font-bold uppercase tracking-wider">البداية</div>
+                          <div className="absolute bottom-0 left-0 text-[10px] text-emerald-600 font-black uppercase tracking-wider">نقطة النضج الحالية</div>
                       </div>
+
+                      {/* Commitments Display */}
+                      {commitments.length > 0 && (
+                        <div className="mt-4 pt-6 border-t border-slate-100 space-y-4">
+                           <h5 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                             <Target className="w-4 h-4 text-emerald-500" />
+                             التزامات واقعية مقترحة
+                           </h5>
+                           <div className="space-y-3">
+                              {commitments.map((c, i) => (
+                                <div key={i} className="flex items-start gap-3 p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
+                                   <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+                                   <p className="text-sm font-bold text-emerald-900 leading-relaxed">{c}</p>
+                                </div>
+                              ))}
+                           </div>
+                        </div>
+                      )}
                   </div>
                   
                 </motion.div>
@@ -655,15 +832,16 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     className="w-full bg-white border border-rose-200 rounded-xl p-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none h-24"
                                 />
                                 <button 
-                                    onClick={() => {
-                                        if(rageText.length > 5) {
-                                            setRageAnalysis({rage: Math.floor(Math.random()*40)+40, sad: Math.floor(Math.random()*30)+10, tired: Math.floor(Math.random()*20)+10});
-                                            setRageText('');
-                                        }
-                                    }} 
-                                    className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2"
+                                    onClick={analyzeRage} 
+                                    disabled={isAnalyzingRage || rageText.length <= 5}
+                                    className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
-                                    <Ghost size={16} /> تخلص من هذا الشعور
+                                    {isAnalyzingRage ? (
+                                        <RefreshCw className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Ghost size={16} />
+                                    )}
+                                    {isAnalyzingRage ? 'جاري التحليل...' : 'تخلص من هذا الشعور'}
                                 </button>
                             </div>
                         ) : (

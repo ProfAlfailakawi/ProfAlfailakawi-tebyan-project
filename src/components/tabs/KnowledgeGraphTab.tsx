@@ -11,7 +11,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem('tibyan_search_history');
+    const saved = localStorage.getItem('tebyan_search_history');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);

@@ -109,7 +109,7 @@ async function startServer() {
         try {
             console.log(`[Server] Generating TTS for text: "${text.substring(0, 50)}..."`);
             
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-tts" });
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
             
             const result = await model.generateContent({
               contents: [{ role: 'user', parts: [{ text }] }],
@@ -174,28 +174,56 @@ async function startServer() {
 
         try {
             // Model Aliasing - Use stable models but allow newer versions
-            let finalModel = modelName || "gemini-2.5-flash";
-            // If it's a generic "gemini" or a 1.0/1.5 model, upgrade it. 
-            // But if it specifies 2.0, 3.1 etc., respect it.
-            if (finalModel === "gemini" || finalModel === "gemini-1.5-flash") {
-                finalModel = "gemini-2.5-flash";
+            let finalModel = modelName || "gemini-1.5-flash";
+            // If it's a generic "gemini" or a non-standard name, fallback to stable.
+            if (finalModel === "gemini" || finalModel.includes("2.5") || finalModel.includes("3.1") || finalModel.includes("3-flash") || finalModel.includes("preview")) {
+                finalModel = "gemini-1.5-flash";
             }
 
-            const generationConfig: any = {};
-            if (config) {
-                if (config.temperature !== undefined) generationConfig.temperature = config.temperature;
-                if (config.responseMimeType) generationConfig.responseMimeType = config.responseMimeType;
-                if (config.responseSchema) generationConfig.responseSchema = config.responseSchema;
+            const attemptGeneration = async (selectedModel: string) => {
+                const generationConfig: any = {};
+                if (config) {
+                    if (config.temperature !== undefined) generationConfig.temperature = config.temperature;
+                    if (config.responseMimeType) generationConfig.responseMimeType = config.responseMimeType;
+                    if (config.responseSchema) generationConfig.responseSchema = config.responseSchema;
+                }
+
+                const model = genAI.getGenerativeModel({ 
+                    model: selectedModel,
+                    generationConfig,
+                    systemInstruction: config?.systemInstruction
+                });
+
+                console.log(`[Server] Generating with model: ${selectedModel}, content length: ${JSON.stringify(contents).length}`);
+                return await model.generateContent({ contents });
+            };
+
+            let result;
+            try {
+                result = await attemptGeneration(finalModel);
+            } catch (firstError: any) {
+                const firstErrStr = (firstError.message || "").toLowerCase();
+                const isSuspended = firstErrStr.includes("403") || firstErrStr.includes("suspended") || firstErrStr.includes("permission");
+                
+                console.warn(`[Server] First AI attempt failed with ${finalModel}:`, firstError.message);
+                
+                if (isSuspended) {
+                    const fallbackModel = finalModel === "gemini-1.5-flash" ? "gemini-1.5-pro" : "gemini-1.5-flash";
+                    console.log(`[Server] Retrying with fallback model: ${fallbackModel}`);
+                    try {
+                        result = await attemptGeneration(fallbackModel);
+                    } catch (secondError: any) {
+                        console.error(`[Server] Fallback AI also failed:`, secondError.message);
+                        return res.status(503).json({ 
+                            error: "AI_SERVICE_SUSPENDED",
+                            message: "عذراً، محرك الذكاء الاصطناعي يخضع للصيانة حالياً. يرجى المحاولة لاحقاً.",
+                            details: secondError.message 
+                        });
+                    }
+                } else {
+                    return res.status(500).json({ error: "AI_ERROR", message: firstError.message });
+                }
             }
-
-            const model = genAI.getGenerativeModel({ 
-                model: finalModel,
-                generationConfig,
-                systemInstruction: config?.systemInstruction
-            });
-
-            console.log(`[Server] Generating with model: ${finalModel}, content length: ${JSON.stringify(contents).length}`);
-            const result = await model.generateContent({ contents });
 
             if (!result.response) {
                 throw new Error("No response from Gemini");

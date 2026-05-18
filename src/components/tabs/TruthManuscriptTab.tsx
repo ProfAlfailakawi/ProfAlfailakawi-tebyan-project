@@ -79,7 +79,7 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
 لا تضع مقدمات بل ادخل في الحكمة مباشرة.`;
 
       const response = await proxyGenerateContent({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash",
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
       });
 

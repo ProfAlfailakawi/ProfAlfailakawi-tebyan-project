@@ -26,7 +26,12 @@ export const logEvent = async (type: EventType, language: string, query?: string
             // User agent can be helpful for mobile vs desktop analysis
             platform: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
         });
-    } catch (error) {
-        console.error('Failed to log analytics event:', error);
+    } catch (error: any) {
+        // Log to console but don't crash or show user errors
+        if (error?.message?.includes('permission')) {
+            console.warn('[Analytics] Missing Firestore permissions. Event was not logged:', type);
+        } else {
+            console.error('Failed to log analytics event:', error);
+        }
     }
 };

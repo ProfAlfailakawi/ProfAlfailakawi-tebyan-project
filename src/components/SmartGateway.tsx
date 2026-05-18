@@ -750,12 +750,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
     if (activeQuery.trim()) {
         try {
-            const historyStr = localStorage.getItem('tibyan_search_history');
+            const historyStr = localStorage.getItem('tebyan_search_history');
             let historyList = historyStr ? JSON.parse(historyStr) : [];
             if (!historyList.includes(activeQuery)) {
                 historyList.unshift(activeQuery);
                 historyList = historyList.slice(0, 50); // keep recent 50
-                localStorage.setItem('tibyan_search_history', JSON.stringify(historyList));
+                localStorage.setItem('tebyan_search_history', JSON.stringify(historyList));
             }
         } catch (e) {}
     }
@@ -876,7 +876,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   ];
 
   const chipSuggestions = useMemo(() => {
-    const history = JSON.parse(localStorage.getItem('tibyan_search_history') || '[]');
+    const history = JSON.parse(localStorage.getItem('tebyan_search_history') || '[]');
     const filtered = ALL_CHIP_SUGGESTIONS.filter(s => !history.includes(language === 'ar' ? s.ar : s.en));
     return [...(filtered.length > 0 ? filtered : ALL_CHIP_SUGGESTIONS)].sort(() => 0.5 - Math.random()).slice(0, 7);
   }, [language]);

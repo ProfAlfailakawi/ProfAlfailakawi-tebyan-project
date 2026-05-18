@@ -33,13 +33,17 @@ const SectionBox = ({
        try {
          const prompt = language === 'ar' ? systemPromptAr : systemPromptEn;
          const res = await proxyGenerateContent({
-           model: "gemini-3-flash-preview",
+           model: "gemini-1.5-flash",
            contents: [{ role: 'user', parts: [{ text: `المشكلة/السؤال: ${query}` }] }],
            config: { systemInstruction: prompt, temperature: 0.7 }
          });
          setContent(res.text);
-       } catch (e) {
-         setContent(language === 'ar' ? 'فشل التحليل، يرجى المحاولة لاحقاً.' : 'Analysis failed, try again later.');
+       } catch (e: any) {
+         if (e?.message === "AI_SERVICE_SUSPENDED") {
+            setContent(language === 'ar' ? 'عذراً، محرك الذكاء الاصطناعي يخضع للصيانة حالياً. يرجى المحاولة لاحقاً.' : 'AI service is currently under maintenance. Please try again later.');
+         } else {
+            setContent(language === 'ar' ? 'فشل التحليل، يرجى المحاولة لاحقاً.' : 'Analysis failed, try again later.');
+         }
        } finally {
          setLoading(false);
        }

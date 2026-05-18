@@ -115,7 +115,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
               chatSummary: chatHistory.length > 2 ? chatHistory.slice(-2) : chatHistory,
               date: new Date().toISOString()
           };
-          localStorage.setItem('tibyan_cognitive_memory', JSON.stringify(memoryContext));
+          localStorage.setItem('tebyan_cognitive_memory', JSON.stringify(memoryContext));
       } catch(e) {}
       
     } catch(err: any) {
@@ -220,7 +220,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                                insight: decision.insight,
                                date: new Date().toISOString()
                            };
-                           localStorage.setItem('tibyan_cognitive_memory', JSON.stringify(memoryContext));
+                           localStorage.setItem('tebyan_cognitive_memory', JSON.stringify(memoryContext));
                          } catch(e) {}
                          if (decision.isCorrect) {
                            window.dispatchEvent(new CustomEvent('add_xp', { detail: { amount: 150 } }));

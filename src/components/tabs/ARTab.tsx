@@ -100,7 +100,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
       let nodes = [];
       try {
         const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
+          model: 'gemini-1.5-flash',
           contents: [{ role: 'user', parts: [{ text: prompt }] }]
         });
         const cleaned = response.text.replace(/```json/g, '').replace(/```/g, '').trim();

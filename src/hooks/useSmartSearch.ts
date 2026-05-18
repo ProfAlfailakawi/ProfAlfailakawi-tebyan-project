@@ -64,7 +64,7 @@ export function useSmartSearch(searchValue: string, minLength: number = 6) {
 ${latestText}`;
 
         const response = await proxyGenerateContent({
-          model: "gemini-3-flash-preview",
+          model: "gemini-1.5-flash",
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           config: {
             responseMimeType: "application/json",
@@ -96,8 +96,12 @@ ${latestText}`;
         } else {
           setSmartSuggestion("");
         }
-      } catch (error) {
-        console.error("Smart search suggestion error:", error);
+      } catch (error: any) {
+        if (error?.message === "AI_SERVICE_SUSPENDED") {
+          setSmartSuggestion("عذراً، محرك الذكاء الاصطناعي يخضع للصيانة حالياً.");
+        } else {
+          console.error("Smart search suggestion error:", error);
+        }
       } finally {
         if (requestId === requestIdRef.current) {
           setIsSuggestionLoading(false);

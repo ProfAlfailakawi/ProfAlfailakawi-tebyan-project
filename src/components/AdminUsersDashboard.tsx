@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, updateDoc, doc, deleteDoc, setDoc } from 'firebase/firestore';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
@@ -78,7 +78,11 @@ export default function AdminUsersDashboard() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (profile?.role === 'admin') {
+    
+    // Allow if either profile role is admin OR email matches hardcoded admins
+    const isAdminByEmail = user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+    
+    if (profile?.role === 'admin' || isAdminByEmail) {
       const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
         const usersList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setUsers(usersList);
@@ -86,14 +90,14 @@ export default function AdminUsersDashboard() {
         setErrorMsg(null);
       }, (error) => {
         console.error("Error fetching users:", error);
-        setErrorMsg(error.message);
+        setErrorMsg(`خطأ في صلاحيات الوصول: ${error.message} (UID: ${user?.uid})`);
         setLoading(false);
       });
       return () => unsubscribe();
     } else {
       setLoading(false);
     }
-  }, [profile, authLoading]);
+  }, [profile, user, authLoading]);
 
   if (!isAuthorized) return <div className="p-10 text-center">غير مصرح لك بالوصول.</div>;
   
@@ -104,8 +108,37 @@ export default function AdminUsersDashboard() {
       </h1>
       
       {errorMsg && (
-        <div className="bg-rose-100 text-rose-900 p-4 rounded-xl mb-6 font-bold">
-          {errorMsg}
+        <div className="bg-rose-100 text-rose-900 p-4 rounded-xl mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="font-bold">
+            {errorMsg}
+          </div>
+          <button 
+            onClick={async () => {
+              try {
+                setLoading(true);
+                const adminRef = doc(db, 'admins', user!.uid);
+                await setDoc(adminRef, { 
+                  email: user!.email, 
+                  registeredAt: new Date().toISOString(),
+                  source: 'manual-repair'
+                });
+                
+                const userRef = doc(db, 'users', user!.uid);
+                await updateDoc(userRef, { role: 'admin' });
+                
+                alert('تم تحديث الصلاحيات بنجاح. يرجى تحديث الصفحة.');
+                window.location.reload();
+              } catch (e: any) {
+                console.error(e);
+                alert(`فشل الإصلاح التلقائي: ${e.message}`);
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="bg-rose-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-rose-700 transition-colors shrink-0"
+          >
+            إصلاح الصلاحيات يدوياً
+          </button>
         </div>
       )}
 

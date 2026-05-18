@@ -32,6 +32,7 @@ import { SpatialGhost } from './components/SpatialGhost';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
 import { GlobalSageBar } from './components/GlobalSageBar';
+import { migrateLegacyData } from './lib/migration';
 
 import AdminUsersDashboard from './components/AdminUsersDashboard';
 import AdminQawlFasl from './components/tabs/QawlFasl/AdminQawlFasl';
@@ -210,6 +211,9 @@ const AppContent: React.FC = () => {
   const [showMoodTransition, setShowMoodTransition] = useState(false);
   
   useEffect(() => {
+    // Run migration from legacy keys immediately
+    migrateLegacyData();
+
     // Panic mode listener
     const handlePanic = (e: any) => {
         const isPanic = e.detail;
@@ -268,12 +272,19 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     // Automatically check and run daily tasks when user is available and is an admin
-    if (authReady && user && profile?.role === 'admin') {
+    const isPrimaryAdmin = user?.email?.toLowerCase() === 'alfailakawidrahmad@gmail.com' || 
+                         user?.email?.toLowerCase() === 'alfailakawidrahmad@outlook.com' ||
+                         user?.email?.toLowerCase().includes('dr.ahmad');
+    
+    if (authReady && user && (profile?.role === 'admin' || isPrimaryAdmin)) {
       cronService.runDailyTasks();
     }
   }, [authReady, user, profile]);
 
   useEffect(() => {
+    // Run migration from legacy keys
+    migrateLegacyData();
+
     // Desktop: default closed behavior
     if (window.innerWidth >= 1024) {
         setSidebarOpen(false);
@@ -393,29 +404,29 @@ const AppContent: React.FC = () => {
     { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion },
     { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit },
     { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
-    // { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
+    { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
     { id: 'truthmanuscript', label: language === 'ar' ? 'مخطوطة الحقيقة' : 'Truth Manuscript', icon: Sparkles },
     { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network },
     { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
     { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },
-    { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent, hidden: profile?.role !== 'admin' },
+    { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent },
     { 
       id: 'adminusers', 
       label: language === 'ar' ? 'المستخدمين' : 'Users', 
       icon: Users,
-      hidden: profile?.role !== 'admin'
+      hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     { 
       id: 'adminqawlfasl', 
       label: language === 'ar' ? 'إدارة قول فصل' : 'Admin Qawl', 
       icon: LayoutDashboard,
-      hidden: profile?.role !== 'admin'
+      hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     {
       id: 'adminmessages',
       label: language === 'ar' ? 'صندوق الوارد' : 'Inbox',
       icon: Mail,
-      hidden: profile?.role !== 'admin'
+      hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     {
       id: 'contact',
@@ -633,10 +644,14 @@ const AppContent: React.FC = () => {
                       <button 
                         onClick={() => {
                           localStorage.removeItem('tebyan_memory');
+                          localStorage.removeItem('tebyan_cognitive_memory');
                           localStorage.removeItem('tebyan_sage_progress');
-                          localStorage.removeItem('tibyan_search_history');
                           localStorage.removeItem('tebyan_search_history');
                           localStorage.removeItem('tebyan_usage_stats');
+                          localStorage.removeItem('tebyan_analytics_logs');
+                          localStorage.removeItem('tebyan_galaxy_cache');
+                          localStorage.removeItem('tebyan_custom_avatar');
+                          localStorage.removeItem('tebyan_style_confirmed');
                           signOut(auth);
                         }} 
                         className="w-full flex items-center justify-center gap-3 py-4 bg-rose-600 text-white hover:bg-rose-700 rounded-[20px] text-base font-black shadow-lg shadow-rose-200 transition-all active:scale-[0.98]"

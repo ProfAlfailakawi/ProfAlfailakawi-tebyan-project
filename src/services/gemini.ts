@@ -75,14 +75,18 @@ ai.models.generateContent = async (params: any & { skipCache?: boolean }) => {
       promptSnippet: promptLog,
       personaSnippet: persona.substring(0, 100)
     });
-  } catch (e) {
-    console.warn("Could not log AI usage to Firestore", e);
+  } catch (e: any) {
+    if (e?.message?.includes('permission')) {
+        // Silently skip if permissions are missing
+    } else {
+        console.warn("Could not log AI usage to Firestore", e);
+    }
   }
 
   return result;
 };
 
-const DEFAULT_MODEL = "gemini-2.5-flash";
+const DEFAULT_MODEL = "gemini-1.5-flash";
 
 function tryRepairJson(json: string): string {
   let cleaned = json.trim();
@@ -1005,7 +1009,7 @@ export async function universalOracle(query: string, persona: string = 'Tibyan A
     
     let memoryContextStr = "";
     try {
-        const memMatch = localStorage.getItem('tibyan_cognitive_memory');
+        const memMatch = localStorage.getItem('tebyan_cognitive_memory');
         if (memMatch) {
             const mem = JSON.parse(memMatch);
             if (lang === 'ar') {
@@ -1580,7 +1584,7 @@ export async function generateCouncilConsultation(topic: string, lang: string = 
     try {
       let memoryContextStr = "";
       try {
-          const memMatch = localStorage.getItem('tibyan_cognitive_memory');
+          const memMatch = localStorage.getItem('tebyan_cognitive_memory');
           if (memMatch) {
               const mem = JSON.parse(memMatch);
               memoryContextStr = `\n[NOTE FOR ADVISORS: The user has a previous memory from the field simulator: ${JSON.stringify(mem)}. You MUST implicitly weave this past behavior/reaction into your advice to make it deeply personalized and continuous.]\n`;
