@@ -111,7 +111,7 @@ export default function Login() {
                   required
                   dir="ltr"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value.replace(/[^a-zA-Z0-9@._+-\s]/g, '').replace(/\s/g, ''))}
                   className="w-full pr-11 md:pr-14 pl-4 py-3 md:py-4 bg-zinc-50 border border-zinc-200/50 rounded-2xl focus:border-black focus:ring-1 focus:ring-black outline-none transition-all font-medium text-sm md:text-base text-left placeholder:text-zinc-400"
                   placeholder="name@example.com"
                 />
