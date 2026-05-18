@@ -14,8 +14,7 @@ const __dirname = path.dirname(__filename);
 
 // Initialize Gemini API
 const getGenAI = () => {
-    // Prioritize user-provided keys over the system-injected GEMINI_API_KEY
-    let apiKey = (process.env.VITE_GEMINI_API_KEY || process.env.API_KEY || process.env.Nee || process.env.New || process.env.GEMINI_API_KEY2 || process.env.GEMINI_API_KEY || "").trim();
+    let apiKey = (process.env.Nee || process.env.GEMINI_API_KEY || "").trim();
     
     if (apiKey === "MY_GEMINI_API_KEY" || apiKey === "YOUR_ACTUAL_AI_KEY_HERE" || apiKey === "INVALID_KEY_PLACEHOLDER") {
         apiKey = "";

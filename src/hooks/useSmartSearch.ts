@@ -99,8 +99,10 @@ ${latestText}`;
       } catch (error: any) {
         if (error?.message === "AI_SERVICE_SUSPENDED") {
           setSmartSuggestion("عذراً، محرك الذكاء الاصطناعي يخضع للصيانة حالياً.");
+        } else if (error?.message?.includes("ضغط") || error?.message?.includes("API_KEY_EXPIRED") || error?.message?.includes("منتهي")) {
+          setSmartSuggestion("");
         } else {
-          console.error("Smart search suggestion error:", error);
+          console.error("Smart search suggestion error:", error?.message || error);
         }
       } finally {
         if (requestId === requestIdRef.current) {
