@@ -194,37 +194,7 @@ async function startServer() {
 
                 console.log(`[Server] Generating with model: ${selectedModel}, content length: ${JSON.stringify(contents).length}`);
 
-                const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                const delays = [0, 2000, 5000];
-
-                let lastError: any;
-                for (let attempt = 0; attempt < delays.length; attempt++) {
-                    if (delays[attempt] > 0) {
-                        console.warn(`[Server] Gemini retry ${attempt + 1}/${delays.length} after ${delays[attempt]}ms`);
-                        await sleep(delays[attempt]);
-                    }
-
-                    try {
-                        return await model.generateContent({ contents });
-                    } catch (err: any) {
-                        lastError = err;
-                        const msg = String(err?.message || err || "").toLowerCase();
-                        const isBusy =
-                            msg.includes("503") ||
-                            msg.includes("service unavailable") ||
-                            msg.includes("high demand") ||
-                            msg.includes("overloaded") ||
-                            msg.includes("temporarily unavailable");
-
-                        if (!isBusy || attempt === delays.length - 1) {
-                            throw err;
-                        }
-
-                        console.warn("[Server] Gemini busy/high demand, retrying:", err?.message || err);
-                    }
-                }
-
-                throw lastError;
+                return await model.generateContent({ contents });
             };
 
             const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

@@ -47,6 +47,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const [capsuleItem, setCapsuleItem] = useState('');
   const [isCapsuled, setIsCapsuled] = useState(false);
 
+  const [showAllLibrary, setShowAllLibrary] = useState(false);
+
   // Rage Room
   const [rageText, setRageText] = useState('');
   const [rageAnalysis, setRageAnalysis] = useState<{rage: number, sad: number, tired: number} | null>(null);
@@ -169,7 +171,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
         if (parsedMem && parsedMem.query) historyText += ' | ' + parsedMem.query;
       }
 
-      if (historyText.length < 50) {
+      if (historyText.length < 5) {
           setContradiction("لا توجد بيانات ومعطيات كافية لاكتشاف التناقضات حتى الآن. استمر في الحوار مع تبيان.");
           setIsAnalyzingContradiction(false);
           return;
@@ -260,7 +262,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
         if (parsedMem && parsedMem.query) historyText += ' | ' + parsedMem.query;
       }
 
-      if (historyText.length < 20) {
+      if (historyText.length < 5) {
           setGalaxyAnalysis("تبيان يحتاج لمزيد من الحوار ليرسم خريطة وعيك.");
           setIsAnalyzingGalaxy(false);
           return;
@@ -490,7 +492,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     className="flex flex-col items-center gap-4 text-indigo-200"
                                   >
                                      <Globe className="w-12 h-12 text-indigo-400 animate-pulse" />
-                                     <p className="text-xs font-black tracking-widest animate-bounce">جاري سبر الأغوار...</p>
+                                     <p className="text-xs font-black tracking-widest animate-bounce">جاري تحليل المعطيات...</p>
                                   </motion.div>
                                ) : contextKeywords.length > 0 ? (
                                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full relative">
@@ -552,8 +554,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2"><Bookmark size={16} className="text-indigo-500"/> خزنة البصائر</h4>
                      {preferences.savedLibrary && preferences.savedLibrary.length > 0 ? (
                         <div className="space-y-3">
-                            {preferences.savedLibrary.slice(0, 3).map((item, idx) => (
-                                <div key={idx} className="p-3 bg-white border border-slate-100 rounded-xl shadow-sm flex items-center justify-between">
+                            {preferences.savedLibrary.slice(0, showAllLibrary ? undefined : 3).map((item, idx) => (
+                                <div key={idx} onClick={() => { if(item.content) alert(item.content); }} className="p-3 bg-white border border-slate-100 rounded-xl shadow-sm flex items-center justify-between cursor-pointer hover:border-indigo-200 transition-colors">
                                     <div className="flex items-center gap-3 overflow-hidden">
                                         <div className="p-2 bg-indigo-50 rounded-lg text-indigo-500 shrink-0"><Bookmark size={14}/></div>
                                         <div className="truncate">
@@ -561,11 +563,18 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                             <p className="text-[10px] text-slate-500">{new Date(item.timestamp || Date.now()).toLocaleDateString('ar-EG')}</p>
                                         </div>
                                     </div>
-                                    <ArrowRightLeft size={14} className="text-slate-300 mx-2" />
+                                    <ArrowRightLeft size={14} className="text-slate-300 mx-2 opacity-50 relative group-hover:text-indigo-500" />
                                 </div>
                             ))}
-                            {preferences.savedLibrary.length > 3 && (
-                                <p className="text-center text-[10px] text-indigo-600 font-bold">+{preferences.savedLibrary.length - 3} عناصر أخرى</p>
+                            {!showAllLibrary && preferences.savedLibrary.length > 3 && (
+                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-indigo-600 hover:text-indigo-800 font-bold py-2 bg-indigo-50 rounded-xl transition-colors">
+                                    +{preferences.savedLibrary.length - 3} عناصر أخرى - انقر للعرض
+                                </button>
+                            )}
+                            {showAllLibrary && preferences.savedLibrary.length > 3 && (
+                                <button onClick={() => setShowAllLibrary(false)} className="w-full text-center text-xs text-slate-600 hover:text-slate-800 font-bold py-2 bg-slate-100 rounded-xl transition-colors">
+                                    إخفاء العناصر الإضافية
+                                </button>
                             )}
                         </div>
                      ) : (
