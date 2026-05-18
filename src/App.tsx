@@ -210,6 +210,26 @@ const AppContent: React.FC = () => {
   const [showMoodTransition, setShowMoodTransition] = useState(false);
   
   useEffect(() => {
+    // Panic mode listener
+    const handlePanic = (e: any) => {
+        const isPanic = e.detail;
+        if (isPanic) {
+            setCurrentMood('calm');
+            document.documentElement.classList.add('panic-mode');
+        } else {
+            setCurrentMood('default');
+            document.documentElement.classList.remove('panic-mode');
+        }
+    };
+    window.addEventListener('tebyan_panic_mode_change', handlePanic);
+    if (localStorage.getItem('tebyan_panic_mode') === 'true') {
+         setCurrentMood('calm');
+         document.documentElement.classList.add('panic-mode');
+    }
+    return () => window.removeEventListener('tebyan_panic_mode_change', handlePanic);
+  }, []);
+
+  useEffect(() => {
     document.documentElement.setAttribute('data-mood', currentMood);
     if (currentMood !== prevMood) {
       setShowMoodTransition(true);

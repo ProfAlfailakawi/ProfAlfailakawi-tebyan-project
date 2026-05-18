@@ -1,10 +1,10 @@
 {
   "projectId": "tebyan-80d93",
-  "appId": "1:986727794314:web:1d235b8f18f048c3dbcf73",
-  "apiKey": "AIzaSyDWBCW_bMJmGw-jgUYtxhEZjsM7edAZK5s",
+  "appId": "1:679130376428:web:cbb31cd46cf66a5fea9dc9",
+  "apiKey": "AIzaSyBl4eAHnn3Ov5tUTGCWz-m2DRfDsHA1PJ0",
   "authDomain": "tebyan-80d93.firebaseapp.com",
-  "firestoreDatabaseId": "ai-studio-018f9fd0-65b4-48d4-aa48-4f92c0b91395",
+  "firestoreDatabaseId": "default",
   "storageBucket": "tebyan-80d93.firebasestorage.app",
-  "messagingSenderId": "986727794314",
+  "messagingSenderId": "679130376428",
   "measurementId": ""
 }

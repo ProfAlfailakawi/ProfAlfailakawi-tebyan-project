@@ -10,13 +10,26 @@ export async function proxyGenerateContent(params: {
   contents: any[];
   config?: any;
 }) {
+
+  // Inject Panic Mode (Calm Mode) instructions if enabled
+  const isPanicMode = localStorage.getItem('tebyan_panic_mode') === 'true';
+  const modifiedParams = { ...params };
+  
+  if (isPanicMode) {
+     modifiedParams.config = modifiedParams.config || {};
+     const panicInstruction = " [توجيه طوارئ: المستخدم يمر بضغط نفسي أو أزمة حالياً. اجعل إجاباتك أكثر تلطفاً، احتواءً، هدوءاً، وداعمة نفسياً جداً ولا تكن قاسياً أو حاداً أبداً.] ";
+     modifiedParams.config.systemInstruction = modifiedParams.config.systemInstruction 
+         ? modifiedParams.config.systemInstruction + panicInstruction
+         : panicInstruction;
+  }
+
   // استخدام الرابط الأساسي للخادم إذا كان معرفاً في 환경 الإنتاج، وإلا استخدام مسار نسبي
   const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
   
   const response = await fetch(`${baseUrl}/api/ai/generate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(params),
+    body: JSON.stringify(modifiedParams),
   });
 
   const contentType = response.headers.get('content-type');

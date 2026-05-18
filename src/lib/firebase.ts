@@ -1,10 +1,15 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, initializeAuth, browserLocalPersistence } from 'firebase/auth';
-import { initializeFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-export const db = initializeFirestore(app, {}, firebaseConfig.firestoreDatabaseId);
+
+// If using the "default" database ID, typical getFirestore is sufficient
+export const db = firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== '(default)' && firebaseConfig.firestoreDatabaseId !== 'default' 
+  ? initializeFirestore(app, {}, firebaseConfig.firestoreDatabaseId)
+  : getFirestore(app);
 
 export const auth = getAuth(app);
+
 

@@ -228,7 +228,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key.length === 1) {
+      if (e.key && e.key.length === 1) {
         inputRef.current?.focus();
       }
     };
@@ -494,16 +494,24 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
     if (savedMemory) {
       const data = JSON.parse(savedMemory);
-      setLastInteraction(data);
-      if (user) {
-        const lastTime = new Date(data.timestamp).getTime();
-        const now = new Date().getTime();
-        if (now - lastTime > 3600000 && !data.followedUp) {
-          setShowFollowUp(true);
+      const currentUid = user?.uid || null;
+      
+      // Only load memory if it belongs to the current user state
+      if (data.uid === currentUid) {
+        setLastInteraction(data);
+        if (user) {
+          const lastTime = new Date(data.timestamp).getTime();
+          const now = new Date().getTime();
+          if (now - lastTime > 3600000 && !data.followedUp) {
+            setShowFollowUp(true);
+          } else {
+            setShowFollowUp(false);
+          }
         } else {
           setShowFollowUp(false);
         }
       } else {
+        setLastInteraction(null);
         setShowFollowUp(false);
       }
     }
@@ -580,7 +588,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         query,
         path: id,
         timestamp: new Date().toISOString(),
-        followedUp: false
+        followedUp: false,
+        uid: user?.uid || null
     };
     localStorage.setItem('tebyan_memory', JSON.stringify(memory));
 

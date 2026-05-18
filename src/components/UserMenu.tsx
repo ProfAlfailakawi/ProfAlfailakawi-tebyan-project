@@ -1,15 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, User as UserIcon, Shield, LayoutDashboard } from 'lucide-react';
+import { LogOut, User as UserIcon, Shield, LayoutDashboard, UserCircle } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import ClientProfilePanel from './ClientProfilePanel';
 
 export default function UserMenu() {
   const { profile, user } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Read saved avatar to update the top right instantly
+  const [savedAvatar, setSavedAvatar] = useState('default');
   
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -18,7 +23,16 @@ export default function UserMenu() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    
+    // Listen to local storage changes for avatar immediately if possible, or just interval/event
+    const interval = setInterval(() => {
+        setSavedAvatar(localStorage.getItem('tebyan_custom_avatar') || 'default');
+    }, 2000);
+
+    return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        clearInterval(interval);
+    }
   }, []);
 
   if (!profile) return null;
@@ -32,10 +46,10 @@ export default function UserMenu() {
         className="flex items-center p-1.5 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all hover:bg-white"
       >
         <div className="relative">
-          {profile.photoURL ? (
+          {profile.photoURL && savedAvatar === 'default' ? (
             <img src={profile.photoURL} alt={profile.displayName} className="w-9 h-9 rounded-xl object-cover border border-slate-100 shadow-sm" />
           ) : (
-            <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-sm ${savedAvatar !== 'default' ? 'bg-indigo-50 border-indigo-100 text-indigo-500' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
               <UserIcon size={18} />
             </div>
           )}
@@ -86,6 +100,17 @@ export default function UserMenu() {
             </div>
 
             <div className="p-1.5 flex flex-col gap-1">
+              <button 
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsProfileOpen(true);
+                }}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-indigo-700 hover:bg-indigo-50 transition-colors w-full text-start group"
+              >
+                <UserCircle size={16} className="text-indigo-500 shrink-0" />
+                <span className="text-sm font-bold flex-1">حسابي</span>
+              </button>
+
               {(profile.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
                 <button 
                   onClick={() => {
@@ -118,6 +143,12 @@ export default function UserMenu() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <ClientProfilePanel 
+         isOpen={isProfileOpen} 
+         onClose={() => setIsProfileOpen(false)} 
+         language="ar"
+      />
     </div>
   );
 }
