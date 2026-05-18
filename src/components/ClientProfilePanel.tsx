@@ -197,13 +197,20 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
     }
   };
 
+  const parseAIJSON = (text: string) => {
+    let clean = text.trim();
+    if (clean.startsWith('```json')) clean = clean.substring(7);
+    else if (clean.startsWith('```')) clean = clean.substring(3);
+    if (clean.endsWith('```')) clean = clean.substring(0, clean.length - 3);
+    return JSON.parse(clean.trim());
+  };
+
   const [isAnalyzingRage, setIsAnalyzingRage] = useState(false);
   const analyzeRage = async () => {
-    if (rageText.length < 5) return;
+    if (rageText.trim().length === 0) return;
     
-    // Clear and start analysis
+    // Start analysis without clearing immediately to allow feedback
     const originalText = rageText;
-    setRageText('');
     setIsAnalyzingRage(true);
     
     try {
@@ -217,18 +224,20 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       });
       
       if (response && response.text) {
-        setRageAnalysis(JSON.parse(response.text));
+        setRageAnalysis(parseAIJSON(response.text));
+        setRageText(''); // Clear on success
       } else {
         throw new Error("No response");
       }
     } catch (e) {
-      console.error(e);
+      console.error("Rage empty throw", e);
       // Fallback to random if AI fails
       setRageAnalysis({
         rage: Math.floor(Math.random() * 40) + 40,
         sad: Math.floor(Math.random() * 30) + 10,
         tired: Math.floor(Math.random() * 20) + 10
       });
+      setRageText(''); // Clear on fallback
     } finally {
       setIsAnalyzingRage(false);
     }
@@ -282,7 +291,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       });
 
       if (response && response.text) {
-          const res = JSON.parse(response.text);
+          const res = parseAIJSON(response.text);
           setGalaxyAnalysis(res.summary);
           setMaturityLabel(res.maturityLabel);
           if (res.scores && res.scores.length === 3) {
@@ -298,9 +307,13 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
           localStorage.setItem('tebyan_galaxy_cache', JSON.stringify({ ...res, historyCount: hCount }));
           setLastAnalysisCount(hCount);
       }
-    } catch (e) {
-        console.error(e);
-        setGalaxyAnalysis("تعذر تحديث التحليل حالياً.");
+    } catch (e: any) {
+        console.error("Galaxy analysis error:", e);
+        if (e.message && (e.message.includes("تم إيقاف مفتاح") || e.message.includes("المفتاح المضاف"))) {
+           setGalaxyAnalysis(e.message);
+        } else {
+           setGalaxyAnalysis("تعذر تحديث التحليل حالياً.");
+        }
     } finally {
         setIsAnalyzingGalaxy(false);
     }
@@ -833,7 +846,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                 />
                                 <button 
                                     onClick={analyzeRage} 
-                                    disabled={isAnalyzingRage || rageText.length <= 5}
+                                    disabled={isAnalyzingRage || rageText.trim().length === 0}
                                     className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                                 >
                                     {isAnalyzingRage ? (

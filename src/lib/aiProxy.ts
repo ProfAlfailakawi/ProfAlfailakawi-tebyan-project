@@ -52,8 +52,8 @@ export async function proxyGenerateContent(params: {
 
   if (!response.ok) {
     const error = await response.json();
-    const e = new Error(error.error || 'AI request failed');
-    (e as any).code = error.code;
+    const e = new Error(error.message || error.error || 'AI request failed');
+    (e as any).code = error.code || error.error;
     throw e;
   }
 

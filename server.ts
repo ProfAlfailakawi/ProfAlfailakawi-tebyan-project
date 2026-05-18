@@ -14,14 +14,13 @@ const __dirname = path.dirname(__filename);
 
 // Initialize Gemini API
 const getGenAI = () => {
-    let apiKey = (process.env.GEMINI_API_KEY || "").trim();
+    // Prioritize user-provided keys over the system-injected GEMINI_API_KEY
+    let apiKey = (process.env.VITE_GEMINI_API_KEY || process.env.API_KEY || process.env.Nee || process.env.New || process.env.GEMINI_API_KEY2 || process.env.GEMINI_API_KEY || "").trim();
+    
     if (apiKey === "MY_GEMINI_API_KEY" || apiKey === "YOUR_ACTUAL_AI_KEY_HERE" || apiKey === "INVALID_KEY_PLACEHOLDER") {
         apiKey = "";
     }
     
-    if (!apiKey) {
-        apiKey = (process.env.GEMINI_API_KEY2 || "").trim();
-    }
     if (!apiKey) {
         apiKey = (process.env.GEMINI_API_KEY3 || "").trim();
     }
@@ -204,19 +203,35 @@ async function startServer() {
             } catch (firstError: any) {
                 const firstErrStr = (firstError.message || "").toLowerCase();
                 const isSuspended = firstErrStr.includes("403") || firstErrStr.includes("suspended") || firstErrStr.includes("permission");
+                const isExpired = firstErrStr.includes("expired") || firstErrStr.includes("api_key_invalid");
                 
                 console.warn(`[Server] First AI attempt failed with ${finalModel}:`, firstError.message);
                 
-                if (isSuspended) {
+                if (isExpired) {
+                     return res.status(503).json({ 
+                        error: "API_KEY_EXPIRED",
+                        message: "المفتاح المضاف (API Key) منتهي الصلاحية أو غير صالح. يرجى إنشاء مفتاح جديد وحفظه في الإعدادات.",
+                        details: firstError.message 
+                    });
+                } else if (isSuspended) {
                     const fallbackModel = finalModel === "gemini-1.5-flash" ? "gemini-1.5-pro" : "gemini-1.5-flash";
                     console.log(`[Server] Retrying with fallback model: ${fallbackModel}`);
                     try {
                         result = await attemptGeneration(fallbackModel);
                     } catch (secondError: any) {
+                        const secondErrStr = (secondError.message || "").toLowerCase();
+                        if (secondErrStr.includes("expired") || secondErrStr.includes("api_key_invalid")) {
+                            return res.status(503).json({ 
+                                error: "API_KEY_EXPIRED",
+                                message: "المفتاح المضاف (API Key) منتهي الصلاحية أو غير صالح. يرجى إنشاء مفتاح جديد وحفظه في الإعدادات.",
+                                details: secondError.message 
+                            });
+                        }
+                        
                         console.error(`[Server] Fallback AI also failed:`, secondError.message);
                         return res.status(503).json({ 
                             error: "AI_SERVICE_SUSPENDED",
-                            message: "عذراً، محرك الذكاء الاصطناعي يخضع للصيانة حالياً. يرجى المحاولة لاحقاً.",
+                            message: "تم إيقاف مفتاح النظام للذكاء الاصطناعي (API Key) من قبل المصدر. يرجى تجديده أو توفير مفتاح آخر في الإعدادات.",
                             details: secondError.message 
                         });
                     }
