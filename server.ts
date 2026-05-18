@@ -247,13 +247,13 @@ async function startServer() {
                 console.warn(`[Server] First AI attempt failed with ${finalModel}:`, firstError.message);
                 
                 if (isExpired) {
-                     return res.status(503).json({ 
+                     return res.status(401).json({ 
                         error: "API_KEY_EXPIRED",
                         message: "المفتاح المضاف (API Key) منتهي الصلاحية أو غير صالح. يرجى إنشاء مفتاح جديد وحفظه في الإعدادات.",
                         details: firstError.message 
                     });
                 } else if (isBusy) {
-                    return res.status(503).json({
+                    return res.status(429).json({
                         error: "AI_HIGH_DEMAND",
                         message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
                         details: firstError.message
@@ -266,7 +266,7 @@ async function startServer() {
                     } catch (secondError: any) {
                         const secondErrStr = (secondError.message || "").toLowerCase();
                         if (secondErrStr.includes("expired") || secondErrStr.includes("api_key_invalid")) {
-                            return res.status(503).json({ 
+                            return res.status(401).json({ 
                                 error: "API_KEY_EXPIRED",
                                 message: "المفتاح المضاف (API Key) منتهي الصلاحية أو غير صالح. يرجى إنشاء مفتاح جديد وحفظه في الإعدادات.",
                                 details: secondError.message 
@@ -274,7 +274,7 @@ async function startServer() {
                         }
 
                         if (isGeminiBusyError(secondError)) {
-                            return res.status(503).json({
+                            return res.status(429).json({
                                 error: "AI_HIGH_DEMAND",
                                 message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
                                 details: secondError.message
@@ -282,7 +282,7 @@ async function startServer() {
                         }
                         
                         console.error(`[Server] Fallback AI also failed:`, secondError.message);
-                        return res.status(503).json({ 
+                        return res.status(403).json({ 
                             error: "AI_SERVICE_SUSPENDED",
                             message: "تم إيقاف مفتاح النظام للذكاء الاصطناعي (API Key) من قبل المصدر. يرجى تجديده أو توفير مفتاح آخر في الإعدادات.",
                             details: secondError.message 

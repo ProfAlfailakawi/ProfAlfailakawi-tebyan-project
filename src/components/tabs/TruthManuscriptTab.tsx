@@ -6,6 +6,7 @@ import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 import { proxyGenerateContent } from '../../lib/aiProxy';
+import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 
 export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initialValue }: { language: 'ar' | 'en', handleTabChange: any, initialValue?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -78,12 +79,20 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
 تجنب أي كلمات معاصرة، استخدم أسلوباً بلاغياً يلامس الروح.
 لا تضع مقدمات بل ادخل في الحكمة مباشرة.`;
 
-      const response = await proxyGenerateContent({
-        model: "gemini-2.5-flash",
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      });
+      const res = await KnowledgeMemoryService.processUnderstanding(
+          query || 'عن الحياة والخفايا',
+          prompt,
+          { temperature: 0.9 },
+          async (textContext, instructionContext) => {
+              const response = await proxyGenerateContent({
+                model: "gemini-2.5-flash",
+                contents: [{ role: 'user', parts: [{ text: instructionContext }] }],
+              });
+              return response.text || '';
+          }
+      );
 
-      setManuscriptContent(response.text || 'لم نجد شيئاً في ظلمات النسيان..');
+      setManuscriptContent(res.text || 'لم نجد شيئاً في ظلمات النسيان..');
       resetCanvas();
     } catch (error) {
       console.error(error);

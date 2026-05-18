@@ -13,6 +13,7 @@ import { auth, db } from '../lib/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useGamificationContext } from './GamificationProvider';
 import { proxyGenerateContent } from '../lib/aiProxy';
+import { KnowledgeMemoryService, ThoughtNode } from '../services/knowledgeMemoryService';
 
 interface ClientProfilePanelProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const [isCapsuled, setIsCapsuled] = useState(false);
 
   const [showAllLibrary, setShowAllLibrary] = useState(false);
+  const [knowledgeTree, setKnowledgeTree] = useState<ThoughtNode[]>([]);
 
   // Rage Room
   const [rageText, setRageText] = useState('');
@@ -82,6 +84,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       let historyCount = 0;
       let words: string[] = [];
       let allQueries: string[] = [];
+      setKnowledgeTree(KnowledgeMemoryService.getMemoryTree());
       if (historyStr) {
         try {
           const parsed = JSON.parse(historyStr);
@@ -216,18 +219,27 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
     setIsAnalyzingRage(true);
     
     try {
-      const response = await proxyGenerateContent({
-        model: "gemini-2.5-flash",
-        contents: [{ role: 'user', parts: [{ text: `النص للتفريغ:\n${originalText}` }] }],
-        config: {
-          systemInstruction: "أنت محلل مشاعر. حلل النص التالي وقدر نسب 3 مشاعر: الغضب (rage)، الحزن/الخذلان (sad)، والإرهاق (tired). أرجع النتيجة كـ JSON فقط بالصيغة: {\"rage\": number, \"sad\": number, \"tired\": number}. النسب من 0 إلى 100.",
-          responseMimeType: "application/json"
-        }
-      });
+      const response = await KnowledgeMemoryService.processUnderstanding(
+          originalText,
+          "أنت محلل مشاعر. حلل النص التالي وقدر نسب 3 مشاعر: الغضب (rage)، الحزن/الخذلان (sad)، والإرهاق (tired). أرجع النتيجة كـ JSON فقط بالصيغة: {\"rage\": number, \"sad\": number, \"tired\": number}. النسب من 0 إلى 100.",
+          { responseMimeType: "application/json" },
+          async (prompt, instruction, cfg) => {
+              const res = await proxyGenerateContent({
+                model: "gemini-2.5-flash",
+                contents: [{ role: 'user', parts: [{ text: `النص للتفريغ:\n${prompt}` }] }],
+                config: {
+                  systemInstruction: instruction,
+                  ...cfg
+                }
+              });
+              return res.text || '';
+          }
+      );
       
       if (response && response.text) {
         setRageAnalysis(parseAIJSON(response.text));
         setRageText(''); // Clear on success
+        setKnowledgeTree(KnowledgeMemoryService.getMemoryTree()); // Refresh Tree
       } else {
         throw new Error("No response");
       }
@@ -468,7 +480,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                            {isAnalyzingGalaxy ? (
                               <>
                                  <RefreshCw className="w-3 h-3 animate-spin" />
-                                 <span>جاري الرصد...</span>
+                                 <span>أقرأ مساراتك...</span>
                               </>
                            ) : (
                               <>
@@ -492,7 +504,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     className="flex flex-col items-center gap-4 text-indigo-200"
                                   >
                                      <Globe className="w-12 h-12 text-indigo-400 animate-pulse" />
-                                     <p className="text-xs font-black tracking-widest animate-bounce">جاري تحليل المعطيات...</p>
+                                     <p className="text-xs font-black tracking-widest animate-bounce">أستجمع شتات أفكارك...</p>
                                   </motion.div>
                                ) : contextKeywords.length > 0 ? (
                                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full relative">
@@ -551,28 +563,49 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   </div>
 
                   <div>
-                    <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2"><Bookmark size={16} className="text-indigo-500"/> خزنة البصائر</h4>
-                     {preferences.savedLibrary && preferences.savedLibrary.length > 0 ? (
-                        <div className="space-y-3">
-                            {preferences.savedLibrary.slice(0, showAllLibrary ? undefined : 3).map((item, idx) => (
-                                <div key={idx} onClick={() => { if(item.content) alert(item.content); }} className="p-3 bg-white border border-slate-100 rounded-xl shadow-sm flex items-center justify-between cursor-pointer hover:border-indigo-200 transition-colors">
-                                    <div className="flex items-center gap-3 overflow-hidden">
-                                        <div className="p-2 bg-indigo-50 rounded-lg text-indigo-500 shrink-0"><Bookmark size={14}/></div>
-                                        <div className="truncate">
-                                            <p className="text-sm font-bold text-slate-800 truncate">{item.title || item.topic || 'بصيرة محفوظة'}</p>
-                                            <p className="text-[10px] text-slate-500">{new Date(item.timestamp || Date.now()).toLocaleDateString('ar-EG')}</p>
+                    <h4 className="font-bold text-slate-900 mb-3 flex items-center gap-2"><Bookmark size={16} className="text-indigo-500"/> الذاكرة المعرفية (Insights Vault)</h4>
+                     {knowledgeTree && knowledgeTree.length > 0 ? (
+                        <div className="space-y-4">
+                            {knowledgeTree.slice(0, showAllLibrary ? undefined : 3).map((item, idx) => (
+                                <div key={item.id || idx} className="p-4 bg-white border border-slate-100 rounded-xl shadow-sm hover:border-indigo-200 transition-colors">
+                                    <div className="flex items-start gap-3 w-full">
+                                        <div className="p-2 bg-indigo-50 rounded-lg text-indigo-500 shrink-0 mt-1"><Bookmark size={14}/></div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-bold text-slate-800 break-words leading-tight mb-1">{item.mainTopic}</p>
+                                            <p className="text-xs text-slate-600 line-clamp-2 mb-2 bg-slate-50 p-2 rounded-lg break-words">الفكرة: {item.originalText}</p>
+                                            
+                                            {item.variants && item.variants.length > 0 && (
+                                                <div className="mt-3 pl-2 border-r-2 border-indigo-100 mr-2 pr-3">
+                                                    <p className="text-[10px] font-bold text-indigo-400 mb-1">امتدادات وتفاصيل جديدة:</p>
+                                                    <div className="space-y-2">
+                                                        {item.variants.map(v => (
+                                                            <div key={v.id} className="text-xs bg-indigo-50/50 p-2 rounded text-slate-700 flex flex-col gap-1">
+                                                                <span className="font-medium">"{v.originalText}"</span>
+                                                                {(v.ageMentioned || v.riskLevel !== 'medium') && (
+                                                                  <div className="flex gap-2 text-[9px] text-indigo-400">
+                                                                    {v.ageMentioned && <span>العمر: {v.ageMentioned}</span>}
+                                                                    {v.riskLevel !== 'medium' && <span>المستوى: {v.riskLevel}</span>}
+                                                                  </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                    <ArrowRightLeft size={14} className="text-slate-300 mx-2 opacity-50 relative group-hover:text-indigo-500" />
+                                    <div className="w-full flex justify-end mt-2 pt-2 border-t border-slate-50">
+                                        <p className="text-[10px] text-slate-400 font-medium">الاستخدامات: {item.usageCount || 1}</p>
+                                    </div>
                                 </div>
                             ))}
-                            {!showAllLibrary && preferences.savedLibrary.length > 3 && (
-                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-indigo-600 hover:text-indigo-800 font-bold py-2 bg-indigo-50 rounded-xl transition-colors">
-                                    +{preferences.savedLibrary.length - 3} عناصر أخرى - انقر للعرض
+                            {!showAllLibrary && knowledgeTree.length > 3 && (
+                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-indigo-600 hover:text-indigo-800 font-bold py-3 bg-indigo-50 rounded-xl transition-colors">
+                                    +{knowledgeTree.length - 3} أفكار وحالات أخرى - عرض الكل
                                 </button>
                             )}
-                            {showAllLibrary && preferences.savedLibrary.length > 3 && (
-                                <button onClick={() => setShowAllLibrary(false)} className="w-full text-center text-xs text-slate-600 hover:text-slate-800 font-bold py-2 bg-slate-100 rounded-xl transition-colors">
+                            {showAllLibrary && knowledgeTree.length > 3 && (
+                                <button onClick={() => setShowAllLibrary(false)} className="w-full text-center text-xs text-slate-600 hover:text-slate-800 font-bold py-3 bg-slate-100 rounded-xl transition-colors">
                                     إخفاء العناصر الإضافية
                                 </button>
                             )}
@@ -580,7 +613,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                      ) : (
                         <div className="text-center p-6 bg-slate-50 rounded-2xl border border-slate-100 border-dashed text-slate-400 text-sm flex flex-col items-center gap-2">
                            <Bookmark size={24} className="text-slate-300" />
-                           <p>لا توجد مقتطفات محفوظة بعد.<br/>التقط الأفكار والقرارات الملهمة أثناء حوارك مع تبيانت لتجدها هنا.</p>
+                           <p>لا توجد مقتطفات محفوظة بعد.<br/>التقط الأفكار والقرارات الملهمة أثناء حوارك مع تبيان لتجدها هنا ومقسمة كشجرة معرفية ذكية.</p>
                         </div>
                      )}
                   </div>
@@ -688,7 +721,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                    disabled={isAnalyzingContradiction}
                                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition-colors disabled:opacity-50"
                                 >
-                                   {isAnalyzingContradiction ? 'جاري الغوص في أفكارك...' : 'اكتشف التناقض'}
+                                   {isAnalyzingContradiction ? 'أقرأ ما بين سطورك...' : 'اكتشف التناقض'}
                                 </button>
                              </div>
                           )}

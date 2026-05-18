@@ -5,6 +5,8 @@ import { useUser } from '../../contexts/UserContext';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
+import { proxyGenerateContent } from '../../lib/aiProxy';
 
 const personas = [
   { id: 'parent', ar: 'الوالد/الوالدة', en: 'Parent/Guardian' },
@@ -41,10 +43,19 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     setIsLoading(true);
     setError(null);
     try {
-      const { universalOracle } = await import('../../services/gemini');
       const promptInstructed = `${input}\n\nيرجى تقديم الإجابة في نقاط قصيرة ومباشرة وفقرات صغيرة جداً لتسهيل القراءة على الهاتف.`;
-      const res = await universalOracle(promptInstructed, oraclePersona, language);
-      setOracleResult(res || '');
+      
+      const res = await KnowledgeMemoryService.processUnderstanding(
+          promptInstructed,
+          `أنت مستشار خبير (شخصية: ${oraclePersona}). قدم استشارة شاملة وعميقة ومباشرة.`,
+          { temperature: 0.7 },
+          async (prompt, instruction, cfg) => {
+              const { universalOracle } = await import('../../services/gemini');
+              return await universalOracle(prompt, oraclePersona, language) || '';
+          }
+      );
+      
+      setOracleResult(res.text || '');
     } catch (err: any) {
       setError(language === 'ar' 
         ? "المستشار يتأمل بعمق في سؤالك.. عاود الضغط ليصيغ لك حكمة." 

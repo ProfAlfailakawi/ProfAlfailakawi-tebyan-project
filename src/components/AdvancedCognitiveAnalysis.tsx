@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Fingerprint, Landmark, AudioLines, Sparkles, TrendingUp, ChevronDown, Loader2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { proxyGenerateContent } from '../lib/aiProxy';
+import { KnowledgeMemoryService } from '../services/knowledgeMemoryService';
 
 interface Props {
   query: string;
@@ -32,11 +33,20 @@ const SectionBox = ({
        setLoading(true);
        try {
          const prompt = language === 'ar' ? systemPromptAr : systemPromptEn;
-         const res = await proxyGenerateContent({
-           model: "gemini-2.5-flash",
-           contents: [{ role: 'user', parts: [{ text: `المشكلة/السؤال: ${query}` }] }],
-           config: { systemInstruction: prompt, temperature: 0.7 }
-         });
+         // Using KnowledgeMemoryService ensures we don't start from scratch and we build a memory graph.
+         const res = await KnowledgeMemoryService.processUnderstanding(
+             query,
+             prompt,
+             { temperature: 0.7 },
+             async (textContext, instructionContext, modifiedConfig) => {
+                 const gen = await proxyGenerateContent({
+                     model: "gemini-2.5-flash",
+                     contents: [{ role: 'user', parts: [{ text: `المشكلة/السؤال: ${textContext}` }] }],
+                     config: { systemInstruction: instructionContext, ...(modifiedConfig || { temperature: 0.7 }) }
+                 });
+                 return gen.text || '';
+             }
+         );
          setContent(res.text);
        } catch (e: any) {
          if (e?.message === "AI_SERVICE_SUSPENDED") {

@@ -4,6 +4,8 @@ import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
+import { proxyGenerateContent } from '../../lib/aiProxy';
 
 declare global {
   namespace JSX {
@@ -149,17 +151,23 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         generateSymbol, generateIdeaSound, generatePerspectivesCollision
       } = await import('../../services/gemini');
       resetAllLabResults();
+      
+      const contextQuery = activeLabTool === 'collider' ? `${labInput} VS ${labInput2}` : labInput;
+
       switch (activeLabTool) {
         case 'collider': 
            if (!labInput2.trim()) { throw new Error("يجب توفير الفكرة الثانية للتصادم!"); }
-           setLabColliderResult(await universalOracle(
-               `أنت في وضع "مُصادم الأفكار". لقد رمى المستخدم هذين المفهومين المتناقضين في الثقب الأسود:
+           const colliderPrompt = `أنت في وضع "مُصادم الأفكار". لقد رمى المستخدم هذين المفهومين المتناقضين في الثقب الأسود:
                 المفهوم الأول: "${labInput}"
                 المفهوم الثاني: "${labInput2}"
-                مهمتك: دمج هذين المفهومين بطريقة مسرحية وفلسفية وتوليد وليدة فكرية جديدة تماماً ومدهشة. اخلق بعداً ثالثاً لم يُفكر به من قبل.`,
-               'Cognitive Collider',
-               language
-           ));
+                مهمتك: دمج هذين المفهومين بطريقة مسرحية وفلسفية وتوليد وليدة فكرية جديدة تماماً ومدهشة. اخلق بعداً ثالثاً لم يُفكر به من قبل.`;
+           const colliderRes = await KnowledgeMemoryService.processUnderstanding(
+               contextQuery,
+               colliderPrompt,
+               { temperature: 0.9 },
+               async (q, p) => await universalOracle(p, 'Cognitive Collider', language) || ''
+           );
+           setLabColliderResult(colliderRes.text);
            break;
         case 'design': setLabDesign(await generateInstructionalDesign(labInput, "General")); break;
         case 'scout': setLabScout(await scoutTools(labInput)); break;
@@ -170,7 +178,20 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         case 'career': setLabCareer(await careerCompass(labInput, language)); break;
         case 'workshop': setLabWorkshop(await generateWorkshop(labInput, language)); break;
         case 'symbols':
-          setLabSymbol(await generateSymbol(labInput, language));
+          const symbolRes = await KnowledgeMemoryService.processUnderstanding(
+              labInput,
+              "توليد رمز بصري فلسفي",
+              { temperature: 0.8 },
+              async () => {
+                  const res = await generateSymbol(labInput, language);
+                  return JSON.stringify(res);
+              }
+          );
+          try {
+              setLabSymbol(JSON.parse(symbolRes.text));
+          } catch(e) {
+              setLabSymbol(symbolRes.text);
+          }
           break;
         case 'sound':
           setLabSound(await generateIdeaSound(labInput, language));
