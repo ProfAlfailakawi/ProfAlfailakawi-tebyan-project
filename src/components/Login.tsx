@@ -3,7 +3,8 @@ import {
   signInWithPopup, 
   GoogleAuthProvider, 
   signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword 
+  createUserWithEmailAndPassword,
+  updateProfile
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { LogIn, Mail, Lock, UserPlus, AlertCircle } from 'lucide-react';
@@ -38,13 +39,12 @@ export default function Login() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         // We need to pass the displayName down? Actually AuthProvider sets `user.displayName || "New User"`.
         // We should update the auth Profile immediately
-        import('firebase/auth').then(({ updateProfile }) => {
-           updateProfile(userCredential.user, { displayName });
-        });
+        await updateProfile(userCredential.user, { displayName });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
     } catch (error: any) {
+      console.error("Auth error:", error);
       let arabicError = 'حدث خطأ ما، يرجى المحاولة مرة أخرى.';
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         arabicError = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
@@ -55,6 +55,11 @@ export default function Login() {
         arabicError = 'كلمة المرور ضعيفة جداً.';
       } else if (error.code === 'auth/invalid-email') {
         arabicError = 'البريد الإلكتروني غير صحيح.';
+      } else if (error.code === 'auth/operation-not-allowed') {
+        arabicError = 'تسجيل الدخول بالبريد وكلمة المرور غير مفعل في Firebase.';
+      } else {
+        // Fallback error message (includes actual message for debugging)
+        arabicError = `حدث خطأ: ${error.message}`;
       }
       setError(arabicError);
     } finally {
