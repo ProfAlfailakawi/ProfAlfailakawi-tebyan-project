@@ -39,4 +39,4 @@ console.log("✅ package.json updated: prebuild guard enabled.");
 console.log("");
 console.log("Next:");
 console.log("npm run build");
-console.log("firebase deploy --only hosting --project gen-lang-client-0579828362 --force");
+console.log("firebase deploy --only hosting --project tebyan-80d93 --force");

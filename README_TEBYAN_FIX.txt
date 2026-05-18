@@ -34,7 +34,7 @@ TEBYAN ROOT FIX FILES
 طريقة الاستخدام بعد رفع الملفات:
 node scripts/apply-tebyan-env-fix.js
 npm run build
-firebase deploy --only hosting --project gen-lang-client-0579828362 --force
+firebase deploy --only hosting --project tebyan-80d93 --force
 
 مهم:
 لا ترفع ملف .env الحقيقي إلى GitHub.

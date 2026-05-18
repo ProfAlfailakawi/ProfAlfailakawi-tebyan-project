@@ -13,7 +13,7 @@ steps:
       - '-c'
       - |
         npm install -g firebase-tools
-        firebase deploy --project=gen-lang-client-0579828362 --only hosting
+        firebase deploy --project=tebyan-80d93 --only hosting
 
 options:
   logging: CLOUD_LOGGING_ONLY
