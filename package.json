@@ -4,9 +4,10 @@
   "version": "4.0.0",
   "type": "module",
   "scripts": {
+    "prebuild": "node scripts/guard.js",
     "dev": "NODE_ENV=development tsx server.ts",
     "start": "node dist/server.js",
-    "build": "node scripts/guard.js && vite build && esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
