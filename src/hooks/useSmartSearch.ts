@@ -64,7 +64,7 @@ export function useSmartSearch(searchValue: string, minLength: number = 6) {
 ${latestText}`;
 
         const response = await proxyGenerateContent({
-          model: "gemini-1.5-flash",
+          model: "gemini-2.5-flash",
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           config: {
             responseMimeType: "application/json",

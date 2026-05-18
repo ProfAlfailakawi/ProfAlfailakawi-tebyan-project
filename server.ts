@@ -108,7 +108,7 @@ async function startServer() {
         try {
             console.log(`[Server] Generating TTS for text: "${text.substring(0, 50)}..."`);
             
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
             
             const result = await model.generateContent({
               contents: [{ role: 'user', parts: [{ text }] }],
@@ -173,10 +173,10 @@ async function startServer() {
 
         try {
             // Model Aliasing - Use stable models but allow newer versions
-            let finalModel = modelName || "gemini-1.5-flash";
+            let finalModel = modelName || "gemini-2.5-flash";
             // If it's a generic "gemini" or a non-standard name, fallback to stable.
             if (finalModel === "gemini" || finalModel.includes("2.5") || finalModel.includes("3.1") || finalModel.includes("3-flash") || finalModel.includes("preview")) {
-                finalModel = "gemini-1.5-flash";
+                finalModel = "gemini-2.5-flash";
             }
 
             const attemptGeneration = async (selectedModel: string) => {
@@ -194,16 +194,86 @@ async function startServer() {
                 });
 
                 console.log(`[Server] Generating with model: ${selectedModel}, content length: ${JSON.stringify(contents).length}`);
-                return await model.generateContent({ contents });
+
+                const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+                const delays = [0, 2000, 5000];
+
+                let lastError: any;
+                for (let attempt = 0; attempt < delays.length; attempt++) {
+                    if (delays[attempt] > 0) {
+                        console.warn(`[Server] Gemini retry ${attempt + 1}/${delays.length} after ${delays[attempt]}ms`);
+                        await sleep(delays[attempt]);
+                    }
+
+                    try {
+                        return await model.generateContent({ contents });
+                    } catch (err: any) {
+                        lastError = err;
+                        const msg = String(err?.message || err || "").toLowerCase();
+                        const isBusy =
+                            msg.includes("503") ||
+                            msg.includes("service unavailable") ||
+                            msg.includes("high demand") ||
+                            msg.includes("overloaded") ||
+                            msg.includes("temporarily unavailable");
+
+                        if (!isBusy || attempt === delays.length - 1) {
+                            throw err;
+                        }
+
+                        console.warn("[Server] Gemini busy/high demand, retrying:", err?.message || err);
+                    }
+                }
+
+                throw lastError;
+            };
+
+            const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+            const isGeminiBusyError = (err: any) => {
+                const msg = String(err?.message || err || "").toLowerCase();
+                return (
+                    msg.includes("503") ||
+                    msg.includes("service unavailable") ||
+                    msg.includes("high demand") ||
+                    msg.includes("overloaded") ||
+                    msg.includes("temporarily unavailable") ||
+                    msg.includes("try again")
+                );
+            };
+
+            const generateWithRetry = async (selectedModel: string) => {
+                const delays = [0, 2000, 5000];
+
+                let lastError: any;
+                for (let attempt = 0; attempt < delays.length; attempt++) {
+                    if (delays[attempt] > 0) {
+                        console.warn(`[Server] Gemini busy. Retrying attempt ${attempt + 1}/${delays.length} after ${delays[attempt]}ms...`);
+                        await sleep(delays[attempt]);
+                    }
+
+                    try {
+                        return await attemptGeneration(selectedModel);
+                    } catch (err: any) {
+                        lastError = err;
+                        if (!isGeminiBusyError(err)) {
+                            throw err;
+                        }
+                        console.warn(`[Server] Gemini busy/high demand on attempt ${attempt + 1}:`, err?.message || err);
+                    }
+                }
+
+                throw lastError;
             };
 
             let result;
             try {
-                result = await attemptGeneration(finalModel);
+                result = await generateWithRetry(finalModel);
             } catch (firstError: any) {
                 const firstErrStr = (firstError.message || "").toLowerCase();
                 const isSuspended = firstErrStr.includes("403") || firstErrStr.includes("suspended") || firstErrStr.includes("permission");
                 const isExpired = firstErrStr.includes("expired") || firstErrStr.includes("api_key_invalid");
+                const isBusy = isGeminiBusyError(firstError);
                 
                 console.warn(`[Server] First AI attempt failed with ${finalModel}:`, firstError.message);
                 
@@ -213,11 +283,17 @@ async function startServer() {
                         message: "المفتاح المضاف (API Key) منتهي الصلاحية أو غير صالح. يرجى إنشاء مفتاح جديد وحفظه في الإعدادات.",
                         details: firstError.message 
                     });
+                } else if (isBusy) {
+                    return res.status(503).json({
+                        error: "AI_HIGH_DEMAND",
+                        message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
+                        details: firstError.message
+                    });
                 } else if (isSuspended) {
-                    const fallbackModel = finalModel === "gemini-1.5-flash" ? "gemini-1.5-pro" : "gemini-1.5-flash";
+                    const fallbackModel = finalModel === "gemini-2.5-flash" ? "gemini-2.5-flash" : "gemini-2.5-flash";
                     console.log(`[Server] Retrying with fallback model: ${fallbackModel}`);
                     try {
-                        result = await attemptGeneration(fallbackModel);
+                        result = await generateWithRetry(fallbackModel);
                     } catch (secondError: any) {
                         const secondErrStr = (secondError.message || "").toLowerCase();
                         if (secondErrStr.includes("expired") || secondErrStr.includes("api_key_invalid")) {
@@ -225,6 +301,14 @@ async function startServer() {
                                 error: "API_KEY_EXPIRED",
                                 message: "المفتاح المضاف (API Key) منتهي الصلاحية أو غير صالح. يرجى إنشاء مفتاح جديد وحفظه في الإعدادات.",
                                 details: secondError.message 
+                            });
+                        }
+
+                        if (isGeminiBusyError(secondError)) {
+                            return res.status(503).json({
+                                error: "AI_HIGH_DEMAND",
+                                message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
+                                details: secondError.message
                             });
                         }
                         

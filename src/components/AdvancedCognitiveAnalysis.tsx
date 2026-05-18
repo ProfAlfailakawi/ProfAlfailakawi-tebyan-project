@@ -33,7 +33,7 @@ const SectionBox = ({
        try {
          const prompt = language === 'ar' ? systemPromptAr : systemPromptEn;
          const res = await proxyGenerateContent({
-           model: "gemini-1.5-flash",
+           model: "gemini-2.5-flash",
            contents: [{ role: 'user', parts: [{ text: `المشكلة/السؤال: ${query}` }] }],
            config: { systemInstruction: prompt, temperature: 0.7 }
          });

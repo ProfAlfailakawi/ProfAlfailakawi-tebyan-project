@@ -7,7 +7,7 @@ export const refineIdea = async (idea: string, language: 'ar' | 'en') => {
 
   try {
     const response = await proxyGenerateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: [{ role: 'user', parts: [{ text: idea }] }],
       config: {
         systemInstruction,
@@ -28,7 +28,7 @@ export const translateWithContext = async (text: string, targetLang: 'ar' | 'en'
 
   try {
     const response = await proxyGenerateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: [{ role: 'user', parts: [{ text }] }],
       config: {
         systemInstruction,
@@ -48,7 +48,7 @@ export const findSoulMatch = async (userPosts: string[], language: 'ar' | 'en') 
 
   try {
     const response = await proxyGenerateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: [{ role: 'user', parts: [{ text: userPosts.join("\n---\n") }] }],
       config: {
         systemInstruction,
@@ -68,7 +68,7 @@ export const getIdeaSerendipity = async (ideaA: string, ideaB: string, language:
     
   try {
     const response = await proxyGenerateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: [{ role: 'user', parts: [{ text: `Idea A: ${ideaA}\nIdea B: ${ideaB}` }] }],
       config: { systemInstruction, temperature: 0.9 },
     });
@@ -82,7 +82,7 @@ export const analyzeTrends = async (ideas: string[], language: 'ar' | 'en') => {
     : "Analyze these ideas and extract the most mature 'Fabric Trends' that are clearly evolving through branch interactions. Summarize these trends concisely.";
   try {
     const response = await proxyGenerateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       contents: [{ role: 'user', parts: [{ text: ideas.join("\n---\n") }] }],
       config: { systemInstruction, temperature: 0.7 },
     });
@@ -96,7 +96,7 @@ export const generateMindMap = async (text: string, language: 'ar' | 'en') => {
       : "Summarize this text into a branched text mind-map (tree structure) for easy understanding.";
     try {
       const response = await proxyGenerateContent({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         contents: [{ role: 'user', parts: [{ text }] }],
         config: { systemInstruction, temperature: 0.6 },
       });

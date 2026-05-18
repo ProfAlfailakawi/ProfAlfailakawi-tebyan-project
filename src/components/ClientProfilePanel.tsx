@@ -176,7 +176,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
 
       const response = await proxyGenerateContent({
-        model: "gemini-1.5-flash", // Use flash for faster "Rage Room" analysis if needed, but pro for contradiction
+        model: "gemini-2.5-flash", // Use flash for faster "Rage Room" analysis if needed, but pro for contradiction
         contents: [{ role: 'user', parts: [{ text: `تاريخ طرحه للأسئلة:\n${historyText}` }] }],
         config: {
           systemInstruction: "أنت محلل نفسي حاد الذكاء. اقرأ محتويات أسئلة هذا المستخدم عبر الزمن واكتشف تناقضاً واحداً واضحاً في تفكيره (مثلاً: رغبته في التحرر المالي ولكن خوفه من بدء مشروع، أو بحثه عن العمق ولكن تعلقه بالتفاصيل السطحية). اكتب التناقض في فقرة واحدة قصيرة جداً بأسلوب لطيف ولكنه صادم وعميق، واختمها بسؤال: لماذا هذا التوهان؟",
@@ -215,7 +215,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
     
     try {
       const response = await proxyGenerateContent({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.5-flash",
         contents: [{ role: 'user', parts: [{ text: `النص للتفريغ:\n${originalText}` }] }],
         config: {
           systemInstruction: "أنت محلل مشاعر. حلل النص التالي وقدر نسب 3 مشاعر: الغضب (rage)، الحزن/الخذلان (sad)، والإرهاق (tired). أرجع النتيجة كـ JSON فقط بالصيغة: {\"rage\": number, \"sad\": number, \"tired\": number}. النسب من 0 إلى 100.",
@@ -267,7 +267,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
 
       const response = await proxyGenerateContent({
-        model: "gemini-1.5-pro",
+        model: "gemini-2.5-flash",
         contents: [{ role: 'user', parts: [{ text: `تاريخ أسئلتي:\n${historyText}` }] }],
         config: {
           systemInstruction: `أنت محلل بيانات واستراتيجي نفسي حاد الذكاء. 

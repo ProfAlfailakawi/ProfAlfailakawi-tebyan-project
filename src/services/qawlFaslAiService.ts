@@ -89,7 +89,7 @@ const chatSessions: Record<string, any> = {};
 export async function generateFollowUp(questionId: string, message: string, history: any[] = []): Promise<string> {
     return withRetry(async () => {
         const response = await proxyGenerateContent({
-          model: 'gemini-1.5-flash',
+          model: 'gemini-2.5-flash',
           contents: [...history, { role: 'user', parts: [{ text: message }] }],
           config: { systemInstruction: SYSTEM_INSTRUCTION }
         });
@@ -149,7 +149,7 @@ export async function generateQawlFaslContent(question: string, context?: string
     let response;
     try {
       response = await proxyGenerateContent({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.5-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
           systemInstruction: SYSTEM_INSTRUCTION,

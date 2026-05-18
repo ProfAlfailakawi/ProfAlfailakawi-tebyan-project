@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         try {
           const { ai } = await import('../services/gemini');
           const response = await ai.models.generateContent({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             contents: [{ role: 'user', parts: [{ text: `Based on this traffic data: ${JSON.stringify(mockTrafficData)}, analyze and provide 3 actionable development suggestions, including new feature ideas or UI/UX improvements (icons, tools, dashboards) to improve user retention and platform value.` }] }],
             config: {
                 systemInstruction: `Return ONLY a JSON array of 3 objects, each with 'title', 'description' (string), and 'priority' ('low', 'medium', 'high') fields.
