@@ -6,6 +6,7 @@ import { universalOracle } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
 import { useCognitiveMode } from '../contexts/CognitiveModeContext';
 import { useAcoustics } from '../hooks/useAcoustics';
+import { TebyanTooltip } from './TebyanTooltip';
 
 export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange }: { isOpen: boolean, onClose: () => void, language: string, tabs: any[], handleTabChange: (tab: string) => void }) => {
   const [query, setQuery] = useState('');
@@ -149,6 +150,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
               <button 
                 type="button"
                 onClick={onClose}
+                title={language === 'ar' ? 'إغلاق' : 'Close'}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-black transition-colors shrink-0 relative z-10"
               >
                 <X className="w-5 h-5" />

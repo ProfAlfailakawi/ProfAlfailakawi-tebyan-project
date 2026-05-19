@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Download, X, Share } from 'lucide-react';
+import { TebyanTooltip } from './TebyanTooltip';
 
 let deferredPromptGlobal: any = null;
+
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPromptGlobal = e;
@@ -53,10 +55,11 @@ export const PWAHeaderButton = () => {
     <>
       <button 
         onClick={handleInstallClick}
-        className="flex items-center justify-center p-2.5 mx-1 md:mx-2 rounded-xl bg-white text-zinc-800 shadow-lg shadow-black/5 hover:scale-105 active:scale-95 transition-all border border-zinc-200/60"
+        className="flex items-center justify-center gap-2 px-4 py-2 mx-1 md:mx-2 rounded-xl bg-white text-zinc-800 shadow-lg shadow-black/5 hover:scale-105 active:scale-95 transition-all border border-zinc-200/60"
         title="تثبيت التطبيق"
       >
-        <Download className="w-5 h-5 text-zinc-700" />
+        <Download className="w-4 h-4 text-zinc-700" />
+        <span className="font-bold text-sm">تثبيت</span>
       </button>
 
       {/* iOS Instructions Modal */}

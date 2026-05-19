@@ -9,7 +9,7 @@ import {
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
   Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box,
-  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2
+  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, ScrollText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -29,6 +29,8 @@ import { WhisperHint } from './components/WhisperHint';
 import { SerendipityCompass } from './components/SerendipityCompass';
 import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt';
 import { SpatialGhost } from './components/SpatialGhost';
+import { OnboardingTour } from './components/OnboardingTour';
+import { TebyanTooltip } from './components/TebyanTooltip';
 
 import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
 import { GlobalSageBar } from './components/GlobalSageBar';
@@ -77,7 +79,37 @@ const KnowledgeCenterTab = React.lazy(() => import('./components/tabs/KnowledgeC
 const ARTab = React.lazy(() => import('./components/tabs/ARTab'));
 const TruthManuscriptTab = React.lazy(() => import('./components/tabs/TruthManuscriptTab'));
 
+import { useGamificationContext } from './components/GamificationProvider';
+import { TAB_MIN_POINTS } from './constants/unlocks';
+
 type Tab = 'home' | 'oracle' | 'concepts' | 'quizzes' | 'simulation' | 'timemachine' | 'council' | 'lab' | 'qawlfasl' | 'mindmap' | 'knowledgegraph' | 'analytics' | 'loyalty' | 'roadmap' | 'story' | 'mylibrary' | 'discover' | 'adminusers' | 'adminqawlfasl' | 'contact' | 'adminmessages' | 'admindashboard' | 'decisionroom' | 'strategicarena' | 'creativelab' | 'knowledgecenter' | 'ar' | 'ripple' | 'truthmanuscript';
+
+const TAB_GROUPS = [
+  { 
+    id: 'main', 
+    labelAr: 'الرئيسية', 
+    labelEn: 'Main', 
+    tabs: ['discover', 'qawlfasl', 'contact'] 
+  },
+  { 
+    id: 'mind_lab', 
+    labelAr: 'مختبر العقل', 
+    labelEn: 'Mind Lab', 
+    tabs: ['creativelab', 'truthmanuscript', 'decisionroom', 'timemachine', 'lab', 'simulation'] 
+  },
+  { 
+    id: 'knowledge', 
+    labelAr: 'المعرفة والبوصلة', 
+    labelEn: 'Knowledge & Compass', 
+    tabs: ['knowledgecenter', 'oracle', 'mylibrary', 'strategicarena', 'loyalty'] 
+  },
+  { 
+    id: 'future', 
+    labelAr: 'آفاق تبيان', 
+    labelEn: 'Tebyan Horizons', 
+    tabs: ['ar', 'story'] 
+  }
+];
 
 type Mood = 'default' | 'revolutionary' | 'calm' | 'melancholic' | 'optimistic';
 
@@ -190,6 +222,7 @@ import { LivingIcon } from './components/LivingIcon';
 import { WhispersOfTheVoid } from './components/WhispersOfTheVoid';
 
 const AppContent: React.FC = () => {
+  const { sageProgress } = useGamificationContext();
   const navigate = useNavigate();
   const { user, profile, loading, authReady } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('home');
@@ -398,42 +431,56 @@ const AppContent: React.FC = () => {
     }
   }, [checkAuth, language, setMobileMenuOpen, setSidebarOpen, setIsLoading, setError, setInitialContext, setActiveTab]);
 
-  const tabs = [
-    { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search },
-    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock },
-    { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion },
-    { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit },
-    { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
-    { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box },
-    { id: 'truthmanuscript', label: language === 'ar' ? 'مخطوطة الحقيقة' : 'Truth Manuscript', icon: Sparkles },
-    { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network },
-    { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
-    { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig },
-    { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent },
+  const allTabs = [
+    { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search, tooltip: language === 'ar' ? 'البحث الرئيسي في النظام' : 'Main Search' },
+    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock, tooltip: language === 'ar' ? 'لمساعدتك في حسم قراراتك الصعبة والمصيرية خطوة بخطوة' : 'Help for tough decisions' },
+    { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion, tooltip: language === 'ar' ? 'لحل النزاعات والنقاشات المعقدة برأي محايد ومنطقي' : 'Resolve conflicts logically' },
+    { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit, tooltip: language === 'ar' ? 'للتخطيط بعيد المدى، سواء لأهدافك الشخصية أو التجارية' : 'Long-term planning' },
+    { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap, tooltip: language === 'ar' ? 'لدمج الأفكار، توليد ابتكارات جديدة، وحل المشاكل بطرق غير تقليدية' : 'Generate innovative ideas' },
+    { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box, tooltip: language === 'ar' ? 'تفاعل مع أفكارك ومجسمات المعرفة في الواقع الثلاثي الأبعاد' : 'Interact in Augmented Reality' },
+    { id: 'truthmanuscript', label: language === 'ar' ? 'مخطوطة الحقيقة' : 'Truth Manuscript', icon: Sparkles, tooltip: language === 'ar' ? 'لتحويل أفكارك وتأملاتك العميقة إلى مخطوطة فنية' : 'Turn thoughts into manuscripts' },
+    { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network, tooltip: language === 'ar' ? 'محرك بحث متقدم يبحث ويرتب لك المعلومات المعقدة كشبكة' : 'Advanced Knowledge Search' },
+    { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command, tooltip: language === 'ar' ? 'لاستشارة النظام بشخصيات مختلفة (طبيب، مهندس، فيلسوف.. إلخ)' : 'Consult different AI personas' },
+    { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig, tooltip: language === 'ar' ? 'المكان الذي تُحفظ فيه كل أفكارك القيمة لاسترجاعها لاحقاً' : 'Your saved knowledge' },
+    { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent, tooltip: language === 'ar' ? 'نقاطك ومكافآتك وعروضك الترويجية كعضو' : 'Your rewards and discounts' },
+    { id: 'timemachine', label: language === 'ar' ? 'آلة الزمن' : 'Time Machine', icon: Hourglass, tooltip: language === 'ar' ? 'استرجع الماضي أو استكشف المستقبل افتراضياً' : 'Virtual time travel' },
+    { id: 'lab', label: language === 'ar' ? 'مصادم الأفكار' : 'Idea Collider', icon: Zap, tooltip: language === 'ar' ? 'اصطدام الأفكار المتناقضة لتوليد حلول جذرية' : 'Collide ideas for solutions' },
+    { id: 'simulation', label: language === 'ar' ? 'سيميوليشن تبيان' : 'Simulation', icon: Gamepad2, tooltip: language === 'ar' ? 'تجربة مواقف حية ومحاكاتها قبل حدوثها' : 'Simulate life situations' },
+    { id: 'story', label: language === 'ar' ? 'قصة وعيك' : 'Your Story', icon: ScrollText, tooltip: language === 'ar' ? 'سرد قصصي لتطور وعيك ورحلتك في تبيان' : 'Your consciousness story' },
     { 
       id: 'adminusers', 
       label: language === 'ar' ? 'المستخدمين' : 'Users', 
       icon: Users,
+      tooltip: language === 'ar' ? 'لوحة تحكم إدارة المستخدمين' : 'User Management',
       hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     { 
       id: 'adminqawlfasl', 
       label: language === 'ar' ? 'إدارة قول فصل' : 'Admin Qawl', 
       icon: LayoutDashboard,
+      tooltip: language === 'ar' ? 'إدارة طلبات وأسئلة قول فصل' : 'Manage Qawl Fasl',
       hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     {
       id: 'adminmessages',
       label: language === 'ar' ? 'صندوق الوارد' : 'Inbox',
       icon: Mail,
+      tooltip: language === 'ar' ? 'رسائل الدعم والاتصال بـ تبيان' : 'Support Inbox',
       hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     {
       id: 'contact',
       label: language === 'ar' ? 'تواصل معنا' : 'Contact Us',
-      icon: Mail
+      icon: Mail,
+      tooltip: language === 'ar' ? 'أرسل لنا رسالة أو استفسار' : 'Send us a message'
     }
   ];
+
+  const tabs = allTabs.filter(t => {
+    if (t.hidden) return false;
+    const minPoints = TAB_MIN_POINTS[t.id] || 0;
+    return sageProgress.points >= minPoints;
+  });
 
   return (
         <div className={cn("h-[100dvh] bg-zinc-50 font-sans flex flex-col overflow-hidden text-zinc-900 selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -534,15 +581,15 @@ const AppContent: React.FC = () => {
          className="fixed top-0 left-0 right-0 z-40 bg-transparent px-8 py-4 flex items-center justify-between pointer-events-none"
       >
          <div className="flex items-center gap-6 pointer-events-auto">
-           <button 
-             onClick={() => handleTabChange('home')}
-             className="flex items-center gap-3 transition-transform active:scale-95"
-           >
-             <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700">
-               <LivingIcon icon={Globe} mood={currentMood} type="home" className="w-5 h-5" />
-             </div>
-             <span className="font-black text-xl text-black tracking-tighter transition-colors group-hover:text-mood-primary">تبيان</span>
-           </button>
+             <button 
+               onClick={() => handleTabChange('home')}
+               className="flex items-center gap-3 transition-transform active:scale-95"
+             >
+               <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700">
+                 <LivingIcon icon={Globe} mood={currentMood} type="home" className="w-5 h-5" />
+               </div>
+               <span className="font-black text-xl text-black tracking-tighter transition-colors group-hover:text-mood-primary">تبيان</span>
+             </button>
            
            {/* <button 
              onClick={() => setLanguage(l => l === 'ar' ? 'en' : 'ar')}
@@ -557,13 +604,14 @@ const AppContent: React.FC = () => {
            {user ? (
              <UserMenu />
            ) : authReady && Object.keys(user || {}).length === 0 ? (
-             <button 
-                onClick={() => setShowLogin(true)}
-                className="bg-white p-2.5 mx-2 rounded-xl text-zinc-900 shadow-lg shadow-black/10 transition-all hover:scale-105 active:scale-95 border border-zinc-200"
-                title={language === 'ar' ? 'تسجيل الدخول' : 'Login'}
-              >
-                <User className="w-5 h-5" />
-              </button>
+               <button 
+                  onClick={() => setShowLogin(true)}
+                  className="bg-white px-4 py-2 mx-2 rounded-xl text-zinc-900 shadow-lg shadow-black/10 transition-all hover:scale-105 active:scale-95 border border-zinc-200 flex items-center gap-2"
+                  title={language === 'ar' ? 'تسجيل الدخول' : 'Login'}
+                >
+                  <User className="w-4 h-4" />
+                  <span className="font-bold text-sm">{language === 'ar' ? 'الدخول' : 'Login'}</span>
+                </button>
            ) : null}
          </div>
       </motion.header>
@@ -599,20 +647,58 @@ const AppContent: React.FC = () => {
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                {tabs.map(tab => !tab.hidden && (
-                  <button
-                    key={tab.id}
-                    onClick={() => { handleTabChange(tab.id as Tab); setMobileMenuOpen(false); }}
-                    className={cn(
-                      "w-full flex flex-wrap md:flex-nowrap items-center gap-4 px-4 py-4 rounded-2xl font-medium transition-colors text-right relative",
-                      activeTab === tab.id ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-600 hover:bg-zinc-100 hover:text-black"
-                    )}
-                  >
-                    <tab.icon className={cn("w-5 h-5", activeTab === tab.id ? "text-white" : "text-zinc-400")} />
-                    <span>{tab.label}</span>
-                  </button>
-                ))}
+              <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8">
+                {TAB_GROUPS.map(group => {
+                  const groupTabs = tabs.filter(t => group.tabs.includes(t.id));
+                  if (groupTabs.length === 0) return null;
+                  
+                  return (
+                    <div key={group.id} className="space-y-3">
+                      <h4 className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">
+                        {language === 'ar' ? group.labelAr : group.labelEn}
+                      </h4>
+                      <div className="space-y-1">
+                        {groupTabs.map(tab => (
+                          <button
+                            key={tab.id}
+                            onClick={() => { handleTabChange(tab.id as Tab); setMobileMenuOpen(false); }}
+                            className={cn(
+                              "w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold transition-all text-right group relative",
+                              activeTab === tab.id ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "text-zinc-600 hover:bg-zinc-100/80 hover:text-black"
+                            )}
+                          >
+                            <tab.icon className={cn("w-5 h-5 transition-transform group-hover:scale-110", activeTab === tab.id ? "text-white" : "text-zinc-400")} />
+                            <div className="flex flex-col text-right">
+                              <span className="text-sm">{tab.label}</span>
+                              <span className={cn("text-[10px] opacity-60 font-medium", activeTab === tab.id ? "text-white/80" : "text-zinc-400")}>
+                                {tab.tooltip}
+                              </span>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Other/Admin tabs not in groups */}
+                {tabs.filter(t => !TAB_GROUPS.some(g => g.tabs.includes(t.id))).length > 0 && (
+                  <div className="space-y-1 pt-4 border-t border-zinc-100">
+                    {tabs.filter(t => !TAB_GROUPS.some(g => g.tabs.includes(t.id))).map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => { handleTabChange(tab.id as Tab); setMobileMenuOpen(false); }}
+                        className={cn(
+                          "w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-bold transition-all text-right group",
+                          activeTab === tab.id ? "bg-mood-primary text-white" : "text-zinc-600 hover:bg-zinc-100/80"
+                        )}
+                      >
+                        <tab.icon className={cn("w-5 h-5", activeTab === tab.id ? "text-white" : "text-zinc-400")} />
+                        <span className="text-sm">{tab.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="p-6 border-t border-zinc-100 bg-zinc-50/50 space-y-3">
                  {/* Language Switcher Hidden
@@ -784,7 +870,7 @@ const AppContent: React.FC = () => {
                   <button 
                     onClick={() => setIsMoodHudOpen(!isMoodHudOpen)}
                     className={cn(
-                      "flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 group relative overflow-hidden active:scale-95",
+                      "tour-mood-compass flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 group relative overflow-hidden active:scale-95",
                       isMoodHudOpen ? "bg-mood-primary text-white shadow-[0_0_30px_rgba(var(--mood-primary),0.3)]" : "bg-white border border-zinc-100 text-zinc-400 hover:text-mood-primary hover:border-mood-primary/30 shadow-sm"
                     )}
                   >
@@ -982,16 +1068,21 @@ const AppContent: React.FC = () => {
       </AnimatePresence>
 
       <PWAInstallPrompt />
+      <OnboardingTour language={language} />
 
       </div>
   );
 };
 
+import { TooltipProvider } from './components/ui/tooltip';
+
 const App = () => (
   <CognitiveModeProvider>
     <GamificationProvider>
       <UserProvider>
-        <AppContent />
+        <TooltipProvider delayDuration={300}>
+          <AppContent />
+        </TooltipProvider>
       </UserProvider>
     </GamificationProvider>
   </CognitiveModeProvider>

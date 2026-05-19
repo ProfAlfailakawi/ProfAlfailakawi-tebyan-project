@@ -5,6 +5,7 @@ import { useAuth } from './AuthProvider';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import ClientProfilePanel from './ClientProfilePanel';
+import { TebyanTooltip } from './TebyanTooltip';
 
 export default function UserMenu() {
   const { profile, user } = useAuth();
@@ -43,7 +44,8 @@ export default function UserMenu() {
       <motion.button 
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center p-1.5 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all hover:bg-white"
+        title="القائمة الشخصية"
+        className="tour-menu-button flex items-center p-1.5 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all hover:bg-white"
       >
         <div className="relative">
           {profile.photoURL && savedAvatar === 'default' ? (

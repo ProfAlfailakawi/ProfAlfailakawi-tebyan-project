@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, CheckCircle } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { TebyanTooltip } from './TebyanTooltip';
 
 export function MessagesFloatingButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,11 +45,12 @@ export function MessagesFloatingButton() {
   return (
     <>
       <motion.button
-        className="fixed bottom-6 right-6 z-[100] w-14 h-14 rounded-full bg-slate-900 text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform"
+        className="fixed bottom-6 right-6 z-[100] h-14 px-6 rounded-full bg-slate-900 text-white shadow-xl flex items-center justify-center gap-3 hover:scale-105 transition-transform"
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.9 }}
       >
-        <MessageSquare className="w-6 h-6" />
+        <MessageSquare className="w-5 h-5" />
+        <span className="font-bold text-sm tracking-wide">تواصل معنا</span>
       </motion.button>
       
       <AnimatePresence>

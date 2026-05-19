@@ -1,0 +1,18 @@
+export const TAB_MIN_POINTS: Record<string, number> = {
+  discover: 0,
+  qawlfasl: 0,
+  contact: 0,
+  loyalty: 0,
+  oracle: 100,
+  mylibrary: 100,
+  story: 100,
+  creativelab: 300,
+  strategicarena: 300,
+  knowledgecenter: 300,
+  decisionroom: 600,
+  truthmanuscript: 600,
+  ar: 1000,
+  timemachine: 1000,
+  lab: 1000,
+  simulation: 1000,
+};
