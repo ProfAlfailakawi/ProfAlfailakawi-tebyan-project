@@ -6,9 +6,6 @@ import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
 import { useAuth } from '../components/AuthProvider';
 import { detectEmotion } from '../services/gemini';
-import { useGamificationContext } from './GamificationProvider';
-import { TAB_MIN_POINTS } from '../constants/unlocks';
-import { levels } from '../constants/gamification';
 
 import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
@@ -169,7 +166,6 @@ const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
 import { useSmartSearch } from '../hooks/useSmartSearch';
 
 export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood }) => {
-  const { sageProgress, updateSageProgress } = useGamificationContext();
   const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
   const { user } = useAuth();
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
@@ -466,10 +462,36 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     logEvent('feature_use', language, undefined, { confirmedStyle: style });
   };
 
+  const [selectionFeedback, setSelectionFeedback] = useState('');
+  const [sageProgress, setSageProgress] = useState({
+    points: 0,
+    level: 'seeker',
+    badges: [] as string[],
+    stats: { wisdom: 0, dialogue: 0, patience: 0 }
+  });
+
+  const levels = [
+    { id: 'seeker', ar: 'باحث', en: 'Seeker', min: 0 },
+    { id: 'awakened', ar: 'متيقظ', en: 'Awakened', min: 100 },
+    { id: 'enlightened', ar: 'مستنير', en: 'Enlightened', min: 300 },
+    { id: 'sage', ar: 'حكيم', en: 'Sage', min: 600 },
+    { id: 'transcendent', ar: 'متسامي', en: 'Transcendent', min: 1000 }
+  ];
+
+  const badges = [
+    { id: 'wisdom', icon: BrainCircuit, ar: 'وسام الحكمة', en: 'Wisdom Badge', desc: { ar: 'تُمنح لتحليل المواقف بعمق قبل الرد', en: 'Awarded for deep analysis before acting' } },
+    { id: 'dialogue', icon: MessageCircleQuestion, ar: 'وسام الحوار', en: 'Dialogue Badge', desc: { ar: 'تُمنح للتدريب على الحوار المتزن', en: 'Awarded for practicing balanced dialogue' } },
+    { id: 'patience', icon: Sparkles, ar: 'وسام الصبر', en: 'Patience Badge', desc: { ar: 'تُمنح للمتابعة والوصول لنتائج هادئة', en: 'Awarded for following up and reaching calm results' } }
+  ];
 
   useEffect(() => {
-    // Memory Layer: Load from localStorage
+    // Memory Layer & Gamification: Load from localStorage
     const savedMemory = localStorage.getItem('tebyan_memory');
+    const savedProgress = localStorage.getItem('tebyan_sage_progress');
+
+    if (savedProgress) {
+      setSageProgress(JSON.parse(savedProgress));
+    }
 
     if (savedMemory) {
       const data = JSON.parse(savedMemory);
@@ -495,6 +517,33 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       }
     }
   }, [user]);
+
+  const updateSageProgress = (pointsToAdd: number, statKey?: keyof typeof sageProgress.stats) => {
+    setSageProgress(prev => {
+      const newPoints = prev.points + pointsToAdd;
+      const newStats = { ...prev.stats };
+      if (statKey) newStats[statKey] += 1;
+
+      // Check for level up
+      const currentLevelObj = [...levels].reverse().find(l => newPoints >= l.min) || levels[0];
+      
+      // Check for new badges
+      const newBadges = [...prev.badges];
+      if (newStats.wisdom >= 3 && !newBadges.includes('wisdom')) newBadges.push('wisdom');
+      if (newStats.dialogue >= 3 && !newBadges.includes('dialogue')) newBadges.push('dialogue');
+      if (newStats.patience >= 2 && !newBadges.includes('patience')) newBadges.push('patience');
+
+      const next = {
+        points: newPoints,
+        level: currentLevelObj.id,
+        badges: newBadges,
+        stats: newStats
+      };
+      
+      localStorage.setItem('tebyan_sage_progress', JSON.stringify(next));
+      return next;
+    });
+  };
 
   const handleFollowUpFeedback = (status: 'success' | 'fail') => {
     if (lastInteraction) {
@@ -780,6 +829,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     // Analytics: Log path selection
     logEvent('path_select', language, q, { pathId: id });
     
+    setSelectionFeedback('');
     setSuggestion('');
     
     onPathSelect(id, q);
@@ -884,11 +934,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     const addPath = (id: string, category: string, labelAr: string, labelEn: string, icon: any, descAr: string, descEn: string, reasonAr: string, reasonEn: string, score: number) => {
       // Avoid duplicates
       if (ranked.some(r => r.id === id)) return;
-
-      // START LEVEL CHECK
-      const minPoints = TAB_MIN_POINTS[id] || 0;
-      if (sageProgress.points < minPoints) return;
-      // END LEVEL CHECK
 
       // Personalization booster
       const usageStats = JSON.parse(localStorage.getItem('tebyan_usage_stats') || '{}');
@@ -1235,6 +1280,17 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           </div>
 
           <AnimatePresence>
+            {selectionFeedback  && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="absolute -top-14 left-1/2 -translate-x-1/2 bg-mood-primary text-white px-8 py-3 rounded-full text-sm font-black shadow-2xl z-50 whitespace-nowrap transition-colors duration-700"
+              >
+                {selectionFeedback}
+              </motion.div>
+            )}
+
             {errorMsg  && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -1398,52 +1454,32 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           </div>
 
                           {/* Alternative Paths */}
-                          <div className="col-span-12 md:col-span-4 space-y-6">
-                             {Array.from(new Set(alternativeSuggestions.map(s => s.category))).map(cat => {
-                               const catSuggestions = alternativeSuggestions.filter(s => s.category === cat);
-                               if (catSuggestions.length === 0) return null;
-
-                               const catLabels: any = {
-                                 'action': { ar: 'القرار والتحرك', en: 'Action & Decision' },
-                                 'analysis': { ar: 'مختبر التحليل', en: 'Analysis Lab' },
-                                 'simulation': { ar: 'التدريب الحي', en: 'Live Training' },
-                                 'roadmap': { ar: 'البوصلة والنتائج', en: 'Compass & Roadmap' },
-                                 'innovation': { ar: 'الإبداع والحلول', en: 'Creative Solutions' },
-                                 'thinking': { ar: 'منظم الأفكار', en: 'Thought Organizer' }
-                               };
-
-                               const label = catLabels[cat] || { ar: 'مسارات إضافية', en: 'More Paths' };
-
-                               return (
-                                 <div key={cat} className="space-y-3">
-                                   <h4 className="text-[10px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest px-2">
-                                       {language === 'ar' ? label.ar : label.en}
-                                   </h4>
-                                   <div className="grid grid-cols-1 gap-2">
-                                      {catSuggestions.map((s: any) => {
-                                         const Icon = s.icon;
-                                         return (
-                                             <button
-                                               key={`alt-${s.id}`}
-                                               type="button"
-                                               title={s.tooltip}
-                                               onClick={() => handlePathSelect(s.id, query)}
-                                               className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-zinc-100/50 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
-                                             >
-                                               <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-zinc-400 flex items-center justify-center shadow-sm group-hover:text-black group-hover:border-zinc-300 transition-colors shrink-0">
-                                                 <Icon className="w-4 h-4" />
-                                               </div>
-                                               <div className="text-right flex-1 min-w-0 break-words w-full">
-                                                  <div className="font-black text-sm text-zinc-800 truncate mb-0.5">{s.label}</div>
-                                                  <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2 w-full">{s.desc}</p>
-                                               </div>
-                                             </button>
-                                         );
-                                      })}
-                                   </div>
-                                 </div>
-                               );
-                             })}
+                          <div className="col-span-12 md:col-span-4 space-y-4">
+                             <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest px-2">
+                                 {language === 'ar' ? 'مسارات أخرى' : 'ALTERNATIVE PATHS'}
+                             </h4>
+                             <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
+                                {alternativeSuggestions.map((s: any) => {
+                                   const Icon = s.icon;
+                                   return (
+                                       <button
+                                         key={`alt-${s.id}`}
+                                         type="button"
+                                         title={s.tooltip}
+                                         onClick={() => handlePathSelect(s.id, query)}
+                                         className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-zinc-100/50 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
+                                       >
+                                         <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-zinc-400 flex items-center justify-center shadow-sm group-hover:text-black group-hover:border-zinc-300 transition-colors shrink-0">
+                                           <Icon className="w-4 h-4" />
+                                         </div>
+                                         <div className="text-right flex-1 min-w-0 break-words w-full">
+                                            <div className="font-black text-sm text-zinc-800 truncate mb-0.5">{s.label}</div>
+                                            <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2 w-full">{s.desc}</p>
+                                         </div>
+                                       </button>
+                                   );
+                                })}
+                             </div>
                           </div>
                        </div>
                     </div>

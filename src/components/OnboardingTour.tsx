@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import * as JoyrideModule from 'react-joyride';
 import { STATUS } from 'react-joyride';
-import type { Step } from 'react-joyride';
+import { useAuth } from './AuthProvider';
 
 const Joyride = (JoyrideModule as any).default || (JoyrideModule as any).Joyride || JoyrideModule;
 
 export const OnboardingTour = ({ language }: { language: 'ar' | 'en' }) => {
   const [run, setRun] = useState(false);
+  const { user } = useAuth();
+  
+  // Create a unique key for the tour to be strictly once per user identity if possible
+  const tourKey = user ? `tebyan_tour_seen_${user.uid}` : 'tebyan_tour_seen_guest';
 
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem('tebyan_tour_seen');
+    const hasSeenTour = localStorage.getItem(tourKey) || localStorage.getItem('tebyan_tour_seen');
+    
     if (!hasSeenTour) {
       // Start tour after a small delay
       const timer = setTimeout(() => {
         setRun(true);
-      }, 3000);
+        // Mark as seen immediately when it starts to ensure it doesn't show again 
+        // even if the user refreshes or closes the page during the tour
+        localStorage.setItem(tourKey, 'true');
+        // Also set the legacy key for backward compatibility
+        localStorage.setItem('tebyan_tour_seen', 'true');
+      }, 5000); // 5 seconds delay to give app time to settle
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [tourKey]);
 
   const handleJoyrideCallback = (data: any) => {
     const { status } = data;
@@ -25,7 +35,6 @@ export const OnboardingTour = ({ language }: { language: 'ar' | 'en' }) => {
     
     if (finishedStatuses.includes(status)) {
       setRun(false);
-      localStorage.setItem('tebyan_tour_seen', 'true');
     }
   };
 

@@ -46,6 +46,45 @@ function hashString(str: string) {
     return crypto.createHash('sha256').update(str).digest('hex');
 }
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const isGeminiBusyError = (err: any) => {
+    const msg = String(err?.message || err || "").toLowerCase();
+    return (
+        msg.includes("503") ||
+        msg.includes("service unavailable") ||
+        msg.includes("high demand") ||
+        msg.includes("overloaded") ||
+        msg.includes("temporarily unavailable") ||
+        msg.includes("try again") ||
+        msg.includes("deadline exceeded")
+    );
+};
+
+async function generateWithRetry(operation: () => Promise<any>, label: string = "AI Result") {
+    const delays = [0, 1000, 3000, 8000, 15000]; // Total retry window ~27 seconds
+    let lastError: any;
+
+    for (let attempt = 0; attempt < delays.length; attempt++) {
+        if (delays[attempt] > 0) {
+            console.warn(`[Server] ${label} busy. Retrying attempt ${attempt + 1}/${delays.length} after ${delays[attempt]}ms...`);
+            await sleep(delays[attempt]);
+        }
+
+        try {
+            return await operation();
+        } catch (err: any) {
+            lastError = err;
+            if (!isGeminiBusyError(err)) {
+                throw err;
+            }
+            console.warn(`[Server] ${label} busy/high demand on attempt ${attempt + 1}:`, err?.message || err);
+        }
+    }
+
+    throw lastError;
+}
+
 async function startServer() {
     const app = express();
     const PORT = process.env.PORT || 3000;
@@ -109,20 +148,22 @@ async function startServer() {
             
             const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
             
-            const result = await model.generateContent({
-              contents: [{ role: 'user', parts: [{ text }] }],
-              generationConfig: {
-                // @ts-ignore
-                responseModalities: ["AUDIO"],
-                speechConfig: {
-                    voiceConfig: {
-                      prebuiltVoiceConfig: { 
-                        voiceName: (voiceName && ['Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr', 'Aoede'].includes(voiceName)) ? voiceName : 'Aoede' 
+            const result = await generateWithRetry(async () => {
+                return await model.generateContent({
+                    contents: [{ role: 'user', parts: [{ text }] }],
+                    generationConfig: {
+                      // @ts-ignore
+                      responseModalities: ["AUDIO"],
+                      speechConfig: {
+                          voiceConfig: {
+                            prebuiltVoiceConfig: { 
+                              voiceName: (voiceName && ['Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr', 'Aoede'].includes(voiceName)) ? voiceName : 'Aoede' 
+                            },
+                          },
                       },
-                    },
-                },
-              } as any,
-            });
+                    } as any,
+                  });
+            }, "Gemini TTS");
 
             const audioData = (result.response.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.mimeType?.startsWith('audio/')) as any)?.inlineData?.data;
             
@@ -197,47 +238,9 @@ async function startServer() {
                 return await model.generateContent({ contents });
             };
 
-            const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-            const isGeminiBusyError = (err: any) => {
-                const msg = String(err?.message || err || "").toLowerCase();
-                return (
-                    msg.includes("503") ||
-                    msg.includes("service unavailable") ||
-                    msg.includes("high demand") ||
-                    msg.includes("overloaded") ||
-                    msg.includes("temporarily unavailable") ||
-                    msg.includes("try again")
-                );
-            };
-
-            const generateWithRetry = async (selectedModel: string) => {
-                const delays = [0, 2000, 5000];
-
-                let lastError: any;
-                for (let attempt = 0; attempt < delays.length; attempt++) {
-                    if (delays[attempt] > 0) {
-                        console.warn(`[Server] Gemini busy. Retrying attempt ${attempt + 1}/${delays.length} after ${delays[attempt]}ms...`);
-                        await sleep(delays[attempt]);
-                    }
-
-                    try {
-                        return await attemptGeneration(selectedModel);
-                    } catch (err: any) {
-                        lastError = err;
-                        if (!isGeminiBusyError(err)) {
-                            throw err;
-                        }
-                        console.warn(`[Server] Gemini busy/high demand on attempt ${attempt + 1}:`, err?.message || err);
-                    }
-                }
-
-                throw lastError;
-            };
-
             let result;
             try {
-                result = await generateWithRetry(finalModel);
+                result = await generateWithRetry(() => attemptGeneration(finalModel), `Gemini AI (${finalModel})`);
             } catch (firstError: any) {
                 const firstErrStr = (firstError.message || "").toLowerCase();
                 const isSuspended = firstErrStr.includes("403") || firstErrStr.includes("suspended") || firstErrStr.includes("permission");
@@ -262,7 +265,7 @@ async function startServer() {
                     const fallbackModel = finalModel === "gemini-2.5-flash" ? "gemini-2.5-flash" : "gemini-2.5-flash";
                     console.log(`[Server] Retrying with fallback model: ${fallbackModel}`);
                     try {
-                        result = await generateWithRetry(fallbackModel);
+                        result = await generateWithRetry(() => attemptGeneration(fallbackModel), `Gemini AI Fallback (${fallbackModel})`);
                     } catch (secondError: any) {
                         const secondErrStr = (secondError.message || "").toLowerCase();
                         if (secondErrStr.includes("expired") || secondErrStr.includes("api_key_invalid")) {
