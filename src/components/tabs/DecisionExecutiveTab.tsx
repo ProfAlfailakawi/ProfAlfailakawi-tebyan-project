@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight, Scale } from 'lucide-react';
+import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight, Scale, LayoutGrid } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { IntellectualKintsugi } from '../common/IntellectualKintsugi';
@@ -13,10 +13,13 @@ type AnalysisTool = {
     icon: any;
     prompt: string;
     bgColor: string;
+    purpose?: string[];
+    hint?: { ar: string, en: string };
 };
 
 export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue = '', onValueUsed }: { language: 'ar' | 'en', handleTabChange: any, initialValue?: string, onValueUsed?: () => void }) => {
     const [dilemma, setDilemma] = useState(initialValue);
+    const [activeDecisionPurpose, setActiveDecisionPurpose] = useState('decide');
     const [dilemmaHistory, setDilemmaHistory] = useState<string[]>([]);
     const lastSubmittedDilemma = useRef(initialValue);
 
@@ -54,19 +57,33 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
     };
 
     const tools: AnalysisTool[] = [
-        { id: 'decision', title: { ar: 'القرار التنفيذي', en: 'Executive Decision' }, icon: Lock, bgColor: 'bg-black', prompt: 'حول هذه الموقف لقرار تنفيذي حاسم ومسؤول: ' },
-        { id: 'consequences', title: { ar: 'موجات العواقب', en: 'Consequence Waves' }, icon: GitBranch, bgColor: 'bg-indigo-600', prompt: 'حلل العواقب من الدرجة الأولى والثانية والثالثة لهذا القرار: ' },
-        { id: 'doubt', title: { ar: 'ميزان اليقين', en: 'Gravity of Doubt' }, icon: Scale, bgColor: 'bg-zinc-800', prompt: 'قم بتحليل درجة اليقين والشك في هذا القرار. أرجع JSON فقط بالشكل التالي: { "certainty": 70, "doubt": 30, "certaintyArguments": ["حجة 1", "حجة 2"], "doubtArguments": ["حجة 1", "حجة 2"], "verdict": "الحكم النهائي" }. لا ترجع أي نص خارج JSON. القرار هو: ' },
-        { id: 'capsule', title: { ar: 'كبسولة الزمن للقرارات', en: 'Time Capsule' }, icon: Hourglass, bgColor: 'bg-amber-900', prompt: 'قم بإعداد كبسولة زمنية لهذا القرار تفتح بعد سنة. أرجع JSON فقط بالشكل التالي: { "targetDate": "2027", "projectedOutcome": "النتيجة المتوقعة العظمى", "messageToFutureSelf": "رسالة قاسية أو محفزة لنفسك في المستقبل", "sealedConfidence": 85 }. لا ترجع نصاً خارج JSON. القرار هو: ' },
-        { id: 'council', title: { ar: 'مجلس العقول', en: 'Council of Minds' }, icon: Users, bgColor: 'bg-emerald-600', prompt: 'حلل هذا القرار كفيلسوف، اقتصادي، قانوني، استراتيجي، وخصم: ' },
-        { id: 'collapse', title: { ar: 'اختبار الاختراق فكرياً', en: 'Red Team Test' }, icon: ShieldAlert, bgColor: 'bg-rose-600', prompt: 'قم بدور "الفريق الأحمر" وحاول تدمير هذا القرار فكرياً واكشف نقاط ضعفه القاتلة: ' },
-        { id: 'hidden', title: { ar: 'الخيوط الخفية', en: 'Hidden Threads' }, icon: Eye, bgColor: 'bg-amber-600', prompt: 'اكشف أصحاب المصلحة والنفوذ والمخاطر الصامتة لهذا القرار: ' },
-        { id: 'memory', title: { ar: 'البصمة الفكرية', en: 'Cognitive Trace' }, icon: History, bgColor: 'bg-slate-700', prompt: 'حلل هذا القرار بناءً على سياق التفكير الاستراتيجي العميق ومبادئه: ' },
-        { id: 'questions', title: { ar: 'محرك الأسئلة', en: 'Question Engine' }, icon: MessageSquareQuote, bgColor: 'bg-purple-600', prompt: 'ولد الأسئلة الليزرية الدقيقة التي كان يجب أن تُسأل ولم تُسأل حول هذا القرار: ' },
-        { id: 'debate', title: { ar: 'الميزان الاستراتيجي', en: 'Strategic Scale' }, icon: Brain, bgColor: 'bg-cyan-600', prompt: 'ابنِ أقوى حجة مع، وأقوى حجة ضد، ثم احكم بينهما لهذا القرار بإنصاف: ' },
-        { id: 'butterfly', title: { ar: 'رؤية 360 درجة', en: '360 Horizon' }, icon: Sparkles, bgColor: 'bg-fuchsia-700', prompt: 'تخيل أنني اتخذت هذا القرار. محاكاة العواقب بعد 5 سنوات. أرجع الرد بصيغة JSON فقط JSON ONLY يحتوي على: { "magazineName": "FORBES 2030", "headline": "العنوان الرئيسي القوي", "subheadline": "عنوان فرعي يشرح الصدمة", "bulletPoints": ["نقطة 1", "نقطة 2", "نقطة 3"], "quote": "اقتباس مقولة ملهمة عن أثر القرار" }. لا ترجع أي نص خارج الJSON. القرار هو: ' },
-        { id: 'vault', title: { ar: 'مرآة التحيزات', en: 'Bias Mirror' }, icon: Lock, bgColor: 'bg-stone-900', prompt: 'أنا سأتخذ هذا القرار. اصنع "مرآة قاسية" تكشف أين أقع بمصيدة الانحياز التأكيدي. حلل كيف سأندم وكيف سأفرح. أسلوبك قاسي جداً وواقعي: ' },
+        { id: 'decision', title: { ar: 'القرار التنفيذي', en: 'Executive Decision' }, icon: Lock, bgColor: 'bg-black', purpose: ['decide'], hint: { ar: 'يحسم الموقف في قرار واضح ومسؤول', en: 'Turns the situation into a clear responsible decision' }, prompt: 'حول هذه الموقف لقرار تنفيذي حاسم ومسؤول: ' },
+        { id: 'consequences', title: { ar: 'موجات العواقب', en: 'Consequence Waves' }, icon: GitBranch, bgColor: 'bg-indigo-600', purpose: ['future','risk'], hint: { ar: 'يرى أثر القرار طبقة بعد طبقة', en: 'Shows effects layer by layer' }, prompt: 'حلل العواقب من الدرجة الأولى والثانية والثالثة لهذا القرار: ' },
+        { id: 'doubt', title: { ar: 'ميزان اليقين', en: 'Gravity of Doubt' }, icon: Scale, bgColor: 'bg-zinc-800', purpose: ['decide','risk'], hint: { ar: 'يقيس اليقين والشك قبل الحسم', en: 'Measures certainty and doubt before deciding' }, prompt: 'قم بتحليل درجة اليقين والشك في هذا القرار. أرجع JSON فقط بالشكل التالي: { "certainty": 70, "doubt": 30, "certaintyArguments": ["حجة 1", "حجة 2"], "doubtArguments": ["حجة 1", "حجة 2"], "verdict": "الحكم النهائي" }. لا ترجع أي نص خارج JSON. القرار هو: ' },
+        { id: 'capsule', title: { ar: 'كبسولة الزمن للقرارات', en: 'Time Capsule' }, icon: Hourglass, bgColor: 'bg-amber-900', purpose: ['future'], hint: { ar: 'رسالة مستقبلية تكشف أثر قرارك', en: 'A future message about your decision' }, prompt: 'قم بإعداد كبسولة زمنية لهذا القرار تفتح بعد سنة. أرجع JSON فقط بالشكل التالي: { "targetDate": "2027", "projectedOutcome": "النتيجة المتوقعة العظمى", "messageToFutureSelf": "رسالة قاسية أو محفزة لنفسك في المستقبل", "sealedConfidence": 85 }. لا ترجع نصاً خارج JSON. القرار هو: ' },
+        { id: 'council', title: { ar: 'مجلس العقول', en: 'Council of Minds' }, icon: Users, bgColor: 'bg-emerald-600', purpose: ['voices'], hint: { ar: 'يسمع القرار من عقول مختلفة', en: 'Reviews the decision through different minds' }, prompt: 'حلل هذا القرار كفيلسوف، اقتصادي، قانوني، استراتيجي، وخصم: ' },
+        { id: 'collapse', title: { ar: 'اختبار الاختراق فكرياً', en: 'Red Team Test' }, icon: ShieldAlert, bgColor: 'bg-rose-600', purpose: ['risk'], hint: { ar: 'يحاول إسقاط القرار قبل الواقع', en: 'Stress-tests the decision before reality does' }, prompt: 'قم بدور "الفريق الأحمر" وحاول تدمير هذا القرار فكرياً واكشف نقاط ضعفه القاتلة: ' },
+        { id: 'hidden', title: { ar: 'الخيوط الخفية', en: 'Hidden Threads' }, icon: Eye, bgColor: 'bg-amber-600', purpose: ['risk','voices'], hint: { ar: 'يكشف النفوذ والمخاطر الصامتة', en: 'Reveals silent influence and risks' }, prompt: 'اكشف أصحاب المصلحة والنفوذ والمخاطر الصامتة لهذا القرار: ' },
+        { id: 'memory', title: { ar: 'البصمة الفكرية', en: 'Cognitive Trace' }, icon: History, bgColor: 'bg-slate-700', purpose: ['voices'], hint: { ar: 'يربط القرار بسياق التفكير', en: 'Links the decision to thinking patterns' }, prompt: 'حلل هذا القرار بناءً على سياق التفكير الاستراتيجي العميق ومبادئه: ' },
+        { id: 'questions', title: { ar: 'محرك الأسئلة', en: 'Question Engine' }, icon: MessageSquareQuote, bgColor: 'bg-purple-600', purpose: ['risk','decide'], hint: { ar: 'يولد الأسئلة التي غابت عنك', en: 'Generates questions you missed' }, prompt: 'ولد الأسئلة الليزرية الدقيقة التي كان يجب أن تُسأل ولم تُسأل حول هذا القرار: ' },
+        { id: 'debate', title: { ar: 'الميزان الاستراتيجي', en: 'Strategic Scale' }, icon: Brain, bgColor: 'bg-cyan-600', purpose: ['decide','voices'], hint: { ar: 'يقارن أقوى حجة مع وضد', en: 'Compares strongest case for and against' }, prompt: 'ابنِ أقوى حجة مع، وأقوى حجة ضد، ثم احكم بينهما لهذا القرار بإنصاف: ' },
+        { id: 'butterfly', title: { ar: 'رؤية 360 درجة', en: '360 Horizon' }, icon: Sparkles, bgColor: 'bg-fuchsia-700', purpose: ['future'], hint: { ar: 'يحاكي المشهد البعيد بوضوح', en: 'Simulates the long horizon clearly' }, prompt: 'تخيل أنني اتخذت هذا القرار. محاكاة العواقب بعد 5 سنوات. أرجع الرد بصيغة JSON فقط JSON ONLY يحتوي على: { "magazineName": "FORBES 2030", "headline": "العنوان الرئيسي القوي", "subheadline": "عنوان فرعي يشرح الصدمة", "bulletPoints": ["نقطة 1", "نقطة 2", "نقطة 3"], "quote": "اقتباس مقولة ملهمة عن أثر القرار" }. لا ترجع أي نص خارج الJSON. القرار هو: ' },
+        { id: 'vault', title: { ar: 'مرآة التحيزات', en: 'Bias Mirror' }, icon: Lock, bgColor: 'bg-stone-900', purpose: ['risk'], hint: { ar: 'يكشف أين قد تخدع نفسك', en: 'Shows where you may fool yourself' }, prompt: 'أنا سأتخذ هذا القرار. اصنع "مرآة قاسية" تكشف أين أقع بمصيدة الانحياز التأكيدي. حلل كيف سأندم وكيف سأفرح. أسلوبك قاسي جداً وواقعي: ' },
     ];
+
+
+
+    const decisionPurposes = [
+        { id: 'decide', title: { ar: 'أبي أحسم القرار', en: 'I need to decide' }, hint: { ar: 'حكم واضح وميزان للحجج', en: 'Clear judgment and argument balance' } },
+        { id: 'risk', title: { ar: 'أبي أفحص المخاطر', en: 'Check the risks' }, hint: { ar: 'تحيزات وعواقب ونقاط ضعف', en: 'Biases, consequences, and weak points' } },
+        { id: 'voices', title: { ar: 'أبي أسمع العقول', en: 'Hear different minds' }, hint: { ar: 'خبراء وأسئلة وسياق', en: 'Experts, questions, and context' } },
+        { id: 'future', title: { ar: 'أبي أشوف المستقبل', en: 'See the future' }, hint: { ar: 'محاكاة الأثر والزمن', en: 'Time and impact simulation' } },
+        { id: 'all', title: { ar: 'عرض كل الغرفة', en: 'Full room' }, hint: { ar: 'كل أدوات القرار كما هي', en: 'All decision tools unchanged' } },
+    ];
+
+    const visibleDecisionTools = activeDecisionPurpose === 'all'
+        ? tools
+        : tools.filter(tool => tool.purpose?.includes(activeDecisionPurpose));
 
     const runAnalysis = async (tool: AnalysisTool) => {
         const trimmedDilemma = dilemma.trim();
@@ -211,26 +228,46 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
              </AnimatePresence>
            </div>
 
-           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-              {tools.map(tool => (
-                  <button 
-                    key={tool.id} 
-                    onClick={() => runAnalysis(tool)}
-                    disabled={isLoading}
-                    className={cn(
-                        "group relative flex flex-col items-center justify-center gap-4 p-8 rounded-[32px] bg-white border border-zinc-100 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-black active:scale-[0.96] overflow-hidden",
-                        !dilemma && "opacity-60 grayscale-[0.5]"
-                    )}
-                  >
-                      <div className={cn("w-16 h-16 rounded-[22px] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500", tool.bgColor)}>
-                        <tool.icon className="w-8 h-8" />
-                      </div>
-                      <span className="font-black text-center text-xs px-2 line-clamp-1">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
-                      
-                      {/* Hover status dot */}
-                      <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-zinc-200 group-hover:bg-emerald-500 transition-colors"></div>
+           <div className="bg-white border border-zinc-100 rounded-[32px] p-5 md:p-6 space-y-5 shadow-sm">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <h2 className="text-xl font-black text-black">{language === 'ar' ? 'ماذا تريد من القرار؟' : 'What do you need from this decision?'}</h2>
+                  <p className="text-sm text-zinc-500 font-bold mt-1">{language === 'ar' ? 'اختر مقصدك؛ الغرفة تقرّب الأدوات المناسبة فقط، وكل الأدوات باقية.' : 'Choose your intent; the room brings the right tools closer, while every tool remains available.'}</p>
+                </div>
+                <button type="button" onClick={() => setActiveDecisionPurpose('all')} className="px-5 py-3 rounded-full bg-black text-white text-xs font-black flex items-center gap-2 active:scale-95 transition-all">
+                  <LayoutGrid className="w-4 h-4" />
+                  {language === 'ar' ? 'كل الأدوات' : 'All tools'}
+                </button>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                {decisionPurposes.map(purpose => (
+                  <button key={purpose.id} type="button" onClick={() => setActiveDecisionPurpose(purpose.id)} className={cn("text-right p-4 rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-zinc-950 text-white border-zinc-950 shadow-lg" : "bg-zinc-50 text-zinc-700 border-zinc-100 hover:bg-white hover:border-zinc-300")}>
+                    <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
+                    <div className={cn("text-[11px] leading-relaxed font-bold", activeDecisionPurpose === purpose.id ? "text-white/70" : "text-zinc-400")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
                   </button>
-              ))}
+                ))}
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {visibleDecisionTools.map(tool => (
+                    <button 
+                      key={tool.id} 
+                      onClick={() => runAnalysis(tool)}
+                      disabled={isLoading}
+                      title={language === 'ar' ? tool.hint?.ar : tool.hint?.en}
+                      className={cn(
+                          "group relative flex flex-col items-center justify-center gap-4 p-6 rounded-[28px] bg-white border border-zinc-100 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-black active:scale-[0.96] overflow-hidden",
+                          !dilemma && "opacity-60 grayscale-[0.5]"
+                      )}
+                    >
+                        <div className={cn("w-16 h-16 rounded-[22px] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500", tool.bgColor)}>
+                          <tool.icon className="w-8 h-8" />
+                        </div>
+                        <span className="font-black text-center text-sm px-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
+                        <p className="text-[11px] text-zinc-400 font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
+                        <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-zinc-200 group-hover:bg-emerald-500 transition-colors"></div>
+                    </button>
+                ))}
+              </div>
            </div>
 
            <div id="decision-results">

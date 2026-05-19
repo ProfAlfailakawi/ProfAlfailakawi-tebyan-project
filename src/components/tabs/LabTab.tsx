@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2 } from 'lucide-react';
+import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -32,6 +32,7 @@ const labTools = [
 
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [activeLabTool, setActiveLabTool] = React.useState('collider');
+  const [activeLabPurpose, setActiveLabPurpose] = React.useState('understand');
   const [labInput, setLabInput] = React.useState('');
   const [labInput2, setLabInput2] = React.useState(''); // For Collider
   const [labColliderResult, setLabColliderResult] = React.useState<string | null>(null);
@@ -61,6 +62,19 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labCollision, setLabCollision] = React.useState<any>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+
+  const labPurposes = React.useMemo(() => ([
+    { id: 'understand', title: { ar: 'أبي أفهمها ببساطة', en: 'Understand it simply' }, hint: { ar: 'تبسيط وخريطة ذهنية وزوايا متعددة', en: 'Simplify, map, and see angles' }, toolIds: ['family', 'mindmap', 'collision'] },
+    { id: 'create', title: { ar: 'أبي فكرة جديدة', en: 'Create a new idea' }, hint: { ar: 'تصادم أفكار ورموز وصوت للفكرة', en: 'Collide ideas, symbols, and resonance' }, toolIds: ['collider', 'symbols', 'sound'] },
+    { id: 'build', title: { ar: 'أبي أحولها لمشروع', en: 'Turn it into a project' }, hint: { ar: 'تصميم ومسارات مهنية وورش', en: 'Design, careers, and workshops' }, toolIds: ['design', 'career', 'workshop'] },
+    { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] },
+    { id: 'all', title: { ar: 'عرض المختبر الكامل', en: 'Full lab' }, hint: { ar: 'كل الأدوات كما هي بدون إخفاء', en: 'All tools, unchanged' }, toolIds: labTools.map(t => t.id) }
+  ]), [language]);
+
+  const visibleLabTools = React.useMemo(() => {
+    const selected = labPurposes.find(p => p.id === activeLabPurpose) || labPurposes[0];
+    return labTools.filter(tool => selected.toolIds.includes(tool.id));
+  }, [activeLabPurpose, labPurposes]);
 
   const playIdeaSound = React.useCallback((freq: number, amp: number, type: string) => {
     try {
@@ -229,12 +243,46 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
          onClose={() => handleTabChange('discover', '', true)}
        />
        <div className="bg-white rounded-[32px] p-8 shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-zinc-100 space-y-10">
-         <div className="space-y-4">
-           <h2 className="text-xl font-bold flex items-center gap-2">
-             {language === 'ar' ? 'أدوات المختبر' : 'Lab Tools'}
-           </h2>
+         <div className="space-y-5">
+           <div className="flex items-center justify-between gap-4 flex-wrap">
+             <div>
+               <h2 className="text-xl font-black flex items-center gap-2 text-black">
+                 <Sparkles className="w-5 h-5" />
+                 {language === 'ar' ? 'ماذا تريد من المختبر؟' : 'What do you need from the lab?'}
+               </h2>
+               <p className="text-sm text-zinc-500 font-bold mt-2">
+                 {language === 'ar' ? 'اختر مقصدك أولاً؛ الأدوات كلها موجودة، لكن تبيان يقرّب لك الأنسب.' : 'Choose your intent first; all tools remain available, Tibyan simply brings the best fit closer.'}
+               </p>
+             </div>
+             <button
+               type="button"
+               onClick={() => setActiveLabPurpose('all')}
+               className="px-5 py-3 rounded-full bg-zinc-950 text-white font-black text-xs flex items-center gap-2 hover:bg-black active:scale-95 transition-all"
+             >
+               <LayoutGrid className="w-4 h-4" />
+               {language === 'ar' ? 'كل الأدوات' : 'All tools'}
+             </button>
+           </div>
+
+           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+             {labPurposes.map(purpose => (
+               <button
+                 key={purpose.id}
+                 type="button"
+                 onClick={() => setActiveLabPurpose(purpose.id)}
+                 className={cn(
+                   "text-right p-4 rounded-[22px] border transition-all active:scale-[0.98]",
+                   activeLabPurpose === purpose.id ? "bg-black text-white border-black shadow-lg" : "bg-zinc-50 text-zinc-700 border-zinc-100 hover:bg-white hover:border-zinc-300"
+                 )}
+               >
+                 <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
+                 <div className={cn("text-[11px] leading-relaxed font-bold", activeLabPurpose === purpose.id ? "text-white/70" : "text-zinc-400")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
+               </button>
+             ))}
+           </div>
+
            <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
-             {labTools.map(tool => (
+             {visibleLabTools.map(tool => (
                <button 
                  key={tool.id} 
                  onClick={() => {
@@ -247,7 +295,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    activeLabTool === tool.id ? "bg-black text-white border-black shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white text-zinc-500 border-zinc-100 hover:border-zinc-300"
                  )}
                >
-                 {language === 'ar' ? tool.ar : tool.en}
+                 <span>{language === 'ar' ? tool.ar : tool.en}</span>
+                 <span className={cn("block text-[10px] mt-1 font-bold", activeLabTool === tool.id ? "text-white/60" : "text-zinc-400")}>{language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}</span>
                </button>
              ))}
            </div>

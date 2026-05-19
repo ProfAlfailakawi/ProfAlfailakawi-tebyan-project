@@ -105,6 +105,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
   const [mission, setMission] = useState<any>(null);
   const [missionLoading, setMissionLoading] = useState(true);
   const [missionCompleted, setMissionCompleted] = useState(false);
+  const [showFullDashboard, setShowFullDashboard] = useState(false);
 
   useEffect(() => {
     // Check if we did it today
@@ -163,6 +164,51 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         </div>
       </header>
 
+      {/* Calm entry: simple for everyone, full depth on demand */}
+      <section className="bg-white border border-zinc-100 rounded-[28px] md:rounded-[40px] p-5 md:p-8 shadow-[0_12px_50px_rgba(0,0,0,0.04)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black tracking-[0.2em] uppercase text-zinc-400">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
+            <h2 className="text-2xl md:text-4xl font-black text-black tracking-tight leading-tight">
+              {language === 'ar' ? 'وش تبي تسوي اليوم؟' : 'What do you want to do today?'}
+            </h2>
+            <p className="text-sm md:text-base text-zinc-500 font-bold leading-relaxed max-w-xl">
+              {language === 'ar' ? 'ثلاثة أبواب تكفي للبداية. العمق كامل موجود متى ما احتجته.' : 'Three doors are enough to start. Full depth is available when needed.'}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowFullDashboard(v => !v)}
+            className="shrink-0 px-6 py-4 rounded-2xl bg-black text-white font-black text-sm hover:bg-zinc-800 active:scale-95 transition-all shadow-lg"
+          >
+            {showFullDashboard ? (language === 'ar' ? 'إخفاء اللوحة الكاملة' : 'Hide full board') : (language === 'ar' ? 'افتح تبيان الكامل' : 'Open full Tebyan')}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
+          {[
+            { id: 'oracle', icon: BrainCircuit, ar: 'أفهم', en: 'Understand', descAr: 'اشرح لي الصورة ببساطة', descEn: 'Explain the picture simply' },
+            { id: 'qawlfasl', icon: MessageCircleQuestion, ar: 'أحسم', en: 'Decide', descAr: 'أعطني خلاصة واضحة', descEn: 'Give me a clear answer' },
+            { id: 'strategicarena', icon: Route, ar: 'أتعمّق', en: 'Go deeper', descAr: 'حلّلها كخبير', descEn: 'Analyze like an expert' }
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={() => handleTabChange(item.id)}
+              className="group p-5 rounded-[24px] bg-zinc-50 border border-zinc-100 text-right hover:bg-white hover:border-zinc-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-900 group-hover:bg-black group-hover:text-white transition-all">
+                  <item.icon className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-black text-lg text-black">{language === 'ar' ? item.ar : item.en}</h3>
+                  <p className="text-xs text-zinc-500 font-bold mt-1">{language === 'ar' ? item.descAr : item.descEn}</p>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* Daily Mission */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-white relative overflow-hidden shadow-lg mb-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-[80px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>
@@ -199,6 +245,8 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           </div>
       </div>
 
+      {showFullDashboard && (
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
       <div className="mb-6">
         <NeuralTree language={language} />
       </div>
@@ -332,8 +380,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           items={[
             { id: 'timemachine', label: language === 'ar' ? 'آلة الزمن' : 'Time Machine', icon: Hourglass },
             { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
-            { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
-            { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: Bookmark }
+            { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig }
           ]}
           handleTabChange={handleTabChange}
           language={language}
@@ -366,6 +413,8 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           color="bg-white"
         />
       </div>
+      </motion.div>
+      )}
     </div>
   );
 };

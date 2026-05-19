@@ -104,17 +104,40 @@ const SectionBox = ({
 };
 
 export const AdvancedCognitiveAnalysis: React.FC<Props> = ({ query, language }) => {
+  const [isDepthOpen, setIsDepthOpen] = useState(false);
   if (!query || query.length < 10) return null; // Avoid showing on empty/short queries
 
   return (
     <div className="space-y-4 md:space-y-4 mt-8 w-full max-w-full overflow-hidden">
-      <div className="flex items-center gap-2 mb-2 px-2">
-         <Sparkles className="w-4 h-4 text-amber-500" />
-         <span className="font-black text-xs text-zinc-400 uppercase tracking-widest">
-           {language === 'ar' ? 'التحليل الاستراتيجي العميق' : 'DEEP COGNITIVE ANALYSIS'}
-         </span>
-      </div>
+      <button
+        type="button"
+        onClick={() => setIsDepthOpen(v => !v)}
+        className="w-full rounded-[28px] border border-amber-100 bg-amber-50/60 hover:bg-amber-50 px-5 py-4 flex items-center justify-between gap-4 text-right transition-all active:scale-[0.99]"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-2xl bg-white border border-amber-100 text-amber-600 flex items-center justify-center shadow-sm">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-black text-zinc-900 text-sm md:text-base">
+              {language === 'ar' ? 'تعمّق استراتيجياً' : 'Go deeper'}
+            </h4>
+            <p className="text-zinc-500 text-xs md:text-sm font-bold mt-0.5">
+              {language === 'ar' ? 'افتح التحليل العميق فقط إذا احتجته.' : 'Open the deep analysis only when you need it.'}
+            </p>
+          </div>
+        </div>
+        <ChevronDown className={cn("w-5 h-5 text-amber-600 transition-transform duration-300", isDepthOpen && "rotate-180")} />
+      </button>
 
+      <AnimatePresence>
+      {isDepthOpen && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="overflow-hidden"
+        >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
         <SectionBox
           titleAr="مجهر النوايا الخفية"
@@ -168,6 +191,9 @@ export const AdvancedCognitiveAnalysis: React.FC<Props> = ({ query, language }) 
           systemPromptEn="You are a sociologist analyzing from a group dynamics perspective. How will this problem/decision affect the user's surroundings? Provide a concise, insightful paragraph opening their mind to social consequences."
         />
       </div>
+        </motion.div>
+      )}
+      </AnimatePresence>
     </div>
   );
 };

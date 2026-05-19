@@ -81,7 +81,14 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
 
   return (
     <div className="w-full h-full flex flex-col space-y-6">
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar hide-scrollbar-on-mobile">
+      <div className="bg-white border border-zinc-100 rounded-[32px] p-5 md:p-6 shadow-sm space-y-4">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div className="text-right">
+            <h2 className="text-xl font-black text-black">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
+            <p className="text-sm text-zinc-500 font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات كبيرة، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four major gates, each leading to a different depth without hiding any feature.'}</p>
+          </div>
+        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = activeSubTab === tab.id;
@@ -90,8 +97,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id as any)}
               className={cn(
-                "flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap",
-                isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "bg-white text-zinc-500 hover:bg-zinc-100 border border-zinc-200"
+                "flex items-center justify-between gap-3 px-5 py-4 rounded-[22px] font-bold text-sm transition-all text-right border",
+                isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-zinc-50 text-zinc-600 hover:bg-white border-zinc-100 hover:border-zinc-300"
               )}
             >
               <Icon className="w-4 h-4" />
@@ -99,6 +106,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
             </button>
           )
         })}
+      </div>
       </div>
 
       <div className="flex-1 w-full">

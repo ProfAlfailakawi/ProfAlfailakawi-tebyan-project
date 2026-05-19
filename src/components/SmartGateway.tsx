@@ -238,6 +238,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, []);
 
   const [hasSearched, setHasSearched] = useState(() => sessionStorage.getItem('tebyan_current_has_searched') === 'true');
+  const [showExpertPaths, setShowExpertPaths] = useState(false);
+  const [showInspiration, setShowInspiration] = useState(false);
 
   const handleSearchInputChange = (value: string) => {
     setSearchValue(value);
@@ -246,6 +248,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     setQuery(value);
     onType();
     if (hasSearched) setHasSearched(false);
+    setShowExpertPaths(false);
   };
 
   const [isQueryExpanded, setIsQueryExpanded] = useState(false);
@@ -566,6 +569,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     sessionStorage.setItem('tebyan_current_query', "");
     sessionStorage.setItem('tebyan_current_has_searched', 'false');
     setSmartSuggestion("");
+    setShowExpertPaths(false);
   };
 
   useEffect(() => {
@@ -574,6 +578,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         setIsThinking(false);
         setQuery("");
         setSmartSuggestion("");
+        setShowExpertPaths(false);
     }
   }, [searchValue]);
 
@@ -1377,13 +1382,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
                     <div className="space-y-8">
                        <div className="md:grid grid-cols-12 gap-8 mt-8">
-                          <div className="col-span-12 md:col-span-8">
+                          <div className={cn("col-span-12", showExpertPaths ? "md:col-span-8" : "md:col-span-12")}>
                               {/* Focus Layer: Primary Suggestion */}
                               {primarySuggestion  && (
                                   <div className="space-y-4">
                                       <div className="px-4 py-2 text-[11px] font-black text-mood-primary uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
                                           <div className="flex items-center gap-2">
-                                           <span>{language === 'ar' ? 'المسار الأنسب لمطابقتك' : 'YOUR STRONGEST MATCH'}</span>
+                                           <span>{language === 'ar' ? 'ابدأ من هنا' : 'START HERE'}</span>
                                            <Zap className="w-3 h-3" />
                                          </div>
                                       </div>
@@ -1416,11 +1421,24 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                   </div>
                               )}
 
+                              {/* Progressive disclosure layer: keep all tools available without crowding first view */}
+                              {(secondarySuggestions.length > 0 || alternativeSuggestions.length > 0) && (
+                                <div className="mt-8 rounded-[28px] border border-zinc-100 bg-zinc-50 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                  <div className="text-right">
+                                    <h4 className="text-sm md:text-base font-black text-zinc-900">{language === 'ar' ? 'تبي تبسطها أكثر أو تفتح العمق؟' : 'Simplify it or open the depth?'}</h4>
+                                    <p className="text-xs md:text-sm leading-relaxed text-zinc-500 font-bold mt-1 max-w-2xl">{language === 'ar' ? 'تبيان يعرض لك طريقاً واحداً أولاً. وإذا ودك تتوسع، افتح باقي الزوايا.' : 'Tebyan shows one path first. Open more angles when you want.'}</p>
+                                  </div>
+                                  <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-6 py-3 rounded-full bg-white border border-zinc-200 text-zinc-900 font-black text-xs md:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all">
+                                    {showExpertPaths ? (language === 'ar' ? 'إخفاء المختبر الكامل' : 'Hide full lab') : (language === 'ar' ? 'عرض كل الأدوات' : 'Show all tools')}
+                                  </button>
+                                </div>
+                              )}
+
                               {/* Focus Layer: Secondary Options */}
-                              {secondarySuggestions.length > 0  && (
+                              {showExpertPaths && secondarySuggestions.length > 0  && (
                                   <div className="mt-8 pt-8 border-t border-zinc-100">
                                      <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest mb-4 px-2">
-                                        {language === 'ar' ? 'خيارات إضافية للموقف' : 'SECONDARY OPTIONS'}
+                                        {language === 'ar' ? 'جرّب زاوية أخرى' : 'TRY ANOTHER ANGLE'}
                                      </h4>
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {secondarySuggestions.map((s) => {
@@ -1454,9 +1472,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           </div>
 
                           {/* Alternative Paths */}
+                          {showExpertPaths && (
                           <div className="col-span-12 md:col-span-4 space-y-4">
                              <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest px-2">
-                                 {language === 'ar' ? 'مسارات أخرى' : 'ALTERNATIVE PATHS'}
+                                 {language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}
                              </h4>
                              <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
                                 {alternativeSuggestions.map((s: any) => {
@@ -1481,6 +1500,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 })}
                              </div>
                           </div>
+                          )}
                        </div>
                     </div>
                   </>
@@ -1572,7 +1592,21 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         )}
 
                         {/* Mobile Secondary */}
-                        {secondarySuggestions.length > 0  && (
+                        {(secondarySuggestions.length > 0 || alternativeSuggestions.length > 0) && (
+                          <div className="rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="text-right">
+                                <div className="font-black text-sm text-zinc-900">{language === 'ar' ? 'تبيان اختصر لك الطريق' : 'Tebyan simplified the path'}</div>
+                                <p className="text-[11px] leading-relaxed text-zinc-500 font-bold mt-1">{language === 'ar' ? 'ابدأ بالمسار الأقوى، أو افتح المختبر الكامل إذا أردت العمق.' : 'Start with the strongest match, or open the full lab for depth.'}</p>
+                              </div>
+                              <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all">
+                                {showExpertPaths ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'عرض كل الأدوات' : 'Show all tools')}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {showExpertPaths && secondarySuggestions.length > 0  && (
                           <div className="space-y-3">
                              <span className="font-black text-[10px] text-zinc-400 uppercase tracking-widest px-2">{language === 'ar' ? 'أبعاد داعمة' : 'SUPPORTING'}</span>
                              <div className="grid grid-cols-1 gap-2">
@@ -1605,9 +1639,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         <div className="h-px bg-zinc-100 mx-4" />
 
                         {/* Mobile Alternative Paths */}
-                        {alternativeSuggestions.length > 0  && (
+                        {showExpertPaths && alternativeSuggestions.length > 0  && (
                            <div className="space-y-3">
-                              <span className="font-black text-[10px] text-zinc-400 uppercase tracking-widest px-2">{language === 'ar' ? 'مسارات أخرى' : 'ALTERNATIVE PATHS'}</span>
+                              <span className="font-black text-[10px] text-zinc-400 uppercase tracking-widest px-2">{language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}</span>
                               <div className="grid grid-cols-2 gap-2">
                                  {alternativeSuggestions.map((s: any) => {
                                     const Icon = s.icon;
@@ -1642,37 +1676,68 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           </AnimatePresence>
         </form>
 
-        {/* Dynamic Suggestion Chips */}
-        <div className="mt-8 flex overflow-x-auto pb-4 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full">
-            {proactiveInsights.dynamicSuggests.map((chip, idx) => (
-                    <button
-                        key={idx}
-                        onClick={() => {
-                            const val = language === 'ar' ? chip.ar : chip.en;
-                            setSearchValue(val);
-                            latestInputRef.current = val;
-                            setQuery(val);
-                            handleSubmit(undefined, val);
-                            setIsFocused(true);
-                        }}
-                        className={cn(
-                            "px-5 py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
-                            "bg-white text-zinc-500 hover:border-mood-primary hover:text-mood-primary",
-                            mood ? getMoodTypography(mood) : "font-bold text-sm"
-                        )}
-                    >
-                        <span className="relative z-10">{language === 'ar' ? chip.ar : chip.en}</span>
-                        {mood === 'revolutionary' && (
-                          <motion.div 
-                            initial={{ x: '-100%' }}
-                            animate={{ x: '100%' }}
-                            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-mood-primary/10 to-transparent skew-x-[-20deg]"
-                          />
-                        )}
-                    </button>
-            ))}
-        </div>
+        {/* Intent shortcuts: Google-simple outside, deep inside */}
+        {!hasSearched && !isThinking && (
+          <div className="mt-6 w-full max-w-2xl mx-auto flex flex-col items-center gap-4">
+            <div className="grid grid-cols-3 gap-2 w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+              {[
+                { labelAr: 'افهمني', labelEn: 'Explain', action: () => searchValue.trim() ? handleSubmit(undefined, searchValue) : inputRef.current?.focus() },
+                { labelAr: 'احسمها', labelEn: 'Decide', action: () => searchValue.trim() ? handlePathSelect('qawlfasl', searchValue) : inputRef.current?.focus() },
+                { labelAr: 'فاجئني', labelEn: 'Surprise', action: () => onPathSelect(currentChallenge.path as any, currentChallenge.query) }
+              ].map((item) => (
+                <button
+                  key={item.labelEn}
+                  type="button"
+                  onClick={item.action}
+                  className="h-12 rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-sm hover:border-black hover:shadow-md active:scale-95 transition-all"
+                >
+                  {language === 'ar' ? item.labelAr : item.labelEn}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowInspiration(v => !v)}
+              className="text-xs font-black text-zinc-400 hover:text-zinc-900 transition-colors"
+            >
+              {showInspiration ? (language === 'ar' ? 'إخفاء الأمثلة' : 'Hide examples') : (language === 'ar' ? 'أحتاج فكرة أبدأ بها' : 'I need a starting idea')}
+            </button>
+          </div>
+        )}
+
+        {/* Dynamic Suggestion Chips - hidden until requested */}
+        {showInspiration && !hasSearched && !isThinking && (
+          <div className="mt-5 flex overflow-x-auto pb-4 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full">
+              {proactiveInsights.dynamicSuggests.map((chip, idx) => (
+                      <button
+                          key={idx}
+                          onClick={() => {
+                              const val = language === 'ar' ? chip.ar : chip.en;
+                              setSearchValue(val);
+                              latestInputRef.current = val;
+                              setQuery(val);
+                              handleSubmit(undefined, val);
+                              setIsFocused(true);
+                          }}
+                          className={cn(
+                              "px-5 py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
+                              "bg-white text-zinc-500 hover:border-mood-primary hover:text-mood-primary",
+                              mood ? getMoodTypography(mood) : "font-bold text-sm"
+                          )}
+                      >
+                          <span className="relative z-10">{language === 'ar' ? chip.ar : chip.en}</span>
+                          {mood === 'revolutionary' && (
+                            <motion.div 
+                              initial={{ x: '-100%' }}
+                              animate={{ x: '100%' }}
+                              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                              className="absolute inset-0 bg-gradient-to-r from-transparent via-mood-primary/10 to-transparent skew-x-[-20deg]"
+                            />
+                          )}
+                      </button>
+              ))}
+          </div>
+        )}
       </div>
       </div>
 
@@ -1791,30 +1856,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           viewport={{ once: true }}
           className="emotion-hide mt-10 md:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 md:gap-8 mb-16"
       >
-          <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgb(0,0,0,0.06)] hover:border-zinc-200 transition-all duration-500 group cursor-pointer" onClick={() => handleTabChange('mylibrary')}>
-              <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
-                  <div className="text-right">
-                      <h3 className="text-xl md:text-2xl font-black text-black mb-2 tracking-tight">
-                          {language === 'ar' ? 'مكتبتك المفضلة' : 'Your Favorite Library'}
-                      </h3>
-                      <p className="text-zinc-500 font-bold text-sm leading-relaxed">
-                          {preferences.savedLibrary && preferences.savedLibrary.length > 0 ? (
-                            language === 'ar' 
-                              ? `لديك ${preferences.savedLibrary.length} مادة محفوظة للرجوع إليها.` 
-                              : `You have ${preferences.savedLibrary.length} items saved for reference.`
-                          ) : (
-                            language === 'ar'
-                              ? 'ابدأ بحفظ الإجابات.'
-                              : 'Start saving answers.'
-                          )}
-                      </p>
-                  </div>
-                  <div className="w-16 h-16 rounded-[24px] bg-white flex items-center justify-center text-zinc-900 border border-zinc-100 shadow-sm transform group-hover:-translate-y-1 transition-transform shrink-0">
-                      <LibraryBig className="w-8 h-8 opacity-80" />
-                  </div>
-              </div>
-          </div>
-
           <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgba(var(--mood-primary-rgb),0.1)] hover:border-mood-primary/30 transition-all duration-500 group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
               <div className="absolute inset-0 bg-mood-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
               <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
