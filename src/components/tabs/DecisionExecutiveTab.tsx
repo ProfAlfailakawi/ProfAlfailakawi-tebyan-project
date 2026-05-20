@@ -78,7 +78,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         { id: 'risk', title: { ar: 'أبي أفحص المخاطر', en: 'Check the risks' }, hint: { ar: 'تحيزات وعواقب ونقاط ضعف', en: 'Biases, consequences, and weak points' } },
         { id: 'voices', title: { ar: 'أبي أسمع العقول', en: 'Hear different minds' }, hint: { ar: 'خبراء وأسئلة وسياق', en: 'Experts, questions, and context' } },
         { id: 'future', title: { ar: 'أبي أشوف المستقبل', en: 'See the future' }, hint: { ar: 'محاكاة الأثر والزمن', en: 'Time and impact simulation' } },
-        { id: 'all', title: { ar: 'عرض كل الغرفة', en: 'Full room' }, hint: { ar: 'كل أدوات القرار كما هي', en: 'All decision tools unchanged' } },
+        { id: 'all', title: { ar: 'الغرفة الكاملة', en: 'Full room' }, hint: { ar: 'كل أدوات القرار كما هي', en: 'All decision tools unchanged' } },
     ];
 
     const visibleDecisionTools = activeDecisionPurpose === 'all'
@@ -236,7 +236,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 </div>
                 <button type="button" onClick={() => setActiveDecisionPurpose('all')} className="px-5 py-3 rounded-full bg-black text-white text-xs font-black flex items-center gap-2 active:scale-95 transition-all">
                   <LayoutGrid className="w-4 h-4" />
-                  {language === 'ar' ? 'كل الأدوات' : 'All tools'}
+                  {language === 'ar' ? 'الغرفة الكاملة' : 'Full room'}
                 </button>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">

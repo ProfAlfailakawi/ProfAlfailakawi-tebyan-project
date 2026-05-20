@@ -18,7 +18,7 @@ export const TypographicAcoustic = forwardRef<HTMLDivElement, {
         initial={{ opacity: 0, scale: 0.98, filter: 'blur(2px)' }}
         animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
         transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.5 }}
-        className={`font-bold tracking-tight ${className}`}
+        className={`font-black tracking-tight kinetic-text-firm text-mood-primary ${className}`}
       >
         {children}
       </motion.div>
@@ -33,7 +33,7 @@ export const TypographicAcoustic = forwardRef<HTMLDivElement, {
         initial={{ opacity: 0, y: 5, filter: 'blur(4px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1], delay: 0.05 }}
-        className={`leading-relaxed text-zinc-600 ${className}`}
+        className={`leading-relaxed kinetic-text-breathing text-zinc-600 dark:text-zinc-400 ${className}`}
       >
         {children}
       </motion.div>

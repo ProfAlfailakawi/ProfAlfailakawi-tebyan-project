@@ -13,12 +13,12 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
        const hints = language === 'ar' ? [
           'المعلومات هنا دسمة وتستحق التأمل.',
           'تلميح: اضغط على ⌘+K للبحث السريع والوصول المباشر.',
-          'إذا فقدت مسارك، يمكنك العودة للصفحة الرئيسية في أي وقت.',
+          'إذا فقدت مسارك، يمكنك البدء بسؤال جديد في أي وقت.',
           'استوقفتك هذه الشاشة، يبدو أن بها تفاصيل تهمك.'
        ] : [
           'The information here is dense and worth reflecting on.',
           'Hint: Press Cmd+K for smart search and quick access.',
-          'If you lose your track, you can return to the home page anytime.',
+          'If you lose your track, you can start a new question anytime.',
           'This screen paused you, seems it has details you care about.'
        ];
        setHint(hints[Math.floor(Math.random() * hints.length)]);

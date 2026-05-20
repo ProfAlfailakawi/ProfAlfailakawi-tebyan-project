@@ -221,6 +221,19 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, []);
 
   const currentChallenge = DAILY_CHALLENGES[challengeIndex % DAILY_CHALLENGES.length];
+
+  /**
+   * Handle the "Surprise" button by selecting a random challenge each time
+   * it is clicked. This ensures the user receives varied suggestions rather
+   * than the same preset challenge on each interaction. After selecting a
+   * random challenge, navigate to its path using onPathSelect.
+   */
+  const handleSurprise = () => {
+    const randomIndex = Math.floor(Math.random() * DAILY_CHALLENGES.length);
+    setChallengeIndex(randomIndex);
+    const randomChallenge = DAILY_CHALLENGES[randomIndex];
+    onPathSelect(randomChallenge.path as any, randomChallenge.query);
+  };
   const currentInsight = PLATFORM_INSIGHTS[insightIndexList % PLATFORM_INSIGHTS.length];
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -1317,8 +1330,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 className="border-t border-zinc-100 mt-2 p-4 hidden md:block space-y-4"
               >
                 <div className="flex justify-center mb-4">
+                    {/* Instead of a confusing "return" message, present a clear restart call-to-action */}
                     <button type="button" onClick={clearSearch} className="px-6 py-2 bg-mood-primary/10 hover:bg-mood-primary/20 text-mood-primary rounded-full font-bold text-sm transition-all duration-500">
-                        {language === 'ar' ? 'العودة للصفحة الرئيسية' : 'Return to Home Page'}
+                        {language === 'ar' ? 'سؤال جديد' : 'New question'}
                     </button>
                 </div>
                 {isThinking ? (
@@ -1429,7 +1443,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                     <p className="text-xs md:text-sm leading-relaxed text-zinc-500 font-bold mt-1 max-w-2xl">{language === 'ar' ? 'تبيان يعرض لك طريقاً واحداً أولاً. وإذا ودك تتوسع، افتح باقي الزوايا.' : 'Tebyan shows one path first. Open more angles when you want.'}</p>
                                   </div>
                                   <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-6 py-3 rounded-full bg-white border border-zinc-200 text-zinc-900 font-black text-xs md:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all">
-                                    {showExpertPaths ? (language === 'ar' ? 'إخفاء المختبر الكامل' : 'Hide full lab') : (language === 'ar' ? 'عرض كل الأدوات' : 'Show all tools')}
+                                    {showExpertPaths ? (language === 'ar' ? 'إخفاء المختبر الكامل' : 'Hide full lab') : (language === 'ar' ? 'فتح المختبر الكامل' : 'Open full lab')}
                                   </button>
                                 </div>
                               )}
@@ -1516,8 +1530,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
                  >
                     <div className="flex justify-center mb-2">
+                      {/* Mobile: provide a simple restart option instead of returning to home */}
                       <button type="button" onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
-                          {language === 'ar' ? 'العودة للصفحة الرئيسية' : 'Return to Home Page'}
+                          {language === 'ar' ? 'سؤال جديد' : 'New question'}
                       </button>
                     </div>
                     {isThinking ? (
@@ -1600,7 +1615,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 <p className="text-[11px] leading-relaxed text-zinc-500 font-bold mt-1">{language === 'ar' ? 'ابدأ بالمسار الأقوى، أو افتح المختبر الكامل إذا أردت العمق.' : 'Start with the strongest match, or open the full lab for depth.'}</p>
                               </div>
                               <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all">
-                                {showExpertPaths ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'عرض كل الأدوات' : 'Show all tools')}
+                                {showExpertPaths ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'فتح المختبر الكامل' : 'Open full lab')}
                               </button>
                             </div>
                           </div>
@@ -1681,19 +1696,38 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           <div className="mt-6 w-full max-w-2xl mx-auto flex flex-col items-center gap-4">
             <div className="grid grid-cols-3 gap-2 w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
               {[
-                { labelAr: 'افهمني', labelEn: 'Explain', action: () => searchValue.trim() ? handleSubmit(undefined, searchValue) : inputRef.current?.focus() },
-                { labelAr: 'احسمها', labelEn: 'Decide', action: () => searchValue.trim() ? handlePathSelect('qawlfasl', searchValue) : inputRef.current?.focus() },
-                { labelAr: 'فاجئني', labelEn: 'Surprise', action: () => onPathSelect(currentChallenge.path as any, currentChallenge.query) }
-              ].map((item) => (
-                <button
-                  key={item.labelEn}
-                  type="button"
-                  onClick={item.action}
-                  className="h-12 rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-sm hover:border-black hover:shadow-md active:scale-95 transition-all"
-                >
-                  {language === 'ar' ? item.labelAr : item.labelEn}
-                </button>
-              ))}
+                {
+                  labelAr: 'افهمني',
+                  labelEn: 'Explain',
+                  action: () => searchValue.trim() ? handleSubmit(undefined, searchValue) : inputRef.current?.focus(),
+                },
+                {
+                  labelAr: 'احسمها',
+                  labelEn: 'Decide',
+                  action: () => searchValue.trim() ? handlePathSelect('qawlfasl', searchValue) : inputRef.current?.focus(),
+                },
+                {
+                  labelAr: 'فاجئني',
+                  labelEn: 'Surprise',
+                  action: handleSurprise,
+                },
+              ].map((item) => {
+                const isDisabled = !searchValue.trim();
+                return (
+                  <button
+                    key={item.labelEn}
+                    type="button"
+                    onClick={item.action}
+                    disabled={isDisabled}
+                    className={cn(
+                      'h-12 rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-sm transition-all active:scale-95',
+                      isDisabled ? 'opacity-50 pointer-events-none' : 'hover:border-black hover:shadow-md'
+                    )}
+                  >
+                    {language === 'ar' ? item.labelAr : item.labelEn}
+                  </button>
+                );
+              })}
             </div>
             <button
               type="button"

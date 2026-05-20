@@ -68,7 +68,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     { id: 'create', title: { ar: 'أبي فكرة جديدة', en: 'Create a new idea' }, hint: { ar: 'تصادم أفكار ورموز وصوت للفكرة', en: 'Collide ideas, symbols, and resonance' }, toolIds: ['collider', 'symbols', 'sound'] },
     { id: 'build', title: { ar: 'أبي أحولها لمشروع', en: 'Turn it into a project' }, hint: { ar: 'تصميم ومسارات مهنية وورش', en: 'Design, careers, and workshops' }, toolIds: ['design', 'career', 'workshop'] },
     { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] },
-    { id: 'all', title: { ar: 'عرض المختبر الكامل', en: 'Full lab' }, hint: { ar: 'كل الأدوات كما هي بدون إخفاء', en: 'All tools, unchanged' }, toolIds: labTools.map(t => t.id) }
+    { id: 'all', title: { ar: 'المختبر الكامل', en: 'Full lab' }, hint: { ar: 'كل الأدوات كما هي', en: 'All tools, unchanged' }, toolIds: labTools.map(t => t.id) }
   ]), [language]);
 
   const visibleLabTools = React.useMemo(() => {
@@ -260,7 +260,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                className="px-5 py-3 rounded-full bg-zinc-950 text-white font-black text-xs flex items-center gap-2 hover:bg-black active:scale-95 transition-all"
              >
                <LayoutGrid className="w-4 h-4" />
-               {language === 'ar' ? 'كل الأدوات' : 'All tools'}
+               {language === 'ar' ? 'المختبر الكامل' : 'Full lab'}
              </button>
            </div>
 

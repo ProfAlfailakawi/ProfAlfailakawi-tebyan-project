@@ -198,6 +198,7 @@ const AppContent: React.FC = () => {
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'error' | 'success' } | null>(null);
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
   const [showSplash, setShowSplash] = useState(true);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
@@ -399,6 +400,21 @@ const AppContent: React.FC = () => {
       }, 50);
     }
   }, [checkAuth, language, setMobileMenuOpen, setSidebarOpen, setIsLoading, setError, setInitialContext, setActiveTab]);
+
+  // Listen for custom navigation events dispatched from child components (e.g. ClientProfilePanel)
+  // When a 'navigate_tab' event is received, navigate to the given tab using handleTabChange.
+  useEffect(() => {
+    const listener = (e: any) => {
+      const targetTab = e?.detail?.tab as Tab | undefined;
+      if (targetTab) {
+        handleTabChange(targetTab);
+      }
+    };
+    window.addEventListener('navigate_tab', listener);
+    return () => {
+      window.removeEventListener('navigate_tab', listener);
+    };
+  }, [handleTabChange]);
 
   const tabs = [
     { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search, tooltip: language === 'ar' ? 'البحث الرئيسي في النظام' : 'Main Search' },

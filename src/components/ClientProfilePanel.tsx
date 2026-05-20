@@ -5,7 +5,8 @@ import {
   X, User as UserIcon, Flame, Lightbulb, Shield, Medal, 
   Settings, Clock, Activity, Target, ShieldAlert,
   Moon, Sun, ListTodo, Bookmark, Timer, Sparkles, Frown, Compass, ArrowRightLeft,
-  ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle
+  ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle,
+  LibraryBig, Network
 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { useUser } from '../contexts/UserContext';
@@ -67,6 +68,25 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
 
   // Growth / Contradictions (Fake data to show concept based on existing UI pattern)
   const [showRage, setShowRage] = useState(false);
+
+  // Handlers to open Library and Knowledge Network tabs from within the profile panel.
+  // Dispatch a custom event that App listens to for navigation. Close the panel afterwards.
+  const openLibrary = () => {
+    try {
+      window.dispatchEvent(new CustomEvent('navigate_tab', { detail: { tab: 'mylibrary' } }));
+    } catch (e) {
+      // ignore
+    }
+    onClose();
+  };
+  const openKnowledge = () => {
+    try {
+      window.dispatchEvent(new CustomEvent('navigate_tab', { detail: { tab: 'knowledgegraph' } }));
+    } catch (e) {
+      // ignore
+    }
+    onClose();
+  };
 
   useEffect(() => {
     // Session timer
@@ -843,7 +863,37 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
 
               {activeTab === 'tools' && (
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-8">
-                    
+
+                    {/* Personal Library & Knowledge Network quick links */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button
+                          type="button"
+                          onClick={openLibrary}
+                          className="flex items-center gap-4 p-5 rounded-2xl border border-amber-100 bg-amber-50 hover:bg-amber-100 transition-colors shadow-sm"
+                        >
+                          <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white text-amber-500 shadow">
+                            <LibraryBig className="w-6 h-6" />
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-sm text-slate-900">{language === 'ar' ? 'مكتبتي' : 'My Library'}</div>
+                            <div className="text-xs text-slate-500 leading-relaxed">{language === 'ar' ? 'كل أسئلتك وجلساتك السابقة محفوظة هنا' : 'All your previous questions and sessions'}</div>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={openKnowledge}
+                          className="flex items-center gap-4 p-5 rounded-2xl border border-indigo-100 bg-indigo-50 hover:bg-indigo-100 transition-colors shadow-sm"
+                        >
+                          <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white text-indigo-500 shadow">
+                            <Network className="w-6 h-6" />
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-sm text-slate-900">{language === 'ar' ? 'شبكتي المعرفية' : 'Knowledge Network'}</div>
+                            <div className="text-xs text-slate-500 leading-relaxed">{language === 'ar' ? 'شاهد كيف ترتبط أفكارك ببعضها' : 'See how your ideas connect'}</div>
+                          </div>
+                        </button>
+                    </div>
+
                     {/* Time Capsule */}
                     <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-lg">
                         <div className="absolute -right-10 -top-10 text-indigo-500/20"><Timer size={120} /></div>
