@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon, Home } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -1272,28 +1272,16 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 >
                     <Search className="w-6 h-6 md:w-7 md:h-7" />
                 </button>
+              <button 
+                  type="button"
+                  onClick={() => handleTabChange('discover', '', true)}
+                  title={language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
+                  className="bg-white text-zinc-700 border border-zinc-200 w-12 h-12 md:w-14 md:h-14 rounded-[18px] transition-all hover:scale-105 hover:border-black hover:text-black active:scale-95 flex items-center justify-center shrink-0 shadow-sm"
+                >
+                    <Home className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
             </div>
             
-            {/* Auto-suggest rewrite pill */}
-            {smartSuggestion && !smartSuggestion.startsWith(searchValue) && isFocused && (
-              <div className="absolute top-full mt-2 w-full max-w-2xl px-2 z-20 flex justify-start">
-                  <button
-                    type="button"
-                    onMouseDown={(e) => {
-                      e.preventDefault(); // Prevent blur
-                      setSearchValue(smartSuggestion);
-                      latestInputRef.current = smartSuggestion;
-                      setQuery(smartSuggestion);
-                      setSmartSuggestion('');
-                    }}
-                    className="flex items-center gap-2 bg-mood-primary text-white text-xs md:text-sm px-4 py-2 rounded-full shadow-lg transition-all"
-                  >
-                     <span className="opacity-80 flex-shrink-0">{language === 'ar' ? 'هل تقصد:' : 'Did you mean:'}</span> 
-                     <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
-                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
-                  </button>
-              </div>
-            )}
 
           </div>
 
@@ -1883,46 +1871,46 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         </motion.div>
       </div>
 
-      {/* Quick Gates (Educational Tools) */}
+      {/* Signature Gate: Idea Fabric — keep it special and remove duplicate Knowledge Graph from dashboard */}
       <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="emotion-hide mt-10 md:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 md:gap-8 mb-16"
+          className="emotion-hide mt-10 md:mt-12 mb-16"
       >
-          <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgba(var(--mood-primary-rgb),0.1)] hover:border-mood-primary/30 transition-all duration-500 group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('knowledgegraph')}>
-              <div className="absolute inset-0 bg-mood-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-              <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
-                  <div className="text-right">
-                      <h3 className="text-xl md:text-2xl font-black text-black mb-2 tracking-tight">
-                          {language === 'ar' ? 'الشبكة العصبية' : 'Knowledge Graph'}
-                      </h3>
-                      <p className="text-zinc-500 font-bold text-sm leading-relaxed">
-                          {language === 'ar' ? 'ارتباط الأفكار بوعيك' : 'How ideas connect'}
-                      </p>
-                  </div>
-                  <div className="w-16 h-16 rounded-[24px] bg-mood-primary/10 flex items-center justify-center text-mood-primary border border-mood-primary/20 shadow-sm transform group-hover:scale-105 transition-transform shrink-0">
-                      <Network className="w-8 h-8 opacity-80" />
-                  </div>
-              </div>
-          </div>
-
-          <div className="flex-1 p-8 md:p-10 bg-[#FAFAFA] rounded-[32px] md:rounded-[40px] border border-zinc-100 flex flex-col justify-between gap-8 hover:shadow-[0_20px_60px_rgba(var(--mood-secondary-rgb),0.1)] hover:border-mood-secondary/30 transition-all duration-500 group cursor-pointer relative overflow-hidden" onClick={() => handleTabChange('ripple')}>
-              <div className="absolute inset-0 bg-mood-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-              <div className="flex items-center gap-6 text-right relative z-10 w-full justify-end">
-                  <div className="text-right">
-                      <h3 className="text-xl md:text-2xl font-black text-black mb-2 tracking-tight">
+          <motion.button
+              type="button"
+              whileHover={{ scale: 1.01, y: -3 }}
+              whileTap={{ scale: 0.99 }}
+              className="w-full p-7 md:p-10 bg-gradient-to-br from-white via-mood-secondary/5 to-mood-primary/5 rounded-[34px] md:rounded-[48px] border border-mood-secondary/20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 md:gap-10 hover:shadow-[0_24px_80px_rgba(var(--mood-secondary-rgb),0.16)] hover:border-mood-secondary/40 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
+              onClick={() => handleTabChange('ripple')}
+          >
+              <div className="absolute -top-20 -right-20 w-72 h-72 bg-mood-secondary/10 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-mood-primary/10 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="relative z-10 flex items-center gap-5 md:gap-7 justify-end flex-1">
+                  <div>
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-mood-secondary/20 text-mood-secondary text-[10px] md:text-xs font-black tracking-widest uppercase mb-4 shadow-sm">
+                          <Sparkles className="w-4 h-4" />
+                          {language === 'ar' ? 'التجربة المميزة' : 'SIGNATURE EXPERIENCE'}
+                      </div>
+                      <h3 className="text-2xl md:text-4xl font-black text-black mb-3 tracking-tight leading-tight">
                           {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                       </h3>
-                      <p className="text-zinc-500 font-bold text-sm leading-relaxed">
-                          {language === 'ar' ? 'نمو الأفكار وترابطها المستمر' : 'Continuous growth and interconnection'}
+                      <p className="text-zinc-500 font-bold text-sm md:text-base leading-relaxed max-w-2xl">
+                          {language === 'ar' ? 'شاهد كيف تنمو فكرتك وتتفرع وتؤثر في أفكار أخرى كأنها كائن حي.' : 'Watch your idea grow, branch, and influence other ideas like a living system.'}
                       </p>
                   </div>
-                  <div className="w-16 h-16 rounded-[24px] bg-mood-secondary/10 flex items-center justify-center text-mood-secondary border border-mood-secondary/20 shadow-sm transform group-hover:scale-105 transition-transform shrink-0">
-                      <Waves className="w-8 h-8 opacity-80" />
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[28px] bg-white flex items-center justify-center text-mood-secondary border border-mood-secondary/20 shadow-lg transform group-hover:rotate-3 group-hover:scale-105 transition-transform shrink-0">
+                      <Waves className="w-10 h-10 md:w-12 md:h-12 opacity-90" />
                   </div>
               </div>
-          </div>
+              <div className="relative z-10 flex md:flex-col items-center justify-between md:justify-center gap-3 md:min-w-[150px] bg-white/70 border border-white/70 rounded-[28px] p-4 md:p-5 shadow-sm">
+                  <span className="text-[11px] md:text-xs text-zinc-400 font-black uppercase tracking-widest">
+                      {language === 'ar' ? 'ابدأ الرحلة' : 'Start journey'}
+                  </span>
+                  <ArrowLeft className={cn("w-5 h-5 text-mood-secondary", language === 'ar' ? "group-hover:-translate-x-1" : "rotate-180 group-hover:translate-x-1", "transition-transform")} />
+              </div>
+          </motion.button>
       </motion.div>
         </>
       )}
