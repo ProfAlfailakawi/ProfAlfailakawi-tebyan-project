@@ -1266,15 +1266,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   type="submit"
                   title={language === 'ar' ? 'البحث أو التحليل' : 'Search / Analyze'}
                   className={cn(
-                    "bg-black text-white w-14 h-14 md:w-16 md:h-16 rounded-[20px] transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
-                    query.length > 0 ? "opacity-100 shadow-xl shadow-black/10" : "opacity-30 pointer-events-none"
+                    "bg-mood-primary text-black w-14 h-14 md:w-16 md:h-16 rounded-[20px] transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
+                    query.length > 0 ? "opacity-100 shadow-xl" : "opacity-30 pointer-events-none"
                   )}
                 >
                     <Search className="w-6 h-6 md:w-7 md:h-7" />
                 </button>
               <button 
                   type="button"
-                  onClick={() => handleTabChange('discover', '', true)}
+                  onClick={() => handleTabChange('discover')}
                   title={language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
                   className="bg-white text-zinc-700 border border-zinc-200 w-12 h-12 md:w-14 md:h-14 rounded-[18px] transition-all hover:scale-105 hover:border-black hover:text-black active:scale-95 flex items-center justify-center shrink-0 shadow-sm"
                 >
@@ -1578,10 +1578,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                              <button 
                                type="button"
                                onClick={() => handlePathSelect(primarySuggestion.id, query)}
-                               className="w-full flex items-center justify-between p-6 bg-black text-white rounded-[32px] shadow-2xl border border-black active:scale-95 transition-all"
+                               className="w-full flex items-center justify-between p-6 bg-mood-primary text-black rounded-[32px] shadow-xl border border-mood-primary active:scale-95 transition-all hover:opacity-95"
                              >
                                 <div className="flex items-center gap-4">
-                                   <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                                   <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center">
                                       {(() => { const Icon = primarySuggestion.icon; return <Icon className="w-6 h-6" />; })()}
                                    </div>
                                    <div className="text-right">
@@ -1772,27 +1772,27 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.01, y: -2 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-black/90 backdrop-blur-xl border border-zinc-800/80 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:shadow-[0_30px_80px_rgba(0,0,0,0.4)]"
+                className="bg-[#FAF6ED]/95 backdrop-blur-xl border border-amber-200/40 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_rgba(197,142,35,0.08)] relative overflow-hidden group hover:shadow-[0_30px_80px_rgba(197,142,35,0.15)]"
              >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-200/10 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
                 <div className="flex items-center gap-5 z-10 w-full md:w-auto">
-                    <div className="w-14 h-14 rounded-[20px] bg-zinc-900/80 text-zinc-300 border border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="w-14 h-14 rounded-[20px] bg-amber-100/60 text-amber-800 border border-amber-200/30 flex items-center justify-center shrink-0 shadow-inner">
                         <Sparkles className="w-6 h-6 animate-pulse opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                     </div>
                     <div className="text-right">
                         <div className="flex items-center gap-2 mb-2">
-                            <span className="text-sm font-serif italic text-zinc-400">
+                            <span className="text-sm font-serif italic text-amber-800">
                                 {language === 'ar' ? 'رسالة سريعة الزوال' : 'Ephemeral Wisdom'}
                             </span>
                         </div>
-                        <p className="text-base md:text-lg font-serif text-white/90 leading-relaxed max-w-xl">
+                        <p className="text-base md:text-lg font-serif text-amber-950 leading-relaxed max-w-xl">
                             {language === 'ar' ? currentWisdom.ar : currentWisdom.en}
                         </p>
                     </div>
                 </div>
                 <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto mt-4 md:mt-0">
-                    <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
-                    <div className="text-2xl md:text-3xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900/50 backdrop-blur-md px-4 py-2 rounded-2xl border border-zinc-800/50 shadow-inner">
+                    <span className="text-[10px] text-amber-800 font-bold uppercase tracking-widest mb-2">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
+                    <div className="text-2xl md:text-3xl font-mono font-black text-amber-950 tracking-tight bg-amber-100/40 backdrop-blur-md px-4 py-2 rounded-2xl border border-amber-200/40 shadow-inner">
                         {String(ephemeralTime.m).padStart(2, '0')}:{String(ephemeralTime.s).padStart(2, '0')}
                     </div>
                 </div>

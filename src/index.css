@@ -184,29 +184,28 @@ html.theme-sunset {
   --mood-glow: rgba(220, 161, 52, 0.15);
 }
 
-/* 4. Night Theme (ليل مظلم عتيق) - Elite Ancient Scrolls, Black & Gold */
+/* 4. Night Theme (ليل دافئ وعميق) - Cozy Golden Night */
 html.theme-evening body,
 html.theme-night body {
-  background-color: #0B0C10; /* Deep Charcoal Black */
-  color: #E2C089; /* Pale Soft Gold */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ancientNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ancientNoise)' opacity='0.08'/%3E%3C/svg%3E");
+  background-color: #FAF6ED; /* Warm Luxury Cream */
+  color: #352615; /* Soft Deep Bronze */
 }
 html.theme-evening .bg-zinc-50,
 html.theme-night .bg-zinc-50 {
-  background-color: #0F1014;
+  background-color: #FAF6ED;
 }
 html.theme-evening .bg-white,
 html.theme-night .bg-white {
-  background-color: rgba(21, 23, 29, 0.82);
+  background-color: #FCF9F3;
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border-color: rgba(226, 192, 137, 0.1);
+  border-color: rgba(220, 161, 52, 0.12);
 }
 html.theme-evening,
 html.theme-night {
-  --mood-primary: #E2C089; /* Pure Saffron Gold */
-  --mood-secondary: #E06C33; /* Pure Amber */
-  --mood-glow: rgba(226, 192, 137, 0.15);
+  --mood-primary: #C58E23; /* Warm Saffron gold */
+  --mood-secondary: #D45D25; /* Soft Warm amber */
+  --mood-glow: rgba(197, 142, 35, 0.12);
 }
 
 /* Liquid Kinetic Transitions */
@@ -281,10 +280,10 @@ div, section, button, header, footer {
 
 html.theme-night .glass-panel,
 html.theme-evening .glass-panel {
-  background: rgba(15, 16, 20, 0.68);
+  background: rgba(252, 249, 243, 0.72);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid rgba(226, 192, 137, 0.12);
+  border: 1px solid rgba(197, 142, 35, 0.15);
 }
 
 /* Spatial Interactive Islands */
