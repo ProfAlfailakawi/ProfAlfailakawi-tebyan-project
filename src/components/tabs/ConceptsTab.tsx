@@ -5,7 +5,6 @@ import ReactMarkdown from 'react-markdown';
 import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
-import { SmartIntentEngine } from '../common/SmartIntentEngine';
 
 interface ConceptsTabProps {
   input: string;
@@ -90,17 +89,6 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
         value={input} onChange={(e) => setInput(e.target.value)}
         className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-zinc-900 border-red-900/40 text-red-100 placeholder:text-red-900 focus:border-red-600 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-zinc-400")}
         placeholder={language === 'ar' ? "أدخل المفهوم المعقد هنا..." : "Enter complex concept here..."}
-      />
-      <SmartIntentEngine
-        compact
-        language={language}
-        value={input}
-        onApply={setInput}
-        onSubmit={(nextValue) => {
-          setInput(nextValue);
-          setTimeout(() => handleSimplify(), 0);
-        }}
-        onQawlFasl={(nextValue) => handleTabChange('qawlfasl', nextValue)}
       />
       <div className="flex flex-col md:flex-row gap-4">
         <button 

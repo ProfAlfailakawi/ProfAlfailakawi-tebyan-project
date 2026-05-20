@@ -4,7 +4,6 @@ import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageS
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { IntellectualKintsugi } from '../common/IntellectualKintsugi';
-import { SmartIntentEngine } from '../common/SmartIntentEngine';
 import { ai, universalOracle } from '../../services/gemini';
 import ReactMarkdown from 'react-markdown';
 
@@ -228,15 +227,6 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                )}
              </AnimatePresence>
            </div>
-
-           <SmartIntentEngine
-             compact
-             language={language}
-             value={dilemma}
-             onApply={setDilemma}
-             onQawlFasl={(nextValue) => handleTabChange('qawlfasl', nextValue)}
-             onOpenPath={(path, nextValue) => handleTabChange(path, nextValue)}
-           />
 
            <div className="bg-white border border-zinc-100 rounded-[32px] p-5 md:p-6 space-y-5 shadow-sm">
               <div className="flex items-center justify-between gap-4 flex-wrap">
