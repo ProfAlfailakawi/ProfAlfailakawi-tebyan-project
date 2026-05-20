@@ -8,7 +8,9 @@ export default defineConfig(({mode}) => {
   return {
     plugins: [react(), tailwindcss()],
     define: {
-      'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      // Gemini API keys must stay server-side in Cloud Functions.
+      // Do not inject GEMINI_API_KEY into the frontend bundle.
+      'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(''),
     },
     resolve: {
       alias: {

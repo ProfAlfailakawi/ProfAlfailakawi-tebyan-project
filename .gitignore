@@ -1,10 +1,9 @@
 node_modules/
 dist/
-.firebase/
 .env
-*.log
-.DS_Store
-*.backup.ts
+.env.*
 functions/.env
-functions/node_modules/
-functions/firebase-debug.log
+functions/.env.*
+.DS_Store
+.firebase/
+*.log
