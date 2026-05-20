@@ -155,7 +155,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <div className="w-1.5 h-1.5 rounded-full bg-mood-primary animate-pulse"></div>
             <span className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-black text-black dark:text-mood-primary leading-[1.05] tracking-tight kinetic-text-firm">
+          <h1 className="text-2xl md:text-4xl font-black text-black leading-[1.05] tracking-tight kinetic-text-firm">
             {language === 'ar' ? 'نظامك الشامل' : 'Your Complete System'}
           </h1>
           <p className="text-sm md:text-base text-zinc-500 font-medium leading-relaxed max-w-sm mt-1">
@@ -169,7 +169,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <p className="text-[10px] font-black tracking-[0.2em] uppercase text-zinc-400">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
-            <h2 className="text-2xl md:text-4xl font-black text-black dark:text-white tracking-tight leading-tight kinetic-text-firm">
+            <h2 className="text-2xl md:text-4xl font-black text-black tracking-tight leading-tight kinetic-text-firm">
               {language === 'ar' ? 'وش تبي تسوي اليوم؟' : 'What do you want to do today?'}
             </h2>
             <p className="text-sm md:text-base text-zinc-500 font-bold leading-relaxed max-w-xl">
@@ -193,14 +193,14 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className="group p-5 rounded-[24px] bg-zinc-50/50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-right hover:bg-white hover:border-zinc-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all ceramic-card knowledge-tectonic"
+              className="group p-5 rounded-[24px] bg-zinc-50/50 border border-zinc-100 text-right hover:bg-white hover:border-zinc-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all ceramic-card knowledge-tectonic"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 flex items-center justify-center text-zinc-900 dark:text-white group-hover:bg-mood-primary group-hover:text-black transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-900 group-hover:bg-mood-primary group-hover:text-black transition-all">
                   <item.icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-black text-lg text-black dark:text-mood-primary">{language === 'ar' ? item.ar : item.en}</h3>
+                  <h3 className="font-black text-lg text-black">{language === 'ar' ? item.ar : item.en}</h3>
                   <p className="text-xs text-zinc-500 font-bold mt-1">{language === 'ar' ? item.descAr : item.descEn}</p>
                 </div>
               </div>
@@ -210,7 +210,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </section>
 
       {/* Daily Mission */}
-      <div className="bg-gradient-to-r from-mood-primary via-mood-primary/90 to-mood-secondary rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-black dark:text-black relative overflow-hidden shadow-lg mb-6 ceramic-card" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="bg-gradient-to-r from-mood-primary via-mood-primary/90 to-mood-secondary rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-black relative overflow-hidden shadow-lg mb-6 ceramic-card" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-[80px] opacity-10 -translate-y-1/2 translate-x-1/3"></div>
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex-1 w-full">
@@ -339,8 +339,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           ]}
           handleTabChange={handleTabChange}
           language={language}
-          color="bg-zinc-900"
-          inverted
+          color="bg-white"
         />
 
         {/* HUB 2: Innovation Lab (Concepts + Lab + Mindmap) */}
