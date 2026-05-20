@@ -4,6 +4,7 @@ import { Network, Sparkles, Brain, ArrowRight, Loader2, Save } from 'lucide-reac
 import { universalOracle } from '../../services/gemini';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
+import { SmartIntentEngine } from '../common/SmartIntentEngine';
 
 export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: string, initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [topic, setTopic] = useState('');
@@ -86,6 +87,15 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
             {language === 'ar' ? 'توليد الخريطة' : 'Generate Map'}
           </button>
         </form>
+        <SmartIntentEngine
+          compact
+          language={language as 'ar' | 'en'}
+          value={topic}
+          onApply={setTopic}
+          onSubmit={(nextValue) => handleGenerate(nextValue)}
+          onQawlFasl={(nextValue) => handleTabChange('qawlfasl', nextValue)}
+          onOpenPath={(path, nextValue) => handleTabChange(path, nextValue)}
+        />
 
         {isGenerating && (
           <div className="py-20 flex flex-col items-center justify-center">

@@ -30,6 +30,11 @@ const getGenAI = () => {
         apiKey = (process.env.GOOGLE_API_KEY || "").trim();
     }
     
+    if (apiKey && (apiKey.includes("AIzaSyBWJcWI1n2") || apiKey === "AIzaSyBWJcWI1n2cERV0eR-wozshcfEliG39aT0")) {
+        console.warn("[Server] Suspended API key detected ('AIza...1n2'). Disabling online API to prevent errors and utilize safe offline fallback mode.");
+        return null;
+    }
+    
     if (!apiKey) {
         console.warn("[Server] WARNING: Missing API key in environment variables.");
         return null;
@@ -222,7 +227,24 @@ Behind every challenging behavior is an unmet developmental need. Safe emotional
 في هذه الأثناء، طبق تبيان قواعد التربية وعلم نفس الطفل لتقديم هذه الاستجابة المنهجية لطلبك:
 
 ### 🌟 التحليل الأولي للموقف
-تحليل الموقف لطلبك: "${query}". يتضح أن السلوك الحالي �function handleServerSideAIFallback(contents: any, config: any, error: any) {
+تحليل الموقف لطلبك: "${query}". يتضح أن السلوك الحالي يتطلب تفهماً للمرحلة السلوكية والعمرية التي يمر بها الطفل، مع فك شفرة الرسائل النفسية الكامنة وراء التصرف.
+
+### 🗣️ حوار مقترح مع الطفل (قل هذا):
+- **الاحتواء أولاً**: "يا حبيبي أنا أفهم تماماً أنك تشعر بالضيق/الغضب الآن..."
+- **تحديد التوقعات بحب**: "أنا هنا معك، ولكن يمنع الإيذاء/السلوك غير المقبول..."
+- **تخيير الطفل**: "هل تحب أن نفعل هذا الخيار الأول أم الخيار الثاني معاً؟"
+
+### 🛠️ خطة عمل فورية للتعامل:
+1. **الهدوء الواعي وملاحظة الذات**: قبل التدخل، تنفس بعمق وحافظ على نبرة صوت هادئة ومنخفضة لعكس الأمان للطفل.
+2. **أشرك طفلك في الحل**: اسأله في وقت لاحق يكون فيه هادئاً: "كيف يمكننا تجنب تكرار ذلك في المرة القادمة؟"
+3. **تعزيز السلوك البديل**: امدح طفلك على الفور عندما يتصرف بمسؤولية أو يعبّر عن مشاعره بكلمات هادئة.
+
+### 📘 منظور تبيان النفسي:
+ما يراه الآباء سلوكاً عنيداً أو سيئاً هو في الغالب محاولة من الطفل للتعبير عن استقلاليته أو تلبية حاجة غير واعية للأمان أو الاهتمام. الأمان النفسي هو حجر الزاوية لكل نمو تربوي سليم.`;
+    }
+}
+
+function handleServerSideAIFallback(contents: any, config: any, error: any) {
     let userPrompt = "";
     if (Array.isArray(contents)) {
         for (const item of contents) {
@@ -410,45 +432,6 @@ Behind every challenging behavior is an unmet developmental need. Safe emotional
         }
         return { text: responseText, offline: true };
     }
-}�لجسدي يعطي نتائج عكسية تضر بالأمان النفسي.`,
-            educationalView: `السلوك السلبي هو صرخة لطلب المساعدة أو وسيلة للتعبير عن احتياج عاطفي كامن.`,
-            suggestedAnswer: `للتعامل بنجاح يجب إيجاد مسببات السلوك أولاً، وتصميم روتين يدعم الإيجابية وتكرار المدح للسلوك الصالح.`,
-            byAgeVersions: [
-                { age: "2-5", text: "قدم خيارات هادئة وبدائل ملموسة وشتت الانتباه عن السلوك السلبي." },
-                { age: "6-11", text: "اشرح الأسباب والنتائج بوضوح وحوار هادئ وبسيط." },
-                { age: "12-18", text: "ركز على الحوار الندّي، واحترام استقلاليتهم مع التوجيه غير المباشر." }
-            ],
-            practicalSteps: [
-                "فهم الدافع الحقيقي خلف هذا التصرف (الحاجة للاهتمام أو الأمان).",
-                "المحافظة على هدوء الأعصاب التام قبل الرد في لحظة الغضب.",
-                "تقديم البدائل المشروعة وتوجيه السلوك بدلاً من المنع المطلق.",
-                "قضاء وقت نوعي يومي لتعزيز العلاقة وبناء جدار الثقة التربوية."
-            ],
-            exercises: [
-                "تمرين الحوار اليومي الإيجابي لمدة 10 دقائق.",
-                "متابعة السلوك وتدوين مسببات الغضب في مفكرة عائلية."
-            ],
-            whenToWorry: "إذا استمر السلوك أو زاد عدوانية لعدة أسابيع مع تأثر علاقاته الاجتماعية ودراسته.",
-            religiousReference: "قال نبينا الكريم محمد ﷺ: 'إن الرفق لا يكون في شيء إلا زانه، ولا ينزع من شيء إلا شأنه'.",
-            scientificStat: "تشير دراسات علم نفس النمو إلى أن 85% من سلوكيات الأطفال السلبية تعدل من خلال القدوة والهدوء العائلي.",
-            resources: [
-                { type: "كتاب", title: "التربية الذكية للأطفال", description: "دليلك العملي لتربية إيجابية متوازنة.", url: "#" }
-            ],
-            closingThought: "الصبر والاحتواء هما عماد العملية التربوية، والنبتة الطيبة تحتاج وقتاً لتروى بالحب حتى تؤتي ثمارها.",
-            sourceStatus: "complete"
-        };
-        return { text: JSON.stringify(fallbackObj), offline: true };
-    } else {
-        // Plain text fallback
-        const match = findOfflineMatch(userPrompt);
-        let responseText = "";
-        if (match) {
-            responseText = formatOfflineResponse(match, isEnglish);
-        } else {
-            responseText = generateSmartGenerativeResponse(userPrompt, isEnglish);
-        }
-        return { text: responseText, offline: true };
-    }
 }
 
 async function startServer() {
@@ -506,7 +489,12 @@ async function startServer() {
 
         const genAI = getGenAI();
         if (!genAI) {
-            return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات.", code: "GEMINI_API_KEY_NOT_CONFIGURED" });
+            console.log("[Server] Gemini Client not available for audio. Returning empty audio placeholder.");
+            return res.json({ 
+                audioData: "", 
+                offline: true,
+                message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق المفتاح الذكي." 
+            });
         }
 
         try {
@@ -567,14 +555,9 @@ async function startServer() {
 
         const genAI = getGenAI();
         if (!genAI) {
-            if (process.env.NODE_ENV !== "production") {
-                const wantsJson = config?.responseMimeType === "application/json";
-                const isArray = config?.responseSchema?.type === 'ARRAY';
-                const mockResponse = wantsJson ? (isArray ? "[]" : "{}") : "وضع التجربة المحلي يعمل، لكن مفتاح Gemini غير مفعّل على الخادم.";
-                return res.json({ text: mockResponse });
-            } else {
-                return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
-            }
+            console.log("[Server] Gemini Client not available (missing or suspended key). Serving smart offline fallback response.");
+            const fallbackResult = handleServerSideAIFallback(contents, config, new Error("Gemini Key is suspended or missing."));
+            return res.json(fallbackResult);
         }
 
         try {

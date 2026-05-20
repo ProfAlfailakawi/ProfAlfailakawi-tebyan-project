@@ -5,6 +5,7 @@ import { CATEGORIES, MAIN_CATEGORIES, QawlFaslQuestion } from './types';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { useSmartSearch } from '../../../hooks/useSmartSearch';
+import { SmartIntentEngine } from '../../common/SmartIntentEngine';
 
 interface Props {
   onEmergency: () => void;
@@ -272,6 +273,16 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                )}
             </form>
 
+            <div className="mt-4">
+              <SmartIntentEngine
+                compact
+                language="ar"
+                value={searchQuery}
+                onApply={setSearchQuery}
+                onSubmit={(nextValue) => handleSearchRecursive(nextValue)}
+              />
+            </div>
+
             {isGenerating && (
               <div className="mt-8 flex justify-center">
                 <div className="bg-[#F5F5F0] border border-zinc-200/80 px-8 py-4 rounded-full flex items-center gap-4 animate-pulse shadow-sm">
@@ -312,7 +323,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Bento Grid Features */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
-          <div className="lg:col-span-8 relative overflow-hidden bg-black rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-white flex flex-col justify-end shadow-2xl group text-right luxury-ceramic-sheen">
+          <div className="lg:col-span-8 relative overflow-hidden bg-black rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-white flex flex-col justify-end shadow-2xl group text-right">
             <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-110 opacity-20 group-hover:opacity-30">
               <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-zinc-500" />
             </div>
@@ -342,7 +353,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
           <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 h-full">
             {/* Daily Picks - Bento 2 */}
-            <div className="bg-[#F5F5F0] rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex flex-col flex-1 border border-transparent hover:border-zinc-200 transition-all shadow-sm text-right overflow-hidden luxury-ceramic-sheen">
+            <div className="bg-[#F5F5F0] rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex flex-col flex-1 border border-transparent hover:border-zinc-200 transition-all shadow-sm text-right overflow-hidden">
                <div className="flex items-center justify-between mb-4">
                   <div className="bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] w-10 h-10 rounded-[14px] flex items-center justify-center text-[#5A5A40]">
                     <Library className="w-5 h-5" />
@@ -380,7 +391,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                disabled={!lastViewedQuestion}
                className={cn(
                 "rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex flex-col justify-between transition-all group text-right flex-shrink-0",
-                lastViewedQuestion ? "bg-white border border-zinc-200/80 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] luxury-ceramic-sheen" : "bg-zinc-50 border border-zinc-100 opacity-60"
+                lastViewedQuestion ? "bg-white border border-zinc-200/80 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]" : "bg-zinc-50 border border-zinc-100 opacity-60"
                )}
             >
               <div className="space-y-4">
@@ -423,7 +434,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 <button 
                   key={category.id}
                   onClick={() => onCategory(category.id)}
-                  className="group bg-white border border-zinc-200/60 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[160px] md:min-h-[220px] justify-between relative overflow-hidden cursor-pointer active:scale-95 z-50 pointer-events-auto luxury-ceramic-sheen"
+                  className="group bg-white border border-zinc-200/60 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[160px] md:min-h-[220px] justify-between relative overflow-hidden cursor-pointer active:scale-95 z-50 pointer-events-auto"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50 rounded-full blur-2xl group-hover:bg-[#F5F5F0] transition-colors translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                   <div className="relative z-10 w-full text-right">
