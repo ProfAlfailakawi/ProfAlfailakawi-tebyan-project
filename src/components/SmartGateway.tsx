@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon, Home } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -11,7 +11,6 @@ import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
 import { TypographicAcoustic } from './TypographicAcoustic';
 import { AdvancedCognitiveAnalysis } from './AdvancedCognitiveAnalysis';
-import { SmartIntentEngine } from './common/SmartIntentEngine';
 import TextareaAutosize from 'react-textarea-autosize';
 import { TebyanTooltip } from './TebyanTooltip';
 
@@ -1273,47 +1272,16 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 >
                     <Search className="w-6 h-6 md:w-7 md:h-7" />
                 </button>
+              <button 
+                  type="button"
+                  onClick={() => handleTabChange('discover', '', true)}
+                  title={language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
+                  className="bg-white text-zinc-700 border border-zinc-200 w-12 h-12 md:w-14 md:h-14 rounded-[18px] transition-all hover:scale-105 hover:border-black hover:text-black active:scale-95 flex items-center justify-center shrink-0 shadow-sm"
+                >
+                    <Home className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
             </div>
             
-            {/* Auto-suggest rewrite pill */}
-            {smartSuggestion && !smartSuggestion.startsWith(searchValue) && isFocused && (
-              <div className="absolute top-full mt-2 w-full max-w-2xl px-2 z-20 flex justify-start">
-                  <button
-                    type="button"
-                    onMouseDown={(e) => {
-                      e.preventDefault(); // Prevent blur
-                      setSearchValue(smartSuggestion);
-                      latestInputRef.current = smartSuggestion;
-                      setQuery(smartSuggestion);
-                      setSmartSuggestion('');
-                    }}
-                    className="flex items-center gap-2 bg-mood-primary text-white text-xs md:text-sm px-4 py-2 rounded-full shadow-lg transition-all"
-                  >
-                     <span className="opacity-80 flex-shrink-0">{language === 'ar' ? 'هل تقصد:' : 'Did you mean:'}</span> 
-                     <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
-                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
-                  </button>
-              </div>
-            )}
-
-            {!hasSearched && !isThinking && searchValue.trim().length >= 3 && (
-              <div className="mt-4 w-full max-w-3xl mx-auto">
-                <SmartIntentEngine
-                  language={language}
-                  value={searchValue}
-                  onApply={(nextValue) => {
-                    setSearchValue(nextValue);
-                    latestInputRef.current = nextValue;
-                    setQuery(nextValue);
-                    setSmartSuggestion('');
-                    inputRef.current?.focus();
-                  }}
-                  onSubmit={(nextValue) => handleSubmit(undefined, nextValue)}
-                  onQawlFasl={(nextValue) => handlePathSelect('qawlfasl', nextValue)}
-                  onOpenPath={(path, nextValue) => handlePathSelect(path, nextValue)}
-                />
-              </div>
-            )}
 
           </div>
 
@@ -1804,12 +1772,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.01, y: -2 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-black/90 backdrop-blur-xl border border-zinc-800/80 rounded-[22px] p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-[0_10px_28px_rgba(0,0,0,0.22)] relative overflow-hidden group hover:shadow-[0_22px_60px_rgba(0,0,0,0.32)]"
+                className="bg-black/90 backdrop-blur-xl border border-zinc-800/80 rounded-[32px] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)] relative overflow-hidden group hover:shadow-[0_30px_80px_rgba(0,0,0,0.4)]"
              >
                 <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
                 <div className="flex items-center gap-5 z-10 w-full md:w-auto">
-                    <div className="w-10 h-10 rounded-[14px] bg-zinc-900/80 text-zinc-300 border border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
-                        <Sparkles className="w-5 h-5 animate-pulse opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
+                    <div className="w-14 h-14 rounded-[20px] bg-zinc-900/80 text-zinc-300 border border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
+                        <Sparkles className="w-6 h-6 animate-pulse opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                     </div>
                     <div className="text-right">
                         <div className="flex items-center gap-2 mb-2">
@@ -1817,14 +1785,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 {language === 'ar' ? 'رسالة سريعة الزوال' : 'Ephemeral Wisdom'}
                             </span>
                         </div>
-                        <p className="text-sm font-serif text-white/90 leading-relaxed max-w-xl">
+                        <p className="text-base md:text-lg font-serif text-white/90 leading-relaxed max-w-xl">
                             {language === 'ar' ? currentWisdom.ar : currentWisdom.en}
                         </p>
                     </div>
                 </div>
                 <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto mt-4 md:mt-0">
                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
-                    <div className="text-lg md:text-xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-zinc-800/50 shadow-inner">
+                    <div className="text-2xl md:text-3xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900/50 backdrop-blur-md px-4 py-2 rounded-2xl border border-zinc-800/50 shadow-inner">
                         {String(ephemeralTime.m).padStart(2, '0')}:{String(ephemeralTime.s).padStart(2, '0')}
                     </div>
                 </div>
@@ -1834,29 +1802,29 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
 
           {/* Daily Challenge & Insights Section */}
-          <div className="emotion-hide mt-5 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <div className="emotion-hide mt-10 md:mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         <motion.div
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
            whileHover={{ scale: 1.01, y: -2 }}
            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-           className="bg-mood-primary/95 backdrop-blur-xl rounded-[22px] md:rounded-[26px] p-4 md:p-5 text-white relative overflow-hidden group shadow-[0_24px_60px_rgba(var(--mood-primary-rgb),0.25)] hover:shadow-[0_30px_80px_rgba(var(--mood-primary-rgb),0.35)]"
+           className="bg-mood-primary/95 backdrop-blur-xl rounded-[32px] md:rounded-[48px] p-8 md:p-10 text-white relative overflow-hidden group shadow-[0_24px_60px_rgba(var(--mood-primary-rgb),0.25)] hover:shadow-[0_30px_80px_rgba(var(--mood-primary-rgb),0.35)]"
         >
             <div className="relative z-10">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full w-fit mb-4 md:mb-5 backdrop-blur-md border border-white/10">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full w-fit mb-6 md:mb-8 backdrop-blur-md border border-white/10">
                     <Gamepad2 className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
                     <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
                 </div>
-                <h3 className="text-lg md:text-xl font-serif mb-2 md:mb-3 leading-tight tracking-tight">
+                <h3 className="text-2xl md:text-3xl font-serif mb-4 md:mb-5 leading-tight tracking-tight">
                     {language === 'ar' ? currentChallenge.titleAr : currentChallenge.titleEn}
                 </h3>
-                <p className="text-white/80 text-xs md:text-sm mb-4 md:mb-5 leading-relaxed font-medium">
+                <p className="text-white/80 text-sm md:text-base mb-8 md:mb-10 leading-relaxed font-medium">
                     {language === 'ar' ? 'تحدَّ نفسك في المحاكي اليوم' : 'Challenge yourself in the simulator today'}
                 </p>
                 <button 
                     onClick={() => onPathSelect(currentChallenge.path as any, currentChallenge.query)}
-                    className="w-full py-2.5 md:py-3 bg-white/90 backdrop-blur-md text-mood-primary rounded-2xl md:rounded-[20px] font-black text-sm md:text-base hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all active:scale-95 border border-white"
+                    className="w-full py-4 md:py-5 bg-white/90 backdrop-blur-md text-mood-primary rounded-2xl md:rounded-[24px] font-black text-sm md:text-lg hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all active:scale-95 border border-white"
                 >
                     {language === 'ar' ? 'ابدأ التحدي' : 'Start Challenge'}
                 </button>
@@ -1871,19 +1839,19 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
            viewport={{ once: true }}
            whileHover={{ scale: 1.01, y: -2 }}
            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-           className="bg-white/80 backdrop-blur-xl rounded-[22px] md:rounded-[26px] p-4 md:p-5 border border-zinc-100/50 flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.08)] transition-all duration-500"
+           className="bg-white/80 backdrop-blur-xl rounded-[32px] md:rounded-[48px] p-8 md:p-10 border border-zinc-100/50 flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.08)] transition-all duration-500"
         >
             <div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-50/50 text-zinc-500 rounded-full w-fit mb-4 md:mb-5 border border-zinc-100/50 backdrop-blur-md">
+                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-50/50 text-zinc-500 rounded-full w-fit mb-6 md:mb-8 border border-zinc-100/50 backdrop-blur-md">
                     <BrainCircuit className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
                     <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
                 </div>
-                <h3 className="text-base md:text-lg font-serif text-black mb-3 tracking-tight leading-tight">
+                <h3 className="text-xl md:text-2xl font-serif text-black mb-6 tracking-tight leading-tight">
                     {language === 'ar' ? currentInsight.titleAr : currentInsight.titleEn}
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-4 md:space-y-5">
                     {currentInsight.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2.5 md:p-3 bg-zinc-50/50 rounded-2xl border border-zinc-100/30 hover:bg-zinc-50 transition-colors backdrop-blur-sm">
+                        <div key={idx} className="flex items-center justify-between p-4 md:p-5 bg-zinc-50/50 rounded-2xl border border-zinc-100/30 hover:bg-zinc-50 transition-colors backdrop-blur-sm">
                             <span className="text-sm md:text-base font-bold text-zinc-700">{language === 'ar' ? item.labelAr : item.labelEn}</span>
                             <div className="h-1.5 md:h-2 w-20 md:w-32 bg-zinc-200/40 rounded-full overflow-hidden shadow-inner flex shrink-0">
                                  <motion.div 
@@ -1897,7 +1865,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     ))}
                 </div>
             </div>
-            <p className="mt-4 md:mt-5 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center border-t border-zinc-100/50 pt-4">
+            <p className="mt-8 md:mt-12 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center border-t border-zinc-100/50 pt-6">
                 {language === 'ar' ? 'تحليل 2000 حالة' : 'Based on 2000 cases'}
             </p>
         </motion.div>
