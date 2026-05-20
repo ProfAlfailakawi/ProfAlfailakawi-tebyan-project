@@ -5,6 +5,7 @@ import { CATEGORIES, MAIN_CATEGORIES, QawlFaslQuestion } from './types';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { useSmartSearch } from '../../../hooks/useSmartSearch';
+import { SmartIntentEngine } from '../../common/SmartIntentEngine';
 
 interface Props {
   onEmergency: () => void;
@@ -271,6 +272,16 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                  </div>
                )}
             </form>
+
+            <div className="mt-4">
+              <SmartIntentEngine
+                compact
+                language="ar"
+                value={searchQuery}
+                onApply={setSearchQuery}
+                onSubmit={(nextValue) => handleSearchRecursive(nextValue)}
+              />
+            </div>
 
             {isGenerating && (
               <div className="mt-8 flex justify-center">
