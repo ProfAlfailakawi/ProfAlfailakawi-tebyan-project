@@ -151,7 +151,13 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
       <div className="rounded-[24px] md:rounded-[32px]">
         <AnimatePresence mode="wait">
         {currentView === 'home' && (
-          <motion.div key="home" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+          <motion.div 
+            key="home" 
+            initial={{ opacity: 0, y: 35, filter: 'blur(10px)', scale: 0.98 }} 
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }} 
+            exit={{ opacity: 0, y: -35, filter: 'blur(10px)', scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 100, damping: 14, mass: 0.9 }}
+          >
             <HomeView 
               lastViewedId={lastViewedId} 
               questions={questions} 
@@ -165,13 +171,25 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
         )}
         
         {currentView === 'emergency' && (
-          <motion.div key="emergency" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}>
+          <motion.div 
+            key="emergency" 
+            initial={{ opacity: 0, y: 35, filter: 'blur(10px)', scale: 0.98 }} 
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }} 
+            exit={{ opacity: 0, y: -35, filter: 'blur(10px)', scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 100, damping: 14, mass: 0.9 }}
+          >
             <EmergencyView questions={questions} onBack={goToHome} onQuestion={goToQuestion} />
           </motion.div>
         )}
 
         {currentView === 'question' && selectedQuestionId && (
-          <motion.div key={`question-${selectedQuestionId}`} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+          <motion.div 
+            key={`question-${selectedQuestionId}`} 
+            initial={{ opacity: 0, x: 50, filter: 'blur(8px)' }} 
+            animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} 
+            exit={{ opacity: 0, x: -50, filter: 'blur(8px)' }}
+            transition={{ type: "spring", stiffness: 100, damping: 14, mass: 0.9 }}
+          >
             <QuestionDetailView 
               questionId={selectedQuestionId} 
               questions={questions} 
@@ -186,7 +204,13 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
         )}
 
         {currentView === 'category' && selectedCategoryId && (
-          <motion.div key="category" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}>
+          <motion.div 
+            key="category" 
+            initial={{ opacity: 0, y: 35, filter: 'blur(10px)', scale: 0.98 }} 
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }} 
+            exit={{ opacity: 0, y: -35, filter: 'blur(10px)', scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 100, damping: 14, mass: 0.9 }}
+          >
              <CategoryView questions={questions} categoryId={selectedCategoryId} onBack={goToHome} onQuestion={goToQuestion} />
           </motion.div>
         )}

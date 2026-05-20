@@ -45,7 +45,7 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
         {finalQuestions.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 lg:gap-10">
             {finalQuestions.map(q => (
-              <div key={q.id} className="bg-white flex flex-col justify-between border border-zinc-100 rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-xl transition-all group cursor-pointer h-full" onClick={() => onQuestion(q)}>
+              <div key={q.id} className="bg-white flex flex-col justify-between border border-zinc-100 rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all group cursor-pointer h-full luxury-ceramic-sheen" onClick={() => onQuestion(q)}>
                 <div className="space-y-4 md:space-y-6 w-full mb-6">
                    <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-black text-zinc-950 leading-snug lg:leading-tight group-hover:text-[#5A5A40] transition-colors" lineClamp={3} />
                    <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold flex-wrap uppercase tracking-widest">

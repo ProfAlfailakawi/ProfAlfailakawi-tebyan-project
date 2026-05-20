@@ -197,6 +197,31 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
+              
+              {/* Premium Organic Wisdom Gradients */}
+              <radialGradient id="parchmentGrad" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stopColor="#FAF6EE" />
+                <stop offset="60%" stopColor="#E6DBBF" />
+                <stop offset="100%" stopColor="#C9B88E" />
+              </radialGradient>
+              
+              <radialGradient id="goldenGrad" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stopColor="#FFEFAA" />
+                <stop offset="50%" stopColor="#DFB247" />
+                <stop offset="100%" stopColor="#9C771E" />
+              </radialGradient>
+              
+              <radialGradient id="coreGrad" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stopColor="#6366F1" />
+                <stop offset="60%" stopColor="#4338CA" />
+                <stop offset="100%" stopColor="#1E1B4B" />
+              </radialGradient>
+              
+              <radialGradient id="selectedGrad" cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stopColor="#6EE7B7" />
+                <stop offset="60%" stopColor="#10B981" />
+                <stop offset="100%" stopColor="#064E3B" />
+              </radialGradient>
             </defs>
 
             {edges.map((edge, i) => {
@@ -237,8 +262,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             {nodes.map((node, i) => {
               const isSelected = selectedNodes.find(n => n.id === node.id);
               const isGolden = node.type === 'golden';
-              const baseColor = node.type === 'core' ? '#4f46e5' : isGolden ? '#fbbf24' : isSelected ? '#10b981' : '#27272a';
-              const strokeColor = node.type === 'core' ? '#818cf8' : isGolden ? '#fcd34d' : isSelected ? '#34d399' : '#3f3f46';
+              const baseFillUrl = node.type === 'core' ? 'url(#coreGrad)' : isGolden ? 'url(#goldenGrad)' : isSelected ? 'url(#selectedGrad)' : 'url(#parchmentGrad)';
+              const strokeColor = node.type === 'core' ? '#818cf8' : isGolden ? '#b45309' : isSelected ? '#10b981' : '#8c7d5c';
               const isRippleTarget = selectedNodes.length === 1 && edges.some(e => 
                  (e.source === selectedNodes[0].id && e.target === node.id) || 
                  (e.target === selectedNodes[0].id && e.source === node.id)
@@ -277,10 +302,16 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   )}
 
                   <motion.circle 
-                    animate={{ cx: node.x, cy: node.y }}
-                    transition={{ duration: 0.8 }}
+                    animate={{ 
+                      cx: node.x, 
+                      cy: [node.y - 4, node.y + 4, node.y - 4] 
+                    }}
+                    transition={{ 
+                      cx: { duration: 0.8 },
+                      cy: { repeat: Infinity, duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
+                    }}
                     r={node.type === 'core' ? 38 : isGolden ? 24 : 20} 
-                    fill={baseColor} 
+                    fill={baseFillUrl} 
                     stroke={strokeColor} 
                     strokeWidth="3"
                     filter="url(#glow)"
@@ -319,8 +350,18 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   )}
 
                   <motion.text 
-                    animate={{ x: node.x, y: node.y + (node.type === 'core' ? 65 : isGolden ? 45 : 40) }}
-                    transition={{ duration: 0.8 }}
+                    animate={{ 
+                      x: node.x, 
+                      y: [
+                        node.y + (node.type === 'core' ? 61 : isGolden ? 41 : 36), 
+                        node.y + (node.type === 'core' ? 69 : isGolden ? 49 : 44), 
+                        node.y + (node.type === 'core' ? 61 : isGolden ? 41 : 36)
+                      ]
+                    }}
+                    transition={{ 
+                      x: { duration: 0.8 },
+                      y: { repeat: Infinity, duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
+                    }}
                     textAnchor="middle" 
                     fill={isSelected ? "#34d399" : isGolden ? "#fcd34d" : node.type === 'core' ? "white" : "#a1a1aa"} 
                     fontSize={node.type === 'core' ? "18" : isGolden ? "15" : "13"} 
