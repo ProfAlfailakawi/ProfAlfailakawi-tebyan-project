@@ -26,7 +26,7 @@ const HubCard: React.FC<{
       viewport={{ once: true }}
       className={cn(
         "group rounded-[32px] md:rounded-[40px] p-6 md:p-8 border transition-all duration-500 flex flex-col justify-between relative overflow-hidden",
-        inverted ? "bg-zinc-950 border-zinc-800 hover:shadow-[0_20px_60px_rgba(255,255,255,0.05)] hover:border-zinc-700" : "bg-white border-zinc-100 hover:shadow-[0_20px_60px_rgba(0,0,0,0.06)] hover:border-zinc-200"
+        inverted ? "bg-[#F8F5EF] border-[#8FA9C7]/15 hover:shadow-[0_20px_60px_rgba(255,255,255,0.05)] hover:border-zinc-700" : "bg-white border-zinc-100 hover:shadow-[0_20px_60px_rgba(0,0,0,0.06)] hover:border-zinc-200"
       )}
       style={{ textAlign: language === 'ar' ? 'right' : 'left' }}
     >
@@ -47,7 +47,7 @@ const HubCard: React.FC<{
              )}>{title}</h3>
              <p className={cn(
                "text-xs md:text-sm font-medium leading-relaxed max-w-[280px]",
-               inverted ? "text-zinc-400" : "text-zinc-500"
+               inverted ? "text-[#7C8796]" : "text-zinc-500"
              )}>{description}</p>
            </div>
         </div>
@@ -62,29 +62,29 @@ const HubCard: React.FC<{
                 className={cn(
                   "flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group/item text-right hover:-translate-y-0.5",
                   inverted 
-                    ? "bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 shadow-[0_4px_20px_rgb(0,0,0,0.2)]" 
+                    ? "bg-white/70 border border-[#8FA9C7]/15 hover:bg-zinc-800 hover:border-zinc-700 shadow-[0_4px_20px_rgb(0,0,0,0.2)]" 
                     : "bg-[#FAFAFA] border border-zinc-100 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] shadow-sm"
                 )}
               >
                 <div className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-colors",
                   inverted 
-                    ? "bg-zinc-800 border-zinc-700 group-hover/item:bg-zinc-700" 
+                    ? "bg-[#F1EEF4] border-[#8E7AAE]/15 group-hover/item:bg-zinc-700" 
                     : "bg-white border-zinc-100 group-hover/item:border-zinc-200"
                 )}>
                   <item.icon className={cn(
                     "w-5 h-5 transition-colors",
-                    inverted ? "text-zinc-400 group-hover/item:text-white" : "text-zinc-400 group-hover/item:text-zinc-900"
+                    inverted ? "text-[#7C8796] group-hover/item:text-white" : "text-[#7C8796] group-hover/item:text-zinc-900"
                   )} />
                 </div>
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className={cn(
                     "text-sm font-black tracking-tight truncate", 
-                    inverted ? "text-zinc-200 group-hover/item:text-white" : "text-zinc-700 group-hover/item:text-zinc-900"
+                    inverted ? "text-[#182231] group-hover/item:text-white" : "text-zinc-700 group-hover/item:text-zinc-900"
                   )}>{item.label}</span>
                   <div className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-all",
-                    inverted ? "bg-zinc-800 text-zinc-500 group-hover/item:text-white" : "bg-zinc-100 text-zinc-400 group-hover/item:text-zinc-900"
+                    inverted ? "bg-[#F1EEF4] text-[#8E7AAE] group-hover/item:text-white" : "bg-zinc-100 text-[#7C8796] group-hover/item:text-zinc-900"
                   )}>
                     <ArrowLeft className={cn("w-3 h-3 text-current", language === 'ar' ? "" : "rotate-180")} />
                   </div>
@@ -106,6 +106,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
   const [missionLoading, setMissionLoading] = useState(true);
   const [missionCompleted, setMissionCompleted] = useState(false);
   const [showFullDashboard, setShowFullDashboard] = useState(false);
+  const [lastSession, setLastSession] = useState<any>(null);
 
   useEffect(() => {
     // Check if we did it today
@@ -147,6 +148,15 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
     }
   };
 
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('tebyan_last_session');
+      setLastSession(raw ? JSON.parse(raw) : null);
+    } catch (e) {
+      setLastSession(null);
+    }
+  }, []);
+
   return (
     <div className="w-full flex flex-col pt-4 pb-16 md:pt-6 px-4 md:px-6 max-w-6xl mx-auto space-y-5">
       <header className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-zinc-200/60 pb-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -155,7 +165,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <div className="w-1.5 h-1.5 rounded-full bg-black"></div>
             <span className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
           </div>
-          <h1 className="text-2xl md:text-4xl font-black text-black leading-[1.05] tracking-tight">
+          <h1 className="text-2xl md:text-4xl font-black text-[#182231] leading-[1.05] tracking-tight">
             {language === 'ar' ? 'نظامك الشامل' : 'Your Complete System'}
           </h1>
           <p className="text-sm md:text-base text-zinc-500 font-medium leading-relaxed max-w-sm mt-1">
@@ -165,11 +175,11 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </header>
 
       {/* Calm entry: simple for everyone, full depth on demand */}
-      <section className="bg-white border border-zinc-100 rounded-[28px] md:rounded-[40px] p-5 md:p-8 shadow-[0_12px_50px_rgba(0,0,0,0.04)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="bg-white/82 border border-[#8FA9C7]/15 rounded-[28px] md:rounded-[40px] p-5 md:p-8 shadow-[0_12px_50px_rgba(0,0,0,0.04)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <p className="text-[10px] font-black tracking-[0.2em] uppercase text-zinc-400">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
-            <h2 className="text-2xl md:text-4xl font-black text-black tracking-tight leading-tight">
+            <p className="text-[10px] font-black tracking-[0.2em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
+            <h2 className="text-2xl md:text-4xl font-black text-[#182231] tracking-tight leading-tight">
               {language === 'ar' ? 'وش تبي تسوي اليوم؟' : 'What do you want to do today?'}
             </h2>
             <p className="text-sm md:text-base text-zinc-500 font-bold leading-relaxed max-w-xl">
@@ -178,7 +188,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           </div>
           <button
             onClick={() => setShowFullDashboard(v => !v)}
-            className="shrink-0 px-6 py-4 rounded-2xl bg-black text-white font-black text-sm hover:bg-zinc-800 active:scale-95 transition-all shadow-lg"
+            className="shrink-0 px-6 py-4 rounded-2xl bg-[#8E7AAE] text-white font-black text-sm hover:bg-[#806D9F] active:scale-95 transition-all shadow-lg"
           >
             {showFullDashboard ? (language === 'ar' ? 'إخفاء اللوحة الكاملة' : 'Hide full board') : (language === 'ar' ? 'افتح تبيان الكامل' : 'Open full Tebyan')}
           </button>
@@ -196,11 +206,11 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               className="group p-5 rounded-[24px] bg-zinc-50 border border-zinc-100 text-right hover:bg-white hover:border-zinc-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all"
             >
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-900 group-hover:bg-black group-hover:text-white transition-all">
+                <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-900 group-hover:bg-[#8E7AAE] group-hover:text-white transition-all">
                   <item.icon className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-black text-lg text-black">{language === 'ar' ? item.ar : item.en}</h3>
+                  <h3 className="font-black text-lg text-[#182231]">{language === 'ar' ? item.ar : item.en}</h3>
                   <p className="text-xs text-zinc-500 font-bold mt-1">{language === 'ar' ? item.descAr : item.descEn}</p>
                 </div>
               </div>
@@ -209,21 +219,51 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         </div>
       </section>
 
+      {/* Session Memory */}
+      <section className="rounded-[24px] border border-[#8FA9C7]/15 bg-white/78 p-4 md:p-5 shadow-[0_14px_45px_rgba(24,34,49,0.05)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-[#F1ECF7] text-[#6E5F8E] flex items-center justify-center shrink-0 border border-[#8E7AAE]/15">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] font-black tracking-widest text-[#8E7AAE] uppercase">{language === 'ar' ? 'آخر ما كنت تفكر فيه' : 'Where you left off'}</p>
+              <h3 className="mt-1 text-base md:text-lg font-black text-[#182231] truncate max-w-2xl">
+                {lastSession?.query || (language === 'ar' ? 'لم تبدأ جلسة محفوظة بعد' : 'No saved session yet')}
+              </h3>
+              <p className="mt-1 text-xs font-bold text-[#7C8796]">
+                {lastSession?.toolLabel ? `${language === 'ar' ? 'آخر مسار' : 'Last path'}: ${lastSession.toolLabel}` : (language === 'ar' ? 'اكتب أول سؤال، وسنحفظ لك المسار القادم هنا.' : 'Write your first question and your next path will appear here.')}
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <button onClick={() => handleTabChange('discover')} className="px-4 py-2.5 rounded-full bg-[#8E7AAE] text-white text-xs font-black active:scale-95 transition-all">
+              {lastSession ? (language === 'ar' ? 'أكمل' : 'Continue') : (language === 'ar' ? 'ابدأ فكرة' : 'Start')}
+            </button>
+            {lastSession?.tool && lastSession.tool !== 'discover' && (
+              <button onClick={() => handleTabChange(lastSession.tool)} className="px-4 py-2.5 rounded-full bg-white border border-[#8FA9C7]/20 text-[#465568] text-xs font-black active:scale-95 transition-all">
+                {language === 'ar' ? 'افتح المسار' : 'Open path'}
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Daily Mission */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-white relative overflow-hidden shadow-lg mb-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="bg-gradient-to-r from-[#EEF2F6] to-[#F7F3FB] rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-[#182231] border border-[#8FA9C7]/18 relative overflow-hidden shadow-lg mb-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-[80px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex-1 w-full">
                   <div className="flex items-center gap-2 mb-1.5">
-                      <Target className="w-4 h-4 text-blue-200" />
-                      <h3 className="font-bold text-blue-100 tracking-widest uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
+                      <Target className="w-4 h-4 text-[#8E7AAE]" />
+                      <h3 className="font-bold text-[#64788D] tracking-widest uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
                   </div>
                   {missionLoading ? (
-                      <div className="h-8 md:h-12 flex items-center text-blue-200 font-bold text-xs md:text-sm">{language === 'ar' ? 'جاري استلام المهمة من الذكاء الاصطناعي...' : 'Receiving mission from AI...'}</div>
+                      <div className="h-8 md:h-12 flex items-center text-[#8E7AAE] font-bold text-xs md:text-sm">{language === 'ar' ? 'نرتّب تحدي اليوم بهدوء…' : 'Preparing today’s challenge calmly…'}</div>
                   ) : (
                       <>
                         <h4 className="text-lg md:text-xl font-black mb-0.5">{mission?.title}</h4>
-                        <p className="text-blue-100/90 leading-relaxed font-medium text-xs md:text-sm">{mission?.task}</p>
+                        <p className="text-[#64788D]/90 leading-relaxed font-medium text-xs md:text-sm">{mission?.task}</p>
                       </>
                   )}
               </div>
@@ -235,7 +275,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                          "w-full md:w-auto px-6 md:px-5 py-3 md:py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all text-sm md:text-sm",
                          missionCompleted 
                             ? "bg-white/10 text-white cursor-default"
-                            : "bg-white text-blue-600 hover:bg-blue-50 shadow-md active:scale-95"
+                            : "bg-white text-[#6E5F8E] hover:bg-[#F1EEF4] shadow-md active:scale-95"
                      )}
                   >
                       {missionCompleted ? <CheckCircle className="w-4 h-4 text-emerald-400" /> : <Star className="w-4 h-4" />}
@@ -257,7 +297,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           onClick={() => handleTabChange('ar')}
-          className="group relative h-[200px] md:h-[240px] bg-gradient-to-br from-indigo-950 via-purple-900 to-black rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(79,70,229,0.4)] border border-indigo-400/30 active:scale-[0.98] transition-all"
+          className="group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[#8E7AAE]/18 active:scale-[0.98] transition-all"
         >
            <motion.div 
              animate={{ opacity: [0.1, 0.4, 0.1], scale: [1, 1.5, 1], rotate: [0, 90, 0] }} 
@@ -266,13 +306,13 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
            />
            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-             <div className="w-16 h-16 bg-white/10 backdrop-blur-xl text-white rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all duration-500 border border-white/20">
+             <div className="w-16 h-16 bg-white/80 backdrop-blur-xl text-[#6E5F8E] rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-[#F1EEF4] group-hover:text-[#6E5F8E] transition-all duration-500 border border-white/20">
                <Box className="w-8 h-8" />
              </div>
-             <h3 className="text-xl md:text-2xl font-black text-white drop-shadow-lg">
+             <h3 className="text-xl md:text-2xl font-black text-[#182231] drop-shadow-sm">
                {language === 'ar' ? 'فضاء تبيان الممتد (AR)' : 'Tibyan Extended Space (AR)'}
              </h3>
-             <p className="text-indigo-200 text-sm font-bold mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
+             <p className="text-[#64788D] text-sm font-bold mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
                {language === 'ar' ? 'تجسيد الأفكار في عالمك الحقيقي' : 'Materialize concepts in your real world'}
              </p>
            </div>
@@ -285,7 +325,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={() => handleTabChange(tab.id)}
-            className="group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-emerald-600 via-teal-700 to-indigo-900 rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(16,185,129,0.3)] border border-emerald-400/30 active:scale-[0.98] transition-all"
+            className="group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[#F7F5F2] via-[#EEF2F6] to-[#F1EEF4] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[#8FA9C7]/18 active:scale-[0.98] transition-all"
           >
              <motion.div 
                animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.2, 1] }} 
@@ -294,16 +334,16 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
              />
              <div className="relative z-10 h-full flex flex-col justify-between">
                 <div>
-                   <div className="bg-white text-emerald-700 w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
+                   <div className="bg-white text-[#6E5F8E] w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
                       <tab.icon className="w-7 h-7 md:w-11 md:h-11 animate-pulse" />
                    </div>
-                   <span className="bg-amber-400 text-black text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
+                   <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
                       {language === 'ar' ? 'البوصلة النوعية' : 'THE CORE EDGE'}
                    </span>
                    <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-white leading-[1.1] mb-2 md:mb-4 drop-shadow-sm">
                       {tab.label}
                    </h3>
-                   <p className="text-emerald-50/70 text-sm md:text-base font-medium max-w-[220px] leading-relaxed">
+                   <p className="text-[#64788D] text-sm md:text-base font-medium max-w-[220px] leading-relaxed">
                       {language === 'ar' ? 'الميزة الجوهرية في كل مشروع' : 'The essential difference in every project'}
                    </p>
                 </div>

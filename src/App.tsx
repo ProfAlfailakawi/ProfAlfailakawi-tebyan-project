@@ -9,7 +9,7 @@ import {
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
   Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box,
-  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2
+  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, WifiOff
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -95,98 +95,109 @@ import { translateWithContext, findSoulMatch } from './services/geminiService';
 
 const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 'ar' | 'en' }) => {
     const quotes = language === 'ar' ? [
-        "مكان تتبلور فيه الأفكار..",
-        "ابحث عن العمق في كل فكرة..",
-        "اصنع تأثيراً يمتد طويلاً..",
-        "مرحباً بك في عالم التبيان..",
-        "الأفكار العظيمة تحتاج مساحة للتنفس.."
+        'نفتح بوابة الفهم…',
+        'نرتّب الفكرة بهدوء…',
+        'تبيان يهيّئ مساحة القرار…',
+        'كل سؤال جيد يبدأ من هدوء صغير…'
     ] : [
-        "Where ideas crystallize..",
-        "Find depth in every thought..",
-        "Create an impact that lasts..",
-        "Welcome to the world of Tabyan..",
-        "Great ideas need space to breathe.."
+        'Opening the gate of understanding…',
+        'Arranging the idea calmly…',
+        'Tebyan is preparing your decision space…',
+        'Every good question begins with a quiet moment…'
     ];
 
     const [randomQuote] = useState(() => quotes[Math.floor(Math.random() * quotes.length)]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
+            localStorage.setItem('tebyan_splash_seen_v12', 'true');
             onFinish();
-        }, 1800);
+        }, 1850);
         return () => clearTimeout(timer);
     }, [onFinish]);
 
     return (
         <motion.div 
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
-            className="fixed inset-0 z-[99999] bg-white flex flex-col items-center justify-center overflow-hidden"
+            exit={{ opacity: 0, filter: 'blur(12px)', transition: { duration: 0.75, ease: 'easeInOut' } }}
+            className="fixed inset-0 z-[99999] bg-[#F8F5EF] flex flex-col items-center justify-center overflow-hidden"
         >
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div 
-                    animate={{ 
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 90, 0],
-                        opacity: [0.03, 0.08, 0.03]
-                    }}
-                    transition={{ duration: 15, repeat: Infinity }}
-                    className="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] bg-mood-secondary rounded-full blur-[120px]"
-                />
-                <motion.div 
-                    animate={{ 
-                        scale: [1, 1.3, 1],
-                        rotate: [0, -90, 0],
-                        opacity: [0.03, 0.05, 0.03]
-                    }}
-                    transition={{ duration: 20, repeat: Infinity, delay: 2 }}
-                    className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-mood-primary rounded-full blur-[100px]"
-                />
+                <motion.div animate={{ scale: [1, 1.13, 1], opacity: [0.18, 0.30, 0.18] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} className="absolute top-[10%] right-[14%] w-[520px] h-[520px] bg-[#C9BEDF] rounded-full blur-[145px]" />
+                <motion.div animate={{ scale: [1, 1.17, 1], opacity: [0.14, 0.24, 0.14] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }} className="absolute bottom-[6%] left-[10%] w-[430px] h-[430px] bg-[#B9D0E7] rounded-full blur-[135px]" />
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(142,122,174,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(143,169,199,0.055)_1px,transparent_1px)] bg-[size:52px_52px] [mask-image:radial-gradient(circle_at_center,#000_0%,transparent_72%)]" />
             </div>
 
-            <div className="relative flex flex-col items-center gap-8">
-                <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 1.2, ease: "easeOut" }}
-                    className="relative"
-                >
-                    <div className="w-24 h-24 md:w-32 md:h-32 bg-black rounded-[2.5rem] flex items-center justify-center shadow-2xl shadow-black/20 rotate-12">
-                        <Globe className="w-12 h-12 md:w-16 md:h-16 text-white -rotate-12" />
-                    </div>
+            <div className="relative flex flex-col items-center gap-7 px-6 text-center">
+                <motion.div initial={{ scale: 0.88, opacity: 0, rotate: -2 }} animate={{ scale: 1, opacity: 1, rotate: 0 }} transition={{ duration: 0.9, ease: 'easeOut' }} className="relative h-36 w-36 md:h-44 md:w-44 flex items-center justify-center">
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 16, repeat: Infinity, ease: 'linear' }} className="absolute inset-0 rounded-full border border-dashed border-[#8E7AAE]/28" />
+                    <motion.div animate={{ scale: [1, 1.08, 1], opacity: [0.65, 1, 0.65] }} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }} className="absolute h-28 w-28 md:h-36 md:w-36 rounded-full bg-white/72 border border-white shadow-[0_28px_80px_rgba(103,88,132,0.18)]" />
+                    <motion.div animate={{ y: [-2, 2, -2] }} transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }} className="relative z-10 flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-[2rem] bg-[#FBFAF7] border border-[#E8E0F0] text-[#8E7AAE] shadow-inner">
+                        <Globe className="w-10 h-10 md:w-12 md:h-12" />
+                        <Sparkles className="absolute -top-1 -left-1 h-4 w-4 text-[#A68F58]" />
+                    </motion.div>
                 </motion.div>
 
-                <div className="text-center space-y-3">
-                    <motion.h1 
-                        initial={{ y: 20, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                        className="text-4xl md:text-6xl font-black text-black tracking-tighter"
-                    >
+                <div className="space-y-3">
+                    <motion.p initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.7 }} className="text-[11px] font-black tracking-[0.35em] text-[#8E7AAE]/70 uppercase">
+                        {language === 'ar' ? 'مختبر فكر هادئ' : 'Quiet thinking lab'}
+                    </motion.p>
+                    <motion.h1 initial={{ y: 18, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.35, duration: 0.75 }} className="text-5xl md:text-7xl font-black text-[#182231] tracking-tighter">
                         تبيان
                     </motion.h1>
-                    <motion.p 
-                        initial={{ y: 10, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 1.2, duration: 0.8 }}
-                        className="text-zinc-400 font-medium flex items-center justify-center gap-2"
-                    >
+                    <motion.p initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.65, duration: 0.75 }} className="text-[#7C8796] font-black flex items-center justify-center gap-2 leading-relaxed">
                         {randomQuote}
                     </motion.p>
                 </div>
 
-                <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-48 h-0.5 bg-zinc-100 overflow-hidden rounded-full">
-                    <motion.div 
-                        initial={{ x: '-100%' }}
-                        animate={{ x: '100%' }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        className="h-full bg-black w-1/2"
-                    />
+                <div className="mt-5 flex items-center gap-2" aria-label={language === 'ar' ? 'جاري التحميل' : 'Loading'}>
+                    {[0, 1, 2].map(i => (
+                        <motion.span key={i} animate={{ opacity: [0.22, 1, 0.22], scale: [0.86, 1.08, 0.86] }} transition={{ duration: 1.45, repeat: Infinity, delay: i * 0.2, ease: 'easeInOut' }} className="h-2.5 w-2.5 rounded-full bg-[#8E7AAE]/70" />
+                    ))}
                 </div>
             </div>
         </motion.div>
     );
 };
+
+const SessionRestoreLoader = ({ language }: { language: 'ar' | 'en' }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed left-1/2 top-5 z-[9998] -translate-x-1/2 rounded-full border border-white/70 bg-white/80 px-4 py-2 shadow-[0_14px_40px_rgba(103,88,132,0.12)] backdrop-blur-xl"
+  >
+    <div className="flex items-center gap-3 text-xs font-black text-[#7D689E]">
+      <Loader2 className="h-4 w-4 animate-spin" />
+      <span>{language === 'ar' ? 'جاري استعادة الجلسة…' : 'Restoring session…'}</span>
+    </div>
+  </motion.div>
+);
+
+
+const OfflineNotice = ({ language }: { language: 'ar' | 'en' }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 24, scale: 0.98 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: 24, scale: 0.98 }}
+    transition={{ duration: 0.35, ease: 'easeOut' }}
+    className="fixed bottom-5 left-1/2 z-[9999] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-[28px] border border-[#F0D8D2] bg-[#FFF9F6]/92 p-4 shadow-[0_24px_80px_rgba(166,96,63,0.14)] backdrop-blur-2xl"
+    dir={language === 'ar' ? 'rtl' : 'ltr'}
+  >
+    <div className="flex items-start gap-3">
+      <div className="relative mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#FAF0E6] text-[#A6603F]">
+        <motion.span animate={{ scale: [1, 1.45, 1], opacity: [0.45, 0, 0.45] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }} className="absolute inset-0 rounded-2xl border border-[#A6603F]/25" />
+        <WifiOff className="h-5 w-5" />
+      </div>
+      <div className="min-w-0 text-right">
+        <p className="text-sm font-black text-[#182231]">{language === 'ar' ? 'الاتصال انقطع بهدوء' : 'Connection paused gently'}</p>
+        <p className="mt-1 text-xs font-bold leading-relaxed text-[#7C8796]">
+          {language === 'ar' ? 'لا تقلق، تبيان يحافظ على مسارك الحالي حتى يعود الاتصال.' : 'No worries. Tebyan keeps your current path until the connection returns.'}
+        </p>
+      </div>
+    </div>
+  </motion.div>
+);
 
 import { LivingIcon } from './components/LivingIcon';
 import { WhispersOfTheVoid } from './components/WhispersOfTheVoid';
@@ -197,7 +208,8 @@ const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'error' | 'success' } | null>(null);
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(() => localStorage.getItem('tebyan_splash_seen_v12') !== 'true');
+  const [isOffline, setIsOffline] = useState(() => typeof navigator !== 'undefined' ? !navigator.onLine : false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -213,6 +225,17 @@ const AppContent: React.FC = () => {
   const [prevMood, setPrevMood] = useState<Mood>('default');
   const [showMoodTransition, setShowMoodTransition] = useState(false);
   
+  useEffect(() => {
+    const updateOnlineState = () => setIsOffline(!navigator.onLine);
+    window.addEventListener('online', updateOnlineState);
+    window.addEventListener('offline', updateOnlineState);
+    updateOnlineState();
+    return () => {
+      window.removeEventListener('online', updateOnlineState);
+      window.removeEventListener('offline', updateOnlineState);
+    };
+  }, []);
+
   useEffect(() => {
     // Run migration from legacy keys immediately
     migrateLegacyData();
@@ -458,7 +481,7 @@ const AppContent: React.FC = () => {
   ];
 
   return (
-        <div className={cn("h-[100dvh] bg-zinc-50 font-sans flex flex-col overflow-hidden text-zinc-900 selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className={cn("h-[100dvh] tebyan-living-background font-sans flex flex-col overflow-hidden text-[#182231] selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <AnimatePresence>
             {lighthouseIdea && (
               <LighthouseMode 
@@ -468,6 +491,8 @@ const AppContent: React.FC = () => {
               />
             )}
             {showSplash && <SplashScreen key="splash" onFinish={() => setShowSplash(false)} language={language} />}
+            {!showSplash && !authReady && <SessionRestoreLoader key="session-restore" language={language} />}
+            {isOffline && !showSplash && <OfflineNotice key="offline-notice" language={language} />}
           </AnimatePresence>
           
           {/* Background Elements (Volume & Texture) */}

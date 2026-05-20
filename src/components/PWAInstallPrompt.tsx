@@ -55,11 +55,11 @@ export const PWAHeaderButton = () => {
     <>
       <button 
         onClick={handleInstallClick}
-        className="flex items-center justify-center gap-2 px-4 py-2 mx-1 md:mx-2 rounded-xl bg-white text-zinc-800 shadow-lg shadow-black/5 hover:scale-105 active:scale-95 transition-all border border-zinc-200/60"
+        className="flex items-center justify-center gap-2 px-4 py-2 mx-1 md:mx-2 rounded-xl bg-white/85 text-[#7D689E] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[#C9BEDF]/40 backdrop-blur-xl"
         title="تثبيت التطبيق"
       >
-        <Download className="w-4 h-4 text-zinc-700" />
-        <span className="font-bold text-sm">تثبيت</span>
+        <Download className="w-4 h-4 text-[#8E7AAE]" />
+        <span className="font-black text-sm">تثبيت</span>
       </button>
 
       {/* iOS Instructions Modal */}
@@ -70,7 +70,7 @@ export const PWAHeaderButton = () => {
             animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999 }}
-            className="flex flex-col items-center justify-end md:justify-center p-4 bg-zinc-900/60"
+            className="flex flex-col items-center justify-end md:justify-center p-4 bg-[#F7F3EE]/70"
             onClick={() => setShowIOSInstructions(false)}
             dir="rtl"
           >
@@ -101,7 +101,7 @@ export const PWAHeaderButton = () => {
                </ol>
                <button 
                   onClick={() => setShowIOSInstructions(false)}
-                  className="w-full mt-8 p-4 rounded-2xl bg-black text-white font-bold text-sm hover:bg-zinc-800 transition-colors shadow-lg shadow-black/20"
+                  className="w-full mt-8 p-4 rounded-2xl bg-[#8E7AAE] text-white font-bold text-sm hover:bg-[#806D9F] transition-colors shadow-lg shadow-[#8E7AAE]/20"
                 >
                   حسناً، فهمت
                 </button>
@@ -159,17 +159,17 @@ export const PWAInstallPrompt = () => {
            initial={{ y: 150, opacity: 0 }}
            animate={{ y: 0, opacity: 1 }}
            exit={{ y: 150, opacity: 0 }}
-           className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:w-96 bg-white border border-zinc-200 p-5 rounded-3xl shadow-2xl z-50 flex items-start gap-4"
+           className="fixed bottom-6 left-6 right-6 md:left-auto md:right-8 md:w-96 bg-white/90 backdrop-blur-xl border border-[#C9BEDF]/40 p-5 rounded-3xl shadow-[0_24px_70px_rgba(103,88,132,0.16)] z-50 flex items-start gap-4"
         >
-          <div className="w-12 h-12 bg-black rounded-[14px] flex items-center justify-center shrink-0">
-             <Download className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-[#F3EEF8] border border-[#C9BEDF]/40 rounded-[14px] flex items-center justify-center shrink-0">
+             <Download className="w-6 h-6 text-[#8E7AAE]" />
           </div>
           <div className="flex-1 pt-1 rtl" dir="rtl">
              <h4 className="font-bold text-zinc-900 mb-1">ثبّت التطبيق</h4>
              <p className="text-zinc-500 text-sm mb-3">لتجربة أسرع وأفضل، يمكنك تثبيت التطبيق على جهازك.</p>
              <div className="flex items-center gap-2">
-                <button onClick={handleInstallClick} className="px-4 py-2 bg-black text-white rounded-xl text-sm font-bold shadow-md hover:scale-105 active:scale-95 transition-all">تثبيت الآن</button>
-                <button onClick={handleClose} className="px-4 py-2 bg-zinc-100 text-zinc-600 rounded-xl text-sm font-bold hover:bg-zinc-200 transition-colors">لاحقاً</button>
+                <button onClick={handleInstallClick} className="px-4 py-2 bg-[#8E7AAE] text-white rounded-xl text-sm font-black shadow-md shadow-[#8E7AAE]/20 hover:scale-105 active:scale-95 transition-all">تثبيت الآن</button>
+                <button onClick={handleClose} className="px-4 py-2 bg-[#F7F3EE] text-slate-500 rounded-xl text-sm font-bold hover:bg-[#EFE9E1] transition-colors">لاحقاً</button>
              </div>
           </div>
           <button onClick={handleClose} className="p-1 -mr-2 text-zinc-400 hover:text-black transition-colors rounded-full left-0 mx-2 absolute top-4">

@@ -113,12 +113,12 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
 
   return (
     <div className={cn(
-      'rounded-[24px] border border-zinc-100 bg-white/80 backdrop-blur-xl shadow-sm',
+      'rounded-[24px] border border-[#8E7AAE]/15 bg-[#FAF9F6]/90 backdrop-blur-xl shadow-[0_18px_55px_rgba(24,34,49,0.06)]',
       compact ? 'p-3 space-y-3' : 'p-4 md:p-5 space-y-4',
       className
     )} dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-black text-white flex items-center justify-center shrink-0 shadow-lg">
+        <div className="w-10 h-10 rounded-2xl bg-[#8E7AAE]/12 text-[#6E5F8E] border border-[#8E7AAE]/20 flex items-center justify-center shrink-0 shadow-lg">
           <Icon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0 text-right">
@@ -128,8 +128,8 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
             </span>
             {isSuggestionLoading && <span className="text-[10px] font-bold text-zinc-300">{language === 'ar' ? 'يصيغ...' : 'refining...'}</span>}
           </div>
-          <h4 className="text-sm md:text-base font-black text-zinc-950">{profile.title}</h4>
-          <p className="text-xs md:text-sm text-zinc-500 font-bold leading-relaxed mt-1">{profile.hint}</p>
+          <h4 className="text-sm md:text-base font-black text-[#182231]">{profile.title}</h4>
+          <p className="text-xs md:text-sm text-[#7C8796] font-bold leading-relaxed mt-1">{profile.hint}</p>
         </div>
       </div>
 
@@ -137,10 +137,10 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         <button
           type="button"
           onClick={() => onApply(refined)}
-          className="w-full text-right p-3 rounded-2xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 transition-colors"
+          className="w-full text-right p-3 rounded-2xl bg-[#F7F5F2] hover:bg-[#F1EEF4] border border-[#8E7AAE]/12 transition-colors"
         >
           <div className="text-[10px] font-black text-zinc-400 mb-1">{language === 'ar' ? 'صياغة أفضل' : 'Better wording'}</div>
-          <div className="text-sm font-black text-zinc-800 leading-relaxed">{refined}</div>
+          <div className="text-sm font-black text-[#182231] leading-relaxed">{refined}</div>
         </button>
       )}
 
@@ -148,7 +148,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         <button
           type="button"
           onClick={() => onApply(refined || buildFallbackRefinement(trimmed, language))}
-          className="px-4 py-2 rounded-full bg-zinc-950 text-white text-xs font-black flex items-center gap-2 active:scale-95 transition-all"
+          className="px-4 py-2 rounded-full bg-[#8E7AAE] text-white text-xs font-black flex items-center gap-2 active:scale-95 transition-all"
         >
           <Wand2 className="w-4 h-4" />
           {language === 'ar' ? 'استخدم الصياغة' : 'Use wording'}
@@ -156,7 +156,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         <button
           type="button"
           onClick={() => onApply(language === 'ar' ? `اشرح لي ببساطة: ${trimmed}` : `Explain simply: ${trimmed}`)}
-          className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-zinc-700 text-xs font-black active:scale-95 transition-all"
+          className="px-4 py-2 rounded-full bg-white/90 border border-[#8FA9C7]/25 text-[#465568] text-xs font-black active:scale-95 transition-all"
         >
           {language === 'ar' ? 'بسّطها' : 'Simplify'}
         </button>
@@ -164,7 +164,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
           <button
             type="button"
             onClick={() => onQawlFasl(refined || trimmed)}
-            className="px-4 py-2 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-black active:scale-95 transition-all"
+            className="px-4 py-2 rounded-full bg-[#F6F0E3] border border-[#D8C28A]/30 text-[#7A6B42] text-xs font-black active:scale-95 transition-all"
           >
             {language === 'ar' ? 'قول فصل' : 'Qawl Fasl'}
           </button>
@@ -173,7 +173,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
           <button
             type="button"
             onClick={() => onSubmit(refined || trimmed)}
-            className="px-4 py-2 rounded-full bg-mood-primary/10 border border-mood-primary/10 text-mood-primary text-xs font-black active:scale-95 transition-all"
+            className="px-4 py-2 rounded-full bg-[#8E7AAE]/10 border border-[#8E7AAE]/15 text-[#6E5F8E] text-xs font-black active:scale-95 transition-all"
           >
             {language === 'ar' ? 'ابدأ الآن' : 'Start now'}
           </button>
@@ -182,7 +182,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
           <button
             type="button"
             onClick={() => onOpenPath(profile.path, refined || trimmed)}
-            className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-zinc-800 text-xs font-black flex items-center gap-2 active:scale-95 transition-all"
+            className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-[#182231] text-xs font-black flex items-center gap-2 active:scale-95 transition-all"
           >
             <Route className="w-4 h-4" />
             {profile.action}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit, Lightbulb, Beaker } from 'lucide-react';
+import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit, Lightbulb, Beaker, Bookmark, Link2 } from 'lucide-react';
+import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
 
@@ -8,6 +9,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   const [history, setHistory] = useState<string[]>([]);
   const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
   const [timeEra, setTimeEra] = useState<number>(3); // 1: Past, 2: Recent, 3: Present, 4: Future
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -115,6 +117,14 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
     }
   };
 
+  const saveNode = (node: any) => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('tebyan_saved_nodes') || '[]');
+      const item = { id: `node-${Date.now()}`, title: node.label, type: node.category || node.type || 'idea', createdAt: new Date().toISOString() };
+      localStorage.setItem('tebyan_saved_nodes', JSON.stringify([item, ...saved].slice(0, 50)));
+    } catch (e) {}
+  };
+
   const executeSearch = (term: string) => {
     handleTabChange('oracle', term);
   };
@@ -138,15 +148,15 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   };
 
   return (
-    <div className="w-full bg-zinc-950 text-white min-h-[85vh] rounded-[32px] p-4 md:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-6 border-4 border-indigo-950/20">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,transparent_70%)] pointer-events-none"></div>
+    <div className="w-full bg-[#FBFAF7] text-[#182231] min-h-[85vh] rounded-[32px] p-4 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.12)] relative overflow-hidden flex flex-col md:flex-row gap-6 border border-[#E9E2F1]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(142,122,174,0.12)_0%,transparent_70%)] pointer-events-none"></div>
       <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay"></div>
       
       <div className="absolute top-4 inset-x-4 md:top-8 md:end-8 md:start-auto z-50 flex justify-between md:justify-end">
         <div className="md:hidden" />
         <button 
           onClick={() => handleTabChange('home', '', true)} 
-          className="px-6 py-2.5 md:py-3 bg-zinc-900 border border-zinc-700 text-white rounded-full font-black text-[10px] md:text-sm tracking-widest shadow-2xl flex items-center gap-2 hover:bg-zinc-800 transition-all active:scale-95 pointer-events-auto cursor-pointer"
+          className="px-6 py-2.5 md:py-3 bg-white border border-[#E6E1EA] text-[#7C8796] rounded-full font-black text-[10px] md:text-sm tracking-widest shadow-2xl flex items-center gap-2 hover:bg-[#F7F3FB] hover:text-[#8E7AAE] transition-all active:scale-95 pointer-events-auto cursor-pointer"
         >
           <ArrowRight className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "" : "rotate-180")} />
           {language === 'ar' ? 'الرجوع' : 'BACK'}
@@ -155,33 +165,63 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
       <div className="flex-1 flex flex-col relative z-10 pt-32 md:pt-0">
         <div className="mb-6 md:mb-10 pl-2">
-            <h2 className="text-3xl md:text-5xl font-black text-white flex items-center gap-4 tracking-tighter italic">
-                <div className="p-3 bg-indigo-500/20 rounded-2xl border border-indigo-500/30 flex items-center justify-center shrink-0">
-                  <Network className="w-10 h-10 md:w-16 md:h-16 text-indigo-400" />
+            <h2 className="text-3xl md:text-5xl font-black text-[#182231] flex items-center gap-4 tracking-tighter italic">
+                <div className="p-3 bg-[#F1ECF7] rounded-2xl border border-[#E8E2F1] flex items-center justify-center shrink-0">
+                  <Network className="w-10 h-10 md:w-16 md:h-16 text-[#8E7AAE]" />
                 </div>
                 <div className="flex-1 min-w-0 pb-1 pt-1">
-                  <div className="bg-gradient-to-r from-white to-indigo-400 bg-clip-text text-transparent leading-tight">
+                  <div className="bg-gradient-to-r from-[#182231] to-[#8E7AAE] bg-clip-text text-transparent leading-tight">
                     {language === 'ar' ? 'البصمة المعرفية' : 'Cognitive Blueprint'}
                   </div>
-                  <div className="text-sm md:text-lg text-indigo-400 font-bold not-italic tracking-normal mt-1">
+                  <div className="text-sm md:text-lg text-[#8E7AAE] font-bold not-italic tracking-normal mt-1">
                     {language === 'ar' ? 'مختبر دمج الأفكار' : 'Ideas Fusion Lab'}
                   </div>
                 </div>
             </h2>
-            <div className="mt-6 p-5 rounded-2xl bg-indigo-950/20 border border-indigo-500/10 backdrop-blur-sm max-w-3xl">
-                <p className="text-indigo-200 font-medium leading-relaxed md:text-lg text-justify">
+            <div className="mt-6 p-5 rounded-2xl bg-white/70 border border-[#E9E2F1] backdrop-blur-sm max-w-3xl">
+                <p className="text-[#6F7785] font-medium leading-relaxed md:text-lg text-justify">
                     {language === 'ar' 
                       ? 'هنا لا نعطيك مجرد إجابات مُعلبة، بل نُريك المجرة المعرفية المحيطة بها. الأفكار لا تعيش في عزلة.. اكتشف الروابط الخفية بين قراراتك، وكيف يمكن لفكرة واحدة أن تفتح لك مسارات لم تكن تتوقعها.' 
                       : 'Here we don’t just give you canned answers; we show you the cognitive galaxy surrounding them. Ideas don’t live in isolation. Discover the hidden connections between your decisions.'}
                 </p>
-                <div className="mt-4 flex items-center gap-3 text-emerald-400 font-bold text-sm">
+                <div className="mt-4 flex items-center gap-3 text-[#5A8C75] font-bold text-sm">
                     <Sparkles className="w-5 h-5 animate-pulse" />
                     <span>{language === 'ar' ? 'تحليل شبكتك: تتركز اهتماماتك بقوة حول مفاهيمك الحالية، استكشف لربطها وتوسيع مداركك.' : 'Network Analysis: Your focus is strong on current concepts, merge them to expand your mindset.'}</span>
                 </div>
             </div>
         </div>
 
-        <div className="flex-1 relative w-full h-full min-h-[500px] border border-white/5 rounded-[32px] bg-black/60 shadow-inner overflow-hidden flex items-center justify-center group z-0">
+        <div className="mb-4 flex items-center gap-2">
+          <button type="button" onClick={() => setViewMode('map')} className={cn('px-4 py-2 rounded-full text-xs font-black border transition-all', viewMode === 'map' ? 'bg-[#8E7AAE] text-[#182231] border-[#8E7AAE]' : 'bg-white text-[#64788D] border-[#8FA9C7]/18')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
+          <button type="button" onClick={() => setViewMode('list')} className={cn('px-4 py-2 rounded-full text-xs font-black border transition-all', viewMode === 'list' ? 'bg-[#8E7AAE] text-[#182231] border-[#8E7AAE]' : 'bg-white text-[#64788D] border-[#8FA9C7]/18')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
+        </div>
+
+        {viewMode === 'list' && (
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+            {nodes.filter(n => n.type !== 'core').map(node => (
+              <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className="text-right rounded-2xl border border-[#8FA9C7]/16 bg-white/80 p-4 hover:border-[#8E7AAE]/30 transition-all">
+                <p className="text-[10px] font-black tracking-widest text-[#8E7AAE] mb-1">{node.category || node.type}</p>
+                <h4 className="font-black text-[#182231]">{node.label}</h4>
+                <p className="text-xs font-bold text-[#7C8796] mt-2">{language === 'ar' ? 'اضغط لفتح البطاقة الجانبية والروابط.' : 'Tap to open the side card and links.'}</p>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[500px] border border-[#E9E2F1] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
+          {history.length === 0 && (
+            <div className="absolute top-6 left-6 right-6 z-20 pointer-events-auto">
+              <TebyanEmptyState
+                language={language}
+                icon={Network}
+                title={language === 'ar' ? 'شبكتك المعرفية تبدأ من أول سؤال' : 'Your knowledge network starts with one question'}
+                description={language === 'ar' ? 'هذه الخريطة ستبني روابطها تلقائياً من أسئلتك وقراراتك القادمة.' : 'This map will build itself from your next questions and decisions.'}
+                actionLabel={language === 'ar' ? 'اسأل أول سؤال' : 'Ask first question'}
+                onAction={() => handleTabChange('discover')}
+                className="p-5 md:p-6 shadow-sm"
+              />
+            </div>
+          )}
           <svg 
             width="100%" 
             height="100%" 
@@ -246,7 +286,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     opacity: 1, 
                     strokeDashoffset: isRipple ? [0, -24] : 0 
                   }}
-                  stroke={isBothSelected ? "rgba(52,211,153,0.8)" : isRipple ? "rgba(99,102,241,0.6)" : edge.type === 'primary' ? "rgba(99,102,241,0.2)" : "rgba(255,255,255,0.05)"} 
+                  stroke={isBothSelected ? "rgba(52,211,153,0.8)" : isRipple ? "rgba(142,122,174,0.55)" : edge.type === 'primary' ? "rgba(142,122,174,0.22)" : "rgba(142,122,174,0.10)"} 
                   strokeWidth={isBothSelected ? "3" : isRipple ? "2.5" : edge.type === 'primary' ? "2" : "1"}
                   strokeDasharray={isRipple ? "8 4" : edge.type === 'secondary' ? "4 4" : "none"}
                   transition={{ 
@@ -376,9 +416,9 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </svg>
 
           {/* Time Traveling Slider */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] md:w-[60%] z-40 bg-zinc-900/90 backdrop-blur-xl border border-zinc-700/50 rounded-full p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] md:w-[60%] z-40 bg-zinc-900/90 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-full p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
              <div className="w-full flex items-center justify-between gap-4">
-                 <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 1 ? "text-indigo-400" : "text-zinc-500")}>
+                 <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
                      {getEraLabel(1)}
                  </span>
                  <input 
@@ -388,15 +428,15 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
                     className="flex-1 accent-indigo-500 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer" 
                  />
-                 <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-zinc-500")}>
+                 <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
                     {getEraLabel(4)}
                  </span>
              </div>
-             <div className="text-[10px] md:text-xs font-medium text-zinc-400 whitespace-nowrap text-center">
+             <div className="text-[10px] md:text-xs font-medium text-[#7C8796] whitespace-nowrap text-center">
                  {language === 'ar' ? 'رحلة الأفكار عبر الزمن' : 'Time-Traveling Concepts'}
              </div>
           </div>
-        </div>
+        </div>}
       </div>
 
       <AnimatePresence mode="wait">
@@ -407,11 +447,11 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ type: "spring", bounce: 0 }}
-            className="w-full md:w-[350px] lg:w-[400px] bg-zinc-900 border border-zinc-800 rounded-[32px] p-6 flex flex-col relative z-20 shadow-2xl"
+            className="w-full md:w-[350px] lg:w-[400px] bg-white/88 border border-[#8FA9C7]/18 rounded-[32px] p-6 flex flex-col relative z-20 shadow-[0_24px_80px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <button 
               onClick={() => setSelectedNodes([])}
-              className="absolute top-4 right-4 p-2 bg-white/5 rounded-full hover:bg-white/10 transition-colors"
+              className="absolute top-4 right-4 p-2 bg-[#F7F5F2] rounded-full hover:bg-[#F1EEF4] text-[#64788D] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -421,35 +461,54 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     <div className="mt-8 flex-1">
                         <div className="flex items-center gap-3 mb-6">
                             <div className={cn("p-3 rounded-2xl border", selectedNodes[0].type === 'golden' ? "bg-amber-500/20 border-amber-500/20" : "bg-emerald-500/20 border-emerald-500/20")}>
-                                {selectedNodes[0].type === 'golden' ? <Sparkles className="w-6 h-6 text-amber-400" /> : <Lightbulb className="w-6 h-6 text-emerald-400" />}
+                                {selectedNodes[0].type === 'golden' ? <Sparkles className="w-6 h-6 text-amber-400" /> : <Lightbulb className="w-6 h-6 text-[#5A8C75]" />}
                             </div>
                             <h3 className="text-2xl font-black">{selectedNodes[0].label}</h3>
                         </div>
 
                         <div className="space-y-6">
-                            <p className="text-zinc-400 leading-relaxed font-medium">
+                            <p className="text-[#7C8796] leading-relaxed font-medium">
                             {selectedNodes[0].type === 'golden' ? (language === 'ar' ? 'لقد اكتشفت عقدة ذهبية! هذا المفهوم نادر ويظهر عند توسيع مداركك في المستقبل.' : 'You discovered a Golden Node! This rare concept appears when expanding your future mindset.') : (language === 'ar' 
                                 ? `أحد المفاهيم الحيوية في شبكتك. إنها نقطة قوة تشكلت من بحثك المسبق. ماذا لو تم دمجها مع مجال آخر لا علاقة له بها؟ الإشعاع الذي تراه هو "استشراف الأثر"، هكذا تتأثر باقي شبكتك بهذا المفهوم.` 
                                 : `A vital concept in your network. It's a strength carved by your searches. What if you merged it with an unrelated field? The pulse you see is the "Ripple Effect", showing how decisions impact the whole map.`)}
                             </p>
 
-                            <div className="p-5 bg-zinc-800/80 rounded-2xl border border-zinc-700/50 shadow-inner">
-                                <div className={cn("text-xs font-black uppercase tracking-widest mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-emerald-400")}>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="rounded-2xl bg-[#FBFAF7] border border-[#8FA9C7]/16 p-3">
+                                <p className="text-[10px] font-black text-[#8E7AAE] mb-1">{language === 'ar' ? 'نوع العقدة' : 'Node type'}</p>
+                                <p className="text-sm font-black text-[#182231]">{selectedNodes[0].category || selectedNodes[0].type || (language === 'ar' ? 'فكرة' : 'Idea')}</p>
+                              </div>
+                              <div className="rounded-2xl bg-[#FBFAF7] border border-[#8FA9C7]/16 p-3">
+                                <p className="text-[10px] font-black text-[#8E7AAE] mb-1">{language === 'ar' ? 'التاريخ' : 'Date'}</p>
+                                <p className="text-sm font-black text-[#182231]">{new Date().toLocaleDateString(language === 'ar' ? 'ar-KW' : 'en-US')}</p>
+                              </div>
+                            </div>
+
+                            <div className="p-5 bg-[#F7F5F2] rounded-2xl border border-[#8FA9C7]/18 shadow-inner">
+                                <div className={cn("text-xs font-black uppercase tracking-widest mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-[#5A8C75]")}>
                                     <Sparkles className="w-4 h-4" />
                                     {language === 'ar' ? 'دعوة للابتكار' : 'Call for Innovation'}
                                 </div>
-                                <p className="text-sm font-bold text-white mb-4">
+                                <p className="text-sm font-bold text-[#182231] mb-4">
                                     {language === 'ar' ? 'اسحب عقلك لنقطة أبعد. اضغط على فقاعة أخرى في الشاشة لدمجها واكتشاف منطقة العبقرية.' : 'Stretch your mind further. Tap another bubble to merge and discover the genius zone.'}
                                 </p>
                             </div>
 
                             <button 
                             onClick={() => executeSearch(selectedNodes[0].label)}
-                            className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl font-black transition-all active:scale-[0.98] border border-white/5"
+                            className="w-full flex items-center justify-center gap-3 py-4 bg-[#8E7AAE] hover:bg-[#806D9F] text-[#182231] rounded-2xl font-black transition-all active:scale-[0.98] border border-white/5"
                             >
                             <Search className="w-5 h-5" />
                             {language === 'ar' ? 'استكشاف هذا المفهوم منفرداً' : 'Explore Singly'}
                             </button>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              <button onClick={() => saveNode(selectedNodes[0])} className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-[#8FA9C7]/18 text-[#465568] rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
+                                <Bookmark className="w-4 h-4" /> {language === 'ar' ? 'احفظ العقدة' : 'Save node'}
+                              </button>
+                              <button onClick={() => setSelectedNodes(prev => prev.slice(0,1))} className="w-full flex items-center justify-center gap-2 py-3 bg-[#F1EEF4] border border-[#8E7AAE]/16 text-[#6E5F8E] rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
+                                <Link2 className="w-4 h-4" /> {language === 'ar' ? 'اربط بفكرة أخرى' : 'Link another idea'}
+                              </button>
+                            </div>
                         </div>
                     </div>
                 </>
@@ -458,9 +517,9 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     <div className="mt-8 flex-1 flex flex-col justify-center">
                         <div className="text-center mb-6">
                             <div className="inline-flex p-4 bg-indigo-500/20 rounded-full border border-indigo-500/20 mb-4 animate-pulse">
-                                <Beaker className="w-10 h-10 text-indigo-400" />
+                                <Beaker className="w-10 h-10 text-[#8E7AAE]" />
                             </div>
-                            <h3 className="text-2xl font-black text-white">
+                            <h3 className="text-2xl font-black text-[#182231]">
                                 {language === 'ar' ? 'اصطدام الأفكار' : 'Idea Collider'}
                             </h3>
                         </div>
@@ -469,7 +528,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform -rotate-2", selectedNodes[0].type === 'golden' ? "bg-amber-500/10 border-amber-500/20" : "bg-emerald-500/10 border-emerald-500/20")}>
                                 <span className={cn("font-bold", selectedNodes[0].type === 'golden' ? "text-amber-300" : "text-emerald-300")}>{selectedNodes[0].label}</span>
                             </div>
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-zinc-900 rounded-full flex items-center justify-center border-4 border-zinc-950 z-10 text-zinc-500 font-bold text-sm">
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-[#F7F5F2] z-10 text-[#8E7AAE] font-bold text-sm">
                                 +
                             </div>
                             <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform rotate-2", selectedNodes[1].type === 'golden' ? "bg-amber-500/10 border-amber-500/20" : "bg-cyan-500/10 border-cyan-500/20")}>
@@ -477,7 +536,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             </div>
                         </div>
 
-                        <p className="text-zinc-400 text-center font-medium mb-8 text-sm leading-relaxed">
+                        <p className="text-[#7C8796] text-center font-medium mb-8 text-sm leading-relaxed">
                             {language === 'ar' 
                                 ? 'دعنا نضع هذين المفهومين في محرك "المستشار الكلي" لنستخرج منهما ابتكاراً جديداً يعطيك أفضلية استراتيجية. لم يسبق لأحد أن دمج هذين المسارين بهذا العمق!' 
                                 : 'Let’s put these two concepts in the "Omni Counselor" to extract a new innovation giving you a strategic edge. Seldom has anyone merged these paths this deeply!'}
@@ -485,7 +544,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
                         <button 
                             onClick={executeMerge}
-                            className="w-full flex items-center justify-center gap-3 py-5 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-black rounded-2xl font-black transition-all active:scale-[0.98] shadow-xl shadow-emerald-500/20 text-lg"
+                            className="w-full flex items-center justify-center gap-3 py-5 bg-[#8E7AAE] hover:bg-[#806D9F] text-white rounded-2xl font-black transition-all active:scale-[0.98] shadow-xl shadow-emerald-500/20 text-lg"
                         >
                             <Sparkles className="w-6 h-6" />
                             {language === 'ar' ? 'توليد الابتكار الآن' : 'Generate Innovation Now'}
@@ -494,7 +553,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                 </>
             )}
             
-            <div className="mt-6 text-center text-xs text-zinc-600 font-medium">
+            <div className="mt-6 text-center text-xs text-[#7C8796] font-medium">
                {language === 'ar' ? 'خوارزمية تبيان للربط الإبداعي' : 'Tibyan Creative Connect Algorithm'}
             </div>
           </motion.div>

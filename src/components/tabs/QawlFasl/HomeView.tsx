@@ -459,11 +459,6 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
         {/* Global Footer / Disclaimer */}
         <footer className="pt-16 md:pt-24 border-t border-zinc-200/60 text-center space-y-6">
-          <div className="flex justify-center gap-3">
-            <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-zinc-200"></div>
-            <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#5A5A40]"></div>
-            <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-zinc-200"></div>
-          </div>
           <p className="text-zinc-400 text-xs md:text-sm font-medium max-w-xl mx-auto leading-relaxed px-4">
             تبيان: نظام متكامل للذكاء وتحليل المواقف. نؤمن أن الحل السليم يبدأ بفهم السياق بوضوح والتعامل معه بحكمة.
             <br/>

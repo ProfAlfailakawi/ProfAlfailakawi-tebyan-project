@@ -12,6 +12,8 @@ import { AIHeartbeat } from './ui/AIHeartbeat';
 import { TypographicAcoustic } from './TypographicAcoustic';
 import { AdvancedCognitiveAnalysis } from './AdvancedCognitiveAnalysis';
 import { SmartIntentEngine } from './common/SmartIntentEngine';
+import { KnowledgeSignature } from './common/KnowledgeSignature';
+import { TebyanGlyph } from './common/TebyanGlyph';
 import TextareaAutosize from 'react-textarea-autosize';
 import { TebyanTooltip } from './TebyanTooltip';
 
@@ -53,32 +55,32 @@ const PLATFORM_INSIGHTS = [
         titleAr: 'أكثر التحديات الإنسانية هذا الأسبوع',
         titleEn: 'Top human challenges this week',
         items: [
-            { labelAr: 'إدارة الغضب', labelEn: 'Anger Management', pct: '70%', color: 'bg-mood-secondary' },
-            { labelAr: 'صناعة القرار', labelEn: 'Decision Making', pct: '85%', color: 'bg-mood-primary' }
+            { labelAr: 'إدارة الغضب', labelEn: 'Anger Management', pct: '70%', color: 'bg-[#8FA9C7]' },
+            { labelAr: 'صناعة القرار', labelEn: 'Decision Making', pct: '85%', color: 'bg-[#8E7AAE]' }
         ]
     },
     {
         titleAr: 'تحديات التواصل الحديثة',
         titleEn: 'Modern Communication Challenges',
         items: [
-            { labelAr: 'القلق والمخاوف', labelEn: 'Anxiety & Fears', pct: '60%', color: 'bg-mood-primary/60' },
-            { labelAr: 'الإقناع والتفاوض', labelEn: 'Persuasion & Negotiation', pct: '75%', color: 'bg-mood-secondary/60' }
+            { labelAr: 'القلق والمخاوف', labelEn: 'Anxiety & Fears', pct: '60%', color: 'bg-[#B7A7C7]' },
+            { labelAr: 'الإقناع والتفاوض', labelEn: 'Persuasion & Negotiation', pct: '75%', color: 'bg-[#AFC0D2]' }
         ]
     },
     {
         titleAr: 'مواقف صعبة شائعة اليوم',
         titleEn: 'Common Difficult Situations Today',
         items: [
-            { labelAr: 'العناد المفرط', labelEn: 'Extreme Stubbornness', pct: '80%', color: 'bg-mood-primary/80' },
-            { labelAr: 'رفض التغيير', labelEn: 'Resistance to Change', pct: '50%', color: 'bg-mood-secondary/40' }
+            { labelAr: 'العناد المفرط', labelEn: 'Extreme Stubbornness', pct: '80%', color: 'bg-[#9F8CC0]' },
+            { labelAr: 'رفض التغيير', labelEn: 'Resistance to Change', pct: '50%', color: 'bg-[#CFDAE5]' }
         ]
     },
     {
         titleAr: 'محاور الذكاء العاطفي',
         titleEn: 'Emotional Intelligence Focus',
         items: [
-            { labelAr: 'حل النزاعات', labelEn: 'Conflict Resolution', pct: '65%', color: 'bg-mood-secondary/80' },
-            { labelAr: 'التواصل الفعال', labelEn: 'Effective Communication', pct: '90%', color: 'bg-mood-primary/40' }
+            { labelAr: 'حل النزاعات', labelEn: 'Conflict Resolution', pct: '65%', color: 'bg-[#9BB4CD]' },
+            { labelAr: 'التواصل الفعال', labelEn: 'Effective Communication', pct: '90%', color: 'bg-[#D6CDE2]' }
         ]
     }
 ];
@@ -272,11 +274,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const resultRef = useRef<HTMLDivElement>(null);
 
   const loadingPhrasesAr = [
-      'جاري تشريح الأبعاد الاستراتيجية...',
-      'فحص المسارات المحتملة للقرار...',
-      'تصفية التناقضات السلوكية...',
-      'استخراج الجوهر التفاوضي المفقود...',
-      'بناء خارطة الطريق الشاملة...'
+      'نرتّب الفكرة بهدوء…',
+      'نبحث عن أقرب مسار لفهم ما كتبت…',
+      'نوازن بين المعنى والسياق…',
+      'نخفف الضجيج ونستخرج الجوهر…',
+      'نجهز لك مساراً معرفياً مرتباً…'
   ];
 
   const loadingPhrasesEn = [
@@ -312,7 +314,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+            <span className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
@@ -321,7 +323,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+             <span className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, is your coffee ready to continue? ☕</span>
@@ -360,7 +362,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-            <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+            <span className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>، هل نكمل الاستكشاف؟ ☕</span>
@@ -369,7 +371,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-            <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+            <span className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, shall we continue exploring? ☕</span>
@@ -407,7 +409,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         arSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
-             <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+             <span className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>.. هل كان يوماً مثمراً؟ 🌟</span>
@@ -416,7 +418,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         enSub = (
           <div className="inline-flex flex-wrap justify-center items-center gap-1 cursor-pointer" onClick={() => setIsQueryExpanded(!isQueryExpanded)}>
             <span>Welcome back.. last time we stopped at</span>
-             <span className={`text-content text-mood-primary font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
+             <span className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? 'whitespace-normal w-full text-center mt-2 break-words' : 'truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom'}`}>
                 "{lastInteraction.query}"
             </span>
             <span>, how was your day? 🌟</span>
@@ -760,7 +762,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     
     if (!activeQuery.trim()) {
       console.log('[SmartGateway] Search blocked: active query is empty');
-      setErrorMsg(language === 'ar' ? 'اكتب موقفك أولاً' : 'Write your situation first');
+      setErrorMsg(language === 'ar' ? 'لم تكتمل الفكرة بعد، أضف سطرًا واحدًا فقط' : 'The idea is not complete yet. Add one short line.');
       setTimeout(() => setErrorMsg(''), 3000);
       return;
     }
@@ -799,6 +801,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     // Analytics: Log search
     logEvent('search', language, activeQuery);
     addToHistory(activeQuery);
+    try {
+      localStorage.setItem('tebyan_last_session', JSON.stringify({ query: activeQuery, tool: 'discover', toolLabel: language === 'ar' ? 'البحث الذكي' : 'Smart search', at: new Date().toISOString() }));
+    } catch (e) {}
 
     detectEmotion(activeQuery).then(emo => {
       setEmotion(emo);
@@ -851,6 +856,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     setSelectionFeedback('');
     setSuggestion('');
     
+    try {
+      localStorage.setItem('tebyan_last_session', JSON.stringify({ query: q, tool: id, toolLabel: id, at: new Date().toISOString() }));
+    } catch (e) {}
     onPathSelect(id, q);
   };
 
@@ -941,6 +949,22 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
     return analysis;
   }, [query, language]);
+
+  const questionClarity = useMemo(() => {
+    const text = searchValue.trim();
+    if (text.length < 3) return null;
+    let score = Math.min(100, 28 + Math.floor(text.length * 1.7));
+    const hasContext = /(عمر|متى|وين|لماذا|ليش|سبب|مدرس|بيت|دوام|سنة|شهر|age|when|where|why|school|work)/i.test(text);
+    const hasGoal = /(أريد|ابي|كيف|حل|قرار|احسم|افهم|اشرح|what|how|decide|understand)/i.test(text);
+    if (hasContext) score += 18;
+    if (hasGoal) score += 14;
+    score = Math.max(8, Math.min(100, score));
+    const level = score < 45 ? (language === 'ar' ? 'منخفض' : 'low') : score < 75 ? (language === 'ar' ? 'متوسط' : 'medium') : (language === 'ar' ? 'عالٍ' : 'high');
+    const hint = hasContext
+      ? (language === 'ar' ? 'سؤالك واضح. إضافة الهدف النهائي قد ترفع جودة المسار.' : 'Your question is clear. Adding the desired outcome can improve the path.')
+      : (language === 'ar' ? 'السؤال واضح جزئياً. أضف العمر أو السياق أو متى يحدث الموقف.' : 'Partly clear. Add age, context, or when this happens.');
+    return { score, level, hint };
+  }, [searchValue, language]);
 
   const suggestions = useMemo(() => {
     const q = query.toLowerCase();
@@ -1091,13 +1115,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 <motion.div
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
-                   className="text-zinc-400 font-bold text-xs md:text-sm tracking-widest uppercase mb-3 md:mb-4"
+                   className="text-[#7C8796] font-bold text-xs md:text-sm tracking-widest uppercase mb-3 md:mb-4"
                 >
                    {language === 'ar' ? proactiveInsights.arSub : proactiveInsights.enSub}
                 </motion.div>
-                <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-black text-black tracking-tighter leading-[0.85] mb-5 md:mb-8">
+                <h1 className="text-4xl md:text-6xl lg:text-[6.2rem] font-black text-[#182231] tracking-tighter leading-[0.88] mb-5 md:mb-8">
                   {language === 'ar' ? proactiveInsights.arG.split(' ')[0] : proactiveInsights.enG.split(' ')[0]}<br/>
-                  <span className="text-zinc-300 italic">
+                  <span className="text-[#8E7AAE]/35 italic">
                       {language === 'ar' 
                           ? proactiveInsights.arG.split(' ').slice(1).join(' ') 
                           : proactiveInsights.enG.split(' ').slice(1).join(' ')}
@@ -1115,7 +1139,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     className="mb-8 bg-white border border-zinc-100 p-6 rounded-[32px] shadow-2xl space-y-6 text-right"
                 >
                     <div className="flex items-center justify-between">
-                        <button onClick={() => setShowStylePicker(false)} className="text-zinc-400 hover:text-black">
+                        <button onClick={() => setShowStylePicker(false)} className="text-[#7C8796] hover:text-[#6E5F8E]">
                             <X className="w-5 h-5" />
                         </button>
                         <h4 className="font-black text-zinc-800">
@@ -1133,10 +1157,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 onClick={() => confirmStyle(s.id as any)}
                                 className={cn(
                                     "p-4 rounded-2xl border text-right transition-all group flex flex-col gap-3",
-                                    "bg-white border-zinc-100 hover:border-black"
+                                    "bg-white border-zinc-100 hover:border-[#8E7AAE]/45"
                                 )}
                             >
-                                <s.icon className={cn("w-6 h-6", "text-zinc-400 group-hover:text-black")} />
+                                <s.icon className={cn("w-6 h-6", "text-[#7C8796] group-hover:text-[#6E5F8E]")} />
                                 <div>
                                     <div className="font-black text-sm">{language === 'ar' ? s.labelAr : s.labelEn}</div>
                                 </div>
@@ -1151,23 +1175,23 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="mb-8 bg-emerald-50 border border-emerald-100 p-6 rounded-[32px] shadow-lg space-y-4 text-emerald-900 group relative overflow-hidden"
+                    className="mb-8 bg-[#EEF4F1] border border-[#A8C3BD]/25 p-6 rounded-[32px] shadow-lg space-y-4 text-[#34524B] group relative overflow-hidden"
                 >
-                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-200/50 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-[#A8C3BD]/25 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-2">
-                            <button onClick={() => setShowFollowUp(false)} className="text-emerald-400 hover:text-emerald-900 transition-colors">
+                            <button onClick={() => setShowFollowUp(false)} className="text-[#7DA39A] hover:text-[#34524B] transition-colors">
                                 <X className="w-5 h-5" />
                             </button>
                             <h4 className="font-black flex items-center gap-2">
                                 <span>{language === 'ar' ? 'سؤال للاطمئنان..' : 'Checking in..'}</span>
-                                <Sparkles className="w-4 h-4 text-emerald-500" />
+                                <Sparkles className="w-4 h-4 text-[#6E948A]" />
                             </h4>
                         </div>
-                        <p className="font-bold text-sm md:text-base mb-4 leading-relaxed bg-white/40 p-4 rounded-2xl border border-white/50 backdrop-blur-sm">
+                        <p className="font-bold text-sm md:text-base mb-4 leading-relaxed bg-white/40 p-4 rounded-2xl border border-[#8E7AAE]/15 backdrop-blur-sm">
                             {language === 'ar' ? 'في المرة السابقة، فكرنا معاً حول هذا الموضوع:' : 'Last time, we thought through this topic:'}
                             <br/>
-                            <span className="italic text-emerald-700 mt-2 block break-words opacity-80">"{lastInteraction.query}"</span>
+                            <span className="italic text-[#4D6B63] mt-2 block break-words opacity-80">"{lastInteraction.query}"</span>
                         </p>
                         <p className="font-bold text-sm">
                             {language === 'ar' ? 'هل سارت الأمور على ما يرام؟ هل احتجت للمزيد من الدعم؟' : 'Did things go well? Do you need more support?'}
@@ -1175,7 +1199,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         <div className="flex items-center gap-3 mt-4">
                             <button 
                                 onClick={() => handleFollowUpFeedback('success')}
-                                className="flex-1 bg-white border border-emerald-200 hover:border-emerald-500 hover:bg-emerald-50 text-emerald-700 py-3 rounded-xl font-bold transition-all shadow-sm active:scale-95"
+                                className="flex-1 bg-white border border-[#A8C3BD]/35 hover:border-[#8FA9C7]/50 hover:bg-[#EEF4F1] text-[#4D6B63] py-3 rounded-xl font-bold transition-all shadow-sm active:scale-95"
                             >
                                 {language === 'ar' ? 'ممتاز، خطونا خطوة للأمام 👍' : 'Great, took a step forward 👍'}
                             </button>
@@ -1190,7 +1214,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 {language === 'ar' ? 'ما زلت أواجه تحدياً 💬' : 'Still facing a challenge 💬'}
                             </button>
                         </div>
-                        <div className="absolute top-4 left-4 flex items-center gap-1 opacity-50 px-2 py-1 bg-emerald-100 rounded-md">
+                        <div className="absolute top-4 left-4 flex items-center gap-1 opacity-50 px-2 py-1 bg-[#DDEBE7] rounded-md">
                             <Activity className="w-3 h-3" />
                             <span className="text-[10px] font-black uppercase tracking-widest">{language === 'ar' ? 'سحر المتابعة' : 'FOLLOW-UP MAGIC'}</span>
                         </div>
@@ -1211,8 +1235,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
             )}
             <div className={cn(
-              "tour-search-input flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-500",
-              isFocused ? "shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-zinc-200 ring-4 ring-zinc-100 bg-white" : "shadow-sm border-zinc-200 bg-white/80",
+              "tour-search-input flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card",
+              isFocused ? "ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95" : "bg-[#FAF9F6]/80",
               getFluidStyles(),
               getFluidAmbient()
             )}>
@@ -1246,7 +1270,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  className="w-full bg-transparent border-none outline-none px-6 py-4 text-lg md:text-2xl font-bold tracking-tight text-black placeholder:text-zinc-300 z-10 relative resize-none leading-relaxed"
+                  className="w-full bg-transparent border-none outline-none px-6 py-4 text-lg md:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
@@ -1257,7 +1281,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     dir={language === 'ar' ? 'rtl' : 'ltr'}
                   >
                     <span className="invisible">{searchValue}</span>
-                    <span className="text-zinc-200">{smartSuggestion.slice(searchValue.length)}</span>
+                    <span className="text-[#8E7AAE]/28">{smartSuggestion.slice(searchValue.length)}</span>
                   </div>
                 )}
               </div>
@@ -1267,11 +1291,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   type="submit"
                   title={language === 'ar' ? 'البحث أو التحليل' : 'Search / Analyze'}
                   className={cn(
-                    "bg-black text-white w-14 h-14 md:w-16 md:h-16 rounded-[20px] transition-all hover:scale-105 active:scale-95 flex items-center justify-center shrink-0",
-                    query.length > 0 ? "opacity-100 shadow-xl shadow-black/10" : "opacity-30 pointer-events-none"
+                    "bg-[#8E7AAE] text-white w-14 h-14 md:w-16 md:h-16 rounded-[20px] transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center shrink-0 tebyan-breathe",
+                    query.length > 0 ? "opacity-100 shadow-[0_16px_38px_rgba(142,122,174,0.20)]" : "opacity-35 pointer-events-none"
                   )}
                 >
-                    <Search className="w-6 h-6 md:w-7 md:h-7" />
+                    <span className="relative inline-flex items-center justify-center">
+                      <TebyanGlyph kind="gateway" className="w-7 h-7 md:w-8 md:h-8" />
+                    </span>
                 </button>
               <button
                   type="button"
@@ -1280,7 +1306,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     handleTabChange('discover', '');
                   }}
                   title={language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
-                  className="bg-white text-zinc-700 border border-zinc-200 w-12 h-12 md:w-14 md:h-14 rounded-[18px] transition-all hover:scale-105 hover:border-black hover:text-black active:scale-95 flex items-center justify-center shrink-0 shadow-sm"
+                  className="bg-white/90 text-[#465568] border border-[#8FA9C7]/25 w-12 h-12 md:w-14 md:h-14 rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
                 >
                     <Home className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
@@ -1302,6 +1328,19 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   onQawlFasl={(nextValue) => handlePathSelect('qawlfasl', nextValue)}
                   onOpenPath={(path, nextValue) => handlePathSelect(path, nextValue)}
                 />
+              </div>
+            )}
+
+            {questionClarity && !hasSearched && !isThinking && (
+              <div className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#8FA9C7]/18 bg-white/72 backdrop-blur-xl px-4 py-3 tebyan-focus-keep" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <span className="text-[11px] font-black text-[#64788D]">{language === 'ar' ? 'وضوح السؤال' : 'Question clarity'}: {questionClarity.level}</span>
+                  <span className="text-[11px] font-black text-[#8E7AAE]">{questionClarity.score}%</span>
+                </div>
+                <div className="h-2 rounded-full bg-[#EEF2F6] overflow-hidden">
+                  <div className="h-full rounded-full bg-gradient-to-l from-[#8E7AAE] to-[#8FA9C7] transition-all duration-500" style={{ width: `${questionClarity.score}%` }} />
+                </div>
+                <p className="mt-2 text-xs font-bold leading-relaxed text-[#7C8796]">{questionClarity.hint}</p>
               </div>
             )}
 
@@ -1341,7 +1380,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               >
                 <div className="flex justify-center mb-4">
                     {/* Instead of a confusing "return" message, present a clear restart call-to-action */}
-                    <button type="button" onClick={clearSearch} className="px-6 py-2 bg-mood-primary/10 hover:bg-mood-primary/20 text-mood-primary rounded-full font-bold text-sm transition-all duration-500">
+                    <button type="button" onClick={clearSearch} className="px-6 py-2 bg-[#8E7AAE]/12 hover:bg-mood-primary/20 text-[#6E5F8E] rounded-full font-bold text-sm transition-all duration-500">
                         {language === 'ar' ? 'سؤال جديد' : 'New question'}
                     </button>
                 </div>
@@ -1353,7 +1392,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           <TypographicAcoustic
                              key={loadingPhraseIndex}
                              type="snap"
-                             className="text-black font-black text-xl text-center w-full"
+                             className="text-[#182231] font-black text-xl text-center w-full"
                           >
                              {language === 'ar' ? loadingPhrasesAr[loadingPhraseIndex] : loadingPhrasesEn[loadingPhraseIndex]}
                           </TypographicAcoustic>
@@ -1369,12 +1408,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                     className="p-4 bg-mood-secondary/5 border border-mood-secondary/10 rounded-2xl mb-4"
                                 >
                                     <div className="flex items-center gap-2 mb-2 justify-center">
-                                        <Sparkles className="w-4 h-4 text-mood-secondary" />
-                                        <span className="text-[11px] leading-[1.6] font-black text-mood-secondary uppercase tracking-widest">
+                                        <Sparkles className="w-4 h-4 text-[#6E5F8E]" />
+                                        <span className="text-[11px] leading-[1.6] font-black text-[#6E5F8E] uppercase tracking-widest">
                                             {language === 'ar' ? 'استنتاج أولي' : 'Initial Insight'}
                                         </span>
                                     </div>
-                                    <p className="text-mood-secondary font-bold text-sm leading-relaxed">
+                                    <p className="text-[#6E5F8E] font-bold text-sm leading-relaxed">
                                         {smartResponse}
                                     </p>
                                 </motion.div>
@@ -1399,8 +1438,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                             animate={{ opacity: 1, x: 0 }}
                             className="bg-zinc-50 border border-zinc-100 p-4 rounded-2xl flex items-start gap-3"
                         >
-                            <Sparkles className="w-5 h-5 text-zinc-400 shrink-0 mt-1" />
-                            <p className="text-sm font-bold text-zinc-700 leading-relaxed">{smartResponse}</p>
+                            <Sparkles className="w-5 h-5 text-[#7C8796] shrink-0 mt-1" />
+                            <p className="text-sm font-bold text-[#465568] leading-relaxed">{smartResponse}</p>
                         </motion.div>
                     )}
 
@@ -1410,7 +1449,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               {/* Focus Layer: Primary Suggestion */}
                               {primarySuggestion  && (
                                   <div className="space-y-4">
-                                      <div className="px-4 py-2 text-[11px] font-black text-mood-primary uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
+                                      <div className="px-4 py-2 text-[11px] font-black text-[#6E5F8E] uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
                                           <div className="flex items-center gap-2">
                                            <span>{language === 'ar' ? 'ابدأ من هنا' : 'START HERE'}</span>
                                            <Zap className="w-3 h-3" />
@@ -1461,7 +1500,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               {/* Focus Layer: Secondary Options */}
                               {showExpertPaths && secondarySuggestions.length > 0  && (
                                   <div className="mt-8 pt-8 border-t border-zinc-100">
-                                     <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest mb-4 px-2">
+                                     <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest mb-4 px-2">
                                         {language === 'ar' ? 'جرّب زاوية أخرى' : 'TRY ANOTHER ANGLE'}
                                      </h4>
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1475,7 +1514,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                                className="flex items-center justify-between p-5 rounded-[24px] transition-all duration-300 group text-right border bg-white border-zinc-100 hover:border-zinc-300 active:scale-95 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-0.5"
                                              >
                                               <div className="flex items-center gap-4">
-                                                  <div className="w-12 h-12 rounded-[16px] bg-zinc-50 border border-zinc-100 text-zinc-400 group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all duration-300 flex items-center justify-center">
+                                                  <div className="w-12 h-12 rounded-[16px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all duration-300 flex items-center justify-center">
                                                       <Icon className="w-5 h-5" />
                                                   </div>
                                                   <div className="text-right">
@@ -1483,7 +1522,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                                       <p className="text-xs leading-relaxed text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                                   </div>
                                               </div>
-                                              <ArrowLeft className={cn("w-4 h-4 text-zinc-300 group-hover:text-zinc-900 transition-colors", language === 'ar' ? "" : "rotate-180")} />
+                                              <ArrowLeft className={cn("w-4 h-4 text-[#6E5F8E] group-hover:text-zinc-900 transition-colors", language === 'ar' ? "" : "rotate-180")} />
                                              </button>
                                            );
                                         })}
@@ -1498,7 +1537,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           {/* Alternative Paths */}
                           {showExpertPaths && (
                           <div className="col-span-12 md:col-span-4 space-y-4">
-                             <h4 className="text-[11px] leading-[1.6] font-black text-zinc-400 uppercase tracking-widest px-2">
+                             <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest px-2">
                                  {language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}
                              </h4>
                              <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
@@ -1510,9 +1549,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                          type="button"
                                          title={s.tooltip}
                                          onClick={() => handlePathSelect(s.id, query)}
-                                         className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-zinc-100/50 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
+                                         className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
                                        >
-                                         <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-zinc-400 flex items-center justify-center shadow-sm group-hover:text-black group-hover:border-zinc-300 transition-colors shrink-0">
+                                         <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-[#7C8796] flex items-center justify-center shadow-sm group-hover:text-[#6E5F8E] group-hover:border-zinc-300 transition-colors shrink-0">
                                            <Icon className="w-4 h-4" />
                                          </div>
                                          <div className="text-right flex-1 min-w-0 break-words w-full">
@@ -1529,6 +1568,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     </div>
                   </>
                 )}
+              {hasSearched && (
+                <KnowledgeSignature
+                  language={language}
+                  query={query}
+                  kind="مسار فهم"
+                  onLink={() => handleTabChange('knowledgegraph')}
+                />
+              )}
               </motion.div>
             )}
             
@@ -1541,7 +1588,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                  >
                     <div className="flex justify-center mb-2">
                       {/* Mobile: provide a simple restart option instead of returning to home */}
-                      <button type="button" onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full font-bold text-sm transition-all">
+                      <button type="button" onClick={clearSearch} className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-[#465568] rounded-full font-bold text-sm transition-all">
                           {language === 'ar' ? 'سؤال جديد' : 'New question'}
                       </button>
                     </div>
@@ -1556,7 +1603,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                      animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
                                      exit={{ y: -20, opacity: 0, filter: 'blur(4px)' }}
                                      transition={{ duration: 0.4 }}
-                                     className="text-black font-black text-lg text-center w-full"
+                                     className="text-[#182231] font-black text-lg text-center w-full"
                                   >
                                      {language === 'ar' ? loadingPhrasesAr[loadingPhraseIndex] : loadingPhrasesEn[loadingPhraseIndex]}
                                   </motion.p>
@@ -1569,9 +1616,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                         <motion.div
                                             initial={{ opacity: 0, scale: 0.95 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl mb-2"
+                                            className="p-4 bg-[#EEF4F1] border border-[#A8C3BD]/25 rounded-2xl mb-2"
                                         >
-                                            <p className="text-emerald-900 font-bold text-xs leading-relaxed">
+                                            <p className="text-[#34524B] font-bold text-xs leading-relaxed">
                                                 {smartResponse}
                                             </p>
                                         </motion.div>
@@ -1584,7 +1631,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                         exit={{ opacity: 0, y: -5 }}
                                         className="min-h-[50px] flex items-center justify-center"
                                     >
-                                <p className="text-zinc-400 font-bold italic text-sm leading-relaxed px-6">
+                                <p className="text-[#7C8796] font-bold italic text-sm leading-relaxed px-6">
                                             "{dynamicInsights[insightIndex]}"
                                         </p>
                                     </motion.div>
@@ -1596,11 +1643,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         {/* Mobile Primary */}
                         {primarySuggestion  && (
                           <div className="space-y-3">
-                             <span className="font-black text-[10px] text-zinc-400 uppercase tracking-widest px-2">{language === 'ar' ? 'المسار الأقوى' : 'TOP MATCH'}</span>
+                             <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'المسار الأقوى' : 'TOP MATCH'}</span>
                              <button 
                                type="button"
                                onClick={() => handlePathSelect(primarySuggestion.id, query)}
-                               className="w-full flex items-center justify-between p-6 bg-black text-white rounded-[32px] shadow-2xl border border-black active:scale-95 transition-all"
+                               className="w-full flex items-center justify-between p-6 bg-[#8E7AAE] text-white rounded-[32px] shadow-2xl border border-black active:scale-95 transition-all"
                              >
                                 <div className="flex items-center gap-4">
                                    <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
@@ -1633,7 +1680,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
                         {showExpertPaths && secondarySuggestions.length > 0  && (
                           <div className="space-y-3">
-                             <span className="font-black text-[10px] text-zinc-400 uppercase tracking-widest px-2">{language === 'ar' ? 'أبعاد داعمة' : 'SUPPORTING'}</span>
+                             <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'أبعاد داعمة' : 'SUPPORTING'}</span>
                              <div className="grid grid-cols-1 gap-2">
                                 {secondarySuggestions.map(s => {
                                   const Icon = s.icon;
@@ -1645,7 +1692,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                       className="w-full flex items-center justify-between p-4 bg-zinc-50 rounded-[24px] border border-zinc-100 active:scale-95 transition-all"
                                     >
                                        <div className="flex items-center gap-3">
-                                          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-zinc-400 shadow-sm">
+                                          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#7C8796] shadow-sm">
                                              <Icon className="w-5 h-5" />
                                           </div>
                                           <div className="text-right">
@@ -1653,7 +1700,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                              <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">{s.desc}</p>
                                           </div>
                                        </div>
-                                       <ArrowLeft className={cn("w-4 h-4 text-zinc-300", language === 'ar' ? "" : "rotate-180")} />
+                                       <ArrowLeft className={cn("w-4 h-4 text-[#6E5F8E]", language === 'ar' ? "" : "rotate-180")} />
                                     </button>
                                   );
                                 })}
@@ -1666,7 +1713,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         {/* Mobile Alternative Paths */}
                         {showExpertPaths && alternativeSuggestions.length > 0  && (
                            <div className="space-y-3">
-                              <span className="font-black text-[10px] text-zinc-400 uppercase tracking-widest px-2">{language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}</span>
+                              <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}</span>
                               <div className="grid grid-cols-2 gap-2">
                                  {alternativeSuggestions.map((s: any) => {
                                     const Icon = s.icon;
@@ -1676,7 +1723,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                          onClick={() => handlePathSelect(s.id, query)} 
                                          className="flex flex-col items-start gap-4 p-5 bg-white rounded-[24px] border border-zinc-100/80 hover:border-zinc-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95 transition-all group cursor-pointer"
                                       >
-                                         <div className="w-10 h-10 rounded-[14px] bg-zinc-50 border border-zinc-100 text-zinc-400 group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
+                                         <div className="w-10 h-10 rounded-[14px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
                                             <Icon className="w-4 h-4" />
                                          </div>
                                          <div className="text-right">
@@ -1731,7 +1778,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     disabled={isDisabled}
                     className={cn(
                       'h-12 rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-sm transition-all active:scale-95',
-                      isDisabled ? 'opacity-50 pointer-events-none' : 'hover:border-black hover:shadow-md'
+                      isDisabled ? 'opacity-50 pointer-events-none' : 'hover:border-[#8E7AAE]/45 hover:shadow-md'
                     )}
                   >
                     {language === 'ar' ? item.labelAr : item.labelEn}
@@ -1742,7 +1789,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             <button
               type="button"
               onClick={() => setShowInspiration(v => !v)}
-              className="text-xs font-black text-zinc-400 hover:text-zinc-900 transition-colors"
+              className="text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors"
             >
               {showInspiration ? (language === 'ar' ? 'إخفاء الأمثلة' : 'Hide examples') : (language === 'ar' ? 'أحتاج فكرة أبدأ بها' : 'I need a starting idea')}
             </button>
@@ -1765,7 +1812,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           }}
                           className={cn(
                               "px-5 py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
-                              "bg-white text-zinc-500 hover:border-mood-primary hover:text-mood-primary",
+                              "bg-white text-zinc-500 hover:border-mood-primary hover:text-[#6E5F8E]",
                               mood ? getMoodTypography(mood) : "font-bold text-sm"
                           )}
                       >
@@ -1792,29 +1839,29 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                whileHover={{ scale: 1.01, y: -2 }}
+                whileHover={{ y: -1 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="bg-black/90 backdrop-blur-xl border border-zinc-800/80 rounded-[22px] p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-[0_10px_28px_rgba(0,0,0,0.22)] relative overflow-hidden group hover:shadow-[0_22px_60px_rgba(0,0,0,0.32)]"
+                className="bg-[#FAF9F6]/88 backdrop-blur-xl border border-[#8E7AAE]/15 rounded-[20px] p-3 md:p-3.5 flex flex-col md:flex-row items-center justify-between gap-3 shadow-[0_12px_40px_rgba(24,34,49,0.06)] relative overflow-hidden group hover:shadow-[0_18px_50px_rgba(142,122,174,0.10)]"
              >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-800/20 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#8FA9C7]/10 rounded-full blur-[80px] pointer-events-none transition-transform duration-1000 group-hover:scale-110" />
                 <div className="flex items-center gap-5 z-10 w-full md:w-auto">
-                    <div className="w-10 h-10 rounded-[14px] bg-zinc-900/80 text-zinc-300 border border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="w-10 h-10 rounded-[14px] bg-[#8E7AAE]/10 text-[#6E5F8E] border border-[#8E7AAE]/15 flex items-center justify-center shrink-0 shadow-inner">
                         <Sparkles className="w-5 h-5 animate-pulse opacity-70 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                     </div>
                     <div className="text-right">
                         <div className="flex items-center gap-2 mb-2">
-                            <span className="text-sm font-serif italic text-zinc-400">
+                            <span className="text-sm font-serif italic text-[#7C8796]">
                                 {language === 'ar' ? 'رسالة سريعة الزوال' : 'Ephemeral Wisdom'}
                             </span>
                         </div>
-                        <p className="text-sm font-serif text-white/90 leading-relaxed max-w-xl">
+                        <p className="text-sm font-serif text-[#182231]/90 leading-relaxed max-w-xl">
                             {language === 'ar' ? currentWisdom.ar : currentWisdom.en}
                         </p>
                     </div>
                 </div>
                 <div className="flex flex-col items-end shrink-0 z-10 w-full md:w-auto mt-4 md:mt-0">
                     <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">{language === 'ar' ? 'تختفي بعد' : 'Disappears in'}</span>
-                    <div className="text-lg md:text-xl font-mono font-black text-zinc-300 tracking-tight bg-zinc-900/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-zinc-800/50 shadow-inner">
+                    <div className="text-lg md:text-xl font-mono font-black text-[#6E5F8E] tracking-tight bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-xl border border-[#8E7AAE]/12 shadow-inner">
                         {String(ephemeralTime.m).padStart(2, '0')}:{String(ephemeralTime.s).padStart(2, '0')}
                     </div>
                 </div>
@@ -1829,53 +1876,53 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
            initial={{ opacity: 0, x: 20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           whileHover={{ scale: 1.01, y: -2 }}
+           whileHover={{ y: -1 }}
            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-           className="bg-mood-primary/95 backdrop-blur-xl rounded-[22px] md:rounded-[26px] p-4 md:p-5 text-white relative overflow-hidden group shadow-[0_24px_60px_rgba(var(--mood-primary-rgb),0.25)] hover:shadow-[0_30px_80px_rgba(var(--mood-primary-rgb),0.35)]"
+           className="bg-[#FAF9F6]/90 backdrop-blur-xl rounded-[20px] md:rounded-[24px] p-3.5 md:p-4 text-[#182231] relative overflow-hidden group border border-[#8E7AAE]/15 shadow-[0_14px_42px_rgba(24,34,49,0.06)] hover:shadow-[0_18px_52px_rgba(142,122,174,0.10)]"
         >
             <div className="relative z-10">
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full w-fit mb-4 md:mb-5 backdrop-blur-md border border-white/10">
+                <div className="flex items-center gap-2 px-4 py-2 bg-[#8E7AAE]/10 rounded-full w-fit mb-3 backdrop-blur-md border border-[#8E7AAE]/15 text-[#6E5F8E]">
                     <Gamepad2 className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
                     <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'تحدي اليوم' : 'DAILY CHALLENGE'}</span>
                 </div>
                 <h3 className="text-lg md:text-xl font-serif mb-2 md:mb-3 leading-tight tracking-tight">
                     {language === 'ar' ? currentChallenge.titleAr : currentChallenge.titleEn}
                 </h3>
-                <p className="text-white/80 text-xs md:text-sm mb-4 md:mb-5 leading-relaxed font-medium">
+                <p className="text-[#7C8796] text-xs md:text-sm mb-4 md:mb-5 leading-relaxed font-medium">
                     {language === 'ar' ? 'تحدَّ نفسك في المحاكي اليوم' : 'Challenge yourself in the simulator today'}
                 </p>
                 <button 
                     onClick={() => onPathSelect(currentChallenge.path as any, currentChallenge.query)}
-                    className="w-full py-2.5 md:py-3 bg-white/90 backdrop-blur-md text-mood-primary rounded-2xl md:rounded-[20px] font-black text-sm md:text-base hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:-translate-y-1 transition-all active:scale-95 border border-white"
+                    className="w-full py-2.5 md:py-3 bg-[#8E7AAE]/10 backdrop-blur-md text-[#6E5F8E] rounded-2xl md:rounded-[20px] font-black text-sm md:text-base hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 transition-all active:scale-95 border border-[#8E7AAE]/15"
                 >
                     {language === 'ar' ? 'ابدأ التحدي' : 'Start Challenge'}
                 </button>
             </div>
             {/* Abstract background element */}
-            <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-white/20 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-1000 pointer-events-none" />
+            <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-[#8FA9C7]/14 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-1000 pointer-events-none" />
         </motion.div>
 
         <motion.div
            initial={{ opacity: 0, x: -20 }}
            whileInView={{ opacity: 1, x: 0 }}
            viewport={{ once: true }}
-           whileHover={{ scale: 1.01, y: -2 }}
+           whileHover={{ y: -1 }}
            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-           className="bg-white/80 backdrop-blur-xl rounded-[22px] md:rounded-[26px] p-4 md:p-5 border border-zinc-100/50 flex flex-col justify-between shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_60px_rgb(0,0,0,0.08)] transition-all duration-500"
+           className="bg-[#FAF9F6]/90 backdrop-blur-xl rounded-[20px] md:rounded-[24px] p-3.5 md:p-4 border border-[#8FA9C7]/15 flex flex-col justify-between shadow-[0_14px_42px_rgba(24,34,49,0.05)] hover:shadow-[0_18px_52px_rgba(143,169,199,0.10)] transition-all duration-500"
         >
             <div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-50/50 text-zinc-500 rounded-full w-fit mb-4 md:mb-5 border border-zinc-100/50 backdrop-blur-md">
+                <div className="flex items-center gap-2 px-4 py-2 bg-[#8FA9C7]/10 text-[#64788D] rounded-full w-fit mb-4 md:mb-5 border border-[#8FA9C7]/15 backdrop-blur-md">
                     <BrainCircuit className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
                     <span className="text-xs leading-none uppercase font-black tracking-widest">{language === 'ar' ? 'رؤية المنصة' : 'PLATFORM INSIGHT'}</span>
                 </div>
-                <h3 className="text-base md:text-lg font-serif text-black mb-3 tracking-tight leading-tight">
+                <h3 className="text-base md:text-lg font-serif text-[#182231] mb-3 tracking-tight leading-tight">
                     {language === 'ar' ? currentInsight.titleAr : currentInsight.titleEn}
                 </h3>
                 <div className="space-y-3">
                     {currentInsight.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2.5 md:p-3 bg-zinc-50/50 rounded-2xl border border-zinc-100/30 hover:bg-zinc-50 transition-colors backdrop-blur-sm">
-                            <span className="text-sm md:text-base font-bold text-zinc-700">{language === 'ar' ? item.labelAr : item.labelEn}</span>
-                            <div className="h-1.5 md:h-2 w-20 md:w-32 bg-zinc-200/40 rounded-full overflow-hidden shadow-inner flex shrink-0">
+                        <div key={idx} className="flex items-center justify-between p-2.5 md:p-3 bg-white/55 rounded-2xl border border-zinc-100/30 hover:bg-zinc-50 transition-colors backdrop-blur-sm">
+                            <span className="text-sm md:text-base font-bold text-[#465568]">{language === 'ar' ? item.labelAr : item.labelEn}</span>
+                            <div className="h-1.5 md:h-2 w-20 md:w-32 bg-[#D9DEE5]/55 rounded-full overflow-hidden shadow-inner flex shrink-0">
                                  <motion.div 
                                     className={`h-full ${item.color} rounded-full`} 
                                     initial={{ width: 0 }}
@@ -1887,7 +1934,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     ))}
                 </div>
             </div>
-            <p className="mt-4 md:mt-5 text-[10px] md:text-[11px] text-zinc-400 font-bold uppercase tracking-widest text-center border-t border-zinc-100/50 pt-4">
+            <p className="mt-4 md:mt-5 text-[10px] md:text-[11px] text-[#7C8796] font-bold uppercase tracking-widest text-center border-t border-[#8FA9C7]/15 pt-4">
                 {language === 'ar' ? 'تحليل 2000 حالة' : 'Based on 2000 cases'}
             </p>
         </motion.div>
@@ -1898,39 +1945,39 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="emotion-hide mt-10 md:mt-12 mb-16"
+          className="emotion-hide mt-8 md:mt-10 mb-14"
       >
           <motion.button
               type="button"
-              whileHover={{ scale: 1.01, y: -3 }}
-              whileTap={{ scale: 0.99 }}
-              className="w-full p-7 md:p-10 bg-gradient-to-br from-white via-mood-secondary/5 to-mood-primary/5 rounded-[34px] md:rounded-[48px] border border-mood-secondary/20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 md:gap-10 hover:shadow-[0_24px_80px_rgba(var(--mood-secondary-rgb),0.16)] hover:border-mood-secondary/40 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.995 }}
+              className="w-full p-6 md:p-8 tebyan-intellectual-gradient rounded-[30px] md:rounded-[40px] border border-[#8FA9C7]/20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 md:gap-10 hover:shadow-[0_24px_80px_rgba(143,169,199,0.16)] hover:border-[#8E7AAE]/30 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
               onClick={() => handleTabChange('ripple')}
           >
-              <div className="absolute -top-20 -right-20 w-72 h-72 bg-mood-secondary/10 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-mood-primary/10 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#8FA9C7]/12 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-[#8E7AAE]/12 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
               <div className="relative z-10 flex items-center gap-5 md:gap-7 justify-end flex-1">
                   <div>
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-mood-secondary/20 text-mood-secondary text-[10px] md:text-xs font-black tracking-widest uppercase mb-4 shadow-sm">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-[#8E7AAE]/18 text-[#6E5F8E] text-[10px] md:text-xs font-black tracking-widest uppercase mb-4 shadow-sm">
                           <Sparkles className="w-4 h-4" />
                           {language === 'ar' ? 'التجربة المميزة' : 'SIGNATURE EXPERIENCE'}
                       </div>
-                      <h3 className="text-2xl md:text-4xl font-black text-black mb-3 tracking-tight leading-tight">
+                      <h3 className="text-2xl md:text-4xl font-black text-[#182231] mb-3 tracking-tight leading-tight">
                           {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                       </h3>
                       <p className="text-zinc-500 font-bold text-sm md:text-base leading-relaxed max-w-2xl">
                           {language === 'ar' ? 'شاهد كيف تنمو فكرتك وتتفرع وتؤثر في أفكار أخرى كأنها كائن حي.' : 'Watch your idea grow, branch, and influence other ideas like a living system.'}
                       </p>
                   </div>
-                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[28px] bg-white flex items-center justify-center text-mood-secondary border border-mood-secondary/20 shadow-lg transform group-hover:rotate-3 group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[28px] bg-white flex items-center justify-center text-[#6E5F8E] border border-[#8E7AAE]/18 shadow-lg transform group-hover:rotate-1 group-hover:scale-[1.02] transition-transform shrink-0">
                       <Waves className="w-10 h-10 md:w-12 md:h-12 opacity-90" />
                   </div>
               </div>
-              <div className="relative z-10 flex md:flex-col items-center justify-between md:justify-center gap-3 md:min-w-[150px] bg-white/70 border border-white/70 rounded-[28px] p-4 md:p-5 shadow-sm">
-                  <span className="text-[11px] md:text-xs text-zinc-400 font-black uppercase tracking-widest">
+              <div className="relative z-10 flex md:flex-col items-center justify-between md:justify-center gap-3 md:min-w-[150px] bg-white/70 border border-[#8E7AAE]/15 rounded-[28px] p-4 md:p-5 shadow-sm">
+                  <span className="text-[11px] md:text-xs text-[#7C8796] font-black uppercase tracking-widest">
                       {language === 'ar' ? 'ابدأ الرحلة' : 'Start journey'}
                   </span>
-                  <ArrowLeft className={cn("w-5 h-5 text-mood-secondary", language === 'ar' ? "group-hover:-translate-x-1" : "rotate-180 group-hover:translate-x-1", "transition-transform")} />
+                  <ArrowLeft className={cn("w-5 h-5 text-[#6E5F8E]", language === 'ar' ? "group-hover:-translate-x-1" : "rotate-180 group-hover:translate-x-1", "transition-transform")} />
               </div>
           </motion.button>
       </motion.div>

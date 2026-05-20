@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @property --mood-primary {
   syntax: '<color>';
   inherits: true;
@@ -11,50 +12,49 @@
 }
 
 :root {
-  --color-brand-primary: #000000;
-  --color-brand-accent: #000000;
-  --color-brand-bg: #FAFAFA;
-  --mood-primary: #6366f1;
-  --mood-primary-rgb: 99, 102, 241;
-  --mood-secondary: #10b981;
-  --mood-secondary-rgb: 16, 185, 129;
-  --mood-glow: rgba(99, 102, 241, 0.15);
+  --color-brand-primary: #6E5F8E;
+  --color-brand-accent: #8FA9C7;
+  --color-brand-bg: #F7F5F2;
+  --mood-primary: #8E7AAE;
+  --mood-primary-rgb: 142, 122, 174;
+  --mood-secondary: #8FA9C7;
+  --mood-secondary-rgb: 143, 169, 199;
+  --mood-glow: rgba(142, 122, 174, 0.14);
   transition: --mood-primary 0.8s ease, --mood-secondary 0.8s ease, --mood-glow 0.8s ease;
 }
 
 :root[data-mood="revolutionary"] {
-  --mood-primary: #f43f5e;
-  --mood-primary-rgb: 244, 63, 94;
-  --mood-secondary: #f97316;
-  --mood-secondary-rgb: 249, 115, 22;
-  --mood-glow: rgba(244, 63, 94, 0.2);
+  --mood-primary: #9E7F96;
+  --mood-primary-rgb: 158, 127, 150;
+  --mood-secondary: #B7A7C7;
+  --mood-secondary-rgb: 183, 167, 199;
+  --mood-glow: rgba(158, 127, 150, 0.16);
 }
 
 :root[data-mood="calm"] {
-  --mood-primary: #10b981;
-  --mood-primary-rgb: 16, 185, 129;
-  --mood-secondary: #06b6d4;
-  --mood-secondary-rgb: 6, 182, 212;
-  --mood-glow: rgba(16, 185, 129, 0.2);
+  --mood-primary: #8FA9C7;
+  --mood-primary-rgb: 143, 169, 199;
+  --mood-secondary: #A8C3BD;
+  --mood-secondary-rgb: 168, 195, 189;
+  --mood-glow: rgba(143, 169, 199, 0.16);
 }
 
 :root[data-mood="melancholic"] {
-  --mood-primary: #6366f1;
-  --mood-primary-rgb: 99, 102, 241;
-  --mood-secondary: #4338ca;
-  --mood-secondary-rgb: 67, 56, 202;
-  --mood-glow: rgba(99, 102, 241, 0.25);
+  --mood-primary: #7C8796;
+  --mood-primary-rgb: 124, 135, 150;
+  --mood-secondary: #8E7AAE;
+  --mood-secondary-rgb: 142, 122, 174;
+  --mood-glow: rgba(124, 135, 150, 0.16);
 }
 
 :root[data-mood="optimistic"] {
-  --mood-primary: #f59e0b;
-  --mood-primary-rgb: 245, 158, 11;
-  --mood-secondary: #ec4899;
-  --mood-secondary-rgb: 236, 72, 153;
-  --mood-glow: rgba(245, 158, 11, 0.2);
+  --mood-primary: #CBBF9B;
+  --mood-primary-rgb: 203, 191, 155;
+  --mood-secondary: #B7A7C7;
+  --mood-secondary-rgb: 183, 167, 199;
+  --mood-glow: rgba(203, 191, 155, 0.16);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -62,9 +62,9 @@
   --font-sans: 'Alexandria', 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-serif: 'Amiri', 'Playfair Display', ui-serif, Georgia, serif;
   
-  --color-brand-primary: #000000;
-  --color-brand-accent: #000000;
-  --color-brand-bg: #FAFAFA;
+  --color-brand-primary: #6E5F8E;
+  --color-brand-accent: #8FA9C7;
+  --color-brand-bg: #F7F5F2;
 
   --color-mood-primary: var(--mood-primary, #6366f1);
   --color-mood-secondary: var(--mood-secondary, #10b981);
@@ -96,11 +96,12 @@
 
 @layer base {
   body {
-    @apply bg-zinc-50 text-zinc-900 selection:bg-zinc-200 antialiased;
+    @apply text-zinc-900 selection:bg-zinc-200 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
+    background: radial-gradient(circle at top right, rgba(142,122,174,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(143,169,199,0.10), transparent 30%), #F7F5F2;
   }
   button, [type="button"], [type="submit"], [role="button"] {
     cursor: pointer;
@@ -446,3 +447,103 @@ body:not(.zen-idle) nav {
   background-clip: content-box, border-box;
 }
 
+
+
+@keyframes tebyan-breathe {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.92; }
+  50% { transform: translateY(-1px) scale(1.01); opacity: 1; }
+}
+
+.tebyan-breathe {
+  animation: tebyan-breathe 4.8s ease-in-out infinite;
+}
+
+.tebyan-soft-card {
+  background: rgba(250, 249, 246, 0.82);
+  border: 1px solid rgba(142, 122, 174, 0.14);
+  box-shadow: 0 18px 50px rgba(24, 34, 49, 0.06);
+  backdrop-filter: blur(18px);
+}
+
+.tebyan-soft-glow {
+  box-shadow: 0 18px 55px rgba(142, 122, 174, 0.14);
+}
+
+.tebyan-intellectual-gradient {
+  background:
+    radial-gradient(circle at 85% 10%, rgba(142,122,174,0.14), transparent 30%),
+    radial-gradient(circle at 10% 90%, rgba(143,169,199,0.15), transparent 32%),
+    linear-gradient(135deg, rgba(250,249,246,0.96), rgba(247,245,242,0.88));
+}
+
+.tebyan-deep-soft {
+  background:
+    radial-gradient(circle at top right, rgba(142,122,174,0.20), transparent 30%),
+    linear-gradient(135deg, #F8F6F2, #EEF2F6);
+}
+
+/* Tebyan v12 premium experience layer: soft, calm, non-destructive */
+@keyframes tebyan-living-hush {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.55; }
+  50% { transform: translate3d(0,-6px,0) scale(1.035); opacity: 0.78; }
+}
+
+.tebyan-living-background {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(201,190,223,0.24), transparent 32%),
+    radial-gradient(circle at 12% 88%, rgba(185,208,231,0.20), transparent 34%),
+    linear-gradient(135deg, #FBFAF7 0%, #F7F5F2 52%, #F2F5F8 100%);
+}
+
+.tebyan-living-background::before,
+.tebyan-living-background::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(96px);
+  animation: tebyan-living-hush 9s ease-in-out infinite;
+}
+
+.tebyan-living-background::before {
+  width: 26rem;
+  height: 26rem;
+  top: -6rem;
+  right: -4rem;
+  background: rgba(142,122,174,0.18);
+}
+
+.tebyan-living-background::after {
+  width: 24rem;
+  height: 24rem;
+  bottom: -7rem;
+  left: -5rem;
+  background: rgba(143,169,199,0.16);
+  animation-delay: 1.2s;
+}
+
+.tebyan-result-document {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(250,249,246,0.98)),
+    radial-gradient(circle at top right, rgba(142,122,174,0.08), transparent 36%);
+  border: 1px solid rgba(142,122,174,0.14);
+  box-shadow: 0 24px 70px rgba(24,34,49,0.07);
+}
+
+.tebyan-mode-understanding { --mode-accent: #8FA9C7; }
+.tebyan-mode-decision { --mode-accent: #8E7AAE; }
+.tebyan-mode-judgment { --mode-accent: #D8C28A; }
+.tebyan-mode-creative { --mode-accent: #C8A9CB; }
+.tebyan-mode-knowledge { --mode-accent: #7C8796; }
+.tebyan-mode-warning { --mode-accent: #A6603F; }
+
+body.tebyan-focus-mode .global-floating-buttons,
+body.tebyan-focus-mode .tour-search-input ~ *:not(.tebyan-focus-keep) {
+  opacity: 0.18;
+}
+
+body.tebyan-focus-mode main {
+  scroll-behavior: smooth;
+}

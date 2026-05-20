@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, User as UserIcon, Shield, LayoutDashboard, UserCircle } from 'lucide-react';
+import { LogOut, User as UserIcon, Shield, LayoutDashboard, UserCircle, Sparkles } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
 import { motion, AnimatePresence } from 'motion/react';
@@ -125,6 +125,17 @@ export default function UserMenu() {
                   <span className="text-sm font-bold flex-1">لوحة التحكم</span>
                 </button>
               )}
+
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  window.dispatchEvent(new Event('tebyan_open_onboarding'));
+                }}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#7D689E] hover:bg-[#F3EEF8] transition-colors w-full text-start"
+              >
+                <Sparkles size={16} className="text-[#8E7AAE] shrink-0" />
+                <span className="text-sm font-bold flex-1">دليل البداية</span>
+              </button>
               
               <button 
                 onClick={() => {

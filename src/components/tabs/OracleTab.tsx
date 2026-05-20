@@ -107,7 +107,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
+    <div className="bg-white rounded-[32px] p-8 border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
       <div className="flex flex-wrap gap-3 items-center justify-center">
         {personas.map(p => (
           <button
@@ -116,8 +116,8 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             className={cn(
               "px-5 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer border",
               oraclePersona === p.id 
-                ? "bg-black text-white border-black shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
-                : "bg-white text-zinc-600 border-zinc-200/80 hover:border-zinc-300 hover:text-black"
+                ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
+                : "bg-white text-[#465568] border-[#8FA9C7]/25/80 hover:border-zinc-300 hover:text-[#182231]"
             )}
           >
             {language === 'ar' ? p.ar : p.en}
@@ -128,7 +128,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
-            "w-full p-6 text-xl font-medium bg-zinc-50 placeholder:text-zinc-400 rounded-[16px] border-2 border-zinc-200/80 focus:border-black focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
+            "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-[#7C8796] rounded-[16px] border-2 border-[#8FA9C7]/25/80 focus:border-[#8E7AAE] focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
             language === 'ar' ? "pl-32" : "pr-32"
           )}
           placeholder={language === 'ar' ? "اسأل تبيان بأي لهجة..." : "Ask Tebyan..."}
@@ -140,7 +140,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           className={cn(
             "absolute top-3 bottom-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
             language === 'ar' ? "left-3" : "right-3",
-            isLoading ? "bg-zinc-200 text-zinc-500 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
+            isLoading ? "bg-zinc-200 text-[#64788D] cursor-not-allowed" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           )}
         >
           {isLoading ? (
@@ -170,19 +170,19 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="w-full bg-transparent rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-zinc-200/80"
+            className="w-full bg-transparent rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-[#8FA9C7]/25/80"
           >
             <div className="relative">
-              <div className="w-16 h-16 border-4 border-zinc-200/80 rounded-full"></div>
-              <RefreshCw className="w-16 h-16 text-black animate-spin absolute top-0 left-0" />
+              <div className="w-16 h-16 border-4 border-[#8FA9C7]/25/80 rounded-full"></div>
+              <RefreshCw className="w-16 h-16 text-[#182231] animate-spin absolute top-0 left-0" />
             </div>
-            <div className="text-xl font-semibold text-zinc-600">
+            <div className="text-xl font-semibold text-[#465568]">
               {language === 'ar' ? 'جاري استحضار الإجابة...' : 'Summoning the answer...'}
             </div>
           </motion.div>
         ) : oracleResult && (
           <div id="oracle-results" className="space-y-4">
-            <div className="markdown-body p-8 border border-zinc-200/80 rounded-[16px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div className="markdown-body p-8 border border-[#8FA9C7]/25/80 rounded-[16px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
               <ReactMarkdown>{oracleResult}</ReactMarkdown>
             </div>
             {/* Fluid Bridges */}
@@ -191,11 +191,11 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
                      <Command className="w-4 h-4" />
                      {language === 'ar' ? 'خذ هذه الفكرة لآلة الزمن' : 'Take to Time Machine'}
                  </button>
-                 <button onClick={() => handleTabChange('simulation', input)} className="px-4 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                 <button onClick={() => handleTabChange('simulation', input)} className="px-4 py-2 bg-[#EEF4F1] text-emerald-700 hover:bg-emerald-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
                      <Command className="w-4 h-4" />
                      {language === 'ar' ? 'اختبرها في المحاكي' : 'Test in Simulator'}
                  </button>
-                 <button onClick={() => handleTabChange('mindmap', input)} className="px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                 <button onClick={() => handleTabChange('mindmap', input)} className="px-4 py-2 bg-[#F6F0E3] text-amber-700 hover:bg-amber-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
                      <Command className="w-4 h-4" />
                      {language === 'ar' ? 'فككها في الخريطة الذهنية' : 'Breakdown in Mindmap'}
                  </button>
@@ -221,8 +221,8 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
                 className={cn(
                   "flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all",
                   preferences.savedLibrary.some(s => s.content === oracleResult)
-                    ? "bg-black text-white"
-                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                    ? "bg-[#8E7AAE] text-white"
+                    : "bg-[#F1EEF4] text-[#465568] hover:bg-zinc-200"
                 )}
               >
                 {preferences.savedLibrary.some(s => s.content === oracleResult) ? (
