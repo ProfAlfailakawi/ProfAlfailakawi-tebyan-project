@@ -256,6 +256,20 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const [hasSearched, setHasSearched] = useState(() => sessionStorage.getItem('tebyan_current_has_searched') === 'true');
   const [showExpertPaths, setShowExpertPaths] = useState(false);
   const [showInspiration, setShowInspiration] = useState(false);
+  const [showGateEcho, setShowGateEcho] = useState(false);
+
+  useEffect(() => {
+    const revealGate = () => {
+      setShowGateEcho(true);
+      setTimeout(() => setShowGateEcho(false), 2800);
+      try { sessionStorage.removeItem('tebyan_gate_to_search'); } catch(e) {}
+    };
+    if (sessionStorage.getItem('tebyan_gate_to_search') === 'true') {
+      setTimeout(revealGate, 250);
+    }
+    window.addEventListener('tebyan_gate_to_search', revealGate);
+    return () => window.removeEventListener('tebyan_gate_to_search', revealGate);
+  }, []);
 
   const handleSearchInputChange = (value: string) => {
     setSearchValue(value);
@@ -966,6 +980,16 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return { score, level, hint };
   }, [searchValue, language]);
 
+  const clarityRingStyle = questionClarity
+    ? {
+        '--clarity-glow': questionClarity.score < 45
+          ? 'rgba(143,169,199,0.16)'
+          : questionClarity.score < 75
+            ? 'rgba(143,169,199,0.24)'
+            : 'rgba(142,122,174,0.28)'
+      } as React.CSSProperties
+    : undefined;
+
   const suggestions = useMemo(() => {
     const q = query.toLowerCase();
     const ranked: any[] = [];
@@ -1234,12 +1258,27 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             {isThinking && (
                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
             )}
-            <div className={cn(
-              "tour-search-input flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card",
-              isFocused ? "ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95" : "bg-[#FAF9F6]/80",
-              getFluidStyles(),
-              getFluidAmbient()
-            )}>
+            <div
+              className={cn(
+                "tour-search-input tebyan-gateway-ring flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card relative overflow-visible",
+                searchValue.trim().length > 0 && "tebyan-understanding-pulse",
+                showGateEcho && "tebyan-gate-arrival",
+                isFocused ? "ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95" : "bg-[#FAF9F6]/80",
+                getFluidStyles(),
+                getFluidAmbient()
+              )}
+              style={clarityRingStyle}
+            >
+              {showGateEcho && (
+                <div className="pointer-events-none absolute -inset-10 z-0 flex items-center justify-center">
+                  <motion.div
+                    initial={{ scale: 1.22, opacity: 0.0 }}
+                    animate={{ scale: [1.22, 1.02, 1.08], opacity: [0, 0.58, 0] }}
+                    transition={{ duration: 2.65, ease: 'easeInOut' }}
+                    className="h-40 w-40 rounded-full border border-[#8E7AAE]/22 bg-[#F4F0FA]/30 blur-[1px]"
+                  />
+                </div>
+              )}
               <div className="flex-1 relative flex overflow-hidden flex-col justify-center">
                 <TextareaAutosize
                   ref={inputRef as any}
@@ -1296,6 +1335,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   )}
                 >
                     <span className="relative inline-flex items-center justify-center">
+                      {searchValue.trim().length > 0 && <motion.span aria-hidden className="absolute -top-1 -left-1 h-2.5 w-2.5 rounded-full bg-white/90" animate={{ scale: [0.85, 1.35, 0.85], opacity: [0.45, 1, 0.45] }} transition={{ duration: 1.55, repeat: Infinity, ease: 'easeInOut' }} />}
                       <TebyanGlyph kind="gateway" className="w-7 h-7 md:w-8 md:h-8" />
                     </span>
                 </button>
@@ -1956,6 +1996,21 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           >
               <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#8FA9C7]/12 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
               <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-[#8E7AAE]/12 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute inset-0 pointer-events-none opacity-70">
+                {[...Array(14)].map((_, i) => (
+                  <motion.span
+                    key={`fabric-shadow-${i}`}
+                    animate={{ y: [0, i % 2 ? 4 : -4, 0], opacity: [0.25, 0.72, 0.25] }}
+                    transition={{ duration: 4.6 + (i % 3), repeat: Infinity, ease: 'easeInOut', delay: i * 0.14 }}
+                    className="absolute h-1.5 w-1.5 rounded-full bg-[#8E7AAE]/45 shadow-[0_0_16px_rgba(142,122,174,0.28)]"
+                    style={{ right: `${8 + (i * 7) % 82}%`, top: `${18 + (i * 11) % 66}%` }}
+                  />
+                ))}
+                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 900 260" preserveAspectRatio="none" aria-hidden>
+                  <path d="M70 82 C 200 35, 300 185, 440 105 S 620 45, 830 168" fill="none" stroke="rgba(142,122,174,0.15)" strokeWidth="2" strokeDasharray="8 13" />
+                  <path d="M95 185 C 250 120, 345 220, 500 145 S 650 84, 840 72" fill="none" stroke="rgba(143,169,199,0.16)" strokeWidth="2" strokeDasharray="5 14" />
+                </svg>
+              </div>
               <div className="relative z-10 flex items-center gap-5 md:gap-7 justify-end flex-1">
                   <div>
                       <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-[#8E7AAE]/18 text-[#6E5F8E] text-[10px] md:text-xs font-black tracking-widest uppercase mb-4 shadow-sm">

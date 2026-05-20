@@ -249,6 +249,43 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         </div>
       </section>
 
+      {/* Living Idea Fabric Shadow — a soft dashboard signature without replacing the real feature */}
+      <section className="relative overflow-hidden rounded-[30px] border border-[#8E7AAE]/14 bg-[#FBFAF7]/86 p-5 md:p-7 shadow-[0_18px_60px_rgba(142,122,174,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="absolute inset-0 pointer-events-none opacity-80">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(142,122,174,0.16),transparent_18%),radial-gradient(circle_at_72%_22%,rgba(143,169,199,0.18),transparent_20%),radial-gradient(circle_at_62%_76%,rgba(142,122,174,0.12),transparent_18%)]" />
+          {[...Array(12)].map((_, i) => (
+            <motion.span
+              key={i}
+              animate={{ y: [0, i % 2 ? 5 : -5, 0], opacity: [0.35, 0.75, 0.35] }}
+              transition={{ duration: 5 + (i % 4), repeat: Infinity, ease: 'easeInOut', delay: i * 0.18 }}
+              className="absolute h-1.5 w-1.5 rounded-full bg-[#8E7AAE]/50 shadow-[0_0_18px_rgba(142,122,174,0.35)]"
+              style={{ right: `${10 + (i * 7) % 78}%`, top: `${18 + (i * 13) % 62}%` }}
+            />
+          ))}
+          <svg className="absolute inset-0 h-full w-full" viewBox="0 0 900 240" preserveAspectRatio="none" aria-hidden>
+            <path d="M90 70 C 210 20, 280 170, 410 90 S 620 35, 765 145" fill="none" stroke="rgba(142,122,174,0.18)" strokeWidth="2" strokeDasharray="7 12" />
+            <path d="M130 170 C 240 120, 340 205, 470 145 S 640 88, 815 55" fill="none" stroke="rgba(143,169,199,0.18)" strokeWidth="2" strokeDasharray="5 14" />
+          </svg>
+        </div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex items-start gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[22px] border border-[#8E7AAE]/16 bg-white/70 text-[#8E7AAE] shadow-sm">
+              <Network className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-[11px] font-black tracking-[0.24em] uppercase text-[#8E7AAE]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
+              <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">{language === 'ar' ? 'أفكارك بدأت ترسم خريطة هادئة' : 'Your ideas are forming a quiet map'}</h3>
+              <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-[#7C8796]">
+                {language === 'ar' ? 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.' : 'This is only a visual shadow; the full idea fabric remains in your knowledge network.'}
+              </p>
+            </div>
+          </div>
+          <button onClick={() => handleTabChange('knowledgegraph')} className="shrink-0 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-5 py-3 text-xs font-black text-[#6E5F8E] shadow-sm transition-all hover:border-[#8E7AAE]/40 hover:bg-[#F4F1F8] active:scale-95">
+            {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
+          </button>
+        </div>
+      </section>
+
       {/* Daily Mission */}
       <div className="bg-gradient-to-r from-[#EEF2F6] to-[#F7F3FB] rounded-[20px] md:rounded-[24px] p-4 md:p-6 text-[#182231] border border-[#8FA9C7]/18 relative overflow-hidden shadow-lg mb-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-[80px] opacity-20 -translate-y-1/2 translate-x-1/3"></div>

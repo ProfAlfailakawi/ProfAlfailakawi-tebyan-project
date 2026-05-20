@@ -45,7 +45,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
   return (
     <div
       className={cn(
-        'mt-4 rounded-[22px] border border-[#E8E3F0] bg-[#FBFAF7]/90 px-4 py-3 shadow-[0_10px_30px_rgba(142,122,174,0.08)]',
+        'mt-4 rounded-[22px] tebyan-knowledge-stamp px-4 py-3',
         'flex flex-col md:flex-row md:items-center justify-between gap-3 text-right',
         compact && 'px-3 py-2 rounded-2xl',
         className
@@ -58,10 +58,10 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
         </div>
         <div className="min-w-0">
           <p className="text-[11px] font-black tracking-widest uppercase text-[#8E7AAE]">
-            {isAr ? 'توقيع تبيان المعرفي' : 'Tebyan knowledge signature'}
+            {isAr ? 'ختم تبيان المعرفي' : 'Tebyan knowledge seal'}
           </p>
           <p className="text-xs md:text-sm font-bold text-[#6F7785] leading-relaxed">
-            {isAr ? 'يمكنك حفظ هذا المسار أو ربطه بنسيج أفكارك للعودة إليه لاحقاً.' : 'Save this path or link it to your idea fabric for later.'}
+            {isAr ? 'هذا المسار صار وثيقة صغيرة: احفظها، اربطها بالنسيج، أو ارجع لها عندما تكتمل الفكرة.' : 'This path is now a small document: save it, link it, or return when the idea matures.'}
           </p>
         </div>
       </div>

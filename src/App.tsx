@@ -9,7 +9,7 @@ import {
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
   Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box,
-  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, WifiOff
+  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, WifiOff, DoorOpen, ShieldCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -110,7 +110,8 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            localStorage.setItem('tebyan_splash_seen_v12', 'true');
+            localStorage.setItem('tebyan_creative_splash_seen_v15', 'true');
+            try { sessionStorage.setItem('tebyan_gate_to_search', 'true'); window.dispatchEvent(new CustomEvent('tebyan_gate_to_search')); } catch(e) {}
             onFinish();
         }, 1850);
         return () => clearTimeout(timer);
@@ -160,16 +161,16 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
     );
 };
 
-const SessionRestoreLoader = ({ language }: { language: 'ar' | 'en' }) => (
+const SessionRestoreLoader = ({ language, slow = false }: { language: 'ar' | 'en', slow?: boolean }) => (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
-    className="fixed left-1/2 top-5 z-[9998] -translate-x-1/2 rounded-full border border-white/70 bg-white/80 px-4 py-2 shadow-[0_14px_40px_rgba(103,88,132,0.12)] backdrop-blur-xl"
+    className={cn('fixed left-1/2 z-[9998] -translate-x-1/2 border border-white/70 bg-white/84 shadow-[0_14px_40px_rgba(103,88,132,0.12)] backdrop-blur-xl', slow ? 'top-6 rounded-[28px] px-5 py-4 max-w-md w-[calc(100%-2rem)]' : 'top-5 rounded-full px-4 py-2')}
   >
     <div className="flex items-center gap-3 text-xs font-black text-[#7D689E]">
       <Loader2 className="h-4 w-4 animate-spin" />
-      <span>{language === 'ar' ? 'جاري استعادة الجلسة…' : 'Restoring session…'}</span>
+      <span>{slow ? (language === 'ar' ? 'نحافظ على مسارك ونستعيد الاتصال بالنظام…' : 'Keeping your path while restoring the system…') : (language === 'ar' ? 'جاري استعادة الجلسة…' : 'Restoring session…')}</span>
     </div>
   </motion.div>
 );
@@ -177,25 +178,39 @@ const SessionRestoreLoader = ({ language }: { language: 'ar' | 'en' }) => (
 
 const OfflineNotice = ({ language }: { language: 'ar' | 'en' }) => (
   <motion.div
-    initial={{ opacity: 0, y: 24, scale: 0.98 }}
-    animate={{ opacity: 1, y: 0, scale: 1 }}
-    exit={{ opacity: 0, y: 24, scale: 0.98 }}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
     transition={{ duration: 0.35, ease: 'easeOut' }}
-    className="fixed bottom-5 left-1/2 z-[9999] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-[28px] border border-[#F0D8D2] bg-[#FFF9F6]/92 p-4 shadow-[0_24px_80px_rgba(166,96,63,0.14)] backdrop-blur-2xl"
+    className="fixed inset-0 z-[9999] flex items-end justify-center p-4 md:items-center bg-[#F8F5EF]/62 backdrop-blur-[6px]"
     dir={language === 'ar' ? 'rtl' : 'ltr'}
   >
-    <div className="flex items-start gap-3">
-      <div className="relative mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#FAF0E6] text-[#A6603F]">
-        <motion.span animate={{ scale: [1, 1.45, 1], opacity: [0.45, 0, 0.45] }} transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }} className="absolute inset-0 rounded-2xl border border-[#A6603F]/25" />
-        <WifiOff className="h-5 w-5" />
+    <motion.div
+      initial={{ y: 22, scale: 0.98, opacity: 0 }}
+      animate={{ y: 0, scale: 1, opacity: 1 }}
+      exit={{ y: 22, scale: 0.98, opacity: 0 }}
+      className="relative w-full max-w-lg overflow-hidden rounded-[34px] border border-[#F0D8D2] bg-[#FFF9F6]/94 p-5 md:p-7 shadow-[0_34px_110px_rgba(166,96,63,0.16)]"
+    >
+      <div className="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#F1D7CC]/50 blur-[70px]" />
+      <div className="absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-[#C9BEDF]/35 blur-[80px]" />
+      <div className="relative flex items-start gap-4">
+        <div className="relative mt-0.5 flex h-14 w-14 shrink-0 items-center justify-center rounded-[24px] bg-[#FAF0E6] text-[#A6603F]">
+          <motion.span animate={{ scale: [1, 1.7, 1], opacity: [0.5, 0, 0.5] }} transition={{ duration: 2.6, repeat: Infinity, ease: 'easeOut' }} className="absolute inset-0 rounded-[24px] border border-[#A6603F]/25" />
+          <WifiOff className="h-6 w-6" />
+        </div>
+        <div className="min-w-0 text-right">
+          <p className="text-[11px] font-black tracking-[0.22em] uppercase text-[#A6603F]/75">{language === 'ar' ? 'وضع الحفاظ على المسار' : 'Path-preserve mode'}</p>
+          <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">{language === 'ar' ? 'الاتصال انقطع… لكن الفكرة لم تضِع' : 'Connection paused… the idea is safe'}</h3>
+          <p className="mt-2 text-sm font-bold leading-relaxed text-[#7C8796]">
+            {language === 'ar' ? 'لا نعيد السبلاش الافتتاحي هنا. تبيان يحفظ حالتك الحالية، وعند عودة الشبكة نكمل من نفس الباب.' : 'We do not replay the opening splash here. Tebyan keeps your state and resumes from the same doorway when the network returns.'}
+          </p>
+          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-[#E9D7CF] bg-white/60 px-3 py-2 text-xs font-black text-[#8D6A58]">
+            <ShieldCheck className="h-4 w-4" />
+            <span>{language === 'ar' ? 'مسارك الحالي محفوظ مؤقتاً' : 'Your current path is temporarily preserved'}</span>
+          </div>
+        </div>
       </div>
-      <div className="min-w-0 text-right">
-        <p className="text-sm font-black text-[#182231]">{language === 'ar' ? 'الاتصال انقطع بهدوء' : 'Connection paused gently'}</p>
-        <p className="mt-1 text-xs font-bold leading-relaxed text-[#7C8796]">
-          {language === 'ar' ? 'لا تقلق، تبيان يحافظ على مسارك الحالي حتى يعود الاتصال.' : 'No worries. Tebyan keeps your current path until the connection returns.'}
-        </p>
-      </div>
-    </div>
+    </motion.div>
   </motion.div>
 );
 
@@ -208,8 +223,10 @@ const AppContent: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('home');
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'error' | 'success' } | null>(null);
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [showSplash, setShowSplash] = useState(() => localStorage.getItem('tebyan_splash_seen_v12') !== 'true');
+  const [showSplash, setShowSplash] = useState(() => localStorage.getItem('tebyan_creative_splash_seen_v15') !== 'true');
   const [isOffline, setIsOffline] = useState(() => typeof navigator !== 'undefined' ? !navigator.onLine : false);
+  const [showSlowRecovery, setShowSlowRecovery] = useState(false);
+  const [doorTransition, setDoorTransition] = useState<{ label: string; kind: string } | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -235,6 +252,15 @@ const AppContent: React.FC = () => {
       window.removeEventListener('offline', updateOnlineState);
     };
   }, []);
+
+  useEffect(() => {
+    if (showSplash || authReady) {
+      setShowSlowRecovery(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowSlowRecovery(true), 1800);
+    return () => clearTimeout(timer);
+  }, [showSplash, authReady]);
 
   useEffect(() => {
     // Run migration from legacy keys immediately
@@ -408,6 +434,20 @@ const AppContent: React.FC = () => {
     }
 
     const actualTab = targetTab === 'home' || targetTab === 'discover' || (targetTab as string) === 'dashboard' ? 'home' : targetTab;
+    const doorLabels: Record<string, string> = {
+      home: language === 'ar' ? 'نعود إلى الواجهة الهادئة…' : 'Returning to the calm dashboard…',
+      qawlfasl: language === 'ar' ? 'نفتح باب قول فصل…' : 'Opening Qawl Fasl…',
+      decisionroom: language === 'ar' ? 'نفتح غرفة القرار…' : 'Opening the decision room…',
+      creativelab: language === 'ar' ? 'نفتح مفاعل الإبداع…' : 'Opening the idea reactor…',
+      knowledgecenter: language === 'ar' ? 'نفتح مركز المعرفة…' : 'Opening the knowledge center…',
+      knowledgegraph: language === 'ar' ? 'نفتح نسيج الأفكار…' : 'Opening the idea fabric…',
+      strategicarena: language === 'ar' ? 'نفتح الميدان الاستراتيجي…' : 'Opening the strategic arena…',
+      oracle: language === 'ar' ? 'نفتح مجلس المستشارين…' : 'Opening the council…'
+    };
+    if (actualTab !== activeTab) {
+      setDoorTransition({ label: doorLabels[String(actualTab)] || (language === 'ar' ? 'نفتح الباب المناسب…' : 'Opening the right doorway…'), kind: String(actualTab) });
+      setTimeout(() => setDoorTransition(null), 760);
+    }
     if (checkAuth(actualTab as Tab)) {
       setIsLoading(false);
       setError(null);
@@ -422,7 +462,7 @@ const AppContent: React.FC = () => {
         if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'auto' });
       }, 50);
     }
-  }, [checkAuth, language, setMobileMenuOpen, setSidebarOpen, setIsLoading, setError, setInitialContext, setActiveTab]);
+  }, [checkAuth, language, activeTab, setMobileMenuOpen, setSidebarOpen, setIsLoading, setError, setInitialContext, setActiveTab]);
 
   // Listen for custom navigation events dispatched from child components (e.g. ClientProfilePanel)
   // When a 'navigate_tab' event is received, navigate to the given tab using handleTabChange.
@@ -491,8 +531,26 @@ const AppContent: React.FC = () => {
               />
             )}
             {showSplash && <SplashScreen key="splash" onFinish={() => setShowSplash(false)} language={language} />}
-            {!showSplash && !authReady && <SessionRestoreLoader key="session-restore" language={language} />}
+            {!showSplash && !authReady && <SessionRestoreLoader key="session-restore" language={language} slow={showSlowRecovery} />}
             {isOffline && !showSplash && <OfflineNotice key="offline-notice" language={language} />}
+            {doorTransition && !showSplash && (
+              <motion.div
+                key="door-transition"
+                initial={{ opacity: 0, scale: 0.98, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, scale: 1.02, filter: 'blur(10px)' }}
+                transition={{ duration: 0.34, ease: 'easeOut' }}
+                className="fixed inset-0 z-[120] pointer-events-none flex items-center justify-center bg-[#F8F5EF]/36 backdrop-blur-[2px]"
+              >
+                <div className="relative rounded-[34px] border border-white/75 bg-white/82 px-8 py-6 shadow-[0_30px_100px_rgba(142,122,174,0.16)] overflow-hidden">
+                  <div className="absolute -top-20 -right-20 h-44 w-44 rounded-full bg-[#C9BEDF]/45 blur-[60px]" />
+                  <div className="relative flex items-center gap-4 text-[#6E5F8E]">
+                    <DoorOpen className="w-7 h-7" />
+                    <span className="text-base md:text-lg font-black">{doorTransition.label}</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
           
           {/* Background Elements (Volume & Texture) */}
@@ -717,7 +775,7 @@ const AppContent: React.FC = () => {
 
       {/* --- Desktop Sidebar Removed --- */}
 
-      <main ref={mainRef} className="flex-1 w-full min-h-0 pt-24 overflow-y-auto overflow-x-hidden relative scroll-smooth custom-scrollbar">
+      <main ref={mainRef} className={cn("flex-1 w-full min-h-0 pt-24 overflow-y-auto overflow-x-hidden relative scroll-smooth custom-scrollbar tebyan-route-shell", `tebyan-route-${activeTab}`)}>
         
         {/* Error Banner */}
         {error && (

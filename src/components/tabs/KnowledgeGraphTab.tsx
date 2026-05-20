@@ -246,21 +246,21 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
               </radialGradient>
               
               <radialGradient id="goldenGrad" cx="30%" cy="30%" r="70%">
-                <stop offset="0%" stopColor="#FFEFAA" />
-                <stop offset="50%" stopColor="#DFB247" />
-                <stop offset="100%" stopColor="#9C771E" />
+                <stop offset="0%" stopColor="#FFF7D8" />
+                <stop offset="50%" stopColor="#E7D8A3" />
+                <stop offset="100%" stopColor="#C9B77B" />
               </radialGradient>
               
               <radialGradient id="coreGrad" cx="30%" cy="30%" r="70%">
-                <stop offset="0%" stopColor="#6366F1" />
-                <stop offset="60%" stopColor="#4338CA" />
-                <stop offset="100%" stopColor="#1E1B4B" />
+                <stop offset="0%" stopColor="#EEE7F8" />
+                <stop offset="60%" stopColor="#B7A7C7" />
+                <stop offset="100%" stopColor="#8E7AAE" />
               </radialGradient>
               
               <radialGradient id="selectedGrad" cx="30%" cy="30%" r="70%">
-                <stop offset="0%" stopColor="#6EE7B7" />
-                <stop offset="60%" stopColor="#10B981" />
-                <stop offset="100%" stopColor="#064E3B" />
+                <stop offset="0%" stopColor="#E8F5F1" />
+                <stop offset="60%" stopColor="#A8C3BD" />
+                <stop offset="100%" stopColor="#6D958B" />
               </radialGradient>
             </defs>
 
