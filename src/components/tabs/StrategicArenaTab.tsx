@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'motion/react';
-import { BrainCircuit, Hourglass, Gamepad2, Move, Activity } from 'lucide-react';
+import { BrainCircuit, Hourglass, Gamepad2, Move, Activity, ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { CouncilTab } from './CouncilTab';
 import { TimeMachineTab } from './TimeMachineTab';
@@ -71,6 +71,7 @@ const EmotionalLandscape = ({ language }: { language: 'ar' | 'en' }) => {
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
   const [activeSubTab, setActiveSubTab] = useState<'council' | 'timemachine' | 'simulation' | 'spatial'>('council');
+  const [showArenaPicker, setShowArenaPicker] = useState(true);
 
   const tabs = [
     { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
@@ -78,6 +79,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
     { id: 'simulation', label: language === 'ar' ? 'المحاكي الميداني' : 'Simulator', icon: Gamepad2 },
     { id: 'spatial', label: language === 'ar' ? 'الميدان الفراغي' : 'Spatial Field', icon: Move }
   ];
+
+  const activeArenaTab = tabs.find(tab => tab.id === activeSubTab) || tabs[0];
 
   return (
     <div className="w-full h-full flex flex-col space-y-6">
@@ -88,24 +91,39 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
             <p className="text-sm text-[#64788D] font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات كبيرة، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four major gates, each leading to a different depth without hiding any feature.'}</p>
           </div>
         </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {tabs.map(tab => {
-          const Icon = tab.icon;
-          const isActive = activeSubTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveSubTab(tab.id as any)}
-              className={cn(
-                "flex items-center justify-between gap-3 px-5 py-4 rounded-[22px] font-bold text-sm transition-all text-right border",
-                isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-[#465568] hover:bg-[#FAF9F6]/88 border-[#8FA9C7]/15 hover:border-zinc-300"
-              )}
-            >
-              <Icon className="w-4 h-4" />
-              <span>{tab.label}</span>
-            </button>
-          )
-        })}
+      <div className="space-y-3">
+        <button
+          type="button"
+          onClick={() => setShowArenaPicker(v => !v)}
+          className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
+        >
+          <div className="flex items-center gap-3 font-black text-[#182231]">
+            {React.createElement(activeArenaTab.icon, { className: 'w-5 h-5 text-[#8E7AAE]' })}
+            <span>{activeArenaTab.label}</span>
+          </div>
+          <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showArenaPicker && "rotate-180")} />
+        </button>
+        {showArenaPicker && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {tabs.map(tab => {
+              const Icon = tab.icon;
+              const isActive = activeSubTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveSubTab(tab.id as any); setShowArenaPicker(false); }}
+                  className={cn(
+                    "flex items-center justify-between gap-3 px-5 py-4 rounded-[22px] font-bold text-sm transition-all text-right border",
+                    isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-[#465568] hover:bg-[#FAF9F6]/88 border-[#8FA9C7]/15 hover:border-zinc-300"
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
       </div>
 

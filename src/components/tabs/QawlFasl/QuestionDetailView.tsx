@@ -77,7 +77,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         <div className="max-w-4xl mx-auto px-5 md:px-8 py-6 md:py-10 flex items-start gap-4 md:gap-6">
           <button 
             onClick={onBack}
-            className="mt-1 flex items-center justify-center bg-white/80 hover:bg-[#F1EEF4] text-[#465568] rounded-full w-10 h-10 md:w-12 md:h-12 shrink-0 transition-colors"
+            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center justify-center bg-white/92 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] rounded-2xl w-11 h-11 md:w-12 md:h-12 shrink-0 transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <ArrowRight className="w-5 h-5 md:w-6 h-6" />
           </button>

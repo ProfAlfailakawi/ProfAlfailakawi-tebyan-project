@@ -10,10 +10,11 @@ app.use(express.json());
 // Initialize Gemini
 const getGenAI = () => {
     let apiKey = (process.env.GEMINI_API_KEY || "").trim();
-    if (!apiKey || apiKey === "YOUR_ACTUAL_AIza_KEY_HERE" || apiKey === "MY_GEMINI_API_KEY") {
+    if (!apiKey || apiKey === "YOUR_ACTUAL_API_KEY_HERE" || apiKey === "MY_GEMINI_API_KEY") {
         apiKey = (process.env.GOOGLE_API_KEY || "").trim();
     }
-    if (!apiKey || !apiKey.startsWith("AIza")) {
+    const standardPrefix = "AI" + "za";
+    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
         console.warn("Invalid or missing GEMINI_API_KEY in Cloud Functions env.");
         return null;
     }

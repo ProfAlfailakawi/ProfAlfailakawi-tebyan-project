@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid } from 'lucide-react';
+import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid, ChevronDown } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -33,6 +33,7 @@ const labTools = [
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [activeLabTool, setActiveLabTool] = React.useState('collider');
   const [activeLabPurpose, setActiveLabPurpose] = React.useState('understand');
+  const [showLabPurposePicker, setShowLabPurposePicker] = React.useState(true);
   const [labInput, setLabInput] = React.useState('');
   const [labInput2, setLabInput2] = React.useState(''); // For Collider
   const [labColliderResult, setLabColliderResult] = React.useState<string | null>(null);
@@ -70,10 +71,14 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] }
   ]), [language]);
 
+  const activeLabPurposeMeta = React.useMemo(() => activeLabPurpose === 'all'
+    ? { id: 'all', title: { ar: 'المختبر الكامل', en: 'Full lab' }, hint: { ar: 'كل أدوات المختبر كما هي', en: 'All lab tools unchanged' }, toolIds: labTools.map(t => t.id) }
+    : (labPurposes.find(p => p.id === activeLabPurpose) || labPurposes[0]), [activeLabPurpose, labPurposes]);
+
   const visibleLabTools = React.useMemo(() => {
-    const selected = labPurposes.find(p => p.id === activeLabPurpose) || labPurposes[0];
+    const selected = activeLabPurposeMeta;
     return labTools.filter(tool => selected.toolIds.includes(tool.id));
-  }, [activeLabPurpose, labPurposes]);
+  }, [activeLabPurposeMeta]);
 
   const playIdeaSound = React.useCallback((freq: number, amp: number, type: string) => {
     try {
@@ -255,7 +260,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
              </div>
              <button
                type="button"
-               onClick={() => setActiveLabPurpose('all')}
+               onClick={() => { setActiveLabPurpose('all'); setShowLabPurposePicker(false); }}
                className="px-5 py-3 rounded-full bg-[#8E7AAE] text-white font-black text-xs flex items-center gap-2 hover:bg-black active:scale-95 transition-all"
              >
                <LayoutGrid className="w-4 h-4" />
@@ -263,21 +268,36 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
              </button>
            </div>
 
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-             {labPurposes.filter(purpose => purpose.id !== 'all').map(purpose => (
-               <button
-                 key={purpose.id}
-                 type="button"
-                 onClick={() => setActiveLabPurpose(purpose.id)}
-                 className={cn(
-                   "text-right p-4 rounded-[22px] border transition-all active:scale-[0.98]",
-                   activeLabPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-[#F7F5F2] text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300"
-                 )}
-               >
-                 <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
-                 <div className={cn("text-[11px] leading-relaxed font-bold", activeLabPurpose === purpose.id ? "text-white/70" : "text-[#7C8796]")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
-               </button>
-             ))}
+           <div className="space-y-3">
+             <button
+               type="button"
+               onClick={() => setShowLabPurposePicker(v => !v)}
+               className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
+             >
+               <div>
+                 <div className="font-black text-sm md:text-base text-[#182231]">{language === 'ar' ? activeLabPurposeMeta.title.ar : activeLabPurposeMeta.title.en}</div>
+                 <div className="text-[11px] md:text-xs font-bold text-[#64788D] mt-0.5">{language === 'ar' ? activeLabPurposeMeta.hint.ar : activeLabPurposeMeta.hint.en}</div>
+               </div>
+               <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showLabPurposePicker && "rotate-180")} />
+             </button>
+             {showLabPurposePicker && (
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                 {labPurposes.filter(purpose => purpose.id !== 'all').map(purpose => (
+                   <button
+                     key={purpose.id}
+                     type="button"
+                     onClick={() => { setActiveLabPurpose(purpose.id); setShowLabPurposePicker(false); }}
+                     className={cn(
+                       "text-right p-4 rounded-[22px] border transition-all active:scale-[0.98]",
+                       activeLabPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-[#F7F5F2] text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300"
+                     )}
+                   >
+                     <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
+                     <div className={cn("text-[11px] leading-relaxed font-bold", activeLabPurpose === purpose.id ? "text-white/70" : "text-[#7C8796]")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
+                   </button>
+                 ))}
+               </div>
+             )}
            </div>
 
            <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">

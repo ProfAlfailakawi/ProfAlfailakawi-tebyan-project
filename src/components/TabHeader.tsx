@@ -26,13 +26,13 @@ export const TabHeader: React.FC<{
                     onClick={handleBack}
                     aria-label={language === 'ar' ? 'رجوع' : 'Back'}
                     title={language === 'ar' ? 'رجوع' : 'Back'}
-                    className="tebyan-tab-back absolute top-4 left-4 z-20 w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-white/90 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] border border-[#8FA9C7]/18 shadow-sm transition-all active:scale-95 flex items-center justify-center"
+                    className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] w-11 h-11 md:w-12 md:h-12 rounded-2xl bg-white/92 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
                 >
-                    <ArrowLeft className="w-5 h-5" />
+                    <ArrowLeft className={language === 'ar' ? 'w-5 h-5' : 'w-5 h-5 rotate-180'} />
                 </button>
             )}
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pr-0 pl-12 md:pl-14 min-w-0">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pe-0 ps-0 min-w-0">
                 <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 w-full md:w-auto">
                     <div className="w-12 h-12 md:w-16 md:h-16 bg-[#8E7AAE]/12 text-[#6E5F8E] border border-[#8E7AAE]/18 rounded-[18px] md:rounded-[24px] flex items-center justify-center shrink-0 shadow-lg">
                         <Icon className="w-6 h-6 md:w-8 md:h-8" />

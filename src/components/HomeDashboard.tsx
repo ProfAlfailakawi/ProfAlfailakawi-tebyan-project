@@ -157,6 +157,11 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
     }
   }, []);
 
+  const closeFullDashboardAndGo = (id: string) => {
+    setShowFullDashboard(false);
+    handleTabChange(id);
+  };
+
   return (
     <div className="tebyan-home-signature w-full flex flex-col pt-4 pb-16 md:pt-6 px-4 md:px-6 max-w-6xl mx-auto space-y-5">
       <header className="tebyan-cinematic-hero flex flex-col md:flex-row md:items-start justify-between gap-4 pb-5" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -333,7 +338,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         <motion.button
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          onClick={() => handleTabChange('ar')}
+          onClick={() => closeFullDashboardAndGo('ar')}
           className="tebyan-glass-card tebyan-tool-tile group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[#8E7AAE]/18 active:scale-[0.98] transition-all"
         >
            <motion.div 
@@ -361,7 +366,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             key={tab.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            onClick={() => handleTabChange(tab.id)}
+            onClick={() => closeFullDashboardAndGo(tab.id)}
             className="tebyan-glass-card tebyan-tool-tile group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[#F7F5F2] via-[#EEF2F6] to-[#F1EEF4] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[#8FA9C7]/18 active:scale-[0.98] transition-all"
           >
              <motion.div 
@@ -402,7 +407,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
             { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-white"
         />
@@ -414,7 +419,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           items={[
             { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent, hidden: tabs.find(t => t.id === 'loyalty')?.hidden }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-zinc-900"
           inverted
@@ -430,7 +435,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             { id: 'lab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
             { id: 'mindmap', label: language === 'ar' ? 'العقل المدبر' : 'Mastermind', icon: Network }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-white"
         />
@@ -444,7 +449,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route },
             { id: 'simulation', label: language === 'ar' ? 'المحاكي الميداني' : 'Simulator', icon: Gamepad2 }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-white"
         />
@@ -459,7 +464,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
             { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-white"
         />
@@ -472,7 +477,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           items={[
             { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-white"
         />
@@ -485,7 +490,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           items={[
             { id: 'contact', label: language === 'ar' ? 'تواصل معنا' : 'Contact Us', icon: Bookmark }
           ]}
-          handleTabChange={handleTabChange}
+          handleTabChange={closeFullDashboardAndGo}
           language={language}
           color="bg-white"
         />

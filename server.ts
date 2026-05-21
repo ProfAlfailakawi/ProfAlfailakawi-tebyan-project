@@ -30,11 +30,6 @@ const getGenAI = () => {
         apiKey = (process.env.GOOGLE_API_KEY || "").trim();
     }
     
-    if (apiKey && (apiKey.includes("AIzaSyBWJcWI1n2") || apiKey === "AIzaSyBWJcWI1n2cERV0eR-wozshcfEliG39aT0")) {
-        console.warn("[Server] Suspended API key detected ('AIza...1n2'). Disabling online API to prevent errors and utilize safe offline fallback mode.");
-        return null;
-    }
-    
     if (!apiKey) {
         console.warn("[Server] WARNING: Missing API key in environment variables.");
         return null;
