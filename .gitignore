@@ -1,9 +1,0 @@
-node_modules/
-dist/
-.env
-.env.*
-functions/.env
-functions/.env.*
-.DS_Store
-.firebase/
-*.log
