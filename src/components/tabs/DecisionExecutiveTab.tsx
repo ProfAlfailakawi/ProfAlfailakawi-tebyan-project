@@ -118,6 +118,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     if (jsonStr.startsWith('```')) jsonStr = jsonStr.replace(/```\n?/, '');
                     if (jsonStr.endsWith('```')) jsonStr = jsonStr.replace(/```$/, '');
                     setResult({ tool: tool.id, content: JSON.parse(jsonStr), isJson: true });
+                    setTimeout(() => document.getElementById('decision-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
                 } catch(e) {
                     if (tool.id === 'butterfly') {
                         setResult({ tool: tool.id, content: { magazineName: 'Future Link', headline: 'تم استشراف المستقبل', subheadline: 'الذكاء حلل الأثر البعيد للقرار', bulletPoints: [content.substring(0, 100) + '...'], quote: 'تبيان استكشف الأثر.' }, isJson: true });
@@ -135,6 +136,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
             setResult({ tool: 'Error', content: language === 'ar' ? `لقد تعثرت عملية التحليل الاستراتيجي.. المحرك يحتاج إلى إعادة ضبط المسار. جرب المحاولة مرة أخرى بعد ثوانٍ. (${e.message})` : `Strategic analysis stumbled.. The engine needs to recalibrate. Try again in a few seconds. (${e.message})` });
         } finally {
             setIsLoading(false);
+            setTimeout(() => document.getElementById('decision-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 180);
         }
     };
 
@@ -188,7 +190,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
            </AnimatePresence>
 
            <div className="relative group/input">
-             <div className="absolute -top-3 right-6 z-20 px-4 py-1 bg-[#8E7AAE] text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg group-focus-within/input:bg-rose-600 transition-colors">
+             <div className="absolute -top-3 right-6 z-20 px-3 py-1 bg-[#8E7AAE] text-white text-[10px] md:text-[11px] font-black uppercase tracking-wider rounded-full shadow-lg group-focus-within/input:bg-rose-600 transition-colors">
                 {language === 'ar' ? 'مدخلات المعضلة' : 'DILEMMA INPUT'}
              </div>
              <textarea 
@@ -200,7 +202,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                }}
                onKeyDown={handleKeyDown}
                className={cn(
-                 "w-full h-40 p-8 pt-10 rounded-[32px] md:rounded-[48px] border-2 text-xl md:text-2xl font-medium focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
+                 "w-full h-32 md:h-40 p-5 md:p-8 pt-8 md:pt-10 rounded-[26px] md:rounded-[48px] border-2 text-base md:text-xl font-medium focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
                  showRadarWarning ? "border-rose-900/50 bg-stone-900 text-rose-100 placeholder:text-rose-900/30 focus:ring-rose-900/10" : "border-[#8FA9C7]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[#8E7AAE] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
                )}
                placeholder={language === 'ar' ? 'صِف الموقف أو القرار أو المعضلة التي تواجهك هنا بصراحة تامة...' : 'Describe the situation, decision, or dilemma you are facing here with total honesty...'}
@@ -236,7 +238,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                   <h2 className="text-xl font-black text-[#182231]">{language === 'ar' ? 'ماذا تريد من القرار؟' : 'What do you need from this decision?'}</h2>
                   <p className="text-sm text-[#64788D] font-bold mt-1">{language === 'ar' ? 'اختر مقصدك؛ الغرفة تقرّب الأدوات المناسبة فقط، وكل الأدوات باقية.' : 'Choose your intent; the room brings the right tools closer, while every tool remains available.'}</p>
                 </div>
-                <button type="button" onClick={() => setActiveDecisionPurpose('all')} className="px-5 py-3 rounded-full bg-[#8E7AAE] text-white text-xs font-black flex items-center gap-2 active:scale-95 transition-all">
+                <button type="button" onClick={() => setActiveDecisionPurpose('all')} className="hidden px-5 py-3 rounded-full bg-[#8E7AAE] text-white text-xs font-black items-center gap-2 active:scale-95 transition-all">
                   <LayoutGrid className="w-4 h-4" />
                   {language === 'ar' ? 'الغرفة الكاملة' : 'Full room'}
                 </button>

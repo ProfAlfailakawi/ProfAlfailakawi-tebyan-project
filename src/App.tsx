@@ -262,6 +262,62 @@ const AppContent: React.FC = () => {
     return () => clearTimeout(timer);
   }, [showSplash, authReady]);
 
+
+  // Mobile UX assist: after pressing any internal tool/action button, guide the viewport to the generated result area.
+  // This is visual navigation only; it does not alter AI prompts, features, data, or routes.
+  useEffect(() => {
+    const resultSelectors = [
+      '#decision-results', '#lab-results', '#mobile-results', '#desktop-results', '#qawl-fasl-results',
+      '[data-tebyan-results]', '[data-result-section]', '.tebyan-result-document', '.markdown-body'
+    ];
+    const skipSelectors = [
+      'header', '.tebyan-tab-back', '[aria-label="رجوع"]', '[aria-label="Back"]', '[title="رجوع"]', '[title="Back"]',
+      '[title="الصفحة الرئيسية"]', '[title="Home"]', '[data-no-auto-scroll]'
+    ];
+
+    const findScrollableMain = () => document.querySelector('main') as HTMLElement | null;
+    const isMeaningfulResult = (el: Element) => {
+      const rect = el.getBoundingClientRect();
+      const text = (el.textContent || '').trim();
+      return rect.height > 80 && text.length > 12;
+    };
+    const scrollToResult = () => {
+      const mainEl = findScrollableMain();
+      const target = resultSelectors
+        .map(selector => Array.from(document.querySelectorAll(selector)).find(isMeaningfulResult))
+        .find(Boolean) as HTMLElement | undefined;
+      if (!target) return;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const behavior: ScrollBehavior = prefersReduced ? 'auto' : 'smooth';
+      const topGap = window.innerWidth < 768 ? 86 : 112;
+      if (mainEl && getComputedStyle(mainEl).overflowY !== 'visible') {
+        const mainRect = mainEl.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        mainEl.scrollTo({ top: mainEl.scrollTop + targetRect.top - mainRect.top - topGap, behavior });
+      } else {
+        window.scrollTo({ top: window.scrollY + target.getBoundingClientRect().top - topGap, behavior });
+      }
+    };
+
+    const scheduleResultScroll = (event: Event) => {
+      const target = event.target as Element | null;
+      if (!target) return;
+      const action = target.closest('button, a, [role="button"], [role="tab"], input[type="submit"]');
+      if (!action || skipSelectors.some(sel => action.closest(sel))) return;
+      if (!action.closest('main')) return;
+      window.setTimeout(scrollToResult, 450);
+      window.setTimeout(scrollToResult, 1100);
+      window.setTimeout(scrollToResult, 2200);
+    };
+
+    document.addEventListener('click', scheduleResultScroll, true);
+    document.addEventListener('submit', scheduleResultScroll, true);
+    return () => {
+      document.removeEventListener('click', scheduleResultScroll, true);
+      document.removeEventListener('submit', scheduleResultScroll, true);
+    };
+  }, []);
+
   useEffect(() => {
     // Run migration from legacy keys immediately
     migrateLegacyData();

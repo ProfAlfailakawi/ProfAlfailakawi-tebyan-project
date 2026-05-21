@@ -2077,3 +2077,231 @@ body.tebyan-focus-mode .tebyan-result-document {
     max-width: 34vw;
   }
 }
+
+/* ========================================================================
+   Final Tebyan visual/mobile/admin refinement — no feature/AI/data changes
+   ======================================================================== */
+@layer components {
+  :root {
+    --tebyan-final-ink: #182231;
+    --tebyan-final-muted: #617386;
+    --tebyan-final-soft: #F8F6F1;
+    --tebyan-final-paper: rgba(255,255,255,.86);
+    --tebyan-final-line: rgba(142,122,174,.16);
+    --tebyan-final-primary: #78659B;
+    --tebyan-final-blue: #8FA9C7;
+    --tebyan-final-danger: #C43655;
+  }
+
+  /* Readability: prevent washed-out text and invisible icons across the site */
+  main :where(.text-white\/40, .text-white\/50, .text-white\/60, .text-zinc-300, .text-zinc-400, .text-slate-300, .text-slate-400) {
+    color: var(--tebyan-final-muted) !important;
+  }
+  main :where(.bg-black, .bg-zinc-950, .bg-zinc-900, .bg-slate-950, .bg-slate-900, .bg-stone-900, .bg-rose-950, .bg-red-950) {
+    background: linear-gradient(135deg, #FFFCF7, #F3EEF8 52%, #EEF4F8) !important;
+    color: var(--tebyan-final-ink) !important;
+    border-color: var(--tebyan-final-line) !important;
+    box-shadow: 0 16px 46px rgba(24,34,49,.07), inset 0 1px 0 rgba(255,255,255,.8) !important;
+  }
+  main :where(.bg-black, .bg-zinc-950, .bg-zinc-900, .bg-slate-950, .bg-slate-900, .bg-stone-900, .bg-rose-950, .bg-red-950) * {
+    color: inherit !important;
+    text-shadow: none !important;
+  }
+  main :where(.text-rose-500, .text-red-500, .text-rose-600, .text-red-600) {
+    color: var(--tebyan-final-danger) !important;
+  }
+
+  /* All input/search boxes: elegant, smaller, RTL-safe */
+  .tour-search-input,
+  main textarea,
+  main input[type="text"],
+  main input[type="search"],
+  main [contenteditable="true"] {
+    direction: rtl;
+    text-align: right;
+  }
+  .tour-search-input textarea,
+  main textarea,
+  main input[type="text"],
+  main input[type="search"] {
+    color: var(--tebyan-final-ink) !important;
+    caret-color: var(--tebyan-final-primary);
+    background: rgba(255,255,255,.72);
+  }
+  .tour-search-input textarea::placeholder,
+  main textarea::placeholder,
+  main input::placeholder {
+    color: rgba(97,115,134,.55) !important;
+    font-weight: 650;
+  }
+
+  /* Buttons and chips: consistent palette, no hard neon blocks */
+  main button:not(.tebyan-tab-back),
+  main a[role="button"] {
+    letter-spacing: -.015em;
+  }
+  main :where(button, a[role="button"]) svg {
+    color: currentColor;
+    opacity: .95;
+  }
+  main :where(.bg-purple-600, .bg-indigo-600, .bg-fuchsia-700, .bg-cyan-600, .bg-emerald-600, .bg-amber-600, .bg-amber-900) {
+    background: linear-gradient(135deg, #F7F3FB, #EEF4F8) !important;
+    color: var(--tebyan-final-primary) !important;
+    border: 1px solid rgba(142,122,174,.16) !important;
+  }
+
+  /* Result sections: readable document cards instead of low-contrast overlays */
+  #decision-results,
+  #lab-results,
+  #qawl-fasl-results,
+  [data-tebyan-results] {
+    scroll-margin-top: 7rem;
+  }
+  #decision-results :where(h1, h2, h3, p, li, blockquote),
+  #lab-results :where(h1, h2, h3, p, li, blockquote),
+  #qawl-fasl-results :where(h1, h2, h3, p, li, blockquote),
+  [data-tebyan-results] :where(h1, h2, h3, p, li, blockquote) {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* Admin dashboards: calmer typography and spacing */
+  [class*="Admin"],
+  main:has([href*="admin"]),
+  main:has(button[title="العودة للرئيسية"]) {
+    --tebyan-admin-ink: #1E293B;
+  }
+  main table,
+  main thead,
+  main tbody,
+  main td,
+  main th {
+    color: var(--tebyan-final-ink);
+  }
+  main th {
+    font-size: .82rem !important;
+    font-weight: 850 !important;
+    color: #475569 !important;
+  }
+  main td {
+    font-size: .88rem !important;
+    line-height: 1.65 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Back button: always visible at the top of internal pages */
+  .tebyan-tab-header .tebyan-tab-back {
+    position: fixed !important;
+    top: max(.75rem, env(safe-area-inset-top)) !important;
+    left: .85rem !important;
+    z-index: 80 !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    border-radius: 1rem !important;
+    background: rgba(255,255,255,.92) !important;
+    box-shadow: 0 12px 34px rgba(24,34,49,.12) !important;
+    backdrop-filter: blur(16px) saturate(1.1);
+  }
+  .tebyan-tab-header {
+    padding-top: 1rem !important;
+  }
+  .tebyan-tab-header > div:nth-child(3) {
+    padding-left: 0 !important;
+  }
+
+  /* Search/input copy smaller and centered within cards, while RTL stays correct */
+  .tour-search-input textarea {
+    font-size: .98rem !important;
+    font-weight: 700 !important;
+    padding: .75rem .85rem !important;
+  }
+  .tour-search-input button[type="submit"] {
+    width: 2.65rem !important;
+    height: 2.65rem !important;
+  }
+
+  /* Decision room: make intent options side-by-side and compact */
+  main .grid.lg\:grid-cols-5,
+  main .grid.sm\:grid-cols-2.lg\:grid-cols-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .55rem !important;
+  }
+  main .grid.lg\:grid-cols-5 button,
+  main .grid.sm\:grid-cols-2.lg\:grid-cols-5 button {
+    min-height: 4.65rem !important;
+    padding: .78rem !important;
+    text-align: center !important;
+  }
+  main .grid.lg\:grid-cols-5 button div:first-child,
+  main .grid.sm\:grid-cols-2.lg\:grid-cols-5 button div:first-child {
+    font-size: .86rem !important;
+    line-height: 1.35 !important;
+  }
+  main .grid.lg\:grid-cols-5 button div:last-child,
+  main .grid.sm\:grid-cols-2.lg\:grid-cols-5 button div:last-child {
+    font-size: .68rem !important;
+    line-height: 1.45 !important;
+  }
+
+  /* Tool cards and icons: clear, balanced, not oversized */
+  main .grid.lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: .65rem !important;
+  }
+  main .grid.lg\:grid-cols-4 button {
+    padding: .9rem .7rem !important;
+    gap: .55rem !important;
+    min-height: 8.1rem !important;
+  }
+  main .grid.lg\:grid-cols-4 button > div:first-child {
+    width: 2.85rem !important;
+    height: 2.85rem !important;
+    border-radius: 1rem !important;
+  }
+  main .grid.lg\:grid-cols-4 button span {
+    font-size: .84rem !important;
+    line-height: 1.35 !important;
+  }
+  main .grid.lg\:grid-cols-4 button p {
+    font-size: .68rem !important;
+    line-height: 1.4 !important;
+  }
+
+  /* 360/future magazine output: remove dark poster treatment and fix RTL reading */
+  #decision-results [class*="min-h-[500px]"],
+  #decision-results [class*="min-h-[700px]"] {
+    min-height: auto !important;
+    padding: 1rem !important;
+    border-width: 1px !important;
+    border-radius: 1.45rem !important;
+    background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(247,243,251,.88)) !important;
+    color: var(--tebyan-final-ink) !important;
+    justify-content: flex-start !important;
+    direction: rtl !important;
+    text-align: right !important;
+  }
+  #decision-results [class*="bg-[url"] { opacity: .08 !important; }
+  #decision-results h1 {
+    font-size: clamp(1.25rem, 6.5vw, 1.8rem) !important;
+    line-height: 1.32 !important;
+    text-transform: none !important;
+    font-style: normal !important;
+  }
+  #decision-results p,
+  #decision-results li,
+  #decision-results blockquote {
+    font-size: .92rem !important;
+    line-height: 1.8 !important;
+  }
+
+  /* Admin on phone: no giant text, cards fit screen */
+  main table { min-width: 38rem; }
+  main :where(th, td) { white-space: normal !important; }
+
+  /* De-emphasize decorative low-opacity ghost layers that made screens unreadable */
+  main [class*="text-white/"],
+  main [class*="opacity-"] {
+    text-shadow: none !important;
+  }
+}
