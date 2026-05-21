@@ -15,7 +15,7 @@ export const SpatialGhost = ({
 
   return (
     <div 
-      className={`fixed ${x} ${y} z-30 pointer-events-auto`}
+      className={`hidden md:block fixed ${x} ${y} z-30 pointer-events-auto`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

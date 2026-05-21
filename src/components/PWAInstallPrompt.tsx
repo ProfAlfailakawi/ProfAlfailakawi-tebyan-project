@@ -120,15 +120,8 @@ export const PWAInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    // Delay slightly to not bombard immediately
-    const timer = setTimeout(() => {
-      if (isStandaloneMode()) return;
-      if (sessionStorage.getItem('pwa_prompt_closed') === 'true') return;
-      
-      // If we are here, we can show the banner.
-      setShowPrompt(true);
-    }, 2000);
-    return () => clearTimeout(timer);
+    // Keep install available through the header icon only, without a text banner.
+    setShowPrompt(false);
   }, []);
 
   const handleClose = () => {

@@ -693,3 +693,220 @@ body.tebyan-focus-mode .tebyan-result-document {
     border-radius: 26px !important;
   }
 }
+
+/* Tebyanfix3 — comprehensive mobile softness pass
+   Goal: every page on phones should feel lighter, smaller, and more readable without removing features. */
+@media (max-width: 640px) {
+  html { font-size: 14px; }
+  body { overflow-x: hidden; }
+  #root { overflow-x: hidden; }
+
+  /* Global mobile canvas */
+  main,
+  main > div,
+  main section {
+    max-width: 100vw !important;
+  }
+  main {
+    padding-left: 0.55rem !important;
+    padding-right: 0.55rem !important;
+  }
+
+  /* Header must not visually collide with content */
+  header.fixed {
+    padding: 0.65rem 0.75rem !important;
+  }
+  header.fixed span:not(.sr-only) {
+    font-size: 1.15rem !important;
+    line-height: 1.15 !important;
+  }
+  header.fixed button,
+  header.fixed [role="button"] {
+    min-width: 2.55rem !important;
+    min-height: 2.55rem !important;
+  }
+  header.fixed svg {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+  }
+
+  /* Typography: prevent desktop-scale headlines from appearing on phones */
+  main [class*="text-7xl"],
+  main [class*="text-6xl"],
+  main [class*="text-5xl"],
+  main [class*="text-4xl"] {
+    font-size: clamp(1.55rem, 8vw, 2.35rem) !important;
+    line-height: 1.18 !important;
+    letter-spacing: -0.045em !important;
+  }
+  main [class*="text-3xl"] {
+    font-size: clamp(1.35rem, 6vw, 1.75rem) !important;
+    line-height: 1.25 !important;
+  }
+  main [class*="text-2xl"] {
+    font-size: clamp(1.12rem, 5vw, 1.35rem) !important;
+    line-height: 1.35 !important;
+  }
+  main [class*="text-xl"] {
+    font-size: clamp(1rem, 4.4vw, 1.16rem) !important;
+    line-height: 1.45 !important;
+  }
+  main p,
+  main li,
+  main .markdown-body,
+  main .prose {
+    font-size: 0.92rem !important;
+    line-height: 1.8 !important;
+  }
+  main .markdown-body p,
+  main .markdown-body li,
+  main .prose p,
+  main .prose li {
+    font-size: 0.92rem !important;
+    line-height: 1.85 !important;
+  }
+
+  /* Cards and panels: remove desktop heaviness on phones */
+  main [class*="p-10"],
+  main [class*="p-12"],
+  main [class*="p-14"],
+  main [class*="p-16"],
+  main [class*="p-20"],
+  main [class*="p-24"] {
+    padding: 1.15rem !important;
+  }
+  main [class*="p-8"] { padding: 1rem !important; }
+  main [class*="p-7"] { padding: 0.95rem !important; }
+  main [class*="p-6"] { padding: 0.9rem !important; }
+  main [class*="gap-10"],
+  main [class*="gap-12"],
+  main [class*="gap-14"],
+  main [class*="gap-16"] {
+    gap: 1rem !important;
+  }
+  main [class*="space-y-10"] > :not([hidden]) ~ :not([hidden]),
+  main [class*="space-y-12"] > :not([hidden]) ~ :not([hidden]),
+  main [class*="space-y-14"] > :not([hidden]) ~ :not([hidden]),
+  main [class*="space-y-16"] > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem !important;
+  }
+
+  main [class*="rounded-[32px]"],
+  main [class*="rounded-[36px]"],
+  main [class*="rounded-[40px]"],
+  main [class*="rounded-[48px]"],
+  main [class*="rounded-[56px]"],
+  main [class*="rounded-[60px]"] {
+    border-radius: 1.45rem !important;
+  }
+
+  /* Icon containers: make every tool icon phone-sized unless explicitly inside large visualization */
+  main button [class*="w-16"],
+  main button [class*="h-16"],
+  main [role="button"] [class*="w-16"],
+  main [role="button"] [class*="h-16"],
+  main [class*="w-20"][class*="h-20"],
+  main [class*="w-24"][class*="h-24"] {
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+  main button svg,
+  main a svg {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+  }
+  main [class*="w-14"][class*="h-14"],
+  main [class*="w-16"][class*="h-16"] {
+    width: 3.05rem !important;
+    height: 3.05rem !important;
+  }
+  main [class*="w-20"][class*="h-20"],
+  main [class*="w-24"][class*="h-24"],
+  main [class*="w-28"][class*="h-28"],
+  main [class*="w-32"][class*="h-32"] {
+    width: 3.4rem !important;
+    height: 3.4rem !important;
+  }
+
+  /* Buttons should wrap calmly instead of creating horizontal overflow */
+  main button,
+  main a {
+    max-width: 100% !important;
+  }
+  main .flex {
+    min-width: 0;
+  }
+  main [class*="whitespace-nowrap"] {
+    white-space: normal !important;
+  }
+
+  /* Search area */
+  .tour-search-input {
+    border-radius: 1.35rem !important;
+    padding: 0.45rem !important;
+    box-shadow: 0 12px 34px rgba(24,34,49,0.06) !important;
+  }
+  .tour-search-input textarea {
+    font-size: 1rem !important;
+    line-height: 1.7 !important;
+    padding: 0.8rem 0.95rem !important;
+  }
+  .tour-search-input button[type="submit"] {
+    width: 2.85rem !important;
+    height: 2.85rem !important;
+    border-radius: 0.95rem !important;
+  }
+
+  /* Smart intent engine remains only on Smart Gateway; make it compact there */
+  .tour-search-input ~ div [class*="rounded-[24px]"],
+  .tour-search-input ~ div [class*="rounded-3xl"] {
+    border-radius: 1.25rem !important;
+  }
+
+  /* Generated AI result panels: phone-readable, not poster-sized */
+  #decision-results,
+  #lab-results,
+  #mobile-results,
+  #desktop-results {
+    font-size: 0.92rem !important;
+    line-height: 1.8 !important;
+  }
+  #decision-results [class*="min-h-[500px]"],
+  #decision-results [class*="min-h-[700px]"],
+  #lab-results [class*="min-h-[500px]"],
+  #lab-results [class*="min-h-[700px]"] {
+    min-height: auto !important;
+  }
+  #decision-results [class*="border-[8px]"],
+  #decision-results [class*="border-[12px]"],
+  #decision-results [class*="border-[16px]"] {
+    border-width: 3px !important;
+  }
+
+  /* TabHeader mobile density */
+  main > div > div:first-child [class*="rounded-[32px]"] {
+    padding: 0.95rem !important;
+  }
+
+  /* Hide spatial ghost hints on phones; they create ghost text over content */
+  .marginalia-hint,
+  [class*="SpatialGhost"] {
+    display: none !important;
+  }
+
+  /* Floating utilities: keep useful, but small and non-invasive */
+  .global-floating-buttons {
+    width: 2.8rem !important;
+    height: 2.8rem !important;
+    transform: scale(0.82) !important;
+    transform-origin: bottom right !important;
+    opacity: 0.88 !important;
+  }
+
+  /* Prevent any component from producing sideways scroll on mobile */
+  main,
+  main * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}

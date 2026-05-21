@@ -5,7 +5,6 @@ import { useUser } from '../../contexts/UserContext';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
-import { SmartIntentEngine } from '../common/SmartIntentEngine';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 
@@ -153,17 +152,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           )}
         </button>
       </div>
-      <SmartIntentEngine
-        compact
-        language={language}
-        value={input}
-        onApply={setInput}
-        onSubmit={(nextValue) => {
-          setInput(nextValue);
-          setTimeout(() => runOracleRef.current?.(), 0);
-        }}
-        onQawlFasl={(nextValue) => handleTabChange('qawlfasl', nextValue)}
-      />
+      
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {isLoading ? (

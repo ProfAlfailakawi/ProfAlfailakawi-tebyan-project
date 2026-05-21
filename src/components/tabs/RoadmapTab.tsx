@@ -5,7 +5,6 @@ import { generateRoadmap } from '../../services/gemini';
 import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
-import { SmartIntentEngine } from '../common/SmartIntentEngine';
 
 export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
@@ -91,15 +90,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
             )}
             {language === 'ar' ? 'رسم مسار الإنجاز' : 'Map Your Path'}
           </button>
-          <SmartIntentEngine
-            compact
-            language={language}
-            value={goal}
-            onApply={setGoal}
-            onSubmit={(nextValue) => handleGenerate(nextValue)}
-            onQawlFasl={(nextValue) => handleTabChange('qawlfasl', nextValue)}
-            onOpenPath={(path, nextValue) => handleTabChange(path, nextValue)}
-          />
+          
         </div>
         {error && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-6 p-4 bg-rose-50 text-rose-600 rounded-2xl text-center font-bold border border-rose-100">

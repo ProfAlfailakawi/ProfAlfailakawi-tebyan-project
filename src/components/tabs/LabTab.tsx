@@ -4,7 +4,6 @@ import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid }
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
-import { SmartIntentEngine } from '../common/SmartIntentEngine';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 
@@ -353,18 +352,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
               </button>
             )}
          </div>
-         <SmartIntentEngine
-           compact
-           language={language}
-           value={labInput}
-           onApply={setLabInput}
-           onSubmit={(nextValue) => {
-             setLabInput(nextValue);
-             setTimeout(() => handleRunLabTool(), 0);
-           }}
-           onQawlFasl={(nextValue) => handleTabChange('qawlfasl', nextValue)}
-           onOpenPath={(path, nextValue) => handleTabChange(path, nextValue)}
-         />
+         
   
          {error && <div className="text-rose-500 font-bold">{error}</div>}
   
