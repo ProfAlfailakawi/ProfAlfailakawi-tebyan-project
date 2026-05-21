@@ -23,8 +23,14 @@ export default function Login() {
     try {
       await signInWithPopup(auth, provider);
     } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
-        setError("حدث خطأ أثناء تسجيل الدخول بحساب جوجل.");
+      if (error.code === 'auth/popup-closed-by-user') return;
+      
+      console.error("Google Auth error:", error);
+      const errorMessage = error.message || '';
+      if (error.code === 'auth/permission-denied' || errorMessage.includes('api-key') || errorMessage.includes('suspended')) {
+        setError('عذراً، يبدو أننا نقوم ببعض التحسينات التقنية حالياً. يرجى المحاولة مرة أخرى بعد قليل، شكراً لصبرك.');
+      } else {
+        setError("حدث خطأ أثناء محاولة تسجيل الدخول بحساب جوجل. يرجى المحاولة مرة أخرى.");
       }
     }
   };
@@ -45,22 +51,30 @@ export default function Login() {
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      let arabicError = 'حدث خطأ ما، يرجى المحاولة مرة أخرى.';
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-        arabicError = 'لم نتمكن من التحقق من البيانات. راجع البريد أو كلمة المرور.';
-      } else if (error.code === 'auth/email-already-in-use') {
-        arabicError = 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.';
-        setIsSignUp(false); // Switch to login immediately
-      } else if (error.code === 'auth/weak-password') {
-        arabicError = 'كلمة المرور ضعيفة جداً.';
-      } else if (error.code === 'auth/invalid-email') {
-        arabicError = 'البريد الإلكتروني غير صحيح.';
-      } else if (error.code === 'auth/operation-not-allowed') {
-        arabicError = 'تسجيل الدخول بالبريد وكلمة المرور غير مفعل في Firebase.';
+      let arabicError = 'حدث خطأ غير متوقع، يرجى المحاولة لاحقاً.';
+      
+      const errorMessage = error.message || '';
+      const errorCode = error.code || '';
+
+      if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') {
+        arabicError = 'لم نتمكن من التحقق من البيانات. يرجى التأكد من البريد الإلكتروني وكلمة المرور.';
+      } else if (errorCode === 'auth/email-already-in-use') {
+        arabicError = 'هذا البريد الإلكتروني مسجل بالفعل. يمكنك تسجيل الدخول بدلاً من إنشاء حساب جديد.';
+        setIsSignUp(false);
+      } else if (errorCode === 'auth/weak-password') {
+        arabicError = 'كلمة المرور التي اخترتها ضعيفة، يرجى استخدام كلمة مرور أقوى لسلامة حسابك.';
+      } else if (errorCode === 'auth/invalid-email') {
+        arabicError = 'البريد الإلكتروني المدخل غير صحيح، يرجى كتابته بشكل سليم.';
+      } else if (errorCode === 'auth/operation-not-allowed') {
+        arabicError = 'تسجيل الدخول بهذه الطريقة غير مفعّل حالياً. نعتذر عن الإزعاج.';
+      } else if (errorCode === 'auth/permission-denied' || errorMessage.includes('api-key') || errorMessage.includes('suspended')) {
+        arabicError = 'نحن نقوم ببعض التحديثات الضرورية لضمان أفضل تجربة لك. يرجى العودة بعد قليل، نقدّر انتظارك كثيراً.';
+      } else if (errorCode === 'auth/popup-closed-by-user') {
+        return; // Silent return
       } else {
-        // Fallback error message (includes actual message for debugging)
-        arabicError = `حدث خطأ: ${error.message}`;
+        arabicError = 'نواجه بعض الصعوبات التقنية المؤقتة. يرجى المحاولة مرة أخرى بعد لحظات.';
       }
+      
       setError(arabicError);
     } finally {
       setLoading(false);

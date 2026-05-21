@@ -7,7 +7,7 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
 
   console.log("AdminRoute Check:", { user: user?.email, profile, loading });
 
-  const isAdmin = profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+  const isAdmin = profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
 
   if (loading) return <div className="p-10 text-center font-bold text-slate-500">جاري التحقق من صلاحياتك... (لحظات)</div>;
   

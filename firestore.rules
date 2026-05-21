@@ -15,7 +15,8 @@ service cloud.firestore {
           "alfailakawidrahmad@gmail.com",
           "alfailakawidrahmad@outlook.com",
           "dr.ahmad@gmail.com",
-          "dr.ahmad.alfailakawi@gmail.com"
+          "dr.ahmad.alfailakawi@gmail.com",
+          "ah_f@hotmail.com"
         ] ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
@@ -95,7 +96,8 @@ service cloud.firestore {
       allow write: if isSignedIn() && request.auth.uid == userId && (
         request.auth.token.get('email', '').lower() == "alfailakawidrahmad@gmail.com" ||
         request.auth.token.get('email', '').lower() == "dr.ahmad@gmail.com" ||
-        request.auth.token.get('email', '').lower() == "dr.ahmad.alfailakawi@gmail.com"
+        request.auth.token.get('email', '').lower() == "dr.ahmad.alfailakawi@gmail.com" ||
+        request.auth.token.get('email', '').lower() == "ah_f@hotmail.com"
       );
     }
 

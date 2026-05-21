@@ -8,7 +8,7 @@ import { Users, Trash2, Edit2, Shield, X, KeyRound, Save, Activity, FileText, Ba
 export default function AdminUsersDashboard() {
   const { profile, user, loading: authLoading } = useAuth();
   
-  const isAuthorized = profile?.role === 'admin' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+  const isAuthorized = profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -80,7 +80,7 @@ export default function AdminUsersDashboard() {
     if (authLoading) return;
     
     // Allow if either profile role is admin OR email matches hardcoded admins
-    const isAdminByEmail = user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+    const isAdminByEmail = user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
     
     if (profile?.role === 'admin' || isAdminByEmail) {
       const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {

@@ -55,6 +55,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
     const isUserIdea = node.authorId === auth.currentUser?.uid || 
                         (rootOwnerId === auth.currentUser?.uid && !!rootOwnerId) ||
                         (node.author === (language === 'ar' ? 'أنت' : 'You') && !node.authorId) ||
+                        auth.currentUser?.email?.toLowerCase() === 'ah_f@hotmail.com' ||
                         auth.currentUser?.email?.toLowerCase().includes('alfailakawidrahmad') || 
                         auth.currentUser?.email?.toLowerCase().includes('dr.ahmad');
     
