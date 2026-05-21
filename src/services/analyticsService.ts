@@ -1,0 +1,37 @@
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+
+export type EventType = 'search' | 'path_select' | 'feature_use';
+
+export interface AnalyticsMetadata {
+    [key: string]: any;
+}
+
+export const logEvent = async (type: EventType, language: string, query?: string, metadata?: AnalyticsMetadata) => {
+    try {
+        const safeMetadata = { ...metadata };
+        if (safeMetadata) {
+            Object.keys(safeMetadata).forEach(key => {
+                if (safeMetadata[key] === undefined) {
+                    delete safeMetadata[key];
+                }
+            });
+        }
+        await addDoc(collection(db, 'analytics'), {
+            type,
+            query: query || null,
+            metadata: safeMetadata || {},
+            language,
+            timestamp: serverTimestamp(),
+            // User agent can be helpful for mobile vs desktop analysis
+            platform: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+        });
+    } catch (error: any) {
+        // Log to console but don't crash or show user errors
+        if (error?.message?.includes('permission')) {
+            console.warn('[Analytics] Missing Firestore permissions. Event was not logged:', type);
+        } else {
+            console.error('Failed to log analytics event:', error);
+        }
+    }
+};

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#312e81" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <g transform="translate(600, 240)">
+    <circle cx="0" cy="0" r="100" fill="#1e1b4b" stroke="#818cf8" stroke-width="4" />
+    <circle cx="0" cy="0" r="120" fill="none" stroke="#6366f1" stroke-width="2" stroke-dasharray="10 10"/>
+    <circle cx="0" cy="0" r="140" fill="none" stroke="#4f46e5" stroke-width="1" stroke-dasharray="5 5"/>
+    <path d="M-30,-20 L30,-20 L40,0 L30,20 L-30,20 L-40,0 Z" fill="#818cf8"/>
+  </g>
+  <text x="600" y="440" font-family="Arial, sans-serif" font-weight="bold" font-size="80" fill="#ffffff" text-anchor="middle">تبيان</text>
+  <text x="600" y="510" font-family="Arial, sans-serif" font-size="36" fill="#a5b4fc" text-anchor="middle">منصة ذكية لفهم الأفكار، ترتيب القرارات، واستكشاف المعنى بوضوح</text>
+</svg>

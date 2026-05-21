@@ -1,0 +1,657 @@
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@property --mood-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #6366f1;
+}
+
+@property --mood-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #10b981;
+}
+
+:root {
+  --color-brand-primary: #6E5F8E;
+  --color-brand-accent: #8FA9C7;
+  --color-brand-bg: #F7F5F2;
+  --mood-primary: #8E7AAE;
+  --mood-primary-rgb: 142, 122, 174;
+  --mood-secondary: #8FA9C7;
+  --mood-secondary-rgb: 143, 169, 199;
+  --mood-glow: rgba(142, 122, 174, 0.14);
+  transition: --mood-primary 0.8s ease, --mood-secondary 0.8s ease, --mood-glow 0.8s ease;
+}
+
+:root[data-mood="revolutionary"] {
+  --mood-primary: #9E7F96;
+  --mood-primary-rgb: 158, 127, 150;
+  --mood-secondary: #B7A7C7;
+  --mood-secondary-rgb: 183, 167, 199;
+  --mood-glow: rgba(158, 127, 150, 0.16);
+}
+
+:root[data-mood="calm"] {
+  --mood-primary: #8FA9C7;
+  --mood-primary-rgb: 143, 169, 199;
+  --mood-secondary: #A8C3BD;
+  --mood-secondary-rgb: 168, 195, 189;
+  --mood-glow: rgba(143, 169, 199, 0.16);
+}
+
+:root[data-mood="melancholic"] {
+  --mood-primary: #7C8796;
+  --mood-primary-rgb: 124, 135, 150;
+  --mood-secondary: #8E7AAE;
+  --mood-secondary-rgb: 142, 122, 174;
+  --mood-glow: rgba(124, 135, 150, 0.16);
+}
+
+:root[data-mood="optimistic"] {
+  --mood-primary: #CBBF9B;
+  --mood-primary-rgb: 203, 191, 155;
+  --mood-secondary: #B7A7C7;
+  --mood-secondary-rgb: 183, 167, 199;
+  --mood-glow: rgba(203, 191, 155, 0.16);
+}
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'Alexandria', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Amiri', 'Playfair Display', ui-serif, Georgia, serif;
+  
+  --color-brand-primary: #6E5F8E;
+  --color-brand-accent: #8FA9C7;
+  --color-brand-bg: #F7F5F2;
+
+  --color-mood-primary: var(--mood-primary, #6366f1);
+  --color-mood-secondary: var(--mood-secondary, #10b981);
+  --color-mood-glow: var(--mood-glow, rgba(99, 102, 241, 0.15));
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+  }
+}
+
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+}
+
+@layer base {
+  body {
+    @apply text-zinc-900 selection:bg-zinc-200 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    background: radial-gradient(circle at top right, rgba(142,122,174,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(143,169,199,0.10), transparent 30%), #F7F5F2;
+  }
+  button, [type="button"], [type="submit"], [role="button"] {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #d4d4d8; }
+
+/* Living UI Themes */
+html.theme-evening body {
+  background-color: #f7f3ec; /* Warmer background */
+}
+html.theme-evening .bg-zinc-50 {
+  background-color: #f7f3ec;
+}
+html.theme-evening .bg-white {
+  background-color: #fdfbf7;
+}
+
+/* Emotion-Based UI */
+body.emotion-stress {
+  background-color: #f0fdf4 !important;
+  transition: background-color 2s ease-in-out, color 2s ease-in-out;
+}
+body.emotion-stress .bg-zinc-50, 
+body.emotion-stress .bg-white,
+body.emotion-stress .bg-zinc-950 {
+  background-color: transparent !important;
+  transition: background-color 2s ease-in-out;
+}
+body.emotion-stress .emotion-hide {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 1s ease-in-out;
+}
+
+body.emotion-creative {
+  background-color: #fffbeb !important;
+  transition: background-color 2s ease-in-out, color 2s ease-in-out;
+}
+body.emotion-creative .bg-zinc-50, 
+body.emotion-creative .bg-white,
+body.emotion-creative .bg-zinc-950 {
+  background-color: transparent !important;
+  transition: background-color 2s ease-in-out;
+}
+body.emotion-creative * {
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+
+/* 
+  Elastic Density (الكثافة المرنة)
+  Adjust layout dynamically based on scroll speed and interaction.
+*/
+body.scroll-fast main {
+  opacity: 0.85;
+  transform: scale(0.995);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.scroll-fast .markdown-body p {
+  color: #52525b; /* dim slightly */
+  transition: color 0.3s ease;
+}
+
+body.scroll-dwelling main {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.scroll-dwelling .marginalia-hint {
+  opacity: 1;
+  transform: translateX(0);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.marginalia-hint {
+  opacity: 0;
+  transform: translateX(-10px);
+  pointer-events: none;
+}
+
+/* 
+  Digital Patina (الزنجار الرقمي)
+  These variables represents the "age" of the application install.
+  We will map this directly in CSS. Over time, bg-zinc-50 becomes slightly warmer.
+*/
+:root {
+  --patina-warmth: 0%; /* Default */
+}
+
+body.patina-aged {
+  /* Simulate 6 months of aging: warmer tone, softer contrasts */
+  --patina-warmth: 100%;
+  background-color: color-mix(in srgb, #f4f4f5, #fcfaf5 var(--patina-warmth));
+}
+
+body.patina-aged .bg-white {
+  background-color: color-mix(in srgb, #ffffff, #fffdf8 var(--patina-warmth));
+}
+
+body.patina-aged .text-zinc-900 {
+  color: color-mix(in srgb, #18181b, #2d2620 var(--patina-warmth));
+}
+body.mode-focus main {
+  max-width: 800px;
+  margin: 0 auto;
+  transition: max-width 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body.mode-focus .orchestrator-ui,
+body.mode-focus header,
+body.mode-focus footer,
+body.mode-focus .global-floating-buttons {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body.mode-executive .markdown-body {
+  font-family: var(--font-sans);
+  @apply prose-p:leading-snug prose-headings:font-bold prose-headings:tracking-tight;
+}
+
+body.mode-genesis .card-ui {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.04);
+  border-radius: 2rem;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Auto-Zen Mode */
+body.zen-idle header,
+body.zen-idle footer,
+body.zen-idle .global-floating-buttons,
+body.zen-idle .orchestrator-ui,
+body.zen-idle nav {
+  opacity: 0.1 !important;
+  pointer-events: none !important;
+  transition: opacity 3s cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+
+body.zen-idle::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.05) 100%);
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 2s ease;
+}
+
+body:not(.zen-idle)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.05) 100%);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+body:not(.zen-idle) header,
+body:not(.zen-idle) footer,
+body:not(.zen-idle) .global-floating-buttons,
+body:not(.zen-idle) .orchestrator-ui,
+body:not(.zen-idle) nav {
+  transition: opacity 0.5s ease, transform 0.5s ease !important;
+}
+
+.markdown-body {
+  @apply prose prose-zinc prose-base max-w-none prose-headings:font-black prose-headings:tracking-tighter prose-p:text-zinc-700 prose-p:leading-[1.85] prose-strong:text-zinc-900 prose-p:mb-5 prose-li:mb-2 prose-ul:my-5 prose-h3:mt-8;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.markdown-body pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.markdown-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  width: 100%;
+  white-space: nowrap;
+}
+
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-inner p {
+  margin-bottom: 0.75rem;
+}
+.markdown-inner p:last-child {
+  margin-bottom: 0;
+}
+.markdown-inner ul {
+  list-style-type: disc;
+  padding-inline-start: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.markdown-inner li {
+  margin-bottom: 0.5rem;
+}
+
+/* Immersive & Luxurious Interactive Styles (Tebyan Premium Upgrades) */
+
+/* 1. Dynamic Ceramic & Finished Silver Reflection Glaze */
+.luxury-ceramic-sheen {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s ease;
+}
+
+.luxury-ceramic-sheen::after {
+  content: '';
+  position: absolute;
+  top: -150%;
+  left: -150%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.1) 48%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.1) 52%,
+    transparent 55%
+  );
+  transform: rotate(-20deg);
+  transition: none;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.luxury-ceramic-sheen:hover::after {
+  animation: ceramicGlazeSwipe 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.luxury-ceramic-sheen:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(90, 90, 64, 0.08), 0 0 25px rgba(90, 90, 64, 0.04);
+}
+
+@keyframes ceramicGlazeSwipe {
+  0% {
+    top: -150%;
+    left: -150%;
+  }
+  100% {
+    top: 150%;
+    left: 150%;
+  }
+}
+
+/* 2. Kinetic & Decisive Breathing Typography */
+.text-kinetic-breathe {
+  animation: kineticBreath 6s ease-in-out infinite alternate;
+}
+
+@keyframes kineticBreath {
+  0% {
+    font-weight: 300;
+    font-variation-settings: "wght" 300, "wdth" 80;
+    letter-spacing: -0.01em;
+  }
+  50% {
+    font-weight: 500;
+    font-variation-settings: "wght" 500, "wdth" 105;
+    letter-spacing: 0.02em;
+  }
+  100% {
+    font-weight: 700;
+    font-variation-settings: "wght" 700, "wdth" 120;
+    letter-spacing: 0em;
+  }
+}
+
+/* Hard Decisive Metal Strike (قول فصل) Text appearance effect */
+.text-strike-gold {
+  background: linear-gradient(135deg, #18181b 0%, #2a2925 30%, #a1a1aa 50%, #5a5a40 70%, #2a2925 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shineBronze 3s linear infinite;
+  font-weight: 900;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+}
+
+@keyframes shineBronze {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* 3. 3D Tectonic Islands & Organic Living Wisdom Containers */
+.tectonic-island-3d {
+  background: linear-gradient(145deg, #FFFBFA, #FAF6F0);
+  border: 1px solid rgba(90, 90, 64, 0.12);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.02), 
+    0 2px 4px -1px rgba(0, 0, 0, 0.01),
+    0 10px 15px -3px rgba(90, 90, 64, 0.04), 
+    inset 0 1px 0 rgba(255, 255, 215, 0.4);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tectonic-island-3d:hover {
+  transform: translateZ(20px) rotateX(1deg) rotateY(-1deg);
+  box-shadow: 
+    0 20px 25px -5px rgba(90, 90, 64, 0.06), 
+    0 10px 10px -5px rgba(90, 90, 64, 0.04),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    0 1px 2px rgba(180, 150, 100, 0.15);
+}
+
+.organic-gold-rim {
+  border: 2px solid transparent;
+  background-image: linear-gradient(white, white), radial-gradient(circle at top left, #dfc18b, #c49a45, #dfc18b);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+
+
+@keyframes tebyan-breathe {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.92; }
+  50% { transform: translateY(-1px) scale(1.01); opacity: 1; }
+}
+
+.tebyan-breathe {
+  animation: tebyan-breathe 4.8s ease-in-out infinite;
+}
+
+.tebyan-soft-card {
+  background: rgba(250, 249, 246, 0.82);
+  border: 1px solid rgba(142, 122, 174, 0.14);
+  box-shadow: 0 18px 50px rgba(24, 34, 49, 0.06);
+  backdrop-filter: blur(18px);
+}
+
+.tebyan-soft-glow {
+  box-shadow: 0 18px 55px rgba(142, 122, 174, 0.14);
+}
+
+.tebyan-intellectual-gradient {
+  background:
+    radial-gradient(circle at 85% 10%, rgba(142,122,174,0.14), transparent 30%),
+    radial-gradient(circle at 10% 90%, rgba(143,169,199,0.15), transparent 32%),
+    linear-gradient(135deg, rgba(250,249,246,0.96), rgba(247,245,242,0.88));
+}
+
+.tebyan-deep-soft {
+  background:
+    radial-gradient(circle at top right, rgba(142,122,174,0.20), transparent 30%),
+    linear-gradient(135deg, #F8F6F2, #EEF2F6);
+}
+
+/* Tebyan v12 premium experience layer: soft, calm, non-destructive */
+@keyframes tebyan-living-hush {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: 0.55; }
+  50% { transform: translate3d(0,-6px,0) scale(1.035); opacity: 0.78; }
+}
+
+.tebyan-living-background {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 84% 8%, rgba(201,190,223,0.24), transparent 32%),
+    radial-gradient(circle at 12% 88%, rgba(185,208,231,0.20), transparent 34%),
+    linear-gradient(135deg, #FBFAF7 0%, #F7F5F2 52%, #F2F5F8 100%);
+}
+
+.tebyan-living-background::before,
+.tebyan-living-background::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(96px);
+  animation: tebyan-living-hush 9s ease-in-out infinite;
+}
+
+.tebyan-living-background::before {
+  width: 26rem;
+  height: 26rem;
+  top: -6rem;
+  right: -4rem;
+  background: rgba(142,122,174,0.18);
+}
+
+.tebyan-living-background::after {
+  width: 24rem;
+  height: 24rem;
+  bottom: -7rem;
+  left: -5rem;
+  background: rgba(143,169,199,0.16);
+  animation-delay: 1.2s;
+}
+
+.tebyan-result-document {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.94), rgba(250,249,246,0.98)),
+    radial-gradient(circle at top right, rgba(142,122,174,0.08), transparent 36%);
+  border: 1px solid rgba(142,122,174,0.14);
+  box-shadow: 0 24px 70px rgba(24,34,49,0.07);
+}
+
+.tebyan-mode-understanding { --mode-accent: #8FA9C7; }
+.tebyan-mode-decision { --mode-accent: #8E7AAE; }
+.tebyan-mode-judgment { --mode-accent: #D8C28A; }
+.tebyan-mode-creative { --mode-accent: #C8A9CB; }
+.tebyan-mode-knowledge { --mode-accent: #7C8796; }
+.tebyan-mode-warning { --mode-accent: #A6603F; }
+
+body.tebyan-focus-mode .global-floating-buttons,
+body.tebyan-focus-mode .tour-search-input ~ *:not(.tebyan-focus-keep) {
+  opacity: 0.18;
+}
+
+body.tebyan-focus-mode main {
+  scroll-behavior: smooth;
+}
+
+
+/* Tebyan v15 wow layer — non-destructive visual polish */
+@keyframes tebyan-gateway-ring-breathe {
+  0%, 100% { box-shadow: 0 18px 50px rgba(24,34,49,0.06), 0 0 0 0 var(--clarity-glow, rgba(142,122,174,0.16)); }
+  50% { box-shadow: 0 22px 70px rgba(142,122,174,0.10), 0 0 0 8px var(--clarity-glow, rgba(142,122,174,0.12)); }
+}
+.tebyan-gateway-ring { animation: tebyan-gateway-ring-breathe 4.8s ease-in-out infinite; }
+.tebyan-understanding-pulse::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent, rgba(142,122,174,0.16), rgba(143,169,199,0.14), transparent);
+  opacity: 0.7;
+  filter: blur(8px);
+  animation: tebyan-search-aurora 3.8s ease-in-out infinite;
+}
+@keyframes tebyan-search-aurora {
+  0%, 100% { transform: translateX(-1.5%) scale(0.995); opacity: 0.34; }
+  50% { transform: translateX(1.5%) scale(1.005); opacity: 0.76; }
+}
+.tebyan-gate-arrival { animation: tebyan-gate-arrival 2.7s ease-in-out both; }
+@keyframes tebyan-gate-arrival {
+  0% { transform: translateY(14px) scale(0.985); filter: blur(8px); }
+  32% { transform: translateY(0) scale(1.01); filter: blur(0); }
+  100% { transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* Route personalities: very soft visual accents per thinking path */
+.tebyan-route-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.75;
+  transition: background 700ms ease, opacity 700ms ease;
+}
+.tebyan-route-qawlfasl::before { background: radial-gradient(circle at 82% 10%, rgba(216,194,138,0.16), transparent 28%); }
+.tebyan-route-decisionroom::before { background: radial-gradient(circle at 80% 12%, rgba(142,122,174,0.16), transparent 30%); }
+.tebyan-route-creativelab::before { background: radial-gradient(circle at 80% 12%, rgba(200,169,203,0.18), transparent 30%); }
+.tebyan-route-knowledgecenter::before, .tebyan-route-knowledgegraph::before { background: radial-gradient(circle at 80% 12%, rgba(143,169,199,0.18), transparent 31%); }
+.tebyan-route-strategicarena::before { background: radial-gradient(circle at 80% 12%, rgba(168,195,189,0.16), transparent 30%); }
+
+/* Royal reading focus: calm document mode without removing functionality */
+body.tebyan-focus-mode main {
+  background: linear-gradient(180deg, rgba(251,250,247,0.95), rgba(247,245,242,0.98));
+}
+body.tebyan-focus-mode .global-floating-buttons,
+body.tebyan-focus-mode header,
+body.tebyan-focus-mode .orchestrator-ui {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+body.tebyan-focus-mode .markdown-body,
+body.tebyan-focus-mode .tebyan-result-document {
+  font-size: 1.08rem;
+  line-height: 2;
+  box-shadow: 0 30px 110px rgba(24,34,49,0.08) !important;
+}
+
+/* Softer special document stamp */
+.tebyan-knowledge-stamp {
+  background: linear-gradient(135deg, rgba(251,250,247,0.96), rgba(244,241,248,0.92));
+  border: 1px solid rgba(142,122,174,0.14);
+  box-shadow: 0 16px 44px rgba(142,122,174,0.08);
+}
+
+/* Tebyan v16 — cognitive mood + thought journey, soft and non-destructive */
+.tebyan-cognitive-mood {
+  background:
+    radial-gradient(circle at 92% 8%, var(--cognitive-soft, rgba(143,169,199,0.08)), transparent 34%),
+    rgba(250, 249, 246, 0.86);
+  border-color: color-mix(in srgb, var(--cognitive-accent, #8FA9C7) 22%, transparent);
+}
+.tebyan-cognitive-mood::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.56;
+  background: linear-gradient(120deg, transparent, var(--cognitive-soft, rgba(143,169,199,0.08)), transparent);
+  filter: blur(10px);
+}
+.tebyan-cognitive-understanding { --cognitive-accent: #8FA9C7; --cognitive-soft: rgba(143,169,199,0.08); }
+.tebyan-cognitive-decision { --cognitive-accent: #8E7AAE; --cognitive-soft: rgba(142,122,174,0.09); }
+.tebyan-cognitive-creative { --cognitive-accent: #C8A9CB; --cognitive-soft: rgba(200,169,203,0.09); }
+.tebyan-cognitive-knowledge { --cognitive-accent: #7C8796; --cognitive-soft: rgba(124,135,150,0.08); }
+.tebyan-cognitive-warning { --cognitive-accent: #A6603F; --cognitive-soft: rgba(166,96,63,0.075); }
+
+.tebyan-thought-journey {
+  margin: 1rem auto;
+  max-width: 48rem;
+  border-radius: 1.75rem;
+  border: 1px solid rgba(142,122,174,0.13);
+  background:
+    radial-gradient(circle at 88% 0%, rgba(142,122,174,0.10), transparent 32%),
+    linear-gradient(135deg, rgba(250,249,246,0.94), rgba(242,245,248,0.86));
+  padding: 1rem;
+  box-shadow: 0 18px 48px rgba(24,34,49,0.055);
+  backdrop-filter: blur(18px);
+}
+.tebyan-thought-journey:hover {
+  box-shadow: 0 22px 58px rgba(142,122,174,0.09);
+}
