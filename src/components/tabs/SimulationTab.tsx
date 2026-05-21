@@ -149,17 +149,17 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
        onBack={() => handleTabChange('discover', '')}
        onClose={() => handleTabChange('discover', '', true)}
      />
-     <div className="flex bg-white/50 backdrop-blur-md rounded-full shadow-sm p-1 max-w-[400px] mx-auto border border-zinc-200">
-        <button onClick={() => setSimMode('decision')} className={cn("flex-1 py-3 px-4 rounded-full font-bold transition-all", simMode === 'decision' ? "bg-black text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
+     <div className="flex bg-white/50 backdrop-blur-md rounded-full shadow-sm p-1 max-w-[400px] mx-auto border border-zinc-200 text-sm md:text-base">
+        <button onClick={() => setSimMode('decision')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'decision' ? "bg-black text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
            {language === 'ar' ? 'نموذج القرار' : 'Decision Model'}
         </button>
-        <button onClick={() => setSimMode('roleplay')} className={cn("flex-1 py-3 px-4 rounded-full font-bold transition-all", simMode === 'roleplay' ? "bg-rose-500 text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
+        <button onClick={() => setSimMode('roleplay')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'roleplay' ? "bg-rose-500 text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
            {language === 'ar' ? 'تقمص الأدوار المباشر' : 'Live Roleplay'}
         </button>
      </div>
 
      <div 
-        className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-blue-100 space-y-8 relative overflow-hidden"
+        className="bg-white p-4 md:p-7 lg:p-9 rounded-[24px] md:rounded-[32px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-blue-100 space-y-6 md:space-y-8 relative overflow-hidden"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             if (simFeedback) setSimFeedback(null);
@@ -201,8 +201,8 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
               </div>
             ) : (
               <div id="simulation-results" className="space-y-8">
-                <div className="p-8 bg-blue-50 rounded-[24px] md:rounded-[32px] border-2 border-blue-100">
-                  <h3 className="text-2xl font-bold text-blue-900 leading-relaxed">{simulation.scenario}</h3>
+                <div className="p-4 md:p-6 bg-blue-50 rounded-[20px] md:rounded-[28px] border border-blue-100">
+                  <h3 className="text-base md:text-xl font-bold text-blue-900 leading-relaxed">{simulation.scenario}</h3>
                 </div>
                 
                 {!simFeedback ? (
@@ -227,9 +227,9 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                          } else {
                            window.dispatchEvent(new CustomEvent('add_xp', { detail: { amount: 50 } }));
                          }
-                      }} className="group p-6 text-right bg-white border border-zinc-200/80 rounded-[16px] hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer">
+                      }} className="group p-4 md:p-5 text-right bg-white border border-zinc-200/80 rounded-[16px] hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer">
                         <div className="flex items-center justify-between font-bold">
-                           <span className="text-xl text-zinc-700 group-hover:text-blue-700">{decision.choice}</span>
+                           <span className="text-sm md:text-lg text-zinc-700 group-hover:text-blue-700 leading-relaxed">{decision.choice}</span>
                            <Zap className="w-5 h-5 text-zinc-300 group-hover:text-blue-400" />
                         </div>
                       </button>
@@ -237,9 +237,9 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                   </div>
                 ) : (
                   <motion.div id="simulation-feedback" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
-                     <div className={cn("p-8 rounded-[24px] md:rounded-[32px] border-4", simFeedback.isCorrect ? "bg-emerald-50 border-emerald-200" : "bg-orange-50 border-orange-200")}>
-                        <h4 className="text-2xl font-bold mb-4">{simFeedback.isCorrect ? (language === 'ar' ? 'أحسنتم!' : 'Well Done!') : (language === 'ar' ? 'تحليل النتيجة' : 'Result Analysis')}</h4>
-                        <p className="text-lg font-bold text-zinc-700 leading-relaxed">{simFeedback.impact}</p>
+                     <div className={cn("p-4 md:p-6 rounded-[20px] md:rounded-[28px] border", simFeedback.isCorrect ? "bg-emerald-50 border-emerald-200" : "bg-orange-50 border-orange-200")}>
+                        <h4 className="text-lg md:text-xl font-bold mb-3">{simFeedback.isCorrect ? (language === 'ar' ? 'أحسنتم!' : 'Well Done!') : (language === 'ar' ? 'تحليل النتيجة' : 'Result Analysis')}</h4>
+                        <p className="text-sm md:text-base font-bold text-zinc-700 leading-relaxed">{simFeedback.impact}</p>
                      </div>
                      <button onClick={() => setSimFeedback(null)} className="w-full py-4 bg-black text-white rounded-[16px] font-bold">
                        {language === 'ar' ? 'تجربة قرار آخر' : 'Try another decision'}

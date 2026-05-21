@@ -148,7 +148,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   };
 
   return (
-    <div className="w-full bg-[#FBFAF7] text-[#182231] min-h-[85vh] rounded-[32px] p-4 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.12)] relative overflow-hidden flex flex-col md:flex-row gap-6 border border-[#E9E2F1]">
+    <div className="w-full bg-[#FBFAF7] text-[#182231] min-h-[82vh] rounded-[24px] md:rounded-[32px] p-3 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.12)] relative overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 border border-[#E9E2F1]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(142,122,174,0.12)_0%,transparent_70%)] pointer-events-none"></div>
       <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay"></div>
       
@@ -163,11 +163,11 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         </button>
       </div>
 
-      <div className="flex-1 flex flex-col relative z-10 pt-32 md:pt-0">
+      <div className="flex-1 flex flex-col relative z-10 pt-24 md:pt-0">
         <div className="mb-6 md:mb-10 pl-2">
-            <h2 className="text-3xl md:text-5xl font-black text-[#182231] flex items-center gap-4 tracking-tighter italic">
+            <h2 className="text-2xl md:text-5xl font-black text-[#182231] flex items-center gap-4 tracking-tighter italic">
                 <div className="p-3 bg-[#F1ECF7] rounded-2xl border border-[#E8E2F1] flex items-center justify-center shrink-0">
-                  <Network className="w-10 h-10 md:w-16 md:h-16 text-[#8E7AAE]" />
+                  <Network className="w-7 h-7 md:w-16 md:h-16 text-[#8E7AAE]" />
                 </div>
                 <div className="flex-1 min-w-0 pb-1 pt-1">
                   <div className="bg-gradient-to-r from-[#182231] to-[#8E7AAE] bg-clip-text text-transparent leading-tight">
@@ -178,8 +178,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   </div>
                 </div>
             </h2>
-            <div className="mt-6 p-5 rounded-2xl bg-white/70 border border-[#E9E2F1] backdrop-blur-sm max-w-3xl">
-                <p className="text-[#6F7785] font-medium leading-relaxed md:text-lg text-justify">
+            <div className="mt-4 md:mt-6 p-4 md:p-5 rounded-2xl bg-white/70 border border-[#E9E2F1] backdrop-blur-sm max-w-3xl">
+                <p className="text-[#6F7785] font-medium leading-relaxed text-sm md:text-lg text-justify">
                     {language === 'ar' 
                       ? 'هنا لا نعطيك مجرد إجابات مُعلبة، بل نُريك المجرة المعرفية المحيطة بها. الأفكار لا تعيش في عزلة.. اكتشف الروابط الخفية بين قراراتك، وكيف يمكن لفكرة واحدة أن تفتح لك مسارات لم تكن تتوقعها.' 
                       : 'Here we don’t just give you canned answers; we show you the cognitive galaxy surrounding them. Ideas don’t live in isolation. Discover the hidden connections between your decisions.'}
@@ -208,7 +208,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </div>
         )}
 
-        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[500px] border border-[#E9E2F1] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
+        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[380px] md:min-h-[500px] border border-[#E9E2F1] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
           {history.length === 0 && (
             <div className="absolute top-6 left-6 right-6 z-20 pointer-events-auto">
               <TebyanEmptyState
@@ -416,7 +416,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </svg>
 
           {/* Time Traveling Slider */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%] md:w-[60%] z-40 bg-zinc-900/90 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-full p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
+          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
              <div className="w-full flex items-center justify-between gap-4">
                  <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
                      {getEraLabel(1)}
@@ -426,7 +426,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     min="1" max="4" 
                     value={timeEra} 
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
-                    className="flex-1 accent-indigo-500 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer" 
+                    className="flex-1 accent-[#8E7AAE] h-2 bg-[#E9E2F1] rounded-lg appearance-none cursor-pointer" 
                  />
                  <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
                     {getEraLabel(4)}
@@ -447,7 +447,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ type: "spring", bounce: 0 }}
-            className="w-full md:w-[350px] lg:w-[400px] bg-white/88 border border-[#8FA9C7]/18 rounded-[32px] p-6 flex flex-col relative z-20 shadow-[0_24px_80px_rgba(24,34,49,0.10)] backdrop-blur-xl"
+            className="w-full md:w-[350px] lg:w-[400px] bg-white/92 border border-[#8FA9C7]/18 rounded-[24px] md:rounded-[32px] p-4 md:p-6 flex flex-col relative z-20 shadow-[0_24px_80px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <button 
               onClick={() => setSelectedNodes([])}
@@ -463,7 +463,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             <div className={cn("p-3 rounded-2xl border", selectedNodes[0].type === 'golden' ? "bg-amber-500/20 border-amber-500/20" : "bg-emerald-500/20 border-emerald-500/20")}>
                                 {selectedNodes[0].type === 'golden' ? <Sparkles className="w-6 h-6 text-amber-400" /> : <Lightbulb className="w-6 h-6 text-[#5A8C75]" />}
                             </div>
-                            <h3 className="text-2xl font-black">{selectedNodes[0].label}</h3>
+                            <h3 className="text-lg md:text-2xl font-black">{selectedNodes[0].label}</h3>
                         </div>
 
                         <div className="space-y-6">

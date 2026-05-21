@@ -45,12 +45,12 @@ export function MessagesFloatingButton() {
   return (
     <>
       <motion.button
-        className="fixed bottom-6 right-6 z-[100] h-14 px-6 rounded-full bg-slate-900 text-white shadow-xl flex items-center justify-center gap-3 hover:scale-105 transition-transform"
+        className="fixed bottom-6 right-6 z-[100] h-12 w-12 md:h-13 md:w-13 rounded-full bg-white/90 text-[#6E5F8E] border border-[#C9BEDF]/50 shadow-xl flex items-center justify-center hover:scale-105 transition-transform global-floating-buttons"
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.9 }}
       >
         <MessageSquare className="w-5 h-5" />
-        <span className="font-bold text-sm tracking-wide">تواصل معنا</span>
+        <span className="sr-only">تواصل معنا</span>
       </motion.button>
       
       <AnimatePresence>

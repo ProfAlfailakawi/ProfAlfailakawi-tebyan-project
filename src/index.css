@@ -655,3 +655,41 @@ body.tebyan-focus-mode .tebyan-result-document {
 .tebyan-thought-journey:hover {
   box-shadow: 0 22px 58px rgba(142,122,174,0.09);
 }
+
+/* Mobile refinement pass: softer density without removing any feature */
+@media (max-width: 640px) {
+  .tour-search-input {
+    border-radius: 22px !important;
+    padding: 0.55rem !important;
+  }
+  .tour-search-input textarea {
+    font-size: 1rem !important;
+    line-height: 1.65 !important;
+    padding: 0.85rem 1rem !important;
+  }
+  .tour-search-input button[type="submit"] {
+    width: 3rem !important;
+    height: 3rem !important;
+    border-radius: 16px !important;
+  }
+  .tebyan-thought-journey {
+    padding: 0.8rem !important;
+    border-radius: 20px !important;
+  }
+  .tebyan-thought-journey .grid {
+    gap: 0.35rem !important;
+  }
+  .tebyan-thought-journey svg {
+    width: 0.85rem !important;
+    height: 0.85rem !important;
+  }
+  .global-floating-buttons {
+    transform: scale(0.92);
+    transform-origin: bottom right;
+  }
+  main [class*="rounded-[40px]"],
+  main [class*="rounded-[48px]"],
+  main [class*="rounded-[56px]"] {
+    border-radius: 26px !important;
+  }
+}

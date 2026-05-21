@@ -73,7 +73,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   return (
     <div className="flex flex-col h-full bg-[#FAF9F6]/70 backdrop-blur-2xl min-h-[80vh] font-sans pb-24">
       {/* Header */}
-      <div className="bg-[#FAF9F6]/95 border-b border-[#8FA9C7]/15 sticky top-0 z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="bg-[#FAF9F6]/95 border-b border-[#8FA9C7]/15 relative z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="max-w-4xl mx-auto px-5 md:px-8 py-6 md:py-10 flex items-start gap-4 md:gap-6">
           <button 
             onClick={onBack}

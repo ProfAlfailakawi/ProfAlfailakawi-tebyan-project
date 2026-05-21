@@ -1907,7 +1907,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
         {/* Intent shortcuts: Google-simple outside, deep inside */}
         {!hasSearched && !isThinking && (
-          <div className="mt-6 w-full max-w-2xl mx-auto flex flex-col items-center gap-4">
+          <div className="mt-4 md:mt-6 w-full max-w-2xl mx-auto flex flex-col items-center gap-3 md:gap-4">
             <div className="grid grid-cols-3 gap-2 w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
               {[
                 {
@@ -1934,7 +1934,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     onClick={item.action}
                     disabled={isDisabled}
                     className={cn(
-                      'h-12 rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-sm transition-all active:scale-95',
+                      'h-10 md:h-12 rounded-xl md:rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-xs md:text-sm transition-all active:scale-95',
                       isDisabled ? 'opacity-50 pointer-events-none' : 'hover:border-[#8E7AAE]/45 hover:shadow-md'
                     )}
                   >
@@ -1946,7 +1946,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             <button
               type="button"
               onClick={() => setShowInspiration(v => !v)}
-              className="text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors"
+              className="inline-flex items-center justify-center rounded-full border border-[#C9BEDF]/40 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors shadow-sm"
             >
               {showInspiration ? (language === 'ar' ? 'إخفاء الأمثلة' : 'Hide examples') : (language === 'ar' ? 'أحتاج فكرة أبدأ بها' : 'I need a starting idea')}
             </button>
@@ -1955,7 +1955,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
         {/* Dynamic Suggestion Chips - hidden until requested */}
         {showInspiration && !hasSearched && !isThinking && (
-          <div className="mt-5 flex overflow-x-auto pb-4 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full">
+          <div className="mt-4 flex overflow-x-auto pb-3 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full px-1">
               {proactiveInsights.dynamicSuggests.map((chip, idx) => (
                       <button
                           key={idx}
@@ -1968,9 +1968,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               setIsFocused(true);
                           }}
                           className={cn(
-                              "px-5 py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
+                              "px-3.5 md:px-5 py-2 md:py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
                               "bg-white text-zinc-500 hover:border-mood-primary hover:text-[#6E5F8E]",
-                              mood ? getMoodTypography(mood) : "font-bold text-sm"
+                              mood ? getMoodTypography(mood) : "font-bold text-xs md:text-sm"
                           )}
                       >
                           <span className="relative z-10">{language === 'ar' ? chip.ar : chip.en}</span>

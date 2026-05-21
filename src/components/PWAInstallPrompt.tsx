@@ -55,11 +55,11 @@ export const PWAHeaderButton = () => {
     <>
       <button 
         onClick={handleInstallClick}
-        className="flex items-center justify-center gap-2 px-4 py-2 mx-1 md:mx-2 rounded-xl bg-white/85 text-[#7D689E] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[#C9BEDF]/40 backdrop-blur-xl"
+        className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 mx-1 md:mx-2 rounded-xl bg-white/85 text-[#7D689E] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[#C9BEDF]/40 backdrop-blur-xl"
         title="تثبيت التطبيق"
+        aria-label="تثبيت التطبيق"
       >
         <Download className="w-4 h-4 text-[#8E7AAE]" />
-        <span className="font-black text-sm">تثبيت</span>
       </button>
 
       {/* iOS Instructions Modal */}

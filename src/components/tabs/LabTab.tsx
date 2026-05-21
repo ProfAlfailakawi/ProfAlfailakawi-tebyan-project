@@ -266,7 +266,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
            </div>
 
            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-             {labPurposes.map(purpose => (
+             {labPurposes.filter(purpose => purpose.id !== 'all').map(purpose => (
                <button
                  key={purpose.id}
                  type="button"

@@ -25,7 +25,7 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
 
   return (
     <div className="flex flex-col h-full bg-white/60 backdrop-blur-2xl min-h-[80vh] pb-24 font-sans">
-      <div className="bg-white border-b border-[#EBEAE4] sticky top-0 z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="bg-white border-b border-[#EBEAE4] relative z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col md:flex-row items-center md:justify-between gap-4">
           <button 
             onClick={onBack}

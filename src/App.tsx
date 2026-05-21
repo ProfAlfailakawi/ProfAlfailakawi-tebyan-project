@@ -670,7 +670,6 @@ const AppContent: React.FC = () => {
                   title={language === 'ar' ? 'تسجيل الدخول' : 'Login'}
                 >
                   <User className="w-4 h-4" />
-                  <span className="font-bold text-sm">{language === 'ar' ? 'الدخول' : 'Login'}</span>
                 </button>
            ) : null}
          </div>
@@ -1006,12 +1005,16 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <TheOrb 
-        language={language}
-        onTap={() => setShowGlobalCommand(true)}
-        onDragUp={() => setShowVoiceCanvas(true)}
-      />
-      <MessagesFloatingButton />
+      {(activeTab === 'home' || activeTab === 'discover') && (
+        <>
+          <TheOrb 
+            language={language}
+            onTap={() => setShowGlobalCommand(true)}
+            onDragUp={() => setShowVoiceCanvas(true)}
+          />
+          <MessagesFloatingButton />
+        </>
+      )}
 
       <VoiceCanvas
         isOpen={showVoiceCanvas}
@@ -1027,7 +1030,9 @@ const AppContent: React.FC = () => {
         handleTabChange={handleTabChange}
       />
 
-      <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
+      {(activeTab === 'home' || activeTab === 'discover') && (
+        <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
+      )}
 
       <AnimatePresence>
           {isAnalyzingTwin && (

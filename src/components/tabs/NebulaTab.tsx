@@ -97,7 +97,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
     }, [isCinematic, visibleNodes, x, y]);
 
     return (
-        <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "fixed inset-0 z-50 h-screen bg-black rounded-none" : "h-[70vh] bg-black rounded-[40px] border border-zinc-800")}>
+        <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "fixed inset-0 z-50 h-screen bg-black rounded-none" : "h-[68vh] md:h-[70vh] bg-black rounded-[24px] md:rounded-[40px] border border-zinc-800")}>
             {/* Nebula Background */}
             <div className={cn("absolute inset-0 pointer-events-none transition-opacity duration-1000", isCinematic ? "opacity-20" : "opacity-40")}>
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-[150px] animate-pulse" />
@@ -107,8 +107,8 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
             {/* Instruction Overlay */}
             {!isCinematic && (
               <div className={cn(
-                  "absolute top-6 z-20 flex items-center gap-3 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 text-white/80 text-xs font-bold",
-                  language === 'ar' ? 'right-6' : 'left-6'
+                  "absolute top-4 md:top-6 z-20 flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 md:px-4 py-2 rounded-full border border-white/10 text-white/80 text-[10px] md:text-xs font-bold max-w-[52vw] md:max-w-none leading-relaxed",
+                  language === 'ar' ? 'right-3 md:right-6' : 'left-3 md:left-6'
               )}>
                   <Info className="w-4 h-4" />
                   {language === 'ar' ? 'تفاعل مع نقاط الضوء لاستكشاف الأفكار' : 'Interact with light points to explore ideas'}
@@ -117,8 +117,8 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
 
             {/* Cinematic Button */}
             <div className={cn(
-                "absolute top-6 z-20 flex items-center gap-3",
-                language === 'ar' ? 'left-6' : 'right-6'
+                "absolute top-4 md:top-6 z-20 flex items-center gap-2",
+                language === 'ar' ? 'left-3 md:left-6' : 'right-3 md:right-6'
             )}>
               <button 
                   onClick={() => {
@@ -126,7 +126,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                       else setIsCinematic(true);
                   }} 
                   className={cn(
-                      "px-4 py-2 rounded-full font-bold text-xs flex items-center gap-2 backdrop-blur-md shadow-lg transition-all border",
+                      "px-3 md:px-4 py-2 rounded-full font-bold text-[10px] md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
                       isCinematic ? "bg-white text-black border-white" : "bg-black/50 text-white border-white/10 hover:bg-white/10"
                   )}
               >
