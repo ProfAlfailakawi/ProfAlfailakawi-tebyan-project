@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon, Home } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon, Home, Eye, CheckCircle2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -113,6 +113,106 @@ const getMoodTypography = (mood: string) => {
     default:
       return "font-bold tracking-tight transition-all";
   }
+};
+
+
+const getCognitiveMood = (text: string, language: 'ar' | 'en') => {
+  const q = (text || '').toLowerCase();
+  const has = (words: string[]) => words.some(w => q.includes(w));
+  if (has(['خطر', 'أزمة', 'طوارئ', 'كارثة', 'ينتحر', 'يؤذي', 'urgent', 'danger', 'crisis', 'emergency'])) {
+    return {
+      id: 'warning',
+      label: language === 'ar' ? 'مقام تنبيه هادئ' : 'Calm alert mood',
+      hint: language === 'ar' ? 'تبيان سيحافظ على الهدوء ويطلب السياق الحاسم.' : 'Tebyan will stay calm and ask for decisive context.',
+      accent: '#A6603F',
+      glow: 'rgba(166,96,63,0.16)',
+      soft: 'rgba(166,96,63,0.07)'
+    };
+  }
+  if (has(['قرار', 'احسم', 'اختار', 'حيرة', 'أقرر', 'decide', 'decision', 'choose'])) {
+    return {
+      id: 'decision',
+      label: language === 'ar' ? 'مقام قرار' : 'Decision mood',
+      hint: language === 'ar' ? 'السؤال يميل إلى الترجيح والحسم.' : 'This leans toward weighing and deciding.',
+      accent: '#8E7AAE',
+      glow: 'rgba(142,122,174,0.22)',
+      soft: 'rgba(142,122,174,0.08)'
+    };
+  }
+  if (has(['إبداع', 'فكرة', 'ابتكار', 'مشروع', 'creative', 'idea', 'innovation', 'project'])) {
+    return {
+      id: 'creative',
+      label: language === 'ar' ? 'مقام إبداع' : 'Creative mood',
+      hint: language === 'ar' ? 'تبيان سيبحث عن زاوية جديدة لا عن جواب عادي.' : 'Tebyan will seek a fresh angle, not a generic answer.',
+      accent: '#C8A9CB',
+      glow: 'rgba(200,169,203,0.22)',
+      soft: 'rgba(200,169,203,0.08)'
+    };
+  }
+  if (has(['معرفة', 'مفهوم', 'بحث', 'مصدر', 'تعلم', 'knowledge', 'concept', 'research', 'learn'])) {
+    return {
+      id: 'knowledge',
+      label: language === 'ar' ? 'مقام معرفة' : 'Knowledge mood',
+      hint: language === 'ar' ? 'السؤال يحتاج ربطاً بين المفاهيم والمعنى.' : 'This needs links between concepts and meaning.',
+      accent: '#7C8796',
+      glow: 'rgba(124,135,150,0.20)',
+      soft: 'rgba(124,135,150,0.08)'
+    };
+  }
+  return {
+    id: 'understanding',
+    label: language === 'ar' ? 'مقام فهم' : 'Understanding mood',
+    hint: language === 'ar' ? 'تبيان يقرأ طبيعة السؤال ويهيّئ مسار الفهم.' : 'Tebyan reads the question and prepares the understanding path.',
+    accent: '#8FA9C7',
+    glow: 'rgba(143,169,199,0.22)',
+    soft: 'rgba(143,169,199,0.08)'
+  };
+};
+
+const ThoughtJourney = ({ language, moodLabel }: { language: 'ar' | 'en', moodLabel: string }) => {
+  const steps = language === 'ar'
+    ? [
+        { label: 'كُتبت', icon: MessageCircleQuestion },
+        { label: 'فُهمت', icon: Eye },
+        { label: 'وُجّهت', icon: Route },
+        { label: 'صارت معرفة', icon: CheckCircle2 },
+      ]
+    : [
+        { label: 'Written', icon: MessageCircleQuestion },
+        { label: 'Understood', icon: Eye },
+        { label: 'Routed', icon: Route },
+        { label: 'Knowledge', icon: CheckCircle2 },
+      ];
+  return (
+    <div className="tebyan-thought-journey tebyan-focus-keep" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 border border-[#8E7AAE]/14 shadow-sm">
+            <Sparkles className="h-4 w-4 text-[#8E7AAE]" />
+          </span>
+          <div>
+            <p className="text-xs font-black text-[#182231]">{language === 'ar' ? 'رحلة الفكرة' : 'Thought journey'}</p>
+            <p className="text-[10px] font-bold text-[#7C8796]">{moodLabel}</p>
+          </div>
+        </div>
+        <span className="text-[10px] font-black text-[#8E7AAE] bg-white/70 px-3 py-1 rounded-full border border-[#8E7AAE]/10">
+          {language === 'ar' ? 'مسار معرفي' : 'Cognitive path'}
+        </span>
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        {steps.map((step, index) => {
+          const Icon = step.icon;
+          return (
+            <div key={step.label} className="relative rounded-2xl bg-white/72 border border-[#8FA9C7]/14 px-2 py-3 text-center shadow-sm overflow-hidden">
+              {index < steps.length - 1 && <span className="hidden md:block absolute top-1/2 -left-2 h-px w-4 bg-[#8FA9C7]/28" />}
+              <Icon className="h-4 w-4 mx-auto mb-2 text-[#6E5F8E]" />
+              <span className="block text-[10px] md:text-[11px] font-black text-[#465568]">{step.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
@@ -980,15 +1080,19 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return { score, level, hint };
   }, [searchValue, language]);
 
+  const cognitiveMood = useMemo(() => getCognitiveMood(searchValue || query, language), [searchValue, query, language]);
+
   const clarityRingStyle = questionClarity
     ? {
-        '--clarity-glow': questionClarity.score < 45
-          ? 'rgba(143,169,199,0.16)'
-          : questionClarity.score < 75
-            ? 'rgba(143,169,199,0.24)'
-            : 'rgba(142,122,174,0.28)'
+        '--clarity-glow': cognitiveMood.glow,
+        '--cognitive-accent': cognitiveMood.accent,
+        '--cognitive-soft': cognitiveMood.soft
       } as React.CSSProperties
-    : undefined;
+    : {
+        '--clarity-glow': cognitiveMood.glow,
+        '--cognitive-accent': cognitiveMood.accent,
+        '--cognitive-soft': cognitiveMood.soft
+      } as React.CSSProperties;
 
   const suggestions = useMemo(() => {
     const q = query.toLowerCase();
@@ -1260,7 +1364,8 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             )}
             <div
               className={cn(
-                "tour-search-input tebyan-gateway-ring flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card relative overflow-visible",
+                "tour-search-input tebyan-gateway-ring tebyan-cognitive-mood flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card relative overflow-visible",
+                `tebyan-cognitive-${cognitiveMood.id}`,
                 searchValue.trim().length > 0 && "tebyan-understanding-pulse",
                 showGateEcho && "tebyan-gate-arrival",
                 isFocused ? "ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95" : "bg-[#FAF9F6]/80",
@@ -1269,6 +1374,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               )}
               style={clarityRingStyle}
             >
+              {searchValue.trim().length >= 3 && (
+                <div className="pointer-events-none absolute -top-9 right-5 z-20 hidden md:flex items-center gap-2 rounded-full border border-[#8E7AAE]/12 bg-white/82 px-3 py-1.5 shadow-sm backdrop-blur-xl">
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: cognitiveMood.accent, boxShadow: `0 0 14px ${cognitiveMood.glow}` }} />
+                  <span className="text-[10px] font-black text-[#465568]">{cognitiveMood.label}</span>
+                </div>
+              )}
               {showGateEcho && (
                 <div className="pointer-events-none absolute -inset-10 z-0 flex items-center justify-center">
                   <motion.div
@@ -1609,6 +1720,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   </>
                 )}
               {hasSearched && (
+                <ThoughtJourney language={language} moodLabel={cognitiveMood.label} />
+              )}
+              {hasSearched && (
                 <KnowledgeSignature
                   language={language}
                   query={query}
@@ -1680,6 +1794,9 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         </div>
                     ) : (
                       <div className="space-y-8">
+                        {hasSearched && (
+                          <ThoughtJourney language={language} moodLabel={cognitiveMood.label} />
+                        )}
                         {/* Mobile Primary */}
                         {primarySuggestion  && (
                           <div className="space-y-3">
