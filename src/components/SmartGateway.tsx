@@ -10,7 +10,6 @@ import { detectEmotion } from '../services/gemini';
 import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
 import { TypographicAcoustic } from './TypographicAcoustic';
-import { AdvancedCognitiveAnalysis } from './AdvancedCognitiveAnalysis';
 import { SmartIntentEngine } from './common/SmartIntentEngine';
 import { KnowledgeSignature } from './common/KnowledgeSignature';
 import { TebyanGlyph } from './common/TebyanGlyph';
@@ -1610,23 +1609,23 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                       <button
                                         type="button"
                                         onClick={() => handlePathSelect(primarySuggestion.id, query)}
-                                        className="w-full flex-col md:flex-row flex md:items-center justify-between p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all group text-right border active:scale-[0.98] bg-mood-primary text-white hover:opacity-90 border-mood-primary shadow-2xl shadow-mood-glow relative overflow-hidden"
+                                        className="tebyan-primary-route-card w-full flex-col md:flex-row flex md:items-center justify-between p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all group text-right border active:scale-[0.98] bg-white text-[#182231] hover:opacity-100 border-[#DED6EA] shadow-[0_22px_60px_rgba(24,34,49,0.08)] relative overflow-hidden"
                                       >
                                          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 relative z-10 w-full md:w-auto">
-                                             <div className="w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[32px] bg-white/10 flex items-center justify-center transition-all group-hover:scale-110 shrink-0 self-end md:self-auto">
+                                             <div className="w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[32px] bg-white/76 border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center transition-all group-hover:scale-110 shrink-0 self-end md:self-auto shadow-sm">
                                                  {(() => { const Icon = primarySuggestion.icon; return <Icon className="w-7 h-7 md:w-10 md:h-10" />; })()}
                                              </div>
                                              <div className="text-right w-full">
                                                  <div className="flex items-center gap-2 mb-1 md:mb-2 justify-end md:justify-start">
                                                     <h3 className="text-2xl md:text-3xl font-black">{primarySuggestion.label}</h3>
                                                  </div>
-                                                 <p className="text-sm md:text-base font-bold opacity-80 max-w-md">
+                                                 <p className="text-sm md:text-base font-semibold text-[#5E6B7A] max-w-md leading-relaxed">
                                                      {primarySuggestion.reason || primarySuggestion.desc}
                                                  </p>
                                              </div>
                                          </div>
                                          <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right">
-                                            <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-white/10 px-6 md:px-8 py-3 md:py-3 rounded-full md:group-hover:bg-mood-secondary transition-all">
+                                            <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] px-6 md:px-8 py-3 md:py-3 rounded-full md:group-hover:bg-white transition-all shadow-sm">
                                                <span className="font-bold text-sm">{language === 'ar' ? 'البدء' : 'Start'}</span>
                                                <ArrowLeft className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "group-hover:-translate-x-2" : "rotate-180 group-hover:translate-x-2")} />
                                             </div>
@@ -1682,7 +1681,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               )}
 
                               {/* NEW: DEEP COGNITIVE ANALYSIS */}
-                              <AdvancedCognitiveAnalysis query={query} language={language} />
                           </div>
 
                           {/* Alternative Paths */}
@@ -1719,9 +1717,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     </div>
                   </>
                 )}
-              {hasSearched && (
-                <ThoughtJourney language={language} moodLabel={cognitiveMood.label} />
-              )}
               {hasSearched && (
                 <KnowledgeSignature
                   language={language}
@@ -1794,9 +1789,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         </div>
                     ) : (
                       <div className="space-y-8">
-                        {hasSearched && (
-                          <ThoughtJourney language={language} moodLabel={cognitiveMood.label} />
-                        )}
                         {/* Mobile Primary */}
                         {primarySuggestion  && (
                           <div className="space-y-3">
@@ -1804,15 +1796,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                              <button 
                                type="button"
                                onClick={() => handlePathSelect(primarySuggestion.id, query)}
-                               className="w-full flex items-center justify-between p-6 bg-[#8E7AAE] text-white rounded-[32px] shadow-2xl border border-black active:scale-95 transition-all"
+                               className="tebyan-primary-route-card w-full flex items-center justify-between p-6 bg-white text-[#182231] rounded-[32px] shadow-[0_18px_52px_rgba(24,34,49,0.08)] border border-[#DED6EA] active:scale-95 transition-all"
                              >
                                 <div className="flex items-center gap-4">
-                                   <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                                   <div className="w-12 h-12 rounded-2xl bg-[#F4F0F8] border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center">
                                       {(() => { const Icon = primarySuggestion.icon; return <Icon className="w-6 h-6" />; })()}
                                    </div>
                                    <div className="text-right">
                                       <div className="font-black text-lg tracking-tight">{primarySuggestion.label}</div>
-                                      <div className="text-[11px] leading-[1.6] opacity-60 font-bold">{language === 'ar' ? 'البداية الأسرع والأكثر فعالية' : 'Fastest and most effective start'}</div>
+                                      <div className="text-[11px] leading-[1.6] text-[#64788D] font-semibold">{language === 'ar' ? 'البداية الأسرع والأكثر فعالية' : 'Fastest and most effective start'}</div>
                                    </div>
                                 </div>
                                 <ArrowLeft className={cn("w-6 h-6", language === 'ar' ? "" : "rotate-180")} />
@@ -1896,7 +1888,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
                         {/* NEW: DEEP COGNITIVE ANALYSIS MOBILE */}
                         <div className="px-1">
-                           <AdvancedCognitiveAnalysis query={query} language={language} />
                         </div>
                       </div>
                     )}
@@ -2108,11 +2099,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               type="button"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.995 }}
-              className="w-full p-6 md:p-8 tebyan-intellectual-gradient rounded-[30px] md:rounded-[40px] border border-[#8FA9C7]/20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 md:gap-10 hover:shadow-[0_24px_80px_rgba(143,169,199,0.16)] hover:border-[#8E7AAE]/30 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
+              className="w-full p-5 sm:p-6 md:p-8 tebyan-fabric-hero-card rounded-[28px] md:rounded-[42px] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-5 md:gap-10 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
               onClick={() => handleTabChange('ripple')}
           >
-              <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#8FA9C7]/12 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-[#8E7AAE]/12 rounded-full blur-[70px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#D8CEE9]/34 rounded-full blur-[72px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-[#DCEAF4]/38 rounded-full blur-[72px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
               <div className="absolute inset-0 pointer-events-none opacity-70">
                 {[...Array(14)].map((_, i) => (
                   <motion.span
@@ -2128,24 +2119,24 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   <path d="M95 185 C 250 120, 345 220, 500 145 S 650 84, 840 72" fill="none" stroke="rgba(143,169,199,0.16)" strokeWidth="2" strokeDasharray="5 14" />
                 </svg>
               </div>
-              <div className="relative z-10 flex items-center gap-5 md:gap-7 justify-end flex-1">
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 md:gap-7 justify-end flex-1">
                   <div>
                       <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-[#8E7AAE]/18 text-[#6E5F8E] text-[10px] md:text-xs font-black tracking-widest uppercase mb-4 shadow-sm">
                           <Sparkles className="w-4 h-4" />
                           {language === 'ar' ? 'التجربة المميزة' : 'SIGNATURE EXPERIENCE'}
                       </div>
-                      <h3 className="text-2xl md:text-4xl font-black text-[#182231] mb-3 tracking-tight leading-tight">
+                      <h3 className="text-[1.7rem] sm:text-3xl md:text-4xl font-black text-[#182231] mb-3 tracking-tight leading-[1.12]">
                           {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                       </h3>
-                      <p className="text-zinc-500 font-bold text-sm md:text-base leading-relaxed max-w-2xl">
+                      <p className="text-[#566276] font-bold text-sm md:text-base leading-relaxed max-w-2xl">
                           {language === 'ar' ? 'شاهد كيف تنمو فكرتك وتتفرع وتؤثر في أفكار أخرى كأنها كائن حي.' : 'Watch your idea grow, branch, and influence other ideas like a living system.'}
                       </p>
                   </div>
-                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-[28px] bg-white flex items-center justify-center text-[#6E5F8E] border border-[#8E7AAE]/18 shadow-lg transform group-hover:rotate-1 group-hover:scale-[1.02] transition-transform shrink-0">
+                  <div className="tebyan-fabric-orb w-20 h-20 md:w-24 md:h-24 rounded-[28px] bg-white flex items-center justify-center text-[#6E5F8E] border border-[#8E7AAE]/18 shadow-lg transform group-hover:rotate-1 group-hover:scale-[1.02] transition-transform shrink-0">
                       <Waves className="w-10 h-10 md:w-12 md:h-12 opacity-90" />
                   </div>
               </div>
-              <div className="relative z-10 flex md:flex-col items-center justify-between md:justify-center gap-3 md:min-w-[150px] bg-white/70 border border-[#8E7AAE]/15 rounded-[28px] p-4 md:p-5 shadow-sm">
+              <div className="relative z-10 flex md:flex-col items-center justify-between md:justify-center gap-3 md:min-w-[150px] bg-white/78 border border-[#8E7AAE]/14 rounded-[24px] md:rounded-[28px] p-4 md:p-5 shadow-sm backdrop-blur-xl">
                   <span className="text-[11px] md:text-xs text-[#7C8796] font-black uppercase tracking-widest">
                       {language === 'ar' ? 'ابدأ الرحلة' : 'Start journey'}
                   </span>

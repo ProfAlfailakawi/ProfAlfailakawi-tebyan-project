@@ -67,8 +67,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     { id: 'understand', title: { ar: 'أبي أفهمها ببساطة', en: 'Understand it simply' }, hint: { ar: 'تبسيط وخريطة ذهنية وزوايا متعددة', en: 'Simplify, map, and see angles' }, toolIds: ['family', 'mindmap', 'collision'] },
     { id: 'create', title: { ar: 'أبي فكرة جديدة', en: 'Create a new idea' }, hint: { ar: 'تصادم أفكار ورموز وصوت للفكرة', en: 'Collide ideas, symbols, and resonance' }, toolIds: ['collider', 'symbols', 'sound'] },
     { id: 'build', title: { ar: 'أبي أحولها لمشروع', en: 'Turn it into a project' }, hint: { ar: 'تصميم ومسارات مهنية وورش', en: 'Design, careers, and workshops' }, toolIds: ['design', 'career', 'workshop'] },
-    { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] },
-    { id: 'all', title: { ar: 'المختبر الكامل', en: 'Full lab' }, hint: { ar: 'كل الأدوات كما هي', en: 'All tools, unchanged' }, toolIds: labTools.map(t => t.id) }
+    { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] }
   ]), [language]);
 
   const visibleLabTools = React.useMemo(() => {

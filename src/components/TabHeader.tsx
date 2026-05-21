@@ -1,72 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, X, Eye, Minimize2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
-export const TabHeader: React.FC<{ 
-    title: { ar: string, en: string }; 
-    description: { ar: string, en: string }; 
+export const TabHeader: React.FC<{
+    title: { ar: string, en: string };
+    description: { ar: string, en: string };
     icon: React.ElementType;
     language: string;
     onBack?: () => void;
     onClose?: () => void;
 }> = ({ title, description, icon: Icon, language, onBack, onClose }) => {
-    const [isFocus, setIsFocus] = useState(false);
-
-    useEffect(() => {
-        document.body.classList.toggle('tebyan-focus-mode', isFocus);
-        return () => document.body.classList.remove('tebyan-focus-mode');
-    }, [isFocus]);
+    const handleBack = onBack || onClose;
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-4 md:gap-6 mb-8 md:mb-10 p-6 md:p-8 rounded-[32px] md:rounded-[40px] bg-[#FAF9F6]/82 backdrop-blur-xl border border-[#8E7AAE]/14 shadow-[0_18px_55px_rgba(24,34,49,0.06)] relative overflow-hidden"
+            className="tebyan-tab-header relative flex flex-col gap-4 md:gap-6 mb-6 md:mb-8 p-5 md:p-7 rounded-[26px] md:rounded-[34px] bg-white/76 backdrop-blur-xl border border-[#8E7AAE]/12 shadow-[0_18px_55px_rgba(24,34,49,0.055)] overflow-hidden"
         >
             <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[#8E7AAE]/20 to-transparent" />
-            
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
-                    <div className="w-14 h-14 md:w-16 md:h-16 bg-[#8E7AAE]/12 text-[#6E5F8E] border border-[#8E7AAE]/18 rounded-[20px] md:rounded-[24px] flex items-center justify-center shrink-0 shadow-lg">
-                        <Icon className="w-7 h-7 md:w-8 md:h-8" />
+
+            {handleBack && (
+                <button
+                    type="button"
+                    onClick={handleBack}
+                    aria-label={language === 'ar' ? 'رجوع' : 'Back'}
+                    title={language === 'ar' ? 'رجوع' : 'Back'}
+                    className="absolute top-4 left-4 z-20 w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-white/85 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] border border-[#8FA9C7]/18 shadow-sm transition-all active:scale-95 flex items-center justify-center"
+                >
+                    <ArrowLeft className="w-5 h-5" />
+                </button>
+            )}
+
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pr-0 pl-12 md:pl-14 min-w-0">
+                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 w-full md:w-auto">
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-[#8E7AAE]/12 text-[#6E5F8E] border border-[#8E7AAE]/18 rounded-[18px] md:rounded-[24px] flex items-center justify-center shrink-0 shadow-lg">
+                        <Icon className="w-6 h-6 md:w-8 md:h-8" />
                     </div>
-                    <div>
-                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-[#182231] tracking-tighter">
+                    <div className="min-w-0">
+                        <h2 className="text-2xl md:text-3xl lg:text-[2.15rem] font-black text-[#182231] tracking-tighter leading-tight break-words">
                             {language === 'ar' ? title.ar : title.en}
                         </h2>
-                        <p className="text-sm md:text-base lg:text-lg text-[#64788D] font-bold mt-1 tracking-tight">
+                        <p className="text-sm md:text-base text-[#64788D] font-semibold mt-1 tracking-tight leading-relaxed max-w-2xl break-words">
                             {language === 'ar' ? description.ar : description.en}
                         </p>
                     </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2 md:gap-3 w-full md:w-auto">
-                    <button
-                        onClick={() => setIsFocus(v => !v)}
-                        className="flex-1 md:flex-none px-4 md:px-5 py-3 rounded-2xl bg-white/70 hover:bg-[#8E7AAE]/10 hover:text-[#6E5F8E] text-[#64788D] border border-[#8FA9C7]/15 font-black text-sm transition-all flex items-center justify-center gap-2 active:scale-95"
-                        title={language === 'ar' ? 'وضع التركيز' : 'Focus mode'}
-                    >
-                        {isFocus ? <Minimize2 className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {isFocus ? (language === 'ar' ? 'خروج التركيز' : 'Exit focus') : (language === 'ar' ? 'وضع التركيز' : 'Focus')}
-                    </button>
-                    {onBack && (
-                        <button 
-                            onClick={onBack}
-                            className="flex-1 md:flex-none px-4 md:px-5 py-3 rounded-2xl bg-white/70 hover:bg-[#8E7AAE]/10 hover:text-[#6E5F8E] text-[#64788D] border border-[#8FA9C7]/15 font-black text-sm transition-all flex items-center justify-center gap-2 active:scale-95"
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            {language === 'ar' ? 'رجوع' : 'Back'}
-                        </button>
-                    )}
-                    {onClose && (
-                        <button 
-                            onClick={onClose}
-                            className="flex-1 md:flex-none px-4 md:px-5 py-3 rounded-2xl bg-white/70 hover:bg-rose-50 hover:text-rose-700 text-[#64788D] border border-[#8FA9C7]/15 font-black text-sm transition-all flex items-center justify-center gap-2 active:scale-95"
-                        >
-                            <X className="w-4 h-4" />
-                            {language === 'ar' ? 'خروج' : 'Exit'}
-                        </button>
-                    )}
                 </div>
             </div>
         </motion.div>

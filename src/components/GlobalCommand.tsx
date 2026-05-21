@@ -166,14 +166,10 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                      <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
                        {language === 'ar' ? 'أنماط الإدراك' : 'Cognitive Modes'}
                      </h3>
-                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <button onClick={() => handleAction(() => setMode('default'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'default' ? 'border-black bg-black text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
                           <Sparkles className={cn("w-5 h-5 mb-2", mode === 'default' ? 'text-white' : 'text-zinc-500')} />
                           <div className="font-bold">{language === 'ar' ? 'الافتراضي' : 'Default'}</div>
-                        </button>
-                        <button onClick={() => handleAction(() => setMode('focus'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'focus' ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
-                          <Eye className={cn("w-5 h-5 mb-2", mode === 'focus' ? 'text-white' : 'text-zinc-500')} />
-                          <div className="font-bold">{language === 'ar' ? 'التركيز' : 'Focus'}</div>
                         </button>
                         <button onClick={() => handleAction(() => setMode('executive'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'executive' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
                           <Zap className={cn("w-5 h-5 mb-2", mode === 'executive' ? 'text-white' : 'text-zinc-500')} />

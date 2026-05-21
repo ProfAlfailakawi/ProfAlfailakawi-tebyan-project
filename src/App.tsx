@@ -638,17 +638,17 @@ const AppContent: React.FC = () => {
       <motion.header 
          animate={{ y: showHeader ? 0 : -100 }}
          transition={{ duration: 0.3, ease: "easeInOut" }}
-         className="fixed top-0 left-0 right-0 z-40 bg-transparent px-8 py-4 flex items-center justify-between pointer-events-none"
+         className="fixed top-0 left-0 right-0 z-40 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none"
       >
-         <div className="flex items-center gap-6 pointer-events-auto">
+         <div className="tebyan-floating-nav flex items-center gap-4 md:gap-6 pointer-events-auto">
              <button 
                onClick={() => handleTabChange('home')}
                className="flex items-center gap-3 transition-transform active:scale-95"
              >
-               <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700">
+               <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700 tebyan-orb-mark">
                  <LivingIcon icon={Globe} mood={currentMood} type="home" className="w-5 h-5" />
                </div>
-               <span className="font-black text-xl text-black tracking-tighter transition-colors group-hover:text-mood-primary">تبيان</span>
+               <span className="font-black text-xl text-[#182231] tracking-tighter transition-colors group-hover:text-mood-primary">تبيان</span>
              </button>
            
            {/* <button 
@@ -666,7 +666,7 @@ const AppContent: React.FC = () => {
            ) : authReady && Object.keys(user || {}).length === 0 ? (
                <button 
                   onClick={() => setShowLogin(true)}
-                  className="bg-white px-4 py-2 mx-2 rounded-xl text-zinc-900 shadow-lg shadow-black/10 transition-all hover:scale-105 active:scale-95 border border-zinc-200 flex items-center gap-2"
+                  className="bg-white/78 backdrop-blur-xl px-4 py-2 mx-2 rounded-2xl text-zinc-900 shadow-[0_10px_30px_rgba(24,34,49,0.08)] transition-all hover:scale-105 active:scale-95 border border-white/70 flex items-center gap-2"
                   title={language === 'ar' ? 'تسجيل الدخول' : 'Login'}
                 >
                   <User className="w-4 h-4" />

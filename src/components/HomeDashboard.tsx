@@ -25,29 +25,29 @@ const HubCard: React.FC<{
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className={cn(
-        "group rounded-[32px] md:rounded-[40px] p-6 md:p-8 border transition-all duration-500 flex flex-col justify-between relative overflow-hidden",
-        inverted ? "bg-[#F8F5EF] border-[#8FA9C7]/15 hover:shadow-[0_20px_60px_rgba(255,255,255,0.05)] hover:border-zinc-700" : "bg-white border-zinc-100 hover:shadow-[0_20px_60px_rgba(0,0,0,0.06)] hover:border-zinc-200"
+        "tebyan-glass-card tebyan-tool-tile group rounded-[32px] md:rounded-[40px] p-6 md:p-8 border transition-all duration-500 flex flex-col justify-between relative overflow-hidden",
+        inverted ? "bg-gradient-to-br from-[#FFFCF7] via-[#F8F5EF] to-[#EEF2F6] border-[#8FA9C7]/18 hover:shadow-[0_22px_70px_rgba(142,122,174,0.10)] hover:border-[#8E7AAE]/24" : "bg-white/88 border-[#E7E1D8] hover:shadow-[0_22px_70px_rgba(24,34,49,0.07)] hover:border-[#D8CEDF]"
       )}
       style={{ textAlign: language === 'ar' ? 'right' : 'left' }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/0 to-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-[#F8F5EF]/20 to-[#8FA9C7]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
       <div className="relative z-10 w-full flex flex-col h-full">
         {/* Header section */}
         <div className="flex items-start gap-4 md:gap-5 mb-8">
            <div className={cn(
              "w-12 h-12 md:w-14 md:h-14 rounded-[20px] flex items-center justify-center transition-transform duration-500 shadow-sm shrink-0 border transform group-hover:scale-105",
-             inverted ? "bg-zinc-800/80 border-zinc-700 text-white" : "bg-zinc-50 border-zinc-100 text-zinc-900"
+             inverted ? "bg-white/78 border-[#8E7AAE]/16 text-[#6E5F8E]" : "bg-[#FBFAF7] border-[#E7E1D8] text-[#182231]"
            )}>
              <Icon className={cn("w-6 h-6 md:w-7 md:h-7 opacity-80")} />
            </div>
            <div className="pt-1">
              <h3 className={cn(
                "text-xl md:text-2xl font-black leading-tight tracking-tight mb-2",
-               inverted ? "text-white" : "text-zinc-900"
+               inverted ? "text-[#182231]" : "text-[#182231]"
              )}>{title}</h3>
              <p className={cn(
                "text-xs md:text-sm font-medium leading-relaxed max-w-[280px]",
-               inverted ? "text-[#7C8796]" : "text-zinc-500"
+               inverted ? "text-[#64788D]" : "text-[#64788D]"
              )}>{description}</p>
            </div>
         </div>
@@ -60,31 +60,31 @@ const HubCard: React.FC<{
                 key={item.id}
                 onClick={(e) => { e.stopPropagation(); handleTabChange(item.id); }}
                 className={cn(
-                  "flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group/item text-right hover:-translate-y-0.5",
+                  "tebyan-micro-tile flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group/item text-right hover:-translate-y-0.5",
                   inverted 
-                    ? "bg-white/70 border border-[#8FA9C7]/15 hover:bg-zinc-800 hover:border-zinc-700 shadow-[0_4px_20px_rgb(0,0,0,0.2)]" 
-                    : "bg-[#FAFAFA] border border-zinc-100 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] shadow-sm"
+                    ? "bg-white/74 border border-[#8FA9C7]/16 hover:bg-white hover:border-[#8E7AAE]/25 shadow-[0_8px_26px_rgba(24,34,49,0.04)]" 
+                    : "bg-[#FBFAF7] border border-[#E7E1D8] hover:bg-white hover:border-[#D8CEDF] hover:shadow-[0_10px_34px_rgba(24,34,49,0.05)] shadow-sm"
                 )}
               >
                 <div className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-colors",
                   inverted 
-                    ? "bg-[#F1EEF4] border-[#8E7AAE]/15 group-hover/item:bg-zinc-700" 
-                    : "bg-white border-zinc-100 group-hover/item:border-zinc-200"
+                    ? "bg-[#F1EEF4] border-[#8E7AAE]/15 group-hover/item:bg-white" 
+                    : "bg-white border-[#E7E1D8] group-hover/item:border-[#D8CEDF]"
                 )}>
                   <item.icon className={cn(
                     "w-5 h-5 transition-colors",
-                    inverted ? "text-[#7C8796] group-hover/item:text-white" : "text-[#7C8796] group-hover/item:text-zinc-900"
+                    inverted ? "text-[#7C8796] group-hover/item:text-[#6E5F8E]" : "text-[#7C8796] group-hover/item:text-[#182231]"
                   )} />
                 </div>
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className={cn(
                     "text-sm font-black tracking-tight truncate", 
-                    inverted ? "text-[#182231] group-hover/item:text-white" : "text-zinc-700 group-hover/item:text-zinc-900"
+                    inverted ? "text-[#182231] group-hover/item:text-[#6E5F8E]" : "text-zinc-700 group-hover/item:text-[#182231]"
                   )}>{item.label}</span>
                   <div className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-all",
-                    inverted ? "bg-[#F1EEF4] text-[#8E7AAE] group-hover/item:text-white" : "bg-zinc-100 text-[#7C8796] group-hover/item:text-zinc-900"
+                    inverted ? "bg-[#F1EEF4] text-[#8E7AAE] group-hover/item:bg-white" : "bg-[#F1EEF4] text-[#7C8796] group-hover/item:text-[#182231]"
                   )}>
                     <ArrowLeft className={cn("w-3 h-3 text-current", language === 'ar' ? "" : "rotate-180")} />
                   </div>
@@ -158,11 +158,11 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
   }, []);
 
   return (
-    <div className="w-full flex flex-col pt-4 pb-16 md:pt-6 px-4 md:px-6 max-w-6xl mx-auto space-y-5">
-      <header className="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-zinc-200/60 pb-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="tebyan-home-signature w-full flex flex-col pt-4 pb-16 md:pt-6 px-4 md:px-6 max-w-6xl mx-auto space-y-5">
+      <header className="tebyan-cinematic-hero flex flex-col md:flex-row md:items-start justify-between gap-4 pb-5" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div>
           <div className="flex items-center gap-2 mb-2 justify-start">
-            <div className="w-1.5 h-1.5 rounded-full bg-black"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-[#8E7AAE]"></div>
             <span className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
           </div>
           <h1 className="text-2xl md:text-4xl font-black text-[#182231] leading-[1.05] tracking-tight">
@@ -175,7 +175,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </header>
 
       {/* Calm entry: simple for everyone, full depth on demand */}
-      <section className="bg-white/82 border border-[#8FA9C7]/15 rounded-[28px] md:rounded-[40px] p-5 md:p-8 shadow-[0_12px_50px_rgba(0,0,0,0.04)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="tebyan-living-awareness tebyan-glass-card bg-white/82 border border-[#8FA9C7]/15 rounded-[28px] md:rounded-[40px] p-5 md:p-8 shadow-[0_12px_50px_rgba(0,0,0,0.04)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <p className="text-[10px] font-black tracking-[0.2em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
@@ -188,7 +188,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           </div>
           <button
             onClick={() => setShowFullDashboard(v => !v)}
-            className="shrink-0 px-6 py-4 rounded-2xl bg-[#8E7AAE] text-white font-black text-sm hover:bg-[#806D9F] active:scale-95 transition-all shadow-lg"
+            className="tebyan-primary-action shrink-0 px-6 py-4 rounded-2xl bg-[#8E7AAE] text-white font-black text-sm hover:bg-[#806D9F] active:scale-95 transition-all shadow-lg"
           >
             {showFullDashboard ? (language === 'ar' ? 'إخفاء اللوحة الكاملة' : 'Hide full board') : (language === 'ar' ? 'افتح تبيان الكامل' : 'Open full Tebyan')}
           </button>
@@ -203,7 +203,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className="group p-5 rounded-[24px] bg-zinc-50 border border-zinc-100 text-right hover:bg-white hover:border-zinc-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all"
+              className="tebyan-entry-tile group p-5 rounded-[24px] bg-zinc-50 border border-zinc-100 text-right hover:bg-white hover:border-zinc-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.06)] active:scale-[0.98] transition-all"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-white border border-zinc-100 flex items-center justify-center text-zinc-900 group-hover:bg-[#8E7AAE] group-hover:text-white transition-all">
@@ -220,7 +220,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </section>
 
       {/* Session Memory */}
-      <section className="rounded-[24px] border border-[#8FA9C7]/15 bg-white/78 p-4 md:p-5 shadow-[0_14px_45px_rgba(24,34,49,0.05)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="tebyan-glass-card rounded-[24px] border border-[#8FA9C7]/15 bg-white/78 p-4 md:p-5 shadow-[0_14px_45px_rgba(24,34,49,0.05)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
             <div className="w-12 h-12 rounded-2xl bg-[#F1ECF7] text-[#6E5F8E] flex items-center justify-center shrink-0 border border-[#8E7AAE]/15">
@@ -250,7 +250,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </section>
 
       {/* Living Idea Fabric Shadow — a soft dashboard signature without replacing the real feature */}
-      <section className="relative overflow-hidden rounded-[30px] border border-[#8E7AAE]/14 bg-[#FBFAF7]/86 p-5 md:p-7 shadow-[0_18px_60px_rgba(142,122,174,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="tebyan-wow-section relative overflow-hidden rounded-[30px] border border-[#8E7AAE]/14 bg-[#FBFAF7]/86 p-5 md:p-7 shadow-[0_18px_60px_rgba(142,122,174,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="absolute inset-0 pointer-events-none opacity-80">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(142,122,174,0.16),transparent_18%),radial-gradient(circle_at_72%_22%,rgba(143,169,199,0.18),transparent_20%),radial-gradient(circle_at_62%_76%,rgba(142,122,174,0.12),transparent_18%)]" />
           {[...Array(12)].map((_, i) => (
@@ -311,7 +311,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                      className={cn(
                          "w-full md:w-auto px-6 md:px-5 py-3 md:py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 transition-all text-sm md:text-sm",
                          missionCompleted 
-                            ? "bg-white/10 text-white cursor-default"
+                            ? "bg-[#EEF7F1] text-[#2F7D55] cursor-default"
                             : "bg-white text-[#6E5F8E] hover:bg-[#F1EEF4] shadow-md active:scale-95"
                      )}
                   >
@@ -323,7 +323,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </div>
 
       {showFullDashboard && (
-      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+      <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="tebyan-quiet-dashboard space-y-6">
       <div className="mb-6">
         <NeuralTree language={language} />
       </div>
@@ -334,7 +334,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           onClick={() => handleTabChange('ar')}
-          className="group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[#8E7AAE]/18 active:scale-[0.98] transition-all"
+          className="tebyan-glass-card tebyan-tool-tile group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[#8E7AAE]/18 active:scale-[0.98] transition-all"
         >
            <motion.div 
              animate={{ opacity: [0.1, 0.4, 0.1], scale: [1, 1.5, 1], rotate: [0, 90, 0] }} 
@@ -362,7 +362,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={() => handleTabChange(tab.id)}
-            className="group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[#F7F5F2] via-[#EEF2F6] to-[#F1EEF4] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[#8FA9C7]/18 active:scale-[0.98] transition-all"
+            className="tebyan-glass-card tebyan-tool-tile group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[#F7F5F2] via-[#EEF2F6] to-[#F1EEF4] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[#8FA9C7]/18 active:scale-[0.98] transition-all"
           >
              <motion.div 
                animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.2, 1] }} 
@@ -377,14 +377,14 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                    <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
                       {language === 'ar' ? 'البوصلة النوعية' : 'THE CORE EDGE'}
                    </span>
-                   <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-white leading-[1.1] mb-2 md:mb-4 drop-shadow-sm">
+                   <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-[#182231] leading-[1.1] mb-2 md:mb-4">
                       {tab.label}
                    </h3>
                    <p className="text-[#64788D] text-sm md:text-base font-medium max-w-[220px] leading-relaxed">
                       {language === 'ar' ? 'الميزة الجوهرية في كل مشروع' : 'The essential difference in every project'}
                    </p>
                 </div>
-                <div className="flex items-center gap-2 md:gap-3 text-white font-black text-sm md:text-lg">
+                <div className="flex items-center gap-2 md:gap-3 text-[#6E5F8E] font-black text-sm md:text-lg">
                    <ArrowLeft className={cn("w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-2 md:group-hover:-translate-x-3 transition-transform", language === 'ar' ? '' : 'rotate-180 group-hover:translate-x-2 md:group-hover:translate-x-3')} />
                    <span>{language === 'ar' ? 'اكتشف العمق' : 'Discover Depth'}</span>
                 </div>
