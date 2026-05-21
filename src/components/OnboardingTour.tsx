@@ -40,6 +40,17 @@ export const OnboardingTour = ({ language }: { language: 'ar' | 'en' }) => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeTour();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, tourKey]);
+
   const steps = language === 'ar' ? [
     {
       icon: BookOpen,
@@ -106,12 +117,22 @@ export const OnboardingTour = ({ language }: { language: 'ar' | 'en' }) => {
             transition={{ duration: 0.45, ease: 'easeOut' }}
             className="relative w-full max-w-xl overflow-hidden rounded-[36px] border border-white/70 bg-white/85 shadow-[0_30px_90px_rgba(103,88,132,0.18)]"
           >
-            <div className="absolute -top-28 -left-20 h-64 w-64 rounded-full bg-[#C9BEDF]/35 blur-3xl" />
-            <div className="absolute -bottom-24 -right-16 h-56 w-56 rounded-full bg-[#B9D0E7]/35 blur-3xl" />
+            <div className="pointer-events-none absolute -top-28 -left-20 h-64 w-64 rounded-full bg-[#C9BEDF]/35 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -right-16 h-56 w-56 rounded-full bg-[#B9D0E7]/35 blur-3xl" />
 
             <button
-              onClick={closeTour}
-              className="absolute left-5 top-5 z-10 rounded-full bg-white/70 p-2 text-slate-400 shadow-sm transition hover:text-slate-700"
+              type="button"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeTour();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeTour();
+              }}
+              className="absolute left-5 top-5 z-[60] rounded-full bg-white/80 p-2 text-slate-400 shadow-sm transition hover:bg-white hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#8E7AAE]/30"
               aria-label={language === 'ar' ? 'إغلاق الدليل' : 'Close guide'}
             >
               <X className="h-4 w-4" />
