@@ -113,7 +113,7 @@ export default function UserMenu() {
                 <span className="text-sm font-bold flex-1">حسابي</span>
               </button>
 
-              {(profile.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
+              {(profile.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
                 <button 
                   onClick={() => {
                     setIsOpen(false);

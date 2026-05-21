@@ -27,7 +27,7 @@ import { useAuth } from '../AuthProvider';
 
 export const LoyaltyTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const { user, profile } = useAuth();
-  const isAdmin = profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+  const isAdmin = profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
   
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);

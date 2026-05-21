@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           
           if (userSnap.exists()) {
             const profileData = userSnap.data() as UserProfile;
-            const isAdminEmail = [
+            const isAdminEmail = user.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || [
               'ah_f@hotmail.com',
               'alfailakawidrahmad@gmail.com',
               'dr.ahmad@gmail.com',
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
             setProfile(profileData);
           } else {
-            const isNewAdminEmail = ([
+            const isNewAdminEmail = user.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || ([
                 'ah_f@hotmail.com',
                 'alfailakawidrahmad@gmail.com',
                 'dr.ahmad@gmail.com',
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } catch (error) {
           console.error("Failed to fetch user profile, falling back to local info:", error);
-          const isAdminEmail = [
+          const isAdminEmail = user.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || [
             'ah_f@hotmail.com',
             'alfailakawidrahmad@gmail.com',
             'dr.ahmad@gmail.com',

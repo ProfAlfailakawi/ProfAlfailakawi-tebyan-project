@@ -324,7 +324,8 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     // Automatically check and run daily tasks when user is available and is an admin
-    const isPrimaryAdmin = user?.email?.toLowerCase() === 'ah_f@hotmail.com' ||
+    const isPrimaryAdmin = user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' ||
+                         user?.email?.toLowerCase() === 'ah_f@hotmail.com' ||
                          user?.email?.toLowerCase() === 'alfailakawidrahmad@gmail.com' || 
                          user?.email?.toLowerCase() === 'alfailakawidrahmad@outlook.com' ||
                          user?.email?.toLowerCase().includes('dr.ahmad');
@@ -497,21 +498,21 @@ const AppContent: React.FC = () => {
       label: language === 'ar' ? 'المستخدمين' : 'Users', 
       icon: Users,
       tooltip: language === 'ar' ? 'لوحة تحكم إدارة المستخدمين' : 'User Management',
-      hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
+      hidden: !(profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     { 
       id: 'adminqawlfasl', 
       label: language === 'ar' ? 'إدارة قول فصل' : 'Admin Qawl', 
       icon: LayoutDashboard,
       tooltip: language === 'ar' ? 'إدارة طلبات وأسئلة قول فصل' : 'Manage Qawl Fasl',
-      hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
+      hidden: !(profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     {
       id: 'adminmessages',
       label: language === 'ar' ? 'صندوق الوارد' : 'Inbox',
       icon: Mail,
       tooltip: language === 'ar' ? 'رسائل الدعم والاتصال بـ تبيان' : 'Support Inbox',
-      hidden: !(profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
+      hidden: !(profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
     {
       id: 'contact',
@@ -736,7 +737,7 @@ const AppContent: React.FC = () => {
                  {user && (
                     <div className="mt-4 pt-4 border-t border-zinc-100 space-y-3">
                       {/* Admin Link for Mobile */}
-                      {(profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
+                      {(profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) && (
                         <button 
                           onClick={() => {
                             handleTabChange('admindashboard');
@@ -859,13 +860,13 @@ const AppContent: React.FC = () => {
                   case 'decisionroom':
                     return <DecisionExecutiveTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'adminusers':
-                    return (profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminUsersDashboard /> : null;
+                    return (profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminUsersDashboard /> : null;
                   case 'adminqawlfasl':
-                    return (profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminQawlFasl /> : null;
+                    return (profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminQawlFasl /> : null;
                   case 'adminmessages':
-                    return (profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminContactTab language={language} /> : null;
+                    return (profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminContactTab language={language} /> : null;
                   case 'admindashboard':
-                    return (profile?.role === 'admin' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminDashboard /> : null;
+                    return (profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad')) ? <AdminDashboard /> : null;
                   case 'contact':
                     return <ContactTab language={language} />;
                   default:

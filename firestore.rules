@@ -11,6 +11,7 @@ service cloud.firestore {
     function isAdmin() {
       let email = request.auth.token.get('email', '').lower();
       return isSignedIn() && (
+        request.auth.uid == "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
         email in [
           "alfailakawidrahmad@gmail.com",
           "alfailakawidrahmad@outlook.com",
