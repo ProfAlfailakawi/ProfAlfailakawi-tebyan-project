@@ -157,9 +157,9 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] font-sans pb-24">
+    <div className="min-h-screen bg-[#FDFCFB] font-sans pb-20 md:pb-24">
       {/* Refined Navigation/Header Area space */}
-      <div className="pt-6 pb-4 px-4 md:px-8 max-w-6xl mx-auto flex items-center justify-between">
+      <div className="pt-4 md:pt-6 pb-4 px-4 md:px-8 max-w-6xl mx-auto flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-zinc-500 font-bold text-xs tracking-widest uppercase mb-1">القول الفصل</span>
           <h1 className="text-xl md:text-2xl font-black text-black tracking-tight">البوصلة التحليلية</h1>
@@ -314,7 +314,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         </section>
 
         {/* Bento Grid Features */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:min-h-[520px]">
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
           <div className="lg:col-span-8 relative overflow-hidden bg-black rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-white flex flex-col justify-end shadow-2xl group text-right">
             <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-110 opacity-20 group-hover:opacity-30">
@@ -346,7 +346,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
           <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 h-full">
             {/* Daily Picks - Bento 2 */}
-            <div className="bg-[#F5F5F0] rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex flex-col flex-1 border border-transparent hover:border-zinc-200 transition-all shadow-sm text-right overflow-hidden">
+            <div className="bg-[#F5F5F0] rounded-[24px] md:rounded-[40px] p-5 md:p-8 flex flex-col flex-1 min-h-[300px] md:min-h-[360px] border border-transparent hover:border-zinc-200 transition-all shadow-sm text-right overflow-hidden">
                <div className="flex items-center justify-between mb-4">
                   <div className="bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] w-10 h-10 rounded-[14px] flex items-center justify-center text-[#5A5A40]">
                     <Library className="w-5 h-5" />
@@ -354,7 +354,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   <p className="text-[#5A5A40] font-bold text-[10px] tracking-widest uppercase">مسائل اليوم (١٠ حالات)</p>
                </div>
                
-               <div className="space-y-3 overflow-y-auto max-h-[300px] pr-1 flex-1 custom-scrollbar">
+               <div className="space-y-3 overflow-y-auto max-h-[260px] md:max-h-[300px] pr-1 flex-1 custom-scrollbar">
                   {displayedDaily.length > 0 ? displayedDaily.map((q, i) => (
                     <button 
                       key={q.id || i} 
@@ -408,7 +408,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Library Navigation */}
         <section className="space-y-8 md:space-y-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between text-right gap-4">
-            <h3 className="text-2xl md:text-3xl font-serif text-black font-medium">أقسام المكتبة</h3>
+            <h3 className="text-xl md:text-3xl font-serif text-black font-medium">أقسام المكتبة</h3>
             <div className="h-px flex-1 bg-zinc-200/60 mx-0 md:mx-8 w-full md:w-auto"></div>
           </div>
           

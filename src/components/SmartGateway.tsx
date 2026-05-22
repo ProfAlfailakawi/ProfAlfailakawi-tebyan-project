@@ -1302,15 +1302,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="mb-8 bg-[#EEF4F1] border border-[#A8C3BD]/25 p-6 rounded-[32px] shadow-lg space-y-4 text-[#34524B] group relative overflow-hidden"
+                    className="mb-6 md:mb-8 bg-[#F7FBF9] border border-[#A8C3BD]/25 p-4 md:p-6 rounded-[24px] md:rounded-[32px] shadow-lg space-y-4 text-[#34524B] group relative overflow-hidden"
                 >
                     <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-[#A8C3BD]/25 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
                     <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between gap-3 mb-2">
                             <button onClick={() => setShowFollowUp(false)} className="text-[#7DA39A] hover:text-[#34524B] transition-colors">
                                 <X className="w-5 h-5" />
                             </button>
-                            <h4 className="font-black flex items-center gap-2">
+                            <h4 className="font-black text-sm md:text-base flex items-center gap-2">
                                 <span>{language === 'ar' ? 'سؤال للاطمئنان..' : 'Checking in..'}</span>
                                 <Sparkles className="w-4 h-4 text-[#6E948A]" />
                             </h4>
@@ -1323,10 +1323,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         <p className="font-bold text-sm">
                             {language === 'ar' ? 'هل سارت الأمور على ما يرام؟ هل احتجت للمزيد من الدعم؟' : 'Did things go well? Do you need more support?'}
                         </p>
-                        <div className="flex items-center gap-3 mt-4">
+                        <div className="flex flex-col sm:flex-row items-stretch gap-3 mt-4">
                             <button 
                                 onClick={() => handleFollowUpFeedback('success')}
-                                className="flex-1 bg-white border border-[#A8C3BD]/35 hover:border-[#8FA9C7]/50 hover:bg-[#EEF4F1] text-[#4D6B63] py-3 rounded-xl font-bold transition-all shadow-sm active:scale-95"
+                                className="flex-1 bg-white border border-[#A8C3BD]/35 hover:border-[#8FA9C7]/50 hover:bg-[#EEF4F1] text-[#4D6B63] py-3 rounded-xl font-bold text-sm md:text-base transition-all shadow-sm active:scale-95"
                             >
                                 {language === 'ar' ? 'ممتاز، خطونا خطوة للأمام 👍' : 'Great, took a step forward 👍'}
                             </button>
@@ -1336,12 +1336,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                     setSearchValue(language === 'ar' ? "في موضوع المرة السابقة، واجهت مشكلة إضافية وهي: " : "Regarding the previous topic, I faced another issue: ");
                                     latestInputRef.current = (language === 'ar' ? "في موضوع المرة السابقة، واجهت مشكلة إضافية وهي: " : "Regarding the previous topic, I faced another issue: ");
                                 }}
-                                className="flex-1 bg-white border border-rose-200 hover:border-rose-500 hover:bg-rose-50 text-rose-700 py-3 rounded-xl font-bold transition-all shadow-sm active:scale-95"
+                                className="flex-1 bg-white border border-rose-200 hover:border-rose-500 hover:bg-rose-50 text-rose-700 py-3 rounded-xl font-bold text-sm md:text-base transition-all shadow-sm active:scale-95"
                             >
                                 {language === 'ar' ? 'ما زلت أواجه تحدياً 💬' : 'Still facing a challenge 💬'}
                             </button>
                         </div>
-                        <div className="absolute top-4 left-4 flex items-center gap-1 opacity-50 px-2 py-1 bg-[#DDEBE7] rounded-md">
+                        <div className="absolute top-3 left-3 hidden sm:flex items-center gap-1 opacity-50 px-2 py-1 bg-[#DDEBE7] rounded-md">
                             <Activity className="w-3 h-3" />
                             <span className="text-[10px] font-black uppercase tracking-widest">{language === 'ar' ? 'سحر المتابعة' : 'FOLLOW-UP MAGIC'}</span>
                         </div>
@@ -1363,7 +1363,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             )}
             <div
               className={cn(
-                "tour-search-input tebyan-gateway-ring tebyan-cognitive-mood flex items-center w-full max-w-3xl rounded-[32px] p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card relative overflow-visible",
+                "tour-search-input tebyan-gateway-ring tebyan-cognitive-mood flex items-center w-full max-w-3xl rounded-[28px] md:rounded-[32px] p-2.5 md:p-3 transition-all duration-700 border backdrop-blur-xl tebyan-soft-card relative overflow-visible",
                 `tebyan-cognitive-${cognitiveMood.id}`,
                 searchValue.trim().length > 0 && "tebyan-understanding-pulse",
                 showGateEcho && "tebyan-gate-arrival",
@@ -1419,14 +1419,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  className="w-full bg-transparent border-none outline-none px-6 py-4 text-lg md:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
+                  className="w-full bg-transparent border-none outline-none px-4 md:px-6 py-3 md:py-4 text-base md:text-xl lg:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
                 
                 {smartSuggestion && smartSuggestion.startsWith(searchValue) && (
                   <div 
-                    className="pointer-events-none absolute inset-0 px-6 py-4 text-lg md:text-2xl font-bold tracking-tight z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
+                    className="pointer-events-none absolute inset-0 px-4 md:px-6 py-3 md:py-4 text-base md:text-xl lg:text-2xl font-bold tracking-tight z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
                     dir={language === 'ar' ? 'rtl' : 'ltr'}
                   >
                     <span className="invisible">{searchValue}</span>
@@ -1440,7 +1440,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   type="submit"
                   title={language === 'ar' ? 'البحث أو التحليل' : 'Search / Analyze'}
                   className={cn(
-                    "bg-[#8E7AAE] text-white w-14 h-14 md:w-16 md:h-16 rounded-[20px] transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center shrink-0 tebyan-breathe",
+                    "bg-[#8E7AAE] text-white w-12 h-12 md:w-16 md:h-16 rounded-[18px] md:rounded-[20px] transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center shrink-0 tebyan-breathe",
                     query.length > 0 ? "opacity-100 shadow-[0_16px_38px_rgba(142,122,174,0.20)]" : "opacity-35 pointer-events-none"
                   )}
                 >
@@ -1456,7 +1456,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     handleTabChange('discover', '');
                   }}
                   title={language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
-                  className="bg-white/90 text-[#465568] border border-[#8FA9C7]/25 w-12 h-12 md:w-14 md:h-14 rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
+                  className="bg-white/90 text-[#465568] border border-[#8FA9C7]/25 w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
                 >
                     <Home className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
@@ -1814,14 +1814,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
                         {/* Mobile Secondary */}
                         {(secondarySuggestions.length > 0 || alternativeSuggestions.length > 0) && (
-                          <div className="rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
+                          <div className="rounded-[24px] md:rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
                             <div className="flex items-center justify-between gap-3">
                               <div className="text-right">
-                                <div className="font-black text-sm text-zinc-900">{language === 'ar' ? 'تبيان اختصر لك الطريق' : 'Tebyan simplified the path'}</div>
-                                <p className="text-[11px] leading-relaxed text-zinc-500 font-bold mt-1">{language === 'ar' ? 'ابدأ بالمسار الأقوى، أو افتح المختبر الكامل إذا أردت العمق.' : 'Start with the strongest match, or open the full lab for depth.'}</p>
+                                <div className="font-black text-sm text-zinc-900">{language === 'ar' ? 'المسارات الإضافية' : 'Extra paths'}</div>
                               </div>
                               <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all">
-                                {showExpertPaths ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'فتح المختبر الكامل' : 'Open full lab')}
+                                {showExpertPaths ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'المختبر الكامل' : 'Full lab')}
                               </button>
                             </div>
                           </div>

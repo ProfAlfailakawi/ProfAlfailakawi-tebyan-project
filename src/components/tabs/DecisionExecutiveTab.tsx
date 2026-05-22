@@ -276,7 +276,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 </AnimatePresence>
               </div>
               {showDecisionTools && (
-              <div className="grid grid-cols-4 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
+              <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
                 {visibleDecisionTools.map(tool => (
                     <button 
                       key={tool.id} 
@@ -284,15 +284,15 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                       disabled={isLoading}
                       title={language === 'ar' ? tool.hint?.ar : tool.hint?.en}
                       className={cn(
-                          "group relative flex flex-col items-center justify-center gap-1.5 md:gap-4 p-2 md:p-5 rounded-[16px] md:rounded-[28px] tebyan-tool-card bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden min-h-[88px] md:min-h-0",
+                          "group relative flex flex-col items-center justify-center gap-1 md:gap-4 p-2 md:p-5 rounded-[16px] md:rounded-[28px] tebyan-tool-card bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden min-h-[96px] md:min-h-0",
                           !dilemma && "opacity-60 grayscale-[0.5]"
                       )}
                     >
                         <div className={cn("tebyan-tool-icon w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[20px] flex items-center justify-center shadow-sm group-hover:scale-[1.03] transition-transform duration-500", tool.bgColor)}>
                           <tool.icon className="w-5 h-5 md:w-7 md:h-7" />
                         </div>
-                        <span className="font-extrabold text-center text-[10px] md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
-                        <p className="text-[10px] md:text-[11px] text-[#7C8796] font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
+                        <span className="font-extrabold text-center text-[9.5px] sm:text-[10px] md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
+                        <p className="hidden md:block text-[10px] md:text-[11px] text-[#7C8796] font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
                         <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-zinc-200 group-hover:bg-[#EEF4F1]0 transition-colors"></div>
                     </button>
                 ))}

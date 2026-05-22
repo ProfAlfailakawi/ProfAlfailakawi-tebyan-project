@@ -87,8 +87,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
       <div className="bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 rounded-[32px] p-5 md:p-6 shadow-sm space-y-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="text-right">
-            <h2 className="text-xl font-black text-[#182231]">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
-            <p className="text-sm text-[#64788D] font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات كبيرة، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four major gates, each leading to a different depth without hiding any feature.'}</p>
+            <h2 className="text-lg md:text-xl font-black text-[#182231]">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
+            <p className="text-xs md:text-sm text-[#64788D] font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات مرتبة بوضوح، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four clear gates, each leading to a different depth without hiding any feature.'}</p>
           </div>
         </div>
       <div className="space-y-3">
@@ -104,7 +104,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
           <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showArenaPicker && "rotate-180")} />
         </button>
         {showArenaPicker && (
-          <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-3">
             {tabs.map(tab => {
               const Icon = tab.icon;
               const isActive = activeSubTab === tab.id;
@@ -113,12 +113,14 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                   key={tab.id}
                   onClick={() => { setActiveSubTab(tab.id as any); setShowArenaPicker(false); }}
                   className={cn(
-                    "flex flex-col md:flex-row items-center md:justify-between justify-center gap-1.5 md:gap-3 px-2 md:px-5 py-3 md:py-4 rounded-[18px] md:rounded-[22px] font-bold text-[10px] md:text-sm transition-all text-center md:text-right border min-h-[74px]",
+                    "flex items-center justify-between gap-3 px-3 md:px-5 py-3.5 md:py-4 rounded-[18px] md:rounded-[22px] font-bold text-[11px] md:text-sm transition-all text-right border min-h-[82px] md:min-h-[88px]",
                     isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-[#465568] hover:bg-[#FAF9F6]/88 border-[#8FA9C7]/15 hover:border-zinc-300"
                   )}
                 >
-                  <Icon className="w-4 h-4 md:w-4 md:h-4" />
-                  <span className="leading-tight line-clamp-2">{tab.label}</span>
+                  <span className={cn("w-10 h-10 md:w-11 md:h-11 rounded-[14px] flex items-center justify-center shrink-0 border transition-all", isActive ? "bg-white/14 border-white/16" : "bg-white border-[#8FA9C7]/18 text-[#6E5F8E]")}>
+                    <Icon className="w-4 h-4 md:w-5 md:h-5" />
+                  </span>
+                  <span className="leading-tight line-clamp-2 flex-1">{tab.label}</span>
                 </button>
               )
             })}

@@ -191,9 +191,9 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             </div>
         </div>
 
-        <div className="mb-4 flex items-center gap-2 rounded-full bg-white/72 border border-[#E9E2F1] p-1 w-fit shadow-sm">
-          <button type="button" onClick={() => setViewMode('map')} className={cn('px-4 py-2 rounded-full text-xs font-black border transition-all', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[#6E5F8E] shadow-sm' : 'bg-transparent text-[#64788D] border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
-          <button type="button" onClick={() => setViewMode('list')} className={cn('px-4 py-2 rounded-full text-xs font-black border transition-all', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[#6E5F8E] shadow-sm' : 'bg-transparent text-[#64788D] border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
+        <div className="mb-4 flex items-center gap-2 rounded-full bg-white/72 border border-[#E9E2F1] p-1 w-full sm:w-fit shadow-sm overflow-x-auto">
+          <button type="button" onClick={() => setViewMode('map')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[#6E5F8E] shadow-sm' : 'bg-transparent text-[#64788D] border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
+          <button type="button" onClick={() => setViewMode('list')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[#6E5F8E] shadow-sm' : 'bg-transparent text-[#64788D] border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
         </div>
 
         {viewMode === 'list' && (
@@ -416,9 +416,9 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </svg>
 
           {/* Time Traveling Slider */}
-          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
+          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[94%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
              <div className="w-full flex items-center justify-between gap-4">
-                 <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
+                 <span className={cn("text-[11px] md:text-sm font-bold min-w-[54px] md:min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
                      {getEraLabel(1)}
                  </span>
                  <input 
@@ -428,7 +428,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
                     className="flex-1 accent-[#8E7AAE] h-2 bg-[#E9E2F1] rounded-lg appearance-none cursor-pointer" 
                  />
-                 <span className={cn("text-xs md:text-sm font-bold min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
+                 <span className={cn("text-[11px] md:text-sm font-bold min-w-[54px] md:min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
                     {getEraLabel(4)}
                  </span>
              </div>

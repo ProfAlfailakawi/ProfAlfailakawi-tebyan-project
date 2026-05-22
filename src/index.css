@@ -2371,13 +2371,16 @@ html[dir="rtl"] body, body { text-rendering: optimizeLegibility; -webkit-font-sm
     border-radius: 20px !important;
   }
   textarea {
-    min-height: 92px !important;
+    min-height: 78px !important;
+  }
+  .tour-search-input textarea {
+    min-height: 56px !important;
   }
 
-  /* Decision room tools: four compact tools per row */
+  /* Decision room tools: compact and readable on phones */
   .tebyan-decision-room .tebyan-tool-card {
-    min-height: 86px !important;
-    padding: .52rem !important;
+    min-height: 94px !important;
+    padding: .58rem !important;
     gap: .35rem !important;
     border-radius: 16px !important;
   }
@@ -2405,10 +2408,10 @@ html[dir="rtl"] body, body { text-rendering: optimizeLegibility; -webkit-font-sm
   .mobile-three-up { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
   .mobile-four-up { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
 
-  /* Menus: account menu text was too large in screenshots */
+  /* Menus: account menu should stay compact on phones */
   .tour-menu-button + div,
   [class*='absolute'][class*='top-full'][class*='end-0'] {
-    width: min(86vw, 260px) !important;
+    width: min(84vw, 248px) !important;
   }
   .tour-menu-button + div button span,
   [class*='absolute'][class*='top-full'][class*='end-0'] button span {
