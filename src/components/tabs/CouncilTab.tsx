@@ -53,27 +53,27 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 text-[#182231] p-4 md:p-8 rounded-[28px] shadow-[0_18px_55px_rgba(24,34,49,0.06)] space-y-10 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#8E7AAE]/8 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+    <div className="bg-[#1E2430] border border-[#8FA9C7]/12 text-white p-4 md:p-10 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
       
       <div className="space-y-6 z-10 relative text-right">
         <div className="mb-10 text-right">
-           <h2 className="text-2xl md:text-4xl font-black text-[#182231] tracking-tighter">{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
-           <p className="text-[#64788D] mt-3 font-bold text-sm md:text-lg leading-relaxed max-w-2xl ml-auto">{language === 'ar' ? 'اطرح قضيتك أو تحديك على نخبة الخبراء ليتم تحليله بعمق.' : 'Present your case or challenge to the elite experts for deep analysis.'}</p>
+           <h2 className="text-2xl md:text-5xl font-extrabold text-white tracking-tight leading-snug">{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
+           <p className="text-zinc-400 mt-4 font-bold text-lg md:text-xl leading-relaxed max-w-2xl ml-auto">{language === 'ar' ? 'اطرح قضيتك أو تحديك على نخبة الخبراء ليتم تحليله بعمق.' : 'Present your case or challenge to the elite experts for deep analysis.'}</p>
         </div>
 
-      <div className="flex flex-col gap-5 mt-5 p-4 md:p-7 bg-white/72 rounded-[26px] md:rounded-[34px] border border-[#8FA9C7]/15 shadow-inner">
+      <div className="flex flex-col gap-5 md:gap-8 mt-4 md:mt-6 p-4 md:p-10 bg-[#242B38] rounded-[28px] md:rounded-[40px] border border-white/8 shadow-inner">
         <div className="flex items-center justify-between mb-2">
-           <div className="flex items-center gap-3 bg-[#F7F5F2] p-1.5 rounded-full border border-[#8FA9C7]/15 shadow-sm">
+           <div className="flex items-center gap-3 bg-zinc-800 p-2 rounded-full border border-zinc-700 shadow-sm">
              <button 
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(false); }}
-               className={cn("px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-black transition-all cursor-pointer", !isShadowCouncil ? "bg-white text-[#182231] shadow-md" : "text-[#64788D] hover:text-[#182231]")}
+               className={cn("px-6 py-2.5 rounded-full text-sm font-black transition-all cursor-pointer", !isShadowCouncil ? "bg-white text-black shadow-lg" : "text-zinc-500 hover:text-zinc-300")}
              >
                {language === 'ar' ? 'المجلس القياسي' : 'Standard Council'}
              </button>
              <button 
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(true); }}
-               className={cn("px-3 md:px-6 py-2 rounded-full text-xs md:text-sm font-black transition-all cursor-pointer", isShadowCouncil ? "bg-[#B15C5C] text-white shadow-[0_8px_20px_rgba(177,92,92,0.20)]" : "text-[#64788D] hover:text-[#182231]")}
+               className={cn("px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-extrabold transition-all cursor-pointer", isShadowCouncil ? "bg-[#B85D63] text-white shadow-[0_0_15px_rgba(184,93,99,0.22)]" : "text-zinc-400 hover:text-zinc-200")}
              >
                {language === 'ar' ? 'مجلس الظل 🗡️' : 'Shadow Council 🗡️'}
              </button>
@@ -85,10 +85,10 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
             value={councilTopic} 
             onChange={(e) => setCouncilTopic(e.target.value)} 
             className={cn(
-               "w-full p-4 md:p-7 rounded-2xl md:rounded-[28px] text-base md:text-xl outline-none transition-all font-black text-right",
+               "w-full p-4 md:p-10 rounded-2xl md:rounded-[32px] text-[15px] md:text-2xl outline-none transition-all font-semibold md:font-black text-right leading-relaxed",
                isShadowCouncil 
-                 ? "bg-[#2C2228] border border-[#B15C5C]/35 text-[#F7F5F2] placeholder:text-[#C9A6A6]/50 focus:border-[#B15C5C] focus:shadow-[0_0_24px_rgba(177,92,92,0.16)]"
-                 : "bg-white border border-[#8FA9C7]/20 text-[#182231] placeholder:text-[#7C8796]/50 focus:border-[#8E7AAE] focus:bg-white"
+                 ? "bg-black border-2 border-red-900 text-red-100 placeholder-red-900/40 focus:border-red-500 focus:shadow-[0_0_40px_rgba(220,38,38,0.2)]"
+                 : "bg-zinc-800 border-2 border-zinc-700 text-white placeholder-zinc-500 focus:border-indigo-400 focus:bg-zinc-850"
             )}
             placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف هنا بدقة..." : "Type your question or describe the situation here..."} 
           />
@@ -98,12 +98,12 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
           onClick={(e) => { e.stopPropagation(); loadCouncil(); }}
           disabled={isLoading}
           className={cn(
-            "w-full md:w-auto self-end md:px-16 py-4 md:py-5 rounded-[22px] md:rounded-3xl font-black text-base md:text-xl transition-all flex items-center justify-center gap-4 cursor-pointer active:scale-95",
+            "w-full md:w-auto self-end md:px-16 py-4 md:py-6 rounded-[22px] md:rounded-3xl font-extrabold text-base md:text-xl transition-all flex items-center justify-center gap-3 md:gap-4 cursor-pointer active:scale-95",
             isLoading 
               ? "bg-zinc-800 text-zinc-600 cursor-not-allowed" 
               : isShadowCouncil
-                ? "bg-[#B15C5C] hover:bg-[#A34F4F] text-white shadow-[0_12px_30px_rgba(177,92,92,0.22)]"
-                : "bg-[#182231] text-white hover:bg-[#243044] shadow-[0_12px_30px_rgba(24,34,49,0.18)]"
+                ? "bg-red-600 hover:bg-red-500 text-white shadow-[0_12_40px_rgba(220,38,38,0.4)]"
+                : "bg-white text-black hover:bg-zinc-100 shadow-[0_12_40px_rgba(255,255,255,0.1)]"
           )}
         >
           {isLoading ? (
@@ -133,7 +133,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
               <div className="w-32 h-32 border-8 border-zinc-800 rounded-full"></div>
               <RefreshCw className="w-32 h-32 text-indigo-400 animate-spin absolute top-0 left-0" />
             </div>
-            <div className="text-2xl md:text-4xl font-black text-[#182231] text-center tracking-tighter">
+            <div className="text-3xl md:text-5xl font-black text-white text-center tracking-tighter">
               {language === 'ar' ? 'مجلس الخبراء يجتمع الآن...' : 'Experts are convening...'}
             </div>
           </motion.div>

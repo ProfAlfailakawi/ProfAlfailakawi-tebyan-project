@@ -275,24 +275,24 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
              >
                <div>
-                 <div className="font-black text-xs md:text-base text-[#182231]">{language === 'ar' ? activeLabPurposeMeta.title.ar : activeLabPurposeMeta.title.en}</div>
+                 <div className="font-black text-sm md:text-base text-[#182231]">{language === 'ar' ? activeLabPurposeMeta.title.ar : activeLabPurposeMeta.title.en}</div>
                  <div className="text-[11px] md:text-xs font-bold text-[#64788D] mt-0.5">{language === 'ar' ? activeLabPurposeMeta.hint.ar : activeLabPurposeMeta.hint.en}</div>
                </div>
                <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showLabPurposePicker && "rotate-180")} />
              </button>
              {showLabPurposePicker && (
-               <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                  {labPurposes.filter(purpose => purpose.id !== 'all').map(purpose => (
                    <button
                      key={purpose.id}
                      type="button"
                      onClick={() => { setActiveLabPurpose(purpose.id); setShowLabPurposePicker(false); }}
                      className={cn(
-                       "text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]",
+                       "text-right p-4 rounded-[22px] border transition-all active:scale-[0.98]",
                        activeLabPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-[#F7F5F2] text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300"
                      )}
                    >
-                     <div className="font-black text-xs md:text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
+                     <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
                      <div className={cn("text-[11px] leading-relaxed font-bold", activeLabPurpose === purpose.id ? "text-white/70" : "text-[#7C8796]")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
                    </button>
                  ))}
@@ -300,7 +300,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
              )}
            </div>
 
-           <div className="grid grid-cols-2 md:flex md:gap-2 gap-2 pb-4">
+           <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
              {visibleLabTools.map(tool => (
                <button 
                  key={tool.id} 
@@ -310,7 +310,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                  }} 
                  title={language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}
                  className={cn(
-                   "px-3 md:px-6 py-2.5 md:py-3 rounded-[18px] md:rounded-full border text-xs md:text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
+                   "px-6 py-3 rounded-full border-2 text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
                    activeLabTool === tool.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white text-[#64788D] border-[#8FA9C7]/15 hover:border-zinc-300"
                  )}
                >
@@ -327,7 +327,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     <input 
                       value={labInput} 
                       onChange={(e) => setLabInput(e.target.value)} 
-                      className="flex-1 p-4 md:p-6 border border-zinc-100 rounded-[16px] text-base md:text-xl font-bold focus:border-indigo-200 outline-none transition-all placeholder:text-zinc-300" 
+                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-indigo-200 outline-none transition-all placeholder:text-zinc-300" 
                       placeholder={language === 'ar' ? "الفكرة الأولى (مثال: العدمية)..." : "Concept A..."} 
                     />
                     <div className="flex items-center justify-center -mx-2 z-10 hidden md:flex">
@@ -336,7 +336,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     <input 
                       value={labInput2} 
                       onChange={(e) => setLabInput2(e.target.value)} 
-                      className="flex-1 p-4 md:p-6 border border-zinc-100 rounded-[16px] text-base md:text-xl font-bold focus:border-rose-200 outline-none transition-all placeholder:text-zinc-300" 
+                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-rose-200 outline-none transition-all placeholder:text-zinc-300" 
                       placeholder={language === 'ar' ? "الفكرة الثانية (مثال: الأمل)..." : "Concept B..."} 
                     />
                 </div>
@@ -344,7 +344,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 <input 
                   value={labInput} 
                   onChange={(e) => setLabInput(e.target.value)} 
-                  className="flex-1 p-4 md:p-6 border border-zinc-100 rounded-[16px] text-base md:text-xl font-bold focus:border-[#8FA9C7]/25/80 outline-none transition-all" 
+                  className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-[#8FA9C7]/25/80 outline-none transition-all" 
                   placeholder={language === 'ar' ? "أدخل الموضوع أو التحدي..." : "Enter topic or challenge..."} 
                 />
             )}

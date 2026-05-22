@@ -388,7 +388,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                )}
             >
               <div className="space-y-4">
-                <div className="bg-rose-50 w-8 h-8 md:w-11 md:h-11 rounded-[14px] md:rounded-2xl flex items-center justify-center text-rose-500">
+                <div className="bg-rose-50 w-10 h-10 md:w-12 md:h-12 rounded-[14px] md:rounded-2xl flex items-center justify-center text-rose-500">
                   <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <p className="text-zinc-400 font-bold text-[10px] md:text-xs tracking-widest uppercase">آخر ما تصفحت</p>
@@ -412,7 +412,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
             <div className="h-px flex-1 bg-zinc-200/60 mx-0 md:mx-8 w-full md:w-auto"></div>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 lg:gap-6 relative z-10">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 lg:gap-8 relative z-10">
             {categoriesWithQuestions.map((category: any) => {
               const count = questions.filter(q => 
                 q.categoryId === category.id || 
@@ -427,12 +427,12 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 <button 
                   key={category.id}
                   onClick={() => onCategory(category.id)}
-                  className="group bg-white border border-zinc-200/60 rounded-[20px] md:rounded-[28px] p-3.5 md:p-6 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[132px] md:min-h-[190px] justify-between relative overflow-hidden cursor-pointer active:scale-95 z-50 pointer-events-auto"
+                  className="group bg-white border border-zinc-200/60 rounded-[20px] md:rounded-[32px] p-4 md:p-8 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[132px] md:min-h-[220px] justify-between relative overflow-hidden cursor-pointer active:scale-95 z-50 pointer-events-auto"
                 >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50 rounded-full blur-2xl group-hover:bg-[#F5F5F0] transition-colors translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                   <div className="relative z-10 w-full text-right">
-                    <h4 className="font-serif text-base md:text-2xl text-black group-hover:text-[#5A5A40] transition-colors mb-2 md:mb-4">{category.title}</h4>
-                    <p className="text-zinc-500 text-[11px] md:text-sm leading-relaxed opacity-100 md:opacity-0 md:group-hover:opacity-100 line-clamp-2 transition-opacity duration-300">
+                    <h4 className="font-serif text-[1.05rem] md:text-3xl text-black group-hover:text-[#5A5A40] transition-colors mb-2 md:mb-4 leading-snug line-clamp-2">{category.title}</h4>
+                    <p className="text-zinc-500 text-xs md:text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       تصفح دراسات الحالات، القرارات الصعبة، والحلول الإستراتيجية.
                     </p>
                   </div>
@@ -440,7 +440,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                     <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-wider">
                       {count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"}
                     </span>
-                    <div className="w-8 h-8 md:w-11 md:h-11 rounded-full border border-zinc-100 bg-white flex items-center justify-center group-hover:bg-[#5A5A40] group-hover:text-white group-hover:border-[#5A5A40] transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-zinc-100 bg-white flex items-center justify-center group-hover:bg-[#5A5A40] group-hover:text-white group-hover:border-[#5A5A40] transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                       <ArrowRight className="w-4 h-4 md:w-5 md:h-5 -scale-x-100" />
                     </div>
                   </div>

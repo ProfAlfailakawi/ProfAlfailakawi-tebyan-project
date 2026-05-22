@@ -1897,44 +1897,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         </form>
 
         {/* Intent shortcuts: Google-simple outside, deep inside */}
-        {false && !hasSearched && !isThinking && (
+        {!hasSearched && !isThinking && (
           <div className="mt-4 md:mt-6 w-full max-w-2xl mx-auto flex flex-col items-center gap-3 md:gap-4">
-            <div className="grid grid-cols-3 gap-2 w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-              {[
-                {
-                  labelAr: 'افهمني',
-                  labelEn: 'Explain',
-                  action: () => searchValue.trim() ? handleSubmit(undefined, searchValue) : inputRef.current?.focus(),
-                },
-                {
-                  labelAr: 'احسمها',
-                  labelEn: 'Decide',
-                  action: () => searchValue.trim() ? handlePathSelect('qawlfasl', searchValue) : inputRef.current?.focus(),
-                },
-                {
-                  labelAr: 'فاجئني',
-                  labelEn: 'Surprise',
-                  action: handleSurprise,
-                },
-              ].map((item) => {
-                const isDisabled = !searchValue.trim();
-                return (
-                  <button
-                    key={item.labelEn}
-                    type="button"
-                    onClick={item.action}
-                    disabled={isDisabled}
-                    className={cn(
-                      'h-10 md:h-12 rounded-xl md:rounded-2xl bg-white border border-zinc-200 text-zinc-800 font-black text-xs md:text-sm transition-all active:scale-95',
-                      isDisabled ? 'opacity-50 pointer-events-none' : 'hover:border-[#8E7AAE]/45 hover:shadow-md'
-                    )}
-                  >
-                    {language === 'ar' ? item.labelAr : item.labelEn}
-                  </button>
-                );
-              })}
-            </div>
-            <button
+            {/* أزيلت أزرار افهمني / احسمها / فاجئني بناءً على الملاحظة، دون لمس وظائف البحث أو الذكاء الاصطناعي */}
+                        <button
               type="button"
               onClick={() => setShowInspiration(v => !v)}
               className="inline-flex items-center justify-center rounded-full border border-[#C9BEDF]/40 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors shadow-sm"

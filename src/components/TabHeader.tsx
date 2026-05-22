@@ -16,7 +16,7 @@ export const TabHeader: React.FC<{
         <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="tebyan-tab-header relative flex flex-col gap-4 md:gap-6 mb-6 md:mb-8 p-5 md:p-7 rounded-[26px] md:rounded-[34px] bg-white/76 backdrop-blur-xl border border-[#8E7AAE]/12 shadow-[0_18px_55px_rgba(24,34,49,0.055)] overflow-hidden"
+            className="tebyan-tab-header relative flex flex-col gap-3 md:gap-6 mb-5 md:mb-8 p-4 md:p-7 rounded-[24px] md:rounded-[34px] bg-white/78 backdrop-blur-xl border border-[#8E7AAE]/10 shadow-[0_12px_36px_rgba(24,34,49,0.045)] overflow-hidden"
         >
             <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[#8E7AAE]/20 to-transparent" />
 
@@ -26,7 +26,7 @@ export const TabHeader: React.FC<{
                     onClick={handleBack}
                     aria-label={language === 'ar' ? 'رجوع' : 'Back'}
                     title={language === 'ar' ? 'رجوع' : 'Back'}
-                    className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] w-11 h-11 md:w-12 md:h-12 rounded-2xl bg-white/92 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
+                    className="tebyan-page-back fixed top-[calc(env(safe-area-inset-top)+12px)] left-3 md:top-5 md:left-5 z-[80] w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-white/94 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] border border-[#8FA9C7]/18 shadow-[0_10px_28px_rgba(24,34,49,0.11)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
                 >
                     <ArrowLeft className={language === 'ar' ? 'w-5 h-5' : 'w-5 h-5 rotate-180'} />
                 </button>
@@ -38,10 +38,10 @@ export const TabHeader: React.FC<{
                         <Icon className="w-6 h-6 md:w-8 md:h-8" />
                     </div>
                     <div className="min-w-0">
-                        <h2 className="text-2xl md:text-3xl lg:text-[2.15rem] font-black text-[#182231] tracking-tighter leading-tight break-words">
+                        <h2 className="text-[1.45rem] md:text-3xl lg:text-[2.15rem] font-extrabold text-[#182231] tracking-tight leading-snug break-words">
                             {language === 'ar' ? title.ar : title.en}
                         </h2>
-                        <p className="text-sm md:text-base text-[#64788D] font-semibold mt-1 tracking-tight leading-relaxed max-w-2xl break-words">
+                        <p className="text-[13px] md:text-base text-[#64788D] font-semibold mt-1 tracking-tight leading-relaxed max-w-2xl break-words">
                             {language === 'ar' ? description.ar : description.en}
                         </p>
                     </div>

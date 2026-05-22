@@ -158,17 +158,17 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
     }, [isLoading, result]);
 
     return (
-        <div className="space-y-6 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div className="tebyan-decision-room space-y-5 md:space-y-6 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-6 md:mb-12">
              <div className="space-y-4">
                 <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#EEF4F1]0 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5F837A]">{language === 'ar' ? 'الوضع الآمن فعال' : 'SECURE MODE ACTIVE'}</span>
                 </div>
-                <h1 className="text-2xl md:text-5xl font-black text-[#182231] tracking-tight leading-none uppercase">
+                <h1 className="text-[2rem] md:text-5xl font-extrabold text-[#182231] tracking-tight leading-tight uppercase">
                     {language === 'ar' ? 'غرفة القرار السرية' : 'SECRET DECISION ROOM'}
                 </h1>
-                <p className="text-[#64788D] font-bold text-sm md:text-lg max-w-2xl leading-relaxed text-pretty">
+                <p className="text-[#64788D] font-bold text-sm md:text-lg max-w-2xl leading-relaxed">
                     {language === 'ar' ? 'بيئة استراتيجية معزولة لتفكيك المعضلات واتخاذ قرارات مبنية على بيانات إدراكية عميقة.' : 'A secure strategic environment to dismantle dilemmas and make decisions based on deep cognitive insights.'}
                 </p>
              </div>
@@ -211,7 +211,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                }}
                onKeyDown={handleKeyDown}
                className={cn(
-                 "w-full min-h-[96px] md:min-h-[140px] h-28 md:h-36 p-4 md:p-6 pt-8 rounded-[26px] md:rounded-[34px] border text-base md:text-lg font-medium focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
+                 "w-full min-h-[92px] md:min-h-[150px] h-28 md:h-36 p-4 md:p-6 pt-8 rounded-[22px] md:rounded-[34px] border text-[15px] md:text-lg font-medium focus:ring-4 md:focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
                  showRadarWarning ? "border-rose-900/50 bg-stone-900 text-rose-100 placeholder:text-rose-900/30 focus:ring-rose-900/10" : "border-[#8FA9C7]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[#8E7AAE] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
                )}
                placeholder={language === 'ar' ? 'صِف الموقف أو القرار أو المعضلة التي تواجهك هنا بصراحة تامة...' : 'Describe the situation, decision, or dilemma you are facing here with total honesty...'}
@@ -284,14 +284,14 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                       disabled={isLoading}
                       title={language === 'ar' ? tool.hint?.ar : tool.hint?.en}
                       className={cn(
-                          "group relative flex flex-col items-center justify-center gap-2 md:gap-4 p-2.5 md:p-5 rounded-[18px] md:rounded-[28px] min-w-0 tebyan-tool-card bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden",
+                          "group relative flex flex-col items-center justify-center gap-1.5 md:gap-4 p-2 md:p-5 rounded-[16px] md:rounded-[28px] tebyan-tool-card bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden min-h-[88px] md:min-h-0",
                           !dilemma && "opacity-60 grayscale-[0.5]"
                       )}
                     >
-                        <div className={cn("tebyan-tool-icon w-9 h-9 md:w-14 md:h-14 rounded-[16px] md:rounded-[20px] flex items-center justify-center shadow-sm group-hover:scale-[1.03] transition-transform duration-500", tool.bgColor)}>
-                          <tool.icon className="w-4 h-4 md:w-7 md:h-7" />
+                        <div className={cn("tebyan-tool-icon w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[20px] flex items-center justify-center shadow-sm group-hover:scale-[1.03] transition-transform duration-500", tool.bgColor)}>
+                          <tool.icon className="w-5 h-5 md:w-7 md:h-7" />
                         </div>
-                        <span className="font-black text-center text-[10px] md:text-sm px-0.5 leading-snug line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
+                        <span className="font-extrabold text-center text-[10px] md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
                         <p className="text-[10px] md:text-[11px] text-[#7C8796] font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
                         <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-zinc-200 group-hover:bg-[#EEF4F1]0 transition-colors"></div>
                     </button>
@@ -323,7 +323,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                 <motion.h1 
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-2xl md:text-5xl lg:text-7xl font-black leading-[1.1] md:leading-[1.0] tracking-tighter drop-shadow-2xl italic uppercase text-white break-words"
+                                    className="text-3xl md:text-5xl lg:text-7xl font-black leading-[1.1] md:leading-[1.0] tracking-tighter drop-shadow-2xl italic uppercase text-white break-words"
                                 >
                                     {result.content.headline}
                                 </motion.h1>
@@ -499,7 +499,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                         </div>
                                     )}
                                     <div>
-                                        <h3 className="text-2xl md:text-5xl font-black tracking-tighter text-[#182231] uppercase">
+                                        <h3 className="text-3xl md:text-5xl font-black tracking-tighter text-[#182231] uppercase">
                                             {tools.find(t => t.id === result.tool)?.title[language] || (result.tool === 'Error' ? (language === 'ar' ? 'خطأ في التحليل' : 'Analysis Error') : result.tool)}
                                         </h3>
                                         <p className="text-[#64788D] font-bold mt-1 tracking-widest text-xs uppercase">

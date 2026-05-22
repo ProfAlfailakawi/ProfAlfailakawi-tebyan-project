@@ -212,18 +212,18 @@ export default function AdminDashboard() {
             </button>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-10">
               {adminActions.map((action, i) => (
                   <button 
                       key={i} 
                       onClick={() => window.location.href = action.link} 
-                      className="group bg-white p-4 md:p-7 rounded-[22px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col items-center justify-center gap-4 hover:border-indigo-200 hover:shadow-[0_12px_40px_rgb(99,102,241,0.08)] hover:-translate-y-1 transition-all duration-300 focus:ring-2 focus:ring-indigo-500/50 outline-none active:scale-95" 
+                      className="group bg-white p-4 md:p-8 rounded-[22px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col items-center justify-center gap-3 md:gap-4 hover:border-indigo-200 hover:shadow-[0_12px_40px_rgb(99,102,241,0.08)] hover:-translate-y-1 transition-all duration-300 focus:ring-2 focus:ring-indigo-500/50 outline-none active:scale-95 min-h-[132px] md:min-h-0" 
                       title={action.title}
                   >
                       <div className="w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-slate-50 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 flex items-center justify-center transition-all duration-300">
                           <action.icon className="w-5 h-5 md:w-7 md:h-7" />
                       </div>
-                      <span className="font-black text-slate-700 group-hover:text-slate-900 transition-colors text-sm md:text-lg">{action.title}</span>
+                      <span className="font-extrabold text-slate-700 group-hover:text-slate-900 transition-colors text-sm md:text-lg text-center leading-tight">{action.title}</span>
                   </button>
               ))}
           </div>
