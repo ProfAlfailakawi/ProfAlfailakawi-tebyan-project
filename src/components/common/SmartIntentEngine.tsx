@@ -113,8 +113,8 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
 
   return (
     <div className={cn(
-      'rounded-[24px] border border-[#8E7AAE]/15 bg-[#FAF9F6]/90 backdrop-blur-xl shadow-[0_18px_55px_rgba(24,34,49,0.06)]',
-      compact ? 'p-3 space-y-3' : 'p-4 md:p-5 space-y-4',
+      'smart-intent-engine rounded-[22px] md:rounded-[24px] border border-[#8E7AAE]/15 bg-[#FAF9F6]/90 backdrop-blur-xl shadow-[0_18px_55px_rgba(24,34,49,0.06)]',
+      compact ? 'p-2.5 md:p-3 space-y-2.5 md:space-y-3' : 'p-3 md:p-5 space-y-3 md:space-y-4',
       className
     )} dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="flex items-start gap-3">
@@ -160,32 +160,13 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         >
           {language === 'ar' ? 'بسّطها' : 'Simplify'}
         </button>
-        {onQawlFasl && (
-          <button
-            type="button"
-            onClick={() => onQawlFasl(refined || trimmed)}
-            className="px-4 py-2 rounded-full bg-[#F6F0E3] border border-[#D8C28A]/30 text-[#7A6B42] text-xs font-black active:scale-95 transition-all"
-          >
-            {language === 'ar' ? 'قول فصل' : 'Qawl Fasl'}
-          </button>
-        )}
         {onSubmit && (
           <button
             type="button"
             onClick={() => onSubmit(refined || trimmed)}
-            className="px-4 py-2 rounded-full bg-[#8E7AAE]/10 border border-[#8E7AAE]/15 text-[#6E5F8E] text-xs font-black active:scale-95 transition-all"
+            className="smart-intent-start px-5 py-2.5 rounded-full bg-[#6E5F8E] text-white border border-[#6E5F8E] text-xs md:text-sm font-black active:scale-95 transition-all shadow-[0_10px_24px_rgba(110,95,142,0.22)]"
           >
             {language === 'ar' ? 'ابدأ الآن' : 'Start now'}
-          </button>
-        )}
-        {onOpenPath && (
-          <button
-            type="button"
-            onClick={() => onOpenPath(profile.path, refined || trimmed)}
-            className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-[#182231] text-xs font-black flex items-center gap-2 active:scale-95 transition-all"
-          >
-            <Route className="w-4 h-4" />
-            {profile.action}
           </button>
         )}
       </div>

@@ -74,10 +74,7 @@ export default function UserMenu() {
             className="absolute top-full end-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-zinc-100 overflow-hidden z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="px-4 py-3 border-b border-zinc-50 bg-zinc-50/50">
-              <p className="text-sm font-bold text-zinc-900 truncate">{profile.displayName || 'مستخدم'}</p>
-              <p dir="ltr" className="text-xs text-zinc-500 font-medium capitalize truncate text-end">{profile.email || profile.role}</p>
-              
+            <div className="px-4 py-2 border-b border-zinc-50 bg-zinc-50/50">
               {!profile.email && (
                 <div className="mt-3 flex flex-col gap-2">
                     <input 

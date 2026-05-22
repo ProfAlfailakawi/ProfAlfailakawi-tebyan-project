@@ -2428,3 +2428,148 @@ html[dir="rtl"] body, body { text-rendering: optimizeLegibility; -webkit-font-sm
   .overflow-hidden { overflow-clip-margin: 8px; }
   main, section, article { max-width: 100vw; }
 }
+
+/* === Prof. Ahmad mobile polish pass: readability, containment, and compact layouts === */
+@layer base {
+  html, body, #root {
+    max-width: 100%;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  input, textarea, button {
+    font-family: 'Alexandria', ui-sans-serif, system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .tebyan-readable-text {
+    color: #182231;
+    text-shadow: none;
+  }
+}
+
+/* Keep the global back action at the top of the screen, away from content. */
+.tebyan-page-back {
+  position: fixed !important;
+  top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+  left: 12px !important;
+  right: auto !important;
+  z-index: 1000 !important;
+}
+
+/* Remove accidental clipping/overflow in RTL mobile cards. */
+.tebyan-soft-card,
+.tebyan-tab-header,
+.tebyan-primary-route-card,
+.tour-search-input {
+  max-width: 100%;
+}
+
+.tebyan-soft-card *,
+.tebyan-tab-header *,
+.tebyan-primary-route-card *,
+.tour-search-input * {
+  min-width: 0;
+}
+
+@media (max-width: 640px) {
+  /* Overall mobile typography: smaller, smoother, less crowded. */
+  body {
+    letter-spacing: -0.012em;
+  }
+
+  h1, h2, h3, h4, p, span, button, input, textarea {
+    overflow-wrap: anywhere;
+  }
+
+  .tour-search-input textarea,
+  .tour-search-input input {
+    font-size: 15px !important;
+    line-height: 1.75 !important;
+    padding-inline: 12px !important;
+  }
+
+  /* Smart intent result: keep beautiful design, but make it phone-sized. */
+  .smart-intent-engine {
+    border-radius: 20px !important;
+    padding: 12px !important;
+  }
+
+  .smart-intent-engine h4 {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+  }
+
+  .smart-intent-engine p,
+  .smart-intent-engine button {
+    font-size: 11px !important;
+  }
+
+  .smart-intent-engine .smart-intent-start {
+    flex: 1 1 100%;
+    justify-content: center;
+    padding-block: 12px !important;
+    font-size: 13px !important;
+    box-shadow: 0 12px 28px rgba(110, 95, 142, 0.24) !important;
+  }
+
+  /* Prevent faint / low-contrast copy on cards and dark panels. */
+  .text-zinc-300,
+  .text-zinc-400,
+  .text-slate-300,
+  .text-white\/40,
+  .text-white\/50 {
+    color: #64788D !important;
+  }
+
+  .bg-zinc-900 .text-zinc-400,
+  .bg-zinc-950 .text-zinc-400,
+  .bg-black .text-zinc-400,
+  .bg-slate-900 .text-zinc-400,
+  [class*="bg-[#0"] .text-zinc-400,
+  [class*="bg-[#1"] .text-zinc-400 {
+    color: rgba(255,255,255,0.78) !important;
+  }
+
+  /* Compact repeated choice cards on phones without removing any option. */
+  .tebyan-choice-grid,
+  .tebyan-mobile-compact-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .tebyan-choice-grid > *,
+  .tebyan-mobile-compact-grid > * {
+    min-height: auto !important;
+    padding: 12px !important;
+    border-radius: 20px !important;
+  }
+
+  /* A universal safety net for oversized rounded cards on phone screens. */
+  .rounded-\[48px\], .rounded-\[44px\], .rounded-\[40px\] {
+    border-radius: 28px !important;
+  }
+
+  .p-10, .p-9, .p-8 {
+    padding: 1rem !important;
+  }
+
+  .py-40, .py-32, .py-28, .py-24 {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+
+  /* Library cards: 3 per row on phones; no giant vertical cards. */
+  .qawl-library-grid,
+  section:has(h3) .grid.grid-cols-3 {
+    gap: 10px !important;
+  }
+}

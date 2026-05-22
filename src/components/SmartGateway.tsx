@@ -1419,14 +1419,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   }}
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
-                  className="w-full bg-transparent border-none outline-none px-4 md:px-6 py-3 md:py-4 text-base md:text-xl lg:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
+                  className="w-full bg-transparent border-none outline-none px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                   autoFocus
                 />
                 
                 {smartSuggestion && smartSuggestion.startsWith(searchValue) && (
                   <div 
-                    className="pointer-events-none absolute inset-0 px-4 md:px-6 py-3 md:py-4 text-base md:text-xl lg:text-2xl font-bold tracking-tight z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
+                    className="pointer-events-none absolute inset-0 px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
                     dir={language === 'ar' ? 'rtl' : 'ltr'}
                   >
                     <span className="invisible">{searchValue}</span>
@@ -1639,7 +1639,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 <div className="mt-8 rounded-[28px] border border-zinc-100 bg-zinc-50 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                   <div className="text-right">
                                     <h4 className="text-sm md:text-base font-black text-zinc-900">{language === 'ar' ? 'تبي تبسطها أكثر أو تفتح العمق؟' : 'Simplify it or open the depth?'}</h4>
-                                    <p className="text-xs md:text-sm leading-relaxed text-zinc-500 font-bold mt-1 max-w-2xl">{language === 'ar' ? 'تبيان يعرض لك طريقاً واحداً أولاً. وإذا ودك تتوسع، افتح باقي الزوايا.' : 'Tebyan shows one path first. Open more angles when you want.'}</p>
+                                    
                                   </div>
                                   <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-6 py-3 rounded-full bg-white border border-zinc-200 text-zinc-900 font-black text-xs md:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all">
                                     {showExpertPaths ? (language === 'ar' ? 'إخفاء المختبر الكامل' : 'Hide full lab') : (language === 'ar' ? 'فتح المختبر الكامل' : 'Open full lab')}
