@@ -1897,7 +1897,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         </form>
 
         {/* Intent shortcuts: Google-simple outside, deep inside */}
-        {!hasSearched && !isThinking && (
+        {false && !hasSearched && !isThinking && (
           <div className="mt-4 md:mt-6 w-full max-w-2xl mx-auto flex flex-col items-center gap-3 md:gap-4">
             <div className="grid grid-cols-3 gap-2 w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
               {[
