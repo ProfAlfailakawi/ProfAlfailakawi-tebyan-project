@@ -11,6 +11,9 @@ export const SpatialGhost = ({
   x?: string, 
   y?: string 
 }) => {
+  // Disabled: avoid unexpected floating text on paused screens.
+  return null;
+  /*
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -51,4 +54,5 @@ export const SpatialGhost = ({
       </motion.div>
     </div>
   );
+  */
 };

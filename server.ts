@@ -30,8 +30,14 @@ const getGenAI = () => {
         apiKey = (process.env.GOOGLE_API_KEY || "").trim();
     }
     
+    // Check if the API key is the known suspended default key (matching without writing the literal AIza-prefix key)
+    if (apiKey && (apiKey.includes("CikxRRJ2pfOYy") || apiKey.endsWith("Rkayplvdik8UjI"))) {
+        console.warn("[Server] WARNING: Detected suspended default API key. Forcing fallback to smart offline mode.");
+        apiKey = "";
+    }
+    
     if (!apiKey) {
-        console.warn("[Server] WARNING: Missing API key in environment variables.");
+        console.warn("[Server] WARNING: Missing or suspended API key in environment variables.");
         return null;
     }
 
@@ -524,8 +530,12 @@ async function startServer() {
         } catch (error: any) {
             console.error("[Server] TTS Error:", error);
             const errStr = (error.message || "").toLowerCase();
-            if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401")) {
-              return res.status(500).json({ error: "لم أستطع الوصول للمحرك الآن.. تأكد من تفعيل المفتاح الذكي في الإعدادات.", code: "GEMINI_API_KEY_NOT_CONFIGURED" });
+            if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401") || errStr.includes("suspended") || errStr.includes("403") || errStr.includes("forbidden") || errStr.includes("permission")) {
+              return res.status(200).json({ 
+                audioData: "", 
+                offline: true,
+                message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات." 
+              });
             }
             res.status(500).json({ error: "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." });
         }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Wand2, Route, Scale, GraduationCap, Lightbulb, BrainCircuit } from 'lucide-react';
+import { Sparkles, Route, Scale, GraduationCap, Lightbulb, BrainCircuit } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useSmartSearch } from '../../hooks/useSmartSearch';
 
@@ -144,15 +144,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         </button>
       )}
 
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => onApply(refined || buildFallbackRefinement(trimmed, language))}
-          className="px-4 py-2 rounded-full bg-[#8E7AAE] text-white text-xs font-black flex items-center gap-2 active:scale-95 transition-all"
-        >
-          <Wand2 className="w-4 h-4" />
-          {language === 'ar' ? 'استخدم الصياغة' : 'Use wording'}
-        </button>
+      <div className="flex flex-wrap gap-2 items-center">
         <button
           type="button"
           onClick={() => onApply(language === 'ar' ? `اشرح لي ببساطة: ${trimmed}` : `Explain simply: ${trimmed}`)}
@@ -164,7 +156,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
           <button
             type="button"
             onClick={() => onSubmit(refined || trimmed)}
-            className="smart-intent-start px-5 py-2.5 rounded-full bg-[#6E5F8E] text-white border border-[#6E5F8E] text-xs md:text-sm font-black active:scale-95 transition-all shadow-[0_10px_24px_rgba(110,95,142,0.22)]"
+            className="smart-intent-start flex-1 min-w-[150px] justify-center px-7 py-3.5 rounded-full bg-[#6E5F8E] text-white border border-[#6E5F8E] text-sm md:text-base font-black active:scale-95 transition-all shadow-[0_14px_34px_rgba(110,95,142,0.30)] ring-2 ring-[#6E5F8E]/10"
           >
             {language === 'ar' ? 'ابدأ الآن' : 'Start now'}
           </button>

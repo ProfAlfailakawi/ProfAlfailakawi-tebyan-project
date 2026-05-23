@@ -2573,3 +2573,59 @@ html[dir="rtl"] body, body { text-rendering: optimizeLegibility; -webkit-font-sm
     gap: 10px !important;
   }
 }
+
+/* Tebyan mobile polish: Arabic font clarity, fixed back/help, and idle text removal */
+html, body, button, input, textarea, select, svg text {
+  font-family: 'Alexandria', 'Tahoma', 'Arial', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+.tebyan-svg-arabic-text {
+  font-family: 'Alexandria', 'Tahoma', 'Arial', sans-serif !important;
+  paint-order: stroke fill;
+  stroke: rgba(255,255,255,0.72);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  letter-spacing: 0 !important;
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+.tebyan-page-back {
+  display: none !important;
+}
+
+.tebyan-global-back,
+.tebyan-page-help-button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body.zen-idle header,
+body.zen-idle footer,
+body.zen-idle .global-floating-buttons,
+body.zen-idle .orchestrator-ui,
+body.zen-idle nav {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.zen-idle::after,
+body:not(.zen-idle)::after {
+  display: none !important;
+  content: none !important;
+}
+
+@media (max-width: 767px) {
+  .smart-intent-engine {
+    border-radius: 20px !important;
+  }
+  .smart-intent-start {
+    min-height: 48px;
+    font-size: 15px !important;
+  }
+  .tebyan-route-shell {
+    padding-top: 76px !important;
+  }
+}

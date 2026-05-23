@@ -4,6 +4,9 @@ import { Sparkles, X } from 'lucide-react';
 import { useCognitiveMode } from '../contexts/CognitiveModeContext';
 
 export const WhisperHint = ({ language, forceShow = false }: { language: string, forceShow?: boolean }) => {
+  // Disabled: no automatic idle text should appear when the user pauses on the screen.
+  return null;
+  /*
   const [show, setShow] = useState(false);
   const [hint, setHint] = useState('');
   const { mode } = useCognitiveMode();
@@ -99,4 +102,5 @@ export const WhisperHint = ({ language, forceShow = false }: { language: string,
       )}
     </AnimatePresence>
   );
+  */
 };

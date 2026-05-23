@@ -9,7 +9,8 @@ import {
   ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, 
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
   Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box,
-  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, WifiOff, DoorOpen, ShieldCheck
+  Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, WifiOff, DoorOpen, ShieldCheck,
+  ArrowLeft, HelpCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -227,6 +228,7 @@ const AppContent: React.FC = () => {
   const [isOffline, setIsOffline] = useState(() => typeof navigator !== 'undefined' ? !navigator.onLine : false);
   const [showSlowRecovery, setShowSlowRecovery] = useState(false);
   const [doorTransition, setDoorTransition] = useState<{ label: string; kind: string } | null>(null);
+  const [showPageHelp, setShowPageHelp] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -480,6 +482,7 @@ const AppContent: React.FC = () => {
     setSidebarOpen(false); // Force close
     setShowGlobalCommand(false);
     setShowVoiceCanvas(false);
+    setShowPageHelp(false);
     // Dispatch event to close all other potential overlays (like Serendipity Compass)
     window.dispatchEvent(new CustomEvent('close_overlays'));
     
@@ -578,6 +581,13 @@ const AppContent: React.FC = () => {
     }
   ];
 
+
+  const currentTabMeta = tabs.find(t => t.id === activeTab);
+  const isInternalPage = activeTab !== 'home' && activeTab !== 'discover';
+  const pageHelpText = language === 'ar'
+    ? `هذه صفحة ${currentTabMeta?.label || 'داخلية'}. استخدم الأزرار الرئيسية داخل البطاقة لبدء الإجراء، والأيقونات الصغيرة للتنقل أو الحفظ أو فتح التفاصيل. زر الرجوع ثابت أعلى اليسار للعودة بدون أن يغطي المحتوى.`
+    : `This is the ${currentTabMeta?.label || 'internal'} page. Use the main card buttons to start, and the small icons for navigation, saving, or opening details. The back button stays at the top-left without covering content.`;
+
   return (
         <div className={cn("h-[100dvh] tebyan-living-background font-sans flex flex-col overflow-hidden text-[#182231] selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <AnimatePresence>
@@ -640,6 +650,45 @@ const AppContent: React.FC = () => {
 
           <ThoughtNebula />
           <WhisperHint language={language} forceShow={isConfused} />
+          {isInternalPage && (
+            <div className="fixed top-[calc(env(safe-area-inset-top)+12px)] left-3 z-[95] flex items-center gap-2 pointer-events-auto">
+              <button
+                type="button"
+                onClick={() => handleTabChange('discover', '', true)}
+                aria-label={language === 'ar' ? 'رجوع' : 'Back'}
+                title={language === 'ar' ? 'رجوع' : 'Back'}
+                className="tebyan-global-back w-11 h-11 rounded-2xl bg-[#182231] text-white border border-white/60 shadow-[0_14px_34px_rgba(24,34,49,0.22)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
+              >
+                <ArrowLeft className={cn('w-5 h-5', language === 'ar' ? '' : 'rotate-180')} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowPageHelp(v => !v)}
+                aria-label={language === 'ar' ? 'شرح الصفحة' : 'Page help'}
+                title={language === 'ar' ? 'شرح الصفحة' : 'Page help'}
+                className="tebyan-page-help-button w-8 h-8 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          <AnimatePresence>
+            {isInternalPage && showPageHelp && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                className="fixed top-[calc(env(safe-area-inset-top)+62px)] left-3 z-[94] w-[min(330px,calc(100vw-24px))] rounded-[22px] bg-white/96 border border-[#8E7AAE]/15 shadow-[0_24px_70px_rgba(24,34,49,0.16)] backdrop-blur-2xl p-4 text-right"
+                dir={language === 'ar' ? 'rtl' : 'ltr'}
+              >
+                <div className="flex items-center gap-2 mb-2 text-[#6E5F8E]">
+                  <HelpCircle className="w-4 h-4" />
+                  <span className="text-xs font-black">{language === 'ar' ? 'كيف تستخدم هذه الصفحة؟' : 'How to use this page'}</span>
+                </div>
+                <p className="text-xs font-bold leading-relaxed text-[#64788D]">{pageHelpText}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
           
           {/* Spatial Ghosting (الذاكرة المكانية الوهمية) */}
           {activeTab === 'discover' && (

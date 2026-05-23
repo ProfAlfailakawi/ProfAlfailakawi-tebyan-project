@@ -404,9 +404,9 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     }}
                     textAnchor="middle" 
                     fill={isSelected ? "#2F7D67" : isGolden ? "#8A6A18" : node.type === 'core' ? "#FFFFFF" : "#465568"} 
-                    fontSize={node.type === 'core' ? "18" : isGolden ? "15" : "13"} 
+                    fontSize={node.type === 'core' ? "20" : isGolden ? "16" : "14"} 
                     fontWeight={isSelected || node.type === 'core' || isGolden ? "900" : "bold"}
-                    className="select-none pointer-events-none"
+                    className="select-none pointer-events-none tebyan-svg-arabic-text"
                   >
                     {isSelected ? node.label : (node.label.length > 25 ? node.label.substring(0, 25) + '...' : node.label)}
                   </motion.text>

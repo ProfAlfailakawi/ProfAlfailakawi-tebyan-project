@@ -22,6 +22,9 @@ const quotesEn = [
 ];
 
 export const WhispersOfTheVoid = ({ isZen, language }: { isZen: boolean, language: 'ar' | 'en' }) => {
+  // Disabled: no quote text should appear during idle/zen pauses.
+  return null;
+  /*
   const [quoteIndices, setQuoteIndices] = useState<number[]>([]);
   
   useEffect(() => {
@@ -66,4 +69,5 @@ export const WhispersOfTheVoid = ({ isZen, language }: { isZen: boolean, languag
       </AnimatePresence>
     </div>
   );
+  */
 };
