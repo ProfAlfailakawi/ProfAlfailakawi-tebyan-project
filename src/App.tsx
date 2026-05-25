@@ -651,13 +651,13 @@ const AppContent: React.FC = () => {
           <ThoughtNebula />
           <WhisperHint language={language} forceShow={isConfused} />
           {isInternalPage && (
-            <div className="fixed top-[calc(env(safe-area-inset-top)+12px)] left-3 z-[95] flex items-center gap-2 pointer-events-auto">
+            <div className="fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[95] flex items-center gap-2.5 pointer-events-auto">
               <button
                 type="button"
                 onClick={() => handleTabChange('discover', '', true)}
                 aria-label={language === 'ar' ? 'رجوع' : 'Back'}
                 title={language === 'ar' ? 'رجوع' : 'Back'}
-                className="tebyan-global-back w-11 h-11 rounded-2xl bg-[#182231] text-white border border-white/60 shadow-[0_14px_34px_rgba(24,34,49,0.22)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
+                className="tebyan-global-back w-11 h-11 rounded-2xl bg-[#182231] text-white border border-white/60 shadow-[0_14px_34px_rgba(24,34,49,0.22)] backdrop-blur-xl transition-all hover:bg-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
               >
                 <ArrowLeft className={cn('w-5 h-5', language === 'ar' ? '' : 'rotate-180')} />
               </button>
@@ -666,7 +666,7 @@ const AppContent: React.FC = () => {
                 onClick={() => setShowPageHelp(v => !v)}
                 aria-label={language === 'ar' ? 'شرح الصفحة' : 'Page help'}
                 title={language === 'ar' ? 'شرح الصفحة' : 'Page help'}
-                className="tebyan-page-help-button w-8 h-8 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all active:scale-95 flex items-center justify-center"
+                className="tebyan-page-help-button w-8 h-8 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
               >
                 <HelpCircle className="w-4 h-4" />
               </button>
@@ -678,7 +678,7 @@ const AppContent: React.FC = () => {
                 initial={{ opacity: 0, y: -8, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                className="fixed top-[calc(env(safe-area-inset-top)+62px)] left-3 z-[94] w-[min(330px,calc(100vw-24px))] rounded-[22px] bg-white/96 border border-[#8E7AAE]/15 shadow-[0_24px_70px_rgba(24,34,49,0.16)] backdrop-blur-2xl p-4 text-right"
+                className="fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[94] w-[min(330px,calc(100vw-24px))] rounded-[22px] bg-white/96 border border-[#8E7AAE]/15 shadow-[0_24px_70px_rgba(24,34,49,0.16)] backdrop-blur-2xl p-4 text-right"
                 dir={language === 'ar' ? 'rtl' : 'ltr'}
               >
                 <div className="flex items-center gap-2 mb-2 text-[#6E5F8E]">

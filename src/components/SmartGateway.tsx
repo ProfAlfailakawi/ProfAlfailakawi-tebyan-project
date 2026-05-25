@@ -1359,19 +1359,21 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           >
              <header className="text-center">
         
-                <motion.div
+                <motion.div 
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
-                   className="text-[#7C8796] font-black text-[10px] md:text-xs tracking-[0.28em] uppercase mb-3"
+                   className="text-[#7C8796] font-bold text-xs md:text-sm tracking-widest uppercase mb-3 md:mb-4 animate-fade-in"
                 >
-                   {language === 'ar' ? 'كل أدوات تبيان خلف سؤال واحد' : 'All Tebyan tools behind one question'}
+                   {language === 'ar' ? proactiveInsights.arSub : proactiveInsights.enSub}
                 </motion.div>
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-[#182231] tracking-tighter leading-[0.92] mb-2 md:mb-3">
-                  {language === 'ar' ? 'وش يشغلك اليوم؟' : 'What is on your mind?'}
+                <h1 className="text-4xl md:text-6xl lg:text-[6.2rem] font-black text-[#182231] tracking-tighter leading-[0.88] mb-5 md:mb-8">
+                  {language === 'ar' ? proactiveInsights.arG.split(' ')[0] : proactiveInsights.enG.split(' ')[0]}<br/>
+                  <span className="text-[#8E7AAE]/35 italic">
+                      {language === 'ar' 
+                          ? proactiveInsights.arG.split(' ').slice(1).join(' ') 
+                          : proactiveInsights.enG.split(' ').slice(1).join(' ')}
+                  </span>
                 </h1>
-                <p className="mx-auto max-w-2xl text-sm md:text-base font-bold leading-relaxed text-[#64788D]">
-                  {language === 'ar' ? 'اكتبها بطريقتك. تبيان يختار الرحلة والأداة المناسبة دون أن يزحمك.' : 'Write it naturally. Tebyan chooses the right journey and tool without crowding you.'}
-                </p>
              </header>
           </motion.div>
 
@@ -2045,97 +2047,18 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
           </AnimatePresence>
         </form>
 
-        {/* Simple entry layer: one question first, tools stay available on demand */}
+        {/* Simple entry layer: only inspiration toggle stays on demand */}
         {!hasSearched && !isThinking && (
           <div className="mt-4 md:mt-6 w-full max-w-3xl mx-auto flex flex-col items-center gap-3 md:gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full">
-              {[
-                { ar: 'أفهم موضوع', en: 'Understand', seedAr: 'أريد أن أفهم ', seedEn: 'I want to understand ' },
-                { ar: 'أتخذ قرار', en: 'Decide', seedAr: 'أحتاج أن أتخذ قراراً بشأن ', seedEn: 'I need to decide about ' },
-                { ar: 'أبني فكرة', en: 'Build an idea', seedAr: 'أريد بناء فكرة حول ', seedEn: 'I want to build an idea about ' },
-                { ar: 'أرتب خطة', en: 'Plan', seedAr: 'أريد ترتيب خطة لـ ', seedEn: 'I want to plan for ' }
-              ].map((intent) => {
-                const value = language === 'ar' ? intent.seedAr : intent.seedEn;
-                return (
-                  <button
-                    key={intent.en}
-                    type="button"
-                    onClick={() => {
-                      setSearchValue(value);
-                      latestInputRef.current = value;
-                      setQuery(value);
-                      setSmartSuggestion('');
-                      setShowDirectTools(false);
-                      setShowInspiration(false);
-                      setTimeout(() => inputRef.current?.focus(), 30);
-                    }}
-                    className="rounded-2xl border border-[#DED6EA]/60 bg-white/72 px-3 py-3 text-xs md:text-sm font-black text-[#465568] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#8E7AAE]/35 hover:bg-white active:scale-95"
-                  >
-                    {language === 'ar' ? intent.ar : intent.en}
-                  </button>
-                );
-              })}
-            </div>
-
             <div className="flex flex-wrap items-center justify-center gap-2">
               <button
                 type="button"
-                onClick={() => { setShowInspiration(v => !v); setShowDirectTools(false); }}
-                className="inline-flex items-center justify-center rounded-full border border-[#C9BEDF]/40 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors shadow-sm"
+                onClick={() => { setShowInspiration(v => !v); }}
+                className="inline-flex items-center justify-center rounded-full border border-[#C9BEDF]/40 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors shadow-sm cursor-pointer hover:-translate-y-0.5 transition-transform"
               >
-                {showInspiration ? (language === 'ar' ? 'إخفاء الإلهام' : 'Hide inspiration') : (language === 'ar' ? 'أحتاج مثالاً' : 'Show examples')}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setShowDirectTools(v => !v); setShowInspiration(false); }}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#8FA9C7]/28 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-[#6E5F8E] transition-colors shadow-sm"
-              >
-                <LayoutGrid className="h-3.5 w-3.5" />
-                {showDirectTools ? (language === 'ar' ? 'إخفاء المختبر' : 'Hide lab') : (language === 'ar' ? 'مختبر تبيان الكامل' : 'Full Tebyan lab')}
+                {showInspiration ? (language === 'ar' ? 'إخفاء الأمثلة' : 'Hide examples') : (language === 'ar' ? 'أحتاج فكرة أبدأ بها' : 'I need a starting idea')}
               </button>
             </div>
-
-            <AnimatePresence>
-              {showDirectTools && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: 'auto' }}
-                  exit={{ opacity: 0, y: 8, height: 0 }}
-                  className="w-full overflow-hidden"
-                >
-                  <div className="mt-2 rounded-[28px] border border-[#DED6EA]/55 bg-white/76 p-3 md:p-4 shadow-[0_18px_55px_rgba(24,34,49,0.06)] backdrop-blur-xl">
-                    <div className="mb-3 flex items-center justify-between gap-3 px-1">
-                      <div className="text-right">
-                        <p className="text-sm font-black text-[#182231]">{language === 'ar' ? 'الوصول المباشر' : 'Direct access'}</p>
-                        <p className="text-[11px] font-bold text-[#7C8796]">{language === 'ar' ? 'لمن يعرف الأداة التي يريدها' : 'For users who already know the tool they want'}</p>
-                      </div>
-                      <button type="button" onClick={() => setShowDirectTools(false)} className="h-8 w-8 rounded-full border border-zinc-100 bg-zinc-50 text-zinc-500 flex items-center justify-center active:scale-95">
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                      {[...(tabs || []).filter((t: any) => !t.hidden && t.id !== 'discover'), { id: 'ripple', label: language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric', icon: Waves, tooltip: language === 'ar' ? 'شاهد كيف تتفرع فكرتك وتؤثر' : 'See how your idea branches and influences' }].map((tool: any) => {
-                        const Icon = tool.icon || Sparkles;
-                        return (
-                          <button
-                            key={tool.id}
-                            type="button"
-                            onClick={() => { setShowDirectTools(false); handleTabChange(tool.id); }}
-                            className="group flex min-h-[88px] flex-col items-center justify-center gap-2 rounded-2xl border border-zinc-100 bg-[#FAF9F6]/80 px-2 py-3 text-center transition-all hover:-translate-y-0.5 hover:border-[#8E7AAE]/25 hover:bg-white active:scale-95"
-                            title={tool.tooltip}
-                          >
-                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[#DED6EA]/70 bg-white text-[#6E5F8E] shadow-sm group-hover:scale-105 transition-transform">
-                              <Icon className="h-5 w-5" />
-                            </span>
-                            <span className="text-[11px] md:text-xs font-black leading-tight text-[#465568] line-clamp-2">{tool.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {!searchValue.trim() && (
               <motion.div
@@ -2209,7 +2132,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       </div>
       </div>
 
-      {!hasSearched && showInspiration && (
+      {!hasSearched && (
         <>
           {/* Ephemeral Wisdom Feature (FOMO) */}
           <div className="mt-8">
