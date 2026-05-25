@@ -639,7 +639,7 @@ const AppContent: React.FC = () => {
               '2️⃣ تدرج عبر تسلسل الجلسة بتفعيل "النبضة الأولى" ثم "زد العمق".',
               '3️⃣ تابع تسلسل الخطوات الأربعة لتأكيد اليقين وفحص كل زاوية.'
             ],
-            tip: '💡 يمكنك الانتقال إلى المختبر الكامل عند الحاجة لأدوات مخصصة!'
+            tip: '💡 ابدأ بزاوية واحدة، وإذا احتجت عمقاً أكثر افتح زاوية إضافية بهدوء.'
           };
         case 'strategicarena':
           return {
@@ -1239,7 +1239,7 @@ const AppContent: React.FC = () => {
                 switch (activeTab) {
                   case 'home':
                   case 'discover':
-                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} onShowLogin={() => setShowLogin(true)} />;
+                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} onShowLogin={() => setShowLogin(true)} isHome={activeTab === 'home'} />;
                   case 'strategicarena':
                     return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'creativelab':

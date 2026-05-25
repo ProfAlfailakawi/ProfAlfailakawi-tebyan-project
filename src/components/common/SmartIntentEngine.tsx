@@ -20,7 +20,7 @@ const getIntentProfile = (raw: string, language: 'ar' | 'en') => {
   const q = raw.toLowerCase();
   const has = (...words: string[]) => words.some(w => q.includes(w));
 
-  if (has('مدرس', 'مدرسة', 'بنتي', 'ولدي', 'ابني', 'ابنتي', 'طفل', 'طفلي', 'مراهق', 'school', 'child', 'daughter', 'son', 'teen')) {
+  if (has('مدرس', 'مدرسة', 'طالب', 'طالبة', 'مراهق', 'تربية', 'school', 'student', 'teen', 'education')) {
     return {
       icon: GraduationCap,
       path: 'qawlfasl' as IntentPath,

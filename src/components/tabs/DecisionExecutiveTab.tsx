@@ -309,7 +309,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <div>
                   <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#8E7AAE]">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
                   <h2 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">{language === 'ar' ? 'تبيان يفتح لك الزاوية المناسبة فقط' : 'Tebyan opens only the right angle'}</h2>
-                  <p className="text-sm text-[#64788D] font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، اضغط زد العمق. وإذا صرت محترفاً، افتح المختبر الكامل.' : 'Need more depth? Go deeper. When you are ready, open the full lab.'}</p>
+                  <p className="text-sm text-[#64788D] font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، افتح زاوية إضافية بهدوء. الأدوات موجودة بالخلفية بدون زحمة.' : 'Need more depth? Open one extra angle calmly. The tools stay in the background.'}</p>
                 </div>
                 <button
                   type="button"
@@ -320,7 +320,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                   )}
                 >
                   <LayoutGrid className="w-4 h-4" />
-                  {showFullLab ? (language === 'ar' ? 'إخفاء المختبر' : 'Hide lab') : (language === 'ar' ? 'المختبر الكامل' : 'Full lab')}
+                  {showFullLab ? (language === 'ar' ? 'إخفاء الزوايا' : 'Hide angles') : (language === 'ar' ? 'زوايا إضافية' : 'More angles')}
                 </button>
               </div>
 

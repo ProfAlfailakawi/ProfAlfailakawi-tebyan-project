@@ -307,14 +307,6 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
           </button>
         </div>
-      </section>l shadow; the full idea fabric remains in your knowledge network.'}
-              </p>
-            </div>
-          </div>
-          <button onClick={() => handleTabChange('knowledgegraph')} className="shrink-0 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-5 py-3 text-xs font-black text-[#6E5F8E] shadow-sm transition-all hover:border-[#8E7AAE]/40 hover:bg-[#F4F1F8] active:scale-95">
-            {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
-          </button>
-        </div>
       </section>
 
       {/* Daily Mission */}

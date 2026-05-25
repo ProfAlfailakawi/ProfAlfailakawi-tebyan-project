@@ -100,6 +100,7 @@ interface SmartGatewayProps {
   tabs: any[];
   mood?: string;
   onShowLogin?: () => void;
+  isHome?: boolean;
 }
 
 type JourneyProfile = {
@@ -168,7 +169,7 @@ const pickJourneyProfile = (raw: string, fallbackId?: string): JourneyProfile =>
     return {
       id: 'future',
       title: { ar: 'رحلة مستقبل', en: 'Future journey' },
-      promise: { ar: getGenderWord(userGender, 'نفتح لك أول مشهد لما قد يحدث، بدون إغراقك بكل المختبر.', 'نفتح لكِ أول مشهد لما قد يحدث، بدون إغراقكِ بكل المختبر.', 'نفتح أول مشهد لما قد يحدث.'), en: 'We open the first scene of what may happen, without flooding you with the whole lab.' },
+      promise: { ar: 'نفتح أول مشهد لما قد يحدث، بدون إغراقك بكل المختبر.', en: 'We open the first scene of what may happen, without flooding you with the whole lab.' },
       firstDoor: { ar: 'شاهد أول سيناريو', en: 'See the first scenario' },
       deepen: { ar: 'بعدها نقدر نختبر القرار بقسوة أكبر.', en: 'Then we can stress-test it harder.' },
       accent: '#B7A7C7',
@@ -179,12 +180,113 @@ const pickJourneyProfile = (raw: string, fallbackId?: string): JourneyProfile =>
   return {
     id: 'understanding',
     title: { ar: 'رحلة فهم', en: 'Understanding journey' },
-    promise: { ar: getGenderWord(userGender, 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبته.', 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبتِيه.', 'نبدأ بفهم واضح واحد.'), en: 'We begin with one clear understanding, then open depth only when you ask.' },
+    promise: { ar: 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبته.', en: 'We begin with one clear understanding, then open depth only when you ask.' },
     firstDoor: { ar: 'افتح باب الفهم', en: 'Open the understanding doorway' },
     deepen: { ar: 'بعدها نقدر نحول الفهم إلى قرار أو خطة.', en: 'Then we can turn understanding into a decision or plan.' },
     accent: '#7C8796',
     icon: BrainCircuit
   };
+};
+
+const JOURNEY_DOOR_ORDER: Record<string, string[]> = {
+  decision: ['decisionroom', 'qawlfasl', 'strategicarena', 'knowledgecenter', 'oracle', 'ripple'],
+  conflict: ['qawlfasl', 'simulation_roleplay', 'strategicarena', 'oracle', 'knowledgecenter', 'decisionroom'],
+  idea: ['creativelab', 'oracle', 'knowledgecenter', 'strategicarena', 'ripple', 'decisionroom'],
+  execution: ['knowledgecenter', 'roadmap', 'strategicarena', 'qawlfasl', 'oracle', 'decisionroom'],
+  future: ['strategicarena', 'decisionroom', 'oracle', 'knowledgecenter', 'qawlfasl', 'ripple'],
+  understanding: ['oracle', 'knowledgecenter', 'qawlfasl', 'strategicarena', 'creativelab', 'decisionroom', 'ripple']
+};
+
+const DOOR_COPY: Record<string, Array<{ ar: string; en: string; descAr: string; descEn: string }>> = {
+  decision: [
+    { ar: 'باب الحسم', en: 'Decision door', descAr: 'نرتب الاختيارات ونقرب القرار.', descEn: 'We organize options and move toward a decision.' },
+    { ar: 'باب الحقيقة', en: 'Truth door', descAr: 'نكشف ما هو ثابت وما يحتاج سؤالاً.', descEn: 'We reveal what is solid and what still needs asking.' },
+    { ar: 'باب المستقبل', en: 'Future door', descAr: 'نشوف أثر القرار قبل لا يصير.', descEn: 'We preview the decision before it happens.' },
+    { ar: 'باب الفجوة', en: 'Gap door', descAr: 'نعرف شنو ناقص قبل الخطوة.', descEn: 'We find what is missing before the next move.' },
+    { ar: 'باب الحكمة', en: 'Wisdom door', descAr: 'نأخذ جواباً أهدأ وأوسع.', descEn: 'We take a calmer, wider answer.' },
+    { ar: 'باب الأثر', en: 'Impact door', descAr: 'نشوف كيف القرار يلمس بقية الأفكار.', descEn: 'We see how the decision touches other ideas.' }
+  ],
+  conflict: [
+    { ar: 'باب التصرف', en: 'Response door', descAr: 'نهدئ الموقف ونحدد الرد الأنسب.', descEn: 'We calm the situation and choose the best response.' },
+    { ar: 'باب التجربة', en: 'Rehearsal door', descAr: 'نجرب الحوار قبل ما تقوله.', descEn: 'We rehearse the conversation before you say it.' },
+    { ar: 'باب الصورة الكبيرة', en: 'Big picture door', descAr: 'نشوف القوى الخفية في الموقف.', descEn: 'We see the hidden forces in the situation.' },
+    { ar: 'باب الحكمة', en: 'Wisdom door', descAr: 'نسمع جواباً متزنًا بلا استعجال.', descEn: 'We hear a balanced answer without rushing.' },
+    { ar: 'باب الفهم', en: 'Understanding door', descAr: 'نربط الأسباب ونخفف التشويش.', descEn: 'We connect causes and reduce noise.' },
+    { ar: 'باب القرار', en: 'Decision door', descAr: 'إذا احتجت حسم، نحسم بهدوء.', descEn: 'If you need a decision, we decide calmly.' }
+  ],
+  idea: [
+    { ar: 'باب التشكيل', en: 'Shaping door', descAr: 'نحوّل الفكرة الخام إلى بداية واضحة.', descEn: 'We turn the raw idea into a clear start.' },
+    { ar: 'باب الإلهام', en: 'Inspiration door', descAr: 'نفتح زاوية غير متوقعة.', descEn: 'We open an unexpected angle.' },
+    { ar: 'باب الفجوة', en: 'Gap door', descAr: 'نعرف ما تحتاجه الفكرة لتكبر.', descEn: 'We find what the idea needs to grow.' },
+    { ar: 'باب السوق', en: 'Strategy door', descAr: 'نختبر الفكرة في الواقع.', descEn: 'We test the idea against reality.' },
+    { ar: 'باب النسيج', en: 'Fabric door', descAr: 'نشوف تشعبات الفكرة وأثرها.', descEn: 'We see the idea branches and impact.' },
+    { ar: 'باب الحسم', en: 'Decision door', descAr: 'نختار النسخة الأقوى من الفكرة.', descEn: 'We choose the strongest version of the idea.' }
+  ],
+  execution: [
+    { ar: 'باب الخطوة', en: 'Action door', descAr: 'نحوّل الموضوع إلى خطوة عملية.', descEn: 'We turn the topic into a practical step.' },
+    { ar: 'باب الطريق', en: 'Road door', descAr: 'نرسم المسار بدون تعقيد.', descEn: 'We map the path without complexity.' },
+    { ar: 'باب الأولويات', en: 'Priority door', descAr: 'نرتب المهم قبل المستعجل.', descEn: 'We order what matters before what shouts.' },
+    { ar: 'باب الوضوح', en: 'Clarity door', descAr: 'نزيل العوائق من البداية.', descEn: 'We remove obstacles from the start.' },
+    { ar: 'باب الحكمة', en: 'Wisdom door', descAr: 'نراجع الخطة بعين أهدأ.', descEn: 'We review the plan with a calmer eye.' },
+    { ar: 'باب القرار', en: 'Decision door', descAr: 'نحسم الخطوة التالية بثقة.', descEn: 'We decide the next step with confidence.' }
+  ],
+  future: [
+    { ar: 'باب السيناريو', en: 'Scenario door', descAr: 'نرى ما قد يحدث قبل أن يحدث.', descEn: 'We see what may happen before it happens.' },
+    { ar: 'باب الاختبار', en: 'Stress-test door', descAr: 'نضغط القرار ونشوف صلابته.', descEn: 'We pressure-test the decision.' },
+    { ar: 'باب الحكمة', en: 'Wisdom door', descAr: 'نوسع النظر قبل الحركة.', descEn: 'We widen the view before moving.' },
+    { ar: 'باب الفجوة', en: 'Gap door', descAr: 'نكشف ما لم يُحسب حسابه.', descEn: 'We reveal what was not accounted for.' },
+    { ar: 'باب الحقيقة', en: 'Truth door', descAr: 'نثبت النقاط قبل التوقع.', descEn: 'We ground the facts before forecasting.' },
+    { ar: 'باب الأثر', en: 'Impact door', descAr: 'نراقب امتداد القرار.', descEn: 'We watch the decision ripple outward.' }
+  ],
+  understanding: [
+    { ar: 'باب المعنى', en: 'Meaning door', descAr: 'نفهم الموضوع من غير زحمة.', descEn: 'We understand the topic without clutter.' },
+    { ar: 'باب الفجوة', en: 'Gap door', descAr: 'نحدد ما يحتاج توضيحاً.', descEn: 'We identify what needs clarification.' },
+    { ar: 'باب الحقيقة', en: 'Truth door', descAr: 'نفرق بين الشعور والمعطيات.', descEn: 'We separate feeling from facts.' },
+    { ar: 'باب الصورة الكبيرة', en: 'Big picture door', descAr: 'نضع الموضوع في سياقه الأوسع.', descEn: 'We place the topic in its wider context.' },
+    { ar: 'باب الفكرة', en: 'Idea door', descAr: 'نحوّل الفهم إلى احتمال جديد.', descEn: 'We turn understanding into a new possibility.' },
+    { ar: 'باب الحسم', en: 'Decision door', descAr: 'إذا اتضح المعنى، نختار الخطوة.', descEn: 'When meaning is clear, we choose the step.' },
+    { ar: 'باب النسيج', en: 'Fabric door', descAr: 'نرى الروابط التي لم تكن ظاهرة.', descEn: 'We see links that were not visible.' }
+  ]
+};
+
+const decorateJourneyDoors = (ranked: any[], tabs: any[], journeyId: string, language: 'ar' | 'en') => {
+  const order = JOURNEY_DOOR_ORDER[journeyId] || JOURNEY_DOOR_ORDER.understanding;
+  const rankedById = new Map(ranked.map((item) => [item.id, item]));
+  const tabById = new Map((tabs || []).map((tab) => [tab.id, tab]));
+  const used = new Set<string>();
+  const copySet = DOOR_COPY[journeyId] || DOOR_COPY.understanding;
+
+  const buildDoor = (id: string, index: number) => {
+    const base = rankedById.get(id) || tabById.get(id);
+    if (!base || used.has(id)) return null;
+    used.add(id);
+    const copy = copySet[index % copySet.length];
+    return {
+      ...base,
+      id,
+      icon: base.icon || Sparkles,
+      label: language === 'ar' ? copy.ar : copy.en,
+      desc: language === 'ar' ? copy.descAr : copy.descEn,
+      tooltip: language === 'ar' ? copy.descAr : copy.descEn,
+      doorIndex: index + 1
+    };
+  };
+
+  const doors = order.map((id, index) => buildDoor(id, index)).filter(Boolean);
+  ranked.forEach((item) => {
+    if (used.has(item.id)) return;
+    const copy = copySet[doors.length % copySet.length];
+    used.add(item.id);
+    doors.push({
+      ...item,
+      label: language === 'ar' ? copy.ar : copy.en,
+      desc: language === 'ar' ? copy.descAr : copy.descEn,
+      tooltip: language === 'ar' ? copy.descAr : copy.descEn,
+      doorIndex: doors.length + 1
+    });
+  });
+
+  return doors.slice(0, 8);
 };
 
 const getMoodTypography = (mood: string) => {
@@ -355,7 +457,7 @@ const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
 
 import { useSmartSearch } from '../hooks/useSmartSearch';
 
-export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood, onShowLogin }) => {
+export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood, onShowLogin, isHome = false }) => {
   const { preferences, addToLibrary, removeFromLibrary, setUserStyle: setGlobalUserStyle } = useUser();
   const { user, userName, userGender } = useAuth();
 
@@ -504,7 +606,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, []);
 
   const [hasSearched, setHasSearched] = useState(() => sessionStorage.getItem('tebyan_current_has_searched') === 'true');
-  const [showExpertPaths, setShowExpertPaths] = useState(false);
+  const [depthLevel, setDepthLevel] = useState(0);
   const [showDirectTools, setShowDirectTools] = useState(false);
   const [showInspiration, setShowInspiration] = useState(false);
   const [showGateEcho, setShowGateEcho] = useState(false);
@@ -529,7 +631,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     setQuery(value);
     onType();
     if (hasSearched) setHasSearched(false);
-    setShowExpertPaths(false);
+    setDepthLevel(0);
     setShowDirectTools(false);
   };
 
@@ -851,7 +953,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     sessionStorage.setItem('tebyan_current_query', "");
     sessionStorage.setItem('tebyan_current_has_searched', 'false');
     setSmartSuggestion("");
-    setShowExpertPaths(false);
+    setDepthLevel(0);
   };
 
   useEffect(() => {
@@ -860,7 +962,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
         setIsThinking(false);
         setQuery("");
         setSmartSuggestion("");
-        setShowExpertPaths(false);
+        setDepthLevel(0);
     }
   }, [searchValue]);
 
@@ -1150,15 +1252,15 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   }, [query, language]);
 
   const ALL_CHIP_SUGGESTIONS = [
-    { ar: 'ابني يدخن وعمره 15 سنة، شسوي؟', en: 'My son is smoking and he is 15, what should I do?' },
-    { ar: 'كيف أتعامل مع ابني المراهق العنيد؟', en: 'How to deal with my stubborn teenage son?' },
-    { ar: 'ولدي ما يسمع الكلام وكله يعاندني بالبيت', en: 'My son doesnt listen and always rebels at home' },
+    { ar: 'مراهق قريب مني يتصرف بعناد، شلون أتعامل بهدوء؟', en: 'A teenager close to me is acting stubborn, how should I handle it calmly?' },
+    { ar: 'شخص صغير بالعمر يتكرر منه سلوك مقلق، ما التصرف الأنسب؟', en: 'A young person keeps repeating a worrying behavior, what is the best response?' },
+    { ar: 'عندي تحدي تربوي في البيت وأحتاج طريقة واضحة', en: 'I have a family guidance challenge and need a clear approach' },
     { ar: 'رفيجي بالدوام وايد يذم فيني قفاي، شلون أتصرف؟', en: 'My friend at work backbites me, how to behave?' },
     { ar: 'مديري بالدوام وايد يضغطني وشايل علي، شالحل؟', en: 'My boss pressures me and has a grudge, what is the solution?' },
-    { ar: 'ابني يكذب علي باستمرار، ما الحل؟', en: 'My son lies to me constantly, what is the solution?' },
-    { ar: 'طفلي يرفض الذهاب للمدرسة ويتمارض', en: 'My child refuses to go to school and fakes illness' },
-    { ar: 'إدمان الأطفال على الألعاب الإلكترونية', en: 'Childrens addiction to electronic games' },
-    { ar: 'كيف أغرس الصدق والأمانة في أطفالي؟', en: 'How to instill honesty and integrity in my children?' },
+    { ar: 'شخص قريب مني يكذب كثيراً، شلون أبني الثقة؟', en: 'Someone close to me lies often, how can I rebuild trust?' },
+    { ar: 'طالب يرفض المدرسة ويختلق الأعذار، ما أفضل تصرف؟', en: 'A student refuses school and makes excuses, what is the best response?' },
+    { ar: 'استخدام الألعاب الإلكترونية صار زائد، شلون أرتبه؟', en: 'Gaming use has become excessive, how can I organize it?' },
+    { ar: 'كيف أغرس الصدق والأمانة بطريقة ذكية وهادئة؟', en: 'How can I instill honesty and integrity in a smart calm way?' },
     { ar: 'توسعة النشاط التجاري المتعثر', en: 'Expanding a struggling business' },
     { ar: 'إقناع المستثمرين بتمويل المشروع', en: 'Persuading investors to fund the project' },
     { ar: 'إدارة أزمة ثقة حادة داخل الفريق', en: 'Managing a severe trust crisis within the team' },
@@ -1343,20 +1445,36 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return ranked;
   }, [query, language]);
 
-  // Split suggestions into three tiers
+  const journeyProfile = useMemo(() => pickJourneyProfile(query || searchValue, suggestions[0]?.id), [query, searchValue, suggestions]);
+
+  const journeyDoors = useMemo(() => {
+    return decorateJourneyDoors(suggestions, tabs, journeyProfile.id, language);
+  }, [suggestions, tabs, journeyProfile.id, language]);
+
+  // Split the journey into progressive doors: first door, then deeper different doors.
   const { primarySuggestion, secondarySuggestions, alternativeSuggestions } = useMemo(() => {
-    const primary = suggestions[0] || null;
-    const secondary = suggestions.slice(1, 3);
-    const alternative = suggestions.slice(3, 12);
+    const primary = journeyDoors[0] || suggestions[0] || null;
+    const secondary = journeyDoors.slice(1, 3);
+    const alternative = journeyDoors.slice(3, 8);
     
     return { 
       primarySuggestion: primary, 
       secondarySuggestions: secondary, 
       alternativeSuggestions: alternative 
     };
-  }, [suggestions]);
+  }, [journeyDoors, suggestions]);
 
-  const journeyProfile = useMemo(() => pickJourneyProfile(query || searchValue, primarySuggestion?.id), [query, searchValue, primarySuggestion?.id]);
+  const progressiveDoors = useMemo(() => {
+    return [...secondarySuggestions, ...alternativeSuggestions].slice(0, depthLevel);
+  }, [secondarySuggestions, alternativeSuggestions, depthLevel]);
+
+  const visibleSecondarySuggestions = progressiveDoors.slice(0, 2);
+  const visibleAlternativeSuggestions = progressiveDoors.slice(2);
+  const hasMoreDepth = depthLevel < (secondarySuggestions.length + alternativeSuggestions.length);
+
+  useEffect(() => {
+    setDepthLevel(0);
+  }, [journeyProfile.id, query]);
 
   const dailyDiscovery = useMemo(() => {
     const daySeed = Math.floor(Date.now() / 86400000);
@@ -1560,7 +1678,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   minRows={1}
                   maxRows={4}
                   onChange={(e) => handleSearchInputChange(e.target.value)}
-                  placeholder={language === 'ar' ? "وش يدور ببالك؟ اكتبه هنا وبنفكر فيه سوا..." : "Type your question or problem..."}
+                  placeholder={language === 'ar' ? "اكتب الموضوع اللي تبي نفهمه معاك..." : "Type the topic you want us to understand with you..."}
                   onKeyDown={(e) => {
                     if ((e.key === 'Tab' || (e.key === 'Enter' && !e.shiftKey)) && smartSuggestion) {
                       e.preventDefault();
@@ -1827,7 +1945,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
                     <div className="space-y-8">
                        <div className="md:grid grid-cols-12 gap-8 mt-8">
-                          <div className={cn("col-span-12", showExpertPaths ? "md:col-span-8" : "md:col-span-12")}>
+                          <div className={cn("col-span-12", depthLevel > 2 ? "md:col-span-8" : "md:col-span-12")}>
                               {/* Focus Layer: Primary Suggestion */}
                               {primarySuggestion  && (
                                   <div className="space-y-4">
@@ -1870,23 +1988,23 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               {(secondarySuggestions.length > 0 || alternativeSuggestions.length > 0) && (
                                 <div className="mt-8 rounded-[28px] border border-zinc-100 bg-zinc-50 p-5 md:p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                   <div className="text-right">
-                                    <h4 className="text-sm md:text-base font-black text-zinc-900">{language === 'ar' ? 'تبي تبسطها أكثر أو تفتح العمق؟' : 'Simplify it or open the depth?'}</h4>
-                                    
+                                    <h4 className="text-sm md:text-base font-black text-zinc-900">{language === 'ar' ? 'تبي نفتح باب أعمق؟' : 'Open a deeper door?'}</h4>
+                                    <p className="mt-1 text-xs md:text-sm font-bold text-zinc-500">{language === 'ar' ? 'كل باب يفتح زاوية مختلفة، بهدوء وبدون زحمة أدوات.' : 'Each door opens a different angle without tool clutter.'}</p>
                                   </div>
-                                  <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-6 py-3 rounded-full bg-white border border-zinc-200 text-zinc-900 font-black text-xs md:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all">
-                                    {showExpertPaths ? (language === 'ar' ? 'إخفاء المختبر الكامل' : 'Hide full lab') : (language === 'ar' ? 'فتح المختبر الكامل' : 'Open full lab')}
+                                  <button type="button" onClick={() => setDepthLevel((level) => hasMoreDepth ? level + 1 : 0)} className="shrink-0 px-6 py-3 rounded-full bg-white border border-zinc-200 text-zinc-900 font-black text-xs md:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all">
+                                    {hasMoreDepth ? (language === 'ar' ? 'زد العمق' : 'Go deeper') : (language === 'ar' ? 'اكتفي بهذا الباب' : 'Stay with this door')}
                                   </button>
                                 </div>
                               )}
 
                               {/* Focus Layer: Secondary Options */}
-                              {showExpertPaths && secondarySuggestions.length > 0  && (
+                              {visibleSecondarySuggestions.length > 0  && (
                                   <div className="mt-8 pt-8 border-t border-zinc-100">
                                      <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest mb-4 px-2">
-                                        {language === 'ar' ? 'جرّب زاوية أخرى' : 'TRY ANOTHER ANGLE'}
+                                        {language === 'ar' ? 'أبواب أعمق' : 'DEEPER DOORS'}
                                      </h4>
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {secondarySuggestions.map((s) => {
+                                        {visibleSecondarySuggestions.map((s) => {
                                            const Icon = s.icon;
                                            return (
                                              <button
@@ -1916,13 +2034,13 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           </div>
 
                           {/* Alternative Paths */}
-                          {showExpertPaths && (
+                          {visibleAlternativeSuggestions.length > 0 && (
                           <div className="col-span-12 md:col-span-4 space-y-4">
                              <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest px-2">
-                                 {language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}
+                                 {language === 'ar' ? 'إذا تبي أكثر' : 'MORE IF NEEDED'}
                              </h4>
                              <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
-                                {alternativeSuggestions.map((s: any) => {
+                                {visibleAlternativeSuggestions.map((s: any) => {
                                    const Icon = s.icon;
                                    return (
                                        <button
@@ -2111,20 +2229,21 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                           <div className="rounded-[24px] md:rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
                             <div className="flex items-center justify-between gap-3">
                               <div className="text-right">
-                                <div className="font-black text-sm text-zinc-900">{language === 'ar' ? 'المسارات الإضافية' : 'Extra paths'}</div>
+                                <div className="font-black text-sm text-zinc-900">{language === 'ar' ? 'باب أعمق إذا احتجت' : 'A deeper door if needed'}</div>
+                                <p className="mt-1 text-[11px] font-bold text-zinc-500">{language === 'ar' ? 'نفتح زاوية ثانية، مو نفس الباب.' : 'We open a second angle, not the same door.'}</p>
                               </div>
-                              <button type="button" onClick={() => setShowExpertPaths(v => !v)} className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all">
-                                {showExpertPaths ? (language === 'ar' ? 'إخفاء' : 'Hide') : (language === 'ar' ? 'المختبر الكامل' : 'Full lab')}
+                              <button type="button" onClick={() => setDepthLevel((level) => hasMoreDepth ? level + 1 : 0)} className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all">
+                                {hasMoreDepth ? (language === 'ar' ? 'زد العمق' : 'Go deeper') : (language === 'ar' ? 'اكتفي' : 'Enough')}
                               </button>
                             </div>
                           </div>
                         )}
 
-                        {showExpertPaths && secondarySuggestions.length > 0  && (
+                        {visibleSecondarySuggestions.length > 0  && (
                           <div className="space-y-3">
-                             <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'أبعاد داعمة' : 'SUPPORTING'}</span>
+                             <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'أبواب أعمق' : 'DEEPER DOORS'}</span>
                              <div className="grid grid-cols-1 gap-2">
-                                {secondarySuggestions.map(s => {
+                                {visibleSecondarySuggestions.map(s => {
                                   const Icon = s.icon;
                                   return (
                                     <button 
@@ -2153,11 +2272,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         <div className="h-px bg-zinc-100 mx-4" />
 
                         {/* Mobile Alternative Paths */}
-                        {showExpertPaths && alternativeSuggestions.length > 0  && (
+                        {visibleAlternativeSuggestions.length > 0  && (
                            <div className="space-y-3">
-                              <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'أبواب إضافية' : 'MORE DOORS'}</span>
+                              <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'إذا تبي أكثر' : 'MORE IF NEEDED'}</span>
                               <div className="grid grid-cols-2 gap-2">
-                                 {alternativeSuggestions.map((s: any) => {
+                                 {visibleAlternativeSuggestions.map((s: any) => {
                                     const Icon = s.icon;
                                      return (
                                       <div 
@@ -2274,7 +2393,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       </div>
       </div>
 
-      {!hasSearched && (
+      {!hasSearched && (isHome || showInspiration) && (
         <>
           {/* Ephemeral Wisdom Feature (FOMO) */}
           <div className="mt-8">
