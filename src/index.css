@@ -2629,3 +2629,115 @@ body:not(.zen-idle)::after {
     padding-top: 76px !important;
   }
 }
+
+/* Tebyan Home 10000% polish — visual only, no feature logic changes */
+.tebyan-home-masterpiece {
+  isolation: isolate;
+}
+
+.tebyan-home-masterpiece::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 78% 8%, rgba(142, 122, 174, 0.13), transparent 28%),
+    radial-gradient(circle at 14% 24%, rgba(143, 169, 199, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.22), transparent 45%);
+}
+
+.tebyan-aurora-shell,
+.tebyan-gateway-stage,
+.tebyan-memory-card,
+.tebyan-daily-mission,
+.tebyan-fabric-shadow {
+  backdrop-filter: blur(22px) saturate(1.08);
+  -webkit-backdrop-filter: blur(22px) saturate(1.08);
+}
+
+.tebyan-aurora-shell::after,
+.tebyan-gateway-stage::after,
+.tebyan-daily-mission::after,
+.tebyan-fabric-shadow::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.62), rgba(255,255,255,0.06) 36%, rgba(142,122,174,0.06));
+  mix-blend-mode: soft-light;
+}
+
+.tebyan-entry-tile,
+.tebyan-primary-action,
+.tebyan-tool-tile,
+.tebyan-micro-tile {
+  will-change: transform, box-shadow;
+}
+
+.tebyan-entry-tile:hover,
+.tebyan-tool-tile:hover {
+  transform: translateY(-3px);
+}
+
+.tebyan-primary-action:hover {
+  transform: translateY(-1px);
+}
+
+.tebyan-memory-card {
+  background-image:
+    linear-gradient(135deg, rgba(255,255,255,0.92), rgba(248,245,239,0.72)),
+    radial-gradient(circle at 92% 18%, rgba(142,122,174,0.12), transparent 26%);
+}
+
+.tebyan-daily-mission {
+  position: relative;
+}
+
+.tebyan-daily-mission::before {
+  content: "";
+  position: absolute;
+  inset-inline: 22px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.85), transparent);
+}
+
+.tebyan-fabric-shadow svg path {
+  animation: tebyanFabricDash 18s linear infinite;
+}
+
+@keyframes tebyanFabricDash {
+  to { stroke-dashoffset: -120; }
+}
+
+@media (max-width: 768px) {
+  .tebyan-home-masterpiece {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .tebyan-aurora-shell,
+  .tebyan-gateway-stage,
+  .tebyan-daily-mission,
+  .tebyan-fabric-shadow {
+    border-radius: 28px;
+  }
+
+  .tebyan-entry-tile:hover,
+  .tebyan-tool-tile:hover,
+  .tebyan-primary-action:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tebyan-fabric-shadow svg path,
+  .tebyan-entry-tile,
+  .tebyan-tool-tile,
+  .tebyan-primary-action {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}
