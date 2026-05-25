@@ -1471,6 +1471,35 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
   const visibleSecondarySuggestions = progressiveDoors.slice(0, 2);
   const visibleAlternativeSuggestions = progressiveDoors.slice(2);
   const hasMoreDepth = depthLevel < (secondarySuggestions.length + alternativeSuggestions.length);
+  const lastVisibleDoor = progressiveDoors[progressiveDoors.length - 1] || null;
+  const depthMoment = useMemo(() => {
+    const moments = [
+      {
+        ar: { label: 'زد العمق', title: 'افتح زاوية جديدة', desc: 'نضيف باباً واحداً فقط، عشان تبقى الصورة هادئة.' },
+        en: { label: 'Go deeper', title: 'Open a new angle', desc: 'We add only one door so the view stays calm.' }
+      },
+      {
+        ar: { label: 'اكشف الزاوية المخفية', title: 'ظهرت زاوية ما كانت واضحة', desc: 'هذا الباب يفتح معنى مختلف، مو تكراراً للباب الأول.' },
+        en: { label: 'Reveal the hidden angle', title: 'A hidden angle appeared', desc: 'This door opens a different meaning, not a repeat.' }
+      },
+      {
+        ar: { label: 'اختبرها بقوة', title: 'حان وقت اختبار الفكرة', desc: 'نضغط الاحتمال شوي عشان نعرف قوته قبل القرار.' },
+        en: { label: 'Stress-test it', title: 'Time to test the idea', desc: 'We gently pressure the possibility before deciding.' }
+      },
+      {
+        ar: { label: 'حوّلها إلى خطوة', title: 'الوضوح صار أقرب للتنفيذ', desc: 'نقلل التفكير الزائد ونقربك من خطوة عملية.' },
+        en: { label: 'Turn it into a step', title: 'Clarity is becoming action', desc: 'We reduce overthinking and move toward a practical step.' }
+      },
+      {
+        ar: { label: 'افتح الأثر', title: 'نشوف امتداد القرار أو الفكرة', desc: 'هنا يبدأ تبيان يريك ما وراء اللحظة الحالية.' },
+        en: { label: 'Open the impact', title: 'See the wider impact', desc: 'Here Tebyan shows what lives beyond the current moment.' }
+      }
+    ];
+    return moments[Math.min(depthLevel, moments.length - 1)];
+  }, [depthLevel]);
+  const depthCtaText = hasMoreDepth
+    ? (language === 'ar' ? depthMoment.ar.label : depthMoment.en.label)
+    : (language === 'ar' ? 'اكتفي بهذا الباب' : 'Stay with this door');
 
   useEffect(() => {
     setDepthLevel(0);
@@ -1505,6 +1534,37 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       }
     ];
     return items[daySeed % items.length];
+  }, []);
+
+  const dailyWow = useMemo(() => {
+    const daySeed = Math.floor(Date.now() / 86400000);
+    const items = [
+      {
+        ar: 'اليوم جرّب تسأل: ما الشيء الصغير الذي لو رتبته تغيّر يومي؟',
+        en: 'Today ask: what small thing would change my day if I organized it?',
+        queryAr: 'ما الشيء الصغير الذي لو رتبته الآن يغير يومي للأفضل؟',
+        queryEn: 'What small thing would improve my day if I organized it now?'
+      },
+      {
+        ar: 'اليوم افتح باب: فكرة مؤجلة تستحق فرصة ثانية.',
+        en: 'Today open: a postponed idea that deserves a second chance.',
+        queryAr: 'عندي فكرة مؤجلة وأبي أعرف إذا تستحق فرصة ثانية',
+        queryEn: 'I have a postponed idea and want to know if it deserves a second chance'
+      },
+      {
+        ar: 'اليوم خل تبيان يكشف لك زاوية ما كنت شايفها.',
+        en: 'Today let Tebyan reveal an angle you were not seeing.',
+        queryAr: 'أبي زاوية جديدة لموضوع مأخذ من تفكيري',
+        queryEn: 'I want a new angle on something taking my attention'
+      },
+      {
+        ar: 'اليوم حوّل الحيرة إلى خطوة واحدة بس.',
+        en: 'Today turn hesitation into just one step.',
+        queryAr: 'أنا محتار وأبي خطوة واحدة واضحة أبدأ فيها',
+        queryEn: 'I am unsure and want one clear step to start with'
+      }
+    ];
+    return items[(daySeed + 2) % items.length];
   }, []);
 
   /* useEffect for typing indicator removed to prevent conflict with handleSubmit */
@@ -1992,9 +2052,34 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                     <p className="mt-1 text-xs md:text-sm font-bold text-zinc-500">{language === 'ar' ? 'كل باب يفتح زاوية مختلفة، بهدوء وبدون زحمة أدوات.' : 'Each door opens a different angle without tool clutter.'}</p>
                                   </div>
                                   <button type="button" onClick={() => setDepthLevel((level) => hasMoreDepth ? level + 1 : 0)} className="shrink-0 px-6 py-3 rounded-full bg-white border border-zinc-200 text-zinc-900 font-black text-xs md:text-sm shadow-sm hover:shadow-md active:scale-95 transition-all">
-                                    {hasMoreDepth ? (language === 'ar' ? 'زد العمق' : 'Go deeper') : (language === 'ar' ? 'اكتفي بهذا الباب' : 'Stay with this door')}
+                                    {depthCtaText}
                                   </button>
                                 </div>
+                              )}
+
+                              {depthLevel > 0 && lastVisibleDoor && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: 8 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  className="mt-4 rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 md:p-5 shadow-[0_14px_44px_rgba(24,34,49,0.05)]"
+                                  dir={language === 'ar' ? 'rtl' : 'ltr'}
+                                >
+                                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                    <div className="text-right">
+                                      <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">{language === 'ar' ? `العمق ${depthLevel}` : `Depth ${depthLevel}`}</p>
+                                      <h4 className="mt-1 text-base md:text-lg font-black text-[#182231]">{language === 'ar' ? depthMoment.ar.title : depthMoment.en.title}</h4>
+                                      <p className="mt-1 text-xs md:text-sm font-bold leading-relaxed text-[#64788D]">{lastVisibleDoor.desc || (language === 'ar' ? depthMoment.ar.desc : depthMoment.en.desc)}</p>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 justify-end">
+                                      {[0, 1, 2, 3, 4].map((step) => (
+                                        <span
+                                          key={`depth-dot-${step}`}
+                                          className={cn("h-2 rounded-full transition-all", step < depthLevel ? "w-6 bg-[#8E7AAE]" : "w-2 bg-[#D9DEE5]")}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                </motion.div>
                               )}
 
                               {/* Focus Layer: Secondary Options */}
@@ -2233,10 +2318,23 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                 <p className="mt-1 text-[11px] font-bold text-zinc-500">{language === 'ar' ? 'نفتح زاوية ثانية، مو نفس الباب.' : 'We open a second angle, not the same door.'}</p>
                               </div>
                               <button type="button" onClick={() => setDepthLevel((level) => hasMoreDepth ? level + 1 : 0)} className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all">
-                                {hasMoreDepth ? (language === 'ar' ? 'زد العمق' : 'Go deeper') : (language === 'ar' ? 'اكتفي' : 'Enough')}
+                                {depthCtaText}
                               </button>
                             </div>
                           </div>
+                        )}
+
+                        {depthLevel > 0 && lastVisibleDoor && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]"
+                            dir={language === 'ar' ? 'rtl' : 'ltr'}
+                          >
+                            <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">{language === 'ar' ? `العمق ${depthLevel}` : `Depth ${depthLevel}`}</p>
+                            <h4 className="mt-1 text-base font-black text-[#182231]">{language === 'ar' ? depthMoment.ar.title : depthMoment.en.title}</h4>
+                            <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#64788D]">{lastVisibleDoor.desc || (language === 'ar' ? depthMoment.ar.desc : depthMoment.en.desc)}</p>
+                          </motion.div>
                         )}
 
                         {visibleSecondarySuggestions.length > 0  && (
@@ -2350,6 +2448,41 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                     className="shrink-0 rounded-2xl bg-[#182231] px-5 py-3 text-xs md:text-sm font-black text-white shadow-[0_14px_30px_rgba(24,34,49,0.18)] transition-all hover:bg-black active:scale-[0.98]"
                   >
                     {language === 'ar' ? 'ادخل' : 'Enter'}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {!searchValue.trim() && isHome && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+                className="w-full rounded-[24px] border border-[#8FA9C7]/14 bg-[#FAF9F6]/72 p-3 md:p-4 shadow-[0_14px_45px_rgba(24,34,49,0.045)] backdrop-blur-xl"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 text-right">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#EEF2F6] text-[#64788D] border border-[#8FA9C7]/18 shrink-0">
+                      <Sparkles className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#64788D]">{language === 'ar' ? 'شيء جديد اليوم' : 'New today'}</p>
+                      <h3 className="text-sm md:text-base font-black text-[#182231]">{language === 'ar' ? dailyWow.ar : dailyWow.en}</h3>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextValue = language === 'ar' ? dailyWow.queryAr : dailyWow.queryEn;
+                      setSearchValue(nextValue);
+                      latestInputRef.current = nextValue;
+                      setQuery(nextValue);
+                      setSmartSuggestion('');
+                      handleSubmit(undefined, nextValue);
+                    }}
+                    className="shrink-0 rounded-2xl bg-white px-5 py-3 text-xs md:text-sm font-black text-[#465568] border border-[#8FA9C7]/18 shadow-sm transition-all hover:border-[#8E7AAE]/30 active:scale-[0.98]"
+                  >
+                    {language === 'ar' ? 'افتحها' : 'Open it'}
                   </button>
                 </div>
               </motion.div>
