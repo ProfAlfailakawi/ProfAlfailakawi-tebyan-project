@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
-import { detectGender, setActiveUser } from '../utils/genderHelper';
+import { resolveUserAddressing, setActiveUser, UserGender } from '../utils/genderHelper';
 
 interface UserProfile {
   email: string;
@@ -17,7 +17,7 @@ const AuthContext = createContext<{
   loading: boolean;
   authReady: boolean;
   userName: string;
-  userGender: 'male' | 'female' | 'neutral';
+  userGender: UserGender;
 }>({ 
   user: null, 
   profile: null, 
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
   
   const [userName, setUserName] = useState<string>('ضيف');
-  const [userGender, setUserGender] = useState<'male' | 'female' | 'neutral'>('neutral');
+  const [userGender, setUserGender] = useState<UserGender>('neutral');
 
   useEffect(() => {
     // We removed the aggressive 10s timeout here to avoid logging out users on slow PWA wakeups.
@@ -151,18 +151,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (user) {
-      const name = profile?.displayName || user.displayName || 'ضيف';
-      const cleanName = name && name !== 'New User' && name !== 'ضيف' ? name : '';
-      const finalName = cleanName || 'ضيف';
-      const gender = cleanName ? detectGender(cleanName) : 'neutral';
-      
-      setUserName(finalName);
-      setUserGender(gender);
-      setActiveUser(finalName, gender);
+      const addressing = resolveUserAddressing(profile?.displayName || user.displayName || 'ضيف');
+      setUserName(addressing.name);
+      setUserGender(addressing.gender);
+      setActiveUser(addressing.name, addressing.gender);
     } else {
-      setUserName('ضيف');
-      setUserGender('neutral');
-      setActiveUser('ضيف', 'neutral');
+      const guestAddressing = resolveUserAddressing('ضيف', true);
+      setUserName(guestAddressing.name);
+      setUserGender(guestAddressing.gender);
+      setActiveUser(guestAddressing.name, guestAddressing.gender);
     }
   }, [user, profile]);
 

@@ -1,5 +1,5 @@
 
-import { getActiveUser } from "../utils/genderHelper";
+import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
 
 /**
  * AI Proxy for Client-side usage.
@@ -18,19 +18,15 @@ export async function proxyGenerateContent(params: {
   const modifiedParams = { ...params };
   modifiedParams.config = modifiedParams.config || {};
 
-  // Inject active user information (gender dialect and custom white dialect)
+  // Inject active user information through the unified site-wide addressing layer.
   const activeUser = getActiveUser();
-  const userName = activeUser.name || "ضيف";
-  const userGender = activeUser.gender || "neutral";
+  const addressing = resolveUserAddressing(activeUser.name, activeUser.name === 'ضيف');
 
   const arabicGenderInstruction = `
 [توجيه أسلوب الرد النهائي الحازم]:
 1. نوع اللغة: يجب أن تتحدث وتجيب وتصيغ كل شيء كلياً باللغة العربية العامة السهلة، الناعمة والبسيطة جداً، الودية جداً والمفهومة للجميع (اللهجة البيضاء المقروءة اللطيفة، القريبة من لغة الحديث اليومي البسيط والودي) وتجنب تماماً الكلمات والمصطلحات المعقدة أو الرسمية والجامدة جداً.
-2. صيغة المخاطبة: اسم المستخدم الحالي هو "${userName}" وجنسه هو [${userGender}].
-- إذا كان جنس المستخدم [female] (أنثى)، فيجب مخاطبتها بصيغة المؤنث الحتمي اللطيف طوال الرد تماماً دون أي تقصير مثل: (أنتِ، تفضلي، شفتي، سويتي، وش رأيكِ، بطلة، منورة).
-- إذا كان جنس المستخدم [male] (ذكر)، فيجب مخاطبته بصيغة المذكر الودي الحتمي طوال الرد مثل: (أنت، تفضل، شفت، سويت، وش رأيك، بطل، منور).
-- إذا كان جنس المستخدم [neutral] (غير محدد أو ضيف)، استخدم صيغة عامة ودية ناعمة محايدة وصالحة للجميع.
-3. الألوان والرموز: استخدم الإيموجيات اللطيفة لتلوين الحديث وبث السعادة والسهولة والراحة في قلب المستخدم وجعل الإجابة رائعة ولذيذة القراءة ومبسطة.
+${buildUserAddressingInstruction(addressing)}
+3. الألوان والرموز: استخدم الإيموجيات اللطيفة باعتدال لتلوين الحديث وبث السعادة والسهولة والراحة دون مبالغة.
 `;
 
   modifiedParams.config.systemInstruction = modifiedParams.config.systemInstruction

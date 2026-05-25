@@ -12,7 +12,7 @@ import { perfMonitor } from "../lib/performance";
 import { proxyGenerateContent } from "../lib/aiProxy";
 import { db } from "../lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { getActiveUser } from "../utils/genderHelper";
+import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
 
 export const ai: any = {
   models: {
@@ -43,22 +43,18 @@ export const ai: any = {
 const aiCache = new Map<string, any>();
 const originalGenerateContent = ai.models.generateContent.bind(ai.models);
 ai.models.generateContent = async (params: any & { skipCache?: boolean }) => {
-  // Get active user data (gender, name) for dialect & addressing customization
+  // Get active user data through the unified site-wide addressing layer.
   const activeUser = getActiveUser();
-  const userName = activeUser.name || "ضيف";
-  const userGender = activeUser.gender || "neutral";
+  const addressing = resolveUserAddressing(activeUser.name, activeUser.name === 'ضيف');
 
   let tweakedSystemInstruction = params.config?.systemInstruction || "";
   
-  // Rule for standard informal white dialect and gender addressing
+  // Rule for standard informal white dialect and site-wide gender-safe addressing.
   const arabicGenderInstruction = `
 [توجيه أسلوب الرد النهائي الحازم]:
 1. نوع اللغة: يجب أن تتحدث وتجيب وتصيغ كل شيء كلياً باللغة العربية العامة السهلة، الناعمة والبسيطة جداً، الودية جداً والمفهومة للجميع (اللهجة البيضاء المقروءة اللطيفة، القريبة من لغة الحديث اليومي البسيط والودي) وتجنب تماماً الكلمات والمصطلحات المعقدة أو الرسمية والجامدة جداً.
-2. صيغة المخاطبة: اسم المستخدم الحالي هو "${userName}" وجنسه هو [${userGender}].
-- إذا كان جنس المستخدم [female] (أنثى)، فيجب مخاطبتها بصيغة المؤنث الحتمي اللطيف طوال الرد تماماً دون أي تقصير مثل: (أنتِ، تفضلي، شفتي، سويتي، وش رأيكِ، بطلة، منورة).
-- إذا كان جنس المستخدم [male] (ذكر)، فيجب مخاطبته بصيغة المذكر الودي الحتمي طوال الرد مثل: (أنت، تفضل، شفت، سويت، وش رأيك، بطل، منور).
-- إذا كان جنس المستخدم [neutral] (غير محدد أو ضيف)، استخدم صيغة عامة ودية ناعمة محايدة وصالحة للجميع.
-3. الألوان والرموز: استخدم الإيموجيات اللطيفة لتلوين الحديث وبث السعادة والسهولة والراحة في قلب المستخدم وجعل الإجابة رائعة ولذيذة القراءة ومبسطة.
+${buildUserAddressingInstruction(addressing)}
+3. الألوان والرموز: استخدم الإيموجيات اللطيفة باعتدال لتلوين الحديث وبث السعادة والسهولة والراحة دون مبالغة.
 `;
 
   if (tweakedSystemInstruction) {

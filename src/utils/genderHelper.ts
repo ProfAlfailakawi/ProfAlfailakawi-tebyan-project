@@ -36,6 +36,110 @@ const FAMOUS_MALE_NAMES = new Set([
   'ماهر', 'زهير', 'سامي', 'فادي', 'جمال', 'أنيس', 'انيس', 'وجدي', 'منير', 'رامي', 'فايز', 'تركي', 'سلمان'
 ]);
 
+
+export type UserGender = 'male' | 'female' | 'neutral';
+
+export interface UserAddressingProfile {
+  name: string;
+  displayName: string;
+  firstName: string;
+  gender: UserGender;
+  shouldUseName: boolean;
+  isGuest: boolean;
+  reason: 'guest' | 'empty' | 'generic' | 'nickname' | 'unknown-gender' | 'personal-name';
+}
+
+const GENERIC_DISPLAY_NAMES = new Set([
+  'ضيف', 'زائر', 'مستخدم', 'مستخدم جديد', 'new user', 'user', 'guest', 'visitor', 'anonymous', 'anon',
+  'admin', 'administrator', 'test', 'tester', 'demo', 'null', 'undefined', 'unknown', 'unknown user',
+  'student', 'teacher', 'client', 'customer', 'member', 'عضو', 'طالب', 'طالبة', 'معلم', 'معلمة', 'عميل',
+  'حساب', 'حسابي', 'صديق', 'صديقة', 'بدون اسم', 'مفكر مجهول', 'anonymous user'
+]);
+
+const NICKNAME_PATTERNS = [
+  /^@/, /\d/, /[_\-.#]/, /^(abu|abo|umm|om)[_\-.]/i, /^user\w*$/i, /^guest\w*$/i,
+  /^test\w*$/i, /^admin\w*$/i, /^[a-z]{1,2}$/i, /^[\u0600-\u06FF]{1,2}$/
+];
+
+function normalizeForClassification(value: string): string {
+  return normalizeArabicString(value)
+    .replace(/[ًٌٍَُِّْـ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function extractFirstUsableName(displayName: string): string {
+  const clean = displayName.trim().replace(/^@+/, '').replace(/\s+/g, ' ');
+  const parts = clean.split(' ').filter(Boolean);
+  if (!parts.length) return '';
+  const first = parts[0];
+  const familyPrefixes = new Set(['د', 'د.', 'dr', 'dr.', 'prof', 'prof.', 'أ', 'ا', 'أ.', 'ا.']);
+  if (familyPrefixes.has(first.toLowerCase()) && parts[1]) return parts[1];
+  return first;
+}
+
+export function isGenericOrNicknameName(displayName: string | null | undefined): boolean {
+  if (!displayName) return true;
+  const clean = displayName.trim();
+  if (!clean) return true;
+  const normalized = normalizeForClassification(clean);
+  if (GENERIC_DISPLAY_NAMES.has(clean.toLowerCase()) || GENERIC_DISPLAY_NAMES.has(normalized)) return true;
+  if (NICKNAME_PATTERNS.some((pattern) => pattern.test(clean))) return true;
+
+  const firstName = extractFirstUsableName(clean);
+  if (!firstName) return true;
+  if (GENERIC_DISPLAY_NAMES.has(firstName.toLowerCase()) || GENERIC_DISPLAY_NAMES.has(normalizeForClassification(firstName))) return true;
+  if (NICKNAME_PATTERNS.some((pattern) => pattern.test(firstName))) return true;
+
+  // Mixed handles without spaces are treated as nicknames unless they match a known name later.
+  if (/^[a-z0-9_\-.#@]+$/i.test(clean) && clean.split(/\s+/).length === 1) {
+    const gender = detectGender(clean);
+    return gender === 'neutral';
+  }
+
+  return false;
+}
+
+export function resolveUserAddressing(displayName: string | null | undefined, isGuest = false): UserAddressingProfile {
+  const rawName = (displayName || '').trim();
+  if (isGuest) {
+    return { name: 'ضيف', displayName: 'ضيف', firstName: '', gender: 'neutral', shouldUseName: false, isGuest: true, reason: 'guest' };
+  }
+  if (!rawName || rawName === 'New User') {
+    return { name: 'ضيف', displayName: rawName || 'ضيف', firstName: '', gender: 'neutral', shouldUseName: false, isGuest: false, reason: 'empty' };
+  }
+
+  const firstName = extractFirstUsableName(rawName);
+  const gender = detectGender(firstName || rawName);
+  const looksGeneric = isGenericOrNicknameName(rawName);
+
+  if (looksGeneric) {
+    return { name: 'ضيف', displayName: rawName, firstName, gender: 'neutral', shouldUseName: false, isGuest: false, reason: 'generic' };
+  }
+  if (gender === 'neutral') {
+    return { name: 'ضيف', displayName: rawName, firstName, gender: 'neutral', shouldUseName: false, isGuest: false, reason: 'unknown-gender' };
+  }
+
+  return { name: firstName || rawName, displayName: rawName, firstName: firstName || rawName, gender, shouldUseName: true, isGuest: false, reason: 'personal-name' };
+}
+
+export function buildUserAddressingInstruction(profile: UserAddressingProfile): string {
+  const userNamePart = profile.shouldUseName ? `الاسم المناسب للمخاطبة هو "${profile.name}".` : 'لا تستخدم اسم المستخدم في المخاطبة لأن الاسم غير شخصي أو غير واضح أو المستخدم ضيف.';
+  const mode = profile.gender === 'female' ? 'female' : profile.gender === 'male' ? 'male' : 'neutral';
+
+  return `
+[قاعدة المخاطبة الموحدة على كامل تبيان]:
+- حالة المخاطبة الحالية: ${mode}. ${userNamePart}
+- هذه القاعدة هي المرجع النهائي وتنسخ أي تعليمات سابقة تطلب الحياد المطلق أو تمنع المخاطبة المباشرة عندما يكون الاسم والجنس واضحين.
+- إذا كانت الحالة female: خاطب المستخدم بصيغة المؤنث اللطيفة في كل الرد، مثل: أنتِ، لكِ، تفضلين، لاحظتِ، يمكنكِ.
+- إذا كانت الحالة male: خاطب المستخدم بصيغة المذكر اللطيفة في كل الرد، مثل: أنت، لك، تفضل، لاحظت، يمكنك.
+- إذا كانت الحالة neutral: استخدم صياغة عامة ومحايدة لا تكشف جنساً ولا تعتمد على الاسم، مثل: يمكن البدء، يفضّل، الخطوة المناسبة، هذا يساعد على.
+- لا تستنتج الجنس من لقب أو نك نيم أو اسم عام. لا تستخدم الاسم إلا إذا كان اسماً شخصياً واضحاً.
+- حافظ على نفس القاعدة في العناوين، الشرح، الأسئلة، الملخصات، والتوصيات النهائية.
+`;
+}
+
 /**
  * Normalizes an Arabic string for better matching. Removes diacritics, tanween,
  * and normalizes letters like Alef and Te-Marbouta where appropriate.
@@ -217,10 +321,10 @@ export const whiteDialectPhrases = {
   }
 };
 
-let activeUserGender: 'male' | 'female' | 'neutral' = 'neutral';
+let activeUserGender: UserGender = 'neutral';
 let activeUserName: string = '';
 
-export function setActiveUser(name: string, gender: 'male' | 'female' | 'neutral') {
+export function setActiveUser(name: string, gender: UserGender) {
   activeUserName = name;
   activeUserGender = gender;
   try {
