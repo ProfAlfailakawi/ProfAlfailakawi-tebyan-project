@@ -1112,11 +1112,11 @@ const AppContent: React.FC = () => {
 
       {(activeTab === 'home' || activeTab === 'discover') && (
         <>
-          <TheOrb 
+          {false && <TheOrb 
             language={language}
             onTap={() => setShowGlobalCommand(true)}
             onDragUp={() => setShowVoiceCanvas(true)}
-          />
+          />}
           <MessagesFloatingButton />
         </>
       )}
@@ -1135,7 +1135,7 @@ const AppContent: React.FC = () => {
         handleTabChange={handleTabChange}
       />
 
-      {(activeTab === 'home' || activeTab === 'discover') && (
+      {false && (activeTab === 'home' || activeTab === 'discover') && (
         <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
       )}
 
@@ -1221,4 +1221,3 @@ const App = () => (
 );
 
 export default App;
-

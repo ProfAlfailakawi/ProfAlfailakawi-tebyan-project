@@ -22,6 +22,8 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
     const [activeDecisionPurpose, setActiveDecisionPurpose] = useState('decide');
     const [showDecisionTools, setShowDecisionTools] = useState(true);
     const [showPurposePicker, setShowPurposePicker] = useState(true);
+    const [showFullLab, setShowFullLab] = useState(false);
+    const [depthIndex, setDepthIndex] = useState(0);
     const [dilemmaHistory, setDilemmaHistory] = useState<string[]>([]);
     const lastSubmittedDilemma = useRef(initialValue);
 
@@ -91,9 +93,69 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         setActiveDecisionPurpose(purposeId);
         setShowDecisionTools(true);
         setShowPurposePicker(false);
+        setShowFullLab(purposeId === 'all');
+        setDepthIndex(0);
     };
 
     const activePurpose = decisionPurposes.find(p => p.id === activeDecisionPurpose) || decisionPurposes[0];
+    const toolById = (id: string) => tools.find(tool => tool.id === id) || tools[0];
+    const iconTone = (bgColor: string) => bgColor.includes('text-') ? '' : 'text-white';
+    const firstSceneByPurpose: Record<string, string> = {
+        decide: 'decision',
+        risk: 'collapse',
+        voices: 'council',
+        future: 'butterfly',
+        all: 'decision'
+    };
+    const firstSceneId = firstSceneByPurpose[activeDecisionPurpose] || 'decision';
+    const decisionScenes = [
+        {
+            id: firstSceneId,
+            eyebrow: { ar: 'النبضة الأولى', en: 'First pulse' },
+            title: {
+                ar: activeDecisionPurpose === 'risk' ? 'خلّنا نكسر القرار قبل الواقع' : activeDecisionPurpose === 'voices' ? 'خلّنا نسمع العقول حوله' : activeDecisionPurpose === 'future' ? 'خلّنا نشوف أثره البعيد' : 'خلّنا نحسمه بهدوء',
+                en: activeDecisionPurpose === 'risk' ? 'Let us break it before reality does' : activeDecisionPurpose === 'voices' ? 'Let us hear the minds around it' : activeDecisionPurpose === 'future' ? 'Let us see its long shadow' : 'Let us decide it calmly'
+            },
+            body: {
+                ar: 'تبيان لا يعرض لك الأدوات الآن؛ يفتح الزاوية الأنسب فقط حسب مقصدك.',
+                en: 'Tebyan will not show the tools now; it opens only the best angle for your intent.'
+            },
+            cta: { ar: 'ابدأ هذه الزاوية', en: 'Start this angle' }
+        },
+        {
+            id: activeDecisionPurpose === 'future' ? 'capsule' : 'doubt',
+            eyebrow: { ar: 'العمق الثاني', en: 'Second depth' },
+            title: { ar: 'بقيت زاوية لم نفحصها', en: 'One angle remains unchecked' },
+            body: {
+                ar: activeDecisionPurpose === 'future' ? 'نختم القرار في رسالة مستقبلية تكشف كيف سيبدو بعد سنة.' : 'نقيس اليقين والشك حتى لا يبدو القرار أوضح مما هو عليه.',
+                en: activeDecisionPurpose === 'future' ? 'Seal the decision into a future message that shows how it may look in a year.' : 'Measure certainty and doubt so the decision does not look clearer than it is.'
+            },
+            cta: { ar: 'زد العمق', en: 'Go deeper' }
+        },
+        {
+            id: activeDecisionPurpose === 'voices' ? 'debate' : 'hidden',
+            eyebrow: { ar: 'الزاوية المخفية', en: 'Hidden angle' },
+            title: { ar: 'فيه شيء ساكت في القرار', en: 'Something quiet is inside the decision' },
+            body: {
+                ar: activeDecisionPurpose === 'voices' ? 'نضع أقوى حجة مع وأقوى حجة ضد، ثم نطلب حكماً منصفاً.' : 'نكشف أصحاب المصلحة، النفوذ، والمخاطر التي لا تظهر في أول قراءة.',
+                en: activeDecisionPurpose === 'voices' ? 'We place the strongest case for and against, then ask for a fair judgment.' : 'Reveal stakeholders, influence, and risks that do not appear on first reading.'
+            },
+            cta: { ar: 'افتح الزاوية', en: 'Open the angle' }
+        },
+        {
+            id: activeDecisionPurpose === 'risk' ? 'vault' : 'consequences',
+            eyebrow: { ar: 'الصدمة النافعة', en: 'Useful shock' },
+            title: { ar: 'اختبار أخير قبل الحكم', en: 'One last test before judgment' },
+            body: {
+                ar: activeDecisionPurpose === 'risk' ? 'مرآة قاسية تكشف أين قد تخدع نفسك قبل أن تدفع الثمن.' : 'نرى موجات العواقب: ماذا يحدث أولاً، ثم ماذا يحدث بعد ذلك.',
+                en: activeDecisionPurpose === 'risk' ? 'A hard mirror that shows where you may fool yourself before paying the price.' : 'See consequence waves: what happens first, then what follows.'
+            },
+            cta: { ar: 'اختبر القرار', en: 'Test the decision' }
+        }
+    ];
+    const activeScene = decisionScenes[Math.min(depthIndex, decisionScenes.length - 1)];
+    const activeSceneTool = toolById(activeScene.id);
+    const completedSceneIds = decisionScenes.slice(0, depthIndex).map(scene => scene.id);
 
     const runAnalysis = async (tool: AnalysisTool) => {
         const trimmedDilemma = dilemma.trim();
@@ -241,14 +303,28 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
 
            
 
-           <div className="bg-[#FAF9F6]/92 border border-[#8FA9C7]/15 rounded-[28px] md:rounded-[32px] p-4 md:p-6 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between gap-4 flex-wrap">
+           <div className="relative overflow-hidden bg-[#FAF9F6]/94 border border-[#8FA9C7]/15 rounded-[28px] md:rounded-[36px] p-4 md:p-7 space-y-5 shadow-[0_24px_70px_rgba(24,34,49,0.06)]">
+              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_10%,rgba(142,122,174,0.14),transparent_28%),radial-gradient(circle_at_88%_28%,rgba(143,169,199,0.18),transparent_30%)]" />
+              <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
                 <div>
-                  <h2 className="text-xl font-black text-[#182231]">{language === 'ar' ? 'ماذا تريد من القرار؟' : 'What do you need from this decision?'}</h2>
-                  <p className="text-sm text-[#64788D] font-bold mt-1">{language === 'ar' ? 'اختر مقصدك؛ الغرفة تقرّب الأدوات المناسبة فقط، وكل الأدوات باقية.' : 'Choose your intent; the room brings the right tools closer, while every tool remains available.'}</p>
+                  <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#8E7AAE]">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
+                  <h2 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">{language === 'ar' ? 'تبيان يفتح لك الزاوية المناسبة فقط' : 'Tebyan opens only the right angle'}</h2>
+                  <p className="text-sm text-[#64788D] font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، اضغط زد العمق. وإذا صرت محترفاً، افتح المختبر الكامل.' : 'Need more depth? Go deeper. When you are ready, open the full lab.'}</p>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setShowFullLab(v => !v)}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-black transition-all active:scale-95",
+                    showFullLab ? "bg-[#182231] text-white border-[#182231] shadow-lg" : "bg-white/88 text-[#6E5F8E] border-[#8E7AAE]/18 hover:border-[#8E7AAE]/35"
+                  )}
+                >
+                  <LayoutGrid className="w-4 h-4" />
+                  {showFullLab ? (language === 'ar' ? 'إخفاء المختبر' : 'Hide lab') : (language === 'ar' ? 'المختبر الكامل' : 'Full lab')}
+                </button>
               </div>
-              <div className="space-y-3">
+
+              <div className="relative z-10 space-y-3">
                 <button
                   type="button"
                   onClick={() => setShowPurposePicker(v => !v)}
@@ -265,7 +341,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 pt-1">
                         {decisionPurposes.map(purpose => (
-                          <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-[#F7F5F2] text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300")}>
+                          <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-white/78 text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300")}>
                             <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
                             <div className={cn("text-[11px] leading-relaxed font-bold", activeDecisionPurpose === purpose.id ? "text-white/70" : "text-[#7C8796]")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
                           </button>
@@ -275,25 +351,104 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                   )}
                 </AnimatePresence>
               </div>
-              {showDecisionTools && (
-              <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
+
+              {!showFullLab && (
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-4 md:gap-5">
+                  <motion.div
+                    key={`${activeScene.id}-${depthIndex}-${activeDecisionPurpose}`}
+                    initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className="relative overflow-hidden rounded-[28px] md:rounded-[34px] border border-[#8E7AAE]/16 bg-white/92 p-5 md:p-7 shadow-[0_18px_55px_rgba(24,34,49,0.07)]"
+                  >
+                    <div className="absolute -top-20 -left-16 h-52 w-52 rounded-full bg-[#D8CEEA]/35 blur-3xl" />
+                    <div className="relative z-10 flex flex-col h-full">
+                      <div className="flex items-start gap-4">
+                        <div className={cn("w-14 h-14 md:w-16 md:h-16 rounded-[22px] flex items-center justify-center shrink-0 shadow-sm", activeSceneTool.bgColor)}>
+                          <activeSceneTool.icon className={cn("w-7 h-7 md:w-8 md:h-8", iconTone(activeSceneTool.bgColor))} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black tracking-[0.24em] uppercase text-[#8E7AAE]">{language === 'ar' ? activeScene.eyebrow.ar : activeScene.eyebrow.en}</p>
+                          <h3 className="mt-1 text-2xl md:text-4xl font-black leading-tight text-[#182231]">{language === 'ar' ? activeScene.title.ar : activeScene.title.en}</h3>
+                          <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-[#64788D]">{language === 'ar' ? activeScene.body.ar : activeScene.body.en}</p>
+                        </div>
+                      </div>
+                      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                        <button
+                          type="button"
+                          onClick={() => runAnalysis(activeSceneTool)}
+                          disabled={isLoading}
+                          className="flex-1 rounded-2xl bg-[#182231] px-6 py-4 text-sm font-black text-white shadow-[0_16px_36px_rgba(24,34,49,0.22)] transition-all hover:bg-black active:scale-[0.98] disabled:opacity-60"
+                        >
+                          {language === 'ar' ? activeScene.cta.ar : activeScene.cta.en}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDepthIndex(i => Math.min(i + 1, decisionScenes.length - 1))}
+                          disabled={depthIndex >= decisionScenes.length - 1}
+                          className="rounded-2xl border border-[#8FA9C7]/22 bg-[#F7F5F2] px-5 py-4 text-sm font-black text-[#6E5F8E] transition-all hover:bg-white active:scale-[0.98] disabled:opacity-40"
+                        >
+                          {language === 'ar' ? 'زد العمق' : 'Go deeper'}
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <div className="rounded-[28px] border border-[#8FA9C7]/14 bg-[#F7F5F2]/82 p-4 md:p-5">
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <div>
+                        <p className="text-[10px] font-black tracking-[0.24em] uppercase text-[#7C8796]">{language === 'ar' ? 'تسلسل الجلسة' : 'Session sequence'}</p>
+                        <h4 className="text-lg font-black text-[#182231]">{language === 'ar' ? 'كل مرة باب واحد فقط' : 'One doorway at a time'}</h4>
+                      </div>
+                      <Sparkles className="w-5 h-5 text-[#8E7AAE]" />
+                    </div>
+                    <div className="space-y-2">
+                      {decisionScenes.map((scene, index) => {
+                        const sceneTool = toolById(scene.id);
+                        const isActive = index === depthIndex;
+                        const isDone = completedSceneIds.includes(scene.id);
+                        return (
+                          <button
+                            key={`${scene.id}-${index}`}
+                            type="button"
+                            onClick={() => setDepthIndex(index)}
+                            className={cn(
+                              "w-full flex items-center gap-3 rounded-2xl border p-3 text-right transition-all active:scale-[0.99]",
+                              isActive ? "bg-white border-[#8E7AAE]/32 shadow-sm" : "bg-white/54 border-[#8FA9C7]/12 hover:bg-white"
+                            )}
+                          >
+                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isDone ? "bg-[#EEF4F1] text-[#5F837A]" : isActive ? "bg-[#8E7AAE] text-white" : "bg-[#EEF2F6] text-[#7C8796]")}>
+                              <sceneTool.icon className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[10px] font-black text-[#8E7AAE]">{language === 'ar' ? scene.eyebrow.ar : scene.eyebrow.en}</p>
+                              <p className="text-sm font-black text-[#182231] truncate">{language === 'ar' ? scene.title.ar : scene.title.en}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {showFullLab && (
+              <div className="relative z-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4">
                 {visibleDecisionTools.map(tool => (
-                    <button 
-                      key={tool.id} 
+                    <button
+                      key={tool.id}
                       onClick={() => runAnalysis(tool)}
                       disabled={isLoading}
                       title={language === 'ar' ? tool.hint?.ar : tool.hint?.en}
                       className={cn(
-                          "group relative flex flex-col items-center justify-center gap-1 md:gap-4 p-2 md:p-5 rounded-[16px] md:rounded-[28px] tebyan-tool-card bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden min-h-[96px] md:min-h-0",
+                          "group relative flex flex-col items-center justify-center gap-2 md:gap-4 p-3 md:p-5 rounded-[18px] md:rounded-[28px] tebyan-tool-card bg-white/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden min-h-[116px]",
                           !dilemma && "opacity-60 grayscale-[0.5]"
                       )}
                     >
                         <div className={cn("tebyan-tool-icon w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[20px] flex items-center justify-center shadow-sm group-hover:scale-[1.03] transition-transform duration-500", tool.bgColor)}>
-                          <tool.icon className="w-5 h-5 md:w-7 md:h-7" />
+                          <tool.icon className={cn("w-5 h-5 md:w-7 md:h-7", iconTone(tool.bgColor))} />
                         </div>
-                        <span className="font-extrabold text-center text-[9.5px] sm:text-[10px] md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
+                        <span className="font-extrabold text-center text-[10px] md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
                         <p className="hidden md:block text-[10px] md:text-[11px] text-[#7C8796] font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
-                        <div className="absolute top-4 right-4 w-1.5 h-1.5 rounded-full bg-zinc-200 group-hover:bg-[#EEF4F1]0 transition-colors"></div>
                     </button>
                 ))}
               </div>

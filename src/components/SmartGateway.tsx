@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon, Home, Eye, CheckCircle2 } from 'lucide-react';
+import { Search, Sparkles, MessageCircleQuestion, BrainCircuit, Gamepad2, ArrowLeft, Lightbulb, Zap, Route, Rocket, Activity, BarChart3, Network, Hourglass, ClipboardCheck, Command, X, LibraryBig, Lock, Box, Waves, ScrollText, Compass, Moon, Home, Eye, CheckCircle2, LayoutGrid } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
@@ -98,6 +98,91 @@ interface SmartGatewayProps {
   tabs: any[];
   mood?: string;
 }
+
+type JourneyProfile = {
+  id: string;
+  title: { ar: string; en: string };
+  promise: { ar: string; en: string };
+  firstDoor: { ar: string; en: string };
+  deepen: { ar: string; en: string };
+  accent: string;
+  icon: any;
+};
+
+const pickJourneyProfile = (raw: string, fallbackId?: string): JourneyProfile => {
+  const q = (raw || '').toLowerCase();
+  const has = (...words: string[]) => words.some(word => q.includes(word));
+
+  if (has('قرار', 'اختار', 'احسم', 'حيرة', 'محتار', 'مصيري', 'decision', 'choose', 'decide') || fallbackId === 'decisionroom') {
+    return {
+      id: 'decision',
+      title: { ar: 'رحلة قرار', en: 'Decision journey' },
+      promise: { ar: 'نحول الحيرة إلى باب واحد واضح، ثم نزيد العمق فقط إذا احتجت.', en: 'We turn hesitation into one clear doorway, then deepen only if needed.' },
+      firstDoor: { ar: 'افتح أول باب للحسم', en: 'Open the first decision doorway' },
+      deepen: { ar: 'بعدها نقدر نكشف المخاطر أو المستقبل.', en: 'After that, we can reveal risks or the future.' },
+      accent: '#8E7AAE',
+      icon: Lock
+    };
+  }
+
+  if (has('فكرة', 'ابتكار', 'مشروع', 'تصميم', 'إبداع', 'creative', 'idea', 'project', 'design') || fallbackId === 'creativelab') {
+    return {
+      id: 'idea',
+      title: { ar: 'رحلة فكرة', en: 'Idea journey' },
+      promise: { ar: 'نأخذ الفكرة الخام ونفتح لها أول زاوية قابلة للتطوير.', en: 'We take the raw idea and open the first buildable angle.' },
+      firstDoor: { ar: 'ابدأ تشكيل الفكرة', en: 'Start shaping the idea' },
+      deepen: { ar: 'بعدها نقدر نحولها لخطة أو نختبرها.', en: 'Then we can turn it into a plan or test it.' },
+      accent: '#C8A9CB',
+      icon: Lightbulb
+    };
+  }
+
+  if (has('خطة', 'خطوات', 'تنفيذ', 'هدف', 'roadmap', 'plan', 'execute', 'goal') || fallbackId === 'roadmap') {
+    return {
+      id: 'execution',
+      title: { ar: 'رحلة تنفيذ', en: 'Execution journey' },
+      promise: { ar: 'نرتب الفوضى إلى خطوة أولى، ثم مسار قابل للمتابعة.', en: 'We turn the mess into a first step, then a trackable path.' },
+      firstDoor: { ar: 'حوّلها إلى خطوة عملية', en: 'Turn it into an action step' },
+      deepen: { ar: 'بعدها نقدر نقيس التقدم أو نرسم الطريق.', en: 'Then we can measure progress or map the road.' },
+      accent: '#8FA9C7',
+      icon: Route
+    };
+  }
+
+  if (has('خلاف', 'نزاع', 'غضب', 'توتر', 'صراع', 'مشكلة', 'conflict', 'angry', 'fight', 'tension') || fallbackId === 'qawlfasl') {
+    return {
+      id: 'conflict',
+      title: { ar: 'رحلة موقف', en: 'Situation journey' },
+      promise: { ar: 'نهدئ الضجيج ونفتح أول باب لفهم الموقف والتصرف بذكاء.', en: 'We quiet the noise and open the first doorway to understand and act wisely.' },
+      firstDoor: { ar: 'افتح باب التصرف الصحيح', en: 'Open the right response doorway' },
+      deepen: { ar: 'بعدها نقدر نحاكي الحوار أو نسمع زوايا مختلفة.', en: 'Then we can simulate the dialogue or hear different angles.' },
+      accent: '#A8C3BD',
+      icon: MessageCircleQuestion
+    };
+  }
+
+  if (has('مستقبل', 'توقع', 'زمن', 'مخاطر', 'سيناريو', 'future', 'risk', 'scenario') || fallbackId === 'simulation') {
+    return {
+      id: 'future',
+      title: { ar: 'رحلة مستقبل', en: 'Future journey' },
+      promise: { ar: 'نفتح لك أول مشهد لما قد يحدث، بدون إغراقك بكل المختبر.', en: 'We open the first scene of what may happen, without flooding you with the whole lab.' },
+      firstDoor: { ar: 'شاهد أول سيناريو', en: 'See the first scenario' },
+      deepen: { ar: 'بعدها نقدر نختبر القرار بقسوة أكبر.', en: 'Then we can stress-test it harder.' },
+      accent: '#B7A7C7',
+      icon: Hourglass
+    };
+  }
+
+  return {
+    id: 'understanding',
+    title: { ar: 'رحلة فهم', en: 'Understanding journey' },
+    promise: { ar: 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبته.', en: 'We begin with one clear understanding, then open depth only when you ask.' },
+    firstDoor: { ar: 'افتح باب الفهم', en: 'Open the understanding doorway' },
+    deepen: { ar: 'بعدها نقدر نحول الفهم إلى قرار أو خطة.', en: 'Then we can turn understanding into a decision or plan.' },
+    accent: '#7C8796',
+    icon: BrainCircuit
+  };
+};
 
 const getMoodTypography = (mood: string) => {
   switch (mood) {
@@ -1226,36 +1311,67 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     };
   }, [suggestions]);
 
+  const journeyProfile = useMemo(() => pickJourneyProfile(query || searchValue, primarySuggestion?.id), [query, searchValue, primarySuggestion?.id]);
+
+  const dailyDiscovery = useMemo(() => {
+    const daySeed = Math.floor(Date.now() / 86400000);
+    const items = [
+      {
+        ar: 'اختبر قراراً صغيراً كأنه قرار مصيري',
+        en: 'Test a small decision like it matters',
+        queryAr: 'عندي قرار صغير وأبي أختبر أثره قبل أتسرع',
+        queryEn: 'I have a small decision and want to test its impact before rushing'
+      },
+      {
+        ar: 'حوّل فكرة عادية إلى شيء قابل للتنفيذ',
+        en: 'Turn an ordinary idea into something buildable',
+        queryAr: 'عندي فكرة بسيطة وأبي أحولها إلى خطة قابلة للتنفيذ',
+        queryEn: 'I have a simple idea and want to turn it into an executable plan'
+      },
+      {
+        ar: 'افتح زاوية لم تكن تراها في موقفك',
+        en: 'Open an angle you were not seeing',
+        queryAr: 'أريد زاوية جديدة لموقف أفكر فيه كثيراً',
+        queryEn: 'I want a new angle on a situation I keep thinking about'
+      },
+      {
+        ar: 'درّب نفسك على حوار صعب قبل حدوثه',
+        en: 'Rehearse a hard conversation before it happens',
+        queryAr: 'عندي حوار صعب وأبي أتدرب عليه قبل أقوله',
+        queryEn: 'I have a difficult conversation and want to rehearse it first'
+      }
+    ];
+    return items[daySeed % items.length];
+  }, []);
+
   /* useEffect for typing indicator removed to prevent conflict with handleSubmit */
 
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-8 py-2 flex flex-col min-h-0">
-      {/* Hero / Search Section - Pulled higher, balanced */}
-      <div className="flex flex-col mt-4 md:mt-8 mb-10 md:mb-16">
+      {/* One-screen gateway: the user sees one question, while Tebyan routes the full lab behind it. */}
+      <div className="flex flex-col mt-2 md:mt-4 mb-8 md:mb-12">
         
         {/* Title Section always visible */}
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-6 md:mb-8"
+            className="text-center mb-5 md:mb-7"
           >
              <header className="text-center">
         
                 <motion.div
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
-                   className="text-[#7C8796] font-bold text-xs md:text-sm tracking-widest uppercase mb-3 md:mb-4"
+                   className="text-[#7C8796] font-black text-[10px] md:text-xs tracking-[0.28em] uppercase mb-3"
                 >
-                   {language === 'ar' ? proactiveInsights.arSub : proactiveInsights.enSub}
+                   {language === 'ar' ? 'كل أدوات تبيان خلف سؤال واحد' : 'All Tebyan tools behind one question'}
                 </motion.div>
-                <h1 className="text-4xl md:text-6xl lg:text-[6.2rem] font-black text-[#182231] tracking-tighter leading-[0.88] mb-5 md:mb-8">
-                  {language === 'ar' ? proactiveInsights.arG.split(' ')[0] : proactiveInsights.enG.split(' ')[0]}<br/>
-                  <span className="text-[#8E7AAE]/35 italic">
-                      {language === 'ar' 
-                          ? proactiveInsights.arG.split(' ').slice(1).join(' ') 
-                          : proactiveInsights.enG.split(' ').slice(1).join(' ')}
-                  </span>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-[#182231] tracking-tighter leading-[0.92] mb-2 md:mb-3">
+                  {language === 'ar' ? 'وش يشغلك اليوم؟' : 'What is on your mind?'}
                 </h1>
+                <p className="mx-auto max-w-2xl text-sm md:text-base font-bold leading-relaxed text-[#64788D]">
+                  {language === 'ar' ? 'اكتبها بطريقتك. تبيان يختار الرحلة والأداة المناسبة دون أن يزحمك.' : 'Write it naturally. Tebyan chooses the right journey and tool without crowding you.'}
+                </p>
              </header>
           </motion.div>
 
@@ -1351,7 +1467,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 </motion.div>
             )}
         </AnimatePresence>
-        
+
       <div className="relative z-20 flex flex-col items-center justify-center min-h-[40vh]">
         <MoodBackgroundEffect mood={mood || 'default'} />
         <form 
@@ -1583,6 +1699,25 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   </div>
                 ) : (
                   <>
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="rounded-[28px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-5 md:p-6 shadow-[0_18px_55px_rgba(24,34,49,0.05)] relative overflow-hidden"
+                      dir={language === 'ar' ? 'rtl' : 'ltr'}
+                    >
+                      <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(circle at 18% 20%, ${journeyProfile.accent}22, transparent 32%)` }} />
+                      <div className="relative z-10 flex items-start gap-4">
+                        <div className="h-12 w-12 rounded-[18px] border border-white/70 bg-white/78 flex items-center justify-center shrink-0 shadow-sm" style={{ color: journeyProfile.accent }}>
+                          {(() => { const Icon = journeyProfile.icon; return <Icon className="h-6 w-6" />; })()}
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] font-black tracking-[0.28em] uppercase" style={{ color: journeyProfile.accent }}>{language === 'ar' ? 'تبيان فهمك' : 'Tebyan understood'}</p>
+                          <h3 className="mt-1 text-2xl md:text-3xl font-black text-[#182231]">{language === 'ar' ? journeyProfile.title.ar : journeyProfile.title.en}</h3>
+                          <p className="mt-2 text-sm md:text-base font-bold leading-relaxed text-[#64788D] max-w-2xl">{language === 'ar' ? journeyProfile.promise.ar : journeyProfile.promise.en}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+
                     {smartResponse  && (
                         <motion.div 
                             key="smart-response-bubble"
@@ -1615,20 +1750,20 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                                       >
                                          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 relative z-10 w-full md:w-auto">
                                              <div className="w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[32px] bg-white/76 border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center transition-all group-hover:scale-110 shrink-0 self-end md:self-auto shadow-sm">
-                                                 {(() => { const Icon = primarySuggestion.icon; return <Icon className="w-7 h-7 md:w-10 md:h-10" />; })()}
+                                                 {(() => { const Icon = journeyProfile.icon; return <Icon className="w-7 h-7 md:w-10 md:h-10" />; })()}
                                              </div>
                                              <div className="text-right w-full">
                                                  <div className="flex items-center gap-2 mb-1 md:mb-2 justify-end md:justify-start">
-                                                    <h3 className="text-2xl md:text-3xl font-black">{primarySuggestion.label}</h3>
+                                                    <h3 className="text-2xl md:text-3xl font-black">{language === 'ar' ? journeyProfile.firstDoor.ar : journeyProfile.firstDoor.en}</h3>
                                                  </div>
                                                  <p className="text-sm md:text-base font-semibold text-[#5E6B7A] max-w-md leading-relaxed">
-                                                     {primarySuggestion.reason || primarySuggestion.desc}
+                                                     {language === 'ar' ? journeyProfile.deepen.ar : journeyProfile.deepen.en}
                                                  </p>
                                              </div>
                                          </div>
                                          <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right">
                                             <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] px-6 md:px-8 py-3 md:py-3 rounded-full md:group-hover:bg-white transition-all shadow-sm">
-                                               <span className="font-bold text-sm">{language === 'ar' ? 'البدء' : 'Start'}</span>
+                                              <span className="font-bold text-sm">{language === 'ar' ? 'البدء' : 'Start'}</span>
                                                <ArrowLeft className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "group-hover:-translate-x-2" : "rotate-180 group-hover:translate-x-2")} />
                                             </div>
                                          </div>
@@ -1791,10 +1926,23 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         </div>
                     ) : (
                       <div className="space-y-8">
+                        <div className="rounded-[26px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/90 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                          <div className="flex items-start gap-3">
+                            <div className="h-11 w-11 rounded-2xl bg-white border border-[#DED6EA] flex items-center justify-center shrink-0" style={{ color: journeyProfile.accent }}>
+                              {(() => { const Icon = journeyProfile.icon; return <Icon className="w-5 h-5" />; })()}
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[10px] font-black tracking-widest" style={{ color: journeyProfile.accent }}>{language === 'ar' ? 'تبيان فهمك' : 'Tebyan understood'}</p>
+                              <h3 className="mt-1 text-xl font-black text-[#182231]">{language === 'ar' ? journeyProfile.title.ar : journeyProfile.title.en}</h3>
+                              <p className="mt-1 text-xs font-bold leading-relaxed text-[#64788D]">{language === 'ar' ? journeyProfile.promise.ar : journeyProfile.promise.en}</p>
+                            </div>
+                          </div>
+                        </div>
+
                         {/* Mobile Primary */}
                         {primarySuggestion  && (
                           <div className="space-y-3">
-                             <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'المسار الأقوى' : 'TOP MATCH'}</span>
+                             <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">{language === 'ar' ? 'الباب الأول' : 'FIRST DOOR'}</span>
                              <button 
                                type="button"
                                onClick={() => handlePathSelect(primarySuggestion.id, query)}
@@ -1802,11 +1950,11 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                              >
                                 <div className="flex items-center gap-4">
                                    <div className="w-12 h-12 rounded-2xl bg-[#F4F0F8] border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center">
-                                      {(() => { const Icon = primarySuggestion.icon; return <Icon className="w-6 h-6" />; })()}
+                                      {(() => { const Icon = journeyProfile.icon; return <Icon className="w-6 h-6" />; })()}
                                    </div>
                                    <div className="text-right">
-                                      <div className="font-black text-lg tracking-tight">{primarySuggestion.label}</div>
-                                      <div className="text-[11px] leading-[1.6] text-[#64788D] font-semibold">{language === 'ar' ? 'البداية الأسرع والأكثر فعالية' : 'Fastest and most effective start'}</div>
+                                      <div className="font-black text-lg tracking-tight">{language === 'ar' ? journeyProfile.firstDoor.ar : journeyProfile.firstDoor.en}</div>
+                                      <div className="text-[11px] leading-[1.6] text-[#64788D] font-semibold">{language === 'ar' ? 'بدون زحمة أدوات' : 'No tool clutter'}</div>
                                    </div>
                                 </div>
                                 <ArrowLeft className={cn("w-6 h-6", language === 'ar' ? "" : "rotate-180")} />
@@ -1940,9 +2088,10 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
               <button
                 type="button"
                 onClick={() => { setShowDirectTools(v => !v); setShowInspiration(false); }}
-                className="inline-flex items-center justify-center rounded-full border border-[#8FA9C7]/35 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#6E5F8E] hover:text-zinc-900 transition-colors shadow-sm"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#8FA9C7]/28 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-[#6E5F8E] transition-colors shadow-sm"
               >
-                {showDirectTools ? (language === 'ar' ? 'إخفاء كل الأدوات' : 'Hide all tools') : (language === 'ar' ? 'كل الأدوات' : 'All tools')}
+                <LayoutGrid className="h-3.5 w-3.5" />
+                {showDirectTools ? (language === 'ar' ? 'إخفاء المختبر' : 'Hide lab') : (language === 'ar' ? 'مختبر تبيان الكامل' : 'Full Tebyan lab')}
               </button>
             </div>
 
@@ -1987,6 +2136,40 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {!searchValue.trim() && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full rounded-[24px] border border-[#8E7AAE]/12 bg-white/68 p-3 md:p-4 shadow-[0_14px_45px_rgba(24,34,49,0.05)] backdrop-blur-xl"
+              >
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 text-right">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] shrink-0">
+                      <Compass className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">{language === 'ar' ? 'باب اليوم' : 'Today’s doorway'}</p>
+                      <h3 className="text-sm md:text-base font-black text-[#182231]">{language === 'ar' ? dailyDiscovery.ar : dailyDiscovery.en}</h3>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextValue = language === 'ar' ? dailyDiscovery.queryAr : dailyDiscovery.queryEn;
+                      setSearchValue(nextValue);
+                      latestInputRef.current = nextValue;
+                      setQuery(nextValue);
+                      setSmartSuggestion('');
+                      handleSubmit(undefined, nextValue);
+                    }}
+                    className="shrink-0 rounded-2xl bg-[#182231] px-5 py-3 text-xs md:text-sm font-black text-white shadow-[0_14px_30px_rgba(24,34,49,0.18)] transition-all hover:bg-black active:scale-[0.98]"
+                  >
+                    {language === 'ar' ? 'ادخل' : 'Enter'}
+                  </button>
+                </div>
+              </motion.div>
+            )}
           </div>
         )}
 
