@@ -40,6 +40,18 @@ import { migrateLegacyData } from './lib/migration';
 import AdminUsersDashboard from './components/AdminUsersDashboard';
 import AdminQawlFasl from './components/tabs/QawlFasl/AdminQawlFasl';
 import { AdminContactTab } from './components/tabs/AdminContactTab';
+import { getActiveUser, getGenderWord } from './utils/genderHelper';
+
+// Clear old search outputs instantly at moduleload/first-evaluation time so there are absolutely no race conditions or initial render leaks
+try {
+  if (typeof window !== 'undefined' && typeof sessionStorage !== 'undefined') {
+    sessionStorage.removeItem('tebyan_current_query');
+    sessionStorage.removeItem('tebyan_current_has_searched');
+    localStorage.removeItem('tebyan_last_query');
+    localStorage.removeItem('tebyan_last_has_searched');
+  }
+} catch (e) {}
+
 
 const TabFallback = () => (
   <div className="w-full space-y-8 p-6 md:p-12 bg-white rounded-[24px] md:rounded-[32px] border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] animate-pulse">
@@ -220,8 +232,9 @@ import { WhispersOfTheVoid } from './components/WhispersOfTheVoid';
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
-  const { user, profile, loading, authReady } = useAuth();
+  const { user, profile, loading, authReady, userName, userGender } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('home');
+  const isInternalPage = activeTab !== 'home' && activeTab !== 'discover';
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'error' | 'success' } | null>(null);
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
   const [showSplash, setShowSplash] = useState(() => localStorage.getItem('tebyan_creative_splash_seen_v15') !== 'true');
@@ -397,6 +410,14 @@ const AppContent: React.FC = () => {
     // Run migration from legacy keys
     migrateLegacyData();
 
+    // Clear saved query and search states so user starting/entering the site lands completely fresh without prefilled search text.
+    try {
+      sessionStorage.removeItem('tebyan_current_query');
+      sessionStorage.removeItem('tebyan_current_has_searched');
+      localStorage.removeItem('tebyan_last_query');
+      localStorage.removeItem('tebyan_last_has_searched');
+    } catch (e) {}
+
     // Desktop: default closed behavior
     if (window.innerWidth >= 1024) {
         setSidebarOpen(false);
@@ -561,36 +582,46 @@ const AppContent: React.FC = () => {
     },
     { 
       id: 'adminqawlfasl', 
-      label: language === 'ar' ? 'إدارة قول فصل' : 'Admin Qawl', 
-      icon: LayoutDashboard,
-      tooltip: language === 'ar' ? 'إدارة طلبات وأسئلة قول فصل' : 'Manage Qawl Fasl',
+      label: language === 'ar' ? 'إدارة قول فصل' : 'Admin Qawl Fasl', 
+      icon: MessageCircleQuestion,
+      tooltip: language === 'ar' ? 'لوحة تحكم إدارة أسئلة قول فصل' : 'Manage Qawl Fasl Questions',
       hidden: !(profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
     },
-    {
-      id: 'adminmessages',
-      label: language === 'ar' ? 'صندوق الوارد' : 'Inbox',
+    { 
+      id: 'adminmessages', 
+      label: language === 'ar' ? 'إدارة رسائل الدعم' : 'Admin Support Messages', 
       icon: Mail,
-      tooltip: language === 'ar' ? 'رسائل الدعم والاتصال بـ تبيان' : 'Support Inbox',
+      tooltip: language === 'ar' ? 'لوحة إدارة رسائل الدعم والاتصال' : 'Support Tickets',
       hidden: !(profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad'))
-    },
-    {
-      id: 'contact',
-      label: language === 'ar' ? 'تواصل معنا' : 'Contact Us',
-      icon: Mail,
-      tooltip: language === 'ar' ? 'أرسل لنا رسالة أو استفسار' : 'Send us a message'
     }
   ];
 
-
-  const currentTabMeta = tabs.find(t => t.id === activeTab);
-  const isInternalPage = activeTab !== 'home' && activeTab !== 'discover';
-
   const getPageHelpDetails = () => {
     if (language === 'ar') {
+      const finalUserName = userName && userName !== 'ضيف' && userName !== 'New User' ? userName : '';
+      const finalUserGender = userGender || "neutral";
+
+      const getGreetingTitle = (pageTitle: string) => {
+        const greetingPrefix = finalUserName 
+          ? getGenderWord(
+              finalUserGender,
+              `أهلاً بك يا ${finalUserName} في`,
+              `أهلاً بكِ يا ${finalUserName} في`,
+              `أهلاً بك في`
+            )
+          : getGenderWord(
+              finalUserGender,
+              `أهلاً بك في`,
+              `أهلاً بكِ في`,
+              `أهلاً بك في`
+            );
+        return `${greetingPrefix} ${pageTitle}`;
+      };
+
       switch (activeTab) {
         case 'qawlfasl':
           return {
-            title: 'مرحباً بك في قول فصل ⚖️',
+            title: getGreetingTitle('قول فصل ⚖️'),
             intro: 'مساحة الحكمة لفض النزاعات وحسم النقاشات برأي عادل ومنقح.',
             steps: [
               '1️⃣ اكتب السؤال أو القضية المعقدة في الخانة لتهيئة الحوار.',
@@ -601,10 +632,10 @@ const AppContent: React.FC = () => {
           };
         case 'decisionroom':
           return {
-            title: 'مرحباً بك في غرفة القرار 🤫',
+            title: getGreetingTitle('غرفة القرار 🤫'),
             intro: 'لتفكيك الحيرة والوصول إلى أفضل الخيارات الممكنة بهدوء وعمق.',
             steps: [
-              '1️⃣ ضع القرار الذي يشغل بالك وصيغه بوضوح.',
+              '1️⃣ وضع القرار الذي يشغل بالك وصيغه بوضوح.',
               '2️⃣ تدرج عبر تسلسل الجلسة بتفعيل "النبضة الأولى" ثم "زد العمق".',
               '3️⃣ تابع تسلسل الخطوات الأربعة لتأكيد اليقين وفحص كل زاوية.'
             ],
@@ -612,7 +643,7 @@ const AppContent: React.FC = () => {
           };
         case 'strategicarena':
           return {
-            title: 'مرحباً بك في الميدان الاستراتيجي 🏹',
+            title: getGreetingTitle('الميدان الاستراتيجي 🏹'),
             intro: 'لتحويل الأهداف المعقدة والرؤى البعيدة إلى خطة تكتيكية جاهزة.',
             steps: [
               '1️⃣ عبّر عن الهدف أو المشروع الاستراتيجي الخاص بك.',
@@ -623,7 +654,7 @@ const AppContent: React.FC = () => {
           };
         case 'creativelab':
           return {
-            title: 'مرحباً بك في المختبر الإبداعي ⚛️',
+            title: getGreetingTitle('المختبر الإبداعي ⚛️'),
             intro: 'مصنعك الخاص لمزج الأفكار المتباعدة وولادة الابتكار غير المألوف.',
             steps: [
               '1️⃣ حدد المواد المعرفية أو الهوايات أو المجالات التي تريد دمجها.',
@@ -634,7 +665,7 @@ const AppContent: React.FC = () => {
           };
         case 'ar':
           return {
-            title: 'مرحباً بك في تبيان الروابط (AR) 🕶️',
+            title: getGreetingTitle('تبيان الروابط (AR) 🕶️'),
             intro: 'شاهد أفكارك ومجسمات المعرفة المجردة كروابط حية تتجسد حولك.',
             steps: [
               '1️⃣ اسمح بفتح الكاميرا لتفعيل تجربة واقع تبيان المعزز.',
@@ -645,7 +676,7 @@ const AppContent: React.FC = () => {
           };
         case 'truthmanuscript':
           return {
-            title: 'مرحباً بك في مخطوطة الحقيقة 📜',
+            title: getGreetingTitle('مخطوطة الحقيقة 📜'),
             intro: 'لتحويل هواجسك، مشاعرك وتأملاتك العميقة إلى مخطوطة فنية خالدة.',
             steps: [
               '1️⃣ اكتب ما تشعر به أو الفكرة التي تعصف بذهنك الآن.',
@@ -656,7 +687,7 @@ const AppContent: React.FC = () => {
           };
         case 'knowledgecenter':
           return {
-            title: 'مرحباً بك في مركز المعرفة 🕸️',
+            title: getGreetingTitle('مركز المعرفة 🕸️'),
             intro: 'استكشف المفاهيم المعقدة من خلال شجرة مترابطة من العلوم والمعرفة.',
             steps: [
               '1️⃣ افتح مربع البحث العلمي المعزز واكتب مفهوماً يشغلك.',
@@ -667,7 +698,7 @@ const AppContent: React.FC = () => {
           };
         case 'oracle':
           return {
-            title: 'مرحباً بك في المستشار الكلي 🔮',
+            title: getGreetingTitle('المستشار الكلي 🔮'),
             intro: 'فريق استشاري متكامل ومكون من عقول بشرية مبدعة لحل معضلاتك.',
             steps: [
               '1️⃣ حدد المستشار الأقرب لطبيعة سؤالك (عقلي، مالي، أو مهني).',
@@ -678,7 +709,7 @@ const AppContent: React.FC = () => {
           };
         case 'mylibrary':
           return {
-            title: 'مرحباً بك في مكتبتك الخاصة 🔖',
+            title: getGreetingTitle('مكتبتك الخاصة 🔖'),
             intro: 'المستودع الآمن لجميع كنوزك المعرفية، مخطوطاتك وقراراتك التاريخية.',
             steps: [
               '• اضغط على أي مخطوطة أو تحليل لمحاكاة قراءته أو تكرار تعديله.',
@@ -689,18 +720,18 @@ const AppContent: React.FC = () => {
           };
         case 'loyalty':
           return {
-            title: 'مرحباً بك في الولاء والهدايا 🎁',
+            title: getGreetingTitle('الولاء والهدايا 🎁'),
             intro: 'عقد تبيان المميز لتقدير رحلتك المعرفية معنا وتقديم الهدايا الفريدة.',
             steps: [
               '• اجمع النقاط والأوسمة الفكرية من خلال استخدامك اليومي للتطبيق.',
               '• فعّل الهدايا والكوبونات للاستفادة من الميزات الخاصة بعضويتك.',
-              '• تفقّد مستواك الفكري الحالي والامتيازات المصاحبة له.'
+              '• تفقّد مستواك الفكري الحالي والامتيازات الصاحبة له.'
             ],
             tip: '💡 استخدامك اليومي الذكي يقودك لبلوغ مراتب علمية أعلى في النظام!'
           };
         case 'contact':
           return {
-            title: 'مرحباً بك في تواصل معنا ✉️',
+            title: getGreetingTitle('تواصل معنا ✉️'),
             intro: 'بوابة مفتوحة لإرسال مقترحاتك وملاحظاتك لمطوري تبيان.',
             steps: [
               '1️⃣ املأ البيانات وحدد نوع استفسارك بدقة.',
@@ -711,8 +742,8 @@ const AppContent: React.FC = () => {
           };
         default:
           return {
-            title: `مرحباً بك في تبيان ✨`,
-            intro: `مساحة التمكين المعرفي والوعي المتكامل لأفكارك وقراراتك.`,
+            title: getGreetingTitle('تبيان ✨'),
+            intro: 'مساحة التمكين المعرفي والوعي المتكامل لأفكارك وقراراتك.',
             steps: [
               '• اختر الأداة التي تناسب احتياجك أو اطرح سؤالك ليقودك تبيان.',
               '• تنقل بسلاسة عبر القوائم لاستكشاف الابتكارات المصممة لأجلك.',
@@ -1208,7 +1239,7 @@ const AppContent: React.FC = () => {
                 switch (activeTab) {
                   case 'home':
                   case 'discover':
-                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} />;
+                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} onShowLogin={() => setShowLogin(true)} />;
                   case 'strategicarena':
                     return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'creativelab':

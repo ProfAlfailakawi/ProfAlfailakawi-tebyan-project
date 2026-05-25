@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Network, Sparkles, Brain, ArrowRight, Loader2, Save } from 'lucide-react';
 import { universalOracle } from '../../services/gemini';
+import { useAuth } from '../AuthProvider';
+import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 
 export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: string, initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
+  const { userGender } = useAuth();
   const [topic, setTopic] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [mindMapData, setMindMapData] = useState<string | null>(null);
@@ -55,7 +58,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
         icon={Network}
         title={{ ar: 'العقل المدبر', en: 'The Mastermind' }}
         description={{ 
-            ar: 'أدخل أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 
+            ar: getGenderWord(userGender, 'أدخل أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 'أدخلي أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 'أدخل أي مفهوم أو مشكلة تربوية.'), 
             en: 'Enter any educational concept or problem, and the Omni-AI will dismantle it into a deep structural mind map.' 
         }}
         language={language}

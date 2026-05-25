@@ -3,11 +3,14 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Map, Flag, CheckCircle, Loader2, ArrowRight, Bookmark, BookmarkCheck } from 'lucide-react';
 import { generateRoadmap } from '../../services/gemini';
 import { useUser } from '../../contexts/UserContext';
+import { useAuth } from '../AuthProvider';
+import { getGenderWord } from '../../utils/genderHelper';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 
 export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
+  const { userGender } = useAuth();
   const [goal, setGoal] = useState('');
   const [roadmap, setRoadmap] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +53,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         icon={Map}
         title={{ ar: 'طريق النجاح', en: 'Success Roadmap' }}
         description={{ 
-            ar: 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 
+            ar: getGenderWord(userGender, 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 'رؤية واضحة لمساركِ الشخصي نحو كل هدف تطمحين إليه.', 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.'), 
             en: 'A clear vision of your personal path towards every goal you aspire to.' 
         }}
         language={language}

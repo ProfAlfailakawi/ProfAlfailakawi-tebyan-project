@@ -6,6 +6,8 @@ import { logEvent } from '../services/analyticsService';
 import { useUser } from '../contexts/UserContext';
 import { useAuth } from '../components/AuthProvider';
 import { detectEmotion } from '../services/gemini';
+import { getActiveUser, getGenderWord, whiteDialectPhrases } from '../utils/genderHelper';
+
 
 import { GravityCard } from './GravityCard';
 import { AIHeartbeat } from './ui/AIHeartbeat';
@@ -97,6 +99,7 @@ interface SmartGatewayProps {
   handleTabChange: (id: any, context?: string) => void;
   tabs: any[];
   mood?: string;
+  onShowLogin?: () => void;
 }
 
 type JourneyProfile = {
@@ -165,7 +168,7 @@ const pickJourneyProfile = (raw: string, fallbackId?: string): JourneyProfile =>
     return {
       id: 'future',
       title: { ar: 'رحلة مستقبل', en: 'Future journey' },
-      promise: { ar: 'نفتح لك أول مشهد لما قد يحدث، بدون إغراقك بكل المختبر.', en: 'We open the first scene of what may happen, without flooding you with the whole lab.' },
+      promise: { ar: getGenderWord(userGender, 'نفتح لك أول مشهد لما قد يحدث، بدون إغراقك بكل المختبر.', 'نفتح لكِ أول مشهد لما قد يحدث، بدون إغراقكِ بكل المختبر.', 'نفتح أول مشهد لما قد يحدث.'), en: 'We open the first scene of what may happen, without flooding you with the whole lab.' },
       firstDoor: { ar: 'شاهد أول سيناريو', en: 'See the first scenario' },
       deepen: { ar: 'بعدها نقدر نختبر القرار بقسوة أكبر.', en: 'Then we can stress-test it harder.' },
       accent: '#B7A7C7',
@@ -176,7 +179,7 @@ const pickJourneyProfile = (raw: string, fallbackId?: string): JourneyProfile =>
   return {
     id: 'understanding',
     title: { ar: 'رحلة فهم', en: 'Understanding journey' },
-    promise: { ar: 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبته.', en: 'We begin with one clear understanding, then open depth only when you ask.' },
+    promise: { ar: getGenderWord(userGender, 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبته.', 'نبدأ بفهم واضح واحد، ثم نفتح العمق فقط إذا طلبتِيه.', 'نبدأ بفهم واضح واحد.'), en: 'We begin with one clear understanding, then open depth only when you ask.' },
     firstDoor: { ar: 'افتح باب الفهم', en: 'Open the understanding doorway' },
     deepen: { ar: 'بعدها نقدر نحول الفهم إلى قرار أو خطة.', en: 'Then we can turn understanding into a decision or plan.' },
     accent: '#7C8796',
@@ -352,9 +355,10 @@ const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
 
 import { useSmartSearch } from '../hooks/useSmartSearch';
 
-export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood }) => {
-  const { preferences, setUserStyle: setGlobalUserStyle } = useUser();
-  const { user } = useAuth();
+export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string, onQueryUsed?: () => void }> = ({ language, handleTabChange, tabs, initialQuery, onQueryUsed, mood, onShowLogin }) => {
+  const { preferences, addToLibrary, removeFromLibrary, setUserStyle: setGlobalUserStyle } = useUser();
+  const { user, userName, userGender } = useAuth();
+
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } = useFluidTyping();
   const [query, setQuery] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
   const [searchValue, setSearchValue] = useState(() => sessionStorage.getItem('tebyan_current_query') || '');
@@ -365,6 +369,68 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
 
   const latestInputRef = useRef(searchValue);
   const [isFocused, setIsFocused] = useState(false);
+
+  const smartResponse = useMemo(() => {
+    if (query.trim().length < 5) return null;
+    const q = query.toLowerCase();
+    
+    // Dynamic Analysis based on keywords
+    let analysis = '';
+    if (q.includes('كذب') || q.includes('كاذب') || q.includes('lie')) {
+      analysis = language === 'ar' 
+        ? `تحليلي لموقف (الكذب) في "${query}" يشير إلى حاجة ملحة لغرس قيمة الصدق بدلاً من العقاب فقط.` 
+        : `My analysis of the (lying) situation in "${query}" suggests an urgent need to instill the value of honesty rather than just punishment.`;
+    } else if (q.includes('خوف') || q.includes('يخاف') || q.includes('fear') || q.includes('afraid')) {
+      analysis = language === 'ar'
+        ? `يبدو أن "${query}" يعكس حالة من القلق أو عدم الأمان، التدخل هنا يتطلب بناء جسر ثقة أولاً.`
+        : `It seems "${query}" reflects a state of anxiety or insecurity; intervention here requires building a bridge of trust first.`;
+    } else if (q.includes('غضب') || q.includes('صراخ') || q.includes('angry') || q.includes('scream')) {
+      analysis = language === 'ar'
+        ? `نوبة الغضب الموصوفة في "${query}" غالباً ما تكون وسيلة تواصل غير ناضجة لمشاعر مكبوتة.`
+        : `The anger episode described in "${query}" is often an immature communication method for suppressed feelings.`;
+    } else if (q.includes('شخص') || q.includes('مدير') || q.includes('زميل') || q.includes('person') || q.includes('team')) {
+      analysis = language === 'ar'
+        ? `الموقف في "${query}" يحتاج موازنة بين الحزم وبين الاحتواء العاطفي لتجنب التصعيد.`
+        : `The situation in "${query}" needs a balance between firmness and emotional containment to avoid escalation.`;
+    } else {
+      analysis = language === 'ar'
+        ? `قمت بتحليل "${query}"، وأرى أن الحل الأمثل يكمن في التعامل مع جذور المشكلة لا أعراضها فقط.`
+        : `I analyzed "${query}", and I see that the optimal solution lies in dealing with the roots of the problem, not just its symptoms.`;
+    }
+
+    return analysis;
+  }, [query, language]);
+
+  const isAlreadySaved = useMemo(() => {
+    if (!preferences?.savedLibrary) return false;
+    return preferences.savedLibrary.some(
+      (item: any) => item && item.type === 'concept' && item.question === query
+    );
+  }, [preferences?.savedLibrary, query]);
+
+  const handleSaveToLibrary = () => {
+    if (!user) {
+      if (onShowLogin) {
+        onShowLogin();
+      }
+      return;
+    }
+    
+    if (isAlreadySaved) {
+      removeFromLibrary({
+        question: query,
+        type: 'concept'
+      });
+    } else {
+      addToLibrary({
+        id: `concept-${Date.now()}`,
+        question: query,
+        content: smartResponse || '',
+        type: 'concept',
+        tabId: 'concept'
+      }, 'concept');
+    }
+  };
   
   const EPHEMERAL_WISDOMS = useMemo(() => [
     { ar: 'الشك هو بداية اليقين.. لا تخف من إعادة النظر في قناعاتك اليوم.', en: 'Doubt is the beginning of certainty.. don\'t fear reconsidering your convictions today.' },
@@ -1119,37 +1185,6 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     return Array.from(new Set(list)).filter(s => typeof s === 'string' && s.length > 0);
   }, [language, proactiveInsights.dynamicSuggests, searchHistory]);
 
-  const smartResponse = useMemo(() => {
-    if (query.trim().length < 5) return null;
-    const q = query.toLowerCase();
-    
-    // Dynamic Analysis based on keywords
-    let analysis = '';
-    if (q.includes('كذب') || q.includes('كاذب') || q.includes('lie')) {
-      analysis = language === 'ar' 
-        ? `تحليلي لموقف (الكذب) في "${query}" يشير إلى حاجة ملحة لغرس قيمة الصدق بدلاً من العقاب فقط.` 
-        : `My analysis of the (lying) situation in "${query}" suggests an urgent need to instill the value of honesty rather than just punishment.`;
-    } else if (q.includes('خوف') || q.includes('يخاف') || q.includes('fear') || q.includes('afraid')) {
-      analysis = language === 'ar'
-        ? `يبدو أن "${query}" يعكس حالة من القلق أو عدم الأمان، التدخل هنا يتطلب بناء جسر ثقة أولاً.`
-        : `It seems "${query}" reflects a state of anxiety or insecurity; intervention here requires building a bridge of trust first.`;
-    } else if (q.includes('غضب') || q.includes('صراخ') || q.includes('angry') || q.includes('scream')) {
-      analysis = language === 'ar'
-        ? `نوبة الغضب الموصوفة في "${query}" غالباً ما تكون وسيلة تواصل غير ناضجة لمشاعر مكبوتة.`
-        : `The anger episode described in "${query}" is often an immature communication method for suppressed feelings.`;
-    } else if (q.includes('شخص') || q.includes('مدير') || q.includes('زميل') || q.includes('person') || q.includes('team')) {
-      analysis = language === 'ar'
-        ? `الموقف في "${query}" يحتاج موازنة بين الحزم وبين الاحتواء العاطفي لتجنب التصعيد.`
-        : `The situation in "${query}" needs a balance between firmness and emotional containment to avoid escalation.`;
-    } else {
-      analysis = language === 'ar'
-        ? `قمت بتحليل "${query}"، وأرى أن الحل الأمثل يكمن في التعامل مع جذور المشكلة لا أعراضها فقط.`
-        : `I analyzed "${query}", and I see that the optimal solution lies in dealing with the roots of the problem, not just its symptoms.`;
-    }
-
-    return analysis;
-  }, [query, language]);
-
   const questionClarity = useMemo(() => {
     const text = searchValue.trim();
     if (text.length < 3) return null;
@@ -1228,7 +1263,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
       let refinedReasonEn = reasonEn;
 
       if (id === 'council') {
-        refinedReasonAr = 'لأنك تفضل عادةً الفهم العميق المتأني لكل زوايا الموقف';
+        refinedReasonAr = getGenderWord(
+          userGender,
+          'لأنك تفضل عادةً الفهم العميق المتأني لكل زوايا الموقف',
+          'لأنكِ تفضلين عادةً الفهم العميق المتأني لكل زوايا الموقف',
+          'لأنك تفضل عادةً الفهم العميق المتأني لكل زوايا الموقف'
+        );
         refinedReasonEn = 'Because you usually prefer a deep, careful understanding of all angles';
       }
 
@@ -1273,7 +1313,12 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
     const storyMatch = !q || q.includes('قصة') || q.includes('شخص') || q.includes('حكاية') || q.includes('تبسيط') || q.includes('كذب') || q.includes('story') || q.includes('tell');
 
     addPath('oracle', 'innovation', 'المستشار الكلي', 'Omni Counselor', Command, 'حوار استراتيجي شامل', 'Comprehensive cognitive dialogue', 'للحصول على مشورة حكيمة تدمج بين علوم السلوك والاستراتيجية', 'For wise advice integrating behavior and strategy', innovMatch ? 8.5 : 1.5);
-    addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Sparkles, 'هندسة الابتكار والأفكار', 'Idea & Innovation Engineering', 'لأنك تحتاج إلى تفكيك الموقف وابتكار وسائل جديدة للحل', 'To deconstruct the situation and innovate new solutions', innovMatch ? 8.5 : 2);
+    addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Sparkles, 'هندسة الابتكار والأفكار', 'Idea & Innovation Engineering', getGenderWord(
+      userGender,
+      'لأنك تحتاج إلى تفكيك الموقف وابتكار وسائل جديدة للحل',
+      'لأنكِ تحتاجين إلى تفكيك الموقف وابتكار وسائل جديدة للحل',
+      'لأنك تحتاج إلى تفكيك الموقف وابتكار وسائل جديدة للحل'
+    ), 'To deconstruct the situation and innovate new solutions', innovMatch ? 8.5 : 2);
     addPath('creativelab', 'innovation', 'المختبر الإبداعي', 'Creative Lab', Zap, 'أدوات التصميم والحلول', 'Strategic design tools', 'لتحليل الأدوات المتاحة للموقف وابتكار وسائل جديدة للحل', 'To analyze available tools and innovate new ones', innovMatch ? 6 : 1);
     
     // 7. Visualization/Thinking Tools
@@ -1358,15 +1403,14 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
             className="text-center mb-5 md:mb-7"
           >
              <header className="text-center">
-        
                 <motion.div 
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
-                   className="text-[#7C8796] font-bold text-xs md:text-sm tracking-widest uppercase mb-3 md:mb-4 animate-fade-in"
+                   className="text-[#7C8796] font-bold text-xs md:text-sm tracking-widest mb-3 md:mb-4 animate-fade-in"
                 >
-                   {language === 'ar' ? proactiveInsights.arSub : proactiveInsights.enSub}
+                   {language === 'ar' ? whiteDialectPhrases.helloUser(userName, userGender) : proactiveInsights.enSub}
                 </motion.div>
-                <h1 className="text-4xl md:text-6xl lg:text-[6.2rem] font-black text-[#182231] tracking-tighter leading-[0.88] mb-5 md:mb-8">
+                <h1 className="text-4xl md:text-6xl lg:text-[6.2rem] font-black text-[#182231] tracking-tighter leading-[0.88] mb-5 md:mb-8 animate-fade-in">
                   {language === 'ar' ? proactiveInsights.arG.split(' ')[0] : proactiveInsights.enG.split(' ')[0]}<br/>
                   <span className="text-[#8E7AAE]/35 italic">
                       {language === 'ar' 
@@ -1516,7 +1560,7 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                   minRows={1}
                   maxRows={4}
                   onChange={(e) => handleSearchInputChange(e.target.value)}
-                  placeholder={language === 'ar' ? "اكتب سؤالك أو مشكلتك..." : "Type your question or problem..."}
+                  placeholder={language === 'ar' ? "وش يدور ببالك؟ اكتبه هنا وبنفكر فيه سوا..." : "Type your question or problem..."}
                   onKeyDown={(e) => {
                     if ((e.key === 'Tab' || (e.key === 'Enter' && !e.shiftKey)) && smartSuggestion) {
                       e.preventDefault();
@@ -1732,6 +1776,55 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                         </motion.div>
                     )}
 
+                    {/* Auth Linking and Memory Palace Synchronizer */}
+                    <div className="border border-zinc-100 bg-[#FAF9F6] rounded-2xl p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
+                      <div className="flex items-start gap-3 text-right">
+                        <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-[#6E5F8E] shrink-0 mt-0.5 border border-purple-100/50">
+                          {user ? <CheckCircle2 className="w-5 h-5 text-emerald-600 animate-pulse" /> : <Lock className="w-5 h-5 text-zinc-400" />}
+                        </div>
+                        <div className="space-y-0.5">
+                          <h4 className="font-black text-xs md:text-sm text-[#182231]">
+                            {user 
+                              ? (language === 'ar' ? `✓ تم ربط هذا البحث بحسابك المعرفي: ${userName}` : `✓ This search is linked to your account: ${userName}`)
+                              : (language === 'ar' ? 'البحث غير مؤرشف في خريطتك المعرفية' : 'Search is not archived in your knowledge map')}
+                          </h4>
+                          <p className="text-[11px] text-zinc-500 font-bold leading-normal">
+                            {user 
+                              ? (language === 'ar' ? 'يمكنك حفظ هذا الاستنتاج تلقائياً لمراجعته في قصر ذاكرتك.' : 'You can automatically save this insight for later in your Memory Palace.')
+                              : (language === 'ar' ? 'سجّل دخولك الآن لحفظ ومزامنة نتائج تبيان والمسارات الفكرية التي تصنعها.' : 'Log in now to save and sync Tebyan answers and the cognitive paths you build.')}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="shrink-0 flex gap-2 w-full md:w-auto self-end md:self-auto justify-end">
+                        {user ? (
+                          <button
+                            type="button"
+                            onClick={handleSaveToLibrary}
+                            className={cn(
+                              "px-5 py-2.5 rounded-full font-black text-xs transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
+                              isAlreadySaved 
+                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                : "bg-[#8E7AAE]/10 text-[#6E5F8E] border-[#8E7AAE]/20 hover:bg-[#8E7AAE]/20"
+                            )}
+                          >
+                            <LibraryBig className="w-4 h-4" />
+                            {isAlreadySaved 
+                              ? (language === 'ar' ? 'حُفظ في قصر ذاكرتك ✓' : 'Saved to Memory Palace ✓')
+                              : (language === 'ar' ? 'حفظ في قصر الذاكرة' : 'Save to Memory Palace')}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => onShowLogin?.()}
+                            className="bg-[#182231] text-white hover:bg-black font-black text-xs px-5 py-2.5 rounded-full transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+                          >
+                            <Lock className="w-3.5 h-3.5" />
+                            {language === 'ar' ? 'مزامنة وتسجيل الدخول' : 'Sync & Login'}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="space-y-8">
                        <div className="md:grid grid-cols-12 gap-8 mt-8">
                           <div className={cn("col-span-12", showExpertPaths ? "md:col-span-8" : "md:col-span-12")}>
@@ -1938,6 +2031,55 @@ export const SmartGateway: React.FC<SmartGatewayProps & { initialQuery?: string,
                               <h3 className="mt-1 text-xl font-black text-[#182231]">{language === 'ar' ? journeyProfile.title.ar : journeyProfile.title.en}</h3>
                               <p className="mt-1 text-xs font-bold leading-relaxed text-[#64788D]">{language === 'ar' ? journeyProfile.promise.ar : journeyProfile.promise.en}</p>
                             </div>
+                          </div>
+                        </div>
+
+                        {/* Mobile Auth Synchronizer */}
+                        <div className="border border-zinc-100 bg-[#FAF9F6] rounded-2xl p-4 flex flex-col gap-3 text-right">
+                          <div className="flex items-start gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-[#6E5F8E] shrink-0 border border-purple-100/50">
+                              {user ? <CheckCircle2 className="w-4.5 h-4.5 text-emerald-600 animate-pulse" /> : <Lock className="w-4.5 h-4.5 text-zinc-400" />}
+                            </div>
+                            <div className="space-y-0.5">
+                              <h4 className="font-black text-xs text-[#182231]">
+                                {user 
+                                  ? (language === 'ar' ? `✓ مرصود ومربوط: ${userName}` : `✓ Linked to account: ${userName}`)
+                                  : (language === 'ar' ? 'البحث غير مؤرشف فكرياً' : 'Search not archived')}
+                              </h4>
+                              <p className="text-[10px] text-zinc-500 font-bold leading-normal">
+                                {user 
+                                  ? (language === 'ar' ? 'متاح ومحفوظ الآن في قصر ذاكرتك.' : 'Available and saved in your Memory Palace.')
+                                  : (language === 'ar' ? 'سجّل دخولك لحفظ المسارات الفكرية التي تصنعها وتتبعها.' : 'Log in now to save and sync the cognitive paths you build.')}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex justify-end mt-1">
+                            {user ? (
+                              <button
+                                type="button"
+                                onClick={handleSaveToLibrary}
+                                className={cn(
+                                  "w-full py-2 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
+                                  isAlreadySaved 
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                    : "bg-[#8E7AAE]/10 text-[#6E5F8E] border-[#8E7AAE]/20 hover:bg-[#8E7AAE]/20"
+                                )}
+                              >
+                                <LibraryBig className="w-3.5 h-3.5" />
+                                {isAlreadySaved 
+                                  ? (language === 'ar' ? 'حُفظ في قصر ذاكرتك ✓' : 'Saved to Memory Palace ✓')
+                                  : (language === 'ar' ? 'حفظ في قصر الذاكرة' : 'Save to Memory Palace')}
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => onShowLogin?.()}
+                                className="w-full bg-[#182231] text-white hover:bg-black font-black text-xs py-2 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                              >
+                                <Lock className="w-3 h-3" />
+                                {language === 'ar' ? 'مزامنة وتسجيل الدخول' : 'Sync & Login'}
+                              </button>
+                            )}
                           </div>
                         </div>
 

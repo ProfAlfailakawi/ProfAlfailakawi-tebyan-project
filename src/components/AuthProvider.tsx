@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
+import { detectGender, setActiveUser } from '../utils/genderHelper';
 
 interface UserProfile {
   email: string;
@@ -15,13 +16,25 @@ const AuthContext = createContext<{
   profile: UserProfile | null;
   loading: boolean;
   authReady: boolean;
-}>({ user: null, profile: null, loading: true, authReady: false });
+  userName: string;
+  userGender: 'male' | 'female' | 'neutral';
+}>({ 
+  user: null, 
+  profile: null, 
+  loading: true, 
+  authReady: false,
+  userName: 'ضيف',
+  userGender: 'neutral'
+});
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
+  
+  const [userName, setUserName] = useState<string>('ضيف');
+  const [userGender, setUserGender] = useState<'male' | 'female' | 'neutral'>('neutral');
 
   useEffect(() => {
     // We removed the aggressive 10s timeout here to avoid logging out users on slow PWA wakeups.
@@ -136,8 +149,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      const name = profile?.displayName || user.displayName || 'ضيف';
+      const cleanName = name && name !== 'New User' && name !== 'ضيف' ? name : '';
+      const finalName = cleanName || 'ضيف';
+      const gender = cleanName ? detectGender(cleanName) : 'neutral';
+      
+      setUserName(finalName);
+      setUserGender(gender);
+      setActiveUser(finalName, gender);
+    } else {
+      setUserName('ضيف');
+      setUserGender('neutral');
+      setActiveUser('ضيف', 'neutral');
+    }
+  }, [user, profile]);
+
   return (
-    <AuthContext.Provider value={{ user, profile, loading, authReady }}>
+    <AuthContext.Provider value={{ user, profile, loading, authReady, userName, userGender }}>
       {children}
     </AuthContext.Provider>
   );

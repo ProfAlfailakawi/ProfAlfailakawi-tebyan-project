@@ -1,4 +1,6 @@
 
+import { getActiveUser } from "../utils/genderHelper";
+
 /**
  * AI Proxy for Client-side usage.
  * This ensures that AI calls work correctly even when exported to GitHub
@@ -14,14 +16,32 @@ export async function proxyGenerateContent(params: {
   // Inject Panic Mode (Calm Mode) instructions if enabled
   const isPanicMode = localStorage.getItem('tebyan_panic_mode') === 'true';
   const modifiedParams = { ...params };
+  modifiedParams.config = modifiedParams.config || {};
+
+  // Inject active user information (gender dialect and custom white dialect)
+  const activeUser = getActiveUser();
+  const userName = activeUser.name || "ضيف";
+  const userGender = activeUser.gender || "neutral";
+
+  const arabicGenderInstruction = `
+[توجيه أسلوب الرد النهائي الحازم]:
+1. نوع اللغة: يجب أن تتحدث وتجيب وتصيغ كل شيء كلياً باللغة العربية العامة السهلة، الناعمة والبسيطة جداً، الودية جداً والمفهومة للجميع (اللهجة البيضاء المقروءة اللطيفة، القريبة من لغة الحديث اليومي البسيط والودي) وتجنب تماماً الكلمات والمصطلحات المعقدة أو الرسمية والجامدة جداً.
+2. صيغة المخاطبة: اسم المستخدم الحالي هو "${userName}" وجنسه هو [${userGender}].
+- إذا كان جنس المستخدم [female] (أنثى)، فيجب مخاطبتها بصيغة المؤنث الحتمي اللطيف طوال الرد تماماً دون أي تقصير مثل: (أنتِ، تفضلي، شفتي، سويتي، وش رأيكِ، بطلة، منورة).
+- إذا كان جنس المستخدم [male] (ذكر)، فيجب مخاطبته بصيغة المذكر الودي الحتمي طوال الرد مثل: (أنت، تفضل، شفت، سويت، وش رأيك، بطل، منور).
+- إذا كان جنس المستخدم [neutral] (غير محدد أو ضيف)، استخدم صيغة عامة ودية ناعمة محايدة وصالحة للجميع.
+3. الألوان والرموز: استخدم الإيموجيات اللطيفة لتلوين الحديث وبث السعادة والسهولة والراحة في قلب المستخدم وجعل الإجابة رائعة ولذيذة القراءة ومبسطة.
+`;
+
+  modifiedParams.config.systemInstruction = modifiedParams.config.systemInstruction
+    ? `${modifiedParams.config.systemInstruction}\n\n${arabicGenderInstruction}`
+    : arabicGenderInstruction;
   
   if (isPanicMode) {
-     modifiedParams.config = modifiedParams.config || {};
      const panicInstruction = " [توجيه طوارئ: المستخدم يمر بضغط نفسي أو أزمة حالياً. اجعل إجاباتك أكثر تلطفاً، احتواءً، هدوءاً، وداعمة نفسياً جداً ولا تكن قاسياً أو حاداً أبداً.] ";
-     modifiedParams.config.systemInstruction = modifiedParams.config.systemInstruction 
-         ? modifiedParams.config.systemInstruction + panicInstruction
-         : panicInstruction;
+     modifiedParams.config.systemInstruction = modifiedParams.config.systemInstruction + panicInstruction;
   }
+
 
   // استخدام الرابط الأساسي للخادم إذا كان معرفاً في 환경 الإنتاج، وإلا استخدام مسار نسبي
   const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark, Box, Lock } from 'lucide-react';
+import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark, Box, Lock, CircleDashed as CircleDashedIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useGamification } from '../hooks/useGamification';
 import { generateDailyMission } from '../services/gemini';
@@ -100,7 +100,11 @@ const HubCard: React.FC<{
 
 import { NeuralTree } from './NeuralTree';
 
+import { useAuth } from './AuthProvider';
+import { getGenderWord } from '../utils/genderHelper';
+
 export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[], handleTabChange: (id: string) => void, language: string }) => {
+  const { user, userGender } = useAuth();
   const { state, addXp } = useGamification();
   const [mission, setMission] = useState<any>(null);
   const [missionLoading, setMissionLoading] = useState(true);
@@ -115,7 +119,13 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
     
     if (lastCompleted === today) {
         setMissionCompleted(true);
-        setMission({ title: language === 'ar' ? 'أنجزت مهمة اليوم!' : 'Today\'s mission completed!', task: language === 'ar' ? 'عد غداً لتحدي ميداني جديد.' : 'Come back tomorrow for a new field challenge.', xp_reward: 0 });
+        setMission({ 
+          title: language === 'ar' ? 'أنجزت مهمة اليوم!' : 'Today\'s mission completed!', 
+          task: language === 'ar' 
+            ? getGenderWord(userGender, 'عد غداً لتحدي ميداني جديد.', 'عودي غداً لتحدي ميداني جديد.', 'عد غداً لتحدي ميداني جديد.') 
+            : 'Come back tomorrow for a new field challenge.', 
+          xp_reward: 0 
+        });
         setMissionLoading(false);
         return;
     }
@@ -138,7 +148,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             setMissionLoading(false);
         });
     }
-  }, [language]);
+  }, [language, userGender]);
 
   const handleCompleteMission = () => {
     if (!missionCompleted && mission?.xp_reward) {
@@ -171,10 +181,10 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <span className="text-zinc-500 font-bold text-[10px] tracking-widest uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
           </div>
           <h1 className="text-2xl md:text-4xl font-black text-[#182231] leading-[1.05] tracking-tight">
-            {language === 'ar' ? 'نظامك الشامل' : 'Your Complete System'}
+            {language === 'ar' ? (user ? getGenderWord(userGender, 'نظامك الحي يا بطل', 'نظامكِ الحي يا بطلة', 'نظامك الشامل') : 'نظامك الشامل') : 'Your Complete System'}
           </h1>
           <p className="text-sm md:text-base text-zinc-500 font-medium leading-relaxed max-w-sm mt-1">
-            {language === 'ar' ? 'أدوات ذكية لتعزيز إدراكك وتحليل المواقف بعمق.' : 'Smart tools to enhance your perception and analyze situations.'}
+            {language === 'ar' ? getGenderWord(userGender, 'أدوات ذكية لتعزيز إدراكك وتحليل المواقف بعمق.', 'أدوات ذكية لتعزيز إدراككِ وتحليل المواقف بعمق.', 'أدوات ذكية لتعزيز الإدراك وتحليل المواقف بعمق.') : 'Smart tools to enhance your perception and analyze situations.'}
           </p>
         </div>
       </header>
@@ -185,10 +195,10 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           <div className="space-y-2">
             <p className="text-[10px] font-black tracking-[0.2em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
             <h2 className="text-2xl md:text-4xl font-black text-[#182231] tracking-tight leading-tight">
-              {language === 'ar' ? 'وش تبي تسوي اليوم؟' : 'What do you want to do today?'}
+              {language === 'ar' ? getGenderWord(userGender, 'وش تبي تسوي اليوم؟', 'وش تبين تسوين اليوم؟', 'وش تبي تسوي اليوم؟') : 'What do you want to do today?'}
             </h2>
             <p className="text-sm md:text-base text-zinc-500 font-bold leading-relaxed max-w-xl">
-              {language === 'ar' ? 'ثلاثة أبواب تكفي للبداية. العمق كامل موجود متى ما احتجته.' : 'Three doors are enough to start. Full depth is available when needed.'}
+              {language === 'ar' ? getGenderWord(userGender, 'ثلاثة أبواب تكفي للبداية. العمق كامل موجود متى ما احتجته.', 'ثلاثة أبواب تكفي للبداية. العمق كامل موجود متى ما احتجتِيه.', 'ثلاثة أبواب تكفي للبداية. العمق كامل موجود متى ما احتجته.') : 'Three doors are enough to start. Full depth is available when needed.'}
             </p>
           </div>
           <button
@@ -229,15 +239,21 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
             <div className="w-12 h-12 rounded-2xl bg-[#F1ECF7] text-[#6E5F8E] flex items-center justify-center shrink-0 border border-[#8E7AAE]/15">
-              <Sparkles className="w-5 h-5" />
+              <CircleDashedIcon className="w-5 h-5 animate-spin-slow" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-black tracking-widest text-[#8E7AAE] uppercase">{language === 'ar' ? 'آخر ما كنت تفكر فيه' : 'Where you left off'}</p>
+              <p className="text-[11px] font-black tracking-widest text-[#8E7AAE] uppercase">
+                {language === 'ar' ? getGenderWord(userGender, 'آخر ما كنت تفكر فيه', 'آخر ما كنتِ تفكرين فيه', 'آخر ما كنت تفكر فيه') : 'Where you left off'}
+              </p>
               <h3 className="mt-1 text-base md:text-lg font-black text-[#182231] truncate max-w-2xl">
                 {lastSession?.query || (language === 'ar' ? 'لم تبدأ جلسة محفوظة بعد' : 'No saved session yet')}
               </h3>
               <p className="mt-1 text-xs font-bold text-[#7C8796]">
-                {lastSession?.toolLabel ? `${language === 'ar' ? 'آخر مسار' : 'Last path'}: ${lastSession.toolLabel}` : (language === 'ar' ? 'اكتب أول سؤال، وسنحفظ لك المسار القادم هنا.' : 'Write your first question and your next path will appear here.')}
+                {lastSession?.toolLabel 
+                  ? `${language === 'ar' ? 'آخر مسار' : 'Last path'}: ${lastSession.toolLabel}` 
+                  : (language === 'ar' 
+                      ? getGenderWord(userGender, 'اكتب أول سؤال، وسنحفظ لك المسار القادم هنا.', 'اكتبي أول سؤال، وسنحفظ لكِ المسار القادم هنا.', 'اكتب أول سؤال، وسنحفظ لك المسار القادم هنا.') 
+                      : 'Write your first question and your next path will appear here.')}
               </p>
             </div>
           </div>
@@ -279,9 +295,19 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             </div>
             <div>
               <p className="text-[11px] font-black tracking-[0.24em] uppercase text-[#8E7AAE]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
-              <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">{language === 'ar' ? 'أفكارك بدأت ترسم خريطة هادئة' : 'Your ideas are forming a quiet map'}</h3>
+              <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">
+                {language === 'ar' ? getGenderWord(userGender, 'أفكارك بدأت ترسم خريطة هادئة', 'أفكاركِ بدأت ترسم خريطة هادئة', 'أفكارك بدأت ترسم خريطة هادئة') : 'Your ideas are forming a quiet map'}
+              </h3>
               <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-[#7C8796]">
-                {language === 'ar' ? 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.' : 'This is only a visual shadow; the full idea fabric remains in your knowledge network.'}
+                {language === 'ar' ? getGenderWord(userGender, 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتكِ المعرفية ويمكن فتحها متى أردتِ.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.') : 'This is only a visual shadow; the full idea fabric remains in your knowledge network.'}
+              </p>
+            </div>
+          </div>
+          <button onClick={() => handleTabChange('knowledgegraph')} className="shrink-0 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-5 py-3 text-xs font-black text-[#6E5F8E] shadow-sm transition-all hover:border-[#8E7AAE]/40 hover:bg-[#F4F1F8] active:scale-95">
+            {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
+          </button>
+        </div>
+      </section>l shadow; the full idea fabric remains in your knowledge network.'}
               </p>
             </div>
           </div>

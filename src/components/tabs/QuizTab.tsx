@@ -2,10 +2,13 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { ClipboardCheck, RefreshCw } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useAuth } from '../AuthProvider';
+import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 
 export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
+  const { userGender } = useAuth();
   const [quizTopic, setQuizTopic] = React.useState(initialValue || '');
 
   React.useEffect(() => {
@@ -79,8 +82,8 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
        icon={ClipboardCheck}
        title={{ ar: 'الاختبارات الذكية', en: 'Smart Quizzes' }}
        description={{ 
-           ar: 'أدخل الموضوع الذي تريد اختبار معلوماتك فيه، وسأقوم بإنشاء أسئلة متنوعة لتقييم فهمك.', 
-           en: 'Enter a topic, and I will generate diversas questions to assess your understanding.' 
+           ar: getGenderWord(userGender, 'أدخل الموضوع الذي تريد اختبار معلوماتك فيه، وسأقوم بإنشاء أسئلة متنوعة لتقييم فهمك.', 'أدخلي الموضوع الذي تريدين اختبار معلوماتكِ فيه، وسأقوم بإنشاء أسئلة متنوعة لتقييم فهمكِ.', 'أدخل الموضوع الذي تود اختبار معلوماتك فيه.'), 
+           en: 'Enter a topic, and I will generate diverse questions to assess your understanding.' 
        }}
        language={language}
        onBack={() => handleTabChange('discover', '')}
@@ -109,7 +112,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
               {language === 'ar' ? 'جاري تأسيس الاختبار...' : 'Generating quiz...'}
             </div>
             <div className="px-8 py-3 bg-emerald-50 text-emerald-700 rounded-full font-bold animate-pulse">
-              {language === 'ar' ? 'نحن نعد لك أسئلة مخصصة لتقييم فهمك' : 'We are preparing custom questions to assess your understanding'}
+              {language === 'ar' ? getGenderWord(userGender, 'نحن نعد لك أسئلة مخصصة لتقييم فهمك', 'نحن نعد لكِ أسئلة مخصصة لتقييم فهمكِ', 'نحن نعد أسئلة مخصصة لتقييم فهمك') : 'We are preparing custom questions to assess your understanding'}
             </div>
           </motion.div>
         ) : (

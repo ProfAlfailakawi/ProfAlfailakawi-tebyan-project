@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Command, RefreshCw, Bookmark, BookmarkCheck } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import { useAuth } from '../AuthProvider';
+import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -19,6 +21,7 @@ const personas = [
 
 export const OracleTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
+  const { userGender } = useAuth();
   const [input, setInput] = React.useState('');
   const [oraclePersona, setOraclePersona] = React.useState('student');
   const [oracleResult, setOracleResult] = React.useState('');
@@ -58,7 +61,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       setOracleResult(res.text || '');
     } catch (err: any) {
       setError(language === 'ar' 
-        ? "المستشار يتأمل بعمق في سؤالك.. عاود الضغط ليصيغ لك حكمة." 
+        ? getGenderWord(userGender, "المستشار يتأمل بعمق في سؤالك.. عاود الضغط ليصيغ لك حكمة.", "المستشارة تتأمل بعمق في سؤالكِ.. عاودي الضغط لتصيغ لكِ حكمة.", "المستشار يتأمل بعمق في سؤالك.. عاود الضغط ليصيغ لك حكمة.") 
         : "The counselor is deeply reflecting.. please click again for wisdom.");
     } finally {
       setIsLoading(false);
@@ -178,15 +181,15 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             <div className="flex flex-wrap gap-2 mt-4">
                  <button onClick={() => handleTabChange('timemachine', input)} className="px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
                      <Command className="w-4 h-4" />
-                     {language === 'ar' ? 'خذ هذه الفكرة لآلة الزمن' : 'Take to Time Machine'}
+                     {language === 'ar' ? getGenderWord(userGender, 'خذ هذه الفكرة لآلة الزمن', 'خذي هذه الفكرة لآلة الزمن', 'خذ هذه الفكرة لآلة الزمن') : 'Take to Time Machine'}
                  </button>
                  <button onClick={() => handleTabChange('simulation', input)} className="px-4 py-2 bg-[#EEF4F1] text-emerald-700 hover:bg-emerald-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
                      <Command className="w-4 h-4" />
-                     {language === 'ar' ? 'اختبرها في المحاكي' : 'Test in Simulator'}
+                     {language === 'ar' ? getGenderWord(userGender, 'اختبرها في المحاكي', 'اختبريها في المحاكي', 'اختبرها في المحاكي') : 'Test in Simulator'}
                  </button>
                  <button onClick={() => handleTabChange('mindmap', input)} className="px-4 py-2 bg-[#F6F0E3] text-amber-700 hover:bg-amber-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
                      <Command className="w-4 h-4" />
-                     {language === 'ar' ? 'فككها في الخريطة الذهنية' : 'Breakdown in Mindmap'}
+                     {language === 'ar' ? getGenderWord(userGender, 'فككها في الخريطة الذهنية', 'فككيها في الخريطة الذهنية', 'فككها في الخريطة الذهنية') : 'Breakdown in Mindmap'}
                  </button>
             </div>
             <div className="flex justify-end mt-4">
