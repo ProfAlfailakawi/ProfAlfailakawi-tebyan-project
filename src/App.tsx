@@ -584,9 +584,280 @@ const AppContent: React.FC = () => {
 
   const currentTabMeta = tabs.find(t => t.id === activeTab);
   const isInternalPage = activeTab !== 'home' && activeTab !== 'discover';
-  const pageHelpText = language === 'ar'
-    ? `هذه صفحة ${currentTabMeta?.label || 'داخلية'}. استخدم الأزرار الرئيسية داخل البطاقة لبدء الإجراء، والأيقونات الصغيرة للتنقل أو الحفظ أو فتح التفاصيل. زر الرجوع ثابت أعلى اليسار للعودة بدون أن يغطي المحتوى.`
-    : `This is the ${currentTabMeta?.label || 'internal'} page. Use the main card buttons to start, and the small icons for navigation, saving, or opening details. The back button stays at the top-left without covering content.`;
+
+  const getPageHelpDetails = () => {
+    if (language === 'ar') {
+      switch (activeTab) {
+        case 'qawlfasl':
+          return {
+            title: 'مرحباً بك في قول فصل ⚖️',
+            intro: 'مساحة الحكمة لفض النزاعات وحسم النقاشات برأي عادل ومنقح.',
+            steps: [
+              '1️⃣ اكتب السؤال أو القضية المعقدة في الخانة لتهيئة الحوار.',
+              '2️⃣ سيقوم تبيان بفصل القضية مستشهداً بالحجج والمنطق دون انحياز.',
+              '3️⃣ اضغط على التفاصيل الإضافية لتعميق الرؤية أو حفظ النتيجة.'
+            ],
+            tip: '💡 يمكنك الاسترشاد بالآراء التاريخية لتوسيع أفق الفهم!'
+          };
+        case 'decisionroom':
+          return {
+            title: 'مرحباً بك في غرفة القرار 🤫',
+            intro: 'لتفكيك الحيرة والوصول إلى أفضل الخيارات الممكنة بهدوء وعمق.',
+            steps: [
+              '1️⃣ ضع القرار الذي يشغل بالك وصيغه بوضوح.',
+              '2️⃣ تدرج عبر تسلسل الجلسة بتفعيل "النبضة الأولى" ثم "زد العمق".',
+              '3️⃣ تابع تسلسل الخطوات الأربعة لتأكيد اليقين وفحص كل زاوية.'
+            ],
+            tip: '💡 يمكنك الانتقال إلى المختبر الكامل عند الحاجة لأدوات مخصصة!'
+          };
+        case 'strategicarena':
+          return {
+            title: 'مرحباً بك في الميدان الاستراتيجي 🏹',
+            intro: 'لتحويل الأهداف المعقدة والرؤى البعيدة إلى خطة تكتيكية جاهزة.',
+            steps: [
+              '1️⃣ عبّر عن الهدف أو المشروع الاستراتيجي الخاص بك.',
+              '2️⃣ حدد المدى وطريقة التوجيه والسرعة للتخطيط المثالي.',
+              '3️⃣ طبّق التحليل للحصول على مسار تنفيذي تتابعه خطوة بخطوة.'
+            ],
+            tip: '💡 استخدم الخرائط المفتوحة لتوقع العقبات قبل حدوثها!'
+          };
+        case 'creativelab':
+          return {
+            title: 'مرحباً بك في المختبر الإبداعي ⚛️',
+            intro: 'مصنعك الخاص لمزج الأفكار المتباعدة وولادة الابتكار غير المألوف.',
+            steps: [
+              '1️⃣ حدد المواد المعرفية أو الهوايات أو المجالات التي تريد دمجها.',
+              '2️⃣ اطلق الشرارة الإبداعية وشاهد نقاط تلاقٍ مدهشة وذكية.',
+              '3️⃣ طوّر التصاميم الجديدة وافرغ أفكارك في ركن الورشة التفاعلية.'
+            ],
+            tip: '💡 الخروج عن المألوف يحتاج لجرأة... جرّب دمج أفكار متناقضة!'
+          };
+        case 'ar':
+          return {
+            title: 'مرحباً بك في تبيان الروابط (AR) 🕶️',
+            intro: 'شاهد أفكارك ومجسمات المعرفة المجردة كروابط حية تتجسد حولك.',
+            steps: [
+              '1️⃣ اسمح بفتح الكاميرا لتفعيل تجربة واقع تبيان المعزز.',
+              '2️⃣ شاهد حركة الأوراق الفكرية وشبكات المفاهيم في الفضاء.',
+              '3️⃣ المس أي مجسم معرفي لاستجلاء باطنه ورواسب فكرته.'
+            ],
+            tip: '💡 تفاعل بكاميرا الهاتف أو شاشتك في بيئة نظيفة وجيدة الإضاءة!'
+          };
+        case 'truthmanuscript':
+          return {
+            title: 'مرحباً بك في مخطوطة الحقيقة 📜',
+            intro: 'لتحويل هواجسك، مشاعرك وتأملاتك العميقة إلى مخطوطة فنية خالدة.',
+            steps: [
+              '1️⃣ اكتب ما تشعر به أو الفكرة التي تعصف بذهنك الآن.',
+              '2️⃣ اختر الأقلام الفكرية والأسلوب الفلسفي المفضل لديك لحياكة النص.',
+              '3️⃣ اضغط صناعة المخطوطة الفنية واحتفظ بها كإرث ينبض بوعيك.'
+            ],
+            tip: '💡 عبّر بعفوية مطلقة... الفن يولد من قلب الصدق!'
+          };
+        case 'knowledgecenter':
+          return {
+            title: 'مرحباً بك في مركز المعرفة 🕸️',
+            intro: 'استكشف المفاهيم المعقدة من خلال شجرة مترابطة من العلوم والمعرفة.',
+            steps: [
+              '1️⃣ افتح مربع البحث العلمي المعزز واكتب مفهوماً يشغلك.',
+              '2️⃣ انظر للعلامات وشبكة الروابط لتغوص في أصل المفهوم وجذوره.',
+              '3️⃣ اقرأ التفاصيل الجانبية للحصول على إضاءات فلسفية وعلمية نادرة.'
+            ],
+            tip: '💡 تتبع الروابط المتشابكة لتكشف خبايا لم تكن ظاهرة للعيان!'
+          };
+        case 'oracle':
+          return {
+            title: 'مرحباً بك في المستشار الكلي 🔮',
+            intro: 'فريق استشاري متكامل ومكون من عقول بشرية مبدعة لحل معضلاتك.',
+            steps: [
+              '1️⃣ حدد المستشار الأقرب لطبيعة سؤالك (عقلي، مالي، أو مهني).',
+              '2️⃣ وجه سؤالك بدقة للحصول على فتوى ورؤية من عمق التخصص.',
+              '3️⃣ بدّل بين النوافذ لتسمع آراء متعددة ومختلفة للقضية الواحدة.'
+            ],
+            tip: '💡 الرأي الحكيم يبنى على رؤية المشكلة من زوايا متعددة!'
+          };
+        case 'mylibrary':
+          return {
+            title: 'مرحباً بك في مكتبتك الخاصة 🔖',
+            intro: 'المستودع الآمن لجميع كنوزك المعرفية، مخطوطاتك وقراراتك التاريخية.',
+            steps: [
+              '• اضغط على أي مخطوطة أو تحليل لمحاكاة قراءته أو تكرار تعديله.',
+              '• تحكم بروتين الحفظ والاستدعاء لتنظيم مخزون أفكارك الثمينة.',
+              '• يمكنك مشاركتها مع الرفقاء أو تركها سراً فكرياً لك وحده.'
+            ],
+            tip: '💡 مراجعة أفكارك القديمة تمنحك وعياً أفضل لتطورك الفكري!'
+          };
+        case 'loyalty':
+          return {
+            title: 'مرحباً بك في الولاء والهدايا 🎁',
+            intro: 'عقد تبيان المميز لتقدير رحلتك المعرفية معنا وتقديم الهدايا الفريدة.',
+            steps: [
+              '• اجمع النقاط والأوسمة الفكرية من خلال استخدامك اليومي للتطبيق.',
+              '• فعّل الهدايا والكوبونات للاستفادة من الميزات الخاصة بعضويتك.',
+              '• تفقّد مستواك الفكري الحالي والامتيازات المصاحبة له.'
+            ],
+            tip: '💡 استخدامك اليومي الذكي يقودك لبلوغ مراتب علمية أعلى في النظام!'
+          };
+        case 'contact':
+          return {
+            title: 'مرحباً بك في تواصل معنا ✉️',
+            intro: 'بوابة مفتوحة لإرسال مقترحاتك وملاحظاتك لمطوري تبيان.',
+            steps: [
+              '1️⃣ املأ البيانات وحدد نوع استفسارك بدقة.',
+              '2️⃣ اكتب رسالتك مع تفاصيل كافية لمساعدتنا على فهم غرضك.',
+              '3️⃣ اضغط على إرسال لنقوم بالتجاوب معك ودعمك بأسرع وقت.'
+            ],
+            tip: '💡 نحن نصغي لكل رسالة بحب وعمق لنرتقي بتبيان معاً!'
+          };
+        default:
+          return {
+            title: `مرحباً بك في تبيان ✨`,
+            intro: `مساحة التمكين المعرفي والوعي المتكامل لأفكارك وقراراتك.`,
+            steps: [
+              '• اختر الأداة التي تناسب احتياجك أو اطرح سؤالك ليقودك تبيان.',
+              '• تنقل بسلاسة عبر القوائم لاستكشاف الابتكارات المصممة لأجلك.',
+              '• استخدم زر الرجوع أعلى اليسار للتنقّل دون فقدان سياق حديثك.'
+            ],
+            tip: '💡 تبيان صُمم ليكون امتداداً واعياً لعقلك وتأملاتك!'
+          };
+      }
+    } else {
+      switch (activeTab) {
+        case 'qawlfasl':
+          return {
+            title: 'Welcome to Qawl Fasl ⚖️',
+            intro: 'A precise space to resolve disputes and complex debates using neutrality and logic.',
+            steps: [
+              '1️⃣ Type your issue or complex debate in the designated box.',
+              '2️⃣ Tebyan will break down the arguments with philosophical and logical balance.',
+              '3️⃣ Access extra details or save the final judgment easily.'
+            ],
+            tip: '💡 Use historic opinions to expand your analytical framework!'
+          };
+        case 'decisionroom':
+          return {
+            title: 'Welcome to Decision Room 🤫',
+            intro: 'Deconstruct hesitation and reach optimal paths with clarity and profound focus.',
+            steps: [
+              '1️⃣ Enter the decision or dilemma on your mind clearly.',
+              '2️⃣ Progress through the session by selecting "First pulse" and then "Go deeper".',
+              '3️⃣ Follow the 4-step sequence to stress-test your confidence and trace every angle.'
+            ],
+            tip: '💡 Switch to the full lab version if you need raw customized tools!'
+          };
+        case 'strategicarena':
+          return {
+            title: 'Welcome to Strategic Arena 🏹',
+            intro: 'Convert complex objectives and abstract visions into a solid, structured roadmap.',
+            steps: [
+              '1️⃣ Express your major strategic goal or personal project.',
+              '2️⃣ Select the appropriate time depth, balancing mode, and execution pace.',
+              '3️⃣ Apply analysis to generate a visual, sequential action plan.'
+            ],
+            tip: '💡 Map unforeseen obstacles before taking real life actions!'
+          };
+        case 'creativelab':
+          return {
+            title: 'Welcome to Creative Lab ⚛️',
+            intro: 'Your workshop to fuse unrelated domains and trigger raw, out-of-the-box innovation.',
+            steps: [
+              '1️⃣ Define the topics, fields, or hobbies you wish to combine.',
+              '2️⃣ Spark the connection and witness intelligent, unexpected crossovers.',
+              '3️⃣ Polish your mock designs and map ideas freely in the interactive workbench.'
+            ],
+            tip: '💡 Great breakthroughs often come from fusing completely opposite thoughts!'
+          };
+        case 'ar':
+          return {
+            title: 'Welcome to Tebyan AR 🕶️',
+            intro: 'Visualize abstract ideas and cognitive networks as living objects around you.',
+            steps: [
+              '1️⃣ Allow camera access to initialize the augmented reality platform.',
+              '2️⃣ Observe the flow of knowledge nodes and intellectual concept structures.',
+              '3️⃣ Interact with floating objects to reveal their inner depth.'
+            ],
+            tip: '💡 Use a well-lit, quiet environment for the best spatial tracking!'
+          };
+        case 'truthmanuscript':
+          return {
+            title: 'Welcome to Truth Manuscript 📜',
+            intro: 'Turn your inner struggles, deep emotions, or thoughts into an elegant historic manuscript.',
+            steps: [
+              '1️⃣ Type whatever occupies your soul or mind in an unfiltered way.',
+              '2️⃣ Choose your preferred philosophical writer filter and creative writing tools.',
+              '3️⃣ Click to finalize and bind the manuscript to store in your private library.'
+            ],
+            tip: '💡 Express yourself with complete honesty, where masterpieces are born!'
+          };
+        case 'knowledgecenter':
+          return {
+            title: 'Welcome to Knowledge Center 🕸️',
+            intro: 'Explore complex subjects via a highly interconnected neural network of wisdom.',
+            steps: [
+              '1️⃣ Open the advanced research input and type a concept you wish to study.',
+              '2️⃣ Track the lines and visual bonds to map related domains and origin points.',
+              '3️⃣ Open side panels to read rare philosophical or academic insights.'
+            ],
+            tip: '💡 Follow adjacent paths to discover secrets hidden on first sight!'
+          };
+        case 'oracle':
+          return {
+            title: 'Welcome to Omni Counselor 🔮',
+            intro: 'Consult a highly balanced cabinet of historic and modern expert intellects.',
+            steps: [
+              '1️⃣ Set the master advisor closest to your problem field (clinical, engineering, philosophy).',
+              '2️⃣ Type your query to hear advice woven from high-tier professional wisdom.',
+              '3️⃣ Toggle between advisors to notice opposite point of views on the same challenge.'
+            ],
+            tip: '💡 Balanced choices are made by checking multiple sound viewpoints!'
+          };
+        case 'mylibrary':
+          return {
+            title: 'Welcome to My Library 🔖',
+            intro: 'The secure repository for all your saved manuscripts, decisions, and intellectual steps.',
+            steps: [
+              '• Click any artifact to read, copy, share, or re-simulate its analysis.',
+              '• Customize categorization to tidy your cognitive shelf of precious assets.',
+              '• Keep them entirely confidential or export your gems to friends.'
+            ],
+            tip: '💡 Revisiting older reflections often rewards you with instant clarity on your personal growth!'
+          };
+        case 'loyalty':
+          return {
+            title: 'Welcome to Loyalty & Coupons 🎁',
+            intro: 'Tebyan’s token of appreciation for your loyalty, unlocking deep benefits and badges.',
+            steps: [
+              '• Earn unique points and badges by exploring and using more tools daily.',
+              '• Activate promo coupons or special gifts granted to members.',
+              '• Track your current level and the associated premium benefits.'
+            ],
+            tip: '💡 Consistent daily intellectual engagement rises your standing in the global hierarchy!'
+          };
+        case 'contact':
+          return {
+            title: 'Welcome to Contact Us ✉️',
+            intro: 'An open gate to suggest features or talk directly to Tebyan developers.',
+            steps: [
+              '1️⃣ Fill in your active contact information and select the message topic.',
+              '2️⃣ Write down your feedback or bug report with optional details.',
+              '3️⃣ Click send and we will review and reply swiftly.'
+            ],
+            tip: '💡 We read every single note with care to shape the future of Tebyan together!'
+          };
+        default:
+          return {
+            title: `Welcome to Tebyan ✨`,
+            intro: `An ambient platform for cognitive growth, strategic action, and elevated decisions.`,
+            steps: [
+              '• Select a specialised tab or ask your core mind question at the main entry.',
+              '• Move smoothly between menus with responsive transitions.',
+              '• The global back button keeps you in flow without resetting states.'
+            ],
+            tip: '💡 Tebyan is designed to be an extensions of your cognitive thinking flow!'
+          };
+      }
+    }
+  };
 
   return (
         <div className={cn("h-[100dvh] tebyan-living-background font-sans flex flex-col overflow-hidden text-[#182231] selection:bg-zinc-200 selection:text-black", language === 'ar' ? 'rtl' : 'ltr')} dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -673,21 +944,40 @@ const AppContent: React.FC = () => {
             </div>
           )}
           <AnimatePresence>
-            {isInternalPage && showPageHelp && (
-              <motion.div
-                initial={{ opacity: 0, y: -8, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                className="fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[94] w-[min(330px,calc(100vw-24px))] rounded-[22px] bg-white/96 border border-[#8E7AAE]/15 shadow-[0_24px_70px_rgba(24,34,49,0.16)] backdrop-blur-2xl p-4 text-right"
-                dir={language === 'ar' ? 'rtl' : 'ltr'}
-              >
-                <div className="flex items-center gap-2 mb-2 text-[#6E5F8E]">
-                  <HelpCircle className="w-4 h-4" />
-                  <span className="text-xs font-black">{language === 'ar' ? 'كيف تستخدم هذه الصفحة؟' : 'How to use this page'}</span>
-                </div>
-                <p className="text-xs font-bold leading-relaxed text-[#64788D]">{pageHelpText}</p>
-              </motion.div>
-            )}
+            {isInternalPage && showPageHelp && (() => {
+              const helpData = getPageHelpDetails();
+              return (
+                <motion.div
+                  key="help-tooltip-popup"
+                  initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                  className="fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[94] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
+                  dir={language === 'ar' ? 'rtl' : 'ltr'}
+                >
+                  <div className="flex items-center gap-2 mb-2 text-[#6E5F8E] border-b border-[#8E7AAE]/10 pb-2">
+                    <HelpCircle className="w-5 h-5 shrink-0" />
+                    <span className="text-sm font-black text-[#182231]">{helpData.title}</span>
+                  </div>
+                  
+                  <p className="text-xs font-bold leading-relaxed text-[#64788D] mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[#8E7AAE]/5">
+                    {helpData.intro}
+                  </p>
+                  
+                  <div className="space-y-2.5 mb-3.5">
+                    {helpData.steps.map((step, idx) => (
+                      <div key={idx} className="text-xs font-semibold leading-relaxed text-[#465568] border-r-2 border-[#8E7AAE]/16 pr-2">
+                        {step}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-[11px] font-bold text-[#6E5F8E] leading-relaxed">
+                    {helpData.tip}
+                  </div>
+                </motion.div>
+              );
+            })()}
           </AnimatePresence>
           
           {/* Spatial Ghosting (الذاكرة المكانية الوهمية) */}
