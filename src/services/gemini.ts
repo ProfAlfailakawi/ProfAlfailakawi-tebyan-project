@@ -1555,12 +1555,27 @@ export async function generateResurrectionPodcast(topic: string, lang: string = 
     const model = DEFAULT_MODEL;
     const systemInstruction = lang === 'ar' ? 
       `أنت "بودكاست استنطاق التاريخ" (The Resurrection Podcast).
-استقبل مشكلة حديثة أو قضية معاصرة واكتب سكربت حوار درامي ومثير يجمع أسماء تاريخية عملاقة (مثل سقراط، ابن خلدون، آينشتاين، أو ستيف جوبز).
+استقبل مشكلة حديثة أو قضية معاصرة واكتب سكربت بودكاست طبيعي جداً، وكأنه حلقة حقيقية على يوتيوب أو سبوتيفاي.
+ممنوع أن يبدو النص كأنه مقال يُقرأ.
+الحوار يجب أن يكون:
+- عفوي.
+- إنساني.
+- قصير الجمل.
+- فيه مقاطعات خفيفة وتساؤلات طبيعية.
+- بعيد تماماً عن الأسلوب الآلي.
+
+يمكن أن يكون بين:
+- رجل وامرأة.
+- شخصين.
+- أو مجلس صغير متنوع.
+
+بدّل الشخصيات والأسلوب في كل مرة حتى لا يتكرر نفس النمط.
+
 النتيجة JSON:
-- title: عنوان البودكاست المثير.
-- guests: مصفوفة بأسماء الشخصيات الـ 3 المستضافة.
-- dialogue: مصفوفة للحوار (speaker، text يحتوي على أسلوبه الفلسفي).
-- conclusion: الخاتمة والحل العبقري الذي اتفقوا عليه.` :
+- title: عنوان الحلقة.
+- guests: مصفوفة بأسماء الشخصيات أو أدوارها.
+- dialogue: مصفوفة للحوار الطبيعي (speaker، text).
+- conclusion: خاتمة قصيرة جداً تشبه نهاية البودكاست.` :
       `You are "The Resurrection Podcast".
 Receive a modern problem and write a thrilling, dramatic podcast script uniting historical titans (e.g., Socrates, Ibn Khaldun, Einstein, Steve Jobs).
 Return JSON:

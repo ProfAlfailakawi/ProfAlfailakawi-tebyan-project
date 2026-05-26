@@ -482,7 +482,29 @@ async function startServer() {
 
     // AI Proxy Route
     app.post("/api/ai/audio", async (req, res) => {
-        const { text, voiceName } = req.body;
+        const { text, voiceName, style = 'natural' } = req.body;
+
+        const femaleVoices = ['Kore', 'Aoede'];
+        const maleVoices = ['Charon', 'Fenrir', 'Puck', 'Zephyr'];
+        const allVoices = [...femaleVoices, ...maleVoices];
+
+        const selectedVoice =
+          voiceName && allVoices.includes(voiceName)
+            ? voiceName
+            : allVoices[Math.floor(Math.random() * allVoices.length)];
+
+        const naturalizedText = `
+        تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
+        لا تقرأ النص كروبوت.
+        استخدم نبرة بشرية هادئة وعفوية.
+        أضف توقفات قصيرة طبيعية بين الجمل.
+        لا تبالغ في الأداء المسرحي.
+        اجعل الإلقاء دافئاً وقريباً من الإنسان.
+        أسلوب الأداء المطلوب: ${style === 'podcast' ? 'حوار بودكاست ذكي وعفوي' : 'حديث بشري طبيعي وهادئ'}.
+
+        النص:
+        ${text}
+        `;
         
         if (!text) {
             return res.status(400).json({ error: "Missing text for audio generation" });
@@ -505,14 +527,14 @@ async function startServer() {
             
             const result = await generateWithRetry(async () => {
                 return await model.generateContent({
-                    contents: [{ role: 'user', parts: [{ text }] }],
+                    contents: [{ role: 'user', parts: [{ text: naturalizedText }] }],
                     generationConfig: {
                       // @ts-ignore
                       responseModalities: ["AUDIO"],
                       speechConfig: {
                           voiceConfig: {
                             prebuiltVoiceConfig: { 
-                              voiceName: (voiceName && ['Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr', 'Aoede'].includes(voiceName)) ? voiceName : 'Aoede' 
+                              voiceName: selectedVoice 
                             },
                           },
                       },
