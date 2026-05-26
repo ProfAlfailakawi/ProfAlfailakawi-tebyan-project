@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, BookOpen, Compass, Network, Sparkles, X } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { cn } from '../lib/utils';
+import { useGamification } from '../hooks/useGamification';
 
 export const OnboardingTour = ({ language }: { language: 'ar' | 'en' }) => {
   const { user } = useAuth();
+  const { state: gamificationState } = useGamification();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
 
@@ -22,11 +24,12 @@ export const OnboardingTour = ({ language }: { language: 'ar' | 'en' }) => {
 
   useEffect(() => {
     const hasSeen = localStorage.getItem(tourKey) || localStorage.getItem('tebyan_onboarding_seen_v3');
-    if (!hasSeen) {
+    // Suppress automatic onboarding for users with level 3+ who are already advanced users
+    if (!hasSeen && gamificationState.level < 3) {
       const timer = setTimeout(() => openTour(false), 1600);
       return () => clearTimeout(timer);
     }
-  }, [tourKey]);
+  }, [tourKey, gamificationState.level]);
 
   useEffect(() => {
     const handler = () => openTour(true);

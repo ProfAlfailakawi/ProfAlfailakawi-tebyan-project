@@ -70,6 +70,15 @@
   --color-mood-secondary: var(--mood-secondary, #10b981);
   --color-mood-glow: var(--mood-glow, rgba(99, 102, 241, 0.15));
 
+  /* Visual Golden Ratio (Fibonacci) Spacing Scale */
+  --spacing-gr-1: 8px;     /* Fibonacci 1: Base spacing unit */
+  --spacing-gr-2: 13px;    /* Fibonacci 2: Golden Ratio multiplier 1 */
+  --spacing-gr-3: 21px;    /* Fibonacci 3: Golden Ratio multiplier 2 */
+  --spacing-gr-5: 34px;    /* Fibonacci 5: Golden Ratio multiplier 3 */
+  --spacing-gr-8: 55px;    /* Fibonacci 8: Golden Ratio multiplier 4 */
+  --spacing-gr-13: 89px;   /* Fibonacci 13: Golden Ratio multiplier 5 */
+  --spacing-gr-21: 144px;  /* Fibonacci 21: Golden Ratio multiplier 6 */
+
   @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }

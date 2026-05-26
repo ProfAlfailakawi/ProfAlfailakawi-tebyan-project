@@ -948,6 +948,7 @@ const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
 };
 
 import { useSmartSearch } from "../hooks/useSmartSearch";
+import { useGamification } from "../hooks/useGamification";
 
 export const SmartGateway: React.FC<
   SmartGatewayProps & { initialQuery?: string; onQueryUsed?: () => void }
@@ -968,6 +969,8 @@ export const SmartGateway: React.FC<
     setUserStyle: setGlobalUserStyle,
   } = useUser();
   const { user, userName, userGender } = useAuth();
+  const { state: gamificationState } = useGamification();
+  const helpOpacity = Math.max(0, 1 - (gamificationState.level - 1) * 0.35);
 
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } =
     useFluidTyping();
@@ -3272,7 +3275,7 @@ export const SmartGateway: React.FC<
           </header>
         </motion.div>
 
-        {!hasSearched && !isThinking && isHome && (
+        {false && !hasSearched && !isThinking && isHome && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
@@ -3318,7 +3321,7 @@ export const SmartGateway: React.FC<
           </motion.div>
         )}
 
-        {showLivingWorldPanel && !hasSearched && !isThinking && isHome && (
+        {false && showLivingWorldPanel && !hasSearched && !isThinking && isHome && (
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -4766,7 +4769,7 @@ export const SmartGateway: React.FC<
                 </button>
               </div>
 
-              {!searchValue.trim() && isHome && showDailyDock && (
+              {false && !searchValue.trim() && isHome && showDailyDock && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -5118,32 +5121,26 @@ export const SmartGateway: React.FC<
           </div>
 
           {/* Daily Challenge & Insights Section */}
-          <div className="emotion-hide mt-5 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
+          <div className="emotion-hide mt-5 md:mt-6 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 items-start">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               whileHover={{ y: -1 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-[#FAF9F6]/90 backdrop-blur-xl rounded-[20px] md:rounded-[24px] p-3.5 md:p-4 text-[#182231] relative overflow-hidden group border border-[#8E7AAE]/15 shadow-[0_14px_42px_rgba(24,34,49,0.06)] hover:shadow-[0_18px_52px_rgba(142,122,174,0.10)]"
+              className="bg-white/72 backdrop-blur-xl rounded-[18px] md:rounded-[22px] p-3 md:p-3.5 text-[#182231] relative overflow-hidden group border border-[#8E7AAE]/10 shadow-[0_8px_22px_rgba(24,34,49,0.035)] self-start"
             >
               <div className="relative z-10">
-                <div className="flex items-center gap-2 px-4 py-2 bg-[#8E7AAE]/10 rounded-full w-fit mb-3 backdrop-blur-md border border-[#8E7AAE]/15 text-[#6E5F8E]">
-                  <Gamepad2 className="w-4 h-4 md:w-5 md:h-5 opacity-80" />
-                  <span className="text-xs leading-none uppercase font-black tracking-widest">
-                    {language === "ar" ? "تحدي اليوم" : "DAILY CHALLENGE"}
+                <h3 className="flex items-start gap-2.5 text-base md:text-lg font-black mb-3 leading-tight tracking-tight">
+                  <span className="mt-0.5 inline-flex w-5 h-5 items-center justify-center shrink-0 rounded-full bg-[#8E7AAE]/10 text-[#6E5F8E]">
+                    <Gamepad2 className="w-3 h-3" />
                   </span>
-                </div>
-                <h3 className="text-lg md:text-xl font-serif mb-2 md:mb-3 leading-tight tracking-tight">
-                  {language === "ar"
-                    ? currentChallenge.titleAr
-                    : currentChallenge.titleEn}
+                  <span>
+                    {language === "ar"
+                      ? currentChallenge.titleAr
+                      : currentChallenge.titleEn}
+                  </span>
                 </h3>
-                <p className="text-[#7C8796] text-xs md:text-sm mb-4 md:mb-5 leading-relaxed font-medium">
-                  {language === "ar"
-                    ? "تحدَّ نفسك في المحاكي اليوم"
-                    : "Challenge yourself in the simulator today"}
-                </p>
                 <button
                   onClick={() =>
                     onPathSelect(
@@ -5151,69 +5148,74 @@ export const SmartGateway: React.FC<
                       currentChallenge.query,
                     )
                   }
-                  className="w-full py-2.5 md:py-3 bg-[#8E7AAE]/10 backdrop-blur-md text-[#6E5F8E] rounded-2xl md:rounded-[20px] font-black text-sm md:text-base hover:shadow-[0_10px_30px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 transition-all active:scale-95 border border-[#8E7AAE]/15"
+                  className="w-full py-2.5 md:py-2.5 bg-[#F3EFF9] text-[#4F4369] border border-[#8E7AAE]/16 rounded-2xl font-black text-sm md:text-sm hover:bg-[#EDE6F6] hover:-translate-y-0.5 transition-all active:scale-95 shadow-sm"
                 >
                   {language === "ar" ? "ابدأ التحدي" : "Start Challenge"}
                 </button>
               </div>
               {/* Abstract background element */}
-              <div className="absolute -bottom-16 -right-16 w-64 h-64 bg-[#8FA9C7]/14 rounded-full blur-[60px] group-hover:scale-110 transition-transform duration-1000 pointer-events-none" />
+              <div className="absolute -bottom-14 -right-14 w-44 h-44 bg-[#8FA9C7]/10 rounded-full blur-[54px] group-hover:scale-105 transition-transform duration-1000 pointer-events-none" />
             </motion.div>
 
-            <details
-              className="bg-white/62 backdrop-blur-xl rounded-[20px] md:rounded-[24px] border border-[#8FA9C7]/12 shadow-[0_10px_30px_rgba(24,34,49,0.035)] overflow-hidden"
+            <motion.div
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -1 }}
+              className="relative bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-2xl rounded-[18px] md:rounded-[22px] border border-white/60 p-4 md:p-5 shadow-[0_12px_32px_rgba(100,120,141,0.05)] overflow-hidden self-start group"
               dir={language === "ar" ? "rtl" : "ltr"}
             >
-              <summary className="cursor-pointer list-none p-3.5 md:p-4 flex items-center justify-between gap-3 text-right">
-                <div className="flex items-center gap-3">
-                  <span className="h-10 w-10 rounded-2xl bg-[#8FA9C7]/10 text-[#64788D] border border-[#8FA9C7]/12 flex items-center justify-center shrink-0">
-                    <BrainCircuit className="w-4 h-4" />
-                  </span>
-                  <div>
-                    <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#64788D]">
-                      {language === "ar" ? "رؤية المنصة" : "PLATFORM INSIGHT"}
-                    </p>
-                    <h3 className="mt-0.5 text-sm md:text-base font-black text-[#182231] leading-tight">
-                      {language === "ar"
-                        ? currentInsight.titleAr
-                        : currentInsight.titleEn}
-                    </h3>
-                  </div>
-                </div>
-                <span className="rounded-full bg-white/75 border border-[#8FA9C7]/12 px-3 py-1.5 text-[10px] font-black text-[#64788D]">
-                  {language === "ar" ? "عرض" : "View"}
-                </span>
-              </summary>
-              <div className="px-3.5 md:px-4 pb-4 space-y-2">
-                {currentInsight.items.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-2.5 bg-white/65 rounded-2xl border border-[#8FA9C7]/10"
-                  >
-                    <span className="text-xs md:text-sm font-bold text-[#465568]">
-                      {language === "ar" ? item.labelAr : item.labelEn}
-                    </span>
-                    <div className="h-1.5 w-20 md:w-28 bg-[#D9DEE5]/55 rounded-full overflow-hidden shadow-inner flex shrink-0">
-                      <motion.div
-                        className={`h-full ${item.color} rounded-full`}
-                        initial={{ width: 0 }}
-                        whileInView={{ width: item.pct }}
-                        transition={{
-                          duration: 1,
-                          ease: "easeOut",
-                          delay: 0.2,
-                        }}
-                      />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#8FA9C7]/15 via-transparent to-transparent opacity-60 rounded-bl-full pointer-events-none" />
+              <div className="relative z-10 flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-2 border-b border-[#8FA9C7]/15 pb-3.5">
+                  <div className="flex items-center gap-2 font-black text-[#506376]">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#8FA9C7]/20 to-[#8FA9C7]/5 shadow-sm border border-[#8FA9C7]/10">
+                      <BrainCircuit className="h-3.5 w-3.5 text-[#64788D]" />
                     </div>
+                    <span className="text-[10px] md:text-[11px] tracking-[0.2em] uppercase text-[#465568]">
+                      {language === "ar" ? "رؤية المنصة" : "Platform insight"}
+                    </span>
                   </div>
-                ))}
-                <p className="pt-2 text-[10px] text-[#7C8796] font-bold uppercase tracking-widest text-center">
+                  <span className="text-[9px] font-bold text-[#64788D] tracking-widest uppercase bg-[#8FA9C7]/10 px-2.5 py-1 rounded-full border border-[#8FA9C7]/10 shadow-inner">
+                    {language === "ar" ? "البيانات: 2000+ حالة" : "Data: 2000+ cases"}
+                  </span>
+                </div>
+                
+                <h4 className="text-sm md:text-base font-black text-[#182231] leading-snug">
                   {language === "ar"
-                    ? "تحليل 2000 حالة"
-                    : "Based on 2000 cases"}
-                </p>
+                    ? currentInsight.titleAr
+                    : currentInsight.titleEn}
+                </h4>
+
+                <div className="space-y-3.5 mt-1">
+                  {currentInsight.items.map((item, idx) => (
+                    <div key={idx} className="group/item">
+                      <div className="flex justify-between items-end mb-1.5 px-0.5">
+                        <span className="text-[11px] font-bold text-[#64788D] transition-colors group-hover/item:text-[#182231]">
+                          {language === "ar" ? item.labelAr : item.labelEn}
+                        </span>
+                        <div className="flex items-baseline gap-0.5">
+                          <span className="text-[12px] font-black text-[#182231]">
+                            {item.pct.replace('%', '')}
+                          </span>
+                          <span className="text-[9px] font-bold text-[#8FA9C7]">%</span>
+                        </div>
+                      </div>
+                      <div className="h-2 w-full bg-[#E5ECEF]/60 rounded-full overflow-hidden shadow-inner flex p-0.5">
+                        <motion.div
+                          className={`h-full ${item.color} rounded-full relative`}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: item.pct }}
+                          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 * idx }}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 rounded-full" />
+                        </motion.div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </details>
+            </motion.div>
           </div>
 
           {/* Signature Gate: Idea Fabric — keep it special and remove duplicate Knowledge Graph from dashboard */}
@@ -5221,19 +5223,19 @@ export const SmartGateway: React.FC<
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="emotion-hide mt-5 md:mt-6 mb-10"
+            className="emotion-hide mt-4 md:mt-5 mb-9"
           >
             <motion.button
               type="button"
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.995 }}
-              className="w-full p-4 sm:p-5 md:p-6 tebyan-fabric-hero-card rounded-[24px] md:rounded-[34px] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 md:gap-7 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
+              className="w-full p-3 sm:p-3.5 md:p-4 tebyan-fabric-hero-card rounded-[20px] md:rounded-[24px] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-4 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
               onClick={() => handleTabChange("ripple")}
             >
-              <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#D8CEE9]/34 rounded-full blur-[72px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-              <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-[#DCEAF4]/38 rounded-full blur-[72px] group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-              <div className="absolute inset-0 pointer-events-none opacity-70">
-                {[...Array(8)].map((_, i) => (
+              <div className="absolute -top-20 -right-20 w-56 h-56 bg-[#D8CEE9]/22 rounded-full blur-[68px] group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-[#DCEAF4]/26 rounded-full blur-[68px] group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
+              <div className="absolute inset-0 pointer-events-none opacity-24">
+                {[...Array(5)].map((_, i) => (
                   <motion.span
                     key={`fabric-shadow-${i}`}
                     animate={{
@@ -5275,34 +5277,28 @@ export const SmartGateway: React.FC<
                   />
                 </svg>
               </div>
-              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 md:gap-7 justify-end flex-1">
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 justify-end flex-1">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 border border-[#8E7AAE]/18 text-[#6E5F8E] text-[10px] md:text-xs font-black tracking-widest uppercase mb-4 shadow-sm">
-                    <Sparkles className="w-4 h-4" />
-                    {language === "ar"
-                      ? "التجربة المميزة"
-                      : "SIGNATURE EXPERIENCE"}
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-black text-[#182231] mb-3 tracking-tight leading-[1.12]">
+                  <h3 className="text-lg md:text-xl font-black text-[#182231] mb-1 tracking-tight leading-[1.12]">
                     {language === "ar" ? "نسيج الأفكار" : "Idea Fabric"}
                   </h3>
                   <p className="text-[#566276] font-bold text-xs md:text-sm leading-relaxed max-w-xl">
                     {language === "ar"
-                      ? "شاهد كيف تنمو فكرتك وتتفرع وتؤثر في أفكار أخرى كأنها كائن حي."
-                      : "Watch your idea grow, branch, and influence other ideas like a living system."}
+                      ? "اربط أفكارك وشوف كيف تتقاطع."
+                      : "Connect your ideas and see how they intersect."}
                   </p>
                 </div>
-                <div className="tebyan-fabric-orb w-16 h-16 md:w-20 md:h-20 rounded-[28px] bg-white flex items-center justify-center text-[#6E5F8E] border border-[#8E7AAE]/18 shadow-lg transform group-hover:rotate-1 group-hover:scale-[1.02] transition-transform shrink-0">
-                  <Waves className="w-8 h-8 md:w-10 md:h-10 opacity-90" />
+                <div className="tebyan-fabric-orb w-10 h-10 md:w-11 md:h-11 rounded-[16px] bg-white/82 flex items-center justify-center text-[#6E5F8E] border border-[#8E7AAE]/12 shadow-sm transform group-hover:rotate-1 group-hover:scale-[1.02] transition-transform shrink-0">
+                  <Waves className="w-5 h-5 md:w-6 md:h-6 opacity-80" />
                 </div>
               </div>
-              <div className="relative z-10 flex md:flex-col items-center justify-between md:justify-center gap-3 md:min-w-[150px] bg-white/78 border border-[#8E7AAE]/14 rounded-[24px] md:rounded-[28px] p-4 md:p-5 shadow-sm backdrop-blur-xl">
-                <span className="text-[11px] md:text-xs text-[#7C8796] font-black uppercase tracking-widest">
-                  {language === "ar" ? "ابدأ الرحلة" : "Start journey"}
+              <div className="relative z-10 flex items-center justify-center gap-2 md:min-w-[110px] bg-white/72 border border-[#8E7AAE]/12 rounded-[16px] md:rounded-[18px] px-3 py-2.5 shadow-sm backdrop-blur-xl">
+                <span className="text-[10px] md:text-[11px] text-[#7C8796] font-black uppercase tracking-widest">
+                  {language === "ar" ? "افتح النسيج" : "Open fabric"}
                 </span>
                 <ArrowLeft
                   className={cn(
-                    "w-5 h-5 text-[#6E5F8E]",
+                    "w-4 h-4 text-[#6E5F8E]",
                     language === "ar"
                       ? "group-hover:-translate-x-1"
                       : "rotate-180 group-hover:translate-x-1",
