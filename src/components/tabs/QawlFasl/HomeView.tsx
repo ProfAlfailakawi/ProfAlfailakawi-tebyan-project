@@ -316,27 +316,27 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Bento Grid Features */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
-          <div className="lg:col-span-8 relative overflow-hidden bg-black rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-white flex flex-col justify-end shadow-2xl group text-right">
-            <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-110 opacity-20 group-hover:opacity-30">
-              <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-zinc-500" />
+          <div className="lg:col-span-8 relative overflow-hidden bg-[#F8F5EF] rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-[#182231] flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[#E7DED2] group text-right">
+            <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-105 opacity-70">
+              <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-[#C68B6A]" />
             </div>
             
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(198,139,106,0.22),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(248,245,239,0.72))] pointer-events-none"></div>
 
             <div className="relative z-10 space-y-6 md:space-y-8">
-              <div className="inline-flex bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#F5F5F0]">
+              <div className="inline-flex bg-white/74 backdrop-blur-md px-4 py-2 rounded-full border border-[#E2D6C8] text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#9A6042] shadow-sm">
                 خدمة التدخل السريع
               </div>
               <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif leading-[1.15] tracking-tight">
                 تواجه موقفاً <br className="hidden md:block"/> 
-                <span className="italic text-zinc-400">حرجاً وصعباً؟</span>
+                <span className="italic text-[#9A6042]">حرجاً وصعباً؟</span>
               </h2>
-              <p className="text-zinc-400 text-sm md:text-base lg:text-lg max-w-xl leading-[1.6]">
+              <p className="text-[#64788D] text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
                 في لحظات الانفعال، نحتاج للهدوء والحكمة. قسم الطوارئ يوفر لك حلولاً سريعة ومجربة للمواقف والطوارئ الضاغطة.
               </p>
               <button 
                 onClick={onEmergency}
-                className="bg-white text-black px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_8px_30px_rgba(255,255,255,0.1)] relative z-50 cursor-pointer pointer-events-auto"
+                className="bg-[#182231] text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-black hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
               >
                 <AlertCircle className="w-5 h-5 md:w-6 md:h-6" />
                 دليل الطوارئ
@@ -463,4 +463,3 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
     </div>
   );
 }
-

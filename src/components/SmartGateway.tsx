@@ -18,7 +18,6 @@ import {
   ClipboardCheck,
   Command,
   X,
-  LibraryBig,
   Lock,
   Box,
   Waves,
@@ -3932,59 +3931,39 @@ export const SmartGateway: React.FC<
                         </motion.div>
                       )}
 
-                      {/* Auth Linking and Memory Palace Synchronizer */}
-                      <div className="border border-zinc-100 bg-[#FAF9F6] rounded-2xl p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2">
+                      {/* Account status stays quiet; saving is handled once in the knowledge seal below. */}
+                      <div className="border border-[#8FA9C7]/12 bg-white/70 rounded-2xl px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 mt-2">
                         <div className="flex items-start gap-3 text-right">
-                          <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-[#6E5F8E] shrink-0 mt-0.5 border border-purple-100/50">
+                          <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 mt-0.5 border border-[#DDEDEA]">
                             {user ? (
-                              <CheckCircle2 className="w-5 h-5 text-emerald-600 animate-pulse" />
+                              <CheckCircle2 className="w-4.5 h-4.5 text-[#0F9F6E]" />
                             ) : (
-                              <Lock className="w-5 h-5 text-zinc-400" />
+                              <Lock className="w-4.5 h-4.5 text-[#7C8796]" />
                             )}
                           </div>
-                          <div className="space-y-0.5">
-                            <h4 className="font-black text-xs md:text-sm text-[#182231]">
+                          <div className="space-y-0.5 min-w-0">
+                            <h4 className="font-black text-xs md:text-sm text-[#182231] leading-relaxed">
                               {user
                                 ? language === "ar"
-                                  ? `✓ تم ربط هذا البحث بحسابك المعرفي: ${userName}`
-                                  : `✓ This search is linked to your account: ${userName}`
+                                  ? `مرتبط بحسابك: ${userName}`
+                                  : `Linked to your account: ${userName}`
                                 : language === "ar"
-                                  ? "البحث غير مؤرشف في خريطتك المعرفية"
-                                  : "Search is not archived in your knowledge map"}
+                                  ? "تقدر تحفظ النتيجة بعد تسجيل الدخول"
+                                  : "Sign in to keep this result"}
                             </h4>
-                            <p className="text-[11px] text-zinc-500 font-bold leading-normal">
+                            <p className="text-[11px] text-[#64788D] font-bold leading-normal">
                               {user
                                 ? language === "ar"
-                                  ? "يمكنك حفظ هذا الاستنتاج تلقائياً لمراجعته في قصر ذاكرتك."
-                                  : "You can automatically save this insight for later in your Memory Palace."
+                                  ? "جاهز للحفظ في نهاية المسار بدون أزرار مكررة."
+                                  : "Ready to save below without repeated buttons."
                                 : language === "ar"
-                                  ? "سجّل دخولك الآن لحفظ ومزامنة نتائج تبيان والمسارات الفكرية التي تصنعها."
-                                  : "Log in now to save and sync Tebyan answers and the cognitive paths you build."}
+                                  ? "زر واحد يكفي: سجّل دخولك إذا تبي ترجع لها لاحقاً."
+                                  : "One button is enough: sign in if you want to return to it."}
                             </p>
                           </div>
                         </div>
-                        <div className="shrink-0 flex gap-2 w-full md:w-auto self-end md:self-auto justify-end">
-                          {user ? (
-                            <button
-                              type="button"
-                              onClick={handleSaveToLibrary}
-                              className={cn(
-                                "px-5 py-2.5 rounded-full font-black text-xs transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                isAlreadySaved
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                  : "bg-[#8E7AAE]/10 text-[#6E5F8E] border-[#8E7AAE]/20 hover:bg-[#8E7AAE]/20",
-                              )}
-                            >
-                              <LibraryBig className="w-4 h-4" />
-                              {isAlreadySaved
-                                ? language === "ar"
-                                  ? "حُفظ في قصر ذاكرتك ✓"
-                                  : "Saved to Memory Palace ✓"
-                                : language === "ar"
-                                  ? "حفظ في قصر الذاكرة"
-                                  : "Save to Memory Palace"}
-                            </button>
-                          ) : (
+                        {!user && (
+                          <div className="shrink-0 flex w-full md:w-auto self-end md:self-auto justify-end">
                             <button
                               type="button"
                               onClick={() => onShowLogin?.()}
@@ -3992,11 +3971,11 @@ export const SmartGateway: React.FC<
                             >
                               <Lock className="w-3.5 h-3.5" />
                               {language === "ar"
-                                ? "مزامنة وتسجيل الدخول"
-                                : "Sync & Login"}
+                                ? "تسجيل الدخول"
+                                : "Sign in"}
                             </button>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
 
                       <div className="space-y-8">
@@ -4286,6 +4265,7 @@ export const SmartGateway: React.FC<
                       language={language}
                       query={query}
                       kind="مسار فهم"
+                      onSave={handleSaveToLibrary}
                       onLink={() => handleTabChange("knowledgegraph")}
                     />
                   )}
@@ -4401,59 +4381,39 @@ export const SmartGateway: React.FC<
                         </div>
                       </div>
 
-                      {/* Mobile Auth Synchronizer */}
-                      <div className="border border-zinc-100 bg-[#FAF9F6] rounded-2xl p-4 flex flex-col gap-3 text-right">
+                      {/* Mobile account status */}
+                      <div className="border border-[#8FA9C7]/12 bg-white rounded-2xl p-3 flex flex-col gap-3 text-right">
                         <div className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-[#6E5F8E] shrink-0 border border-purple-100/50">
+                          <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 border border-[#DDEDEA]">
                             {user ? (
-                              <CheckCircle2 className="w-4.5 h-4.5 text-emerald-600 animate-pulse" />
+                              <CheckCircle2 className="w-4.5 h-4.5 text-[#0F9F6E]" />
                             ) : (
-                              <Lock className="w-4.5 h-4.5 text-zinc-400" />
+                              <Lock className="w-4.5 h-4.5 text-[#7C8796]" />
                             )}
                           </div>
                           <div className="space-y-0.5">
                             <h4 className="font-black text-xs text-[#182231]">
                               {user
                                 ? language === "ar"
-                                  ? `✓ مرصود ومربوط: ${userName}`
-                                  : `✓ Linked to account: ${userName}`
+                                  ? `مرتبط بحسابك: ${userName}`
+                                  : `Linked to account: ${userName}`
                                 : language === "ar"
-                                  ? "البحث غير مؤرشف فكرياً"
-                                  : "Search not archived"}
+                                  ? "تقدر تحفظ بعد تسجيل الدخول"
+                                  : "Sign in to keep it"}
                             </h4>
                             <p className="text-[10px] text-zinc-500 font-bold leading-normal">
                               {user
                                 ? language === "ar"
-                                  ? "متاح ومحفوظ الآن في قصر ذاكرتك."
-                                  : "Available and saved in your Memory Palace."
+                                  ? "الحفظ صار في زر واحد فقط بالأسفل."
+                                  : "Saving now lives in one button below."
                                 : language === "ar"
-                                  ? "سجّل دخولك لحفظ المسارات الفكرية التي تصنعها وتتبعها."
-                                  : "Log in now to save and sync the cognitive paths you build."}
+                                  ? "بدون تكرار، زر الدخول فقط عند الحاجة."
+                                  : "No repetition, only sign in if needed."}
                             </p>
                           </div>
                         </div>
-                        <div className="flex justify-end mt-1">
-                          {user ? (
-                            <button
-                              type="button"
-                              onClick={handleSaveToLibrary}
-                              className={cn(
-                                "w-full py-2 rounded-xl font-black text-xs transition-all flex items-center justify-center gap-2 border shadow-sm cursor-pointer",
-                                isAlreadySaved
-                                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                  : "bg-[#8E7AAE]/10 text-[#6E5F8E] border-[#8E7AAE]/20 hover:bg-[#8E7AAE]/20",
-                              )}
-                            >
-                              <LibraryBig className="w-3.5 h-3.5" />
-                              {isAlreadySaved
-                                ? language === "ar"
-                                  ? "حُفظ في قصر ذاكرتك ✓"
-                                  : "Saved to Memory Palace ✓"
-                                : language === "ar"
-                                  ? "حفظ في قصر الذاكرة"
-                                  : "Save to Memory Palace"}
-                            </button>
-                          ) : (
+                        {!user && (
+                          <div className="flex justify-end mt-1">
                             <button
                               type="button"
                               onClick={() => onShowLogin?.()}
@@ -4461,11 +4421,11 @@ export const SmartGateway: React.FC<
                             >
                               <Lock className="w-3 h-3" />
                               {language === "ar"
-                                ? "مزامنة وتسجيل الدخول"
-                                : "Sync & Login"}
+                                ? "تسجيل الدخول"
+                                : "Sign in"}
                             </button>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Mobile Primary */}
@@ -4694,21 +4654,22 @@ export const SmartGateway: React.FC<
                 </motion.div>
               )}
               {hasSearched && !isThinking && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8 }}
+                <motion.details
+                  initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="w-full max-w-3xl rounded-[24px] border border-[#8FA9C7]/16 bg-[#FAF9F6]/78 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.045)]"
+                  className="w-full max-w-3xl group rounded-2xl border border-[#8FA9C7]/10 bg-white/70 px-4 py-3 text-right shadow-[0_10px_28px_rgba(24,34,49,0.035)]"
                   dir={language === "ar" ? "rtl" : "ltr"}
                 >
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                    <div className="text-right">
-                      <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#64788D]">
-                        {language === "ar" ? "غرفة الغد" : "Tomorrow room"}
-                      </p>
-                      <h4 className="mt-1 text-sm md:text-base font-black text-[#182231]">
-                        {livingWorld.tomorrow}
-                      </h4>
-                    </div>
+                  <summary className="cursor-pointer list-none flex items-center justify-between gap-3 text-xs md:text-sm font-black text-[#64788D]">
+                    <span>{language === "ar" ? "لاحقاً إذا احتجت" : "Later if needed"}</span>
+                    <span className="text-[11px] font-bold text-[#8E7AAE]">
+                      {language === "ar" ? "غرفة الغد" : "Tomorrow room"}
+                    </span>
+                  </summary>
+                  <div className="mt-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-[#8FA9C7]/10 pt-3">
+                    <p className="text-sm md:text-base font-black text-[#182231] leading-relaxed">
+                      {livingWorld.tomorrow}
+                    </p>
                     <button
                       type="button"
                       onClick={() => {
@@ -4729,17 +4690,17 @@ export const SmartGateway: React.FC<
                         setTomorrowRoom(savedDoor);
                         setSelectionFeedback(
                           language === "ar"
-                            ? "تم حفظ باب الغد"
-                            : "Tomorrow door saved",
+                            ? "تم تجهيز باب الغد"
+                            : "Tomorrow door is ready",
                         );
                         setTimeout(() => setSelectionFeedback(""), 2200);
                       }}
-                      className="shrink-0 rounded-full bg-white px-5 py-2.5 text-xs font-black text-[#465568] border border-[#8FA9C7]/18 shadow-sm transition-all hover:border-[#8E7AAE]/30 active:scale-95"
+                      className="shrink-0 rounded-full bg-[#F4F1F8] px-4 py-2 text-xs font-black text-[#6E5F8E] border border-[#DED6EA] transition-all hover:bg-[#EEE8F7] active:scale-95"
                     >
-                      {language === "ar" ? "احفظها لباجر" : "Save for tomorrow"}
+                      {language === "ar" ? "ذكرني باجر" : "Remind me tomorrow"}
                     </button>
                   </div>
-                </motion.div>
+                </motion.details>
               )}
             </AnimatePresence>
           </form>
