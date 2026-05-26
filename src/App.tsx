@@ -278,60 +278,8 @@ const AppContent: React.FC = () => {
   }, [showSplash, authReady]);
 
 
-  // Mobile UX assist: after pressing any internal tool/action button, guide the viewport to the generated result area.
-  // This is visual navigation only; it does not alter AI prompts, features, data, or routes.
-  useEffect(() => {
-    const resultSelectors = [
-      '#decision-results', '#lab-results', '#mobile-results', '#desktop-results', '#qawl-fasl-results',
-      '[data-tebyan-results]', '[data-result-section]', '.tebyan-result-document', '.markdown-body'
-    ];
-    const skipSelectors = [
-      'header', '.tebyan-tab-back', '[aria-label="رجوع"]', '[aria-label="Back"]', '[title="رجوع"]', '[title="Back"]',
-      '[title="الصفحة الرئيسية"]', '[title="Home"]', '[data-no-auto-scroll]'
-    ];
-
-    const findScrollableMain = () => document.querySelector('main') as HTMLElement | null;
-    const isMeaningfulResult = (el: Element) => {
-      const rect = el.getBoundingClientRect();
-      const text = (el.textContent || '').trim();
-      return rect.height > 80 && text.length > 12;
-    };
-    const scrollToResult = () => {
-      const mainEl = findScrollableMain();
-      const target = resultSelectors
-        .map(selector => Array.from(document.querySelectorAll(selector)).find(isMeaningfulResult))
-        .find(Boolean) as HTMLElement | undefined;
-      if (!target) return;
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const behavior: ScrollBehavior = prefersReduced ? 'auto' : 'smooth';
-      const topGap = window.innerWidth < 768 ? 86 : 112;
-      if (mainEl && getComputedStyle(mainEl).overflowY !== 'visible') {
-        const mainRect = mainEl.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
-        mainEl.scrollTo({ top: mainEl.scrollTop + targetRect.top - mainRect.top - topGap, behavior });
-      } else {
-        window.scrollTo({ top: window.scrollY + target.getBoundingClientRect().top - topGap, behavior });
-      }
-    };
-
-    const scheduleResultScroll = (event: Event) => {
-      const target = event.target as Element | null;
-      if (!target) return;
-      const action = target.closest('button, a, [role="button"], [role="tab"], input[type="submit"]');
-      if (!action || skipSelectors.some(sel => action.closest(sel))) return;
-      if (!action.closest('main')) return;
-      window.setTimeout(scrollToResult, 450);
-      window.setTimeout(scrollToResult, 1100);
-      window.setTimeout(scrollToResult, 2200);
-    };
-
-    document.addEventListener('click', scheduleResultScroll, true);
-    document.addEventListener('submit', scheduleResultScroll, true);
-    return () => {
-      document.removeEventListener('click', scheduleResultScroll, true);
-      document.removeEventListener('submit', scheduleResultScroll, true);
-    };
-  }, []);
+  // Performance fix: the old automatic result-scroll fired multiple smooth scrolls after nearly every action.
+  // It made the site feel like it was jumping/hanging, especially on mobile. Keep navigation fully manual and stable.
 
   useEffect(() => {
     // Run migration from legacy keys immediately
@@ -526,9 +474,10 @@ const AppContent: React.FC = () => {
       strategicarena: language === 'ar' ? 'نفتح الميدان الاستراتيجي…' : 'Opening the strategic arena…',
       oracle: language === 'ar' ? 'نفتح مجلس المستشارين…' : 'Opening the council…'
     };
-    if (actualTab !== activeTab) {
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (actualTab !== activeTab && !prefersReducedMotion) {
       setDoorTransition({ label: doorLabels[String(actualTab)] || (language === 'ar' ? 'نفتح الباب المناسب…' : 'Opening the right doorway…'), kind: String(actualTab) });
-      setTimeout(() => setDoorTransition(null), 760);
+      setTimeout(() => setDoorTransition(null), 420);
     }
     if (checkAuth(actualTab as Tab)) {
       setIsLoading(false);
@@ -924,14 +873,11 @@ const AppContent: React.FC = () => {
           </AnimatePresence>
           
           {/* Background Elements (Volume & Texture) */}
-          <div className="fixed inset-0 pointer-events-none z-0 flex flex-col transition-opacity duration-1000" style={{ opacity: Math.max(0.2, intensity * 1.2) }}>
-              <div className="absolute inset-0 bg-noise mix-blend-multiply opacity-40"></div>
+          <div className="fixed inset-0 pointer-events-none z-0 flex flex-col" style={{ opacity: 0.28 }}>
+              <div className="absolute inset-0 bg-noise mix-blend-multiply opacity-20"></div>
               <div 
-                  className="absolute top-0 right-0 w-full h-full blur-[120px] transition-all duration-1000 mix-blend-normal" 
-                  style={{ 
-                      backgroundColor: intensity > 0.8 ? 'rgba(251, 146, 60, 0.25)' : 'var(--mood-glow)',
-                      transform: `scale(${1 + intensity * 0.15})`
-                  }} 
+                  className="absolute top-0 right-0 w-full h-full blur-[120px] mix-blend-normal" 
+                  style={{ backgroundColor: 'var(--mood-glow)' }} 
               />
           </div>
           
@@ -950,25 +896,27 @@ const AppContent: React.FC = () => {
             )}
           </AnimatePresence>
 
-          <ThoughtNebula />
+          {(activeTab === 'home' || activeTab === 'discover') && <ThoughtNebula />}
           <WhisperHint language={language} forceShow={isConfused} />
           {isInternalPage && (
-            <div className="fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[95] flex items-center gap-2.5 pointer-events-auto">
+            <div className="fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[1000] flex items-center gap-2.5 pointer-events-auto">
               <button
                 type="button"
-                onClick={() => handleTabChange('discover', '', true)}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPageHelp(false); handleTabChange('discover', '', true); }}
                 aria-label={language === 'ar' ? 'رجوع' : 'Back'}
                 title={language === 'ar' ? 'رجوع' : 'Back'}
-                className="tebyan-global-back w-11 h-11 rounded-2xl bg-[#182231] text-white border border-white/60 shadow-[0_14px_34px_rgba(24,34,49,0.22)] backdrop-blur-xl transition-all hover:bg-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+                data-no-auto-scroll="true"
+                className="tebyan-global-back w-12 h-12 rounded-2xl bg-[#182231] text-white border border-white/60 shadow-[0_14px_34px_rgba(24,34,49,0.22)] backdrop-blur-xl transition-all hover:bg-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
               >
                 <ArrowLeft className={cn('w-5 h-5', language === 'ar' ? '' : 'rotate-180')} />
               </button>
               <button
                 type="button"
-                onClick={() => setShowPageHelp(v => !v)}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowPageHelp(v => !v); }}
                 aria-label={language === 'ar' ? 'شرح الصفحة' : 'Page help'}
                 title={language === 'ar' ? 'شرح الصفحة' : 'Page help'}
-                className="tebyan-page-help-button w-8 h-8 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+                data-no-auto-scroll="true"
+                className="tebyan-page-help-button w-10 h-10 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
               >
                 <HelpCircle className="w-4 h-4" />
               </button>
@@ -983,7 +931,7 @@ const AppContent: React.FC = () => {
                   initial={{ opacity: 0, y: -8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                  className="fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[94] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
+                  className="fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
                   dir={language === 'ar' ? 'rtl' : 'ltr'}
                 >
                   <div className="flex items-center gap-2 mb-2 text-[#6E5F8E] border-b border-[#8E7AAE]/10 pb-2">
@@ -1012,28 +960,28 @@ const AppContent: React.FC = () => {
           </AnimatePresence>
           
           {/* Spatial Ghosting (الذاكرة المكانية الوهمية) */}
-          {activeTab === 'discover' && (
+          {false && activeTab === 'discover' && (
             <SpatialGhost 
               message={language === 'ar' ? "في زيارتك السابقة، توقفت مطولاً عند مقال عن الوعي الاصطناعي.." : "During your last visit, you lingered on an article about artificial consciousness.."} 
               x="left-8" 
               y="top-1/3" 
             />
           )}
-          {activeTab === 'mindmap' && (
+          {false && activeTab === 'mindmap' && (
             <SpatialGhost 
               message={language === 'ar' ? "هناك رابط خفي لم تكتشفه بعد بين الفلسفة والتكنولوجيا.." : "There is a hidden link you haven't discovered yet between philosophy and tech.."} 
               x="right-10" 
               y="top-1/4" 
             />
           )}
-          {activeTab === 'qawlfasl' && (
+          {false && activeTab === 'qawlfasl' && (
              <SpatialGhost 
                message={language === 'ar' ? "في الشهر الماضي، سألت عن معنى 'الحقيقة المطلقة'..." : "Last month, you asked for the meaning of 'absolute truth'..."} 
                x="left-10" 
                y="bottom-1/3" 
              />
           )}
-          {activeTab === 'mylibrary' && (
+          {false && activeTab === 'mylibrary' && (
              <SpatialGhost 
                message={language === 'ar' ? "كتاب 'تأملات' لا يزال ينتظر أن تكمله منذ أسبوعين.." : "The book 'Meditations' is still waiting for you to finish it since two weeks ago.."} 
                x="right-8" 
@@ -1220,10 +1168,7 @@ const AppContent: React.FC = () => {
         <div 
           className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full min-h-full cursor-default"
           onClick={(e) => {
-            // If clicking the direct background of the tab area, return to home if not already there
-            if (e.target === e.currentTarget && activeTab !== 'home' && activeTab !== 'discover') {
-              handleTabChange('home');
-            }
+            // Do not navigate on empty background clicks; this caused accidental exits and felt like lag.
           }}
         >
             <motion.div 

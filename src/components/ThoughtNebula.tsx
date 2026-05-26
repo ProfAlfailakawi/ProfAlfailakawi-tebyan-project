@@ -30,12 +30,13 @@ export const ThoughtNebula = () => {
     
     // Slow, drifting particles
     const particles: any[] = [];
-    for (let i = 0; i < 40; i++) {
+    const particleCount = window.innerWidth < 768 ? 8 : 16;
+    for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
+        vx: (Math.random() - 0.5) * 0.06,
+        vy: (Math.random() - 0.5) * 0.06,
         size: Math.random() * 80 + 20,
         alpha: Math.random() * 0.05 + 0.01 // very subtle
       });
@@ -65,7 +66,7 @@ export const ThoughtNebula = () => {
       const themeColor = hexToRgb(moodPrimary);
       const secondaryColor = hexToRgb(moodSecondary);
 
-      hueOffset += 0.1;
+      hueOffset += 0.02;
 
       particles.forEach((p) => {
         p.x += p.vx;
@@ -82,9 +83,9 @@ export const ThoughtNebula = () => {
         const dy = mouseY - p.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
         
-        if (dist < 300) {
-          p.x -= (dx / dist) * 0.5;
-          p.y -= (dy / dist) * 0.5;
+        if (dist > 0 && dist < 180) {
+          p.x -= (dx / dist) * 0.08;
+          p.y -= (dy / dist) * 0.08;
         }
 
         const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
