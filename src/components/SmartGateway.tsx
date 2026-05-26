@@ -34,7 +34,6 @@ import { cn } from "../lib/utils";
 import { logEvent } from "../services/analyticsService";
 import { useUser } from "../contexts/UserContext";
 import { useAuth } from "../components/AuthProvider";
-import { detectEmotion } from "../services/gemini";
 import {
   getActiveUser,
   getGenderWord,
@@ -2199,7 +2198,7 @@ export const SmartGateway: React.FC<
       );
     } catch (e) {}
 
-    detectEmotion(activeQuery)
+    import("../services/gemini").then(({ detectEmotion }) => detectEmotion(activeQuery))
       .then((emo) => {
         setEmotion(emo);
       })

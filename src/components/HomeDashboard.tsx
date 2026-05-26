@@ -260,7 +260,17 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                   <div className="min-w-0">
                     <span className="text-[10px] font-black tracking-[0.22em] text-[#8E7AAE]/70">{item.mark}</span>
                     <h3 className="font-black text-xl text-[#182231] leading-tight mt-1">{language === 'ar' ? item.ar : item.en}</h3>
-                    <p className="text-xs text-[#64788D] font-bold"       {/* Session Memory */}
+                    <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? item.descAr : item.descEn}</p>
+                  </div>
+                </div>
+                <ArrowLeft className="h-4 w-4 text-[#8E7AAE]" />
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Session Memory */}
       <section className="tebyan-memory-card tebyan-glass-card relative overflow-hidden rounded-[34px] border border-[#8FA9C7]/15 bg-white/82 p-gr-2 md:p-gr-3 shadow-[0_16px_55px_rgba(24,34,49,0.06)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-[#8E7AAE] via-[#8FA9C7] to-transparent opacity-70" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-gr-3">
@@ -366,17 +376,6 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               <p className="text-[11px] font-black tracking-[0.24em] uppercase text-[#8E7AAE]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
               <h3 className="mt-1 text-xl md:text-3xl font-black text-[#182231] leading-tight">
                 {language === 'ar' ? getGenderWord(userGender, 'أفكارك ترسم خريطة هادئة خلف المشهد', 'أفكاركِ ترسم خريطة هادئة خلف المشهد', 'أفكارك ترسم خريطة هادئة خلف المشهد') : 'Your ideas are drawing a quiet map backstage'}
-              </h3>
-              <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-[#7C8796]">
-                {language === 'ar' ? getGenderWord(userGender, 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتكِ المعرفية ويمكن فتحها متى أردتِ.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.') : 'This is only a visual shadow; the full idea fabric remains in your knowledge network.'}
-              </p>
-            </div>
-          </div>
-          <button onClick={() => handleTabChange('knowledgegraph')} className="shrink-0 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-5 py-3 text-xs font-black text-[#6E5F8E] shadow-sm transition-all hover:border-[#8E7AAE]/40 hover:bg-[#F4F1F8] active:scale-95">
-            {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
-          </button>
-        </div>
-      </section>�لف المشهد', 'أفكارك ترسم خريطة هادئة خلف المشهد') : 'Your ideas are drawing a quiet map backstage'}
               </h3>
               <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-[#7C8796]">
                 {language === 'ar' ? getGenderWord(userGender, 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتكِ المعرفية ويمكن فتحها متى أردتِ.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.') : 'This is only a visual shadow; the full idea fabric remains in your knowledge network.'}

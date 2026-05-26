@@ -15,31 +15,18 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
 import { useAuth } from './components/AuthProvider';
-import { auth, db } from './lib/firebase';
-import { query, collection, where, limit, getDocs } from 'firebase/firestore';
 import Login from './components/Login';
 import UserMenu from './components/UserMenu';
-import { signOut } from 'firebase/auth';
-import { GlobalCommand } from './components/GlobalCommand';
 import { GamificationBadge } from './components/GamificationBadge';
-import { TheOrb } from './components/TheOrb';
-import { VoiceCanvas } from './components/VoiceCanvas';
-import { MessagesFloatingButton } from './components/MessagesFloatingButton';
 import { ThoughtNebula } from './components/ThoughtNebula';
 import { WhisperHint } from './components/WhisperHint';
-import { SerendipityCompass } from './components/SerendipityCompass';
 import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt';
 import { SpatialGhost } from './components/SpatialGhost';
 import { OnboardingTour } from './components/OnboardingTour';
 import { TebyanTooltip } from './components/TebyanTooltip';
 
-import { KnowledgeGraphTab } from './components/tabs/KnowledgeGraphTab';
-import { GlobalSageBar } from './components/GlobalSageBar';
 import { migrateLegacyData } from './lib/migration';
 
-import AdminUsersDashboard from './components/AdminUsersDashboard';
-import AdminQawlFasl from './components/tabs/QawlFasl/AdminQawlFasl';
-import { AdminContactTab } from './components/tabs/AdminContactTab';
 import { getActiveUser, getGenderWord } from './utils/genderHelper';
 
 // Clear old search outputs instantly at moduleload/first-evaluation time so there are absolutely no race conditions or initial render leaks
@@ -98,13 +85,19 @@ type Mood = 'default' | 'revolutionary' | 'calm' | 'melancholic' | 'optimistic';
 
 const protectedFeatures: Tab[] = ['oracle', 'concepts', 'quizzes', 'simulation', 'timemachine', 'council', 'lab', 'adminusers', 'adminqawlfasl', 'mindmap', 'knowledgegraph', 'analytics', 'loyalty', 'roadmap', 'story', 'adminmessages', 'decisionroom', 'admindashboard', 'strategicarena', 'creativelab', 'knowledgecenter', 'mylibrary', 'truthmanuscript'];
 
-import DevPanel from './components/DevPanel';
-
-import { SmartGateway } from './components/SmartGateway';
 import { logEvent } from './services/analyticsService';
 import { cronService } from './services/cronService';
-import { LighthouseMode } from './components/LighthouseMode';
-import { translateWithContext, findSoulMatch } from './services/geminiService';
+
+const SmartGateway = React.lazy(() => import('./components/SmartGateway').then(m => ({ default: m.SmartGateway })));
+const KnowledgeGraphTab = React.lazy(() => import('./components/tabs/KnowledgeGraphTab').then(m => ({ default: m.KnowledgeGraphTab })));
+const AdminUsersDashboard = React.lazy(() => import('./components/AdminUsersDashboard'));
+const AdminQawlFasl = React.lazy(() => import('./components/tabs/QawlFasl/AdminQawlFasl'));
+const AdminContactTab = React.lazy(() => import('./components/tabs/AdminContactTab').then(m => ({ default: m.AdminContactTab })));
+const VoiceCanvas = React.lazy(() => import('./components/VoiceCanvas').then(m => ({ default: m.VoiceCanvas })));
+const GlobalCommand = React.lazy(() => import('./components/GlobalCommand').then(m => ({ default: m.GlobalCommand })));
+const MessagesFloatingButton = React.lazy(() => import('./components/MessagesFloatingButton').then(m => ({ default: m.MessagesFloatingButton })));
+const SerendipityCompass = React.lazy(() => import('./components/SerendipityCompass').then(m => ({ default: m.SerendipityCompass })));
+const LighthouseMode = React.lazy(() => import('./components/LighthouseMode').then(m => ({ default: m.LighthouseMode })));
 
 const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 'ar' | 'en' }) => {
     const quotes = language === 'ar' ? [
@@ -1133,7 +1126,7 @@ const AppContent: React.FC = () => {
                           localStorage.removeItem('tebyan_galaxy_cache');
                           localStorage.removeItem('tebyan_custom_avatar');
                           localStorage.removeItem('tebyan_style_confirmed');
-                          signOut(auth);
+                          import('./lib/firebase').then(({ auth }) => import('firebase/auth').then(({ signOut }) => signOut(auth)));
                         }} 
                         className="w-full flex items-center justify-center gap-3 py-4 bg-rose-600 text-white hover:bg-rose-700 rounded-[20px] text-base font-black shadow-lg shadow-rose-200 transition-all active:scale-[0.98]"
                       >
@@ -1316,14 +1309,23 @@ const AppContent: React.FC = () => {
                               }
                               setIsAnalyzingTwin(true);
                               try {
-                                const q = query(collection(db, 'ripples'), where('authorId', '==', user.uid), limit(5));
-                                const snap = await getDocs(q);
+                                const [{ db }, firestore, soul] = await Promise.all([
+                                  import('./lib/firebase'),
+                                  import('firebase/firestore'),
+                                  import('./services/geminiService')
+                                ]);
+                                const q = firestore.query(
+                                  firestore.collection(db, 'ripples'),
+                                  firestore.where('authorId', '==', user.uid),
+                                  firestore.limit(5)
+                                );
+                                const snap = await firestore.getDocs(q);
                                 const posts = snap.docs.map(d => d.data().text);
                                 if (posts.length < 2) {
                                   showToast(language === 'ar' ? 'انشر بذوراً أكثر لنحلل نمطك الفكري!' : 'Post more seeds to analyze your pattern!', 'info');
                                   return;
                                 }
-                                const res = await findSoulMatch(posts, language);
+                                const res = await soul.findSoulMatch(posts, language);
                                 if (res) setSoulTwinMsg(res);
                               } finally {
                                 setIsAnalyzingTwin(false);
@@ -1378,11 +1380,7 @@ const AppContent: React.FC = () => {
 
       {(activeTab === 'home' || activeTab === 'discover') && (
         <>
-          {false && <TheOrb 
-            language={language}
-            onTap={() => setShowGlobalCommand(true)}
-            onDragUp={() => setShowVoiceCanvas(true)}
-          />}
+          {false && null}
           <MessagesFloatingButton />
         </>
       )}

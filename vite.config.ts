@@ -22,5 +22,20 @@ export default defineConfig(({mode}) => {
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return undefined;
+            if (id.includes('/firebase/')) return 'vendor-firebase';
+            if (id.includes('/@google/') || id.includes('/google-auth-library/')) return 'vendor-ai';
+            if (id.includes('/react-markdown/') || id.includes('/remark-') || id.includes('/micromark') || id.includes('/unified/')) return 'vendor-markdown';
+            if (id.includes('/motion/') || id.includes('/lucide-react/')) return 'vendor-ui';
+            if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/react-router-dom/')) return 'vendor-react';
+            return undefined;
+          },
+        },
+      },
+    },
   };
 });
