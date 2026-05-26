@@ -174,7 +174,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
   };
 
   return (
-    <div className="tebyan-home-signature tebyan-home-masterpiece relative w-full flex flex-col pt-gr-2 pb-gr-8 md:pt-gr-3 px-gr-2 md:px-px-3 max-w-7xl mx-auto space-y-gr-5">
+    <div className="tebyan-home-signature tebyan-home-masterpiece relative w-full flex flex-col pt-gr-2 pb-gr-8 md:pt-gr-3 px-gr-2 md:px-gr-3 max-w-7xl mx-auto space-y-gr-5">
       <header className="tebyan-cinematic-hero tebyan-aurora-shell relative overflow-hidden rounded-[34px] md:rounded-[55px] border border-white/70 bg-gradient-to-br from-white/88 via-[#FBFAF7]/92 to-[#EEF2F6]/88 p-gr-3 md:p-gr-5 shadow-[0_28px_90px_rgba(24,34,49,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-24 -right-20 h-64 w-64 rounded-full bg-[#8E7AAE]/16 blur-[70px]" />
@@ -376,7 +376,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
           </button>
         </div>
-      </section>�لف المشهد', 'أفكارك ترسم خريطة هادئة خلف المشهد') : 'Your ideas are drawing a quiet map backstage'}
+      </section>�لف المشهد', 'أفكارك ترسم خريطة هادئة خلف المشهد') : 'Your ideas are drawing a quiet map backstage'}
               </h3>
               <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-[#7C8796]">
                 {language === 'ar' ? getGenderWord(userGender, 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتكِ المعرفية ويمكن فتحها متى أردتِ.', 'هذا ظل بصري فقط؛ خريطة النسيج الكاملة محفوظة في شبكتك المعرفية ويمكن فتحها متى أردت.') : 'This is only a visual shadow; the full idea fabric remains in your knowledge network.'}
