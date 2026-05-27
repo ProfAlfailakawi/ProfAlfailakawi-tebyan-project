@@ -706,7 +706,21 @@ async function startServer() {
         console.log(`[Server] Production mode: Serving static files from ${distPath}`);
         
         app.use(express.static(distPath, {
-          index: false // We handle index.html manually below
+          index: false, // We handle index.html manually below
+          etag: true,
+          lastModified: true,
+          maxAge: '1y',
+          immutable: true,
+          setHeaders: (res, filePath) => {
+            if (filePath.endsWith('index.html') || filePath.endsWith('sw.js') || filePath.endsWith('site.webmanifest')) {
+              res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+              return;
+            }
+
+            if (/\.(?:js|css|png|jpg|jpeg|svg|webp|woff2?)$/i.test(filePath)) {
+              res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            }
+          }
         }));
         
         app.get('*', (req, res) => {

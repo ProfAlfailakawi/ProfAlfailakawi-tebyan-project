@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { collection, getDocs, doc, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
-import * as XLSX from 'xlsx';
 import { UploadCloud, CheckCircle, AlertTriangle, Loader2, PlayCircle, StopCircle, RefreshCw } from 'lucide-react';
 import { generateQawlFaslContent, GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { CATEGORIES } from './types';
@@ -43,6 +42,7 @@ export default function AdminQawlFaslUpload() {
     setReport(null);
 
     try {
+      const XLSX = await import('xlsx');
       const buffer = await file.arrayBuffer();
       const workbook = XLSX.read(buffer);
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
