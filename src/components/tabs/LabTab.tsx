@@ -18,6 +18,7 @@ declare global {
 const labTools = [
   { id: 'collider', ar: 'مُصادم الأفكار', en: 'Cognitive Collider', tooltip: { ar: 'دمج وتصادم الأفكار المتناقضة لتوليد أفكار جديدة', en: 'Collide contradicting ideas to generate new ones' } },
   { id: 'collision', ar: 'مرايا العقول', en: 'Perspectives Collision', tooltip: { ar: 'مجلس افتراضي يناقش فكرتك من زوايا متضاربة ومتكاملة', en: 'Virtual council discussing your idea from conflicting angles' } },
+  { id: 'podcast', ar: 'بودكاست واقعي', en: 'Realistic Podcast', tooltip: { ar: 'تحويل فكرتك إلى حلقة حوارية طبيعية لا تبدو كقراءة نص', en: 'Turn your idea into a natural conversational podcast script' } },
   { id: 'symbols', ar: 'توليد الرموز', en: 'Symbol Factory', tooltip: { ar: 'تحويل المفاهيم المجردة إلى رموز بصرية تعبيرية عميقة', en: 'Transform abstract concepts into profound visual symbols' } },
   { id: 'sound', ar: 'صوت الأفكار', en: 'Idea Echo', tooltip: { ar: 'تحويل ترددات ورنين الأفكار إلى تمثيلات بصرية موجية', en: 'Transform idea frequencies and resonance into visual waveforms' } },
   { id: 'design', ar: 'تصميم استراتيجي', en: 'Strategic Design', tooltip: { ar: 'تصميم مسارات وخطط شاملة وممنهجة', en: 'Design systematic strategic paths' } },
@@ -65,7 +66,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [error, setError] = React.useState<string | null>(null);
 
   const labPurposes = React.useMemo(() => ([
-    { id: 'understand', title: { ar: 'أبي أفهمها ببساطة', en: 'Understand it simply' }, hint: { ar: 'تبسيط وخريطة ذهنية وزوايا متعددة', en: 'Simplify, map, and see angles' }, toolIds: ['family', 'mindmap', 'collision'] },
+    { id: 'understand', title: { ar: 'أبي أفهمها ببساطة', en: 'Understand it simply' }, hint: { ar: 'تبسيط وخريطة ذهنية وزوايا متعددة', en: 'Simplify, map, and see angles' }, toolIds: ['family', 'mindmap', 'collision', 'podcast'] },
     { id: 'create', title: { ar: 'أبي فكرة جديدة', en: 'Create a new idea' }, hint: { ar: 'تصادم أفكار ورموز وصوت للفكرة', en: 'Collide ideas, symbols, and resonance' }, toolIds: ['collider', 'symbols', 'sound'] },
     { id: 'build', title: { ar: 'أبي أحولها لمشروع', en: 'Turn it into a project' }, hint: { ar: 'تصميم ومسارات مهنية وورش', en: 'Design, careers, and workshops' }, toolIds: ['design', 'career', 'workshop'] },
     { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] }
@@ -166,7 +167,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
       const { 
         generateInstructionalDesign, scoutTools, generatePersonas, auditUDL,
         generateMindMap, explainSimply, careerCompass, generateWorkshop, universalOracle,
-        generateSymbol, generateIdeaSound, generatePerspectivesCollision
+        generateSymbol, generateIdeaSound, generatePerspectivesCollision, generateResurrectionPodcast
       } = await import('../../services/gemini');
       resetAllLabResults();
       
@@ -217,6 +218,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         case 'collision':
           setLabCollision(await generatePerspectivesCollision(labInput, language));
           break;
+        case 'podcast':
+          setLabPodcast(await generateResurrectionPodcast(labInput, language));
+          break;
       }
     } catch (err: any) {
       setError("أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
@@ -226,12 +230,12 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   };
 
   React.useEffect(() => {
-    if (!isLoading && (labSymbol || labColliderResult || labWorkshop || labDesign || labScout.length > 0 || labPersonas.length > 0 || labUdl.length > 0 || labMindMap || labFamilyExplanation || labCareer.length > 0 || labSound)) {
+    if (!isLoading && (labSymbol || labColliderResult || labWorkshop || labDesign || labScout.length > 0 || labPersonas.length > 0 || labUdl.length > 0 || labMindMap || labFamilyExplanation || labCareer.length > 0 || labSound || labPodcast)) {
        setTimeout(() => {
            document.getElementById('lab-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
        }, 100);
     }
-  }, [isLoading, labSymbol, labColliderResult, labWorkshop, labDesign, labScout, labPersonas, labUdl, labMindMap, labFamilyExplanation, labCareer, labSound]);
+  }, [isLoading, labSymbol, labColliderResult, labWorkshop, labDesign, labScout, labPersonas, labUdl, labMindMap, labFamilyExplanation, labCareer, labSound, labPodcast]);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
@@ -572,6 +576,84 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                            {labCollision.synthesis}
                          </p>
                       </div>
+                   </motion.div>
+                 )}
+
+
+                 {activeLabTool === 'podcast' && labPodcast && (
+                   <motion.div
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="bg-[#182231] text-white rounded-[40px] p-6 md:p-12 border border-white/10 shadow-2xl overflow-hidden relative"
+                   >
+                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(142,122,174,0.25),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,195,189,0.18),transparent_30%)] pointer-events-none" />
+                     <div className="relative z-10 space-y-8">
+                       <div className="text-center space-y-4">
+                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10 text-xs font-black tracking-widest uppercase">
+                           <Mic className="w-4 h-4" />
+                           {language === 'ar' ? 'بودكاست واقعي' : 'REALISTIC PODCAST'}
+                         </div>
+                         <h3 className="text-3xl md:text-5xl font-black leading-tight max-w-4xl mx-auto">
+                           {labPodcast.title}
+                         </h3>
+                         <p className="text-white/60 font-bold text-sm md:text-base max-w-2xl mx-auto">
+                           {language === 'ar'
+                             ? 'حوار مكتوب بروح حلقة حقيقية: مقاطعات خفيفة، تردد إنساني، وجمل قصيرة تصلح للتسجيل، وليس نصاً مقروءاً.'
+                             : 'A conversation shaped like a real episode: light interruptions, human hesitation, and short recordable lines.'}
+                         </p>
+                       </div>
+
+                       {labPodcast.guests?.length > 0 && (
+                         <div className="flex flex-wrap justify-center gap-3">
+                           {labPodcast.guests.map((guest: string, i: number) => (
+                             <span key={i} className="px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm font-bold text-white/85">
+                               {guest}
+                             </span>
+                           ))}
+                         </div>
+                       )}
+
+                       <div className="space-y-4">
+                         {labPodcast.dialogue?.map((line: any, i: number) => (
+                           <motion.div
+                             key={i}
+                             initial={{ opacity: 0, y: 12 }}
+                             animate={{ opacity: 1, y: 0 }}
+                             transition={{ delay: i * 0.05 }}
+                             className={cn(
+                               "rounded-[28px] p-5 md:p-6 border max-w-3xl",
+                               i % 2 === 0
+                                 ? "bg-white text-[#182231] border-white/20 ml-auto"
+                                 : "bg-white/10 text-white border-white/10 mr-auto"
+                             )}
+                           >
+                             <div className="flex items-center gap-3 mb-3">
+                               <div className={cn(
+                                 "w-10 h-10 rounded-full flex items-center justify-center font-black",
+                                 i % 2 === 0 ? "bg-[#F1EEF4] text-[#8E7AAE]" : "bg-white/15 text-white"
+                               )}>
+                                 {line.speaker?.[0] || '•'}
+                               </div>
+                               <div className="font-black text-sm md:text-base">{line.speaker}</div>
+                             </div>
+                             <p className="text-lg md:text-xl leading-relaxed font-bold">
+                               {line.text}
+                             </p>
+                           </motion.div>
+                         ))}
+                       </div>
+
+                       {labPodcast.conclusion && (
+                         <div className="bg-white/10 rounded-[32px] p-6 md:p-8 border border-white/10 text-center">
+                           <div className="text-white/50 text-xs font-black uppercase tracking-widest mb-3">
+                             {language === 'ar' ? 'نهاية الحلقة' : 'EPISODE CLOSE'}
+                           </div>
+                           <p className="text-xl md:text-2xl font-black leading-relaxed">
+                             {labPodcast.conclusion}
+                           </p>
+                         </div>
+                       )}
+                     </div>
                    </motion.div>
                  )}
 
