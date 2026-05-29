@@ -18,8 +18,6 @@ import { useAuth } from './components/AuthProvider';
 import Login from './components/Login';
 import UserMenu from './components/UserMenu';
 import { GamificationBadge } from './components/GamificationBadge';
-import { ThoughtNebula } from './components/ThoughtNebula';
-import { WhisperHint } from './components/WhisperHint';
 import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt';
 import { SpatialGhost } from './components/SpatialGhost';
 import { OnboardingTour } from './components/OnboardingTour';
@@ -89,6 +87,7 @@ import { logEvent } from './services/analyticsService';
 import { cronService } from './services/cronService';
 
 const SmartGateway = React.lazy(() => import('./components/SmartGateway').then(m => ({ default: m.SmartGateway })));
+const ThoughtNebula = React.lazy(() => import('./components/ThoughtNebula').then(m => ({ default: m.ThoughtNebula })));
 const KnowledgeGraphTab = React.lazy(() => import('./components/tabs/KnowledgeGraphTab').then(m => ({ default: m.KnowledgeGraphTab })));
 const AdminUsersDashboard = React.lazy(() => import('./components/AdminUsersDashboard'));
 const AdminQawlFasl = React.lazy(() => import('./components/tabs/QawlFasl/AdminQawlFasl'));
@@ -118,7 +117,7 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
         const timer = setTimeout(() => {
             try { sessionStorage.setItem('tebyan_gate_to_search', 'true'); window.dispatchEvent(new CustomEvent('tebyan_gate_to_search')); } catch(e) {}
             onFinish();
-        }, 1850);
+        }, 550);
         return () => clearTimeout(timer);
     }, [onFinish]);
 
@@ -220,7 +219,6 @@ const OfflineNotice = ({ language }: { language: 'ar' | 'en' }) => (
 );
 
 import { LivingIcon } from './components/LivingIcon';
-import { WhispersOfTheVoid } from './components/WhispersOfTheVoid';
 
 const AppContent: React.FC = () => {
   const navigate = useNavigate();
@@ -248,6 +246,7 @@ const AppContent: React.FC = () => {
   const [currentMood, setCurrentMood] = useState<Mood>('default');
   const [prevMood, setPrevMood] = useState<Mood>('default');
   const [showMoodTransition, setShowMoodTransition] = useState(false);
+  const [enableNonCriticalUi, setEnableNonCriticalUi] = useState(false);
   
   useEffect(() => {
     const updateOnlineState = () => setIsOffline(!navigator.onLine);
@@ -268,6 +267,27 @@ const AppContent: React.FC = () => {
     const timer = setTimeout(() => setShowSlowRecovery(true), 1800);
     return () => clearTimeout(timer);
   }, [showSplash, authReady]);
+
+  useEffect(() => {
+    if (showSplash) {
+      setEnableNonCriticalUi(false);
+      return;
+    }
+
+    const start = () => setEnableNonCriticalUi(true);
+    const win = window as typeof window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (typeof win.requestIdleCallback === 'function') {
+      const idleId = win.requestIdleCallback(start, { timeout: 1200 });
+      return () => win.cancelIdleCallback?.(idleId);
+    }
+
+    const timer = window.setTimeout(start, 900);
+    return () => window.clearTimeout(timer);
+  }, [showSplash]);
 
 
   // Performance fix: the old automatic result-scroll fired multiple smooth scrolls after nearly every action.
@@ -314,7 +334,7 @@ const AppContent: React.FC = () => {
   const mainRef = useRef<HTMLElement>(null);
   
   // Ambient Intelligence Hook
-  const { isConfused, isZen, intensity } = useAmbientIntelligence(mainRef);
+  useAmbientIntelligence(mainRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -873,8 +893,6 @@ const AppContent: React.FC = () => {
               />
           </div>
           
-          <WhispersOfTheVoid isZen={isZen} language={language} />
-          
           {/* Liquid Mood Pour Transition */}
           <AnimatePresence>
             {showMoodTransition && (
@@ -888,8 +906,11 @@ const AppContent: React.FC = () => {
             )}
           </AnimatePresence>
 
-          {(activeTab === 'home' || activeTab === 'discover') && <ThoughtNebula />}
-          <WhisperHint language={language} forceShow={isConfused} />
+          {enableNonCriticalUi && (activeTab === 'home' || activeTab === 'discover') && (
+            <React.Suspense fallback={null}>
+              <ThoughtNebula />
+            </React.Suspense>
+          )}
           {isInternalPage && (
             <div className="fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[1000] flex items-center gap-2.5 pointer-events-auto">
               <button
@@ -1377,26 +1398,33 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {(activeTab === 'home' || activeTab === 'discover') && (
-        <>
-          {false && null}
+      {enableNonCriticalUi && (activeTab === 'home' || activeTab === 'discover') && (
+        <React.Suspense fallback={null}>
           <MessagesFloatingButton />
-        </>
+        </React.Suspense>
       )}
 
-      <VoiceCanvas
-        isOpen={showVoiceCanvas}
-        onClose={() => setShowVoiceCanvas(false)}
-        language={language}
-      />
+      {showVoiceCanvas && (
+        <React.Suspense fallback={null}>
+          <VoiceCanvas
+            isOpen={showVoiceCanvas}
+            onClose={() => setShowVoiceCanvas(false)}
+            language={language}
+          />
+        </React.Suspense>
+      )}
 
-      <GlobalCommand 
-        isOpen={showGlobalCommand} 
-        onClose={() => setShowGlobalCommand(false)} 
-        language={language}
-        tabs={tabs}
-        handleTabChange={handleTabChange}
-      />
+      {showGlobalCommand && (
+        <React.Suspense fallback={null}>
+          <GlobalCommand
+            isOpen={showGlobalCommand}
+            onClose={() => setShowGlobalCommand(false)}
+            language={language}
+            tabs={tabs}
+            handleTabChange={handleTabChange}
+          />
+        </React.Suspense>
+      )}
 
       {false && (activeTab === 'home' || activeTab === 'discover') && (
         <SerendipityCompass language={language} contextTopic={initialContext || activeTab} handleTabChange={handleTabChange} />
