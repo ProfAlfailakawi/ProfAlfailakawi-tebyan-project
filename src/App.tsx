@@ -116,7 +116,6 @@ const SplashScreen = ({ onFinish, language }: { onFinish: () => void, language: 
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            localStorage.setItem('tebyan_creative_splash_seen_v15', 'true');
             try { sessionStorage.setItem('tebyan_gate_to_search', 'true'); window.dispatchEvent(new CustomEvent('tebyan_gate_to_search')); } catch(e) {}
             onFinish();
         }, 1850);
@@ -230,7 +229,7 @@ const AppContent: React.FC = () => {
   const isInternalPage = activeTab !== 'home' && activeTab !== 'discover';
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'error' | 'success' } | null>(null);
   const [language, setLanguage] = useState<'ar' | 'en'>('ar');
-  const [showSplash, setShowSplash] = useState(() => localStorage.getItem('tebyan_creative_splash_seen_v15') !== 'true');
+  const [showSplash, setShowSplash] = useState(true);
   const [isOffline, setIsOffline] = useState(() => typeof navigator !== 'undefined' ? !navigator.onLine : false);
   const [showSlowRecovery, setShowSlowRecovery] = useState(false);
   const [doorTransition, setDoorTransition] = useState<{ label: string; kind: string } | null>(null);
