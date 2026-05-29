@@ -4277,14 +4277,14 @@ export const SmartGateway: React.FC<
                 <motion.div
                   id="mobile-results"
                   key="mobile-suggestions"
-                  className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
+                  className="tebyan-post-search-mobile md:hidden px-4 py-5 space-y-5 max-h-[64vh] overflow-y-auto overflow-x-hidden bg-transparent"
                 >
-                  <div className="flex justify-center mb-2">
+                  <div className="flex justify-center mb-1">
                     {/* Mobile: provide a simple restart option instead of returning to home */}
                     <button
                       type="button"
                       onClick={clearSearch}
-                      className="px-6 py-2 bg-zinc-100 hover:bg-zinc-200 text-[#465568] rounded-full font-bold text-sm transition-all"
+                      className="tebyan-mobile-reset px-5 py-2 rounded-full font-black text-xs transition-all active:scale-95"
                     >
                       {language === "ar" ? "سؤال جديد" : "New question"}
                     </button>
@@ -4338,14 +4338,14 @@ export const SmartGateway: React.FC<
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-8">
+                    <div className="tebyan-mobile-stack space-y-5">
                       <div
-                        className="rounded-[26px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/90 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]"
+                        className="tebyan-mobile-result-shell rounded-[30px] p-4"
                         dir={language === "ar" ? "rtl" : "ltr"}
                       >
                         <div className="flex items-start gap-3">
                           <div
-                            className="h-11 w-11 rounded-2xl bg-white border border-[#DED6EA] flex items-center justify-center shrink-0"
+                            className="tebyan-mobile-result-icon h-11 w-11 rounded-2xl flex items-center justify-center shrink-0"
                             style={{ color: journeyProfile.accent }}
                           >
                             {(() => {
@@ -4355,20 +4355,20 @@ export const SmartGateway: React.FC<
                           </div>
                           <div className="text-right">
                             <p
-                              className="text-[10px] font-black tracking-widest"
+                              className="tebyan-result-kicker text-[10px] font-black tracking-widest"
                               style={{ color: journeyProfile.accent }}
                             >
                               {language === "ar"
                                 ? "تبيان فهمك"
                                 : "Tebyan understood"}
                             </p>
-                            <h3 className="mt-1 text-lg font-black text-[#182231]">
+                            <h3 className="mt-1 text-[17px] font-black text-[#182231] leading-snug">
                               {language === "ar"
                                 ? journeyProfile.title.ar
                                 : journeyProfile.title.en}
                             </h3>
                             {shortQuery && (
-                              <p className="mt-1 text-sm font-black leading-relaxed text-[#182231]">
+                              <p className="mt-1 text-[13px] font-black leading-relaxed text-[#182231]">
                                 {shortQuery}
                               </p>
                             )}
@@ -4382,7 +4382,7 @@ export const SmartGateway: React.FC<
                       </div>
 
                       {/* Mobile account status */}
-                      <div className="border border-[#8FA9C7]/12 bg-white rounded-2xl p-3 flex flex-col gap-3 text-right">
+                      <div className="tebyan-mobile-quiet-panel border border-[#8FA9C7]/10 rounded-[22px] p-3 flex flex-col gap-3 text-right">
                         <div className="flex items-start gap-3">
                           <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 border border-[#DDEDEA]">
                             {user ? (
@@ -4430,8 +4430,8 @@ export const SmartGateway: React.FC<
 
                       {/* Mobile Primary */}
                       {primarySuggestion && (
-                        <div className="space-y-3">
-                          <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
+                        <div className="space-y-2.5">
+                          <span className="tebyan-mobile-section-label font-black text-[10px] uppercase tracking-widest px-1">
                             {language === "ar" ? "الباب الأول" : "FIRST DOOR"}
                           </span>
                           <button
@@ -4439,17 +4439,17 @@ export const SmartGateway: React.FC<
                             onClick={() =>
                               handlePathSelect(primarySuggestion.id, query)
                             }
-                            className="tebyan-primary-route-card w-full flex items-center justify-between p-6 bg-white text-[#182231] rounded-[32px] shadow-[0_18px_52px_rgba(24,34,49,0.08)] border border-[#DED6EA] active:scale-95 transition-all"
+                            className="tebyan-primary-route-card tebyan-mobile-primary-door w-full flex items-center justify-between p-5 text-[#182231] rounded-[30px] active:scale-[0.985] transition-all"
                           >
                             <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-2xl bg-[#F4F0F8] border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center">
+                              <div className="w-11 h-11 rounded-2xl bg-[#F4F0F8] border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center shrink-0">
                                 {(() => {
                                   const Icon = journeyProfile.icon;
                                   return <Icon className="w-6 h-6" />;
                                 })()}
                               </div>
                               <div className="text-right">
-                                <div className="font-black text-lg tracking-tight">
+                                <div className="font-black text-[16px] tracking-tight leading-snug">
                                   {language === "ar"
                                     ? journeyProfile.firstDoor.ar
                                     : journeyProfile.firstDoor.en}
@@ -4474,10 +4474,10 @@ export const SmartGateway: React.FC<
                       {/* Mobile Secondary */}
                       {(secondarySuggestions.length > 0 ||
                         alternativeSuggestions.length > 0) && (
-                        <div className="rounded-[24px] md:rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
+                        <div className="tebyan-mobile-deeper-gate rounded-[26px] p-3.5 space-y-3">
                           <div className="flex items-center justify-between gap-3">
                             <div className="text-right">
-                              <div className="font-black text-sm text-zinc-900">
+                              <div className="font-black text-[13px] text-zinc-900 leading-snug">
                                 {language === "ar"
                                   ? "باب أعمق إذا احتجت"
                                   : "A deeper door if needed"}
@@ -4495,7 +4495,7 @@ export const SmartGateway: React.FC<
                                   hasMoreDepth ? level + 1 : 0,
                                 )
                               }
-                              className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all"
+                              className="tebyan-mobile-depth-button shrink-0 px-4 py-2 rounded-full font-black text-[11px] active:scale-95 transition-all"
                             >
                               {depthCtaText}
                             </button>
@@ -4507,7 +4507,7 @@ export const SmartGateway: React.FC<
                         <motion.div
                           initial={{ opacity: 0, y: 8 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]"
+                          className="tebyan-mobile-depth-note rounded-[26px] p-4"
                           dir={language === "ar" ? "rtl" : "ltr"}
                         >
                           <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">
@@ -4531,10 +4531,10 @@ export const SmartGateway: React.FC<
 
                       {visibleSecondarySuggestions.length > 0 && (
                         <div className="space-y-3">
-                          <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
+                          <span className="tebyan-mobile-section-label font-black text-[10px] uppercase tracking-widest px-1">
                             {language === "ar" ? "أبواب أعمق" : "DEEPER DOORS"}
                           </span>
-                          <div className="grid grid-cols-1 gap-2">
+                          <div className="tebyan-mobile-door-list grid grid-cols-1 gap-2.5">
                             {visibleSecondarySuggestions.map((s) => {
                               const Icon = s.icon;
                               return (
@@ -4542,17 +4542,17 @@ export const SmartGateway: React.FC<
                                   key={`mob-sec-${s.id}`}
                                   type="button"
                                   onClick={() => handlePathSelect(s.id, query)}
-                                  className="w-full flex items-center justify-between p-4 bg-zinc-50 rounded-[24px] border border-zinc-100 active:scale-95 transition-all"
+                                  className="tebyan-mobile-door-card w-full flex items-center justify-between p-3.5 active:scale-[0.985] transition-all"
                                 >
                                   <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#7C8796] shadow-sm">
+                                    <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-[#7C8796] shadow-sm shrink-0">
                                       <Icon className="w-5 h-5" />
                                     </div>
                                     <div className="text-right">
-                                      <div className="font-bold text-sm text-zinc-900">
+                                      <div className="font-black text-[13px] text-zinc-900 leading-snug">
                                         {s.label}
                                       </div>
-                                      <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">
+                                      <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-0.5 line-clamp-1">
                                         {s.desc}
                                       </p>
                                     </div>
@@ -4570,30 +4570,30 @@ export const SmartGateway: React.FC<
                         </div>
                       )}
 
-                      <div className="h-px bg-zinc-100 mx-4" />
+                      <div className="tebyan-mobile-hairline h-px mx-5" />
 
                       {/* Mobile Alternative Paths */}
                       {visibleAlternativeSuggestions.length > 0 && (
                         <div className="space-y-3">
-                          <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
+                          <span className="tebyan-mobile-section-label font-black text-[10px] uppercase tracking-widest px-1">
                             {language === "ar"
                               ? "إذا تبي أكثر"
                               : "MORE IF NEEDED"}
                           </span>
-                          <div className="grid grid-cols-2 gap-2">
+                          <div className="tebyan-mobile-more-grid grid grid-cols-2 gap-2.5">
                             {visibleAlternativeSuggestions.map((s: any) => {
                               const Icon = s.icon;
                               return (
                                 <div
                                   key={`mob-rest-${s.id}`}
                                   onClick={() => handlePathSelect(s.id, query)}
-                                  className="flex flex-col items-start gap-4 p-5 bg-white rounded-[24px] border border-zinc-100/80 hover:border-zinc-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95 transition-all group cursor-pointer"
+                                  className="tebyan-mobile-more-card flex flex-col items-start gap-3 p-4 active:scale-[0.985] transition-all group cursor-pointer"
                                 >
-                                  <div className="w-10 h-10 rounded-[14px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
+                                  <div className="w-9 h-9 rounded-[14px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
                                     <Icon className="w-4 h-4" />
                                   </div>
                                   <div className="text-right">
-                                    <div className="font-black text-[13px] text-zinc-900 mb-1">
+                                    <div className="font-black text-[12px] text-zinc-900 mb-1 leading-snug">
                                       {s.label}
                                     </div>
                                     <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2">
@@ -4611,7 +4611,7 @@ export const SmartGateway: React.FC<
                         <motion.div
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="rounded-[24px] border border-[#D8C58A]/30 bg-[#FFFDF4]/88 p-4 shadow-[0_14px_44px_rgba(168,137,48,0.08)]"
+                          className="tebyan-mobile-golden rounded-[26px] p-4"
                           dir={language === "ar" ? "rtl" : "ltr"}
                         >
                           <div className="flex items-start justify-between gap-3">
