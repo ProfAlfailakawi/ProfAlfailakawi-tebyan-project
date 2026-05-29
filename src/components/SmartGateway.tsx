@@ -3515,14 +3515,14 @@ export const SmartGateway: React.FC<
                         setQuery(nextValue);
                         setSmartSuggestion("");
                       }}
-                      className="mx-auto block w-full max-w-xl rounded-full border border-[#A8C3BD]/22 bg-[#F7FBF9]/78 px-4 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#A8C3BD]/38 active:scale-[0.99]"
+                      className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#A8C3BD]/22 bg-[#F7FBF9]/78 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#A8C3BD]/38 active:scale-[0.99] overflow-hidden"
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0">
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <div className="min-w-0 flex-1">
                           <p className="text-[10px] font-black tracking-[0.2em] uppercase text-[#5E8B80]">
                             {language === "ar" ? "نكمل السابق" : "Continue"}
                           </p>
-                          <p className="mt-0.5 truncate text-xs font-black text-[#34524B]">
+                          <p className="mt-0.5 line-clamp-2 max-w-full break-words text-[11px] sm:text-xs font-black leading-relaxed text-[#34524B]">
                             "{lastInteraction.query}"
                           </p>
                         </div>
@@ -3547,14 +3547,14 @@ export const SmartGateway: React.FC<
                         setQuery(nextValue);
                         setSmartSuggestion("");
                       }}
-                      className="mx-auto block w-full max-w-xl rounded-full border border-[#8FA9C7]/18 bg-white/72 px-4 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#8E7AAE]/30 active:scale-[0.99]"
+                      className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#8FA9C7]/18 bg-white/72 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#8E7AAE]/30 active:scale-[0.99] overflow-hidden"
                     >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0">
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <div className="min-w-0 flex-1">
                           <p className="text-[10px] font-black tracking-[0.2em] uppercase text-[#64788D]">
                             {language === "ar" ? "باب باجر" : "Tomorrow"}
                           </p>
-                          <p className="mt-0.5 truncate text-xs font-black text-[#182231]">
+                          <p className="mt-0.5 line-clamp-2 max-w-full break-words text-[11px] sm:text-xs font-black leading-relaxed text-[#182231]">
                             "{tomorrowRoom.query}"
                           </p>
                         </div>
