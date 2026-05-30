@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Headphones, Sparkles } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -19,16 +19,19 @@ interface Props {
 export default function QuestionDetailView({ questions, onBack, questionId, onQuestion, language = 'ar' }: Props) {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
   
-  const getDefaultTab = (): 'quick' | 'deep' | 'age' | 'steps' | 'resources' => {
+  const getDefaultTab = (): 'quick' | 'deep' | 'podcast' | 'age' | 'steps' | 'resources' => {
     return 'quick';
   };
 
-  const [activeTab, setActiveTab] = useState<'quick' | 'deep' | 'age' | 'steps' | 'resources'>(getDefaultTab());
+  const [activeTab, setActiveTab] = useState<'quick' | 'deep' | 'podcast' | 'age' | 'steps' | 'resources'>(getDefaultTab());
   const [related, setRelated] = useState<QawlFaslQuestion[]>([]);
   
   const [shadowResponse, setShadowResponse] = useState<string | null>(null);
   const [isSummoningShadow, setIsSummoningShadow] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [podcastResult, setPodcastResult] = useState<any | null>(null);
+  const [isPodcastLoading, setIsPodcastLoading] = useState(false);
+  const [podcastError, setPodcastError] = useState<string | null>(null);
   
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
@@ -49,6 +52,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setPodcastResult(null);
+    setPodcastError(null);
+    setIsPodcastLoading(false);
 
     async function fetchData() {
       if (!questionId) return;
@@ -67,6 +73,45 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         </div>
     );
   }
+
+
+  const buildPodcastTopic = () => {
+    const quickAnswer = question.quickAnswer || {} as any;
+    const steps = Array.isArray(question.practicalSteps) ? question.practicalSteps.join(' | ') : '';
+    const ages = Array.isArray(question.ageGroups) ? question.ageGroups.join(', ') : '';
+
+    return `حوّل إجابة قول فصل التالية إلى حلقة بودكاست واقعية جداً، لا تبدو كمقال مقروء ولا كنشرة تعليمات.
+المطلوب: حوار طبيعي قريب من الواقع، فيه مقدم أو مقدمة، ومعه ضيف واحد أو ضيفان أو مجلس صغير حسب ما يخدم الموقف فقط.
+ممنوع الإطالة والمواعظ الثقيلة. اجعل الحوار إنسانياً، فيه أخذ ورد، مقاطعات خفيفة، أسئلة قصيرة، تردد طبيعي، أمثلة من بيت كويتي/خليجي دون مبالغة، وخلاصة عملية واضحة.
+لا تستخدم مؤثرات صوتية مكتوبة بكثرة، ولا تكتب وكأنك تقرأ نصاً رسمياً.
+
+السؤال/الموقف: ${question.question || question.title}
+الملخص: ${question.quickSummary || ''}
+قل للطفل: ${quickAnswer.sayThis || ''}
+لا تقل: ${quickAnswer.dontSayThis || ''}
+افعل الآن: ${quickAnswer.doThisNow || ''}
+الخطأ الشائع: ${question.commonMistake || ''}
+الأعمار: ${ages}
+خطوات عملية: ${steps}
+الخاتمة الأصلية: ${question.closingThought || ''}`;
+  };
+
+  const handleGeneratePodcast = async () => {
+    if (isPodcastLoading) return;
+    setIsPodcastLoading(true);
+    setPodcastError(null);
+
+    try {
+      const { generateResurrectionPodcast } = await import('../../../services/gemini');
+      const result = await generateResurrectionPodcast(buildPodcastTopic(), language);
+      setPodcastResult(result);
+    } catch (error) {
+      console.error('Qawl Fasl podcast error:', error);
+      setPodcastError('تعذّر إنشاء قول فصل المسموع الآن. حاول مرة أخرى بعد قليل.');
+    } finally {
+      setIsPodcastLoading(false);
+    }
+  };
 
   const category = CATEGORIES.find(c => c.id === question.categorySlug);
 
@@ -153,6 +198,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
            {[
              { id: 'quick', label: 'الجواب السريع', icon: CheckCircle2 },
              { id: 'deep', label: 'تحليل السلوك والسياق', icon: Lightbulb },
+             { id: 'podcast', label: 'قول فصل المسموع', icon: Headphones },
              { id: 'age', label: 'حسب العمر', icon: UserCheck },
              { id: 'steps', label: 'خطوات وتمارين', icon: FileText },
              { id: 'resources', label: 'للاستزادة', icon: BookOpen },
@@ -337,6 +383,104 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                  </div>
                )}
             </div>
+          </div>
+        )}
+
+
+        {/* Podcast Tab */}
+        {activeTab === 'podcast' && (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-[#8E7AAE]/18 bg-[#F7F5F2] p-5 md:p-8 lg:p-10 shadow-[0_12px_35px_rgba(24,34,49,0.06)]">
+              <div className="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-[#8E7AAE]/10 blur-3xl" />
+              <div className="absolute -bottom-28 -right-24 w-72 h-72 rounded-full bg-[#D8C28A]/18 blur-3xl" />
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="space-y-3">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/80 border border-[#8FA9C7]/16 px-4 py-2 text-xs font-black tracking-widest text-[#8E7AAE]">
+                    <Headphones className="w-4 h-4" /> قول فصل المسموع
+                  </div>
+                  <h3 className="text-2xl md:text-4xl font-black text-[#182231] leading-tight">حوّل الإجابة إلى حوار واقعي</h3>
+                  <p className="max-w-2xl text-[#64788D] font-bold leading-[1.85] text-sm md:text-base">
+                    صياغة بودكاست طبيعية جدًا: شخص أو شخصان أو مجلس صغير حسب الموقف، بلا قراءة جامدة ولا أسلوب آلي.
+                  </p>
+                </div>
+                <button
+                  onClick={handleGeneratePodcast}
+                  disabled={isPodcastLoading}
+                  className={cn(
+                    "shrink-0 inline-flex items-center justify-center gap-2 rounded-full px-6 py-4 text-sm md:text-base font-black transition-all shadow-[0_12px_35px_rgba(142,122,174,0.18)]",
+                    isPodcastLoading
+                      ? "bg-[#EAECE6] text-[#8FA9C7] cursor-wait"
+                      : "bg-[#8E7AAE] text-white hover:bg-[#7D6A9B]"
+                  )}
+                >
+                  {isPodcastLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                  {isPodcastLoading ? 'جاري بناء الحلقة...' : podcastResult ? 'إعادة إنشاء الحلقة' : 'إنشاء البودكاست'}
+                </button>
+              </div>
+            </div>
+
+            {podcastError && (
+              <div className="rounded-[24px] border border-[#F2D7C8] bg-[#FAF0E6] p-5 text-[#A6603F] font-bold leading-relaxed">
+                {podcastError}
+              </div>
+            )}
+
+            {!podcastResult && !isPodcastLoading && !podcastError && (
+              <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-6 md:p-8 text-center text-[#64788D] font-bold leading-relaxed">
+                اضغط على “إنشاء البودكاست” ليتم تحويل هذه الإجابة إلى حلقة حوارية قريبة من الواقع.
+              </div>
+            )}
+
+            {isPodcastLoading && (
+              <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-8 md:p-10 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#8E7AAE]" />
+                <p className="text-[#64788D] font-black tracking-wide">يتم الآن ترتيب الحوار ليبدو كجلسة حقيقية لا كنص مقروء...</p>
+              </div>
+            )}
+
+            {podcastResult && (
+              <div className="space-y-6">
+                <div className="rounded-[28px] md:rounded-[36px] bg-white border border-[#8FA9C7]/15 p-5 md:p-8 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                  <p className="text-[11px] font-black tracking-[0.28em] text-[#A68F58] uppercase mb-3">عنوان الحلقة</p>
+                  <h3 className="text-2xl md:text-4xl font-black text-[#182231] leading-tight">{podcastResult.title}</h3>
+                  {Array.isArray(podcastResult.guests) && podcastResult.guests.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-5">
+                      {podcastResult.guests.map((guest: string, index: number) => (
+                        <span key={`${guest}-${index}`} className="rounded-full bg-[#F7F5F2] border border-[#8FA9C7]/15 px-4 py-2 text-xs md:text-sm font-black text-[#64788D]">
+                          {guest}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  {Array.isArray(podcastResult.dialogue) && podcastResult.dialogue.map((line: any, index: number) => (
+                    <div key={index} className={cn(
+                      "rounded-[24px] border p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
+                      index % 2 === 0
+                        ? "bg-white border-[#8FA9C7]/15"
+                        : "bg-[#F7F5F2] border-[#D8C28A]/20"
+                    )}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-full bg-[#8E7AAE] text-white flex items-center justify-center font-black">
+                          {(line?.speaker || '؟').slice(0, 1)}
+                        </div>
+                        <p className="text-[#182231] font-black text-base md:text-lg">{line?.speaker || 'المتحدث'}</p>
+                      </div>
+                      <p className="text-[#465568] font-bold leading-[1.9] text-base md:text-lg whitespace-pre-wrap">{line?.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {podcastResult.conclusion && (
+                  <div className="rounded-[28px] bg-[#8E7AAE] text-white p-6 md:p-8 shadow-[0_12px_35px_rgba(142,122,174,0.18)]">
+                    <p className="text-[#EACD9B] font-black mb-3">خاتمة الحلقة</p>
+                    <p className="font-bold leading-[1.9] text-lg">{podcastResult.conclusion}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
