@@ -18,7 +18,7 @@ declare global {
 const labTools = [
   { id: 'collider', ar: 'مُصادم الأفكار', en: 'Cognitive Collider', tooltip: { ar: 'دمج وتصادم الأفكار المتناقضة لتوليد أفكار جديدة', en: 'Collide contradicting ideas to generate new ones' } },
   { id: 'collision', ar: 'مرايا العقول', en: 'Perspectives Collision', tooltip: { ar: 'مجلس افتراضي يناقش فكرتك من زوايا متضاربة ومتكاملة', en: 'Virtual council discussing your idea from conflicting angles' } },
-  { id: 'podcast', ar: 'بودكاست واقعي', en: 'Realistic Podcast', tooltip: { ar: 'تحويل فكرتك إلى حلقة حوارية طبيعية لا تبدو كقراءة نص', en: 'Turn your idea into a natural conversational podcast script' } },
+  { id: 'podcast', ar: 'بودكاست واقعي', en: 'Realistic Podcast', tooltip: { ar: 'يحوله إلى حوار طبيعي جداً بين شخص أو أكثر، لا قراءة نصية', en: 'Turns it into a natural multi-voice conversation, not a read-aloud text' } },
   { id: 'symbols', ar: 'توليد الرموز', en: 'Symbol Factory', tooltip: { ar: 'تحويل المفاهيم المجردة إلى رموز بصرية تعبيرية عميقة', en: 'Transform abstract concepts into profound visual symbols' } },
   { id: 'sound', ar: 'صوت الأفكار', en: 'Idea Echo', tooltip: { ar: 'تحويل ترددات ورنين الأفكار إلى تمثيلات بصرية موجية', en: 'Transform idea frequencies and resonance into visual waveforms' } },
   { id: 'design', ar: 'تصميم استراتيجي', en: 'Strategic Design', tooltip: { ar: 'تصميم مسارات وخطط شاملة وممنهجة', en: 'Design systematic strategic paths' } },
@@ -369,6 +369,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                   </>
                 ) : activeLabTool === 'collider' ? (
                   <span>{language === 'ar' ? 'تصادم 💥' : 'COLLIDE 💥'}</span>
+                ) : activeLabTool === 'podcast' ? (
+                  <span>{language === 'ar' ? 'إنشاء بودكاست واقعي' : 'Create Realistic Podcast'}</span>
                 ) : (
                   <span>{language === 'ar' ? 'تشغيل المختبر' : 'Run Lab'}</span>
                 )}
@@ -579,7 +581,6 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    </motion.div>
                  )}
 
-
                  {activeLabTool === 'podcast' && labPodcast && (
                    <motion.div
                      initial={{ opacity: 0, y: 20 }}
@@ -598,8 +599,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          </h3>
                          <p className="text-white/60 font-bold text-sm md:text-base max-w-2xl mx-auto">
                            {language === 'ar'
-                             ? 'حوار مكتوب بروح حلقة حقيقية: مقاطعات خفيفة، تردد إنساني، وجمل قصيرة تصلح للتسجيل، وليس نصاً مقروءاً.'
-                             : 'A conversation shaped like a real episode: light interruptions, human hesitation, and short recordable lines.'}
+                             ? 'حوار مكتوب بروح حلقة حقيقية: أخذ ورد، مقاطعات خفيفة، تردد إنساني، وجمل قصيرة تصلح للتسجيل، وليس نصاً مقروءاً.'
+                             : 'A conversation shaped like a real episode: back-and-forth, light interruptions, human hesitation, and short recordable lines.'}
                          </p>
                        </div>
 
