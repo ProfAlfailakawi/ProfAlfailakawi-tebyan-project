@@ -114,7 +114,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   const speakPodcastText = (text: string) => {
     if (!text || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setPodcastAudioMessage('الصوت غير مدعوم في هذا المتصفح حالياً.');
+      setPodcastAudioMessage('تعذّر تشغيل الصوت الآن. حاول مرة أخرى بعد قليل.');
       return false;
     }
     window.speechSynthesis.cancel();
@@ -126,7 +126,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     utterance.onend = () => setIsBrowserSpeaking(false);
     utterance.onerror = () => {
       setIsBrowserSpeaking(false);
-      setPodcastAudioMessage('تعذّر تشغيل صوت المتصفح. جرّب متصفحاً آخر أو فعّل أصوات النظام.');
+      setPodcastAudioMessage('تعذّر تشغيل الصوت الآن. حاول مرة أخرى بعد قليل.');
     };
     window.speechSynthesis.speak(utterance);
     return true;
@@ -214,11 +214,11 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         setPodcastAudioUrl(audioUrl);
         setPodcastAudioMessage(null);
       } else {
-        setPodcastAudioMessage(audio?.message || 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.');
+        setPodcastAudioMessage(audio?.message || 'تعذّر تجهيز الصوت الآن. حاول مرة أخرى بعد قليل.');
       }
     } catch (error: any) {
       console.error('Qawl Fasl audio error:', error);
-      setPodcastAudioMessage(error?.message || 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.');
+      setPodcastAudioMessage(error?.message || 'تعذّر تجهيز الصوت الآن. حاول مرة أخرى بعد قليل.');
     } finally {
       setIsPodcastLoading(false);
     }
@@ -511,7 +511,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   </div>
                   <h3 className="text-2xl md:text-4xl font-black text-[#182231] leading-tight">حوّل الإجابة إلى حوار واقعي</h3>
                   <p className="max-w-2xl text-[#64788D] font-bold leading-[1.85] text-sm md:text-base">
-                    صياغة بودكاست طبيعية جدًا: شخص أو شخصان أو مجلس صغير حسب الموقف، بلا قراءة جامدة ولا أسلوب آلي.
+                    حلقة صوتية مختصرة وواضحة، بصياغة طبيعية مناسبة للسؤال.
                   </p>
                 </div>
                 <button
@@ -525,7 +525,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   )}
                 >
                   {isPodcastLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-                  {isPodcastLoading ? 'جاري بناء الحلقة...' : podcastResult ? 'إعادة إنشاء الحلقة' : 'إنشاء البودكاست'}
+                  {isPodcastLoading ? 'جارٍ تجهيز الحلقة...' : podcastResult ? 'إعادة إنشاء الحلقة' : 'إنشاء البودكاست'}
                 </button>
               </div>
             </div>
@@ -538,14 +538,14 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
             {!podcastResult && !isPodcastLoading && !podcastError && (
               <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-6 md:p-8 text-center text-[#64788D] font-bold leading-relaxed">
-                اضغط على “إنشاء البودكاست” ليتم تحويل هذه الإجابة إلى حلقة حوارية قريبة من الواقع.
+                اضغط على “إنشاء البودكاست” للاستماع إلى خلاصة صوتية مناسبة.
               </div>
             )}
 
             {isPodcastLoading && (
               <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-8 md:p-10 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#8E7AAE]" />
-                <p className="text-[#64788D] font-black tracking-wide">يتم الآن ترتيب الحوار ليبدو كجلسة حقيقية لا كنص مقروء...</p>
+                <p className="text-[#64788D] font-black tracking-wide">جارٍ تجهيز الحلقة...</p>
               </div>
             )}
 
@@ -578,7 +578,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   ) : (
                     <div className="flex items-center gap-3 rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
                       <Loader2 className="w-5 h-5 animate-spin text-[#8E7AAE]" />
-                      <p className="text-sm md:text-base font-bold leading-relaxed text-[#64788D]">جاري تجهيز الصوت الطبيعي للحلقة...</p>
+                      <p className="text-sm md:text-base font-bold leading-relaxed text-[#64788D]">جارٍ تجهيز الصوت...</p>
                     </div>
                   )}
                 </div>

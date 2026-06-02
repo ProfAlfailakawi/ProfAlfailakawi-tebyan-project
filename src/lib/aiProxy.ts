@@ -119,11 +119,11 @@ export async function proxyGenerateAudio(params: {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.error || 'تعذّر تجهيز الصوت الطبيعي الآن. حاول مرة أخرى بعد قليل.');
+    throw new Error('تعذّر تجهيز الصوت الطبيعي الآن. حاول مرة أخرى بعد قليل.');
   }
 
   const data = await response.json();
-  if (data.error) { throw new Error(data.error); }
+  if (data.error) { throw new Error('تعذّر تجهيز الصوت الطبيعي الآن. حاول مرة أخرى بعد قليل.'); }
   return {
     audioData: data.audioData || "",
     mimeType: data.mimeType || "audio/wav",

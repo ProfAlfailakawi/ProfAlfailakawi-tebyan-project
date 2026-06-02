@@ -211,7 +211,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
 
   const playLabPodcastInBrowser = () => {
     if (!labPodcastSpeechText || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setLabPodcastAudioMessage(language === 'ar' ? 'الصوت غير مدعوم في هذا المتصفح حالياً.' : 'Speech is not supported in this browser.');
+      setLabPodcastAudioMessage(language === 'ar' ? 'تعذّر تشغيل الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be played right now. Please try again shortly.');
       return;
     }
     window.speechSynthesis.cancel();
@@ -223,7 +223,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     utterance.onend = () => setIsLabBrowserSpeaking(false);
     utterance.onerror = () => {
       setIsLabBrowserSpeaking(false);
-      setLabPodcastAudioMessage(language === 'ar' ? 'تعذّر تشغيل صوت المتصفح. جرّب متصفحاً آخر أو فعّل أصوات النظام.' : 'Browser speech could not start. Try another browser or enable system voices.');
+      setLabPodcastAudioMessage(language === 'ar' ? 'تعذّر تشغيل الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be played right now. Please try again shortly.');
     };
     window.speechSynthesis.speak(utterance);
   };
@@ -316,11 +316,11 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
               setLabPodcastAudioUrl(audioUrl);
               setLabPodcastAudioMessage(null);
             } else {
-              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.' : 'The episode text is ready, but the natural audio is not ready yet. Try again shortly.'));
+              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تعذّر تجهيز الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be prepared right now. Please try again shortly.'));
             }
           } catch (audioError: any) {
             console.error('Lab podcast audio error:', audioError);
-            setLabPodcastAudioMessage(audioError?.message || (language === 'ar' ? 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.' : 'The episode text is ready, but the natural audio is not ready yet. Try again shortly.'));
+            setLabPodcastAudioMessage(audioError?.message || (language === 'ar' ? 'تعذّر تجهيز الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be prepared right now. Please try again shortly.'));
           }
           break;
         }
@@ -702,7 +702,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          </h3>
                          <p className="text-white/60 font-bold text-sm md:text-base max-w-2xl mx-auto">
                            {language === 'ar'
-                             ? 'حوار مكتوب بروح حلقة حقيقية: أخذ ورد، مقاطعات خفيفة، تردد إنساني، وجمل قصيرة تصلح للتسجيل، وليس نصاً مقروءاً.'
+                             ? 'حلقة صوتية مختصرة وواضحة، بصياغة طبيعية مناسبة للفكرة.'
                              : 'A conversation shaped like a real episode: back-and-forth, light interruptions, human hesitation, and short recordable lines.'}
                          </p>
                        </div>
@@ -720,7 +720,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          ) : (
                            <div className="flex items-center gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
                              <Loader2 className="w-5 h-5 animate-spin text-white" />
-                             <p className="text-sm font-bold leading-relaxed text-white/75">{language === 'ar' ? 'جاري تجهيز الصوت الطبيعي للحلقة...' : 'Preparing the natural episode audio...'}</p>
+                             <p className="text-sm font-bold leading-relaxed text-white/75">{language === 'ar' ? 'جارٍ تجهيز الصوت...' : 'Preparing the episode audio...'}</p>
                            </div>
                          )}
                        </div>

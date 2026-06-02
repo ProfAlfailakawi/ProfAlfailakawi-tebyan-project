@@ -136,12 +136,12 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
         throw err;
     }
 
-    const femaleVoices = ["Kore", "Aoede"];
-    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
-    const allVoices = [...femaleVoices, ...maleVoices];
-    const selectedVoice = voiceName && allVoices.includes(voiceName)
+    const naturalVoices = ["Puck", "Charon", "Kore", "Fenrir", "Aoede", "Zephyr", "Leda", "Orus", "Autonoe", "Callirrhoe"];
+    const selectedVoice = voiceName && naturalVoices.includes(voiceName)
         ? voiceName
-        : allVoices[Math.floor(Math.random() * allVoices.length)];
+        : naturalVoices[Math.floor(Math.random() * naturalVoices.length)];
+    const hostVoice = selectedVoice;
+    const guestVoice = naturalVoices.find((v) => v !== hostVoice) || "Kore";
 
     const apiKey = getGeminiTtsApiKey();
     const standardPrefix = "AI" + "za";
@@ -150,27 +150,28 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
             audioData: "",
             mimeType: "audio/wav",
             offline: true,
-            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
+            message: "الصوت الطبيعي غير متاح الآن. أعد المحاولة بعد قليل."
         };
     }
 
-    const safeText = String(text).slice(0, 4200);
-
     const naturalizedText = `
-تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
-لا تقرأ النص كروبوت.
-استخدم نبرة بشرية هادئة وعفوية.
-أضف توقفات قصيرة طبيعية بين الجمل.
-لا تبالغ في الأداء المسرحي.
-اجعل الإلقاء دافئاً وقريباً من الإنسان.
-أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
+${style === "podcast" ? `
+حوّل النص التالي إلى أداء صوتي بودكاست طبيعي جداً.
+المطلوب صوت بشري دافئ، غير آلي، بإيقاع هادئ، وتوقفات قصيرة بين الجمل.
+اقرأ الحوار كجلسة حقيقية بين شخصين، لا كتلخيص ولا كنشرة تعليمات.
+نوّع النبرة بين المتحدثين بوضوح، واجعل الجمل العربية طبيعية وقريبة من السمع الخليجي الهادئ.
+لا تذكر أسماء المتحدثين بطريقة جامدة إذا كان ذلك يفسد السلاسة؛ اجعل الانتقال بينهم مسموعاً وطبيعياً.
+` : `
+اقرأ النص التالي بصوت عربي طبيعي جداً، دافئ وهادئ، بعيد عن الآلية والمبالغة.
+`}
 
 النص:
-${safeText}
+${text}
 `;
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const payload = {
+
+    const singleVoicePayload = {
         contents: [{ parts: [{ text: naturalizedText }] }],
         generationConfig: {
             responseModalities: ["AUDIO"],
@@ -182,30 +183,60 @@ ${safeText}
         }
     };
 
-    const response = await generateWithRetry(async () => {
+    const multiVoicePayload = {
+        contents: [{ parts: [{ text: naturalizedText }] }],
+        generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+                multiSpeakerVoiceConfig: {
+                    speakerVoiceConfigs: [
+                        { speaker: "المحاور", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
+                        { speaker: "المقدم", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
+                        { speaker: "Host", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
+                        { speaker: "صوت تربوي هادئ", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } },
+                        { speaker: "ضيف متخصص", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } },
+                        { speaker: "Guest", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } }
+                    ]
+                }
+            }
+        }
+    };
+
+    const requestTts = async (payload: any) => {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 35000);
-        let r: any;
+        const timeout = setTimeout(() => controller.abort(), 25000);
         try {
-            r = await fetch(endpoint, {
+            const r = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
                 signal: controller.signal
             });
+            const bodyText = await r.text();
+            let body: any;
+            try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
+            if (!r.ok) {
+                const err: any = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
+                err.statusCode = r.status;
+                throw err;
+            }
+            return body;
         } finally {
-            clearTimeout(timeoutId);
+            clearTimeout(timeout);
         }
-        const bodyText = await r.text();
-        let body: any;
-        try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
-        if (!r.ok) {
-            const err: any = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
-            err.statusCode = r.status;
-            throw err;
+    };
+
+    let response: any;
+    if (style === "podcast") {
+        try {
+            response = await generateWithRetry(() => requestTts(multiVoicePayload), "Gemini multi-speaker TTS");
+        } catch (multiError: any) {
+            console.warn("[Server] Multi-speaker TTS failed, retrying with single natural voice:", multiError?.message || multiError);
+            response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
         }
-        return body;
-    }, "Gemini TTS");
+    } else {
+        response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
+    }
 
     const audioPart = response?.candidates?.[0]?.content?.parts?.find((part: any) => part?.inlineData?.data);
     const rawAudioData = audioPart?.inlineData?.data;
@@ -614,7 +645,7 @@ async function startServer() {
     });
 
     // AI Proxy Route
-    app.post("/api/ai/audio", async (req, res) => {
+    app.post(["/audio", "/api/audio", "/api/ai/audio"], async (req, res) => {
         try {
             const audio = await generateTtsAudio(req.body || {});
             return res.json(audio);
@@ -629,10 +660,10 @@ async function startServer() {
                     audioData: "",
                     mimeType: "audio/wav",
                     offline: true,
-                    message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
+                    message: "الصوت الطبيعي غير متاح الآن. أعد المحاولة بعد قليل."
                 });
             }
-            return res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً.. جرّب مرة أخرى بعد قليل." });
+            return res.status(200).json({ audioData: "", mimeType: "audio/wav", offline: true, message: "الصوت الطبيعي غير متاح الآن. أعد المحاولة بعد قليل." });
         }
     });
 
