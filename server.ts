@@ -195,7 +195,7 @@ async function generateOpenAiTtsAudio(text: string) {
 }
 
 async function generateProviderFallbackAudio(text: string) {
-    const providers = [generateElevenLabsTtsAudio, generateOpenAiTtsAudio, generateGoogleCloudTtsAudio];
+    const providers = [generateElevenLabsTtsAudio, generateOpenAiTtsAudio];
     let lastError: any;
     for (const provider of providers) {
         try {
@@ -217,6 +217,15 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
         throw err;
     }
 
+    // For podcast audio, never fall back to device/browser speech.
+    // Try premium neural TTS first because generic/browser voices sound robotic in Arabic.
+    if (style === "podcast") {
+        const premiumAudio = await generateProviderFallbackAudio(text);
+        if (premiumAudio?.audioData) {
+            return premiumAudio;
+        }
+    }
+
     const naturalVoices = ["Puck", "Charon", "Kore", "Fenrir", "Aoede", "Zephyr", "Leda", "Orus", "Autonoe", "Callirrhoe"];
     const selectedVoice = voiceName && naturalVoices.includes(voiceName)
         ? voiceName
@@ -232,11 +241,10 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
 
     const naturalizedText = `
 ${style === "podcast" ? `
-حوّل النص التالي إلى أداء صوتي بودكاست طبيعي جداً.
-المطلوب صوت بشري دافئ، غير آلي، بإيقاع هادئ، وتوقفات قصيرة بين الجمل.
-اقرأ الحوار كجلسة حقيقية بين شخصين، لا كتلخيص ولا كنشرة تعليمات.
-نوّع النبرة بين المتحدثين بوضوح، واجعل الجمل العربية طبيعية وقريبة من السمع الخليجي الهادئ.
-لا تذكر أسماء المتحدثين بطريقة جامدة إذا كان ذلك يفسد السلاسة؛ اجعل الانتقال بينهم مسموعاً وطبيعياً.
+أدِّ النص التالي كحلقة بودكاست عربية طبيعية جداً.
+الصوت يجب أن يكون إنسانياً دافئاً وغير آلي، بإيقاع هادئ وتوقفات قصيرة.
+تعامل مع أسماء المتحدثين كإشارات حوارية فقط، ولا تقرأها بطريقة جامدة إذا أفسدت السلاسة.
+اجعل الأداء قريباً من حديث خليجي هادئ، لا قراءة نصية ولا تلخيصاً مدرسياً.
 ` : `
 اقرأ النص التالي بصوت عربي طبيعي جداً، دافئ وهادئ، بعيد عن الآلية والمبالغة.
 `}

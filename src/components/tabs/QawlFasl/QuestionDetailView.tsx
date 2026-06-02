@@ -62,7 +62,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     setPodcastAudioUrl(null);
     setPodcastAudioMessage(null);
     setPodcastSpeechText('');
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
     setIsBrowserSpeaking(false);
     setIsPodcastLoading(false);
 
@@ -112,77 +111,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     }
   };
 
-  const getBestSpeechVoice = (index = 0) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
-    const voices = window.speechSynthesis.getVoices();
-    const arabicVoices = voices.filter((voice) => /^ar([-_]|$)/i.test(voice.lang || '') || /arabic|ar-|maged|tarik|laila|mariam|salma|hoda|karim/i.test(`${voice.name} ${voice.lang}`));
-    const preferred = arabicVoices.sort((a, b) => {
-      const aScore = (/enhanced|premium|natural|neural|google|microsoft|apple/i.test(a.name) ? 2 : 0) + (a.localService ? 0 : 1);
-      const bScore = (/enhanced|premium|natural|neural|google|microsoft|apple/i.test(b.name) ? 2 : 0) + (b.localService ? 0 : 1);
-      return bScore - aScore;
-    });
-    return preferred[index % Math.max(preferred.length, 1)] || voices[0] || null;
-  };
-
-  const splitSpeechIntoTurns = (text: string) => {
-    return text
-      .split(/\n+/)
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .flatMap((line) => line.length > 260 ? line.match(/[^.!؟?。]+[.!؟?。]?/g) || [line] : [line])
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .slice(0, 28);
-  };
-
-  const speakPodcastText = (text: string) => {
-    if (!text || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setPodcastAudioMessage('__retry__');
-      return false;
-    }
-    window.speechSynthesis.cancel();
-    const turns = splitSpeechIntoTurns(text);
-    if (!turns.length) {
-      setPodcastAudioMessage('__retry__');
-      return false;
-    }
-    setIsBrowserSpeaking(true);
-    setPodcastAudioMessage(null);
-
-    let current = 0;
-    const speakNext = () => {
-      if (current >= turns.length) {
-        setIsBrowserSpeaking(false);
-        return;
-      }
-      const utterance = new SpeechSynthesisUtterance(turns[current]);
-      utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
-      const voice = getBestSpeechVoice(current);
-      if (voice) utterance.voice = voice;
-      utterance.rate = 0.9 + (current % 2 === 0 ? 0 : 0.03);
-      utterance.pitch = current % 2 === 0 ? 0.98 : 1.04;
-      utterance.volume = 1;
-      utterance.onend = () => {
-        current += 1;
-        window.setTimeout(speakNext, 170);
-      };
-      utterance.onerror = () => {
-        setIsBrowserSpeaking(false);
-        setPodcastAudioMessage('__retry__');
-      };
-      window.speechSynthesis.speak(utterance);
-    };
-
-    speakNext();
-    return true;
-  };
-
-  const playPodcastInBrowser = () => {
-    speakPodcastText(podcastSpeechText);
-  };
+  const playPodcastInBrowser = () => false;
 
   const stopBrowserSpeech = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
     setIsBrowserSpeaking(false);
   };
 
@@ -259,11 +190,11 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         setPodcastAudioUrl(audioUrl);
         setPodcastAudioMessage(null);
       } else {
-        setPodcastAudioMessage('__browser__');
+        setPodcastAudioMessage('__retry__');
       }
     } catch (error: any) {
       console.error('Qawl Fasl audio error:', error);
-      setPodcastAudioMessage('__browser__');
+      setPodcastAudioMessage('__retry__');
     } finally {
       setIsPodcastLoading(false);
     }
@@ -615,25 +546,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                     <audio controls autoPlay className="w-full" src={podcastAudioUrl}>
                       المتصفح لا يدعم تشغيل الصوت.
                     </audio>
-                  ) : podcastAudioMessage === '__browser__' ? (
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
-                      <button
-                        type="button"
-                        onClick={isBrowserSpeaking ? stopBrowserSpeech : playPodcastInBrowser}
-                        className="inline-flex items-center gap-2 rounded-full bg-[#8E7AAE] px-5 py-2.5 text-sm font-black text-white shadow-sm"
-                      >
-                        <Volume2 className="w-4 h-4" />
-                        {isBrowserSpeaking ? 'إيقاف الصوت' : 'تشغيل الحلقة'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleGeneratePodcast}
-                        disabled={isPodcastLoading}
-                        className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-black text-[#8E7AAE] border border-[#8E7AAE]/20 shadow-sm disabled:opacity-60"
-                      >
-                        إعادة التجهيز
-                      </button>
-                    </div>
                   ) : podcastAudioMessage ? (
                     <div className="flex items-center justify-center rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
                       <button
