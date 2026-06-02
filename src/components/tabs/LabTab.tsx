@@ -56,6 +56,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labPodcast, setLabPodcast] = React.useState<any>(null);
   const [labPodcastAudioUrl, setLabPodcastAudioUrl] = React.useState<string | null>(null);
   const [labPodcastAudioMessage, setLabPodcastAudioMessage] = React.useState<string | null>(null);
+  const [labPodcastSpeechText, setLabPodcastSpeechText] = React.useState<string>('');
+  const [isLabBrowserSpeaking, setIsLabBrowserSpeaking] = React.useState(false);
   const [labUdl, setLabUdl] = React.useState<any[]>([]);
   const [labMindMap, setLabMindMap] = React.useState<any>(null);
   const [labFamilyExplanation, setLabFamilyExplanation] = React.useState('');
@@ -151,8 +153,12 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabScout([]); 
     setLabPersonas([]); 
     setLabPodcast(null); 
+    if (labPodcastAudioUrl) URL.revokeObjectURL(labPodcastAudioUrl);
     setLabPodcastAudioUrl(null);
-    setLabPodcastAudioMessage(null); 
+    setLabPodcastAudioMessage(null);
+    setLabPodcastSpeechText('');
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    setIsLabBrowserSpeaking(false); 
     setLabUdl([]); 
     setLabMindMap(null); 
     setLabFamilyExplanation(''); 
@@ -190,9 +196,41 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     return `${podcast?.title || 'Podcast'}\n\n${lines}\n\n${podcast?.conclusion || ''}`.trim();
   };
 
-  const audioResponseToUrl = (audio: any) => {
+  const makeBlobAudioUrl = (audio: any) => {
     if (!audio?.audioData) return null;
-    return `data:${audio.mimeType || 'audio/wav'};base64,${audio.audioData}`;
+    try {
+      const binary = atob(audio.audioData);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return URL.createObjectURL(new Blob([bytes], { type: audio.mimeType || 'audio/wav' }));
+    } catch (error) {
+      console.error('Invalid lab audio payload:', error);
+      return null;
+    }
+  };
+
+  const playLabPodcastInBrowser = () => {
+    if (!labPodcastSpeechText || typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      setLabPodcastAudioMessage(language === 'ar' ? 'الصوت غير مدعوم في هذا المتصفح حالياً.' : 'Speech is not supported in this browser.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(labPodcastSpeechText.slice(0, 3800));
+    utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
+    utterance.rate = 0.94;
+    utterance.pitch = 1;
+    utterance.onstart = () => setIsLabBrowserSpeaking(true);
+    utterance.onend = () => setIsLabBrowserSpeaking(false);
+    utterance.onerror = () => {
+      setIsLabBrowserSpeaking(false);
+      setLabPodcastAudioMessage(language === 'ar' ? 'تعذّر تشغيل صوت المتصفح. جرّب متصفحاً آخر أو فعّل أصوات النظام.' : 'Browser speech could not start. Try another browser or enable system voices.');
+    };
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopLabBrowserSpeech = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    setIsLabBrowserSpeaking(false);
   };
 
   const handleRunLabTool = async () => {
@@ -256,7 +294,10 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
           break;
         case 'podcast': {
           setLabPodcastAudioMessage(null);
+          if (labPodcastAudioUrl) URL.revokeObjectURL(labPodcastAudioUrl);
+          stopLabBrowserSpeech();
           setLabPodcastAudioUrl(null);
+          setLabPodcastSpeechText('');
           let podcastResult: any;
           try {
             podcastResult = await generateResurrectionPodcast(labInput, language);
@@ -267,18 +308,18 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
           }
           setLabPodcast(podcastResult);
           try {
-            setLabPodcastAudioMessage(language === 'ar' ? 'تم تجهيز الحوار. جارٍ الآن توليد الصوت، وقد يستغرق ذلك ثواني قليلة...' : 'The dialogue is ready. Audio is now being generated and may take a few seconds...');
-            const audio = await proxyGenerateAudio({ text: podcastToSpeechText(podcastResult).slice(0, 4200), style: 'podcast' });
-            const audioUrl = audioResponseToUrl(audio);
+            const finalSpeechText = podcastToSpeechText(podcastResult);
+            setLabPodcastSpeechText(finalSpeechText);
+            const audio = await proxyGenerateAudio({ text: finalSpeechText, style: 'podcast' });
+            const audioUrl = makeBlobAudioUrl(audio);
             if (audioUrl) {
               setLabPodcastAudioUrl(audioUrl);
-              setLabPodcastAudioMessage(null);
             } else {
-              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تم إنشاء الحوار، لكن الصوت غير متاح حالياً من الخادم.' : 'The dialogue was created, but audio is currently unavailable from the server.'));
+              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تم إنشاء الحوار، لكن لم يرجع الخادم ملفاً صوتياً صالحاً. استخدم تشغيل صوت المتصفح بالأسفل.' : 'The dialogue was created, but the server did not return a valid audio file. Use browser speech below.'));
             }
           } catch (audioError) {
             console.error('Lab podcast audio error:', audioError);
-            setLabPodcastAudioMessage(language === 'ar' ? 'تم إنشاء الحوار، لكن تعذّر توليد الملف الصوتي حالياً.' : 'The dialogue was created, but the audio file could not be generated right now.');
+            setLabPodcastAudioMessage(language === 'ar' ? 'تم إنشاء الحوار، لكن تعذّر توليد ملف Gemini الصوتي حالياً. استخدم تشغيل صوت المتصفح بالأسفل.' : 'The dialogue was created, but Gemini audio could not be generated. Use browser speech below.');
           }
           break;
         }
@@ -426,7 +467,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 {isLoading ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>{activeLabTool === 'podcast' && labPodcast ? (language === 'ar' ? 'جاري تجهيز الصوت...' : 'Preparing audio...') : (language === 'ar' ? 'جاري التحليل...' : 'Analyzing...')}</span>
+                    <span>{language === 'ar' ? 'جاري التحليل...' : 'Analyzing...'}</span>
                   </>
                 ) : activeLabTool === 'collider' ? (
                   <span>{language === 'ar' ? 'تصادم 💥' : 'COLLIDE 💥'}</span>
@@ -443,7 +484,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
          {error && <div className="text-rose-500 font-bold">{error}</div>}
   
          <div id="lab-results" className="space-y-8 animate-in fade-in slide-in-from-top-4 relative min-h-[200px]">
-            {isLoading && !(activeLabTool === 'podcast' && labPodcast) ? (
+            {isLoading ? (
                <motion.div 
                  initial={{ opacity: 0 }}
                  animate={{ opacity: 1 }}
@@ -665,18 +706,29 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          </p>
                        </div>
 
-                       {(labPodcastAudioUrl || labPodcastAudioMessage) && (
-                         <div className="rounded-[24px] bg-white/10 border border-white/10 p-4 md:p-5">
-                           {labPodcastAudioUrl ? (
-                             <audio controls className="w-full" src={labPodcastAudioUrl}>
-                               {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
-                             </audio>
-                           ) : null}
-                           {labPodcastAudioMessage && (
-                             <p className="mt-3 text-sm font-bold leading-relaxed text-white/70">{labPodcastAudioMessage}</p>
-                           )}
-                         </div>
-                       )}
+                       <div className="rounded-[24px] bg-white/10 border border-white/10 p-4 md:p-5">
+                         {labPodcastAudioUrl ? (
+                           <audio controls autoPlay className="w-full" src={labPodcastAudioUrl}>
+                             {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
+                           </audio>
+                         ) : (
+                           <div className="flex flex-col md:flex-row md:items-center gap-3">
+                             <button
+                               type="button"
+                               onClick={isLabBrowserSpeaking ? stopLabBrowserSpeech : playLabPodcastInBrowser}
+                               disabled={!labPodcastSpeechText}
+                               className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-[#182231] px-5 py-3 font-black disabled:opacity-50 disabled:cursor-not-allowed"
+                             >
+                               <Volume2 className="w-5 h-5" />
+                               {isLabBrowserSpeaking ? (language === 'ar' ? 'إيقاف صوت المتصفح' : 'Stop browser voice') : (language === 'ar' ? 'تشغيل صوت المتصفح الآن' : 'Play browser voice')}
+                             </button>
+                             <p className="text-sm font-bold leading-relaxed text-white/70">{language === 'ar' ? 'لم يصل ملف صوت Gemini صالح بعد؛ هذا الزر يشغّل الحلقة بصوت المتصفح مباشرة.' : 'No valid Gemini audio file arrived yet; this button plays the episode with browser speech.'}</p>
+                           </div>
+                         )}
+                         {labPodcastAudioMessage && (
+                           <p className="mt-3 text-sm font-bold leading-relaxed text-white/70">{labPodcastAudioMessage}</p>
+                         )}
+                       </div>
 
                        {labPodcast.guests?.length > 0 && (
                          <div className="flex flex-wrap justify-center gap-3">

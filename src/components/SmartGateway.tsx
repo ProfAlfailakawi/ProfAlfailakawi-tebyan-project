@@ -48,6 +48,82 @@ import { TebyanGlyph } from "./common/TebyanGlyph";
 import TextareaAutosize from "react-textarea-autosize";
 import { TebyanTooltip } from "./TebyanTooltip";
 
+
+const normalizeGatewayQueryText = (value: string, language: 'ar' | 'en') => {
+  let text = (value || '').trim().replace(/\s+/g, ' ');
+  const prefixes = language === 'ar'
+    ? [
+        'أريد فهماً واضحاً لهذا الموضوع:',
+        'أريد فهمًا واضحًا لهذا الموضوع:',
+        'اريد فهماً واضحاً لهذا الموضوع:',
+        'اريد فهمًا واضحًا لهذا الموضوع:',
+        'اشرح لي ببساطة:',
+        'كيف أتعامل تربوياً مع موقف:',
+        'ما القرار الأنسب في هذا الموقف:',
+        'كيف أطور هذه الفكرة وأحولها إلى شيء عملي:',
+        'حلل استراتيجياً هذا الموقف:',
+        'كيف أتصرف بهدوء وذكاء في هذا الموقف:'
+      ]
+    : [
+        'I want a clear understanding of this topic:',
+        'Explain simply:',
+        'How should I handle this educationally:',
+        'What is the best decision in this situation:',
+        'How can I develop this idea into something practical:',
+        'Analyze this strategically:',
+        'How can I respond calmly and intelligently to:'
+      ];
+
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const prefix of prefixes) {
+      if (text.toLowerCase().startsWith(prefix.toLowerCase())) {
+        text = text.slice(prefix.length).trim();
+        changed = true;
+      }
+    }
+  }
+
+  // Remove repeated helper phrases even when they appear in the middle of the text.
+  for (const prefix of prefixes) {
+    const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    text = text.replace(new RegExp(`(?:${escaped}\\s*)+`, 'gi'), '').trim();
+  }
+
+  // Collapse exact repeated chunks, including colon-separated repeats that do not end with punctuation.
+  const pieces = text
+    .split(/(?<=[؟?!.])\s+|[:：]/)
+    .map(part => part.trim())
+    .filter(Boolean);
+  if (pieces.length > 1) {
+    const unique: string[] = [];
+    const seen = new Set<string>();
+    for (const piece of pieces) {
+      const key = piece
+        .replace(/[\u064B-\u065F]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(piece);
+      }
+    }
+    text = unique.join(' ');
+  }
+
+  // Last safety pass for a phrase duplicated directly next to itself.
+  const words = text.split(' ').filter(Boolean);
+  if (words.length >= 4 && words.length % 2 === 0) {
+    const half = words.length / 2;
+    if (words.slice(0, half).join(' ') === words.slice(half).join(' ')) {
+      text = words.slice(0, half).join(' ');
+    }
+  }
+  return text.trim();
+};
+
 const DAILY_CHALLENGES = [
   {
     titleAr: "كيف تدير صراعاً حاداً بين أفراد فريقك أو عائلتك؟",
@@ -2120,7 +2196,7 @@ export const SmartGateway: React.FC<
 
   const handleSubmit = (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
-    const rawQuery = overrideQuery || query;
+    const rawQuery = normalizeGatewayQueryText(overrideQuery || query, language);
     const moodPrefix =
       language === "ar" ? activeMoodOption.prefixAr : activeMoodOption.prefixEn;
     const activeQuery =
@@ -2236,6 +2312,7 @@ export const SmartGateway: React.FC<
   };
 
   const handlePathSelect = (id: string, q: string) => {
+    q = normalizeGatewayQueryText(q, language);
     console.log(
       "[SmartGateway] Path selected triggered:",
       id,
@@ -3510,9 +3587,10 @@ export const SmartGateway: React.FC<
                       animate={{ opacity: 1, y: 0 }}
                       onClick={() => {
                         const nextValue = lastInteraction.query;
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
+                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
+                        setSearchValue(cleanValue);
+                        latestInputRef.current = cleanValue;
+                        setQuery(cleanValue);
                         setSmartSuggestion("");
                       }}
                       className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#A8C3BD]/22 bg-[#F7FBF9]/78 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#A8C3BD]/38 active:scale-[0.99] overflow-hidden"
@@ -3542,9 +3620,10 @@ export const SmartGateway: React.FC<
                       animate={{ opacity: 1, y: 0 }}
                       onClick={() => {
                         const nextValue = tomorrowRoom.query;
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
+                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
+                        setSearchValue(cleanValue);
+                        latestInputRef.current = cleanValue;
+                        setQuery(cleanValue);
                         setSmartSuggestion("");
                       }}
                       className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#8FA9C7]/18 bg-white/72 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#8E7AAE]/30 active:scale-[0.99] overflow-hidden"
@@ -3728,9 +3807,10 @@ export const SmartGateway: React.FC<
                       language={language}
                       value={searchValue}
                       onApply={(nextValue) => {
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
+                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
+                        setSearchValue(cleanValue);
+                        latestInputRef.current = cleanValue;
+                        setQuery(cleanValue);
                         setSmartSuggestion("");
                         inputRef.current?.focus();
                       }}
@@ -4829,9 +4909,10 @@ export const SmartGateway: React.FC<
                           language === "ar"
                             ? dailyDiscovery.queryAr
                             : dailyDiscovery.queryEn;
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
+                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
+                        setSearchValue(cleanValue);
+                        latestInputRef.current = cleanValue;
+                        setQuery(cleanValue);
                         setSmartSuggestion("");
                         handleSubmit(undefined, nextValue);
                       }}
@@ -4871,9 +4952,10 @@ export const SmartGateway: React.FC<
                           language === "ar"
                             ? dailyWow.queryAr
                             : dailyWow.queryEn;
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
+                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
+                        setSearchValue(cleanValue);
+                        latestInputRef.current = cleanValue;
+                        setQuery(cleanValue);
                         setSmartSuggestion("");
                         handleSubmit(undefined, nextValue);
                       }}
@@ -4922,9 +5004,10 @@ export const SmartGateway: React.FC<
                           language === "ar"
                             ? sevenDayStep.queryAr
                             : sevenDayStep.queryEn;
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
+                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
+                        setSearchValue(cleanValue);
+                        latestInputRef.current = cleanValue;
+                        setQuery(cleanValue);
                         setSmartSuggestion("");
                         handleSubmit(undefined, nextValue);
                       }}

@@ -6,6 +6,62 @@ import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { useSmartSearch } from '../../../hooks/useSmartSearch';
 
+
+const normalizeQawlSearchText = (value: string) => {
+  let text = (value || '').trim().replace(/\s+/g, ' ');
+  const prefixes = [
+    'أريد فهماً واضحاً لهذا الموضوع:',
+    'أريد فهمًا واضحًا لهذا الموضوع:',
+    'اريد فهماً واضحاً لهذا الموضوع:',
+    'اريد فهمًا واضحًا لهذا الموضوع:',
+    'اشرح لي ببساطة:'
+  ];
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const prefix of prefixes) {
+      if (text.toLowerCase().startsWith(prefix.toLowerCase())) {
+        text = text.slice(prefix.length).trim();
+        changed = true;
+      }
+    }
+  }
+  for (const prefix of prefixes) {
+    const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    text = text.replace(new RegExp(`(?:${escaped}\\s*)+`, 'gi'), '').trim();
+  }
+
+  const parts = text
+    .split(/(?<=[؟?!.])\s+|[:：]/)
+    .map(part => part.trim())
+    .filter(Boolean);
+  if (parts.length > 1) {
+    const unique: string[] = [];
+    const seen = new Set<string>();
+    for (const part of parts) {
+      const key = part
+        .replace(/[\u064B-\u065F]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(part);
+      }
+    }
+    text = unique.join(' ');
+  }
+
+  const words = text.split(' ').filter(Boolean);
+  if (words.length >= 4 && words.length % 2 === 0) {
+    const half = words.length / 2;
+    if (words.slice(0, half).join(' ') === words.slice(half).join(' ')) {
+      text = words.slice(0, half).join(' ');
+    }
+  }
+  return text.trim();
+};
+
 interface Props {
   onEmergency: () => void;
   onQuestion: (question: any) => void;
@@ -83,8 +139,9 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
   useEffect(() => {
     if (initialValue && initialValue.trim().length > 2) {
-      setSearchQuery(initialValue);
-      handleSearchRecursive(initialValue);
+      const cleanInitialValue = normalizeQawlSearchText(initialValue);
+      setSearchQuery(cleanInitialValue);
+      handleSearchRecursive(cleanInitialValue);
       if (onValueUsed) onValueUsed();
     }
   }, [initialValue]);
@@ -109,8 +166,10 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
       setIsGenerating(false);
       setError(null);
       try {
-        const results = await qawlFaslService.searchQuestions(query);
-        await qawlFaslService.logSearch(query, results.length > 0);
+        const cleanQuery = normalizeQawlSearchText(query);
+        if (cleanQuery !== searchQuery) setSearchQuery(cleanQuery);
+        const results = await qawlFaslService.searchQuestions(cleanQuery);
+        await qawlFaslService.logSearch(cleanQuery, results.length > 0);
         
         if (results.length > 0) {
           onQuestion(results[0]);
@@ -118,7 +177,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
           setIsSearching(false);
           setIsGenerating(true);
           try {
-            const generatedQuestion = await qawlFaslService.handleMissingSearchPublishing(query);
+            const generatedQuestion = await qawlFaslService.handleMissingSearchPublishing(cleanQuery);
             if (generatedQuestion.status === 'published') {
               onQuestion(generatedQuestion);
             } else {
@@ -153,7 +212,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSearchRecursive(searchQuery);
+    handleSearchRecursive(normalizeQawlSearchText(searchQuery));
   };
 
   return (
