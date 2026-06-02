@@ -48,82 +48,6 @@ import { TebyanGlyph } from "./common/TebyanGlyph";
 import TextareaAutosize from "react-textarea-autosize";
 import { TebyanTooltip } from "./TebyanTooltip";
 
-
-const normalizeGatewayQueryText = (value: string, language: 'ar' | 'en') => {
-  let text = (value || '').trim().replace(/\s+/g, ' ');
-  const prefixes = language === 'ar'
-    ? [
-        'أريد فهماً واضحاً لهذا الموضوع:',
-        'أريد فهمًا واضحًا لهذا الموضوع:',
-        'اريد فهماً واضحاً لهذا الموضوع:',
-        'اريد فهمًا واضحًا لهذا الموضوع:',
-        'اشرح لي ببساطة:',
-        'كيف أتعامل تربوياً مع موقف:',
-        'ما القرار الأنسب في هذا الموقف:',
-        'كيف أطور هذه الفكرة وأحولها إلى شيء عملي:',
-        'حلل استراتيجياً هذا الموقف:',
-        'كيف أتصرف بهدوء وذكاء في هذا الموقف:'
-      ]
-    : [
-        'I want a clear understanding of this topic:',
-        'Explain simply:',
-        'How should I handle this educationally:',
-        'What is the best decision in this situation:',
-        'How can I develop this idea into something practical:',
-        'Analyze this strategically:',
-        'How can I respond calmly and intelligently to:'
-      ];
-
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const prefix of prefixes) {
-      if (text.toLowerCase().startsWith(prefix.toLowerCase())) {
-        text = text.slice(prefix.length).trim();
-        changed = true;
-      }
-    }
-  }
-
-  // Remove repeated helper phrases even when they appear in the middle of the text.
-  for (const prefix of prefixes) {
-    const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    text = text.replace(new RegExp(`(?:${escaped}\\s*)+`, 'gi'), '').trim();
-  }
-
-  // Collapse exact repeated chunks, including colon-separated repeats that do not end with punctuation.
-  const pieces = text
-    .split(/(?<=[؟?!.])\s+|[:：]/)
-    .map(part => part.trim())
-    .filter(Boolean);
-  if (pieces.length > 1) {
-    const unique: string[] = [];
-    const seen = new Set<string>();
-    for (const piece of pieces) {
-      const key = piece
-        .replace(/[\u064B-\u065F]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .toLowerCase();
-      if (!seen.has(key)) {
-        seen.add(key);
-        unique.push(piece);
-      }
-    }
-    text = unique.join(' ');
-  }
-
-  // Last safety pass for a phrase duplicated directly next to itself.
-  const words = text.split(' ').filter(Boolean);
-  if (words.length >= 4 && words.length % 2 === 0) {
-    const half = words.length / 2;
-    if (words.slice(0, half).join(' ') === words.slice(half).join(' ')) {
-      text = words.slice(0, half).join(' ');
-    }
-  }
-  return text.trim();
-};
-
 const DAILY_CHALLENGES = [
   {
     titleAr: "كيف تدير صراعاً حاداً بين أفراد فريقك أو عائلتك؟",
@@ -1359,6 +1283,48 @@ export const SmartGateway: React.FC<
     "Constructing a comprehensive roadmap...",
   ];
 
+
+  function normalizeFollowUpQuery(value: any) {
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+
+    let text = raw
+      .replace(/^أريد\s+فهمًا?\s+واضحًا?\s+لهذا\s+الموضوع[:：]?\s*/gi, "")
+      .replace(/^اريد\s+فهمًا?\s+واضحًا?\s+لهذا\s+الموضوع[:：]?\s*/gi, "")
+      .replace(/^نكمل\s+السابق[؟?]?\s*/gi, "")
+      .replace(/^أكمل\s+تحليل[:：]?\s*/gi, "")
+      .replace(/^اكمل\s+تحليل[:：]?\s*/gi, "")
+      .replace(/^Continue\s+analyzing[:：]?\s*/gi, "")
+      .replace(/[\uFE0E\uFE0F]/g, "")
+      .replace(/([✨⭐🌟💫])\1+/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const repeatedArabicPrefix = /^(أريد\s+فهمًا?\s+واضحًا?\s+لهذا\s+الموضوع[:：]\s*){2,}/i;
+    text = text.replace(repeatedArabicPrefix, "أريد فهمًا واضحًا لهذا الموضوع: ").trim();
+
+    const parts = text
+      .split(/(?<=[؟?!.])\s+|\s*[|،؛]\s*/g)
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    const seen = new Set<string>();
+    const uniqueParts: string[] = [];
+    for (const part of parts) {
+      const key = part
+        .replace(/["'“”«»]/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueParts.push(part);
+      }
+    }
+
+    return (uniqueParts.length ? uniqueParts.join(" ") : text).trim();
+  }
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isThinking) {
@@ -1397,7 +1363,7 @@ export const SmartGateway: React.FC<
             <span
               className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
-              "{lastInteraction.query}"
+              "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
             <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
           </div>
@@ -1411,15 +1377,15 @@ export const SmartGateway: React.FC<
             <span
               className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
-              "{lastInteraction.query}"
+              "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
             <span>, is your coffee ready to continue? ☕</span>
           </div>
         );
         dynamicSuggests = [
           {
-            ar: `أكمل تحليل: ${lastInteraction.query}`,
-            en: `Continue analyzing: ${lastInteraction.query}`,
+            ar: `أكمل تحليل: ${normalizeFollowUpQuery(lastInteraction.query)}`,
+            en: `Continue analyzing: ${normalizeFollowUpQuery(lastInteraction.query)}`,
           },
           {
             ar: `كيف أتعامل مع تمرد أو عناد الموظفين؟`,
@@ -1505,7 +1471,7 @@ export const SmartGateway: React.FC<
             <span
               className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
-              "{lastInteraction.query}"
+              "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
             <span>، هل نكمل الاستكشاف؟ ☕</span>
           </div>
@@ -1519,15 +1485,15 @@ export const SmartGateway: React.FC<
             <span
               className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
-              "{lastInteraction.query}"
+              "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
             <span>, shall we continue exploring? ☕</span>
           </div>
         );
         dynamicSuggests = [
           {
-            ar: `أكمل تحليل: ${lastInteraction.query}`,
-            en: `Continue analyzing: ${lastInteraction.query}`,
+            ar: `أكمل تحليل: ${normalizeFollowUpQuery(lastInteraction.query)}`,
+            en: `Continue analyzing: ${normalizeFollowUpQuery(lastInteraction.query)}`,
           },
           {
             ar: `مراجعة وتصحيح مسار القرار الأخير`,
@@ -1611,7 +1577,7 @@ export const SmartGateway: React.FC<
             <span
               className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
-              "{lastInteraction.query}"
+              "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
             <span>.. هل كان يوماً مثمراً؟ 🌟</span>
           </div>
@@ -1625,15 +1591,15 @@ export const SmartGateway: React.FC<
             <span
               className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
-              "{lastInteraction.query}"
+              "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
             <span>, how was your day? 🌟</span>
           </div>
         );
         dynamicSuggests = [
           {
-            ar: `أكمل تحليل: ${lastInteraction.query}`,
-            en: `Continue analyzing: ${lastInteraction.query}`,
+            ar: `أكمل تحليل: ${normalizeFollowUpQuery(lastInteraction.query)}`,
+            en: `Continue analyzing: ${normalizeFollowUpQuery(lastInteraction.query)}`,
           },
           {
             ar: `كيف أستعد لمواجهة الخصم غداً بذكاء؟`,
@@ -1800,7 +1766,12 @@ export const SmartGateway: React.FC<
 
       // Only load memory if it belongs to the current user state
       if (data.uid === currentUid) {
-        setLastInteraction(data);
+        const normalizedQuery = normalizeFollowUpQuery(data.query);
+        const normalizedData = { ...data, query: normalizedQuery || data.query };
+        if (normalizedQuery && normalizedQuery !== data.query) {
+          localStorage.setItem("tebyan_memory", JSON.stringify(normalizedData));
+        }
+        setLastInteraction(normalizedData);
         if (user) {
           const lastTime = new Date(data.timestamp).getTime();
           const now = new Date().getTime();
@@ -1901,8 +1872,9 @@ export const SmartGateway: React.FC<
     localStorage.setItem("tebyan_usage_stats", JSON.stringify(usageStats));
 
     // Memory
+    const cleanMemoryQuery = normalizeFollowUpQuery(query);
     const memory = {
-      query,
+      query: cleanMemoryQuery || query,
       path: id,
       timestamp: new Date().toISOString(),
       followedUp: false,
@@ -2196,7 +2168,7 @@ export const SmartGateway: React.FC<
 
   const handleSubmit = (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
-    const rawQuery = normalizeGatewayQueryText(overrideQuery || query, language);
+    const rawQuery = overrideQuery || query;
     const moodPrefix =
       language === "ar" ? activeMoodOption.prefixAr : activeMoodOption.prefixEn;
     const activeQuery =
@@ -2312,7 +2284,6 @@ export const SmartGateway: React.FC<
   };
 
   const handlePathSelect = (id: string, q: string) => {
-    q = normalizeGatewayQueryText(q, language);
     console.log(
       "[SmartGateway] Path selected triggered:",
       id,
@@ -3199,7 +3170,7 @@ export const SmartGateway: React.FC<
     cleanQuery.length > 110 ? `${cleanQuery.slice(0, 110)}…` : cleanQuery;
 
   const livingWorld = useMemo(() => {
-    const combined = [query, ...searchHistory, lastInteraction?.query || ""]
+    const combined = [query, ...searchHistory, normalizeFollowUpQuery(lastInteraction?.query) || ""]
       .join(" ")
       .toLowerCase();
     const count = (words: string[]) =>
@@ -3522,9 +3493,9 @@ export const SmartGateway: React.FC<
                 <button
                   type="button"
                   onClick={() => {
-                    setSearchValue(lastInteraction.query);
-                    latestInputRef.current = lastInteraction.query;
-                    setQuery(lastInteraction.query);
+                    setSearchValue(normalizeFollowUpQuery(lastInteraction.query));
+                    latestInputRef.current = normalizeFollowUpQuery(lastInteraction.query);
+                    setQuery(normalizeFollowUpQuery(lastInteraction.query));
                     setShowFollowUp(false);
                   }}
                   className="min-w-0 flex-1 text-right"
@@ -3533,7 +3504,7 @@ export const SmartGateway: React.FC<
                     {language === "ar" ? "نكمل السابق؟" : "Continue previous?"}
                   </p>
                   <p className="mt-0.5 truncate text-xs md:text-sm font-black text-[#34524B]">
-                    "{lastInteraction.query}"
+                    "{normalizeFollowUpQuery(lastInteraction.query)}"
                   </p>
                 </button>
                 <div className="flex items-center justify-end gap-2">
@@ -3580,17 +3551,16 @@ export const SmartGateway: React.FC<
                   className="mb-4 w-full max-w-3xl space-y-3"
                   dir={language === "ar" ? "rtl" : "ltr"}
                 >
-                  {lastInteraction?.query && (
+                  {lastInteraction?.query && !showFollowUp && (
                     <motion.button
                       type="button"
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       onClick={() => {
-                        const nextValue = lastInteraction.query;
-                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
-                        setSearchValue(cleanValue);
-                        latestInputRef.current = cleanValue;
-                        setQuery(cleanValue);
+                        const nextValue = normalizeFollowUpQuery(lastInteraction.query);
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
                         setSmartSuggestion("");
                       }}
                       className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#A8C3BD]/22 bg-[#F7FBF9]/78 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#A8C3BD]/38 active:scale-[0.99] overflow-hidden"
@@ -3601,7 +3571,7 @@ export const SmartGateway: React.FC<
                             {language === "ar" ? "نكمل السابق" : "Continue"}
                           </p>
                           <p className="mt-0.5 line-clamp-2 max-w-full break-words text-[11px] sm:text-xs font-black leading-relaxed text-[#34524B]">
-                            "{lastInteraction.query}"
+                            "{normalizeFollowUpQuery(lastInteraction.query)}"
                           </p>
                         </div>
                         <ArrowLeft
@@ -3620,10 +3590,9 @@ export const SmartGateway: React.FC<
                       animate={{ opacity: 1, y: 0 }}
                       onClick={() => {
                         const nextValue = tomorrowRoom.query;
-                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
-                        setSearchValue(cleanValue);
-                        latestInputRef.current = cleanValue;
-                        setQuery(cleanValue);
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
                         setSmartSuggestion("");
                       }}
                       className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#8FA9C7]/18 bg-white/72 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#8E7AAE]/30 active:scale-[0.99] overflow-hidden"
@@ -3807,10 +3776,9 @@ export const SmartGateway: React.FC<
                       language={language}
                       value={searchValue}
                       onApply={(nextValue) => {
-                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
-                        setSearchValue(cleanValue);
-                        latestInputRef.current = cleanValue;
-                        setQuery(cleanValue);
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
                         setSmartSuggestion("");
                         inputRef.current?.focus();
                       }}
@@ -4909,10 +4877,9 @@ export const SmartGateway: React.FC<
                           language === "ar"
                             ? dailyDiscovery.queryAr
                             : dailyDiscovery.queryEn;
-                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
-                        setSearchValue(cleanValue);
-                        latestInputRef.current = cleanValue;
-                        setQuery(cleanValue);
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
                         setSmartSuggestion("");
                         handleSubmit(undefined, nextValue);
                       }}
@@ -4952,10 +4919,9 @@ export const SmartGateway: React.FC<
                           language === "ar"
                             ? dailyWow.queryAr
                             : dailyWow.queryEn;
-                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
-                        setSearchValue(cleanValue);
-                        latestInputRef.current = cleanValue;
-                        setQuery(cleanValue);
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
                         setSmartSuggestion("");
                         handleSubmit(undefined, nextValue);
                       }}
@@ -5004,10 +4970,9 @@ export const SmartGateway: React.FC<
                           language === "ar"
                             ? sevenDayStep.queryAr
                             : sevenDayStep.queryEn;
-                        const cleanValue = normalizeGatewayQueryText(nextValue, language);
-                        setSearchValue(cleanValue);
-                        latestInputRef.current = cleanValue;
-                        setQuery(cleanValue);
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
                         setSmartSuggestion("");
                         handleSubmit(undefined, nextValue);
                       }}
