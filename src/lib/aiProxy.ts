@@ -83,6 +83,39 @@ ${buildUserAddressingInstruction(addressing)}
   };
 }
 
+
+function sanitizeTextForAudio(input: string): string {
+  if (!input) return '';
+  let cleaned = String(input)
+    .replace(/ZhaDataSourceResponse[\s\S]*$/g, ' ')
+    .replace(/DataSourceResponse[\s\S]*$/g, ' ')
+    .replace(/with no thought process explanation[\s\S]*$/gi, ' ')
+    .replace(/Follow the[\s\S]*$/gi, ' ')
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/[\uFE0E\uFE0F\u200D]/g, '')
+    .replace(/[✨🎙️🎧🔊▶︎★⭐🌟💫]+/g, ' ')
+    .replace(/[\u{1F300}-\u{1FAFF}]/gu, ' ')
+    .replace(/[ـ]{3,}/g, ' ')
+    .replace(/[-–—]{3,}/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const chunks = cleaned
+    .split(/(?<=[.!؟؛])\s+|\n+/)
+    .map(part => part.trim())
+    .filter(Boolean);
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const chunk of chunks) {
+    const key = chunk.replace(/[\s:：،.؟!؛]+/g, '').slice(0, 120);
+    if (!seen.has(key)) {
+      seen.add(key);
+      unique.push(chunk);
+    }
+  }
+  return unique.join(' ').slice(0, 1400).trim();
+}
+
 export async function proxyGenerateAudio(params: {
   text: string;
   voiceName?: string;
@@ -91,25 +124,16 @@ export async function proxyGenerateAudio(params: {
   // we use root-relative path for /api calls
   const apiPath = `/api/ai/audio`;
 
-  const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 45000);
-
   let response;
   try {
     response = await fetch(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-      signal: controller.signal,
+      body: JSON.stringify({ ...params, text: sanitizeTextForAudio(params.text) }),
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error('[AI Proxy] Audio fetch failed:', err);
-    if (err?.name === 'AbortError') {
-      return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' };
-    }
-    return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' };
-  } finally {
-    window.clearTimeout(timeout);
+    throw new Error('تحقق من اتصالك بالإنترنت، لم أتمكن من طلب الملف الصوتي.');
   }
 
   const contentType = response.headers.get('content-type');
@@ -119,11 +143,11 @@ export async function proxyGenerateAudio(params: {
 
   if (!response.ok) {
     const error = await response.json();
-    return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' };
+    throw new Error(error.error || 'Audio generation failed');
   }
 
   const data = await response.json();
-  if (data.error) { return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' }; }
+  if (data.error) { throw new Error(data.error); }
   return {
     audioData: data.audioData || "",
     mimeType: data.mimeType || "audio/wav",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Headphones, Sparkles, Volume2 } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2 } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -20,23 +20,20 @@ interface Props {
 export default function QuestionDetailView({ questions, onBack, questionId, onQuestion, language = 'ar' }: Props) {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
   
-  const getDefaultTab = (): 'quick' | 'deep' | 'podcast' | 'age' | 'steps' | 'resources' => {
+  const getDefaultTab = (): 'quick' | 'deep' | 'age' | 'steps' | 'resources' => {
     return 'quick';
   };
 
-  const [activeTab, setActiveTab] = useState<'quick' | 'deep' | 'podcast' | 'age' | 'steps' | 'resources'>(getDefaultTab());
+  const [activeTab, setActiveTab] = useState<'quick' | 'deep' | 'age' | 'steps' | 'resources'>(getDefaultTab());
   const [related, setRelated] = useState<QawlFaslQuestion[]>([]);
   
   const [shadowResponse, setShadowResponse] = useState<string | null>(null);
   const [isSummoningShadow, setIsSummoningShadow] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [podcastResult, setPodcastResult] = useState<any | null>(null);
-  const [isPodcastLoading, setIsPodcastLoading] = useState(false);
-  const [podcastError, setPodcastError] = useState<string | null>(null);
-  const [podcastAudioUrl, setPodcastAudioUrl] = useState<string | null>(null);
-  const [podcastAudioMessage, setPodcastAudioMessage] = useState<string | null>(null);
-  const [podcastSpeechText, setPodcastSpeechText] = useState<string>('');
-  const [isBrowserSpeaking, setIsBrowserSpeaking] = useState(false);
+  const [quickAudioUrl, setQuickAudioUrl] = useState<string | null>(null);
+  const [isQuickAudioLoading, setIsQuickAudioLoading] = useState(false);
+  const [quickAudioError, setQuickAudioError] = useState<string | null>(null);
+  const quickAudioRef = useRef<HTMLAudioElement | null>(null);
   
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
@@ -57,13 +54,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    setPodcastResult(null);
-    setPodcastError(null);
-    setPodcastAudioUrl(null);
-    setPodcastAudioMessage(null);
-    setPodcastSpeechText('');
-    setIsBrowserSpeaking(false);
-    setIsPodcastLoading(false);
+    setQuickAudioUrl(null);
+    setQuickAudioError(null);
+    setIsQuickAudioLoading(false);
 
     async function fetchData() {
       if (!questionId) return;
@@ -84,120 +77,96 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   }
 
 
-
-  const textValue = (value: any): string => {
-    if (typeof value === 'string') return value;
+  const stringifyAnswerPart = (value: any): string => {
     if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) return value.map(stringifyAnswerPart).filter(Boolean).join('، ');
     if (typeof value === 'object') {
-      return [value.sayThis, value.dontSayThis, value.doThisNow, value.summary, value.text]
+      return [value.sayThis, value.dontSayThis, value.doThisNow, value.text, value.summary, value.answer]
+        .map(stringifyAnswerPart)
         .filter(Boolean)
-        .join(' ')
-        .trim();
+        .join('، ');
     }
     return String(value);
   };
 
-  const makeBlobAudioUrl = (audio: any) => {
-    if (!audio?.audioData) return null;
-    try {
-      const binary = atob(audio.audioData);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      const blob = new Blob([bytes], { type: audio.mimeType || 'audio/wav' });
-      return URL.createObjectURL(blob);
-    } catch (error) {
-      console.error('Invalid audio payload:', error);
-      return null;
-    }
-  };
+  const cleanTextForSpeech = (text: string): string => {
+    if (!text) return '';
+    let cleaned = text
+      .replace(/ZhaDataSourceResponse[\s\S]*$/g, ' ')
+      .replace(/DataSourceResponse[\s\S]*$/g, ' ')
+      .replace(/with no thought process explanation[\s\S]*$/gi, ' ')
+      .replace(/Follow the[\s\S]*$/gi, ' ')
+      .replace(/[\uFE0E\uFE0F\u200D]/g, '')
+      .replace(/[✨🎙️🎧🔊▶︎★⭐🌟💫]+/g, ' ')
+      .replace(/[\u{1F300}-\u{1FAFF}]/gu, ' ')
+      .replace(/[-ـ]{3,}/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-  const playPodcastInBrowser = () => false;
-
-  const stopBrowserSpeech = () => {
-    setIsBrowserSpeaking(false);
-  };
-
-  const buildPodcastTopic = () => {
-    const quickAnswer = question.quickAnswer || {} as any;
-    const steps = Array.isArray(question.practicalSteps) ? question.practicalSteps.join(' | ') : '';
-    const ages = Array.isArray(question.ageGroups) ? question.ageGroups.join(', ') : '';
-
-    return `حوّل إجابة قول فصل التالية إلى حلقة بودكاست واقعية جداً، لا تبدو كمقال مقروء ولا كنشرة تعليمات.
-المطلوب: حوار طبيعي قريب من الواقع، فيه مقدم أو مقدمة، ومعه ضيف واحد أو ضيفان أو مجلس صغير حسب ما يخدم الموقف فقط.
-ممنوع الإطالة والمواعظ الثقيلة. اجعل الحوار إنسانياً، فيه أخذ ورد، مقاطعات خفيفة، أسئلة قصيرة، تردد طبيعي، أمثلة من بيت كويتي/خليجي دون مبالغة، وخلاصة عملية واضحة.
-لا تستخدم مؤثرات صوتية مكتوبة بكثرة، ولا تكتب وكأنك تقرأ نصاً رسمياً.
-
-السؤال/الموقف: ${question.question || question.title}
-الملخص: ${question.quickSummary || ''}
-قل للطفل: ${quickAnswer.sayThis || ''}
-لا تقل: ${quickAnswer.dontSayThis || ''}
-افعل الآن: ${quickAnswer.doThisNow || ''}
-الخطأ الشائع: ${question.commonMistake || ''}
-الأعمار: ${ages}
-خطوات عملية: ${steps}
-الخاتمة الأصلية: ${question.closingThought || ''}`;
-  };
-
-  const buildFallbackPodcast = () => {
-    const title = `قول فصل المسموع: ${question.question || question.title || 'حلقة قصيرة'}`;
-    return {
-      title,
-      guests: ['المحاور', 'صوت تربوي هادئ'],
-      dialogue: [
-        { speaker: 'المحاور', text: `خلينا نقف عند السؤال بهدوء: ${question.question || question.title || ''}` },
-        { speaker: 'صوت تربوي هادئ', text: textValue(question.quickAnswer) || textValue(question.coreAnswer) || 'الفكرة الأساسية أن نجيب بصدق وهدوء، لا بردة فعل سريعة.' },
-        { speaker: 'المحاور', text: 'يعني المطلوب ليس جواباً جميلاً فقط، بل طريقة تحفظ قلب الطفل وعقله.' },
-        { speaker: 'صوت تربوي هادئ', text: question.closingThought || 'نقترب من السؤال بإنسانية، ونترك مساحة آمنة للفهم والحوار.' }
-      ],
-      conclusion: question.closingThought || 'القول الفصل يبدأ حين يصبح الجواب جسراً لا حكماً قاسياً.'
-    };
-  };
-
-  const podcastToSpeechText = (podcast: any) => {
-    const lines = Array.isArray(podcast?.dialogue)
-      ? podcast.dialogue.map((line: any) => `${line?.speaker || 'المتحدث'}: ${line?.text || ''}`).join('\n')
-      : '';
-    return `${podcast?.title || 'قول فصل المسموع'}\n\n${lines}\n\nالخاتمة: ${podcast?.conclusion || ''}`.trim();
-  };
-
-  const handleGeneratePodcast = async () => {
-    if (isPodcastLoading) return;
-    setIsPodcastLoading(true);
-    setPodcastError(null);
-    setPodcastAudioMessage(null);
-    if (podcastAudioUrl) URL.revokeObjectURL(podcastAudioUrl);
-    stopBrowserSpeech();
-    setPodcastAudioUrl(null);
-    setPodcastSpeechText('');
-
-    let result: any | null = null;
-    try {
-      const { generateResurrectionPodcast } = await import('../../../services/gemini');
-      result = await generateResurrectionPodcast(buildPodcastTopic(), language);
-    } catch (error) {
-      console.error('Qawl Fasl podcast script error:', error);
-      result = buildFallbackPodcast();
-      setPodcastAudioMessage('');
-    }
-
-    try {
-      setPodcastResult(result);
-      const finalSpeechText = podcastToSpeechText(result);
-      setPodcastSpeechText(finalSpeechText);
-      const audio = await proxyGenerateAudio({ text: finalSpeechText, style: 'podcast' });
-      const audioUrl = makeBlobAudioUrl(audio);
-      if (audioUrl) {
-        setPodcastAudioUrl(audioUrl);
-        setPodcastAudioMessage(null);
-      } else {
-        setPodcastAudioMessage('__retry__');
+    const sentences = cleaned.split(/(?<=[.!؟؛])\s+|\n+/).map(s => s.trim()).filter(Boolean);
+    const unique: string[] = [];
+    const seen = new Set<string>();
+    for (const sentence of sentences) {
+      const key = sentence.replace(/[\s:：،.؟!؛]+/g, '').slice(0, 120);
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(sentence);
       }
-    } catch (error: any) {
-      console.error('Qawl Fasl audio error:', error);
-      setPodcastAudioMessage('__retry__');
-    } finally {
-      setIsPodcastLoading(false);
     }
+    return unique.join(' ').slice(0, 1400).trim();
+  };
+
+  const buildQuickAnswerSpeechText = () => {
+    const parts = [
+      question.question || question.title,
+      question.quickSummary,
+      question.quickAnswer?.sayThis ? `قل بهدوء: ${question.quickAnswer.sayThis}` : '',
+      question.quickAnswer?.doThisNow ? `والخطوة الآن: ${question.quickAnswer.doThisNow}` : '',
+      question.closingThought,
+    ].map(stringifyAnswerPart).filter(Boolean);
+    return cleanTextForSpeech(parts.join('. '));
+  };
+
+  const handleQuickAudio = async () => {
+    if (isQuickAudioLoading) return;
+    setQuickAudioError(null);
+
+    if (quickAudioUrl && quickAudioRef.current) {
+      try {
+        quickAudioRef.current.currentTime = 0;
+        await quickAudioRef.current.play();
+      } catch (_) {}
+      return;
+    }
+
+    const text = buildQuickAnswerSpeechText();
+    if (!text) return;
+
+    setIsQuickAudioLoading(true);
+    try {
+      const audio = await proxyGenerateAudio({ text, style: 'quick-answer' });
+      const audioUrl = audioResponseToUrl(audio);
+      if (!audioUrl) {
+        setQuickAudioError('أعد المحاولة');
+        return;
+      }
+      setQuickAudioUrl(audioUrl);
+      setTimeout(() => {
+        quickAudioRef.current?.play().catch(() => {});
+      }, 80);
+    } catch (error) {
+      console.error('Quick answer audio error:', error);
+      setQuickAudioError('أعد المحاولة');
+    } finally {
+      setIsQuickAudioLoading(false);
+    }
+  };
+
+
+  const audioResponseToUrl = (audio: any) => {
+    if (!audio?.audioData) return null;
+    return `data:${audio.mimeType || 'audio/wav'};base64,${audio.audioData}`;
   };
 
   const category = CATEGORIES.find(c => c.id === question.categorySlug);
@@ -285,7 +254,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
            {[
              { id: 'quick', label: 'الجواب السريع', icon: CheckCircle2 },
              { id: 'deep', label: 'تحليل السلوك والسياق', icon: Lightbulb },
-             { id: 'podcast', label: 'قول فصل المسموع', icon: Headphones },
              { id: 'age', label: 'حسب العمر', icon: UserCheck },
              { id: 'steps', label: 'خطوات وتمارين', icon: FileText },
              { id: 'resources', label: 'للاستزادة', icon: BookOpen },
@@ -345,10 +313,36 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             </div>
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <div className="flex-1">
-                <h3 className="text-xl font-black text-[#182231] mb-4 flex items-center gap-2">
-                   <Lightbulb className="text-[#64788D] w-6 h-6" /> الملخص السريع
-                </h3>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                  <h3 className="text-xl font-black text-[#182231] flex items-center gap-2">
+                     <Lightbulb className="text-[#64788D] w-6 h-6" /> الملخص السريع
+                  </h3>
+                  <button
+                    onClick={handleQuickAudio}
+                    disabled={isQuickAudioLoading}
+                    className={cn(
+                      "inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-black transition-all border shadow-sm self-start md:self-auto",
+                      isQuickAudioLoading
+                        ? "bg-[#F6F5F0] text-[#8FA9C7] border-[#8FA9C7]/15 cursor-wait"
+                        : "bg-[#8E7AAE] text-white border-[#8E7AAE] hover:bg-[#7D6A9B]"
+                    )}
+                    title="استمع للجواب"
+                  >
+                    {isQuickAudioLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume2 className="w-4 h-4" />}
+                    {isQuickAudioLoading ? 'جارٍ التجهيز' : 'استمع للجواب'}
+                  </button>
+                </div>
                 <p className="text-[#465568] font-medium leading-[1.85] text-base md:text-xl">{question.quickSummary}</p>
+                {quickAudioUrl && (
+                  <audio ref={quickAudioRef} controls className="w-full mt-5" src={quickAudioUrl}>
+                    المتصفح لا يدعم تشغيل الصوت.
+                  </audio>
+                )}
+                {quickAudioError && (
+                  <button onClick={handleQuickAudio} className="mt-4 text-sm font-black text-[#8E7AAE] underline underline-offset-4">
+                    إعادة المحاولة
+                  </button>
+                )}
               </div>
             </div>
 
@@ -474,127 +468,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         )}
 
 
-        {/* Podcast Tab */}
-        {activeTab === 'podcast' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-            <div className="relative overflow-hidden rounded-[28px] md:rounded-[36px] border border-[#8E7AAE]/18 bg-[#F7F5F2] p-5 md:p-8 lg:p-10 shadow-[0_12px_35px_rgba(24,34,49,0.06)]">
-              <div className="absolute -top-24 -left-24 w-64 h-64 rounded-full bg-[#8E7AAE]/10 blur-3xl" />
-              <div className="absolute -bottom-28 -right-24 w-72 h-72 rounded-full bg-[#D8C28A]/18 blur-3xl" />
-              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-white/80 border border-[#8FA9C7]/16 px-4 py-2 text-xs font-black tracking-widest text-[#8E7AAE]">
-                    <Headphones className="w-4 h-4" /> قول فصل المسموع
-                  </div>
-                  <h3 className="text-2xl md:text-4xl font-black text-[#182231] leading-tight">حوّل الإجابة إلى حوار واقعي</h3>
-                  <p className="max-w-2xl text-[#64788D] font-bold leading-[1.85] text-sm md:text-base">
-                    حلقة صوتية مختصرة وواضحة، بصياغة طبيعية مناسبة للسؤال.
-                  </p>
-                </div>
-                <button
-                  onClick={handleGeneratePodcast}
-                  disabled={isPodcastLoading}
-                  className={cn(
-                    "shrink-0 inline-flex items-center justify-center gap-2 rounded-full px-6 py-4 text-sm md:text-base font-black transition-all shadow-[0_12px_35px_rgba(142,122,174,0.18)]",
-                    isPodcastLoading
-                      ? "bg-[#EAECE6] text-[#8FA9C7] cursor-wait"
-                      : "bg-[#8E7AAE] text-white hover:bg-[#7D6A9B]"
-                  )}
-                >
-                  {isPodcastLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-                  {isPodcastLoading ? 'جارٍ تجهيز الحلقة...' : podcastResult ? 'إعادة إنشاء الحلقة' : 'إنشاء البودكاست'}
-                </button>
-              </div>
-            </div>
-
-            {podcastError && (
-              <div className="rounded-[24px] border border-[#F2D7C8] bg-[#FAF0E6] p-5 text-[#A6603F] font-bold leading-relaxed">
-                {podcastError}
-              </div>
-            )}
-
-            {!podcastResult && !isPodcastLoading && !podcastError && (
-              <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-6 md:p-8 text-center text-[#64788D] font-bold leading-relaxed">
-                اضغط على “إنشاء البودكاست” للاستماع إلى خلاصة صوتية مناسبة.
-              </div>
-            )}
-
-            {isPodcastLoading && (
-              <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-8 md:p-10 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#8E7AAE]" />
-                <p className="text-[#64788D] font-black tracking-wide">جارٍ تجهيز الحلقة...</p>
-              </div>
-            )}
-
-            {podcastResult && (
-              <div className="space-y-6">
-                <div className="rounded-[28px] md:rounded-[36px] bg-white border border-[#8FA9C7]/15 p-5 md:p-8 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                  <p className="text-[11px] font-black tracking-[0.28em] text-[#A68F58] uppercase mb-3">عنوان الحلقة</p>
-                  <h3 className="text-2xl md:text-4xl font-black text-[#182231] leading-tight">{podcastResult.title}</h3>
-                  {Array.isArray(podcastResult.guests) && podcastResult.guests.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-5">
-                      {podcastResult.guests.map((guest: string, index: number) => (
-                        <span key={`${guest}-${index}`} className="rounded-full bg-[#F7F5F2] border border-[#8FA9C7]/15 px-4 py-2 text-xs md:text-sm font-black text-[#64788D]">
-                          {guest}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-[#F7F5F2] p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                  {podcastAudioUrl ? (
-                    <audio controls autoPlay className="w-full" src={podcastAudioUrl}>
-                      المتصفح لا يدعم تشغيل الصوت.
-                    </audio>
-                  ) : podcastAudioMessage ? (
-                    <div className="flex items-center justify-center rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
-                      <button
-                        type="button"
-                        onClick={handleGeneratePodcast}
-                        disabled={isPodcastLoading}
-                        className="inline-flex items-center gap-2 rounded-full bg-[#8E7AAE] px-5 py-2.5 text-sm font-black text-white shadow-sm disabled:opacity-60"
-                      >
-                        <Volume2 className="w-4 h-4" />
-                        إعادة التجهيز
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
-                      <Loader2 className="w-5 h-5 animate-spin text-[#8E7AAE]" />
-                      <p className="text-sm md:text-base font-bold leading-relaxed text-[#64788D]">جارٍ تجهيز الصوت...</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {Array.isArray(podcastResult.dialogue) && podcastResult.dialogue.map((line: any, index: number) => (
-                    <div key={index} className={cn(
-                      "rounded-[24px] border p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]",
-                      index % 2 === 0
-                        ? "bg-white border-[#8FA9C7]/15"
-                        : "bg-[#F7F5F2] border-[#D8C28A]/20"
-                    )}>
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 rounded-full bg-[#8E7AAE] text-white flex items-center justify-center font-black">
-                          {(line?.speaker || '؟').slice(0, 1)}
-                        </div>
-                        <p className="text-[#182231] font-black text-base md:text-lg">{line?.speaker || 'المتحدث'}</p>
-                      </div>
-                      <p className="text-[#465568] font-bold leading-[1.9] text-base md:text-lg whitespace-pre-wrap">{line?.text}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {podcastResult.conclusion && (
-                  <div className="rounded-[28px] bg-[#8E7AAE] text-white p-6 md:p-8 shadow-[0_12px_35px_rgba(142,122,174,0.18)]">
-                    <p className="text-[#EACD9B] font-black mb-3">خاتمة الحلقة</p>
-                    <p className="font-bold leading-[1.9] text-lg">{podcastResult.conclusion}</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+        {/* Audio is now available inside the quick answer card. */}
 
         {/* Age Tab */}
         {activeTab === 'age' && (

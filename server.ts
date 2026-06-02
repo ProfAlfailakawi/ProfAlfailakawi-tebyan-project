@@ -124,90 +124,38 @@ function pcmBase64ToWavBase64(pcmBase64: string, sampleRate = 24000, channels = 
     return Buffer.concat([header, pcm]).toString("base64");
 }
 
+
+function sanitizeTtsText(input) {
+    if (!input) return "";
+    let cleaned = String(input)
+        .replace(/ZhaDataSourceResponse[\s\S]*$/g, " ")
+        .replace(/DataSourceResponse[\s\S]*$/g, " ")
+        .replace(/with no thought process explanation[\s\S]*$/gi, " ")
+        .replace(/Follow the[\s\S]*$/gi, " ")
+        .replace(/```[\s\S]*?```/g, " ")
+        .replace(/[\uFE0E\uFE0F\u200D]/g, "")
+        .replace(/[✨🎙️🎧🔊▶︎★⭐🌟💫]+/g, " ")
+        .replace(/[\u{1F300}-\u{1FAFF}]/gu, " ")
+        .replace(/[ـ]{3,}/g, " ")
+        .replace(/[-–—]{3,}/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    const chunks = cleaned.split(/(?<=[.!؟؛])\s+|\n+/).map((part) => part.trim()).filter(Boolean);
+    const seen = new Set();
+    const unique = [];
+    for (const chunk of chunks) {
+        const key = chunk.replace(/[\s:：،.؟!؛]+/g, "").slice(0, 120);
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(chunk);
+        }
+    }
+    return unique.join(" ").slice(0, 1400).trim();
+}
+
 function sampleRateFromMime(mimeType = "") {
     const match = String(mimeType).match(/rate=(\d+)/i);
     return match ? Number(match[1]) : 24000;
-}
-
-
-async function generateElevenLabsTtsAudio(text: string) {
-    const apiKey = (process.env.ELEVENLABS_API_KEY || "").trim();
-    if (!apiKey) return null;
-    const voiceId = (process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM").trim();
-    const modelId = process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
-    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "xi-api-key": apiKey, "Accept": "audio/mpeg" },
-        body: JSON.stringify({
-            text: text.slice(0, 4500),
-            model_id: modelId,
-            voice_settings: { stability: 0.42, similarity_boost: 0.82, style: 0.38, use_speaker_boost: true }
-        })
-    });
-    if (!r.ok) {
-        const err: any = new Error(await r.text());
-        err.statusCode = r.status;
-        throw err;
-    }
-    const audioBuffer = Buffer.from(await r.arrayBuffer());
-    return { audioData: audioBuffer.toString("base64"), mimeType: "audio/mpeg", voiceName: voiceId, provider: "elevenlabs-tts" };
-}
-
-async function generateGoogleCloudTtsAudio(text: string) {
-    const apiKey = (process.env.GOOGLE_TTS_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "").trim();
-    const standardPrefix = "AI" + "za";
-    if (!apiKey || !apiKey.startsWith(standardPrefix)) return null;
-    const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(apiKey)}`;
-    const payload = {
-        input: { text: text.slice(0, 4800) },
-        voice: { languageCode: "ar-XA", name: process.env.GOOGLE_TTS_VOICE || "ar-XA-Wavenet-B" },
-        audioConfig: { audioEncoding: "MP3", speakingRate: 0.94, pitch: -0.5 }
-    };
-    const r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-    const bodyText = await r.text();
-    let body: any;
-    try { body = JSON.parse(bodyText); } catch { body = {}; }
-    if (!r.ok || !body.audioContent) {
-        const err: any = new Error(body?.error?.message || bodyText || `Google Cloud TTS HTTP ${r.status}`);
-        err.statusCode = r.status;
-        throw err;
-    }
-    return { audioData: body.audioContent, mimeType: "audio/mpeg", voiceName: payload.voice.name, provider: "google-cloud-tts" };
-}
-
-async function generateOpenAiTtsAudio(text: string) {
-    const apiKey = (process.env.OPENAI_API_KEY || "").trim();
-    if (!apiKey) return null;
-    const voices = ["alloy", "verse", "shimmer", "nova", "echo"];
-    const voice = process.env.OPENAI_TTS_VOICE || voices[Math.floor(Math.random() * voices.length)];
-    const r = await fetch("https://api.openai.com/v1/audio/speech", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-        body: JSON.stringify({ model: process.env.OPENAI_TTS_MODEL || "gpt-4o-mini-tts", voice, input: text.slice(0, 4000), format: "mp3" })
-    });
-    if (!r.ok) {
-        const err: any = new Error(await r.text());
-        err.statusCode = r.status;
-        throw err;
-    }
-    const audioBuffer = Buffer.from(await r.arrayBuffer());
-    return { audioData: audioBuffer.toString("base64"), mimeType: "audio/mpeg", voiceName: voice, provider: "openai-tts" };
-}
-
-async function generateProviderFallbackAudio(text: string) {
-    const providers = [generateElevenLabsTtsAudio, generateOpenAiTtsAudio];
-    let lastError: any;
-    for (const provider of providers) {
-        try {
-            const audio = await provider(text);
-            if (audio?.audioData) return audio;
-        } catch (error: any) {
-            lastError = error;
-            console.warn("[Server] TTS fallback provider failed:", error?.message || error);
-        }
-    }
-    if (lastError) console.warn("[Server] All TTS fallback providers failed:", lastError?.message || lastError);
-    return { audioData: "", mimeType: "audio/wav", offline: true, message: "" };
 }
 
 async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?: string; voiceName?: string; style?: string }) {
@@ -217,45 +165,45 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
         throw err;
     }
 
-    // For podcast audio, never fall back to device/browser speech.
-    // Try premium neural TTS first because generic/browser voices sound robotic in Arabic.
-    if (style === "podcast") {
-        const premiumAudio = await generateProviderFallbackAudio(text);
-        if (premiumAudio?.audioData) {
-            return premiumAudio;
-        }
+    const cleanText = sanitizeTtsText(text);
+    if (!cleanText) {
+        const err: any = new Error("Missing clean text for audio generation");
+        err.statusCode = 400;
+        throw err;
     }
 
-    const naturalVoices = ["Puck", "Charon", "Kore", "Fenrir", "Aoede", "Zephyr", "Leda", "Orus", "Autonoe", "Callirrhoe"];
-    const selectedVoice = voiceName && naturalVoices.includes(voiceName)
+    const femaleVoices = ["Kore", "Aoede"];
+    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
+    const allVoices = [...femaleVoices, ...maleVoices];
+    const selectedVoice = voiceName && allVoices.includes(voiceName)
         ? voiceName
-        : naturalVoices[Math.floor(Math.random() * naturalVoices.length)];
-    const hostVoice = selectedVoice;
-    const guestVoice = naturalVoices.find((v) => v !== hostVoice) || "Kore";
+        : allVoices[Math.floor(Math.random() * allVoices.length)];
 
     const apiKey = getGeminiTtsApiKey();
     const standardPrefix = "AI" + "za";
     if (!apiKey || !apiKey.startsWith(standardPrefix)) {
-        return await generateProviderFallbackAudio(text);
+        return {
+            audioData: "",
+            mimeType: "audio/wav",
+            offline: true,
+            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
+        };
     }
 
     const naturalizedText = `
-${style === "podcast" ? `
-أدِّ النص التالي كحلقة بودكاست عربية طبيعية جداً.
-الصوت يجب أن يكون إنسانياً دافئاً وغير آلي، بإيقاع هادئ وتوقفات قصيرة.
-تعامل مع أسماء المتحدثين كإشارات حوارية فقط، ولا تقرأها بطريقة جامدة إذا أفسدت السلاسة.
-اجعل الأداء قريباً من حديث خليجي هادئ، لا قراءة نصية ولا تلخيصاً مدرسياً.
-` : `
-اقرأ النص التالي بصوت عربي طبيعي جداً، دافئ وهادئ، بعيد عن الآلية والمبالغة.
-`}
+تحدث بصوت عربي طبيعي جداً، قريب من إنسان يشرح بهدوء لا من آلة تقرأ.
+لا تذكر أنك نموذج ذكاء اصطناعي ولا تشرح التعليمات.
+لا تقرأ الرموز ولا الزخارف، واقرأ المعنى فقط.
+استخدم نبرة بشرية دافئة، وتوقفات قصيرة طبيعية بين الجمل.
+لا تبالغ في الأداء المسرحي.
+أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار صوتي ذكي وعفوي" : style === "quick-answer" ? "قراءة جواب سريع بوضوح ودفء" : "حديث بشري طبيعي وهادئ"}.
 
 النص:
-${text}
+${cleanText}
 `;
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(apiKey)}`;
-
-    const singleVoicePayload = {
+    const payload = {
         contents: [{ parts: [{ text: naturalizedText }] }],
         generationConfig: {
             responseModalities: ["AUDIO"],
@@ -267,65 +215,22 @@ ${text}
         }
     };
 
-    const multiVoicePayload = {
-        contents: [{ parts: [{ text: naturalizedText }] }],
-        generationConfig: {
-            responseModalities: ["AUDIO"],
-            speechConfig: {
-                multiSpeakerVoiceConfig: {
-                    speakerVoiceConfigs: [
-                        { speaker: "المحاور", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
-                        { speaker: "المقدم", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
-                        { speaker: "Host", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
-                        { speaker: "صوت تربوي هادئ", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } },
-                        { speaker: "ضيف متخصص", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } },
-                        { speaker: "Guest", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } }
-                    ]
-                }
-            }
+    const response = await generateWithRetry(async () => {
+        const r = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const bodyText = await r.text();
+        let body: any;
+        try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
+        if (!r.ok) {
+            const err: any = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
+            err.statusCode = r.status;
+            throw err;
         }
-    };
-
-    const requestTts = async (payload: any) => {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 25000);
-        try {
-            const r = await fetch(endpoint, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-                signal: controller.signal
-            });
-            const bodyText = await r.text();
-            let body: any;
-            try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
-            if (!r.ok) {
-                const err: any = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
-                err.statusCode = r.status;
-                throw err;
-            }
-            return body;
-        } finally {
-            clearTimeout(timeout);
-        }
-    };
-
-    let response: any;
-    try {
-        if (style === "podcast") {
-            try {
-                response = await generateWithRetry(() => requestTts(multiVoicePayload), "Gemini multi-speaker TTS");
-            } catch (multiError: any) {
-                console.warn("[Server] Multi-speaker TTS failed, retrying with single natural voice:", multiError?.message || multiError);
-                response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
-            }
-        } else {
-            response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
-        }
-    } catch (geminiTtsError: any) {
-        console.warn("[Server] Gemini TTS failed, trying provider fallback:", geminiTtsError?.message || geminiTtsError);
-        return await generateProviderFallbackAudio(text);
-    }
+        return body;
+    }, "Gemini TTS");
 
     const audioPart = response?.candidates?.[0]?.content?.parts?.find((part: any) => part?.inlineData?.data);
     const rawAudioData = audioPart?.inlineData?.data;
@@ -734,7 +639,7 @@ async function startServer() {
     });
 
     // AI Proxy Route
-    app.post(["/audio", "/api/audio", "/api/ai/audio"], async (req, res) => {
+    app.post("/api/ai/audio", async (req, res) => {
         try {
             const audio = await generateTtsAudio(req.body || {});
             return res.json(audio);
@@ -749,10 +654,10 @@ async function startServer() {
                     audioData: "",
                     mimeType: "audio/wav",
                     offline: true,
-                    message: ""
+                    message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
                 });
             }
-            return res.status(200).json({ audioData: "", mimeType: "audio/wav", offline: true, message: "" });
+            return res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً.. جرّب مرة أخرى بعد قليل." });
         }
     });
 
