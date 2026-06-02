@@ -480,41 +480,124 @@ async function startServer() {
         message: { error: "Too many requests, please try again later." }
     });
 
-    // AI Proxy Route
+    // AI Podcast / Text-to-Speech Proxy Route
+    const parseAudioMime = (mimeType = "") => {
+        const rateMatch = String(mimeType).match(/rate=(\d+)/i);
+        return {
+            sampleRate: rateMatch ? Number(rateMatch[1]) : 24000,
+            isRawPcm: /audio\/(l16|pcm)/i.test(String(mimeType)) || /codecs=pcm/i.test(String(mimeType))
+        };
+    };
+
+    const pcm16Base64ToWavBase64 = (pcmBase64: string, sampleRate = 24000, channels = 1) => {
+        const pcmBuffer = Buffer.from(pcmBase64, "base64");
+        const header = Buffer.alloc(44);
+        const byteRate = sampleRate * channels * 2;
+        const blockAlign = channels * 2;
+
+        header.write("RIFF", 0);
+        header.writeUInt32LE(36 + pcmBuffer.length, 4);
+        header.write("WAVE", 8);
+        header.write("fmt ", 12);
+        header.writeUInt32LE(16, 16);
+        header.writeUInt16LE(1, 20);
+        header.writeUInt16LE(channels, 22);
+        header.writeUInt32LE(sampleRate, 24);
+        header.writeUInt32LE(byteRate, 28);
+        header.writeUInt16LE(blockAlign, 32);
+        header.writeUInt16LE(16, 34);
+        header.write("data", 36);
+        header.writeUInt32LE(pcmBuffer.length, 40);
+
+        return Buffer.concat([header, pcmBuffer]).toString("base64");
+    };
+
+    const normalizeAudioPayload = (audioData: string, mimeType: string) => {
+        if (!audioData) return { audioData: "", mimeType: "audio/wav" };
+        const parsed = parseAudioMime(mimeType);
+        if (parsed.isRawPcm) {
+            return {
+                audioData: pcm16Base64ToWavBase64(audioData, parsed.sampleRate, 1),
+                mimeType: "audio/wav"
+            };
+        }
+        return { audioData, mimeType: mimeType || "audio/wav" };
+    };
+
+    const extractAudioFromGeminiResponse = (payload: any) => {
+        const parts = payload?.candidates?.[0]?.content?.parts || [];
+        const audioPart = parts.find((part: any) => part?.inlineData?.data && part?.inlineData?.mimeType?.startsWith("audio/"));
+        return {
+            audioData: audioPart?.inlineData?.data || "",
+            mimeType: audioPart?.inlineData?.mimeType || ""
+        };
+    };
+
+    const generateTtsViaRest = async ({ text, voiceName, style }: { text: string; voiceName: string; style: string }) => {
+        const apiKey = (process.env.Nee || process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY3 || process.env.GOOGLE_API_KEY || "").trim();
+        if (!apiKey) throw new Error("Missing Gemini API key");
+
+        const naturalizedText = `
+تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
+لا تقرأ النص كروبوت.
+استخدم نبرة بشرية هادئة وعفوية.
+أضف توقفات قصيرة طبيعية بين الجمل.
+لا تبالغ في الأداء المسرحي.
+اجعل الإلقاء دافئاً وقريباً من الإنسان.
+أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
+
+النص:
+${text}
+`;
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ role: "user", parts: [{ text: naturalizedText }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName }
+                        }
+                    }
+                }
+            })
+        });
+
+        const raw = await response.text();
+        let payload: any;
+        try { payload = JSON.parse(raw); } catch { payload = { error: { message: raw } }; }
+
+        if (!response.ok) {
+            throw new Error(payload?.error?.message || `Gemini TTS HTTP ${response.status}`);
+        }
+
+        return extractAudioFromGeminiResponse(payload);
+    };
+
     app.post("/api/ai/audio", async (req, res) => {
-        const { text, voiceName, style = 'natural' } = req.body;
+        const { text, voiceName, style = 'natural' } = req.body || {};
+        
+        if (!text || typeof text !== 'string' || !text.trim()) {
+            return res.status(400).json({ error: "Missing text for audio generation" });
+        }
 
         const femaleVoices = ['Kore', 'Aoede'];
         const maleVoices = ['Charon', 'Fenrir', 'Puck', 'Zephyr'];
         const allVoices = [...femaleVoices, ...maleVoices];
 
-        const selectedVoice =
-          voiceName && allVoices.includes(voiceName)
+        const selectedVoice = voiceName && allVoices.includes(voiceName)
             ? voiceName
             : allVoices[Math.floor(Math.random() * allVoices.length)];
 
-        const naturalizedText = `
-        تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
-        لا تقرأ النص كروبوت.
-        استخدم نبرة بشرية هادئة وعفوية.
-        أضف توقفات قصيرة طبيعية بين الجمل.
-        لا تبالغ في الأداء المسرحي.
-        اجعل الإلقاء دافئاً وقريباً من الإنسان.
-        أسلوب الأداء المطلوب: ${style === 'podcast' ? 'حوار بودكاست ذكي وعفوي' : 'حديث بشري طبيعي وهادئ'}.
-
-        النص:
-        ${text}
-        `;
-        
-        if (!text) {
-            return res.status(400).json({ error: "Missing text for audio generation" });
-        }
-
-        const genAI = getGenAI();
-        if (!genAI) {
-            console.log("[Server] Gemini Client not available for audio. Returning empty audio placeholder.");
+        const apiKey = (process.env.Nee || process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY3 || process.env.GOOGLE_API_KEY || "").trim();
+        if (!apiKey) {
             return res.json({ 
-                audioData: "", 
+                audioData: "",
+                mimeType: "audio/wav",
                 offline: true,
                 message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق المفتاح الذكي." 
             });
@@ -522,44 +605,28 @@ async function startServer() {
 
         try {
             console.log(`[Server] Generating TTS for text: "${text.substring(0, 50)}..."`);
-            
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-            
-            const result = await generateWithRetry(async () => {
-                return await model.generateContent({
-                    contents: [{ role: 'user', parts: [{ text: naturalizedText }] }],
-                    generationConfig: {
-                      // @ts-ignore
-                      responseModalities: ["AUDIO"],
-                      speechConfig: {
-                          voiceConfig: {
-                            prebuiltVoiceConfig: { 
-                              voiceName: selectedVoice 
-                            },
-                          },
-                      },
-                    } as any,
-                  });
+            const generated = await generateWithRetry(async () => {
+                return await generateTtsViaRest({ text, voiceName: selectedVoice, style });
             }, "Gemini TTS");
 
-            const audioData = (result.response.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData?.mimeType?.startsWith('audio/')) as any)?.inlineData?.data;
-            
-            if (!audioData) {
-              throw new Error("No audio data returned from Gemini TTS");
+            const normalized = normalizeAudioPayload(generated.audioData, generated.mimeType);
+            if (!normalized.audioData) {
+                throw new Error("No audio data returned from Gemini TTS");
             }
 
-            res.json({ audioData });
+            res.json(normalized);
         } catch (error: any) {
             console.error("[Server] TTS Error:", error);
             const errStr = (error.message || "").toLowerCase();
             if (errStr.includes("api key") || errStr.includes("invalid") || errStr.includes("401") || errStr.includes("suspended") || errStr.includes("403") || errStr.includes("forbidden") || errStr.includes("permission")) {
-              return res.status(200).json({ 
-                audioData: "", 
-                offline: true,
-                message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات." 
-              });
+                return res.status(200).json({ 
+                    audioData: "",
+                    mimeType: "audio/wav",
+                    offline: true,
+                    message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات." 
+                });
             }
-            res.status(500).json({ error: "أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." });
+            res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل." });
         }
     });
 

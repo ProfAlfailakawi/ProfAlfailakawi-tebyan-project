@@ -86,6 +86,7 @@ ${buildUserAddressingInstruction(addressing)}
 export async function proxyGenerateAudio(params: {
   text: string;
   voiceName?: string;
+  style?: string;
 }) {
   // we use root-relative path for /api calls
   const apiPath = `/api/ai/audio`;
@@ -114,5 +115,8 @@ export async function proxyGenerateAudio(params: {
 
   const data = await response.json();
   if (data.error) { throw new Error(data.error); }
-  return data.audioData;
+  if (data.offline || !data.audioData) {
+    throw new Error(data.message || 'تعذّر إنشاء الملف الصوتي حالياً.');
+  }
+  return { audioData: data.audioData, mimeType: data.mimeType || 'audio/wav' };
 }

@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
-import { proxyGenerateContent } from '../../lib/aiProxy';
+import { proxyGenerateContent, proxyGenerateAudio } from '../../lib/aiProxy';
 
 declare global {
   namespace JSX {
@@ -53,7 +53,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     }
   }, [initialValue, onValueUsed]);
   const [labPersonas, setLabPersonas] = React.useState<any[]>([]);
-  const [labPodcast, setLabPodcast] = React.useState('');
+  const [labPodcast, setLabPodcast] = React.useState<any>(null);
+  const [labPodcastAudioUrl, setLabPodcastAudioUrl] = React.useState<string | null>(null);
+  const [labPodcastAudioError, setLabPodcastAudioError] = React.useState<string | null>(null);
   const [labUdl, setLabUdl] = React.useState<any[]>([]);
   const [labMindMap, setLabMindMap] = React.useState<any>(null);
   const [labFamilyExplanation, setLabFamilyExplanation] = React.useState('');
@@ -148,7 +150,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabDesign(null); 
     setLabScout([]); 
     setLabPersonas([]); 
-    setLabPodcast(''); 
+    setLabPodcast(null); 
+    setLabPodcastAudioUrl(null);
+    setLabPodcastAudioError(null);
     setLabUdl([]); 
     setLabMindMap(null); 
     setLabFamilyExplanation(''); 
@@ -158,6 +162,21 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabSound(null);
     setLabCollision(null);
   };
+
+  const buildPodcastAudioText = React.useCallback((podcast: any) => {
+    if (!podcast) return '';
+    const parts: string[] = [];
+    if (podcast.title) parts.push(`عنوان الحلقة: ${podcast.title}`);
+    if (Array.isArray(podcast.dialogue)) {
+      podcast.dialogue.forEach((line: any) => {
+        const speaker = line?.speaker || 'المتحدث';
+        const text = line?.text || '';
+        if (text.trim()) parts.push(`${speaker}: ${text}`);
+      });
+    }
+    if (podcast.conclusion) parts.push(`الخاتمة: ${podcast.conclusion}`);
+    return parts.join('\n\n').slice(0, 14000);
+  }, []);
 
   const handleRunLabTool = async () => {
     if (!labInput.trim()) return;
@@ -218,9 +237,21 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
         case 'collision':
           setLabCollision(await generatePerspectivesCollision(labInput, language));
           break;
-        case 'podcast':
-          setLabPodcast(await generateResurrectionPodcast(labInput, language));
+        case 'podcast': {
+          const podcast = await generateResurrectionPodcast(labInput, language);
+          setLabPodcast(podcast);
+          try {
+            const audio = await proxyGenerateAudio({
+              text: buildPodcastAudioText(podcast),
+              style: 'podcast'
+            });
+            setLabPodcastAudioUrl(`data:${audio.mimeType};base64,${audio.audioData}`);
+          } catch (audioError: any) {
+            console.error('Lab podcast audio error:', audioError);
+            setLabPodcastAudioError(audioError?.message || 'تعذّر إنشاء الصوت لهذه الحلقة.');
+          }
           break;
+        }
       }
     } catch (err: any) {
       setError("أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب مرة أخرى بعد قليل.");
@@ -603,6 +634,22 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                              : 'A conversation shaped like a real episode: back-and-forth, light interruptions, human hesitation, and short recordable lines.'}
                          </p>
                        </div>
+
+                       {labPodcastAudioUrl && (
+                         <div className="bg-white/10 rounded-[28px] p-4 md:p-5 border border-white/10">
+                           <div className="flex items-center gap-2 mb-3 text-white/70 text-xs font-black tracking-widest uppercase">
+                             <Volume2 className="w-4 h-4" />
+                             {language === 'ar' ? 'استمع للحلقة' : 'Listen to the episode'}
+                           </div>
+                           <audio controls src={labPodcastAudioUrl} className="w-full" preload="metadata" />
+                         </div>
+                       )}
+
+                       {labPodcastAudioError && (
+                         <div className="bg-[#FAF0E6] text-[#A6603F] rounded-[20px] p-4 border border-[#F2D7C8] font-bold text-sm leading-relaxed">
+                           {labPodcastAudioError}
+                         </div>
+                       )}
 
                        {labPodcast.guests?.length > 0 && (
                          <div className="flex flex-wrap justify-center gap-3">

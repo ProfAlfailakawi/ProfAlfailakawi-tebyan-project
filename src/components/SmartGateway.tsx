@@ -4036,14 +4036,14 @@ export const SmartGateway: React.FC<
                                       </p>
                                     </div>
                                   </div>
-                                  <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right">
-                                    <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] px-6 md:px-8 py-3 md:py-3 rounded-full md:group-hover:bg-white transition-all shadow-sm">
-                                      <span className="font-bold text-sm">
+                                  <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right shrink-0">
+                                    <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] px-6 py-3 rounded-full md:group-hover:bg-white transition-all shadow-sm shrink-0 whitespace-nowrap min-w-[110px] md:min-w-[130px]">
+                                      <span className="font-bold text-sm whitespace-nowrap shrink-0">
                                         {language === "ar" ? "البدء" : "Start"}
                                       </span>
                                       <ArrowLeft
                                         className={cn(
-                                          "w-4 h-4 md:w-5 md:h-5",
+                                          "w-4 h-4 md:w-5 md:h-5 shrink-0",
                                           language === "ar"
                                             ? "group-hover:-translate-x-2"
                                             : "rotate-180 group-hover:translate-x-2",

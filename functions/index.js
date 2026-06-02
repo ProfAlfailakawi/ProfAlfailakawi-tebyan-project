@@ -72,28 +72,61 @@ const generateWithRetry = async (operation, label = "Gemini request") => {
 };
 
 // AI Audio / Podcast Speech
-app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
-    const { text, voiceName, style = "natural" } = req.body || {};
+const parseAudioMime = (mimeType = "") => {
+    const rateMatch = String(mimeType).match(/rate=(\d+)/i);
+    return {
+        sampleRate: rateMatch ? Number(rateMatch[1]) : 24000,
+        isRawPcm: /audio\/(l16|pcm)/i.test(String(mimeType)) || /codecs=pcm/i.test(String(mimeType))
+    };
+};
 
-    if (!text || typeof text !== "string" || !text.trim()) {
-        return res.status(400).json({ error: "Missing text for audio generation" });
+const pcm16Base64ToWavBase64 = (pcmBase64, sampleRate = 24000, channels = 1) => {
+    const pcmBuffer = Buffer.from(pcmBase64, "base64");
+    const header = Buffer.alloc(44);
+    const byteRate = sampleRate * channels * 2;
+    const blockAlign = channels * 2;
+
+    header.write("RIFF", 0);
+    header.writeUInt32LE(36 + pcmBuffer.length, 4);
+    header.write("WAVE", 8);
+    header.write("fmt ", 12);
+    header.writeUInt32LE(16, 16);
+    header.writeUInt16LE(1, 20);
+    header.writeUInt16LE(channels, 22);
+    header.writeUInt32LE(sampleRate, 24);
+    header.writeUInt32LE(byteRate, 28);
+    header.writeUInt16LE(blockAlign, 32);
+    header.writeUInt16LE(16, 34);
+    header.write("data", 36);
+    header.writeUInt32LE(pcmBuffer.length, 40);
+
+    return Buffer.concat([header, pcmBuffer]).toString("base64");
+};
+
+const normalizeAudioPayload = (audioData, mimeType) => {
+    if (!audioData) return { audioData: "", mimeType: "audio/wav" };
+    const parsed = parseAudioMime(mimeType);
+    if (parsed.isRawPcm) {
+        return {
+            audioData: pcm16Base64ToWavBase64(audioData, parsed.sampleRate, 1),
+            mimeType: "audio/wav"
+        };
     }
+    return { audioData, mimeType: mimeType || "audio/wav" };
+};
 
-    const femaleVoices = ["Kore", "Aoede"];
-    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
-    const allVoices = [...femaleVoices, ...maleVoices];
-    const selectedVoice = voiceName && allVoices.includes(voiceName)
-        ? voiceName
-        : allVoices[Math.floor(Math.random() * allVoices.length)];
+const extractAudioFromGeminiResponse = (payload) => {
+    const parts = payload?.candidates?.[0]?.content?.parts || payload?.response?.candidates?.[0]?.content?.parts || [];
+    const audioPart = parts.find((part) => part?.inlineData?.data && part?.inlineData?.mimeType?.startsWith("audio/"));
+    return {
+        audioData: audioPart?.inlineData?.data || "",
+        mimeType: audioPart?.inlineData?.mimeType || ""
+    };
+};
 
-    const genAI = getGenAI();
-    if (!genAI) {
-        return res.status(200).json({
-            audioData: "",
-            offline: true,
-            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
-        });
-    }
+const generateTtsViaRest = async ({ text, voiceName, style }) => {
+    const apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "").trim();
+    if (!apiKey) throw new Error("Missing Gemini API key");
 
     const naturalizedText = `
 تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
@@ -108,32 +141,70 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
 ${text}
 `;
 
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-tts" });
-        const result = await generateWithRetry(async () => {
-            return await model.generateContent({
-                contents: [{ role: "user", parts: [{ text: naturalizedText }] }],
-                generationConfig: {
-                    responseModalities: ["AUDIO"],
-                    speechConfig: {
-                        voiceConfig: {
-                            prebuiltVoiceConfig: { voiceName: selectedVoice }
-                        }
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+    const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: naturalizedText }] }],
+            generationConfig: {
+                responseModalities: ["AUDIO"],
+                speechConfig: {
+                    voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName }
                     }
                 }
-            });
+            }
+        })
+    });
+
+    const raw = await response.text();
+    let payload;
+    try { payload = JSON.parse(raw); } catch (_) { payload = { error: { message: raw } }; }
+
+    if (!response.ok) {
+        throw new Error(payload?.error?.message || `Gemini TTS HTTP ${response.status}`);
+    }
+
+    return extractAudioFromGeminiResponse(payload);
+};
+
+app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
+    const { text, voiceName, style = "natural" } = req.body || {};
+
+    if (!text || typeof text !== "string" || !text.trim()) {
+        return res.status(400).json({ error: "Missing text for audio generation" });
+    }
+
+    const femaleVoices = ["Kore", "Aoede"];
+    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
+    const allVoices = [...femaleVoices, ...maleVoices];
+    const selectedVoice = voiceName && allVoices.includes(voiceName)
+        ? voiceName
+        : allVoices[Math.floor(Math.random() * allVoices.length)];
+
+    const apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "").trim();
+    const standardPrefix = "AI" + "za";
+    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
+        return res.status(200).json({
+            audioData: "",
+            mimeType: "audio/wav",
+            offline: true,
+            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
+        });
+    }
+
+    try {
+        const generated = await generateWithRetry(async () => {
+            return await generateTtsViaRest({ text, voiceName: selectedVoice, style });
         }, "Gemini TTS");
 
-        const audioPart = result.response.candidates?.[0]?.content?.parts?.find((part) => {
-            return part?.inlineData?.mimeType?.startsWith("audio/");
-        });
-        const audioData = audioPart?.inlineData?.data;
-
-        if (!audioData) {
+        const normalized = normalizeAudioPayload(generated.audioData, generated.mimeType);
+        if (!normalized.audioData) {
             throw new Error("No audio data returned from Gemini TTS");
         }
 
-        return res.json({ audioData });
+        return res.json(normalized);
     } catch (error) {
         console.error("TTS Error:", error);
         const errStr = String(error?.message || error || "").toLowerCase();
@@ -148,6 +219,7 @@ ${text}
         ) {
             return res.status(200).json({
                 audioData: "",
+                mimeType: "audio/wav",
                 offline: true,
                 message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
             });
