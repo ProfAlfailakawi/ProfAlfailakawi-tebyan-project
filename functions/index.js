@@ -67,6 +67,87 @@ function sampleRateFromMime(mimeType = "") {
     return match ? Number(match[1]) : 24000;
 }
 
+
+async function generateElevenLabsTtsAudio(text) {
+    const apiKey = (process.env.ELEVENLABS_API_KEY || "").trim();
+    if (!apiKey) return null;
+    const voiceId = (process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM").trim();
+    const modelId = process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
+    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "xi-api-key": apiKey, "Accept": "audio/mpeg" },
+        body: JSON.stringify({
+            text: text.slice(0, 4500),
+            model_id: modelId,
+            voice_settings: { stability: 0.42, similarity_boost: 0.82, style: 0.38, use_speaker_boost: true }
+        })
+    });
+    if (!r.ok) {
+        const err = new Error(await r.text());
+        err.statusCode = r.status;
+        throw err;
+    }
+    const audioBuffer = Buffer.from(await r.arrayBuffer());
+    return { audioData: audioBuffer.toString("base64"), mimeType: "audio/mpeg", voiceName: voiceId, provider: "elevenlabs-tts" };
+}
+
+async function generateGoogleCloudTtsAudio(text) {
+    const apiKey = (process.env.GOOGLE_TTS_API_KEY || process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "").trim();
+    const standardPrefix = "AI" + "za";
+    if (!apiKey || !apiKey.startsWith(standardPrefix)) return null;
+    const endpoint = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(apiKey)}`;
+    const payload = {
+        input: { text: text.slice(0, 4800) },
+        voice: { languageCode: "ar-XA", name: process.env.GOOGLE_TTS_VOICE || "ar-XA-Wavenet-B" },
+        audioConfig: { audioEncoding: "MP3", speakingRate: 0.94, pitch: -0.5 }
+    };
+    const r = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const bodyText = await r.text();
+    let body;
+    try { body = JSON.parse(bodyText); } catch { body = {}; }
+    if (!r.ok || !body.audioContent) {
+        const err = new Error(body?.error?.message || bodyText || `Google Cloud TTS HTTP ${r.status}`);
+        err.statusCode = r.status;
+        throw err;
+    }
+    return { audioData: body.audioContent, mimeType: "audio/mpeg", voiceName: payload.voice.name, provider: "google-cloud-tts" };
+}
+
+async function generateOpenAiTtsAudio(text) {
+    const apiKey = (process.env.OPENAI_API_KEY || "").trim();
+    if (!apiKey) return null;
+    const voices = ["alloy", "verse", "shimmer", "nova", "echo"];
+    const voice = process.env.OPENAI_TTS_VOICE || voices[Math.floor(Math.random() * voices.length)];
+    const r = await fetch("https://api.openai.com/v1/audio/speech", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+        body: JSON.stringify({ model: process.env.OPENAI_TTS_MODEL || "gpt-4o-mini-tts", voice, input: text.slice(0, 4000), format: "mp3" })
+    });
+    if (!r.ok) {
+        const err = new Error(await r.text());
+        err.statusCode = r.status;
+        throw err;
+    }
+    const audioBuffer = Buffer.from(await r.arrayBuffer());
+    return { audioData: audioBuffer.toString("base64"), mimeType: "audio/mpeg", voiceName: voice, provider: "openai-tts" };
+}
+
+async function generateProviderFallbackAudio(text) {
+    const providers = [generateElevenLabsTtsAudio, generateOpenAiTtsAudio, generateGoogleCloudTtsAudio];
+    let lastError;
+    for (const provider of providers) {
+        try {
+            const audio = await provider(text);
+            if (audio?.audioData) return audio;
+        } catch (error) {
+            lastError = error;
+            console.warn("TTS fallback provider failed:", error?.message || error);
+        }
+    }
+    if (lastError) console.warn("All TTS fallback providers failed:", lastError?.message || lastError);
+    return { audioData: "", mimeType: "audio/wav", offline: true, message: "" };
+}
+
 async function generateTtsAudio({ text, voiceName, style = "natural" }) {
     if (!text || typeof text !== "string" || !text.trim()) {
         const err = new Error("Missing text for audio generation");
@@ -85,12 +166,7 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }) {
     const apiKey = getGeminiApiKey();
     const standardPrefix = "AI" + "za";
     if (!apiKey || !apiKey.startsWith(standardPrefix)) {
-        return {
-            audioData: "",
-            mimeType: "audio/wav",
-            offline: true,
-            message: "الصوت الطبيعي غير متاح الآن. أعد المحاولة بعد قليل."
-        };
+        return await generateProviderFallbackAudio(text);
     }
 
     const naturalizedText = `
@@ -165,15 +241,20 @@ ${text}
     };
 
     let response;
-    if (style === "podcast") {
-        try {
-            response = await generateWithRetry(() => requestTts(multiVoicePayload), "Gemini multi-speaker TTS");
-        } catch (multiError) {
-            console.warn("Multi-speaker TTS failed, retrying with a single natural voice:", multiError?.message || multiError);
+    try {
+        if (style === "podcast") {
+            try {
+                response = await generateWithRetry(() => requestTts(multiVoicePayload), "Gemini multi-speaker TTS");
+            } catch (multiError) {
+                console.warn("Multi-speaker TTS failed, retrying with a single natural voice:", multiError?.message || multiError);
+                response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
+            }
+        } else {
             response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
         }
-    } else {
-        response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
+    } catch (geminiTtsError) {
+        console.warn("Gemini TTS failed, trying provider fallback:", geminiTtsError?.message || geminiTtsError);
+        return await generateProviderFallbackAudio(text);
     }
 
     const audioPart = response?.candidates?.[0]?.content?.parts?.find((part) => part?.inlineData?.data);
@@ -259,10 +340,10 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
                 audioData: "",
                 mimeType: "audio/wav",
                 offline: true,
-                message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
+                message: ""
             });
         }
-        return res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً.. جرّب مرة أخرى بعد قليل." });
+        return res.status(200).json({ audioData: "", mimeType: "audio/wav", offline: true, message: "" });
     }
 });
 

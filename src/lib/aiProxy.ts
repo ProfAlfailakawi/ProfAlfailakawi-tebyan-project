@@ -92,7 +92,7 @@ export async function proxyGenerateAudio(params: {
   const apiPath = `/api/ai/audio`;
 
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), 18000);
+  const timeout = window.setTimeout(() => controller.abort(), 45000);
 
   let response;
   try {
@@ -105,9 +105,9 @@ export async function proxyGenerateAudio(params: {
   } catch (err: any) {
     console.error('[AI Proxy] Audio fetch failed:', err);
     if (err?.name === 'AbortError') {
-      throw new Error('الصوت الطبيعي لم يكتمل في الوقت المناسب. أعد المحاولة بعد قليل.');
+      return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' };
     }
-    throw new Error('تعذّر تجهيز الصوت الطبيعي الآن. تحقق من الاتصال ثم حاول مرة أخرى.');
+    return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' };
   } finally {
     window.clearTimeout(timeout);
   }
@@ -119,11 +119,11 @@ export async function proxyGenerateAudio(params: {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error('تعذّر تجهيز الصوت الطبيعي الآن. حاول مرة أخرى بعد قليل.');
+    return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' };
   }
 
   const data = await response.json();
-  if (data.error) { throw new Error('تعذّر تجهيز الصوت الطبيعي الآن. حاول مرة أخرى بعد قليل.'); }
+  if (data.error) { return { audioData: '', mimeType: 'audio/wav', offline: true, message: '' }; }
   return {
     audioData: data.audioData || "",
     mimeType: data.mimeType || "audio/wav",

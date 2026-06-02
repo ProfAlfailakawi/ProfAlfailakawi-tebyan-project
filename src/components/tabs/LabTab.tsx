@@ -209,23 +209,67 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     }
   };
 
+  const getBestSpeechVoice = (index = 0) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    const targetLang = language === 'ar' ? /^ar([-_]|$)/i : /^en([-_]|$)/i;
+    const matching = voices.filter((voice) => targetLang.test(voice.lang || '') || /arabic|english|enhanced|premium|natural|neural|google|microsoft|apple/i.test(`${voice.name} ${voice.lang}`));
+    const preferred = matching.sort((a, b) => {
+      const aScore = (/enhanced|premium|natural|neural|google|microsoft|apple/i.test(a.name) ? 2 : 0) + (a.localService ? 0 : 1);
+      const bScore = (/enhanced|premium|natural|neural|google|microsoft|apple/i.test(b.name) ? 2 : 0) + (b.localService ? 0 : 1);
+      return bScore - aScore;
+    });
+    return preferred[index % Math.max(preferred.length, 1)] || voices[0] || null;
+  };
+
+  const splitSpeechIntoTurns = (text: string) => {
+    return text
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .flatMap((line) => line.length > 260 ? line.match(/[^.!؟?。]+[.!؟?。]?/g) || [line] : [line])
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .slice(0, 28);
+  };
+
   const playLabPodcastInBrowser = () => {
     if (!labPodcastSpeechText || typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      setLabPodcastAudioMessage(language === 'ar' ? 'تعذّر تشغيل الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be played right now. Please try again shortly.');
+      setLabPodcastAudioMessage('__retry__');
       return;
     }
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(labPodcastSpeechText.slice(0, 3800));
-    utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
-    utterance.rate = 0.94;
-    utterance.pitch = 1;
-    utterance.onstart = () => setIsLabBrowserSpeaking(true);
-    utterance.onend = () => setIsLabBrowserSpeaking(false);
-    utterance.onerror = () => {
-      setIsLabBrowserSpeaking(false);
-      setLabPodcastAudioMessage(language === 'ar' ? 'تعذّر تشغيل الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be played right now. Please try again shortly.');
+    const turns = splitSpeechIntoTurns(labPodcastSpeechText);
+    if (!turns.length) {
+      setLabPodcastAudioMessage('__retry__');
+      return;
+    }
+    setIsLabBrowserSpeaking(true);
+    setLabPodcastAudioMessage(null);
+    let current = 0;
+    const speakNext = () => {
+      if (current >= turns.length) {
+        setIsLabBrowserSpeaking(false);
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(turns[current]);
+      utterance.lang = language === 'ar' ? 'ar-SA' : 'en-US';
+      const voice = getBestSpeechVoice(current);
+      if (voice) utterance.voice = voice;
+      utterance.rate = 0.9 + (current % 2 === 0 ? 0 : 0.03);
+      utterance.pitch = current % 2 === 0 ? 0.98 : 1.04;
+      utterance.volume = 1;
+      utterance.onend = () => {
+        current += 1;
+        window.setTimeout(speakNext, 170);
+      };
+      utterance.onerror = () => {
+        setIsLabBrowserSpeaking(false);
+        setLabPodcastAudioMessage('__retry__');
+      };
+      window.speechSynthesis.speak(utterance);
     };
-    window.speechSynthesis.speak(utterance);
+    speakNext();
   };
 
   const stopLabBrowserSpeech = () => {
@@ -316,11 +360,11 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
               setLabPodcastAudioUrl(audioUrl);
               setLabPodcastAudioMessage(null);
             } else {
-              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تعذّر تجهيز الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be prepared right now. Please try again shortly.'));
+              setLabPodcastAudioMessage('__browser__');
             }
           } catch (audioError: any) {
             console.error('Lab podcast audio error:', audioError);
-            setLabPodcastAudioMessage(audioError?.message || (language === 'ar' ? 'تعذّر تجهيز الصوت الآن. حاول مرة أخرى بعد قليل.' : 'Audio could not be prepared right now. Please try again shortly.'));
+            setLabPodcastAudioMessage('__browser__');
           }
           break;
         }
@@ -712,10 +756,36 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                            <audio controls autoPlay className="w-full" src={labPodcastAudioUrl}>
                              {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
                            </audio>
+                         ) : labPodcastAudioMessage === '__browser__' ? (
+                           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
+                             <button
+                               type="button"
+                               onClick={isLabBrowserSpeaking ? stopLabBrowserSpeech : playLabPodcastInBrowser}
+                               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-black text-[#182231] shadow-sm"
+                             >
+                               <Volume2 className="w-4 h-4" />
+                               {language === 'ar' ? (isLabBrowserSpeaking ? 'إيقاف الصوت' : 'تشغيل الحلقة') : (isLabBrowserSpeaking ? 'Stop audio' : 'Play episode')}
+                             </button>
+                             <button
+                               type="button"
+                               onClick={handleRunLabTool}
+                               disabled={isLoading}
+                               className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-2.5 text-sm font-black text-white border border-white/15 shadow-sm disabled:opacity-60"
+                             >
+                               {language === 'ar' ? 'إعادة التجهيز' : 'Prepare again'}
+                             </button>
+                           </div>
                          ) : labPodcastAudioMessage ? (
-                           <div className="flex items-start gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
-                             <Volume2 className="w-5 h-5 mt-1 text-white shrink-0" />
-                             <p className="text-sm font-bold leading-relaxed text-white/75">{labPodcastAudioMessage}</p>
+                           <div className="flex items-center justify-center rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
+                             <button
+                               type="button"
+                               onClick={handleRunLabTool}
+                               disabled={isLoading}
+                               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-black text-[#182231] shadow-sm disabled:opacity-60"
+                             >
+                               <Volume2 className="w-4 h-4" />
+                               {language === 'ar' ? 'إعادة التجهيز' : 'Prepare again'}
+                             </button>
                            </div>
                          ) : (
                            <div className="flex items-center gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
