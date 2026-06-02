@@ -154,6 +154,8 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
         };
     }
 
+    const safeText = String(text).slice(0, 4200);
+
     const naturalizedText = `
 تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
 لا تقرأ النص كروبوت.
@@ -164,7 +166,7 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
 أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
 
 النص:
-${text}
+${safeText}
 `;
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(apiKey)}`;
@@ -181,11 +183,19 @@ ${text}
     };
 
     const response = await generateWithRetry(async () => {
-        const r = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 35000);
+        let r: any;
+        try {
+            r = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+        } finally {
+            clearTimeout(timeoutId);
+        }
         const bodyText = await r.text();
         let body: any;
         try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }

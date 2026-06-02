@@ -267,10 +267,12 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
           }
           setLabPodcast(podcastResult);
           try {
-            const audio = await proxyGenerateAudio({ text: podcastToSpeechText(podcastResult), style: 'podcast' });
+            setLabPodcastAudioMessage(language === 'ar' ? 'تم تجهيز الحوار. جارٍ الآن توليد الصوت، وقد يستغرق ذلك ثواني قليلة...' : 'The dialogue is ready. Audio is now being generated and may take a few seconds...');
+            const audio = await proxyGenerateAudio({ text: podcastToSpeechText(podcastResult).slice(0, 4200), style: 'podcast' });
             const audioUrl = audioResponseToUrl(audio);
             if (audioUrl) {
               setLabPodcastAudioUrl(audioUrl);
+              setLabPodcastAudioMessage(null);
             } else {
               setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تم إنشاء الحوار، لكن الصوت غير متاح حالياً من الخادم.' : 'The dialogue was created, but audio is currently unavailable from the server.'));
             }
@@ -424,7 +426,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 {isLoading ? (
                   <>
                     <RefreshCw className="w-5 h-5 animate-spin" />
-                    <span>{language === 'ar' ? 'جاري التحليل...' : 'Analyzing...'}</span>
+                    <span>{activeLabTool === 'podcast' && labPodcast ? (language === 'ar' ? 'جاري تجهيز الصوت...' : 'Preparing audio...') : (language === 'ar' ? 'جاري التحليل...' : 'Analyzing...')}</span>
                   </>
                 ) : activeLabTool === 'collider' ? (
                   <span>{language === 'ar' ? 'تصادم 💥' : 'COLLIDE 💥'}</span>
@@ -441,7 +443,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
          {error && <div className="text-rose-500 font-bold">{error}</div>}
   
          <div id="lab-results" className="space-y-8 animate-in fade-in slide-in-from-top-4 relative min-h-[200px]">
-            {isLoading ? (
+            {isLoading && !(activeLabTool === 'podcast' && labPodcast) ? (
                <motion.div 
                  initial={{ opacity: 0 }}
                  animate={{ opacity: 1 }}

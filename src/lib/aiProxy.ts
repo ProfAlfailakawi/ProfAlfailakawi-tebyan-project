@@ -90,6 +90,8 @@ export async function proxyGenerateAudio(params: {
 }) {
   // we use root-relative path for /api calls
   const apiPath = `/api/ai/audio`;
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 45000);
 
   let response;
   try {
@@ -97,10 +99,16 @@ export async function proxyGenerateAudio(params: {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(params),
+      signal: controller.signal,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error('[AI Proxy] Audio fetch failed:', err);
+    if (err?.name === 'AbortError') {
+      throw new Error('استغرق توليد الصوت وقتاً أطول من المتوقع. تم إيقاف الطلب حتى لا يعلّق التطبيق.');
+    }
     throw new Error('تحقق من اتصالك بالإنترنت، لم أتمكن من طلب الملف الصوتي.');
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 
   const contentType = response.headers.get('content-type');
@@ -109,7 +117,7 @@ export async function proxyGenerateAudio(params: {
   }
 
   if (!response.ok) {
-    const error = await response.json();
+    const error = await response.json().catch(() => ({}));
     throw new Error(error.error || 'Audio generation failed');
   }
 

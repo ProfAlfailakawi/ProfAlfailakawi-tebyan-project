@@ -35,6 +35,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const [podcastError, setPodcastError] = useState<string | null>(null);
   const [podcastAudioUrl, setPodcastAudioUrl] = useState<string | null>(null);
   const [podcastAudioMessage, setPodcastAudioMessage] = useState<string | null>(null);
+  const podcastGenerationLock = useRef(false);
   
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
@@ -80,9 +81,19 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   }
 
 
+  const toPlainText = (value: any): string => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value)) return value.map(toPlainText).filter(Boolean).join(' | ');
+    if (typeof value === 'object') {
+      return Object.values(value).map(toPlainText).filter(Boolean).join(' | ');
+    }
+    return String(value);
+  };
+
   const buildPodcastTopic = () => {
-    const quickAnswer = question.quickAnswer || {} as any;
-    const steps = Array.isArray(question.practicalSteps) ? question.practicalSteps.join(' | ') : '';
+    const quickAnswer = (question.quickAnswer || {}) as any;
+    const steps = Array.isArray(question.practicalSteps) ? question.practicalSteps.map(toPlainText).join(' | ') : toPlainText(question.practicalSteps);
     const ages = Array.isArray(question.ageGroups) ? question.ageGroups.join(', ') : '';
 
     return `حوّل إجابة قول فصل التالية إلى حلقة بودكاست واقعية جداً، لا تبدو كمقال مقروء ولا كنشرة تعليمات.
@@ -92,13 +103,13 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
 السؤال/الموقف: ${question.question || question.title}
 الملخص: ${question.quickSummary || ''}
-قل للطفل: ${quickAnswer.sayThis || ''}
-لا تقل: ${quickAnswer.dontSayThis || ''}
-افعل الآن: ${quickAnswer.doThisNow || ''}
-الخطأ الشائع: ${question.commonMistake || ''}
+قل للطفل: ${toPlainText(quickAnswer.sayThis)}
+لا تقل: ${toPlainText(quickAnswer.dontSayThis)}
+افعل الآن: ${toPlainText(quickAnswer.doThisNow)}
+الخطأ الشائع: ${toPlainText(question.commonMistake)}
 الأعمار: ${ages}
 خطوات عملية: ${steps}
-الخاتمة الأصلية: ${question.closingThought || ''}`;
+الخاتمة الأصلية: ${toPlainText(question.closingThought)}`;
   };
 
   const buildFallbackPodcast = () => {
@@ -108,11 +119,11 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
       guests: ['المحاور', 'صوت تربوي هادئ'],
       dialogue: [
         { speaker: 'المحاور', text: `خلينا نقف عند السؤال بهدوء: ${question.question || question.title || ''}` },
-        { speaker: 'صوت تربوي هادئ', text: question.quickAnswer || question.coreAnswer || 'الفكرة الأساسية أن نجيب بصدق وهدوء، لا بردة فعل سريعة.' },
+        { speaker: 'صوت تربوي هادئ', text: toPlainText(question.quickAnswer) || toPlainText(question.coreAnswer) || 'الفكرة الأساسية أن نجيب بصدق وهدوء، لا بردة فعل سريعة.' },
         { speaker: 'المحاور', text: 'يعني المطلوب ليس جواباً جميلاً فقط، بل طريقة تحفظ قلب الطفل وعقله.' },
-        { speaker: 'صوت تربوي هادئ', text: question.closingThought || 'نقترب من السؤال بإنسانية، ونترك مساحة آمنة للفهم والحوار.' }
+        { speaker: 'صوت تربوي هادئ', text: toPlainText(question.closingThought) || 'نقترب من السؤال بإنسانية، ونترك مساحة آمنة للفهم والحوار.' }
       ],
-      conclusion: question.closingThought || 'القول الفصل يبدأ حين يصبح الجواب جسراً لا حكماً قاسياً.'
+      conclusion: toPlainText(question.closingThought) || 'القول الفصل يبدأ حين يصبح الجواب جسراً لا حكماً قاسياً.'
     };
   };
 
@@ -129,7 +140,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   };
 
   const handleGeneratePodcast = async () => {
-    if (isPodcastLoading) return;
+    if (isPodcastLoading || podcastGenerationLock.current) return;
+    podcastGenerationLock.current = true;
     setIsPodcastLoading(true);
     setPodcastError(null);
     setPodcastAudioMessage(null);
@@ -148,10 +160,12 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
     try {
       setPodcastResult(result);
-      const audio = await proxyGenerateAudio({ text: podcastToSpeechText(result), style: 'podcast' });
+      setPodcastAudioMessage('تم تجهيز الحوار. جارٍ الآن توليد الصوت، وقد يستغرق ذلك ثواني قليلة...');
+      const audio = await proxyGenerateAudio({ text: podcastToSpeechText(result).slice(0, 4200), style: 'podcast' });
       const audioUrl = audioResponseToUrl(audio);
       if (audioUrl) {
         setPodcastAudioUrl(audioUrl);
+        setPodcastAudioMessage(null);
       } else {
         setPodcastAudioMessage(audio?.message || 'تم إنشاء الحوار، لكن الصوت غير متاح حالياً من الخادم.');
       }
@@ -160,6 +174,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
       setPodcastAudioMessage('تم إنشاء الحوار، لكن تعذّر توليد الملف الصوتي حالياً.');
     } finally {
       setIsPodcastLoading(false);
+      podcastGenerationLock.current = false;
     }
   };
 
@@ -464,7 +479,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   )}
                 >
                   {isPodcastLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-                  {isPodcastLoading ? 'جاري بناء الحلقة...' : podcastResult ? 'إعادة إنشاء الحلقة' : 'إنشاء البودكاست'}
+                  {isPodcastLoading ? (podcastResult ? 'جاري تجهيز الصوت...' : 'جاري بناء الحلقة...') : podcastResult ? 'إعادة إنشاء الحلقة' : 'إنشاء البودكاست'}
                 </button>
               </div>
             </div>
@@ -481,7 +496,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               </div>
             )}
 
-            {isPodcastLoading && (
+            {isPodcastLoading && !podcastResult && (
               <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-white p-8 md:p-10 text-center shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#8E7AAE]" />
                 <p className="text-[#64788D] font-black tracking-wide">يتم الآن ترتيب الحوار ليبدو كجلسة حقيقية لا كنص مقروء...</p>
