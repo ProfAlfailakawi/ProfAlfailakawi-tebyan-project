@@ -74,12 +74,13 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }) {
         throw err;
     }
 
-    const femaleVoices = ["Kore", "Aoede"];
-    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
-    const allVoices = [...femaleVoices, ...maleVoices];
-    const selectedVoice = voiceName && allVoices.includes(voiceName)
+    // Natural Gemini voices. Keep the selection varied so podcast episodes do not feel identical.
+    const naturalVoices = ["Puck", "Charon", "Kore", "Fenrir", "Aoede", "Zephyr", "Leda", "Orus", "Autonoe", "Callirrhoe"];
+    const selectedVoice = voiceName && naturalVoices.includes(voiceName)
         ? voiceName
-        : allVoices[Math.floor(Math.random() * allVoices.length)];
+        : naturalVoices[Math.floor(Math.random() * naturalVoices.length)];
+    const hostVoice = selectedVoice;
+    const guestVoice = naturalVoices.find((v) => v !== hostVoice) || "Kore";
 
     const apiKey = getGeminiApiKey();
     const standardPrefix = "AI" + "za";
@@ -88,25 +89,27 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }) {
             audioData: "",
             mimeType: "audio/wav",
             offline: true,
-            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
+            message: "الصوت الطبيعي غير متاح الآن. أعد المحاولة بعد قليل."
         };
     }
 
     const naturalizedText = `
-تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
-لا تقرأ النص كروبوت.
-استخدم نبرة بشرية هادئة وعفوية.
-أضف توقفات قصيرة طبيعية بين الجمل.
-لا تبالغ في الأداء المسرحي.
-اجعل الإلقاء دافئاً وقريباً من الإنسان.
-أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
+${style === "podcast" ? `
+حوّل النص التالي إلى أداء صوتي بودكاست طبيعي جداً.
+المطلوب صوت بشري دافئ، غير آلي، بإيقاع هادئ، وتوقفات قصيرة بين الجمل.
+اقرأ الحوار كجلسة حقيقية بين شخصين، لا كتلخيص ولا كنشرة تعليمات.
+نوّع النبرة بين المتحدثين بوضوح، واجعل الجمل العربية طبيعية وقريبة من السمع الخليجي الهادئ.
+لا تذكر أسماء المتحدثين بطريقة جامدة إذا كان ذلك يفسد السلاسة؛ اجعل الانتقال بينهم مسموعاً وطبيعياً.
+` : `
+اقرأ النص التالي بصوت عربي طبيعي جداً، دافئ وهادئ، بعيد عن الآلية والمبالغة.
+`}
 
 النص:
 ${text}
 `;
 
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const payload = {
+    const singleVoicePayload = {
         contents: [{ parts: [{ text: naturalizedText }] }],
         generationConfig: {
             responseModalities: ["AUDIO"],
@@ -118,22 +121,60 @@ ${text}
         }
     };
 
-    const response = await generateWithRetry(async () => {
-        const r = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        const bodyText = await r.text();
-        let body;
-        try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
-        if (!r.ok) {
-            const err = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
-            err.statusCode = r.status;
-            throw err;
+    const multiVoicePayload = {
+        contents: [{ parts: [{ text: naturalizedText }] }],
+        generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+                multiSpeakerVoiceConfig: {
+                    speakerVoiceConfigs: [
+                        { speaker: "المحاور", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
+                        { speaker: "المقدم", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
+                        { speaker: "Host", voiceConfig: { prebuiltVoiceConfig: { voiceName: hostVoice } } },
+                        { speaker: "صوت تربوي هادئ", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } },
+                        { speaker: "ضيف متخصص", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } },
+                        { speaker: "Guest", voiceConfig: { prebuiltVoiceConfig: { voiceName: guestVoice } } }
+                    ]
+                }
+            }
         }
-        return body;
-    }, "Gemini TTS");
+    };
+
+    const requestTts = async (payload) => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 25000);
+        try {
+            const r = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+            const bodyText = await r.text();
+            let body;
+            try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
+            if (!r.ok) {
+                const err = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
+                err.statusCode = r.status;
+                throw err;
+            }
+            return body;
+        } finally {
+            clearTimeout(timeout);
+        }
+    };
+
+    let response;
+    if (style === "podcast") {
+        try {
+            response = await generateWithRetry(() => requestTts(multiVoicePayload), "Gemini multi-speaker TTS");
+        } catch (multiError) {
+            console.warn("Multi-speaker TTS failed, retrying with a single natural voice:", multiError?.message || multiError);
+            response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
+        }
+    } else {
+        response = await generateWithRetry(() => requestTts(singleVoicePayload), "Gemini TTS");
+    }
 
     const audioPart = response?.candidates?.[0]?.content?.parts?.find((part) => part?.inlineData?.data);
     const rawAudioData = audioPart?.inlineData?.data;

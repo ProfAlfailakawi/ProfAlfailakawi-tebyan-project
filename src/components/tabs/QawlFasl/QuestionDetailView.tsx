@@ -201,7 +201,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     } catch (error) {
       console.error('Qawl Fasl podcast script error:', error);
       result = buildFallbackPodcast();
-      setPodcastAudioMessage('تم إنشاء نسخة مسموعة احتياطية لأن صياغة الحوار الذكي تعثّرت مؤقتاً.');
+      setPodcastAudioMessage('');
     }
 
     try {
@@ -212,14 +212,13 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
       const audioUrl = makeBlobAudioUrl(audio);
       if (audioUrl) {
         setPodcastAudioUrl(audioUrl);
+        setPodcastAudioMessage(null);
       } else {
-        const started = speakPodcastText(finalSpeechText);
-        setPodcastAudioMessage(audio?.message || (started ? 'لم يرجع Gemini ملفاً صوتياً صالحاً، لذلك بدأ تشغيل الحلقة بصوت المتصفح مباشرة.' : 'تم إنشاء الحوار، لكن لم يرجع الخادم ملفاً صوتياً صالحاً. استخدم تشغيل صوت المتصفح بالأسفل.'));
+        setPodcastAudioMessage(audio?.message || 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Qawl Fasl audio error:', error);
-      const started = result ? speakPodcastText(podcastToSpeechText(result)) : false;
-      setPodcastAudioMessage(started ? 'تعذّر توليد ملف Gemini الصوتي، لذلك بدأ تشغيل الحلقة بصوت المتصفح مباشرة.' : 'تم إنشاء الحوار، لكن تعذّر توليد ملف Gemini الصوتي حالياً. استخدم تشغيل صوت المتصفح بالأسفل.');
+      setPodcastAudioMessage(error?.message || 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.');
     } finally {
       setIsPodcastLoading(false);
     }
@@ -571,22 +570,16 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                     <audio controls autoPlay className="w-full" src={podcastAudioUrl}>
                       المتصفح لا يدعم تشغيل الصوت.
                     </audio>
-                  ) : (
-                    <div className="flex flex-col md:flex-row md:items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={isBrowserSpeaking ? stopBrowserSpeech : playPodcastInBrowser}
-                        disabled={!podcastSpeechText}
-                        className="inline-flex items-center justify-center gap-2 rounded-full bg-[#8E7AAE] text-white px-5 py-3 font-black disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <Volume2 className="w-5 h-5" />
-                        {isBrowserSpeaking ? 'إيقاف صوت المتصفح' : 'تشغيل صوت المتصفح الآن'}
-                      </button>
-                      <p className="text-sm md:text-base font-bold leading-relaxed text-[#64788D]">لم يصل ملف صوت Gemini صالح بعد؛ هذا الزر يشغّل الحلقة بصوت المتصفح مباشرة.</p>
+                  ) : podcastAudioMessage ? (
+                    <div className="flex items-start gap-3 rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
+                      <Volume2 className="w-5 h-5 mt-1 text-[#8E7AAE] shrink-0" />
+                      <p className="text-sm md:text-base font-bold leading-relaxed text-[#64788D]">{podcastAudioMessage}</p>
                     </div>
-                  )}
-                  {podcastAudioMessage && (
-                    <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-[#64788D]">{podcastAudioMessage}</p>
+                  ) : (
+                    <div className="flex items-center gap-3 rounded-[20px] bg-white/70 border border-[#8FA9C7]/15 px-4 py-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-[#8E7AAE]" />
+                      <p className="text-sm md:text-base font-bold leading-relaxed text-[#64788D]">جاري تجهيز الصوت الطبيعي للحلقة...</p>
+                    </div>
                   )}
                 </div>
 

@@ -304,7 +304,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
           } catch (podcastError) {
             console.error('Lab podcast script error:', podcastError);
             podcastResult = buildLabFallbackPodcast(labInput);
-            setLabPodcastAudioMessage(language === 'ar' ? 'تم إنشاء نسخة مسموعة احتياطية لأن صياغة الحوار الذكي تعثّرت مؤقتاً.' : 'A backup spoken version was created because smart dialogue generation was temporarily unavailable.');
+            setLabPodcastAudioMessage(null);
           }
           setLabPodcast(podcastResult);
           try {
@@ -314,12 +314,13 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
             const audioUrl = makeBlobAudioUrl(audio);
             if (audioUrl) {
               setLabPodcastAudioUrl(audioUrl);
+              setLabPodcastAudioMessage(null);
             } else {
-              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تم إنشاء الحوار، لكن لم يرجع الخادم ملفاً صوتياً صالحاً. استخدم تشغيل صوت المتصفح بالأسفل.' : 'The dialogue was created, but the server did not return a valid audio file. Use browser speech below.'));
+              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.' : 'The episode text is ready, but the natural audio is not ready yet. Try again shortly.'));
             }
-          } catch (audioError) {
+          } catch (audioError: any) {
             console.error('Lab podcast audio error:', audioError);
-            setLabPodcastAudioMessage(language === 'ar' ? 'تم إنشاء الحوار، لكن تعذّر توليد ملف Gemini الصوتي حالياً. استخدم تشغيل صوت المتصفح بالأسفل.' : 'The dialogue was created, but Gemini audio could not be generated. Use browser speech below.');
+            setLabPodcastAudioMessage(audioError?.message || (language === 'ar' ? 'اكتمل نص الحلقة، لكن الصوت الطبيعي لم يجهز الآن. أعد المحاولة بعد قليل.' : 'The episode text is ready, but the natural audio is not ready yet. Try again shortly.'));
           }
           break;
         }
@@ -711,22 +712,16 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                            <audio controls autoPlay className="w-full" src={labPodcastAudioUrl}>
                              {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
                            </audio>
-                         ) : (
-                           <div className="flex flex-col md:flex-row md:items-center gap-3">
-                             <button
-                               type="button"
-                               onClick={isLabBrowserSpeaking ? stopLabBrowserSpeech : playLabPodcastInBrowser}
-                               disabled={!labPodcastSpeechText}
-                               className="inline-flex items-center justify-center gap-2 rounded-full bg-white text-[#182231] px-5 py-3 font-black disabled:opacity-50 disabled:cursor-not-allowed"
-                             >
-                               <Volume2 className="w-5 h-5" />
-                               {isLabBrowserSpeaking ? (language === 'ar' ? 'إيقاف صوت المتصفح' : 'Stop browser voice') : (language === 'ar' ? 'تشغيل صوت المتصفح الآن' : 'Play browser voice')}
-                             </button>
-                             <p className="text-sm font-bold leading-relaxed text-white/70">{language === 'ar' ? 'لم يصل ملف صوت Gemini صالح بعد؛ هذا الزر يشغّل الحلقة بصوت المتصفح مباشرة.' : 'No valid Gemini audio file arrived yet; this button plays the episode with browser speech.'}</p>
+                         ) : labPodcastAudioMessage ? (
+                           <div className="flex items-start gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
+                             <Volume2 className="w-5 h-5 mt-1 text-white shrink-0" />
+                             <p className="text-sm font-bold leading-relaxed text-white/75">{labPodcastAudioMessage}</p>
                            </div>
-                         )}
-                         {labPodcastAudioMessage && (
-                           <p className="mt-3 text-sm font-bold leading-relaxed text-white/70">{labPodcastAudioMessage}</p>
+                         ) : (
+                           <div className="flex items-center gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
+                             <Loader2 className="w-5 h-5 animate-spin text-white" />
+                             <p className="text-sm font-bold leading-relaxed text-white/75">{language === 'ar' ? 'جاري تجهيز الصوت الطبيعي للحلقة...' : 'Preparing the natural episode audio...'}</p>
+                           </div>
                          )}
                        </div>
 

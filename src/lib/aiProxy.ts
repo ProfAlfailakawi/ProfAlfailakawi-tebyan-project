@@ -105,9 +105,9 @@ export async function proxyGenerateAudio(params: {
   } catch (err: any) {
     console.error('[AI Proxy] Audio fetch failed:', err);
     if (err?.name === 'AbortError') {
-      throw new Error('توليد الصوت استغرق وقتاً أطول من المتوقع. سأستخدم صوت المتصفح بدلاً منه.');
+      throw new Error('الصوت الطبيعي لم يكتمل في الوقت المناسب. أعد المحاولة بعد قليل.');
     }
-    throw new Error('تحقق من اتصالك بالإنترنت، لم أتمكن من طلب الملف الصوتي.');
+    throw new Error('تعذّر تجهيز الصوت الطبيعي الآن. تحقق من الاتصال ثم حاول مرة أخرى.');
   } finally {
     window.clearTimeout(timeout);
   }
@@ -119,7 +119,7 @@ export async function proxyGenerateAudio(params: {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.error || 'Audio generation failed');
+    throw new Error(error.error || 'تعذّر تجهيز الصوت الطبيعي الآن. حاول مرة أخرى بعد قليل.');
   }
 
   const data = await response.json();
