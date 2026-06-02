@@ -32,11 +32,132 @@ app.get(["/health", "/api/health"], (req, res) => {
     });
 });
 
-// AI Generation
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const isGeminiBusyError = (error) => {
+    const message = String(error?.message || error || "").toLowerCase();
+    return (
+        message.includes("503") ||
+        message.includes("service unavailable") ||
+        message.includes("high demand") ||
+        message.includes("overloaded") ||
+        message.includes("temporarily unavailable") ||
+        message.includes("try again") ||
+        message.includes("deadline exceeded")
+    );
+};
+
+const generateWithRetry = async (operation, label = "Gemini request") => {
+    const delays = [0, 1000, 3000, 8000];
+    let lastError;
+
+    for (let attempt = 0; attempt < delays.length; attempt++) {
+        if (delays[attempt] > 0) {
+            console.warn(`${label} busy. Retry ${attempt + 1}/${delays.length} after ${delays[attempt]}ms.`);
+            await sleep(delays[attempt]);
+        }
+
+        try {
+            return await operation();
+        } catch (error) {
+            lastError = error;
+            if (!isGeminiBusyError(error)) {
+                throw error;
+            }
+            console.warn(`${label} busy/high demand on attempt ${attempt + 1}:`, error?.message || error);
+        }
+    }
+
+    throw lastError;
+};
+
+// AI Audio / Podcast Speech
 app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
-    res.status(501).json({ error: "TTS functionality is currently experiencing upstream provider issues or is not configured on this server." });
+    const { text, voiceName, style = "natural" } = req.body || {};
+
+    if (!text || typeof text !== "string" || !text.trim()) {
+        return res.status(400).json({ error: "Missing text for audio generation" });
+    }
+
+    const femaleVoices = ["Kore", "Aoede"];
+    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
+    const allVoices = [...femaleVoices, ...maleVoices];
+    const selectedVoice = voiceName && allVoices.includes(voiceName)
+        ? voiceName
+        : allVoices[Math.floor(Math.random() * allVoices.length)];
+
+    const genAI = getGenAI();
+    if (!genAI) {
+        return res.status(200).json({
+            audioData: "",
+            offline: true,
+            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
+        });
+    }
+
+    const naturalizedText = `
+تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
+لا تقرأ النص كروبوت.
+استخدم نبرة بشرية هادئة وعفوية.
+أضف توقفات قصيرة طبيعية بين الجمل.
+لا تبالغ في الأداء المسرحي.
+اجعل الإلقاء دافئاً وقريباً من الإنسان.
+أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
+
+النص:
+${text}
+`;
+
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-tts" });
+        const result = await generateWithRetry(async () => {
+            return await model.generateContent({
+                contents: [{ role: "user", parts: [{ text: naturalizedText }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            prebuiltVoiceConfig: { voiceName: selectedVoice }
+                        }
+                    }
+                }
+            });
+        }, "Gemini TTS");
+
+        const audioPart = result.response.candidates?.[0]?.content?.parts?.find((part) => {
+            return part?.inlineData?.mimeType?.startsWith("audio/");
+        });
+        const audioData = audioPart?.inlineData?.data;
+
+        if (!audioData) {
+            throw new Error("No audio data returned from Gemini TTS");
+        }
+
+        return res.json({ audioData });
+    } catch (error) {
+        console.error("TTS Error:", error);
+        const errStr = String(error?.message || error || "").toLowerCase();
+        if (
+            errStr.includes("api key") ||
+            errStr.includes("invalid") ||
+            errStr.includes("401") ||
+            errStr.includes("suspended") ||
+            errStr.includes("403") ||
+            errStr.includes("forbidden") ||
+            errStr.includes("permission")
+        ) {
+            return res.status(200).json({
+                audioData: "",
+                offline: true,
+                message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
+            });
+        }
+
+        return res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً.. جرّب مرة أخرى بعد قليل." });
+    }
 });
 
+// AI Generation
 app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) => {
     const { model: modelName, contents } = req.body;
     
@@ -110,10 +231,6 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
     }
 });
 
-// AI Audio (Stub)
-app.post(["/audio", "/api/ai/audio"], async (req, res) => {
-    res.status(501).json({ error: "Audio endpoint not yet implemented in Cloud Functions" });
-});
 
 // Export the app as 'api' function
 exports.api = functions.https.onRequest(app);
