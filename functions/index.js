@@ -32,6 +32,129 @@ app.get(["/health", "/api/health"], (req, res) => {
     });
 });
 
+
+const getGeminiApiKey = () => {
+    let apiKey = (process.env.GEMINI_API_KEY || "").trim();
+    if (!apiKey || apiKey === "YOUR_ACTUAL_API_KEY_HERE" || apiKey === "MY_GEMINI_API_KEY") {
+        apiKey = (process.env.GOOGLE_API_KEY || "").trim();
+    }
+    return apiKey;
+};
+
+function pcmBase64ToWavBase64(pcmBase64, sampleRate = 24000, channels = 1, bitsPerSample = 16) {
+    const pcm = Buffer.from(pcmBase64, "base64");
+    const header = Buffer.alloc(44);
+    const byteRate = sampleRate * channels * bitsPerSample / 8;
+    const blockAlign = channels * bitsPerSample / 8;
+    header.write("RIFF", 0);
+    header.writeUInt32LE(36 + pcm.length, 4);
+    header.write("WAVE", 8);
+    header.write("fmt ", 12);
+    header.writeUInt32LE(16, 16);
+    header.writeUInt16LE(1, 20);
+    header.writeUInt16LE(channels, 22);
+    header.writeUInt32LE(sampleRate, 24);
+    header.writeUInt32LE(byteRate, 28);
+    header.writeUInt16LE(blockAlign, 32);
+    header.writeUInt16LE(bitsPerSample, 34);
+    header.write("data", 36);
+    header.writeUInt32LE(pcm.length, 40);
+    return Buffer.concat([header, pcm]).toString("base64");
+}
+
+function sampleRateFromMime(mimeType = "") {
+    const match = String(mimeType).match(/rate=(\d+)/i);
+    return match ? Number(match[1]) : 24000;
+}
+
+async function generateTtsAudio({ text, voiceName, style = "natural" }) {
+    if (!text || typeof text !== "string" || !text.trim()) {
+        const err = new Error("Missing text for audio generation");
+        err.statusCode = 400;
+        throw err;
+    }
+
+    const femaleVoices = ["Kore", "Aoede"];
+    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
+    const allVoices = [...femaleVoices, ...maleVoices];
+    const selectedVoice = voiceName && allVoices.includes(voiceName)
+        ? voiceName
+        : allVoices[Math.floor(Math.random() * allVoices.length)];
+
+    const apiKey = getGeminiApiKey();
+    const standardPrefix = "AI" + "za";
+    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
+        return {
+            audioData: "",
+            mimeType: "audio/wav",
+            offline: true,
+            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
+        };
+    }
+
+    const naturalizedText = `
+تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
+لا تقرأ النص كروبوت.
+استخدم نبرة بشرية هادئة وعفوية.
+أضف توقفات قصيرة طبيعية بين الجمل.
+لا تبالغ في الأداء المسرحي.
+اجعل الإلقاء دافئاً وقريباً من الإنسان.
+أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
+
+النص:
+${text}
+`;
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const payload = {
+        contents: [{ parts: [{ text: naturalizedText }] }],
+        generationConfig: {
+            responseModalities: ["AUDIO"],
+            speechConfig: {
+                voiceConfig: {
+                    prebuiltVoiceConfig: { voiceName: selectedVoice }
+                }
+            }
+        }
+    };
+
+    const response = await generateWithRetry(async () => {
+        const r = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const bodyText = await r.text();
+        let body;
+        try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
+        if (!r.ok) {
+            const err = new Error(body?.error?.message || bodyText || `Gemini TTS HTTP ${r.status}`);
+            err.statusCode = r.status;
+            throw err;
+        }
+        return body;
+    }, "Gemini TTS");
+
+    const audioPart = response?.candidates?.[0]?.content?.parts?.find((part) => part?.inlineData?.data);
+    const rawAudioData = audioPart?.inlineData?.data;
+    const rawMimeType = audioPart?.inlineData?.mimeType || "audio/L16;codec=pcm;rate=24000";
+
+    if (!rawAudioData) {
+        throw new Error("No audio data returned from Gemini TTS");
+    }
+
+    if (/audio\/(wav|mpeg|mp3|ogg|webm)/i.test(rawMimeType)) {
+        return { audioData: rawAudioData, mimeType: rawMimeType, voiceName: selectedVoice };
+    }
+
+    return {
+        audioData: pcmBase64ToWavBase64(rawAudioData, sampleRateFromMime(rawMimeType)),
+        mimeType: "audio/wav",
+        sourceMimeType: rawMimeType,
+        voiceName: selectedVoice
+    };
+}
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const isGeminiBusyError = (error) => {
@@ -72,141 +195,15 @@ const generateWithRetry = async (operation, label = "Gemini request") => {
 };
 
 // AI Audio / Podcast Speech
-const parseAudioMime = (mimeType = "") => {
-    const rateMatch = String(mimeType).match(/rate=(\d+)/i);
-    return {
-        sampleRate: rateMatch ? Number(rateMatch[1]) : 24000,
-        isRawPcm: /audio\/(l16|pcm)/i.test(String(mimeType)) || /codecs=pcm/i.test(String(mimeType))
-    };
-};
-
-const pcm16Base64ToWavBase64 = (pcmBase64, sampleRate = 24000, channels = 1) => {
-    const pcmBuffer = Buffer.from(pcmBase64, "base64");
-    const header = Buffer.alloc(44);
-    const byteRate = sampleRate * channels * 2;
-    const blockAlign = channels * 2;
-
-    header.write("RIFF", 0);
-    header.writeUInt32LE(36 + pcmBuffer.length, 4);
-    header.write("WAVE", 8);
-    header.write("fmt ", 12);
-    header.writeUInt32LE(16, 16);
-    header.writeUInt16LE(1, 20);
-    header.writeUInt16LE(channels, 22);
-    header.writeUInt32LE(sampleRate, 24);
-    header.writeUInt32LE(byteRate, 28);
-    header.writeUInt16LE(blockAlign, 32);
-    header.writeUInt16LE(16, 34);
-    header.write("data", 36);
-    header.writeUInt32LE(pcmBuffer.length, 40);
-
-    return Buffer.concat([header, pcmBuffer]).toString("base64");
-};
-
-const normalizeAudioPayload = (audioData, mimeType) => {
-    if (!audioData) return { audioData: "", mimeType: "audio/wav" };
-    const parsed = parseAudioMime(mimeType);
-    if (parsed.isRawPcm) {
-        return {
-            audioData: pcm16Base64ToWavBase64(audioData, parsed.sampleRate, 1),
-            mimeType: "audio/wav"
-        };
-    }
-    return { audioData, mimeType: mimeType || "audio/wav" };
-};
-
-const extractAudioFromGeminiResponse = (payload) => {
-    const parts = payload?.candidates?.[0]?.content?.parts || payload?.response?.candidates?.[0]?.content?.parts || [];
-    const audioPart = parts.find((part) => part?.inlineData?.data && part?.inlineData?.mimeType?.startsWith("audio/"));
-    return {
-        audioData: audioPart?.inlineData?.data || "",
-        mimeType: audioPart?.inlineData?.mimeType || ""
-    };
-};
-
-const generateTtsViaRest = async ({ text, voiceName, style }) => {
-    const apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "").trim();
-    if (!apiKey) throw new Error("Missing Gemini API key");
-
-    const naturalizedText = `
-تحدث بطريقة طبيعية جداً وكأنك داخل بودكاست عربي حقيقي.
-لا تقرأ النص كروبوت.
-استخدم نبرة بشرية هادئة وعفوية.
-أضف توقفات قصيرة طبيعية بين الجمل.
-لا تبالغ في الأداء المسرحي.
-اجعل الإلقاء دافئاً وقريباً من الإنسان.
-أسلوب الأداء المطلوب: ${style === "podcast" ? "حوار بودكاست ذكي وعفوي" : "حديث بشري طبيعي وهادئ"}.
-
-النص:
-${text}
-`;
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-    const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: naturalizedText }] }],
-            generationConfig: {
-                responseModalities: ["AUDIO"],
-                speechConfig: {
-                    voiceConfig: {
-                        prebuiltVoiceConfig: { voiceName }
-                    }
-                }
-            }
-        })
-    });
-
-    const raw = await response.text();
-    let payload;
-    try { payload = JSON.parse(raw); } catch (_) { payload = { error: { message: raw } }; }
-
-    if (!response.ok) {
-        throw new Error(payload?.error?.message || `Gemini TTS HTTP ${response.status}`);
-    }
-
-    return extractAudioFromGeminiResponse(payload);
-};
-
 app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
-    const { text, voiceName, style = "natural" } = req.body || {};
-
-    if (!text || typeof text !== "string" || !text.trim()) {
-        return res.status(400).json({ error: "Missing text for audio generation" });
-    }
-
-    const femaleVoices = ["Kore", "Aoede"];
-    const maleVoices = ["Charon", "Fenrir", "Puck", "Zephyr"];
-    const allVoices = [...femaleVoices, ...maleVoices];
-    const selectedVoice = voiceName && allVoices.includes(voiceName)
-        ? voiceName
-        : allVoices[Math.floor(Math.random() * allVoices.length)];
-
-    const apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "").trim();
-    const standardPrefix = "AI" + "za";
-    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
-        return res.status(200).json({
-            audioData: "",
-            mimeType: "audio/wav",
-            offline: true,
-            message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب عدم تفعيل مفتاح الصوت على الخادم."
-        });
-    }
-
     try {
-        const generated = await generateWithRetry(async () => {
-            return await generateTtsViaRest({ text, voiceName: selectedVoice, style });
-        }, "Gemini TTS");
-
-        const normalized = normalizeAudioPayload(generated.audioData, generated.mimeType);
-        if (!normalized.audioData) {
-            throw new Error("No audio data returned from Gemini TTS");
-        }
-
-        return res.json(normalized);
+        const audio = await generateTtsAudio(req.body || {});
+        return res.json(audio);
     } catch (error) {
         console.error("TTS Error:", error);
+        if (error?.statusCode === 400) {
+            return res.status(400).json({ error: error.message });
+        }
         const errStr = String(error?.message || error || "").toLowerCase();
         if (
             errStr.includes("api key") ||
@@ -224,7 +221,6 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
                 message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
             });
         }
-
         return res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً.. جرّب مرة أخرى بعد قليل." });
     }
 });

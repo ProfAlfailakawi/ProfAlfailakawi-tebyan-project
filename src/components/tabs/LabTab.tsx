@@ -55,7 +55,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labPersonas, setLabPersonas] = React.useState<any[]>([]);
   const [labPodcast, setLabPodcast] = React.useState<any>(null);
   const [labPodcastAudioUrl, setLabPodcastAudioUrl] = React.useState<string | null>(null);
-  const [labPodcastAudioError, setLabPodcastAudioError] = React.useState<string | null>(null);
+  const [labPodcastAudioMessage, setLabPodcastAudioMessage] = React.useState<string | null>(null);
   const [labUdl, setLabUdl] = React.useState<any[]>([]);
   const [labMindMap, setLabMindMap] = React.useState<any>(null);
   const [labFamilyExplanation, setLabFamilyExplanation] = React.useState('');
@@ -152,7 +152,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabPersonas([]); 
     setLabPodcast(null); 
     setLabPodcastAudioUrl(null);
-    setLabPodcastAudioError(null);
+    setLabPodcastAudioMessage(null); 
     setLabUdl([]); 
     setLabMindMap(null); 
     setLabFamilyExplanation(''); 
@@ -163,20 +163,37 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabCollision(null);
   };
 
-  const buildPodcastAudioText = React.useCallback((podcast: any) => {
-    if (!podcast) return '';
-    const parts: string[] = [];
-    if (podcast.title) parts.push(`عنوان الحلقة: ${podcast.title}`);
-    if (Array.isArray(podcast.dialogue)) {
-      podcast.dialogue.forEach((line: any) => {
-        const speaker = line?.speaker || 'المتحدث';
-        const text = line?.text || '';
-        if (text.trim()) parts.push(`${speaker}: ${text}`);
-      });
-    }
-    if (podcast.conclusion) parts.push(`الخاتمة: ${podcast.conclusion}`);
-    return parts.join('\n\n').slice(0, 14000);
-  }, []);
+
+  const buildLabFallbackPodcast = (topic: string) => ({
+    title: language === 'ar' ? `بودكاست واقعي: ${topic.slice(0, 48)}` : `Realistic Podcast: ${topic.slice(0, 48)}`,
+    guests: language === 'ar' ? ['المحاور', 'ضيف متخصص'] : ['Host', 'Specialist Guest'],
+    dialogue: language === 'ar'
+      ? [
+          { speaker: 'المحاور', text: `خلينا نبدأ من الفكرة نفسها: ${topic}` },
+          { speaker: 'ضيف متخصص', text: 'الفكرة تحتاج تفكيك هادئ، ثم تحويلها إلى خطوات صغيرة قابلة للفهم.' },
+          { speaker: 'المحاور', text: 'يعني لا نكتفي بالانبهار، نريد معنى عملياً واضحاً.' },
+          { speaker: 'ضيف متخصص', text: 'بالضبط، القيمة تظهر حين تتحول الفكرة إلى قرار أو سلوك أو تجربة نافعة.' }
+        ]
+      : [
+          { speaker: 'Host', text: `Let us start with the core idea: ${topic}` },
+          { speaker: 'Specialist Guest', text: 'It needs calm unpacking, then small understandable steps.' },
+          { speaker: 'Host', text: 'So we are not chasing surprise; we want practical meaning.' },
+          { speaker: 'Specialist Guest', text: 'Exactly. The value appears when the idea becomes a useful action.' }
+        ],
+    conclusion: language === 'ar' ? 'الفكرة الجيدة لا تنتهي في الأذن؛ تبدأ حين تغيّر طريقة النظر.' : 'A good idea does not end in the ear; it begins when it changes how we see.'
+  });
+
+  const podcastToSpeechText = (podcast: any) => {
+    const lines = Array.isArray(podcast?.dialogue)
+      ? podcast.dialogue.map((line: any) => `${line?.speaker || 'Speaker'}: ${line?.text || ''}`).join('\n')
+      : '';
+    return `${podcast?.title || 'Podcast'}\n\n${lines}\n\n${podcast?.conclusion || ''}`.trim();
+  };
+
+  const audioResponseToUrl = (audio: any) => {
+    if (!audio?.audioData) return null;
+    return `data:${audio.mimeType || 'audio/wav'};base64,${audio.audioData}`;
+  };
 
   const handleRunLabTool = async () => {
     if (!labInput.trim()) return;
@@ -238,17 +255,28 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
           setLabCollision(await generatePerspectivesCollision(labInput, language));
           break;
         case 'podcast': {
-          const podcast = await generateResurrectionPodcast(labInput, language);
-          setLabPodcast(podcast);
+          setLabPodcastAudioMessage(null);
+          setLabPodcastAudioUrl(null);
+          let podcastResult: any;
           try {
-            const audio = await proxyGenerateAudio({
-              text: buildPodcastAudioText(podcast),
-              style: 'podcast'
-            });
-            setLabPodcastAudioUrl(`data:${audio.mimeType};base64,${audio.audioData}`);
-          } catch (audioError: any) {
+            podcastResult = await generateResurrectionPodcast(labInput, language);
+          } catch (podcastError) {
+            console.error('Lab podcast script error:', podcastError);
+            podcastResult = buildLabFallbackPodcast(labInput);
+            setLabPodcastAudioMessage(language === 'ar' ? 'تم إنشاء نسخة مسموعة احتياطية لأن صياغة الحوار الذكي تعثّرت مؤقتاً.' : 'A backup spoken version was created because smart dialogue generation was temporarily unavailable.');
+          }
+          setLabPodcast(podcastResult);
+          try {
+            const audio = await proxyGenerateAudio({ text: podcastToSpeechText(podcastResult), style: 'podcast' });
+            const audioUrl = audioResponseToUrl(audio);
+            if (audioUrl) {
+              setLabPodcastAudioUrl(audioUrl);
+            } else {
+              setLabPodcastAudioMessage(audio?.message || (language === 'ar' ? 'تم إنشاء الحوار، لكن الصوت غير متاح حالياً من الخادم.' : 'The dialogue was created, but audio is currently unavailable from the server.'));
+            }
+          } catch (audioError) {
             console.error('Lab podcast audio error:', audioError);
-            setLabPodcastAudioError(audioError?.message || 'تعذّر إنشاء الصوت لهذه الحلقة.');
+            setLabPodcastAudioMessage(language === 'ar' ? 'تم إنشاء الحوار، لكن تعذّر توليد الملف الصوتي حالياً.' : 'The dialogue was created, but the audio file could not be generated right now.');
           }
           break;
         }
@@ -635,19 +663,16 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          </p>
                        </div>
 
-                       {labPodcastAudioUrl && (
-                         <div className="bg-white/10 rounded-[28px] p-4 md:p-5 border border-white/10">
-                           <div className="flex items-center gap-2 mb-3 text-white/70 text-xs font-black tracking-widest uppercase">
-                             <Volume2 className="w-4 h-4" />
-                             {language === 'ar' ? 'استمع للحلقة' : 'Listen to the episode'}
-                           </div>
-                           <audio controls src={labPodcastAudioUrl} className="w-full" preload="metadata" />
-                         </div>
-                       )}
-
-                       {labPodcastAudioError && (
-                         <div className="bg-[#FAF0E6] text-[#A6603F] rounded-[20px] p-4 border border-[#F2D7C8] font-bold text-sm leading-relaxed">
-                           {labPodcastAudioError}
+                       {(labPodcastAudioUrl || labPodcastAudioMessage) && (
+                         <div className="rounded-[24px] bg-white/10 border border-white/10 p-4 md:p-5">
+                           {labPodcastAudioUrl ? (
+                             <audio controls className="w-full" src={labPodcastAudioUrl}>
+                               {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
+                             </audio>
+                           ) : null}
+                           {labPodcastAudioMessage && (
+                             <p className="mt-3 text-sm font-bold leading-relaxed text-white/70">{labPodcastAudioMessage}</p>
+                           )}
                          </div>
                        )}
 

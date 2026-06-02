@@ -115,8 +115,10 @@ export async function proxyGenerateAudio(params: {
 
   const data = await response.json();
   if (data.error) { throw new Error(data.error); }
-  if (data.offline || !data.audioData) {
-    throw new Error(data.message || 'تعذّر إنشاء الملف الصوتي حالياً.');
-  }
-  return { audioData: data.audioData, mimeType: data.mimeType || 'audio/wav' };
+  return {
+    audioData: data.audioData || "",
+    mimeType: data.mimeType || "audio/wav",
+    offline: !!data.offline,
+    message: data.message || ""
+  };
 }

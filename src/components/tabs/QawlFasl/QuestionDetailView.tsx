@@ -34,7 +34,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const [isPodcastLoading, setIsPodcastLoading] = useState(false);
   const [podcastError, setPodcastError] = useState<string | null>(null);
   const [podcastAudioUrl, setPodcastAudioUrl] = useState<string | null>(null);
-  const [podcastAudioError, setPodcastAudioError] = useState<string | null>(null);
+  const [podcastAudioMessage, setPodcastAudioMessage] = useState<string | null>(null);
   
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
@@ -56,9 +56,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   useEffect(() => {
     window.scrollTo(0, 0);
     setPodcastResult(null);
-    setPodcastAudioUrl(null);
-    setPodcastAudioError(null);
     setPodcastError(null);
+    setPodcastAudioUrl(null);
+    setPodcastAudioMessage(null);
     setIsPodcastLoading(false);
 
     async function fetchData() {
@@ -101,45 +101,63 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 الخاتمة الأصلية: ${question.closingThought || ''}`;
   };
 
-  const buildPodcastAudioText = (podcast: any) => {
-    if (!podcast) return '';
-    const parts: string[] = [];
-    if (podcast.title) parts.push(`عنوان الحلقة: ${podcast.title}`);
-    if (Array.isArray(podcast.dialogue)) {
-      podcast.dialogue.forEach((line: any) => {
-        const speaker = line?.speaker || 'المتحدث';
-        const text = line?.text || '';
-        if (text.trim()) parts.push(`${speaker}: ${text}`);
-      });
-    }
-    if (podcast.conclusion) parts.push(`الخاتمة: ${podcast.conclusion}`);
-    return parts.join('\n\n').slice(0, 14000);
+  const buildFallbackPodcast = () => {
+    const title = `قول فصل المسموع: ${question.question || question.title || 'حلقة قصيرة'}`;
+    return {
+      title,
+      guests: ['المحاور', 'صوت تربوي هادئ'],
+      dialogue: [
+        { speaker: 'المحاور', text: `خلينا نقف عند السؤال بهدوء: ${question.question || question.title || ''}` },
+        { speaker: 'صوت تربوي هادئ', text: question.quickAnswer || question.coreAnswer || 'الفكرة الأساسية أن نجيب بصدق وهدوء، لا بردة فعل سريعة.' },
+        { speaker: 'المحاور', text: 'يعني المطلوب ليس جواباً جميلاً فقط، بل طريقة تحفظ قلب الطفل وعقله.' },
+        { speaker: 'صوت تربوي هادئ', text: question.closingThought || 'نقترب من السؤال بإنسانية، ونترك مساحة آمنة للفهم والحوار.' }
+      ],
+      conclusion: question.closingThought || 'القول الفصل يبدأ حين يصبح الجواب جسراً لا حكماً قاسياً.'
+    };
+  };
+
+  const podcastToSpeechText = (podcast: any) => {
+    const lines = Array.isArray(podcast?.dialogue)
+      ? podcast.dialogue.map((line: any) => `${line?.speaker || 'المتحدث'}: ${line?.text || ''}`).join('\n')
+      : '';
+    return `${podcast?.title || 'قول فصل المسموع'}\n\n${lines}\n\nالخاتمة: ${podcast?.conclusion || ''}`.trim();
+  };
+
+  const audioResponseToUrl = (audio: any) => {
+    if (!audio?.audioData) return null;
+    return `data:${audio.mimeType || 'audio/wav'};base64,${audio.audioData}`;
   };
 
   const handleGeneratePodcast = async () => {
     if (isPodcastLoading) return;
     setIsPodcastLoading(true);
-    setPodcastAudioUrl(null);
-    setPodcastAudioError(null);
     setPodcastError(null);
+    setPodcastAudioMessage(null);
+    if (podcastAudioUrl) URL.revokeObjectURL(podcastAudioUrl);
+    setPodcastAudioUrl(null);
 
+    let result: any | null = null;
     try {
       const { generateResurrectionPodcast } = await import('../../../services/gemini');
-      const result = await generateResurrectionPodcast(buildPodcastTopic(), language);
+      result = await generateResurrectionPodcast(buildPodcastTopic(), language);
+    } catch (error) {
+      console.error('Qawl Fasl podcast script error:', error);
+      result = buildFallbackPodcast();
+      setPodcastAudioMessage('تم إنشاء نسخة مسموعة احتياطية لأن صياغة الحوار الذكي تعثّرت مؤقتاً.');
+    }
+
+    try {
       setPodcastResult(result);
-      try {
-        const audio = await proxyGenerateAudio({
-          text: buildPodcastAudioText(result),
-          style: 'podcast'
-        });
-        setPodcastAudioUrl(`data:${audio.mimeType};base64,${audio.audioData}`);
-      } catch (audioError: any) {
-        console.error('Qawl Fasl podcast audio error:', audioError);
-        setPodcastAudioError(audioError?.message || 'تعذّر إنشاء الصوت لهذه الحلقة.');
+      const audio = await proxyGenerateAudio({ text: podcastToSpeechText(result), style: 'podcast' });
+      const audioUrl = audioResponseToUrl(audio);
+      if (audioUrl) {
+        setPodcastAudioUrl(audioUrl);
+      } else {
+        setPodcastAudioMessage(audio?.message || 'تم إنشاء الحوار، لكن الصوت غير متاح حالياً من الخادم.');
       }
     } catch (error) {
-      console.error('Qawl Fasl podcast error:', error);
-      setPodcastError('تعذّر إنشاء قول فصل المسموع الآن. حاول مرة أخرى بعد قليل.');
+      console.error('Qawl Fasl audio error:', error);
+      setPodcastAudioMessage('تم إنشاء الحوار، لكن تعذّر توليد الملف الصوتي حالياً.');
     } finally {
       setIsPodcastLoading(false);
     }
@@ -475,21 +493,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 <div className="rounded-[28px] md:rounded-[36px] bg-white border border-[#8FA9C7]/15 p-5 md:p-8 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                   <p className="text-[11px] font-black tracking-[0.28em] text-[#A68F58] uppercase mb-3">عنوان الحلقة</p>
                   <h3 className="text-2xl md:text-4xl font-black text-[#182231] leading-tight">{podcastResult.title}</h3>
-                  {podcastAudioUrl && (
-                    <div className="mt-6 rounded-[22px] border border-[#8FA9C7]/15 bg-[#F7F5F2] p-4 md:p-5">
-                      <div className="flex items-center gap-2 mb-3 text-[#8E7AAE] text-xs font-black tracking-widest">
-                        <Headphones className="w-4 h-4" /> استمع للحلقة
-                      </div>
-                      <audio controls src={podcastAudioUrl} className="w-full" preload="metadata" />
-                    </div>
-                  )}
-
-                  {podcastAudioError && (
-                    <div className="mt-6 rounded-[20px] border border-[#F2D7C8] bg-[#FAF0E6] p-4 text-[#A6603F] font-bold leading-relaxed text-sm">
-                      {podcastAudioError}
-                    </div>
-                  )}
-
                   {Array.isArray(podcastResult.guests) && podcastResult.guests.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-5">
                       {podcastResult.guests.map((guest: string, index: number) => (
@@ -500,6 +503,19 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                     </div>
                   )}
                 </div>
+
+                {(podcastAudioUrl || podcastAudioMessage) && (
+                  <div className="rounded-[24px] border border-[#8FA9C7]/15 bg-[#F7F5F2] p-5 md:p-6 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                    {podcastAudioUrl ? (
+                      <audio controls className="w-full" src={podcastAudioUrl}>
+                        المتصفح لا يدعم تشغيل الصوت.
+                      </audio>
+                    ) : null}
+                    {podcastAudioMessage && (
+                      <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-[#64788D]">{podcastAudioMessage}</p>
+                    )}
+                  </div>
+                )}
 
                 <div className="space-y-4">
                   {Array.isArray(podcastResult.dialogue) && podcastResult.dialogue.map((line: any, index: number) => (
