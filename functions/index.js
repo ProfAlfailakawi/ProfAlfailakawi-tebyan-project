@@ -169,6 +169,12 @@ ${cleanText}
             err.statusCode = r.status;
             throw err;
         }
+        const hasAudio = body?.candidates?.[0]?.content?.parts?.some((part) => part?.inlineData?.data);
+        if (!hasAudio) {
+            const err = new Error("No audio data returned from Gemini TTS");
+            err.statusCode = 503;
+            throw err;
+        }
         return body;
     }, "Gemini TTS");
 
@@ -203,12 +209,20 @@ const isGeminiBusyError = (error) => {
         message.includes("overloaded") ||
         message.includes("temporarily unavailable") ||
         message.includes("try again") ||
-        message.includes("deadline exceeded")
+        message.includes("deadline exceeded") ||
+        message.includes("429") ||
+        message.includes("too many requests") ||
+        message.includes("rate limit") ||
+        message.includes("quota") ||
+        message.includes("resource exhausted") ||
+        message.includes("internal") ||
+        message.includes("500") ||
+        message.includes("no audio data")
     );
 };
 
 const generateWithRetry = async (operation, label = "Gemini request") => {
-    const delays = [0, 1000, 3000, 8000];
+    const delays = [0, 1200, 2500, 5000, 9000, 14000];
     let lastError;
 
     for (let attempt = 0; attempt < delays.length; attempt++) {

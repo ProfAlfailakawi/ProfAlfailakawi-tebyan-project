@@ -64,12 +64,20 @@ const isGeminiBusyError = (err: any) => {
         msg.includes("overloaded") ||
         msg.includes("temporarily unavailable") ||
         msg.includes("try again") ||
-        msg.includes("deadline exceeded")
+        msg.includes("deadline exceeded") ||
+        msg.includes("429") ||
+        msg.includes("too many requests") ||
+        msg.includes("rate limit") ||
+        msg.includes("quota") ||
+        msg.includes("resource exhausted") ||
+        msg.includes("internal") ||
+        msg.includes("500") ||
+        msg.includes("no audio data")
     );
 };
 
 async function generateWithRetry(operation: () => Promise<any>, label: string = "AI Result") {
-    const delays = [0, 1000, 3000, 8000, 15000]; // Total retry window ~27 seconds
+    const delays = [0, 1200, 2500, 5000, 9000, 14000]; // TTS/AI stability window without forcing repeated user taps
     let lastError: any;
 
     for (let attempt = 0; attempt < delays.length; attempt++) {
@@ -231,6 +239,12 @@ ${cleanText}
             err.statusCode = r.status;
             throw err;
         }
+        const hasAudio = body?.candidates?.[0]?.content?.parts?.some((part: any) => part?.inlineData?.data);
+        if (!hasAudio) {
+            const err: any = new Error("No audio data returned from Gemini TTS");
+            err.statusCode = 503;
+            throw err;
+        }
         return body;
     }, "Gemini TTS");
 
@@ -301,6 +315,144 @@ function findOfflineMatch(query: string): any {
     }
     
     return highestScore >= 2 ? bestMatch : null;
+}
+
+
+function getQuestionContext(query: string) {
+    const q = (query || "").toLowerCase();
+    const hasChildTerms = /(طفل|طفلي|طفلك|الأطفال|اطفال|ابني|ابنتي|بنتي|ولدي|ولديّ|مراهق|مراهقة|الأبناء|الابناء|حضانة|روضة|مدرسة|واجبات|عناد|نوبات غضب|يبكي|يضرب|يكذب|يسرق|تبول|رضاعة|تربية)/i.test(q);
+    const hasTimeTerms = /(اليوم|وقتي|وقت|خسائر|تعويض|فات|المسار|إنجاز|انجاز|مهام|تخطيط|أولويات|اولويات|إنتاجية|انتاجية|جدول|تقييم|تحسين يومي|عادة|عادات)/i.test(q);
+    const hasSelfTerms = /(نفسي|حياتي|عملي|هدفي|أهدافي|قرار|قراري|إدارة|ادارة|أفكار|تفكير|قلق|تردد|مشاعر|إنسان|انسان|ذات|تطوير)/i.test(q);
+    if (hasChildTerms && !hasTimeTerms && !hasSelfTerms) return "child";
+    if (hasTimeTerms) return "life_planning";
+    if (hasSelfTerms) return "self_growth";
+    return "general";
+}
+
+function buildAdaptiveFallbackObject(userPrompt: string, isEnglish: boolean) {
+    const context = getQuestionContext(userPrompt);
+    const safeQuestion = userPrompt || (isEnglish ? "General question" : "سؤال عام");
+
+    if (context === "child") {
+        return {
+            question: safeQuestion,
+            mainCategory: isEnglish ? "Parenting" : "تربية الأبناء",
+            categorySlug: "parenting",
+            ageGroups: [isEnglish ? "All" : "الكل"],
+            riskLevel: isEnglish ? "Medium" : "متوسط",
+            keywords: isEnglish ? ["parenting", "guidance", "behavior"] : ["تربية", "توجيه", "سلوك"],
+            quickSummary: isEnglish
+                ? `This situation needs calm containment, clear boundaries, and a response suited to the child's age.`
+                : `هذا الموقف يحتاج إلى احتواء هادئ، وحدود واضحة، واستجابة تناسب عمر الطفل وسياق الموقف.`,
+            quickAnswer: {
+                sayThis: isEnglish
+                    ? "I understand what you feel. Let's talk calmly and find a better way together."
+                    : "أنا أفهم ما تشعر به. خلّنا نتكلم بهدوء ونبحث عن طريقة أفضل معاً.",
+                dontSayThis: isEnglish
+                    ? "You always do this. I will not listen to you."
+                    : "أنت دائماً تفعل هذا، ولن أسمع لك.",
+                doThisNow: isEnglish
+                    ? "Lower your tone, get physically closer, and give one clear next step."
+                    : "اخفض نبرة صوتك، اقترب بهدوء، وقدّم خطوة واحدة واضحة الآن."
+            },
+            commonMistake: isEnglish ? "Reacting before understanding the child's need." : "التعامل مع السلوك قبل فهم الحاجة التي تقف خلفه.",
+            educationalView: isEnglish ? "Behavior often carries an emotional message that needs decoding before correction." : "السلوك عند الطفل غالباً يحمل رسالة شعورية تحتاج إلى فهم قبل التصحيح.",
+            suggestedAnswer: isEnglish ? "Start with emotional safety, then guide the behavior with calm firmness." : "ابدأ بالأمان النفسي، ثم وجّه السلوك بحزم هادئ.",
+            byAgeVersions: [],
+            practicalSteps: isEnglish
+                ? ["Pause before responding.", "Name the feeling.", "Offer one acceptable alternative."]
+                : ["توقّف لحظة قبل الرد.", "سمِّ الشعور بهدوء.", "قدّم بديلاً واحداً مقبولاً."],
+            exercises: [],
+            whenToWorry: isEnglish ? "If the behavior becomes repeated, intense, or harmful." : "إذا تكرر السلوك بشدة أو أصبح مؤذياً أو خارج السيطرة.",
+            religiousReference: "",
+            scientificStat: "",
+            resources: [],
+            closingThought: isEnglish ? "Calm guidance teaches more than loud correction." : "التوجيه الهادئ يعلّم أكثر مما يعلّمه الانفعال.",
+            sourceStatus: "adaptive"
+        };
+    }
+
+    if (context === "life_planning") {
+        return {
+            question: safeQuestion,
+            mainCategory: isEnglish ? "Life Planning" : "إدارة اليوم والمسار",
+            categorySlug: "life-planning",
+            ageGroups: [],
+            riskLevel: isEnglish ? "Low" : "منخفض",
+            keywords: isEnglish ? ["time", "planning", "recovery"] : ["وقت", "تخطيط", "تعويض", "مسار"],
+            quickSummary: isEnglish
+                ? `Evaluate today's losses by separating what is gone, what can still be recovered, and what should be protected tomorrow.`
+                : `تقييم خسائر اليوم يبدأ بفصل ما فات فعلاً، عما يمكن تعويضه، وما يجب حمايته في الغد.`,
+            quickAnswer: {
+                sayThis: isEnglish
+                    ? "Name one recoverable action, do it now, then close the day without self-punishment."
+                    : "حدّد عملاً واحداً يمكن إنقاذه الآن، أنجزه، ثم أغلق اليوم بلا جلد للذات.",
+                dontSayThis: isEnglish
+                    ? "The day is ruined, so there is no point in doing anything."
+                    : "اليوم ضاع بالكامل، ولا فائدة من فعل أي شيء.",
+                doThisNow: isEnglish
+                    ? "Write three columns: lost, recoverable, and postponed. Start with the smallest recoverable item."
+                    : "اكتب ثلاث خانات: ما فات، ما يمكن إنقاذه، وما يؤجل. وابدأ بأصغر شيء قابل للإنقاذ."
+            },
+            commonMistake: isEnglish ? "Treating a partial loss as a complete collapse." : "تحويل الخسارة الجزئية إلى انهيار كامل.",
+            educationalView: isEnglish ? "The day is not one block; it is recoverable units of attention, energy, and priorities." : "اليوم ليس كتلة واحدة؛ بل وحدات قابلة للاسترداد من الانتباه والطاقة والأولويات.",
+            suggestedAnswer: isEnglish ? "Recover one meaningful task, reduce tomorrow's damage, and learn the pattern that caused the loss." : "استرد مهمة ذات معنى، وقلّل ضرر الغد، وافهم النمط الذي تسبب في الخسارة.",
+            byAgeVersions: [],
+            practicalSteps: isEnglish
+                ? ["Stop counting the whole day as lost.", "Choose one task that takes less than 15 minutes.", "Move the remaining tasks into a realistic tomorrow list."]
+                : ["لا تحسب اليوم كله خسارة واحدة.", "اختر مهمة واحدة لا تتجاوز 15 دقيقة.", "انقل الباقي إلى قائمة واقعية للغد."],
+            exercises: isEnglish ? ["End-of-day three-column review."] : ["تمرين مراجعة اليوم بثلاث خانات."],
+            whenToWorry: isEnglish ? "If repeated daily loss becomes chronic avoidance or severe distress." : "إذا تحوّل ضياع اليوم إلى تجنّب مزمن أو ضيق شديد ومتكرر.",
+            religiousReference: "",
+            scientificStat: "",
+            resources: [],
+            closingThought: isEnglish ? "A day is repaired by one honest step, not by regret." : "اليوم يُرمَّم بخطوة صادقة، لا بالندم.",
+            sourceStatus: "adaptive"
+        };
+    }
+
+    return {
+        question: safeQuestion,
+        mainCategory: isEnglish ? "General Guidance" : "إرشاد عام",
+        categorySlug: "general-adaptive",
+        ageGroups: [],
+        riskLevel: isEnglish ? "Low" : "منخفض",
+        keywords: isEnglish ? ["understanding", "decision", "balance"] : ["فهم", "قرار", "اتزان"],
+        quickSummary: isEnglish
+            ? `The answer should follow the question's actual context without forcing a parenting frame onto it.`
+            : `الجواب يجب أن يتبع سياق السؤال نفسه، دون افتراض أنه متعلق بالطفل أو التربية إن لم يكن كذلك.`,
+        quickAnswer: {
+            sayThis: isEnglish
+                ? "Start by naming the real issue, then choose one practical next step."
+                : "ابدأ بتسمية المشكلة الحقيقية، ثم اختر خطوة عملية واحدة تالية.",
+            dontSayThis: isEnglish
+                ? "This must fit one fixed template."
+                : "لا تُجبر السؤال على قالب واحد لا يناسبه.",
+            doThisNow: isEnglish
+                ? "Rewrite the question in one clear sentence, then answer that sentence only."
+                : "أعد صياغة السؤال في جملة واضحة، ثم أجب عن هذه الجملة فقط."
+        },
+        commonMistake: isEnglish ? "Using a fixed answer template for every topic." : "استخدام قالب ثابت لكل موضوع مهما اختلف السؤال.",
+        educationalView: isEnglish ? "Good guidance is context-aware before it is content-rich." : "الإرشاد الجيد يبدأ بفهم السياق قبل كثرة المحتوى.",
+        suggestedAnswer: isEnglish ? "Adapt the structure, examples, and language to the user's actual question." : "كيّف البنية والأمثلة واللغة بحسب سؤال المستخدم الفعلي.",
+        byAgeVersions: [],
+        practicalSteps: isEnglish ? ["Identify the domain.", "Remove unrelated examples.", "Give one direct answer."] : ["حدّد المجال.", "احذف الأمثلة غير المرتبطة.", "قدّم جواباً مباشراً واحداً."],
+        exercises: [],
+        whenToWorry: "",
+        religiousReference: "",
+        scientificStat: "",
+        resources: [],
+        closingThought: isEnglish ? "Precision is respect for the question." : "الدقة احترام للسؤال.",
+        sourceStatus: "adaptive"
+    };
+}
+
+function buildAdaptiveFallbackText(query: string, isEnglish: boolean): string {
+    const obj = buildAdaptiveFallbackObject(query, isEnglish);
+    if (isEnglish) {
+        return `### Focused Answer\n${obj.quickSummary}\n\n### What to do now\n${obj.quickAnswer.doThisNow}\n\n### Avoid\n${obj.quickAnswer.dontSayThis}\n\n### Key idea\n${obj.closingThought}`;
+    }
+    return `### خلاصة مركزة\n${obj.quickSummary}\n\n### ماذا تفعل الآن؟\n${obj.quickAnswer.doThisNow}\n\n### تجنّب\n${obj.quickAnswer.dontSayThis}\n\n### الفكرة الأهم\n${obj.closingThought}`;
 }
 
 function formatOfflineResponse(item: any, isEnglish: boolean): string {
@@ -442,7 +594,7 @@ function handleServerSideAIFallback(contents: any, config: any, error: any) {
         
         // 1. Check if it's a query rewrite/suggestion (useSmartSearch)
         if (promptLower.includes("refined_query") || promptLower.includes("أخرج json فقط") || promptLower.includes("إكمال وصياغة ذكي") || promptLower.includes("refined_query")) {
-            let refinedText = "كيف أجيب عن سؤال طفلي بطريقة مبسطة وصادقة: من أين جئت؟";
+            let refinedText = getQuestionContext(userPrompt) === "child" ? "كيف أجيب عن سؤال طفلي بطريقة مبسطة وصادقة: من أين جئت؟" : "كيف أفهم هذا السؤال وأتعامل معه بخطوة عملية واضحة؟";
             
             if (promptLower.includes("يدخن") || promptLower.includes("دخان")) {
                 refinedText = "كيف أتعامل مع ابني المراهق عند اكتشاف تدخينه؟";
@@ -465,7 +617,10 @@ function handleServerSideAIFallback(contents: any, config: any, error: any) {
                 if (cleanPhrase.length > 50) {
                     cleanPhrase = cleanPhrase.substring(0, 50) + "...";
                 }
-                refinedText = `كيف أتعامل مع موقف ${cleanPhrase || "تربوي عابر"} بطريقة حكيمة؟`;
+                const context = getQuestionContext(cleanPhrase);
+                refinedText = context === "child"
+                    ? `كيف أتعامل مع موقف ${cleanPhrase || "تربوي عابر"} بطريقة تربوية حكيمة؟`
+                    : `كيف أفهم موضوع ${cleanPhrase || "هذا السؤال"} وأتعامل معه بخطوة عملية واضحة؟`;
             }
             return { text: JSON.stringify({ refined_query: refinedText }), offline: true };
         }
@@ -522,9 +677,9 @@ function handleServerSideAIFallback(contents: any, config: any, error: any) {
             const fallbackClassification = {
                 classification: "new_case",
                 matchId: null,
-                normalizedMeaning: "استشارة تربوية جديدة تتناول تعديل سلوك الطفل الفردي",
-                mainTopic: "تربية وتوجيه السلوك",
-                subTopics: ["تعديل سلوك", "أمان نفسي", "تواصل عاطفي"],
+                normalizedMeaning: getQuestionContext(userPrompt) === "child" ? "استشارة تربوية جديدة تتناول الطفل أو الأسرة" : "سؤال عام يحتاج استجابة متكيفة مع سياقه",
+                mainTopic: getQuestionContext(userPrompt) === "child" ? "تربية وتوجيه السلوك" : "إرشاد عام وسياقي",
+                subTopics: getQuestionContext(userPrompt) === "child" ? ["تعديل سلوك", "أمان نفسي", "تواصل عاطفي"] : ["فهم السياق", "خطوة عملية", "اتزان"],
                 riskLevel: "low",
                 ageMentioned: null,
                 emotionalTone: "seeking_help"
@@ -539,48 +694,9 @@ function handleServerSideAIFallback(contents: any, config: any, error: any) {
             return { text: JSON.stringify(match), offline: true };
         }
         
-        // 7. Fallback compliant Qawl Fallback schema object
-        console.log("[Server] No match in offline dataset. Generating default QawlFasl fallback object.");
-        const fallbackObj = {
-            question: userPrompt || "سؤال تربوي",
-            mainCategory: "عام",
-            categorySlug: "general",
-            ageGroups: ["الكل"],
-            riskLevel: "متوسط",
-            keywords: ["تربية", "سلوك"],
-            quickSummary: `التوجيه النفسي لموقف: "${userPrompt}" يتطلب الاحتواء والموازنة بين الحزم والرحمة.`,
-            quickAnswer: {
-                sayThis: `نحن معاً في هذا، دعنا نتحدث بهدوء ونقترح حلاً مريحاً لك ولنا.`,
-                dontSayThis: `أنت دائماً تفعل كذا وكذا! لن أصدقك بعد اليوم.`,
-                doThisNow: `تنفس بعمق، وانزل لمستوى طول طفلك للحفاظ على تواصل بصري مريح.`
-            },
-            commonMistake: `سرعة الغضب والانفعال اللفظي والجسدي يعطي نتائج عكسية تضر بالأمان النفسي.`,
-            educationalView: `السلوك السلبي هو صرخة لطلب المساعدة أو وسيلة للتعبير عن احتياج عاطفي كامن.`,
-            suggestedAnswer: `للتعامل بنجاح يجب إيجاد مسببات السلوك أولاً، وتصميم روتين يدعم الإيجابية وتكرار المدح للسلوك الصالح.`,
-            byAgeVersions: [
-                { age: "2-5", text: "قدم خيارات هادئة وبدائل ملموسة وشتت الانتباه عن السلوك السلبي." },
-                { age: "6-11", text: "اشرح الأسباب والنتائج بوضوح وحوار هادئ وبسيط." },
-                { age: "12-18", text: "ركز على الحوار الندّي، واحترام استقلاليتهم مع التوجيه غير المباشر." }
-            ],
-            practicalSteps: [
-                "فهم الدافع الحقيقي خلف هذا التصرف (الحاجة للاهتمام أو الأمان).",
-                "المحافظة على هدوء الأعصاب التام قبل الرد في لحظة الغضب.",
-                "تقديم البدائل المشروعة وتوجيه السلوك بدلاً من المنع المطلق.",
-                "قضاء وقت نوعي يومي لتعزيز العلاقة وبناء جدار الثقة التربوية."
-            ],
-            exercises: [
-                "تمرين الحوار اليومي الإيجابي لمدة 10 دقائق.",
-                "متابعة السلوك وتدوين مسببات الغضب في مفكرة عائلية."
-            ],
-            whenToWorry: "إذا استمر السلوك أو زاد عدوانية لعدة أسابيع مع تأثر علاقاته الاجتماعية ودراسته.",
-            religiousReference: "قال نبينا الكريم محمد ﷺ: 'إن الرفق لا يكون في شيء إلا زانه، ولا ينزع من شيء إلا شأنه'.",
-            scientificStat: "تشير دراسات علم نفس النمو إلى أن 85% من سلوكيات الأطفال السلبية تعدل من خلال القدوة والهدوء العائلي.",
-            resources: [
-                { type: "كتاب", title: "التربية الذكية للأطفال", description: "دليلك العملي لتربية إيجابية متوازنة.", url: "#" }
-            ],
-            closingThought: "الصبر والاحتواء هما عماد العملية التربوية، والنبتة الطيبة تحتاج وقتاً لتروى بالحب حتى تؤتي ثمارها.",
-            sourceStatus: "complete"
-        };
+        // 7. Fallback compliant adaptive object: do not force child/parenting language on unrelated questions.
+        console.log("[Server] No match in offline dataset. Generating adaptive fallback object.");
+        const fallbackObj = buildAdaptiveFallbackObject(userPrompt, isEnglish);
         return { text: JSON.stringify(fallbackObj), offline: true };
     } else {
         // Plain text fallback
@@ -589,7 +705,7 @@ function handleServerSideAIFallback(contents: any, config: any, error: any) {
         if (match) {
             responseText = formatOfflineResponse(match, isEnglish);
         } else {
-            responseText = generateSmartGenerativeResponse(userPrompt, isEnglish);
+            responseText = buildAdaptiveFallbackText(userPrompt, isEnglish);
         }
         return { text: responseText, offline: true };
     }
