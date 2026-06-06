@@ -84,7 +84,7 @@ ${buildUserAddressingInstruction(addressing)}
 }
 
 
-function sanitizeTextForAudio(input: string): string {
+function sanitizeTextForAudio(input: string, maxChars = 1400, preserveLines = false): string {
   if (!input) return '';
   let cleaned = String(input)
     .replace(/ZhaDataSourceResponse[\s\S]*$/g, ' ')
@@ -97,11 +97,12 @@ function sanitizeTextForAudio(input: string): string {
     .replace(/[\u{1F300}-\u{1FAFF}]/gu, ' ')
     .replace(/[ـ]{3,}/g, ' ')
     .replace(/[-–—]{3,}/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 
   const chunks = cleaned
-    .split(/(?<=[.!؟؛])\s+|\n+/)
+    .split(preserveLines ? /\n+/ : /(?<=[.!؟؛])\s+|\n+/)
     .map(part => part.trim())
     .filter(Boolean);
   const seen = new Set<string>();
@@ -113,7 +114,7 @@ function sanitizeTextForAudio(input: string): string {
       unique.push(chunk);
     }
   }
-  return unique.join(' ').slice(0, 1400).trim();
+  return unique.join(preserveLines ? '\n' : ' ').slice(0, maxChars).trim();
 }
 
 export async function proxyGenerateAudio(params: {
@@ -129,7 +130,7 @@ export async function proxyGenerateAudio(params: {
     response = await fetch(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...params, text: sanitizeTextForAudio(params.text) }),
+      body: JSON.stringify({ ...params, text: sanitizeTextForAudio(params.text, params.style === 'podcast' ? 3200 : 1400, params.style === 'podcast') }),
     });
   } catch (err) {
     console.error('[AI Proxy] Audio fetch failed:', err);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid, ChevronDown } from 'lucide-react';
+import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid, ChevronDown, Loader2, Radio, Download, Pause } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -32,7 +32,7 @@ const labTools = [
 ];
 
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
-  const [activeLabTool, setActiveLabTool] = React.useState('collider');
+  const [activeLabTool, setActiveLabTool] = React.useState('podcast');
   const [activeLabPurpose, setActiveLabPurpose] = React.useState('understand');
   const [showLabPurposePicker, setShowLabPurposePicker] = React.useState(true);
   const [labInput, setLabInput] = React.useState('');
@@ -57,6 +57,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labPodcastAudioUrl, setLabPodcastAudioUrl] = React.useState<string | null>(null);
   const [labPodcastAudioMessage, setLabPodcastAudioMessage] = React.useState<string | null>(null);
   const [labPodcastSpeechText, setLabPodcastSpeechText] = React.useState<string>('');
+  const [isLabPodcastPlaying, setIsLabPodcastPlaying] = React.useState(false);
+  const labPodcastAudioRef = React.useRef<HTMLAudioElement | null>(null);
   const [isLabBrowserSpeaking, setIsLabBrowserSpeaking] = React.useState(false);
   const [labUdl, setLabUdl] = React.useState<any[]>([]);
   const [labMindMap, setLabMindMap] = React.useState<any>(null);
@@ -70,7 +72,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [error, setError] = React.useState<string | null>(null);
 
   const labPurposes = React.useMemo(() => ([
-    { id: 'understand', title: { ar: 'أبي أفهمها ببساطة', en: 'Understand it simply' }, hint: { ar: 'تبسيط وخريطة ذهنية وزوايا متعددة', en: 'Simplify, map, and see angles' }, toolIds: ['family', 'mindmap', 'collision', 'podcast'] },
+    { id: 'understand', title: { ar: 'أبي أفهمها ببساطة', en: 'Understand it simply' }, hint: { ar: 'تبسيط وخريطة ذهنية وزوايا متعددة', en: 'Simplify, map, and see angles' }, toolIds: ['podcast', 'family', 'mindmap', 'collision'] },
     { id: 'create', title: { ar: 'أبي فكرة جديدة', en: 'Create a new idea' }, hint: { ar: 'تصادم أفكار ورموز وصوت للفكرة', en: 'Collide ideas, symbols, and resonance' }, toolIds: ['collider', 'symbols', 'sound'] },
     { id: 'build', title: { ar: 'أبي أحولها لمشروع', en: 'Turn it into a project' }, hint: { ar: 'تصميم ومسارات مهنية وورش', en: 'Design, careers, and workshops' }, toolIds: ['design', 'career', 'workshop'] },
     { id: 'audit', title: { ar: 'أبي أفحصها بجدية', en: 'Audit it seriously' }, hint: { ar: 'شخصيات وشمولية وأدوات مناسبة', en: 'Personas, inclusivity, and tools' }, toolIds: ['personas', 'udl', 'scout'] }
@@ -157,6 +159,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     setLabPodcastAudioUrl(null);
     setLabPodcastAudioMessage(null);
     setLabPodcastSpeechText('');
+    setIsLabPodcastPlaying(false);
     setIsLabBrowserSpeaking(false); 
     setLabUdl([]); 
     setLabMindMap(null); 
@@ -189,10 +192,33 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   });
 
   const podcastToSpeechText = (podcast: any) => {
-    const lines = Array.isArray(podcast?.dialogue)
-      ? podcast.dialogue.map((line: any) => `${line?.speaker || 'Speaker'}: ${line?.text || ''}`).join('\n')
-      : '';
-    return `${podcast?.title || 'Podcast'}\n\n${lines}\n\n${podcast?.conclusion || ''}`.trim();
+    const dialogue = Array.isArray(podcast?.dialogue) ? podcast.dialogue : [];
+    const firstSpeaker = dialogue.find((line: any) => line?.speaker)?.speaker;
+    const lines = dialogue
+      .map((line: any, index: number) => {
+        const role = line?.speaker === firstSpeaker || index === 0 ? 'Host' : 'Guest';
+        return `${role}: ${line?.text || ''}`;
+      })
+      .filter((line: string) => line.replace(/^(Host|Guest):\s*/, '').trim())
+      .join('\n');
+    const closing = podcast?.conclusion ? `\nGuest: ${podcast.conclusion}` : '';
+    return `${lines}${closing}`.trim();
+  };
+
+  const toggleLabPodcastPlayback = async () => {
+    const player = labPodcastAudioRef.current;
+    if (!player || !labPodcastAudioUrl) return;
+    if (isLabPodcastPlaying) {
+      player.pause();
+      setIsLabPodcastPlaying(false);
+      return;
+    }
+    try {
+      await player.play();
+      setIsLabPodcastPlaying(true);
+    } catch (_) {
+      setIsLabPodcastPlaying(false);
+    }
   };
 
   const makeBlobAudioUrl = (audio: any) => {
@@ -669,100 +695,111 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    <motion.div
                      initial={{ opacity: 0, y: 20 }}
                      animate={{ opacity: 1, y: 0 }}
-                     className="bg-[#182231] text-white rounded-[40px] p-6 md:p-12 border border-white/10 shadow-2xl overflow-hidden relative"
+                     className="bg-[#11100E] text-white rounded-[36px] p-5 md:p-8 border border-[#D7B56D]/20 shadow-[0_24px_80px_rgba(17,16,14,0.22)] overflow-hidden relative"
                    >
-                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(142,122,174,0.25),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,195,189,0.18),transparent_30%)] pointer-events-none" />
-                     <div className="relative z-10 space-y-8">
-                       <div className="text-center space-y-4">
-                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10 text-xs font-black tracking-widest uppercase">
-                           <Mic className="w-4 h-4" />
-                           {language === 'ar' ? 'بودكاست واقعي' : 'REALISTIC PODCAST'}
+                     <div className="absolute inset-x-0 top-0 h-1 bg-[#D7B56D]" />
+                     <div className="absolute inset-0 opacity-[0.06] pointer-events-none [background-image:linear-gradient(90deg,#fff_1px,transparent_1px),linear-gradient(0deg,#fff_1px,transparent_1px)] [background-size:34px_34px]" />
+                     <div className="relative z-10 space-y-7">
+                       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+                         <div className="space-y-3">
+                           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#D7B56D]/12 border border-[#D7B56D]/25 text-[11px] font-black tracking-widest uppercase text-[#F3D99A]">
+                             <Radio className="w-4 h-4" />
+                             {language === 'ar' ? 'استوديو تبيان' : 'TEBYAN STUDIO'}
+                           </div>
+                           <h3 className="text-2xl md:text-4xl font-black leading-tight max-w-3xl">
+                             {labPodcast.title}
+                           </h3>
                          </div>
-                         <h3 className="text-3xl md:text-5xl font-black leading-tight max-w-4xl mx-auto">
-                           {labPodcast.title}
-                         </h3>
-                         <p className="text-white/60 font-bold text-sm md:text-base max-w-2xl mx-auto">
-                           {language === 'ar'
-                             ? 'حلقة صوتية مختصرة وواضحة، بصياغة طبيعية مناسبة للفكرة.'
-                             : 'A conversation shaped like a real episode: back-and-forth, light interruptions, human hesitation, and short recordable lines.'}
-                         </p>
+                         {labPodcast.guests?.length > 0 && (
+                           <div className="flex flex-wrap md:justify-end gap-2 max-w-md">
+                             {labPodcast.guests.slice(0, 2).map((guest: string, i: number) => (
+                               <span key={i} className="px-3 py-1.5 rounded-full bg-white/[0.07] border border-white/10 text-xs font-black text-white/75">
+                                 {guest}
+                               </span>
+                             ))}
+                           </div>
+                         )}
                        </div>
 
-                       <div className="rounded-[24px] bg-white/10 border border-white/10 p-4 md:p-5">
+                       <div className="rounded-[28px] bg-[#F7F1E3] text-[#171411] border border-[#D7B56D]/20 p-5 md:p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+                         <div className="h-28 md:h-36 flex items-center justify-center gap-1.5 md:gap-2 overflow-hidden" aria-hidden="true">
+                           {Array.from({ length: 42 }).map((_, i) => {
+                             const height = 20 + ((i * 17) % 74);
+                             return (
+                               <span
+                                 key={i}
+                                 className={cn(
+                                   "w-1.5 md:w-2 rounded-full bg-[#11100E] transition-opacity",
+                                   isLabPodcastPlaying ? "animate-pulse opacity-80" : "opacity-25"
+                                 )}
+                                 style={{
+                                   height: `${height}%`,
+                                   animationDelay: `${(i % 9) * 90}ms`,
+                                   animationDuration: `${850 + (i % 5) * 120}ms`
+                                 }}
+                               />
+                             );
+                           })}
+                         </div>
+
                          {labPodcastAudioUrl ? (
-                           <audio controls autoPlay className="w-full" src={labPodcastAudioUrl}>
-                             {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
-                           </audio>
-                         ) : labPodcastAudioMessage ? (
-                           <div className="flex items-center justify-center rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
+                           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-center gap-3 pt-5 border-t border-[#11100E]/10">
+                             <audio
+                               ref={labPodcastAudioRef}
+                               src={labPodcastAudioUrl}
+                               autoPlay
+                               onPlay={() => setIsLabPodcastPlaying(true)}
+                               onPause={() => setIsLabPodcastPlaying(false)}
+                               onEnded={() => setIsLabPodcastPlaying(false)}
+                               className="hidden"
+                             >
+                               {language === 'ar' ? 'المتصفح لا يدعم تشغيل الصوت.' : 'Your browser does not support audio playback.'}
+                             </audio>
+                             <button
+                               type="button"
+                               onClick={toggleLabPodcastPlayback}
+                               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#11100E] px-6 py-3 text-sm font-black text-white shadow-[0_12px_24px_rgba(17,16,14,0.18)] active:scale-95 transition-all"
+                             >
+                               {isLabPodcastPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                               {isLabPodcastPlaying ? (language === 'ar' ? 'إيقاف' : 'Pause') : (language === 'ar' ? 'استماع' : 'Listen')}
+                             </button>
+                             <a
+                               href={labPodcastAudioUrl}
+                               download="tebyan-podcast.wav"
+                               className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-black text-[#11100E] border border-[#11100E]/10 active:scale-95 transition-all"
+                             >
+                               <Download className="w-4 h-4" />
+                               {language === 'ar' ? 'تحميل' : 'Download'}
+                             </a>
                              <button
                                type="button"
                                onClick={handleRunLabTool}
                                disabled={isLoading}
-                               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-black text-[#182231] shadow-sm disabled:opacity-60"
+                               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#8E7AAE] px-6 py-3 text-sm font-black text-white disabled:opacity-60 active:scale-95 transition-all"
+                             >
+                               <RefreshCw className="w-4 h-4" />
+                               {language === 'ar' ? 'نسخة جديدة' : 'New take'}
+                             </button>
+                           </div>
+                         ) : labPodcastAudioMessage ? (
+                           <div className="flex items-center justify-center pt-5 border-t border-[#11100E]/10">
+                             <button
+                               type="button"
+                               onClick={handleRunLabTool}
+                               disabled={isLoading}
+                               className="inline-flex items-center gap-2 rounded-full bg-[#11100E] px-6 py-3 text-sm font-black text-white shadow-sm disabled:opacity-60"
                              >
                                <Volume2 className="w-4 h-4" />
                                {language === 'ar' ? 'إعادة التجهيز' : 'Prepare again'}
                              </button>
                            </div>
                          ) : (
-                           <div className="flex items-center gap-3 rounded-[18px] bg-white/10 border border-white/10 px-4 py-4">
-                             <Loader2 className="w-5 h-5 animate-spin text-white" />
-                             <p className="text-sm font-bold leading-relaxed text-white/75">{language === 'ar' ? 'جارٍ تجهيز الصوت...' : 'Preparing the episode audio...'}</p>
+                           <div className="flex items-center justify-center gap-3 pt-5 border-t border-[#11100E]/10">
+                             <Loader2 className="w-5 h-5 animate-spin text-[#11100E]" />
+                             <p className="text-sm font-black leading-relaxed text-[#11100E]/70">{language === 'ar' ? 'جارٍ تجهيز الصوت...' : 'Preparing audio...'}</p>
                            </div>
                          )}
                        </div>
-
-                       {labPodcast.guests?.length > 0 && (
-                         <div className="flex flex-wrap justify-center gap-3">
-                           {labPodcast.guests.map((guest: string, i: number) => (
-                             <span key={i} className="px-4 py-2 rounded-full bg-white/10 border border-white/10 text-sm font-bold text-white/85">
-                               {guest}
-                             </span>
-                           ))}
-                         </div>
-                       )}
-
-                       <div className="space-y-4">
-                         {labPodcast.dialogue?.map((line: any, i: number) => (
-                           <motion.div
-                             key={i}
-                             initial={{ opacity: 0, y: 12 }}
-                             animate={{ opacity: 1, y: 0 }}
-                             transition={{ delay: i * 0.05 }}
-                             className={cn(
-                               "rounded-[28px] p-5 md:p-6 border max-w-3xl",
-                               i % 2 === 0
-                                 ? "bg-white text-[#182231] border-white/20 ml-auto"
-                                 : "bg-white/10 text-white border-white/10 mr-auto"
-                             )}
-                           >
-                             <div className="flex items-center gap-3 mb-3">
-                               <div className={cn(
-                                 "w-10 h-10 rounded-full flex items-center justify-center font-black",
-                                 i % 2 === 0 ? "bg-[#F1EEF4] text-[#8E7AAE]" : "bg-white/15 text-white"
-                               )}>
-                                 {line.speaker?.[0] || '•'}
-                               </div>
-                               <div className="font-black text-sm md:text-base">{line.speaker}</div>
-                             </div>
-                             <p className="text-lg md:text-xl leading-relaxed font-bold">
-                               {line.text}
-                             </p>
-                           </motion.div>
-                         ))}
-                       </div>
-
-                       {labPodcast.conclusion && (
-                         <div className="bg-white/10 rounded-[32px] p-6 md:p-8 border border-white/10 text-center">
-                           <div className="text-white/50 text-xs font-black uppercase tracking-widest mb-3">
-                             {language === 'ar' ? 'نهاية الحلقة' : 'EPISODE CLOSE'}
-                           </div>
-                           <p className="text-xl md:text-2xl font-black leading-relaxed">
-                             {labPodcast.conclusion}
-                           </p>
-                         </div>
-                       )}
                      </div>
                    </motion.div>
                  )}

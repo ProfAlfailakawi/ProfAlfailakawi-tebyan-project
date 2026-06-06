@@ -63,7 +63,7 @@ function pcmBase64ToWavBase64(pcmBase64, sampleRate = 24000, channels = 1, bitsP
 }
 
 
-function sanitizeTtsText(input) {
+function sanitizeTtsText(input, maxChars = 1400, preserveLines = false) {
     if (!input) return "";
     let cleaned = String(input)
         .replace(/ZhaDataSourceResponse[\s\S]*$/g, " ")
@@ -76,9 +76,10 @@ function sanitizeTtsText(input) {
         .replace(/[\u{1F300}-\u{1FAFF}]/gu, " ")
         .replace(/[ـ]{3,}/g, " ")
         .replace(/[-–—]{3,}/g, " ")
-        .replace(/\s+/g, " ")
+        .replace(/[ \t]+/g, " ")
+        .replace(/\n{3,}/g, "\n\n")
         .trim();
-    const chunks = cleaned.split(/(?<=[.!؟؛])\s+|\n+/).map((part) => part.trim()).filter(Boolean);
+    const chunks = cleaned.split(preserveLines ? /\n+/ : /(?<=[.!؟؛])\s+|\n+/).map((part) => part.trim()).filter(Boolean);
     const seen = new Set();
     const unique = [];
     for (const chunk of chunks) {
@@ -88,7 +89,7 @@ function sanitizeTtsText(input) {
             unique.push(chunk);
         }
     }
-    return unique.join(" ").slice(0, 1400).trim();
+    return unique.join(preserveLines ? "\n" : " ").slice(0, maxChars).trim();
 }
 
 function sampleRateFromMime(mimeType = "") {
@@ -103,7 +104,8 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }) {
         throw err;
     }
 
-    const cleanText = sanitizeTtsText(text);
+    const isPodcast = style === "podcast";
+    const cleanText = sanitizeTtsText(text, isPodcast ? 3200 : 1400, isPodcast);
     if (!cleanText) {
         const err = new Error("Missing clean text for audio generation");
         err.statusCode = 400;
@@ -128,7 +130,16 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }) {
         };
     }
 
-    const naturalizedText = `
+    const naturalizedText = isPodcast ? `
+TTS the following Arabic podcast conversation between Host and Guest.
+Use a calm, premium, intimate studio sound.
+Host should sound curious, warm, and composed.
+Guest should sound thoughtful, grounded, and slightly deeper.
+Keep the Arabic natural, clear, and close to polished everyday speech.
+Do not read punctuation labels or explain these instructions.
+
+${cleanText}
+` : `
 اقرأ النص بلغة عربية بيضاء طبيعية جداً، قريبة من الحديث اليومي الراقي والمفهوم في الخليج والعالم العربي.
 لا تستخدم لهجة كويتية أو خليجية مصطنعة، ولا فصحى مدرسية جامدة.
 اجعل النبرة إنسانية هادئة وواضحة، كأن شخصاً مثقفاً يشرح الجواب ببساطة ودفء.
@@ -147,11 +158,26 @@ ${cleanText}
         contents: [{ parts: [{ text: naturalizedText }] }],
         generationConfig: {
             responseModalities: ["AUDIO"],
-            speechConfig: {
-                voiceConfig: {
-                    prebuiltVoiceConfig: { voiceName: selectedVoice }
+            speechConfig: isPodcast
+                ? {
+                    multiSpeakerVoiceConfig: {
+                        speakerVoiceConfigs: [
+                            {
+                                speaker: "Host",
+                                voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } }
+                            },
+                            {
+                                speaker: "Guest",
+                                voiceConfig: { prebuiltVoiceConfig: { voiceName: "Puck" } }
+                            }
+                        ]
+                    }
                 }
-            }
+                : {
+                    voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName: selectedVoice }
+                    }
+                }
         }
     };
 
