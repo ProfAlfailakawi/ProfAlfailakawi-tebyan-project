@@ -85,7 +85,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
   if (!isAdmin) {
     return (
-      <div className="w-full bg-white min-h-screen rounded-[32px] p-6 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="w-full bg-white min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <TabHeader 
           icon={TicketPercent}
           title={{ ar: 'محفظة الولاء والجوائز', en: 'Loyalty Wallet' }}
@@ -97,22 +97,22 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
           onBack={() => handleTabChange('home')}
         />
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
             {/* Points Card */}
-            <div className="bg-gradient-to-br from-indigo-900 to-indigo-950 rounded-[32px] p-8 text-white shadow-2xl relative overflow-hidden">
+            <div className="bg-gradient-to-br from-indigo-900 to-indigo-950 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-white shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/20 blur-[60px] translate-x-1/4 -translate-y-1/4" />
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 opacity-60 mb-6">
                         <Crown className="w-5 h-5 text-amber-400" />
                         <span className="text-xs font-black uppercase tracking-widest">{language === 'ar' ? 'رصيد النقاط' : 'Points Balance'}</span>
                     </div>
-                    <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-6xl font-black">{myLoyaltyData.points}</span>
+                    <div className="flex flex-wrap items-baseline gap-2 mb-2">
+                        <span className="text-5xl md:text-6xl font-black">{myLoyaltyData.points}</span>
                         <span className="text-xl font-bold opacity-60">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
                     </div>
                     <p className="text-indigo-200 text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
                     
-                    <div className="mt-10 pt-8 border-t border-white/10 flex items-center justify-between">
+                    <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
                         <div>
                             <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
                             <p className="text-lg font-black tracking-tight">KWD {myLoyaltyData.totalSpent}</p>
@@ -125,24 +125,24 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
             </div>
 
             {/* Coupons Card */}
-            <div className="bg-white rounded-[32px] border-2 border-zinc-100 p-8 flex flex-col justify-between">
+            <div className="bg-white rounded-[24px] md:rounded-[32px] border-2 border-zinc-100 p-5 md:p-8 flex flex-col justify-between">
                 <div>
                    <h3 className="text-xl font-black mb-6">{language === 'ar' ? 'مكافآتك المتاحة' : 'Your Available Rewards'}</h3>
                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 border-dashed">
+                      <div className="flex items-center gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 border-dashed min-w-0">
                          <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500">
                             <TicketPercent className="w-6 h-6" />
                          </div>
-                         <div>
+                         <div className="min-w-0">
                             <p className="text-sm font-black text-emerald-900">{language === 'ar' ? 'خصم 15% على الاستشارة القادمة' : '15% Off Your Next Consult'}</p>
                             <p className="text-[10px] text-emerald-700 font-bold">{language === 'ar' ? 'كود: TIBYAN15' : 'Code: TIBYAN15'}</p>
                          </div>
                       </div>
-                      <div className="flex items-center gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 opacity-50 grayscale">
+                      <div className="flex items-center gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 opacity-60 grayscale min-w-0">
                          <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-zinc-400">
                             <Gift className="w-6 h-6" />
                          </div>
-                         <div>
+                         <div className="min-w-0">
                             <p className="text-sm font-black text-zinc-900">{language === 'ar' ? 'هدية "كتاب الحكمة"' : 'Book of Wisdom Gift'}</p>
                             <p className="text-[10px] text-zinc-500 font-bold">{language === 'ar' ? 'متاح عند وصولك لـ 500 نقطة' : 'Available at 500 PTS'}</p>
                          </div>
@@ -228,7 +228,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
   };
 
   return (
-    <div className="w-full bg-[#FAFAFA] min-h-screen rounded-[32px] p-6 lg:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="w-full bg-[#FAFAFA] min-h-screen rounded-[24px] md:rounded-[32px] p-4 lg:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
         icon={Users}
         title={{ ar: 'الولاء والكوبونات', en: 'Loyalty & Coupons' }}
@@ -241,16 +241,16 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
       />
 
       {/* Analytics Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-8 mb-8">
         {[
           { label: 'إجمالي العملاء', val: customers.length, color: 'emerald', icon: Users },
           { label: 'متوسط النقاط', val: Math.round(customers.reduce((acc, c) => acc + c.points, 0) / (customers.length || 1)), color: 'indigo', icon: TrendingUp },
           { label: 'العملاء في خطر', val: customers.filter(c => c.status === 'At Risk').length, color: 'rose', icon: AlertTriangle },
           { label: 'عملاء VIP', val: customers.filter(c => c.status === 'VIP').length, color: 'amber', icon: Crown }
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
-            <div>
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-tighter mb-1">{stat.label}</p>
+          <div key={i} className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between gap-3 min-w-0">
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-zinc-600 uppercase mb-1 leading-snug">{stat.label}</p>
               <p className="text-2xl font-black text-black">{stat.val}</p>
             </div>
             <div className={cn("p-3 rounded-xl", `bg-${stat.color}-50 text-${stat.color}-600`)}>
@@ -276,7 +276,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                   className="w-full bg-zinc-50 border border-zinc-200 rounded-xl py-3 px-12 font-medium focus:border-black transition-colors"
                 />
               </div>
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar tebyan-scroll-contained">
                 {['All', 'VIP', 'Active', 'Inactive', 'At Risk', 'New'].map(f => (
                   <button
                     key={f}
@@ -314,11 +314,11 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                   animate={{ opacity: 1, y: 0 }}
                   onClick={() => setSelectedCustomer(customer)}
                   className={cn(
-                    "bg-white p-4 rounded-2xl border transition-all cursor-pointer group flex items-center justify-between text-right",
+                    "bg-white p-4 rounded-2xl border transition-all cursor-pointer group flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 text-right",
                     selectedCustomer?.id === customer.id ? "border-black shadow-lg ring-1 ring-black" : "border-zinc-200 hover:border-zinc-300 shadow-sm"
                   )}
                 >
-                   <div className="flex items-center gap-4 flex-1">
+                   <div className="flex items-center gap-4 flex-1 min-w-0">
                       <div className="w-12 h-12 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-900 font-black relative shrink-0">
                          {customer.displayName.charAt(0)}
                          <div className={cn("absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white", 
@@ -327,7 +327,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       </div>
                       <div className="text-right min-w-0">
                          <h4 className="font-black text-black text-sm truncate">{customer.displayName}</h4>
-                         <p className="text-xs text-zinc-400 font-mono" dir="ltr">{customer.phone}</p>
+                         <p className="text-xs text-zinc-600 font-mono" dir="ltr">{customer.phone}</p>
                       </div>
                    </div>
 
@@ -342,7 +342,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       </div>
                    </div>
 
-                   <div className="flex items-center gap-4">
+                   <div className="flex items-center gap-3 shrink-0">
                       <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-black border", getStatusColor(customer.status))}>
                          {language === 'ar' ? customer.status : customer.status}
                       </span>
@@ -394,7 +394,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                         {selectedCustomer.displayName.charAt(0)}
                      </div>
                      <h3 className="text-2xl font-black text-black">{selectedCustomer.displayName}</h3>
-                     <p className="text-zinc-500 font-medium text-sm">{selectedCustomer.email}</p>
+                     <p className="text-zinc-600 font-medium text-sm" dir="ltr">{selectedCustomer.email}</p>
                      
                      <div className="flex gap-2 mt-4">
                         <span className={cn("px-3 py-1 rounded-full text-xs font-black border flex items-center gap-1.5", getStatusColor(selectedCustomer.status))}>
@@ -461,9 +461,9 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                               <div key={i} className="flex items-center justify-between p-3 bg-zinc-50/50 rounded-xl border border-zinc-100">
                                  <div>
                                     <p className="text-xs font-bold text-zinc-800">{item.label}</p>
-                                    <p className="text-[10px] text-zinc-400 font-medium">{item.date}</p>
+                           <p className="text-[10px] text-zinc-500 font-medium">{item.date}</p>
                                  </div>
-                                 <span className="text-[10px] font-black text-zinc-500">{item.val}</span>
+                                 <span className="text-[10px] font-black text-zinc-600 text-left">{item.val}</span>
                               </div>
                            ))}
                         </div>
@@ -514,29 +514,29 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
       </div>
 
       {/* Dynamic Rewards Configuration (Admin Only Control) */}
-      <div className="mt-10 p-8 bg-zinc-900 rounded-[32px] shadow-2xl relative overflow-hidden">
+      <div className="mt-10 p-5 md:p-8 bg-zinc-900 rounded-[24px] md:rounded-[32px] shadow-2xl relative overflow-hidden">
          <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[100px]" />
-         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-right">
+         <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 md:gap-8">
+            <div className="text-right min-w-0">
                <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-5 h-5 text-amber-400" />
                   <span className="text-xs font-black text-amber-400 uppercase tracking-widest">{language === 'ar' ? 'التحكم الذكي بالمكافآت' : 'Intelligent Reward Control'}</span>
                </div>
                <h3 className="text-2xl font-black text-white mb-2">{language === 'ar' ? 'تفعيل المكافآت الديناميكية' : 'Enable Dynamic Rewards'}</h3>
-               <p className="text-zinc-400 text-sm max-w-lg font-medium">
+               <p className="text-zinc-200 text-sm max-w-lg font-medium leading-relaxed">
                   {language === 'ar' 
                     ? 'عند تفعيل هذا الخيار، سيقوم النظام بتعديل قيمة المكافآت تلقائياً بناءً على وقت نشاط العمل (أوقات الذروة) وحالة العميل.'
                     : 'System will auto-adjust reward values based on business peak hours and customer status.'}
                </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                <div className="flex flex-col items-center gap-2">
                   <span className="text-[10px] font-bold text-zinc-500">{language === 'ar' ? 'الحالة الحالية' : 'Current Status'}</span>
                   <div className="relative w-16 h-8 bg-white/10 rounded-full p-1 cursor-pointer" onClick={() => window.alert('تم تغيير الوضع!')}>
                      <div className="w-6 h-6 bg-amber-400 rounded-full shadow-lg translate-x-8 rtl:-translate-x-8 transition-transform" />
                   </div>
                </div>
-               <button className="px-6 py-3 bg-white/10 text-white rounded-xl font-bold border border-white/20 hover:bg-white/20 transition-all flex items-center gap-2">
+               <button className="px-6 py-3 bg-white/10 text-white rounded-xl font-bold border border-white/20 hover:bg-white/20 transition-all flex items-center justify-center gap-2">
                   <MoreHorizontal className="w-4 h-4" />
                   {language === 'ar' ? 'إعدادات متقدمة' : 'Advanced Config'}
                </button>

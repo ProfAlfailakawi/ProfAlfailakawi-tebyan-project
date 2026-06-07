@@ -161,7 +161,7 @@ export default function AdminQawlFasl() {
   if (showBulkGen) {
     return (
       <div className="bg-white rounded-[24px] overflow-hidden relative">
-        <button onClick={() => setShowBulkGen(false)} className="absolute top-6 right-6 p-2 bg-zinc-100 hover:bg-zinc-200 rounded-full z-10"><X /></button>
+        <button onClick={() => setShowBulkGen(false)} className="absolute top-4 right-4 md:top-6 md:right-6 p-2 bg-zinc-100 hover:bg-zinc-200 rounded-full z-10"><X /></button>
         <AdminQawlFaslBulkGen />
       </div>
     );
@@ -169,8 +169,8 @@ export default function AdminQawlFasl() {
 
   if (showUpload) {
     return (
-      <div className="bg-white rounded-[24px] overflow-hidden relative p-8">
-        <button onClick={() => setShowUpload(false)} className="absolute top-6 right-6 p-2 bg-zinc-100 hover:bg-zinc-200 rounded-full z-10"><X /></button>
+      <div className="bg-white rounded-[24px] overflow-hidden relative p-4 md:p-8">
+        <button onClick={() => setShowUpload(false)} className="absolute top-4 right-4 md:top-6 md:right-6 p-2 bg-zinc-100 hover:bg-zinc-200 rounded-full z-10"><X /></button>
         <AdminQawlFaslUpload />
       </div>
     );
@@ -178,9 +178,9 @@ export default function AdminQawlFasl() {
 
   if (editingId) {
     return (
-      <div className="p-6 bg-white rounded-[24px] space-y-6 max-h-[80vh] overflow-y-auto">
-         <div className="flex justify-between items-center sticky top-0 bg-white z-10 py-2 border-b">
-            <h2 className="text-2xl font-bold">إضافة / تعديل سؤال</h2>
+      <div className="p-4 md:p-6 bg-white rounded-[24px] space-y-6 max-h-[80vh] overflow-y-auto overflow-x-hidden">
+         <div className="flex justify-between items-center gap-3 sticky top-0 bg-white z-10 py-2 border-b">
+            <h2 className="text-xl md:text-2xl font-bold leading-snug">إضافة / تعديل سؤال</h2>
             <button onClick={() => setEditingId(null)} className="p-2 bg-zinc-100 rounded-full"><X /></button>
          </div>
          
@@ -216,8 +216,8 @@ export default function AdminQawlFasl() {
               </div>
             </div>
 
-            <div className="space-y-4 bg-zinc-50 p-4 rounded-[16px] border">
-               <h3 className="font-bold text-lg border-b pb-2">المحتوى המوّلّد (معاينة سريعة)</h3>
+            <div className="space-y-4 bg-zinc-50 p-4 rounded-[16px] border min-w-0">
+               <h3 className="font-bold text-lg border-b pb-2 leading-snug">المحتوى المولّد (معاينة سريعة)</h3>
                {formData.quickSummary ? (
                  <div className="space-y-3 text-sm">
                    <div><strong className="text-black">الملخص السريع:</strong> {formData.quickSummary}</div>
@@ -243,7 +243,7 @@ export default function AdminQawlFasl() {
                 <option value="published">منشور</option>
               </select>
             </div>
-            <button onClick={save} className="bg-black hover:bg-zinc-900 text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2">
+            <button onClick={save} className="w-full sm:w-auto bg-black hover:bg-zinc-900 text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2">
               <Check className="w-5 h-5"/> حفظ البيانات
             </button>
          </div>
@@ -252,7 +252,7 @@ export default function AdminQawlFasl() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6 overflow-x-hidden">
       {alertDialog && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-[16px] p-6 max-w-sm w-full text-center">
@@ -276,12 +276,12 @@ export default function AdminQawlFasl() {
         </div>
       )}
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">إدارة أسئلة قول فصل</h2>
-        <div className="flex flex-wrap gap-1 md:gap-3">
+      <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+        <h2 className="text-xl md:text-2xl font-bold leading-snug">إدارة أسئلة قول فصل</h2>
+        <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 md:gap-3 w-full lg:w-auto">
           <button 
             disabled={isProcessing}
-            onClick={handleRunAnalysis} className="bg-orange-100 text-orange-700 hover:bg-orange-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center gap-0 md:gap-2 transition-colors text-xs md:text-sm"
+            onClick={handleRunAnalysis} className="bg-orange-100 text-orange-700 hover:bg-orange-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="تحليل البحث"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -304,7 +304,7 @@ export default function AdminQawlFasl() {
               } finally {
                 setIsProcessing(false);
               }
-            }} className="bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center gap-0 md:gap-2 transition-colors text-xs md:text-sm"
+            }} className="bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="توليد مسودات ذكية"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -313,28 +313,28 @@ export default function AdminQawlFasl() {
           <button 
             onClick={handleMigrateCategories} 
             disabled={isMigrating || isProcessing} 
-            className="bg-amber-100 text-amber-700 hover:bg-amber-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center gap-0 md:gap-2 transition-colors text-xs md:text-sm"
+            className="bg-amber-100 text-amber-700 hover:bg-amber-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="تحديث التصنيفات"
           >
             <Wand2 className="w-4 h-4"/> <span className="hidden md:inline">{(isMigrating || isProcessing) ? 'جاري التحديث...' : 'تحديث التصنيفات'}</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowBulkGen(true)} className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center gap-0 md:gap-2 transition-colors text-xs md:text-sm"
+            onClick={() => setShowBulkGen(true)} className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="التوليد الشامل"
           >
             <Database className="w-4 h-4"/> <span className="hidden md:inline">التوليد الشامل</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowUpload(true)} className="bg-teal-100 text-teal-700 hover:bg-teal-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center gap-0 md:gap-2 transition-colors text-xs md:text-sm"
+            onClick={() => setShowUpload(true)} className="bg-teal-100 text-teal-700 hover:bg-teal-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="رفع الأسئلة"
           >
             <UploadCloud className="w-4 h-4"/> <span className="hidden md:inline">رفع الأسئلة</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={openNew} className="bg-black text-white hover:bg-zinc-900 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center gap-0 md:gap-2 transition-colors text-xs md:text-sm"
+            onClick={openNew} className="bg-black text-white hover:bg-zinc-900 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="سؤال جديد"
           >
              <Plus className="w-4 h-4"/> <span className="hidden md:inline">سؤال جديد</span>
@@ -342,12 +342,12 @@ export default function AdminQawlFasl() {
         </div>
       </div>
 
-      <div className="bg-rose-50 border border-rose-200 rounded-[16px] p-6 mb-8 text-rose-900 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-between">
-        <div>
+      <div className="bg-rose-50 border border-rose-200 rounded-[16px] p-4 md:p-6 mb-8 text-rose-900 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="min-w-0">
            <h3 className="text-lg font-bold flex items-center gap-2 mb-1"><Database className="w-5 h-5"/> إدارة النظام الآلي والتهيئة</h3>
            <p className="text-sm">هذه الإجراءات تؤثر بشكل كبير على قاعدة البيانات. استخدمها بحذر.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
             <button 
               disabled={isProcessing}
               onClick={async () => {
@@ -363,7 +363,7 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-rose-600 hover:bg-rose-700 disabled:bg-rose-400 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center gap-2">
+            }} className="bg-rose-600 hover:bg-rose-700 disabled:bg-rose-400 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
                 تهيئة ومسح النظام (Backup & Reset)
             </button>
@@ -383,7 +383,7 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-black hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center gap-2">
+            }} className="bg-black hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
                 توليد 10 أسئلة (Daily Batch)
             </button>
@@ -391,7 +391,7 @@ export default function AdminQawlFasl() {
       </div>
 
       <div className="bg-white rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border overflow-hidden">
-        <table className="w-full text-right text-sm">
+        <table className="hidden md:table w-full text-right text-sm">
           <thead className="bg-zinc-50 border-b">
             <tr>
               <th className="p-4 font-bold text-zinc-600">العنوان</th>
@@ -416,6 +416,27 @@ export default function AdminQawlFasl() {
             ))}
           </tbody>
         </table>
+        <div className="md:hidden divide-y divide-zinc-100">
+          {loading ? <div className="p-8 text-center text-zinc-500">جاري التحميل...</div> : null}
+          {!loading && questions.length === 0 ? <div className="p-8 text-center text-zinc-500">لا يوجد أسئلة.</div> : null}
+          {questions.map(q => (
+            <div key={q.id} className="p-4 space-y-3">
+              <div className="space-y-2">
+                <p className="font-black text-zinc-900 leading-relaxed">{q.title || q.question}</p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-2 py-1 rounded-lg bg-zinc-100 text-zinc-700 text-xs font-bold">
+                    {CATEGORIES.find(c => c.id === (q.categoryId || q.categorySlug))?.title || q.category || 'غير مصنف'}
+                  </span>
+                  <span className={`px-2 py-1 rounded-lg text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status}</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button onClick={() => { setEditingId(q.id); setFormData(q as any); }} className="bg-zinc-100 text-zinc-800 rounded-xl font-bold flex items-center justify-center gap-2 min-h-11 disabled:opacity-30" disabled={isProcessing}><Edit2 size={16} /> تعديل</button>
+                <button onClick={() => remove(q.id)} className="bg-rose-50 text-rose-700 rounded-xl font-bold flex items-center justify-center gap-2 min-h-11 disabled:opacity-30" disabled={isProcessing}><Trash2 size={16} /> حذف</button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       
       {/* Suggested Questions Dashboard */}
@@ -424,13 +445,13 @@ export default function AdminQawlFasl() {
         {missingQuestions.length === 0 ? <p className="text-zinc-500">لا توجد اقتراحات حاليًا.</p> : (
             <div className="space-y-4">
                 {missingQuestions.map(mq => (
-                    <div key={mq.id} className="p-4 border rounded-xl bg-zinc-50 flex justify-between items-center">
-                        <div>
+                    <div key={mq.id} className="p-4 border rounded-xl bg-zinc-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                        <div className="min-w-0">
                             <p className="font-bold">{mq.query}</p>
                             <span className="text-xs text-zinc-500">مطلوب {mq.frequency} مرة</span>
                         </div>
-                        <div className="flex gap-2">
-                            <button className="bg-black text-white px-3 py-1 rounded-lg text-sm" onClick={() => {
+                        <div className="flex gap-2 w-full sm:w-auto">
+                            <button className="w-full sm:w-auto bg-black text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={() => {
                                 // Simple approve hook
                                 qawlFaslService.updateMissingQuestionStatus(mq.id, 'approved', mq.query, 'جاري إعداد الإجابة...');
                                 qawlFaslService.getMissingQuestions().then(setMissingQuestions);

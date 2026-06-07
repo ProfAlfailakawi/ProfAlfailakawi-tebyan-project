@@ -102,9 +102,9 @@ export default function AdminUsersDashboard() {
   if (!isAuthorized) return <div className="p-10 text-center">غير مصرح لك بالوصول.</div>;
   
   return (
-    <div className="p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen">
-      <h1 className="text-2xl md:text-3xl font-black mb-8 flex items-center gap-3">
-        <Users className="w-8 h-8" /> إدارة المستخدمين
+    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen overflow-x-hidden">
+      <h1 className="text-2xl md:text-3xl font-black mb-6 md:mb-8 flex items-center gap-3 leading-snug">
+        <Users className="w-7 h-7 md:w-8 md:h-8 shrink-0" /> إدارة المستخدمين
       </h1>
       
       {errorMsg && (
@@ -144,7 +144,7 @@ export default function AdminUsersDashboard() {
 
       {loading ? <p>جاري تحميل البيانات...</p> : (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="overflow-x-auto w-full max-w-full">
+          <div className="hidden md:block tebyan-scroll-contained w-full max-w-full">
             <table className="w-full text-right text-sm min-w-[700px]">
               <thead className="bg-slate-100 uppercase text-slate-500 font-bold">
                 <tr>
@@ -191,23 +191,60 @@ export default function AdminUsersDashboard() {
               </tbody>
             </table>
           </div>
+          <div className="md:hidden divide-y divide-slate-100">
+            {users.length === 0 ? (
+              <div className="p-8 text-center text-slate-500 font-bold">لا يوجد مستخدمين مسجلين بعد.</div>
+            ) : (
+              users.map((user: any) => (
+                <div key={user.id} className="p-4 space-y-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-black text-slate-900 leading-snug">{user.displayName || 'لا يوجد اسم'}</p>
+                      <p className="mt-1 text-xs text-slate-500 font-mono leading-relaxed" dir="ltr">{user.email}</p>
+                    </div>
+                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button 
+                      onClick={() => openEditModal(user)}
+                      className="min-h-11 rounded-xl bg-blue-50 text-blue-700 font-bold flex items-center justify-center gap-2"
+                      title="تعديل المستخدم"
+                    >
+                      <Edit2 size={16} />
+                      تعديل
+                    </button>
+                    <button 
+                      onClick={() => deleteUser(user.id)}
+                      className="min-h-11 rounded-xl bg-rose-50 text-rose-700 font-bold flex items-center justify-center gap-2"
+                      title="حذف المستخدم"
+                    >
+                      <Trash2 size={16} />
+                      حذف
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       )}
 
       {editingUser && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-3xl p-8 max-w-2xl w-full relative shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl p-5 md:p-8 max-w-2xl w-full relative shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto overflow-x-hidden">
             <button 
               onClick={closeEditModal}
-              className="absolute top-6 left-6 p-2 bg-slate-100 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-200 transition-all font-bold"
+              className="absolute top-4 left-4 md:top-6 md:left-6 p-2 bg-slate-100 rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-all font-bold"
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-2xl font-black mb-8 border-b pb-4">ملف العميل (Client Profile)</h2>
+            <h2 className="text-xl md:text-2xl font-black mb-6 md:mb-8 border-b pb-4 leading-snug pe-12">ملف العميل (Client Profile)</h2>
 
             <div className="flex flex-col md:flex-row gap-8 mb-8 text-right">
               {/* Profile Sidebar */}
-              <div className="flex flex-col items-center min-w-[200px]">
+              <div className="flex flex-col items-center md:min-w-[200px] min-w-0">
                 <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-4xl mb-4 shadow-sm border border-slate-200 relative">
                   {editingUser.photoURL ? (
                     <img src={editingUser.photoURL} alt="Avatar" className="w-24 h-24 rounded-full object-cover" />
@@ -225,7 +262,7 @@ export default function AdminUsersDashboard() {
                   {editingUser.role === 'admin' ? 'مدير النظام (Admin)' : 'مستخدم (User)'}
                 </span>
 
-                <a href={`mailto:${editingUser.email}`} className="text-blue-600 hover:underline text-sm font-bold flex gap-2 items-center">
+                <a href={`mailto:${editingUser.email}`} className="text-blue-600 hover:underline text-sm font-bold flex gap-2 items-center max-w-full text-center" dir="ltr">
                   <span dir="ltr">{editingUser.email}</span>
                 </a>
                 
@@ -242,14 +279,14 @@ export default function AdminUsersDashboard() {
                   <h4 className="font-black text-slate-800 mb-4 flex items-center gap-2">
                     <Activity className="w-5 h-5 text-blue-500" /> نشاط الحساب
                   </h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white p-3 rounded-xl border border-slate-200">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                    <div className="bg-white p-3 rounded-xl border border-slate-200 min-w-0">
                       <div className="text-xs text-slate-500 font-bold mb-1">تاريخ الانضمام</div>
                       <div className="font-bold text-slate-800 truncate" dir="ltr">
                         {editingUser.createdAt?.toDate ? editingUser.createdAt.toDate().toLocaleDateString('en-GB') : 'غير متوفر'}
                       </div>
                     </div>
-                    <div className="bg-white p-3 rounded-xl border border-slate-200">
+                    <div className="bg-white p-3 rounded-xl border border-slate-200 min-w-0">
                       <div className="text-xs text-slate-500 font-bold mb-1">آخر تسجيل دخول</div>
                       <div className="font-bold text-slate-800 truncate" dir="ltr">
                         {editingUser.lastLogin?.toDate ? editingUser.lastLogin.toDate().toLocaleDateString('en-GB') : 'جديد'}
@@ -293,10 +330,10 @@ export default function AdminUsersDashboard() {
 
                   <div>
                     <label className="text-sm font-bold text-slate-600 mb-1 block">حالة الحساب</label>
-                    <div className="flex gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <button 
                         onClick={() => setEditFormData({...editFormData, status: 'active'})}
-                        className={`flex-1 py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border ${
+                        className={`py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border ${
                           editFormData.status === 'active' 
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                             : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
@@ -306,7 +343,7 @@ export default function AdminUsersDashboard() {
                       </button>
                       <button 
                         onClick={() => setEditFormData({...editFormData, status: 'suspended'})}
-                        className={`flex-1 py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border ${
+                        className={`py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all border ${
                           editFormData.status === 'suspended' 
                             ? 'bg-rose-50 text-rose-700 border-rose-200' 
                             : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
@@ -354,7 +391,7 @@ export default function AdminUsersDashboard() {
             )}
 
             {/* Answer to the client question */}
-            <div className="mt-4 bg-amber-50 border border-amber-100 rounded-2xl p-5 text-right">
+            <div className="mt-4 bg-amber-50 border border-amber-100 rounded-2xl p-4 md:p-5 text-right">
                <h4 className="font-black text-amber-900 mb-2 flex items-center gap-2">
                  💡 إجابة على سؤالك
                </h4>

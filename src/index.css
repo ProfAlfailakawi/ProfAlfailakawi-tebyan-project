@@ -103,6 +103,20 @@
 }
 
 @layer base {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
   body {
     @apply text-zinc-900 selection:bg-zinc-200 antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -113,9 +127,98 @@
   }
   button, [type="button"], [type="submit"], [role="button"] {
     cursor: pointer;
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
   }
   button:disabled {
     cursor: not-allowed;
+  }
+
+  img,
+  svg,
+  canvas,
+  video {
+    max-width: 100%;
+  }
+
+  input,
+  textarea,
+  select {
+    max-width: 100%;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  button,
+  label,
+  li,
+  td,
+  th {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  a,
+  [dir="ltr"],
+  .font-mono {
+    overflow-wrap: anywhere;
+  }
+}
+
+@layer utilities {
+  .tebyan-mobile-safe {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .tebyan-scroll-contained {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tebyan-text-readable {
+    color: #182231;
+  }
+
+  @media (max-width: 768px) {
+    .tebyan-mobile-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .tebyan-mobile-wrap {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .tebyan-mobile-card {
+      border-radius: 20px;
+      padding: 1rem;
+    }
+
+    [class*="tracking-"] {
+      letter-spacing: 0 !important;
+    }
+
+    [class*="text-6xl"],
+    [class*="text-7xl"],
+    [class*="text-8xl"] {
+      font-size: clamp(2rem, 11vw, 3.25rem) !important;
+      line-height: 1.12 !important;
+    }
   }
 }
 

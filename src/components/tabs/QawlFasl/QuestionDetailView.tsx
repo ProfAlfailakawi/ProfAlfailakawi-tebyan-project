@@ -172,10 +172,10 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const category = CATEGORIES.find(c => c.id === question.categorySlug);
 
   return (
-    <div className="flex flex-col h-full bg-[#FAF9F6]/70 backdrop-blur-2xl min-h-[80vh] font-sans pb-24">
+    <div className="flex flex-col h-full bg-[#FAF9F6]/70 backdrop-blur-2xl min-h-[80vh] font-sans pb-24 overflow-x-hidden">
       {/* Header */}
       <div className="bg-[#FAF9F6]/95 border-b border-[#8FA9C7]/15 relative z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-        <div className="max-w-4xl mx-auto px-5 md:px-8 py-6 md:py-10 flex items-start gap-4 md:gap-6">
+        <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10 flex items-start gap-3 md:gap-6">
           <button 
             onClick={onBack}
             className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center justify-center bg-white/92 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] rounded-2xl w-11 h-11 md:w-12 md:h-12 shrink-0 transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
@@ -183,12 +183,12 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <ArrowRight className="w-5 h-5 md:w-6 h-6" />
           </button>
           <div className="space-y-4 md:space-y-6 flex-1 min-w-0">
-             <div className="flex flex-wrap gap-2 text-[10px] md:text-xs font-bold font-mono uppercase tracking-widest">
+             <div className="flex flex-wrap gap-2 text-[10px] md:text-xs font-bold font-mono uppercase">
                <span className="bg-[#EAECE6] text-[#64788D] px-3 py-1.5 rounded-full">{category?.title}</span>
                {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full">حساسية</span>}
                <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.join(', ')}</span>
              </div>
-             <div className="flex items-start justify-between gap-4">
+             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#182231] leading-snug lg:leading-tight flex-1 tracking-tight min-w-0">
                  {question.question || question.title}
                </h1>
@@ -283,7 +283,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-l from-[#D8C28A]/70 via-[#8E7AAE]/30 to-transparent" />
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-5 border-b border-[#8FA9C7]/14 pb-6 mb-6">
                 <div>
-                  <p className="text-[11px] font-black tracking-[0.28em] text-[#A68F58] uppercase">وثيقة قول فصل</p>
+                  <p className="text-[11px] font-black text-[#A68F58] uppercase">وثيقة قول فصل</p>
                   <h2 className="mt-2 text-2xl md:text-4xl font-black text-[#182231] leading-tight">{question.question || question.title}</h2>
                   <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-[#64788D]">رتّب القضية، اعرض المعطيات، واخرج بخلاصة متزنة دون تغيير منطق الإجابة الأصلية.</p>
                 </div>
@@ -304,7 +304,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   { label: 'المسار العملي', value: question.practicalSteps?.slice(0, 2).join(' — ') || 'ابدأ بسؤال هادئ ثم خطوة صغيرة قابلة للتطبيق.' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-2xl bg-white/72 border border-[#8FA9C7]/14 p-4">
-                    <p className="text-[10px] font-black tracking-widest text-[#8E7AAE] mb-2">{item.label}</p>
+                    <p className="text-[10px] font-black text-[#8E7AAE] mb-2">{item.label}</p>
                     <p className="text-sm md:text-base font-bold leading-relaxed text-[#465568]">{item.value}</p>
                   </div>
                 ))}

@@ -204,7 +204,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen overflow-x-hidden">
         <header className="flex flex-col gap-6 mb-10">
           <div className="flex items-center">
             <button onClick={() => navigate('/')} className="flex items-center justify-center p-3 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-colors font-bold cursor-pointer shadow-sm active:scale-95" title="العودة للرئيسية">
@@ -228,13 +228,13 @@ export default function AdminDashboard() {
               ))}
           </div>
 
-          <div className="flex justify-between items-center gap-4 flex-wrap">
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">لوحة تحكم الاستراتيجية والقيمة</h1>
-            <div className="flex gap-4">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+            <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-snug">لوحة تحكم الاستراتيجية والقيمة</h1>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
                 <button 
                 onClick={handleGenerateQuestions}
                 disabled={isGenerating}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold hover:bg-emerald-700 transition-all disabled:bg-emerald-300 cursor-pointer"
+                className="bg-emerald-600 text-white px-4 md:px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-emerald-700 transition-all disabled:bg-emerald-300 cursor-pointer text-sm md:text-base leading-tight"
                 title="يتم التوليد تلقائياً كل يوم، يمكن الضغط للمعاودة اليدوية"
                 >
                     {isGenerating ? <RefreshCw className="w-5 h-5 animate-spin" /> : <BookOpen className="w-5 h-5" />} 
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
                 <button 
                 onClick={runAIAnalysis}
                 disabled={isLoading}
-                className="bg-slate-900 text-white px-6 py-3 rounded-xl flex items-center gap-2 font-bold hover:bg-slate-800 transition-all disabled:bg-slate-500 cursor-pointer"
+                className="bg-slate-900 text-white px-4 md:px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-slate-800 transition-all disabled:bg-slate-500 cursor-pointer text-sm md:text-base leading-tight"
                 >
                     <Brain className="w-5 h-5" /> {isLoading ? 'جاري التحليل...' : 'تشغيل تحليل الذكاء الاصطناعي'}
                 </button>
@@ -272,33 +272,33 @@ export default function AdminDashboard() {
       
       {costStats && (
         <section className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 text-slate-800 flex items-center gap-2"><BarChart4 className="w-6 h-6 text-indigo-500" /> توفير تكلفة الذكاء الاصطناعي (AI Cost Engine)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-8 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col justify-between">
-                    <p className="text-slate-500 mb-2 font-bold text-sm tracking-widest uppercase">إجمالي الطلبات</p>
-                    <h3 className="text-4xl font-black text-slate-800 tracking-tight">{costStats.totalCalls}</h3>
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-slate-800 flex items-start md:items-center gap-2 leading-snug"><BarChart4 className="w-6 h-6 text-indigo-500 shrink-0" /> توفير تكلفة الذكاء الاصطناعي (AI Cost Engine)</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col justify-between min-w-0">
+                    <p className="text-slate-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">إجمالي الطلبات</p>
+                    <h3 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">{costStats.totalCalls}</h3>
                 </div>
-                <div className="bg-white p-8 rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-rose-100 flex flex-col justify-between">
-                    <p className="text-rose-400 mb-2 font-bold text-sm tracking-widest uppercase">مكالمات الذكاء الاصطناعي (تكلفة)</p>
-                    <h3 className="text-4xl font-black text-rose-600 tracking-tight">{costStats.aiCalls}</h3>
+                <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-rose-100 flex flex-col justify-between min-w-0">
+                    <p className="text-rose-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">مكالمات الذكاء الاصطناعي (تكلفة)</p>
+                    <h3 className="text-3xl md:text-4xl font-black text-rose-600 tracking-tight">{costStats.aiCalls}</h3>
                 </div>
-                <div className="bg-emerald-50 p-8 rounded-[32px] shadow-[0_4px_20px_rgb(16,185,129,0.05)] border border-emerald-100 flex flex-col justify-between">
-                    <p className="text-emerald-600 mb-2 font-bold text-sm tracking-widest uppercase truncate">الطلبات الموفرة (ذاكرة)</p>
-                    <h3 className="text-4xl font-black text-emerald-700 tracking-tight">{costStats.cacheHits + costStats.kbHits}</h3>
+                <div className="bg-emerald-50 p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(16,185,129,0.05)] border border-emerald-100 flex flex-col justify-between min-w-0">
+                    <p className="text-emerald-700 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">الطلبات الموفرة (ذاكرة)</p>
+                    <h3 className="text-3xl md:text-4xl font-black text-emerald-700 tracking-tight">{costStats.cacheHits + costStats.kbHits}</h3>
                 </div>
-                <div className="bg-slate-900 p-8 rounded-[32px] shadow-xl border border-slate-800 text-white flex flex-col justify-between relative overflow-hidden">
+                <div className="bg-slate-900 p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-xl border border-slate-800 text-white flex flex-col justify-between relative overflow-hidden min-w-0">
                     <div className="absolute inset-0 bg-indigo-500/10 blur-xl rounded-full scale-150 rotate-45 transform" />
-                    <p className="text-slate-400 mb-2 font-bold text-sm tracking-widest uppercase relative z-10">نسبة التوفير الكلية</p>
-                    <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight relative z-10">{costStats.savedPercentage}٪</h3>
+                    <p className="text-slate-200 mb-2 font-bold text-xs md:text-sm uppercase relative z-10 leading-snug">نسبة التوفير الكلية</p>
+                    <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight relative z-10">{costStats.savedPercentage}٪</h3>
                 </div>
             </div>
             <p className="mt-4 text-sm text-slate-500 font-medium">* يتم استخدام خوارزمية التطابق الدلالي وقاعدة المعرفة لمنع استدعاء API بشكل متكرر على نفس الأسئلة.</p>
             
             {topQueries.length > 0 && (
-                <div className="mt-8 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                <div className="mt-8 bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                     <h3 className="text-xl font-bold mb-4 text-slate-800">أكثر الأسئلة والاستعلامات تكراراً (Top 20)</h3>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-right text-sm">
+                    <div className="tebyan-scroll-contained">
+                        <table className="w-full min-w-[620px] text-right text-sm">
                             <thead>
                                 <tr className="border-b border-slate-100 text-slate-500">
                                     <th className="py-3 px-4 font-medium">الاستعلام (Query)</th>
@@ -337,7 +337,7 @@ export default function AdminDashboard() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {suggestions?.map((s, i) => (
-            <div key={i} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-4">
+                    <div key={i} className="bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col gap-4 min-w-0">
               <div className={`${s?.priority === 'high' ? 'bg-rose-500' : s?.priority === 'medium' ? 'bg-amber-500' : 'bg-emerald-500'} p-4 rounded-2xl text-white w-fit`}>
                 <Lightbulb className="w-8 h-8" />
               </div>
@@ -356,13 +356,13 @@ export default function AdminDashboard() {
             <h2 className="text-2xl font-bold mb-8">مؤشرات القيمة والنضج (Valuation)</h2>
             <div className="space-y-6">
                 {valuationMetrics.map((sm, i) => (
-                    <div key={i} className="flex justify-between items-center border-b pb-6 last:border-0 last:pb-0">
-                        <div className="flex flex-wrap md:flex-nowrap items-center gap-4">
+                    <div key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b pb-6 last:border-0 last:pb-0">
+                        <div className="flex flex-wrap md:flex-nowrap items-center gap-4 min-w-0">
                             <sm.icon className={`w-10 h-10 ${sm.color}`} />
-                            <span className="font-bold text-lg">{sm.title}</span>
+                            <span className="font-bold text-base md:text-lg leading-snug">{sm.title}</span>
                         </div>
-                        <div className="text-right">
-                            <p className="text-2xl font-black">{sm.value}</p>
+                        <div className="text-right shrink-0">
+                            <p className="text-xl md:text-2xl font-black">{sm.value}</p>
                             <p className="text-sm text-slate-500 font-bold">{sm.trend}</p>
                         </div>
                     </div>
@@ -389,6 +389,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
 
 

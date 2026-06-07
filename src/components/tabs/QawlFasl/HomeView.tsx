@@ -216,11 +216,11 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] font-sans pb-20 md:pb-24">
+    <div className="min-h-screen bg-[#FDFCFB] font-sans pb-20 md:pb-24 overflow-x-hidden">
       {/* Refined Navigation/Header Area space */}
       <div className="pt-4 md:pt-6 pb-4 px-4 md:px-8 max-w-6xl mx-auto flex items-center justify-between">
         <div className="flex flex-col">
-          <span className="text-zinc-500 font-bold text-xs tracking-widest uppercase mb-1">القول الفصل</span>
+          <span className="text-zinc-600 font-bold text-xs uppercase mb-1">القول الفصل</span>
           <h1 className="text-xl md:text-2xl font-black text-black tracking-tight">البوصلة التحليلية</h1>
         </div>
       </div>
@@ -229,7 +229,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
       <header className="pt-2 md:pt-4 pb-6 md:pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-zinc-200/60 pb-6 md:pb-8 text-right">
           <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-zinc-950 leading-[1.05] tracking-tighter">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-zinc-950 leading-[1.12] md:leading-[1.05] tracking-tighter">
               نصحبك في <br className="hidden md:block"/>
               <span className="text-zinc-500">رحلة البناء</span>
             </h1>
@@ -246,7 +246,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         <section id="search-section" className="relative scroll-mt-24">
           <div className="max-w-5xl mx-auto">
             <form onSubmit={handleSearch} className="group relative">
-               <div className="relative flex items-center shadow-xl rounded-[32px] bg-white border-2 border-zinc-100 focus-within:border-black transition-all p-2 md:p-3">
+               <div className="relative flex flex-col sm:flex-row sm:items-center gap-2 shadow-xl rounded-[24px] md:rounded-[32px] bg-white border-2 border-zinc-100 focus-within:border-black transition-all p-2 md:p-3">
                  <input 
                   ref={inputRef}
                   type="text"
@@ -270,12 +270,12 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                     }
                   }}
                   placeholder="عن ماذا تود استشارتنا اليوم؟"
-                  className="w-full bg-transparent py-4 px-6 md:py-6 md:px-8 text-xl md:text-2xl font-bold text-black placeholder:text-zinc-400 outline-none pr-14 md:pr-24 relative z-10"
+                  className="w-full bg-transparent py-4 px-12 md:py-6 md:px-8 text-base sm:text-xl md:text-2xl font-bold text-black placeholder:text-zinc-500 outline-none sm:pr-14 md:pr-24 relative z-10"
                  />
                  
                  {smartSuggestion && smartSuggestion.startsWith(searchQuery) && (
                    <div 
-                     className="pointer-events-none absolute inset-0 flex items-center pr-14 md:pr-24 text-xl md:text-2xl font-bold z-0"
+                     className="pointer-events-none absolute inset-0 hidden sm:flex items-center pr-14 md:pr-24 text-xl md:text-2xl font-bold z-0"
                      dir="rtl"
                    >
                      <span className="invisible whitespace-pre">{searchQuery}</span>
@@ -283,7 +283,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                    </div>
                  )}
 
-                 <Search className="absolute right-6 top-1/2 -translate-y-1/2 text-zinc-400 w-7 h-7 md:w-8 md:h-8 group-focus-within:text-black transition-colors pointer-events-none z-10" />
+                 <Search className="absolute right-5 top-7 sm:top-1/2 sm:-translate-y-1/2 text-zinc-500 w-5 h-5 md:w-8 md:h-8 group-focus-within:text-black transition-colors pointer-events-none z-10" />
                  
                  {searchQuery && (
                    <button
@@ -294,7 +294,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                        setIsGenerating(false);
                        setError(null);
                      }}
-                     className="absolute right-14 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-rose-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors z-10"
+                     className="absolute right-11 top-5 sm:top-1/2 sm:-translate-y-1/2 text-zinc-500 hover:text-rose-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors z-10"
                    >
                      <title>إلغاء البحث</title>
                      <span className="sr-only">إلغاء البحث</span>
@@ -305,7 +305,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                  <button 
                   type="submit" 
                   disabled={isSearching || isGenerating} 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 bg-black hover:bg-zinc-800 text-white px-6 md:px-10 py-3 md:py-4 rounded-[20px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50 z-10"
+                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-black hover:bg-zinc-800 text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50 z-10"
                  >
                    {isSearching ? 'جاري البحث...' : 'اكتشف'}
                  </button>
@@ -354,7 +354,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
             {trendingSearches.length > 0 && !isGenerating && (
               <div className="mt-6 md:mt-8 flex flex-wrap gap-2 md:gap-3 justify-center items-center">
-                <span className="text-zinc-400 text-xs md:text-sm font-bold pl-2 py-2">رائج الآن:</span>
+                <span className="text-zinc-600 text-xs md:text-sm font-bold pl-2 py-2">رائج الآن:</span>
                 {trendingSearches.map((term, i) => (
                   <button 
                     key={i} 
