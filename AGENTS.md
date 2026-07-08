@@ -62,13 +62,18 @@
     .env.*
     *.backup*
 
-الوضع الحالي الصحيح:
-- Firebase project: tebyan-80d93
-- Cloud Run service: tebyan-api
-- Cloud Run region: us-central1
+الوضع الحالي الصحيح (محدّث 2026-07-08 ليطابق الواقع):
+- Firebase project: tebyan-clean-2026  (سابقاً tebyan-80d93 — تم الانتقال)
+- Hosting site: tebyan-clean-2026
+- باك-إند الإنتاج: Cloud Function باسم "api" (region us-central1) — هو المربوط في firebase.json عبر /api/**
+- باك-إند التطوير/البديل: server.ts (يُشغَّل عبر `npm run dev`، ويُبنى إلى dist/server.js وهو نسخة Cloud Run tebyan-api)
+- قاعدة مهمة: يجب إبقاء functions/index.js و server.ts **متطابقين سلوكياً** (كاش + rate-limit + retry) لأن كليهما يخدم /api في سياقين مختلفين
 - AI model: gemini-2.5-flash
-- Secret name: GEMINI_API_KEY
-- API rewrite: /api/** → tebyan-api
+- Secret name: GEMINI_API_KEY (في Secret Manager / بيئة الدالة)
+- App Check: جاهز للتفعيل — ضع VITE_RECAPTCHA_SITE_KEY في الواجهة و APP_CHECK_ENFORCE=true في الدالة
+- النشر: `npm run deploy` (يبني وينشر hosting + functions:api + firestore:rules)
 - لا توجد مفاتيح مكشوفة داخل ملفات المشروع
 
-لا تقم بإعادة توليد أو استبدال هذه الإعدادات تلقائياً. إذا احتجت تعديل الذكاء الاصطناعي، حافظ على gemini-2.5-flash و Cloud Run tebyan-api و Secret Manager كما هي.
+ملاحظة على البندين 3 و4 أعلاه: الإنتاج فعلياً يوجّه /api/** إلى Cloud Function "api" (وليس Cloud Run مباشرة). عند أي تعديل، حافظ على هذا الربط ولا تكسره، وأبقِ server.ts متطابقاً كنسخة احتياطية.
+
+لا تقم بإعادة توليد أو استبدال هذه الإعدادات تلقائياً. إذا احتجت تعديل الذكاء الاصطناعي، حافظ على gemini-2.5-flash و GEMINI_API_KEY في Secret Manager كما هي.

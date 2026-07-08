@@ -40,6 +40,28 @@ function rateLimited(req) {
     return bucket.count > RATE_MAX;
 }
 
+// Optional Firebase App Check enforcement. Inert by default; enable by setting
+// APP_CHECK_ENFORCE=true in the function env after configuring App Check +
+// reCAPTCHA. Then only verified app instances can reach the AI endpoints.
+let _adminAppCheck = null;
+async function appCheckOk(req) {
+    if (process.env.APP_CHECK_ENFORCE !== "true") return true;
+    const token = req.header("X-Firebase-AppCheck");
+    if (!token) return false;
+    try {
+        if (!_adminAppCheck) {
+            const admin = require("firebase-admin");
+            if (!admin.apps.length) admin.initializeApp();
+            _adminAppCheck = admin.appCheck();
+        }
+        await _adminAppCheck.verifyToken(token);
+        return true;
+    } catch (err) {
+        console.warn("App Check verification failed:", err && err.message ? err.message : err);
+        return false;
+    }
+}
+
 // Initialize Gemini
 const getGenAI = () => {
     let apiKey = (process.env.GEMINI_API_KEY || "").trim();
@@ -309,6 +331,9 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
     if (rateLimited(req)) {
         return res.status(429).json({ error: "طلبات كثيرة على المحرك الصوتي، جرّب بعد قليل." });
     }
+    if (!(await appCheckOk(req))) {
+        return res.status(401).json({ error: "App Check verification required." });
+    }
     try {
         const audio = await generateTtsAudio(req.body || {});
         return res.json(audio);
@@ -342,6 +367,9 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
 app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) => {
     if (rateLimited(req)) {
         return res.status(429).json({ error: "طلبات كثيرة، يرجى المحاولة بعد قليل." });
+    }
+    if (!(await appCheckOk(req))) {
+        return res.status(401).json({ error: "App Check verification required." });
     }
     const { model: modelName, contents } = req.body;
     
