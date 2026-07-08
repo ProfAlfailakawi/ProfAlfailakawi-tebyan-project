@@ -2,10 +2,19 @@ const functions = require("firebase-functions");
 const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const crypto = require("crypto");
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
+
+// In-memory AI response cache (per function instance).
+// Mirrors the Cloud Run server so repeated prompts (e.g. identical search
+// refinements) return instantly instead of re-hitting Gemini — faster + cheaper.
+const smartCache = new Map();
+const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
+const CACHE_MAX_ENTRIES = 500;
+const hashString = (str) => crypto.createHash("sha256").update(str).digest("hex");
 
 // Initialize Gemini
 const getGenAI = () => {
@@ -310,6 +319,13 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
         return res.status(400).json({ error: "Missing contents" });
     }
 
+    // Serve identical prompts from cache (big win for repeated searches).
+    const cacheKey = hashString(JSON.stringify({ modelName, contents, config: req.body.config }));
+    const cachedEntry = smartCache.get(cacheKey);
+    if (cachedEntry && Date.now() - cachedEntry.timestamp < CACHE_TTL) {
+        return res.json({ ...cachedEntry.response, _cached: true });
+    }
+
     const genAI = getGenAI();
     if (!genAI) {
         if (process.env.NODE_ENV !== "production") {
@@ -357,8 +373,14 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
 
         const result = await model.generateContent(requestInput);
         const responseText = result.response.text();
-        
-        res.json({ text: responseText });
+
+        const aiResponse = { text: responseText };
+        if (smartCache.size >= CACHE_MAX_ENTRIES) {
+            smartCache.delete(smartCache.keys().next().value);
+        }
+        smartCache.set(cacheKey, { timestamp: Date.now(), response: aiResponse });
+
+        res.json(aiResponse);
     } catch (error) {
         console.error("AI Error:", error);
         const errStr = (error.message || "").toLowerCase();
