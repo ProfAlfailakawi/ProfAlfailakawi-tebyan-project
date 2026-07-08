@@ -946,6 +946,8 @@ const MoodBackgroundEffect = ({ mood }: { mood: string }) => {
 };
 
 import { useSmartSearch } from "../hooks/useSmartSearch";
+import { useInstantSearch } from "../hooks/useInstantSearch";
+import { InstantResults } from "./InstantResults";
 import { useGamification } from "../hooks/useGamification";
 
 export const SmartGateway: React.FC<
@@ -981,6 +983,7 @@ export const SmartGateway: React.FC<
 
   const { smartSuggestion, isSuggestionLoading, setSmartSuggestion } =
     useSmartSearch(searchValue);
+  const instantSearch = useInstantSearch(searchValue);
   const suggestion = smartSuggestion;
   const setSuggestion = setSmartSuggestion;
 
@@ -3767,6 +3770,19 @@ export const SmartGateway: React.FC<
                   <Home className="w-5 h-5 md:w-6 md:h-6" />
                 </button>
               </div>
+
+              {!hasSearched &&
+                !isThinking &&
+                searchValue.trim().length >= 2 &&
+                instantSearch.results.length > 0 && (
+                  <InstantResults
+                    results={instantSearch.results}
+                    query={searchValue}
+                    language={language}
+                    corpusSize={instantSearch.corpusSize}
+                    onPick={(q) => handlePathSelect("qawlfasl", q)}
+                  />
+                )}
 
               {!hasSearched &&
                 !isThinking &&

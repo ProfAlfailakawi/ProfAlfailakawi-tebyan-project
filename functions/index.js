@@ -16,6 +16,30 @@ const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
 const CACHE_MAX_ENTRIES = 500;
 const hashString = (str) => crypto.createHash("sha256").update(str).digest("hex");
 
+// Lightweight per-instance rate limiter (fixed window) to curb abuse and
+// runaway Gemini cost from automated floods. Generous for real users.
+const rateBuckets = new Map();
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_MAX = 60; // requests per IP per minute per instance
+function rateLimited(req) {
+    const ip = String(req.headers["x-forwarded-for"] || req.ip || "unknown")
+        .split(",")[0]
+        .trim();
+    const now = Date.now();
+    const bucket = rateBuckets.get(ip);
+    if (!bucket || now - bucket.start >= RATE_WINDOW_MS) {
+        rateBuckets.set(ip, { start: now, count: 1 });
+        if (rateBuckets.size > 5000) {
+            for (const [k, v] of rateBuckets) {
+                if (now - v.start >= RATE_WINDOW_MS) rateBuckets.delete(k);
+            }
+        }
+        return false;
+    }
+    bucket.count += 1;
+    return bucket.count > RATE_MAX;
+}
+
 // Initialize Gemini
 const getGenAI = () => {
     let apiKey = (process.env.GEMINI_API_KEY || "").trim();
@@ -282,6 +306,9 @@ const generateWithRetry = async (operation, label = "Gemini request") => {
 
 // AI Audio / Podcast Speech
 app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
+    if (rateLimited(req)) {
+        return res.status(429).json({ error: "طلبات كثيرة على المحرك الصوتي، جرّب بعد قليل." });
+    }
     try {
         const audio = await generateTtsAudio(req.body || {});
         return res.json(audio);
@@ -313,6 +340,9 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
 
 // AI Generation
 app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) => {
+    if (rateLimited(req)) {
+        return res.status(429).json({ error: "طلبات كثيرة، يرجى المحاولة بعد قليل." });
+    }
     const { model: modelName, contents } = req.body;
     
     if (!contents) {

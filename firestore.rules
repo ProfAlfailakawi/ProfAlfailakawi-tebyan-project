@@ -25,6 +25,15 @@ service cloud.firestore {
     
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
 
+    // Guards public log/analytics writes: shape-bounded so anonymous clients
+    // can record telemetry but cannot dump oversized or arbitrary documents.
+    function isBoundedLog(data, maxFields) {
+      return data.size() <= maxFields
+        && ('timestamp' in data)
+        && (!('query' in data) || data.query == null || (data.query is string && data.query.size() <= 1200))
+        && (!('promptSnippet' in data) || (data.promptSnippet is string && data.promptSnippet.size() <= 700));
+    }
+
     function isValidRipple(data) {
       return data.text is string && data.text.size() <= 2000 &&
              data.type in ['seed', 'branch', 'implementation'] &&
@@ -77,12 +86,12 @@ service cloud.firestore {
 
     match /search_logs/{document=**} {
       allow read: if isAdmin();
-      allow create: if true;
+      allow create: if isBoundedLog(request.resource.data, 8);
     }
-    
+
     match /ai_logs/{document=**} {
       allow read: if isAdmin();
-      allow create: if true;
+      allow create: if isBoundedLog(request.resource.data, 16);
     }
 
     match /users/{userId} {
@@ -126,7 +135,7 @@ service cloud.firestore {
     
     match /analytics/{document=**} {
         allow read: if isAdmin();
-        allow create: if true;
+        allow create: if isBoundedLog(request.resource.data, 16);
     }
   }
 }
