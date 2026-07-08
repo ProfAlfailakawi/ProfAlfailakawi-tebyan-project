@@ -77,37 +77,64 @@ export const InstantResults: React.FC<InstantResultsProps> = ({
 
       {/* Results */}
       <div className="divide-y divide-[#8FA9C7]/10">
-        {results.map((r) => {
+        {results.map((r, idx) => {
           const category = r.item.category || r.item.mainCategory || '';
           const summary = (r.item.quickSummary || '').trim();
+          const quick = r.item.quickAnswer || {};
+          const showPreview = idx === 0 && typeof quick.sayThis === 'string' && quick.sayThis.trim().length > 0;
           return (
-            <button
-              key={r.item.id}
-              type="button"
-              onClick={() => onPick(r.question)}
-              className="group flex w-full items-start gap-3 px-4 py-3 text-right transition-colors hover:bg-[#F4F0FA]/60 focus:bg-[#F4F0FA]/70 focus:outline-none"
-            >
-              <ChevronLeft
-                className={`mt-1 h-4 w-4 shrink-0 text-[#8E7AAE]/40 transition-transform group-hover:-translate-x-0.5 group-hover:text-[#8E7AAE] ${
-                  isAr ? '' : 'rotate-180'
-                }`}
-              />
-              <span className="min-w-0 flex-1">
-                <span className="block text-[13px] md:text-sm font-bold leading-relaxed text-[#182231]">
-                  {highlight(r.question, query)}
+            <React.Fragment key={r.item.id}>
+              <button
+                type="button"
+                onClick={() => onPick(r.question)}
+                className="group flex w-full items-start gap-3 px-4 py-3 text-right transition-colors hover:bg-[#F4F0FA]/60 focus:bg-[#F4F0FA]/70 focus:outline-none"
+              >
+                <ChevronLeft
+                  className={`mt-1 h-4 w-4 shrink-0 text-[#8E7AAE]/40 transition-transform group-hover:-translate-x-0.5 group-hover:text-[#8E7AAE] ${
+                    isAr ? '' : 'rotate-180'
+                  }`}
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[13px] md:text-sm font-bold leading-relaxed text-[#182231]">
+                    {highlight(r.question, query)}
+                  </span>
+                  {summary && (
+                    <span className="mt-0.5 block truncate text-[11px] font-medium text-[#7C8796]">
+                      {summary}
+                    </span>
+                  )}
                 </span>
-                {summary && (
-                  <span className="mt-0.5 block truncate text-[11px] font-medium text-[#7C8796]">
-                    {summary}
+                {category && (
+                  <span className="mt-0.5 shrink-0 rounded-full bg-[#8FA9C7]/12 px-2 py-0.5 text-[9px] font-black text-[#64788D]">
+                    {category}
                   </span>
                 )}
-              </span>
-              {category && (
-                <span className="mt-0.5 shrink-0 rounded-full bg-[#8FA9C7]/12 px-2 py-0.5 text-[9px] font-black text-[#64788D]">
-                  {category}
-                </span>
+              </button>
+
+              {/* Instant vetted answer — appears for the top match with zero AI latency */}
+              {showPreview && (
+                <div className="px-4 pb-3 -mt-1">
+                  <div className="rounded-xl border border-[#8E7AAE]/15 bg-[#F4F0FA]/55 p-3">
+                    <div className="mb-1.5 flex items-center gap-1.5">
+                      <Zap className="h-3 w-3 text-[#8E7AAE]" fill="currentColor" />
+                      <span className="text-[10px] font-black text-[#6E5F8E]">
+                        {isAr ? 'إجابة فورية معتمدة · بلا انتظار' : 'Vetted instant answer · no wait'}
+                      </span>
+                    </div>
+                    <p className="text-[12.5px] font-bold leading-relaxed text-[#2C3A4B]">
+                      <span className="text-[#3F9E6A]">{isAr ? '✓ قل: ' : '✓ Say: '}</span>
+                      {quick.sayThis}
+                    </p>
+                    {typeof quick.doThisNow === 'string' && quick.doThisNow.trim() && (
+                      <p className="mt-1 text-[11.5px] font-medium leading-relaxed text-[#64788D]">
+                        <span className="font-black text-[#8E7AAE]">{isAr ? 'افعل الآن: ' : 'Do now: '}</span>
+                        {quick.doThisNow}
+                      </p>
+                    )}
+                  </div>
+                </div>
               )}
-            </button>
+            </React.Fragment>
           );
         })}
       </div>
