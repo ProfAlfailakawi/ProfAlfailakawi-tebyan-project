@@ -2,10 +2,43 @@ const functions = require("firebase-functions");
 const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const crypto = require("crypto");
 
 const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
+
+// In-memory AI response cache (per function instance).
+// Mirrors the Cloud Run server so repeated prompts (e.g. identical search
+// refinements) return instantly instead of re-hitting Gemini — faster + cheaper.
+const smartCache = new Map();
+const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
+const CACHE_MAX_ENTRIES = 500;
+const hashString = (str) => crypto.createHash("sha256").update(str).digest("hex");
+
+// Lightweight per-instance rate limiter (fixed window) to curb abuse and
+// runaway Gemini cost from automated floods. Generous for real users.
+const rateBuckets = new Map();
+const RATE_WINDOW_MS = 60 * 1000;
+const RATE_MAX = 60; // requests per IP per minute per instance
+function rateLimited(req) {
+    const ip = String(req.headers["x-forwarded-for"] || req.ip || "unknown")
+        .split(",")[0]
+        .trim();
+    const now = Date.now();
+    const bucket = rateBuckets.get(ip);
+    if (!bucket || now - bucket.start >= RATE_WINDOW_MS) {
+        rateBuckets.set(ip, { start: now, count: 1 });
+        if (rateBuckets.size > 5000) {
+            for (const [k, v] of rateBuckets) {
+                if (now - v.start >= RATE_WINDOW_MS) rateBuckets.delete(k);
+            }
+        }
+        return false;
+    }
+    bucket.count += 1;
+    return bucket.count > RATE_MAX;
+}
 
 // Initialize Gemini
 const getGenAI = () => {
@@ -273,6 +306,9 @@ const generateWithRetry = async (operation, label = "Gemini request") => {
 
 // AI Audio / Podcast Speech
 app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
+    if (rateLimited(req)) {
+        return res.status(429).json({ error: "طلبات كثيرة على المحرك الصوتي، جرّب بعد قليل." });
+    }
     try {
         const audio = await generateTtsAudio(req.body || {});
         return res.json(audio);
@@ -304,10 +340,20 @@ app.post(["/audio", "/api/ai/audio", "/api/audio"], async (req, res) => {
 
 // AI Generation
 app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) => {
+    if (rateLimited(req)) {
+        return res.status(429).json({ error: "طلبات كثيرة، يرجى المحاولة بعد قليل." });
+    }
     const { model: modelName, contents } = req.body;
     
     if (!contents) {
         return res.status(400).json({ error: "Missing contents" });
+    }
+
+    // Serve identical prompts from cache (big win for repeated searches).
+    const cacheKey = hashString(JSON.stringify({ modelName, contents, config: req.body.config }));
+    const cachedEntry = smartCache.get(cacheKey);
+    if (cachedEntry && Date.now() - cachedEntry.timestamp < CACHE_TTL) {
+        return res.json({ ...cachedEntry.response, _cached: true });
     }
 
     const genAI = getGenAI();
@@ -357,8 +403,14 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
 
         const result = await model.generateContent(requestInput);
         const responseText = result.response.text();
-        
-        res.json({ text: responseText });
+
+        const aiResponse = { text: responseText };
+        if (smartCache.size >= CACHE_MAX_ENTRIES) {
+            smartCache.delete(smartCache.keys().next().value);
+        }
+        smartCache.set(cacheKey, { timestamp: Date.now(), response: aiResponse });
+
+        res.json(aiResponse);
     } catch (error) {
         console.error("AI Error:", error);
         const errStr = (error.message || "").toLowerCase();
