@@ -24,7 +24,6 @@ import {
   ScrollText,
   Compass,
   Moon,
-  Home,
   Eye,
   CheckCircle2,
   LayoutGrid,
@@ -47,6 +46,8 @@ import { KnowledgeSignature } from "./common/KnowledgeSignature";
 import { TebyanGlyph } from "./common/TebyanGlyph";
 import TextareaAutosize from "react-textarea-autosize";
 import { TebyanTooltip } from "./TebyanTooltip";
+import { DirectAnswerCard } from "./gateway/DirectAnswerCard";
+import { buildDirectGuidance, type ResponseMode } from "./gateway/directGuidance";
 
 const DAILY_CHALLENGES = [
   {
@@ -1191,6 +1192,19 @@ export const SmartGateway: React.FC<
   >("calm");
   const [showLivingWorldPanel, setShowLivingWorldPanel] = useState(false);
   const [showDailyDock, setShowDailyDock] = useState(false);
+  const [responseMode, setResponseMode] = useState<ResponseMode>("quick");
+  const [inputSettled, setInputSettled] = useState(false);
+  const [showQuestionHelper, setShowQuestionHelper] = useState(false);
+
+  useEffect(() => {
+    setInputSettled(false);
+    if (searchValue.trim().length < 4) {
+      setShowQuestionHelper(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setInputSettled(true), 700);
+    return () => window.clearTimeout(timer);
+  }, [searchValue]);
 
   useEffect(() => {
     const revealGate = () => {
@@ -1217,6 +1231,7 @@ export const SmartGateway: React.FC<
     if (hasSearched) setHasSearched(false);
     setDepthLevel(0);
     setShowDirectTools(false);
+    setShowQuestionHelper(false);
   };
 
   const moodOptions = useMemo(
@@ -1853,6 +1868,8 @@ export const SmartGateway: React.FC<
     sessionStorage.setItem("tebyan_current_has_searched", "false");
     setSmartSuggestion("");
     setDepthLevel(0);
+    setResponseMode("quick");
+    setShowQuestionHelper(false);
   };
 
   useEffect(() => {
@@ -1904,7 +1921,7 @@ export const SmartGateway: React.FC<
           window.innerWidth < 768
             ? document.getElementById("mobile-results")
             : document.getElementById("desktop-results");
-        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+        el?.scrollIntoView({ behavior: "auto", block: "nearest" });
       }, 100);
     }
   }, [hasSearched, isThinking]);
@@ -2889,6 +2906,25 @@ export const SmartGateway: React.FC<
     [query, searchValue, suggestions],
   );
 
+  const directGuidance = useMemo(
+    () =>
+      buildDirectGuidance({
+        query: query || searchValue,
+        language,
+        journeyId: journeyProfile.id,
+        mode: responseMode,
+        specificInsight: smartResponse,
+      }),
+    [
+      query,
+      searchValue,
+      language,
+      journeyProfile.id,
+      responseMode,
+      smartResponse,
+    ],
+  );
+
   const journeyDoors = useMemo(() => {
     return decorateJourneyDoors(suggestions, tabs, journeyProfile.id, language);
   }, [suggestions, tabs, journeyProfile.id, language]);
@@ -3300,29 +3336,52 @@ export const SmartGateway: React.FC<
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-5 md:mb-7"
         >
-          <header className="text-center">
+          <header className="text-center" dir={language === "ar" ? "rtl" : "ltr"}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-[#7C8796] font-bold text-xs md:text-sm tracking-widest mb-3 md:mb-4 animate-fade-in"
+              className="mb-3 text-sm font-black text-[#8E7AAE] md:text-base"
             >
               {language === "ar"
                 ? whiteDialectPhrases.helloUser(userName, userGender)
-                : proactiveInsights.enSub}
+                : `Welcome${userName ? `, ${userName}` : ""}`}
             </motion.div>
-            <h1 className="text-4xl md:text-6xl lg:text-[6.2rem] font-black text-[#182231] tracking-tighter leading-[0.88] mb-5 md:mb-8 animate-fade-in">
+            <h1 className="mx-auto max-w-4xl text-3xl font-black leading-[1.25] tracking-tight text-[#182231] md:text-5xl lg:text-6xl">
               {language === "ar"
-                ? proactiveInsights.arG.split(" ")[0]
-                : proactiveInsights.enG.split(" ")[0]}
-              <br />
-              <span className="text-[#8E7AAE]/35 italic">
-                {language === "ar"
-                  ? proactiveInsights.arG.split(" ").slice(1).join(" ")
-                  : proactiveInsights.enG.split(" ").slice(1).join(" ")}
-              </span>
+                ? "وش تبي تفهم أو تحسم اليوم؟"
+                : "What do you want to understand or decide today?"}
             </h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base font-bold leading-8 text-[#64788D] md:text-lg">
+              {language === "ar"
+                ? "اكتب سؤالك بطريقتك، حتى لو كان غير مرتب. تبيان يعطيك الخلاصة أولاً ثم يفتح لك التعمق عند الحاجة."
+                : "Write the question in your own words, even if it is not organized. Tebyan gives the answer first, then opens deeper paths only when needed."}
+            </p>
           </header>
         </motion.div>
+
+        {!hasSearched && !isThinking && (
+          <div className="mx-auto mb-4 flex w-full max-w-xl items-center justify-center gap-1 rounded-[20px] border border-[#8FA9C7]/14 bg-white/66 p-1.5 shadow-sm backdrop-blur-xl" dir={language === "ar" ? "rtl" : "ltr"}>
+            {([
+              { id: "quick", ar: "جواب سريع", en: "Quick answer" },
+              { id: "simple", ar: "شرح مبسط", en: "Simple explanation" },
+              { id: "deep", ar: "تحليل عميق", en: "Deep analysis" },
+            ] as Array<{ id: ResponseMode; ar: string; en: string }>).map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => setResponseMode(option.id)}
+                className={cn(
+                  "min-h-11 flex-1 rounded-[15px] px-2 text-xs font-black transition-all sm:text-sm",
+                  responseMode === option.id
+                    ? "bg-[#182231] text-white shadow-sm"
+                    : "text-[#64788D] hover:bg-white hover:text-[#182231]",
+                )}
+              >
+                {language === "ar" ? option.ar : option.en}
+              </button>
+            ))}
+          </div>
+        )}
 
         {false && !hasSearched && !isThinking && isHome && (
           <motion.div
@@ -3538,13 +3597,13 @@ export const SmartGateway: React.FC<
           )}
         </AnimatePresence>
 
-        <div className="relative z-20 flex flex-col items-center justify-center min-h-[40vh]">
+        <div className="relative z-20 flex flex-col items-center justify-center min-h-0">
           <MoodBackgroundEffect mood={mood || "default"} />
           <form
             onSubmit={handleSubmit}
             className="w-full max-w-4xl flex flex-col items-center"
           >
-            <div className="w-full relative flex flex-col items-center mt-12 mb-12 group">
+            <div className="w-full relative flex flex-col items-center mt-4 mb-6 group">
               {isThinking && (
                 <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
               )}
@@ -3671,8 +3730,8 @@ export const SmartGateway: React.FC<
                     onChange={(e) => handleSearchInputChange(e.target.value)}
                     placeholder={
                       language === "ar"
-                        ? "اكتب الموضوع اللي تبي نفهمه معاك..."
-                        : "Type the topic you want us to understand with you..."
+                        ? "اكتب سؤالك هنا… حتى لو كان غير مرتب"
+                        : "Write your question here, even if it is not organized"
                     }
                     onKeyDown={(e) => {
                       if (
@@ -3707,7 +3766,7 @@ export const SmartGateway: React.FC<
                     onBlur={() => setIsFocused(false)}
                     className="w-full bg-transparent border-none outline-none px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
                     dir={language === "ar" ? "rtl" : "ltr"}
-                    autoFocus
+                    aria-label={language === "ar" ? "اكتب سؤالك" : "Write your question"}
                   />
 
                   {smartSuggestion &&
@@ -3758,34 +3817,72 @@ export const SmartGateway: React.FC<
                     />
                   </span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    clearSearch();
-                    handleTabChange("discover", "");
-                  }}
-                  title={language === "ar" ? "الصفحة الرئيسية" : "Home"}
-                  className="bg-white/90 text-[#465568] border border-[#8FA9C7]/25 w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
-                >
-                  <Home className="w-5 h-5 md:w-6 md:h-6" />
-                </button>
+                {searchValue.trim().length > 0 && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    title={language === "ar" ? "مسح السؤال" : "Clear question"}
+                    aria-label={language === "ar" ? "مسح السؤال" : "Clear question"}
+                    className="bg-white/90 text-[#64788D] border border-[#8FA9C7]/20 w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
+                  >
+                    <X className="w-5 h-5 md:w-6 md:h-6" />
+                  </button>
+                )}
               </div>
 
               {!hasSearched &&
                 !isThinking &&
-                searchValue.trim().length >= 2 &&
+                inputSettled &&
                 instantSearch.results.length > 0 && (
-                  <InstantResults
-                    results={instantSearch.results}
-                    query={searchValue}
-                    language={language}
-                    corpusSize={instantSearch.corpusSize}
-                    onPick={(q) => handlePathSelect("qawlfasl", q)}
-                  />
+                  <details
+                    className="mt-4 w-full max-w-3xl mx-auto rounded-2xl border border-[#8FA9C7]/14 bg-white/70 px-4 py-3 text-right shadow-sm"
+                    dir={language === "ar" ? "rtl" : "ltr"}
+                  >
+                    <summary className="cursor-pointer list-none text-xs md:text-sm font-black text-[#64788D] flex items-center justify-between gap-3">
+                      <span>
+                        {language === "ar"
+                          ? "وجدت نتائج جاهزة قريبة من سؤالك"
+                          : "I found ready results close to your question"}
+                      </span>
+                      <Search className="h-4 w-4 text-[#8E7AAE]" />
+                    </summary>
+                    <div className="mt-3 border-t border-[#8FA9C7]/10 pt-3">
+                      <InstantResults
+                        results={instantSearch.results}
+                        query={searchValue}
+                        language={language}
+                        corpusSize={instantSearch.corpusSize}
+                        onPick={(q) => handlePathSelect("qawlfasl", q)}
+                      />
+                    </div>
+                  </details>
                 )}
 
               {!hasSearched &&
                 !isThinking &&
+                inputSettled &&
+                searchValue.trim().length >= 8 && (
+                  <div className="mt-3 w-full max-w-3xl mx-auto text-right" dir={language === "ar" ? "rtl" : "ltr"}>
+                    <button
+                      type="button"
+                      onClick={() => setShowQuestionHelper((value) => !value)}
+                      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/72 px-4 py-2 text-xs font-black text-[#6E5F8E] transition-all hover:bg-[#F7F3FA] active:scale-[0.98]"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {showQuestionHelper
+                        ? language === "ar"
+                          ? "إخفاء مساعد الصياغة"
+                          : "Hide question helper"
+                        : language === "ar"
+                          ? "ساعدني أصيغ السؤال"
+                          : "Help me phrase the question"}
+                    </button>
+                  </div>
+                )}
+
+              {!hasSearched &&
+                !isThinking &&
+                showQuestionHelper &&
                 searchValue.trim().length >= 3 && (
                   <div className="mt-4 w-full max-w-3xl mx-auto">
                     <SmartIntentEngine
@@ -3811,31 +3908,25 @@ export const SmartGateway: React.FC<
                   </div>
                 )}
 
-              {questionClarity && !hasSearched && !isThinking && (
-                <div
-                  className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#8FA9C7]/18 bg-white/72 backdrop-blur-xl px-4 py-3 tebyan-focus-keep"
-                  dir={language === "ar" ? "rtl" : "ltr"}
-                >
-                  <div className="flex items-center justify-between gap-3 mb-2">
-                    <span className="text-[11px] font-black text-[#64788D]">
-                      {language === "ar" ? "وضوح السؤال" : "Question clarity"}:{" "}
-                      {questionClarity.level}
-                    </span>
-                    <span className="text-[11px] font-black text-[#8E7AAE]">
-                      {questionClarity.score}%
-                    </span>
+              {questionClarity &&
+                !hasSearched &&
+                !isThinking &&
+                inputSettled &&
+                questionClarity.score < 60 && (
+                  <div
+                    className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#D8C58A]/22 bg-[#FFFDF4]/78 px-4 py-3 tebyan-focus-keep text-right"
+                    dir={language === "ar" ? "rtl" : "ltr"}
+                  >
+                    <p className="text-xs font-black text-[#9C7A28]">
+                      {language === "ar"
+                        ? "اقتراح بسيط ليكون الجواب أدق"
+                        : "A small suggestion for a more precise answer"}
+                    </p>
+                    <p className="mt-1 text-sm font-bold leading-relaxed text-[#64788D]">
+                      {questionClarity.hint}
+                    </p>
                   </div>
-                  <div className="h-2 rounded-full bg-[#EEF2F6] overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-l from-[#8E7AAE] to-[#8FA9C7] transition-all duration-500"
-                      style={{ width: `${questionClarity.score}%` }}
-                    />
-                  </div>
-                  <p className="mt-2 text-xs font-bold leading-relaxed text-[#7C8796]">
-                    {questionClarity.hint}
-                  </p>
-                </div>
-              )}
+                )}
             </div>
 
             <AnimatePresence>
@@ -3931,69 +4022,24 @@ export const SmartGateway: React.FC<
                     </div>
                   ) : (
                     <>
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="rounded-[28px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-5 md:p-6 shadow-[0_18px_55px_rgba(24,34,49,0.05)] relative overflow-hidden"
-                        dir={language === "ar" ? "rtl" : "ltr"}
-                      >
-                        <div
-                          className="absolute inset-0 pointer-events-none"
-                          style={{
-                            background: `radial-gradient(circle at 18% 20%, ${journeyProfile.accent}22, transparent 32%)`,
-                          }}
-                        />
-                        <div className="relative z-10 flex items-start gap-4">
-                          <div
-                            className="h-12 w-12 rounded-[18px] border border-white/70 bg-white/78 flex items-center justify-center shrink-0 shadow-sm"
-                            style={{ color: journeyProfile.accent }}
-                          >
-                            {(() => {
-                              const Icon = journeyProfile.icon;
-                              return <Icon className="h-6 w-6" />;
-                            })()}
-                          </div>
-                          <div className="text-right">
-                            <p
-                              className="text-[10px] font-black tracking-[0.28em] uppercase"
-                              style={{ color: journeyProfile.accent }}
-                            >
-                              {language === "ar"
-                                ? "تبيان فهمك"
-                                : "Tebyan understood"}
-                            </p>
-                            <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">
-                              {language === "ar"
-                                ? journeyProfile.title.ar
-                                : journeyProfile.title.en}
-                            </h3>
-                            {shortQuery && (
-                              <p className="mt-2 text-sm md:text-base font-black leading-relaxed text-[#182231] max-w-2xl">
-                                {shortQuery}
-                              </p>
-                            )}
-                            <p className="mt-2 text-xs md:text-sm font-bold leading-relaxed text-[#64788D] max-w-2xl">
-                              {language === "ar"
-                                ? "اختر باباً واحداً فقط للمتابعة. لا توجد خطوة إضافية مخفية."
-                                : "Choose one door to continue. No hidden extra step."}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      {smartResponse && (
-                        <motion.div
-                          key="smart-response-bubble"
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          className="bg-zinc-50 border border-zinc-100 p-4 rounded-2xl flex items-start gap-3"
-                        >
-                          <Sparkles className="w-5 h-5 text-[#7C8796] shrink-0 mt-1" />
-                          <p className="text-sm font-bold text-[#465568] leading-relaxed">
-                            {smartResponse}
-                          </p>
-                        </motion.div>
-                      )}
+                      <DirectAnswerCard
+                        language={language}
+                        query={shortQuery || query}
+                        summary={directGuidance.summary}
+                        action={directGuidance.action}
+                        context={directGuidance.context}
+                        responseMode={responseMode}
+                        accent={journeyProfile.accent}
+                        onExplain={() => {
+                          setResponseMode("simple");
+                          setDepthLevel((level) => Math.max(level, 1));
+                        }}
+                        onPlan={() => handlePathSelect("roadmap", query)}
+                        onDeepen={() => {
+                          setResponseMode("deep");
+                          setDepthLevel((level) => Math.max(level, 3));
+                        }}
+                      />
 
                       {/* Account status stays quiet; saving is handled once in the knowledge seal below. */}
                       <div className="border border-[#8FA9C7]/12 bg-white/70 rounded-2xl px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 mt-2">
@@ -4012,8 +4058,8 @@ export const SmartGateway: React.FC<
                                   ? `مرتبط بحسابك: ${userName}`
                                   : `Linked to your account: ${userName}`
                                 : language === "ar"
-                                  ? "تقدر تحفظ النتيجة بعد تسجيل الدخول"
-                                  : "Sign in to keep this result"}
+                                  ? "هذه النتيجة متاحة لك الآن"
+                                  : "This result is available to you now"}
                             </h4>
                             <p className="text-[11px] text-[#64788D] font-bold leading-normal">
                               {user
@@ -4021,8 +4067,8 @@ export const SmartGateway: React.FC<
                                   ? "جاهز للحفظ في نهاية المسار بدون أزرار مكررة."
                                   : "Ready to save below without repeated buttons."
                                 : language === "ar"
-                                  ? "زر واحد يكفي: سجّل دخولك إذا تبي ترجع لها لاحقاً."
-                                  : "One button is enough: sign in if you want to return to it."}
+                                  ? "سجّل فقط إذا تبي تحفظها وتكمل عليها لاحقاً."
+                                  : "Sign in only if you want to save it and continue later."}
                             </p>
                           </div>
                         </div>
@@ -4035,8 +4081,8 @@ export const SmartGateway: React.FC<
                             >
                               <Lock className="w-3.5 h-3.5" />
                               {language === "ar"
-                                ? "تسجيل الدخول"
-                                : "Sign in"}
+                                ? "حفظ ومتابعة"
+                                : "Save and continue"}
                             </button>
                           </div>
                         )}
@@ -4059,8 +4105,8 @@ export const SmartGateway: React.FC<
                                   <div className="flex items-center gap-2">
                                     <span>
                                       {language === "ar"
-                                        ? "ابدأ من هنا"
-                                        : "START HERE"}
+                                        ? "التعمق المقترح"
+                                        : "RECOMMENDED DEEPER PATH"}
                                     </span>
                                     <Zap className="w-3 h-3" />
                                   </div>
@@ -4341,7 +4387,7 @@ export const SmartGateway: React.FC<
                 <motion.div
                   id="mobile-results"
                   key="mobile-suggestions"
-                  className="md:hidden border-t px-4 py-6 space-y-6 max-h-[60vh] overflow-y-auto bg-white"
+                  className="md:hidden border-t border-[#8FA9C7]/10 px-1 sm:px-4 py-6 space-y-6 bg-transparent"
                 >
                   <div className="flex justify-center mb-2">
                     {/* Mobile: provide a simple restart option instead of returning to home */}
@@ -4403,47 +4449,24 @@ export const SmartGateway: React.FC<
                     </div>
                   ) : (
                     <div className="space-y-8">
-                      <div
-                        className="rounded-[26px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/90 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]"
-                        dir={language === "ar" ? "rtl" : "ltr"}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div
-                            className="h-11 w-11 rounded-2xl bg-white border border-[#DED6EA] flex items-center justify-center shrink-0"
-                            style={{ color: journeyProfile.accent }}
-                          >
-                            {(() => {
-                              const Icon = journeyProfile.icon;
-                              return <Icon className="w-5 h-5" />;
-                            })()}
-                          </div>
-                          <div className="text-right">
-                            <p
-                              className="text-[10px] font-black tracking-widest"
-                              style={{ color: journeyProfile.accent }}
-                            >
-                              {language === "ar"
-                                ? "تبيان فهمك"
-                                : "Tebyan understood"}
-                            </p>
-                            <h3 className="mt-1 text-lg font-black text-[#182231]">
-                              {language === "ar"
-                                ? journeyProfile.title.ar
-                                : journeyProfile.title.en}
-                            </h3>
-                            {shortQuery && (
-                              <p className="mt-1 text-sm font-black leading-relaxed text-[#182231]">
-                                {shortQuery}
-                              </p>
-                            )}
-                            <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#64788D]">
-                              {language === "ar"
-                                ? "اختر باباً واحداً للمتابعة بدون تعقيد."
-                                : "Choose one door to continue."}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                      <DirectAnswerCard
+                        language={language}
+                        query={shortQuery || query}
+                        summary={directGuidance.summary}
+                        action={directGuidance.action}
+                        context={directGuidance.context}
+                        responseMode={responseMode}
+                        accent={journeyProfile.accent}
+                        onExplain={() => {
+                          setResponseMode("simple");
+                          setDepthLevel((level) => Math.max(level, 1));
+                        }}
+                        onPlan={() => handlePathSelect("roadmap", query)}
+                        onDeepen={() => {
+                          setResponseMode("deep");
+                          setDepthLevel((level) => Math.max(level, 3));
+                        }}
+                      />
 
                       {/* Mobile account status */}
                       <div className="border border-[#8FA9C7]/12 bg-white rounded-2xl p-3 flex flex-col gap-3 text-right">
@@ -4462,8 +4485,8 @@ export const SmartGateway: React.FC<
                                   ? `مرتبط بحسابك: ${userName}`
                                   : `Linked to account: ${userName}`
                                 : language === "ar"
-                                  ? "تقدر تحفظ بعد تسجيل الدخول"
-                                  : "Sign in to keep it"}
+                                  ? "هذه النتيجة متاحة لك الآن"
+                                  : "This result is available now"}
                             </h4>
                             <p className="text-[10px] text-zinc-500 font-bold leading-normal">
                               {user
@@ -4471,8 +4494,8 @@ export const SmartGateway: React.FC<
                                   ? "الحفظ صار في زر واحد فقط بالأسفل."
                                   : "Saving now lives in one button below."
                                 : language === "ar"
-                                  ? "بدون تكرار، زر الدخول فقط عند الحاجة."
-                                  : "No repetition, only sign in if needed."}
+                                  ? "سجّل فقط إذا تبي تحفظها وتكمل عليها لاحقاً."
+                                  : "Sign in only to save it and continue later."}
                             </p>
                           </div>
                         </div>
@@ -4485,8 +4508,8 @@ export const SmartGateway: React.FC<
                             >
                               <Lock className="w-3 h-3" />
                               {language === "ar"
-                                ? "تسجيل الدخول"
-                                : "Sign in"}
+                                ? "حفظ ومتابعة"
+                                : "Save and continue"}
                             </button>
                           </div>
                         )}
@@ -4496,7 +4519,7 @@ export const SmartGateway: React.FC<
                       {primarySuggestion && (
                         <div className="space-y-3">
                           <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
-                            {language === "ar" ? "الباب الأول" : "FIRST DOOR"}
+                            {language === "ar" ? "التعمق المقترح" : "RECOMMENDED PATH"}
                           </span>
                           <button
                             type="button"
@@ -4520,8 +4543,8 @@ export const SmartGateway: React.FC<
                                 </div>
                                 <div className="text-[11px] leading-[1.6] text-[#64788D] font-semibold">
                                   {language === "ar"
-                                    ? "بدون زحمة أدوات"
-                                    : "No tool clutter"}
+                                    ? "مسار إضافي بعد حصولك على الخلاصة"
+                                    : "An optional path after your summary"}
                                 </div>
                               </div>
                             </div>
@@ -4775,21 +4798,53 @@ export const SmartGateway: React.FC<
               className="mt-4 md:mt-6 w-full max-w-3xl mx-auto flex flex-col items-center gap-3 md:gap-4"
               dir={language === "ar" ? "rtl" : "ltr"}
             >
-              <div className="flex flex-wrap items-center justify-center gap-2">
+              <div className="w-full space-y-3 text-center">
+                <p className="text-xs font-black text-[#7C8796]">
+                  {language === "ar" ? "أمثلة قريبة من الحياة" : "Everyday examples"}
+                </p>
+                <div className="flex w-full gap-2 overflow-x-auto px-1 pb-2 no-scrollbar md:flex-wrap md:justify-center">
+                  {(language === "ar"
+                    ? [
+                        "ولدي ما يحب المدرسة، شلون أتعامل معاه؟",
+                        "محتار بين وظيفتين، شلون أقرر؟",
+                        "اشرح لي هذا الموضوع ببساطة",
+                      ]
+                    : [
+                        "My child dislikes school. How should I respond?",
+                        "I am choosing between two jobs. How do I decide?",
+                        "Explain this topic to me simply",
+                      ]
+                  ).map((example) => (
+                    <button
+                      key={example}
+                      type="button"
+                      onClick={() => {
+                        setSearchValue(example);
+                        latestInputRef.current = example;
+                        setQuery(example);
+                        setSmartSuggestion("");
+                        inputRef.current?.focus();
+                      }}
+                      className="min-h-11 shrink-0 rounded-full border border-[#8FA9C7]/16 bg-white/76 px-4 py-2 text-xs font-black text-[#465568] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E] active:scale-[0.98]"
+                    >
+                      {example}
+                    </button>
+                  ))}
+                </div>
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowInspiration((v) => !v);
-                  }}
-                  className="inline-flex items-center justify-center rounded-full border border-[#C9BEDF]/40 bg-white/70 px-3 py-1.5 text-[11px] md:text-xs font-black text-[#7C8796] hover:text-zinc-900 transition-colors shadow-sm cursor-pointer hover:-translate-y-0.5 transition-transform"
+                  onClick={() => setShowInspiration((value) => !value)}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#C9BEDF]/34 bg-white/60 px-4 py-2 text-xs font-black text-[#7C8796] shadow-sm transition-all hover:bg-white hover:text-[#6E5F8E] active:scale-[0.98]"
+                  aria-expanded={showInspiration}
                 >
+                  <Sparkles className="h-4 w-4" />
                   {showInspiration
                     ? language === "ar"
-                      ? "إخفاء الأمثلة"
-                      : "Hide examples"
+                      ? "إخفاء مساحة الاستكشاف"
+                      : "Hide discovery space"
                     : language === "ar"
-                      ? "أحتاج فكرة أبدأ بها"
-                      : "I need a starting idea"}
+                      ? "استكشف شيئاً جديداً اليوم"
+                      : "Discover something new today"}
                 </button>
               </div>
 
@@ -5114,7 +5169,7 @@ export const SmartGateway: React.FC<
         </div>
       </div>
 
-      {!hasSearched && (isHome || showInspiration) && (
+      {!hasSearched && showInspiration && (
         <>
           {/* Ephemeral Wisdom Feature (FOMO) — compact whisper */}
           <div className="mt-4">

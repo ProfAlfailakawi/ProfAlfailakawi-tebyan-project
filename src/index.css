@@ -2852,3 +2852,44 @@ body:not(.zen-idle)::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* UX architecture: readable touch targets, natural mobile scrolling, and accessible motion. */
+.tebyan-direct-answer button,
+.tebyan-service-explorer button {
+  touch-action: manipulation;
+}
+
+.tebyan-route-home textarea,
+.tebyan-service-explorer input {
+  scroll-margin-top: 7rem;
+}
+
+@media (max-width: 767px) {
+  [class~="text-[10px]"] {
+    font-size: 0.75rem !important;
+    line-height: 1.55 !important;
+  }
+
+  [class~="text-[11px]"] {
+    font-size: 0.78125rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .tebyan-direct-answer,
+  .tebyan-service-explorer {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

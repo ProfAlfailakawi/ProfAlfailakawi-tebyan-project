@@ -10,7 +10,7 @@ import {
   Zap, Users, Lightbulb, RefreshCw, X, MessageCircleQuestion, Menu, LogOut, LayoutDashboard,
   Search, Network, BarChart3, LibraryBig, Route, TicketPercent, Mail, Settings, User, Lock, Box,
   Compass, Anchor, Moon, Sun, Heart, Brain, Loader2, WifiOff, DoorOpen, ShieldCheck,
-  ArrowLeft, HelpCircle
+  ArrowLeft, HelpCircle, Grid3X3
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './lib/utils';
@@ -22,6 +22,7 @@ import { PWAInstallPrompt, PWAHeaderButton } from './components/PWAInstallPrompt
 import { SpatialGhost } from './components/SpatialGhost';
 import { OnboardingTour } from './components/OnboardingTour';
 import { TebyanTooltip } from './components/TebyanTooltip';
+import { getServiceTabs } from './constants/serviceRegistry';
 
 import { migrateLegacyData } from './lib/migration';
 
@@ -87,6 +88,7 @@ import { logEvent } from './services/analyticsService';
 import { cronService } from './services/cronService';
 
 const SmartGateway = React.lazy(() => import('./components/SmartGateway').then(m => ({ default: m.SmartGateway })));
+const ServiceExplorer = React.lazy(() => import('./components/ServiceExplorer'));
 const ThoughtNebula = React.lazy(() => import('./components/ThoughtNebula').then(m => ({ default: m.ThoughtNebula })));
 const KnowledgeGraphTab = React.lazy(() => import('./components/tabs/KnowledgeGraphTab').then(m => ({ default: m.KnowledgeGraphTab })));
 const AdminUsersDashboard = React.lazy(() => import('./components/AdminUsersDashboard'));
@@ -475,7 +477,7 @@ const AppContent: React.FC = () => {
       targetContext = '[ROLEPLAY]' + context;
     }
 
-    const actualTab = targetTab === 'home' || targetTab === 'discover' || (targetTab as string) === 'dashboard' ? 'home' : targetTab;
+    const actualTab = targetTab === 'home' || (targetTab as string) === 'dashboard' ? 'home' : targetTab;
     const doorLabels: Record<string, string> = {
       home: language === 'ar' ? 'نعود إلى الواجهة الهادئة…' : 'Returning to the calm dashboard…',
       qawlfasl: language === 'ar' ? 'نفتح باب قول فصل…' : 'Opening Qawl Fasl…',
@@ -523,17 +525,15 @@ const AppContent: React.FC = () => {
   }, [handleTabChange]);
 
   const tabs = [
-    { id: 'discover', label: language === 'ar' ? 'اكتشف' : 'Discover', icon: Search, tooltip: language === 'ar' ? 'البحث الرئيسي في النظام' : 'Main Search' },
-    { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock, tooltip: language === 'ar' ? 'لمساعدتك في حسم قراراتك الصعبة والمصيرية خطوة بخطوة' : 'Help for tough decisions' },
-    { id: 'qawlfasl', label: language === 'ar' ? 'قول فصل' : 'Qawl Fasl', icon: MessageCircleQuestion, tooltip: language === 'ar' ? 'لحل النزاعات والنقاشات المعقدة برأي محايد ومنطقي' : 'Resolve conflicts logically' },
-    { id: 'strategicarena', label: language === 'ar' ? 'الميدان الاستراتيجي' : 'Strategic Arena', icon: BrainCircuit, tooltip: language === 'ar' ? 'للتخطيط بعيد المدى، سواء لأهدافك الشخصية أو التجارية' : 'Long-term planning' },
-    { id: 'creativelab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap, tooltip: language === 'ar' ? 'لدمج الأفكار، توليد ابتكارات جديدة، وحل المشاكل بطرق غير تقليدية' : 'Generate innovative ideas' },
-    { id: 'ar', label: language === 'ar' ? 'واقع تبيان المعزز' : 'Tibyan AR', icon: Box, tooltip: language === 'ar' ? 'تفاعل مع أفكارك ومجسمات المعرفة في الواقع الثلاثي الأبعاد' : 'Interact in Augmented Reality' },
-    { id: 'truthmanuscript', label: language === 'ar' ? 'مخطوطة الحقيقة' : 'Truth Manuscript', icon: Sparkles, tooltip: language === 'ar' ? 'لتحويل أفكارك وتأملاتك العميقة إلى مخطوطة فنية' : 'Turn thoughts into manuscripts' },
-    { id: 'knowledgecenter', label: language === 'ar' ? 'مركز المعرفة' : 'Knowledge Center', icon: Network, tooltip: language === 'ar' ? 'محرك بحث متقدم يبحث ويرتب لك المعلومات المعقدة كشبكة' : 'Advanced Knowledge Search' },
-    { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command, tooltip: language === 'ar' ? 'لاستشارة النظام بشخصيات مختلفة (طبيب، مهندس، فيلسوف.. إلخ)' : 'Consult different AI personas' },
-    { id: 'mylibrary', label: language === 'ar' ? 'المكتبة المفضلة' : 'My Library', icon: LibraryBig, tooltip: language === 'ar' ? 'المكان الذي تُحفظ فيه كل أفكارك القيمة لاسترجاعها لاحقاً' : 'Your saved knowledge' },
-    { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent, tooltip: language === 'ar' ? 'نقاطك ومكافآتك وعروضك الترويجية كعضو' : 'Your rewards and discounts' },
+    ...getServiceTabs(language),
+    {
+      id: 'discover',
+      label: language === 'ar' ? 'كل الخدمات' : 'All services',
+      brand: language === 'ar' ? 'دليل تبيان' : 'Tebyan directory',
+      icon: Grid3X3,
+      tooltip: language === 'ar' ? 'استكشف جميع خدمات تبيان حسب حاجتك' : 'Explore all Tebyan services by need',
+      category: 'understand'
+    },
     { 
       id: 'adminusers', 
       label: language === 'ar' ? 'المستخدمين' : 'Users', 
@@ -1027,26 +1027,54 @@ const AppContent: React.FC = () => {
          transition={{ duration: 0.3, ease: "easeInOut" }}
          className="fixed top-0 left-0 right-0 z-40 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none"
       >
-         <div className="tebyan-floating-nav flex items-center gap-4 md:gap-6 pointer-events-auto">
+         <div className="tebyan-floating-nav flex items-center gap-3 md:gap-5 pointer-events-auto rounded-[22px] border border-white/70 bg-white/68 px-2.5 py-2 shadow-[0_12px_34px_rgba(24,34,49,0.07)] backdrop-blur-xl">
              <button 
                onClick={() => handleTabChange('home')}
                className="flex items-center gap-3 transition-transform active:scale-95"
+               aria-label={language === 'ar' ? 'الصفحة الرئيسية' : 'Home'}
              >
                <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700 tebyan-orb-mark">
                  <LivingIcon icon={Globe} mood={currentMood} type="home" className="w-5 h-5" />
                </div>
                <span className="font-black text-xl text-[#182231] tracking-tighter transition-colors group-hover:text-mood-primary">تبيان</span>
              </button>
-           
-           {/* <button 
-             onClick={() => setLanguage(l => l === 'ar' ? 'en' : 'ar')}
-             className="hidden md:flex ml-4 px-3 py-1.5 rounded-full bg-white/50 backdrop-blur-sm border border-zinc-200/50 text-xs font-bold text-zinc-500 hover:text-black hover:bg-white transition-all shadow-sm"
-           >
-             {language === 'ar' ? 'EN' : 'عربي'}
-           </button> */}
+
+             <nav className="hidden md:flex items-center gap-1 border-r border-[#8FA9C7]/14 pr-3" aria-label={language === 'ar' ? 'التنقل الرئيسي' : 'Primary navigation'}>
+               {[
+                 { id: 'home', label: language === 'ar' ? 'اسأل' : 'Ask', icon: Search },
+                 { id: 'discover', label: language === 'ar' ? 'كل الخدمات' : 'All services', icon: Grid3X3 },
+                 { id: 'mylibrary', label: language === 'ar' ? 'مكتبتي' : 'My library', icon: LibraryBig },
+               ].map((item) => {
+                 const Icon = item.icon;
+                 return (
+                   <button
+                     key={item.id}
+                     type="button"
+                     onClick={() => handleTabChange(item.id as Tab)}
+                     className={cn(
+                       'min-h-10 rounded-xl px-3.5 text-sm font-black transition-all flex items-center gap-2',
+                       activeTab === item.id
+                         ? 'bg-[#182231] text-white shadow-sm'
+                         : 'text-[#64788D] hover:bg-[#F4F0F8] hover:text-[#182231]'
+                     )}
+                   >
+                     <Icon className="h-4 w-4" />
+                     {item.label}
+                   </button>
+                 );
+               })}
+             </nav>
          </div>
 
          <div className="flex items-center gap-2 pointer-events-auto">
+           <button
+             type="button"
+             onClick={() => setMobileMenuOpen(true)}
+             className="md:hidden flex h-11 w-11 items-center justify-center rounded-2xl border border-white/70 bg-white/82 text-[#182231] shadow-[0_10px_30px_rgba(24,34,49,0.08)] backdrop-blur-xl active:scale-95"
+             aria-label={language === 'ar' ? 'فتح قائمة الخدمات' : 'Open services menu'}
+           >
+             <Menu className="h-5 w-5" />
+           </button>
            <PWAHeaderButton />
            {user ? (
              <UserMenu />
@@ -1094,7 +1122,9 @@ const AppContent: React.FC = () => {
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                {tabs.map(tab => !tab.hidden && (
+                {tabs
+                  .filter((tab) => ['discover', 'mylibrary', 'loyalty', 'contact'].includes(String(tab.id)))
+                  .map(tab => !tab.hidden && (
                   <button
                     key={tab.id}
                     onClick={() => { handleTabChange(tab.id as Tab); setMobileMenuOpen(false); }}
@@ -1161,9 +1191,37 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
+      <nav
+        className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+10px)] z-40 grid grid-cols-3 gap-1 rounded-[24px] border border-white/75 bg-white/88 p-1.5 shadow-[0_18px_55px_rgba(24,34,49,0.18)] backdrop-blur-2xl md:hidden"
+        aria-label={language === 'ar' ? 'التنقل الرئيسي' : 'Primary navigation'}
+      >
+        {[
+          { id: 'home', label: language === 'ar' ? 'اسأل' : 'Ask', icon: Search },
+          { id: 'discover', label: language === 'ar' ? 'استكشف' : 'Explore', icon: Grid3X3 },
+          { id: 'mylibrary', label: language === 'ar' ? 'مكتبتي' : 'Library', icon: LibraryBig },
+        ].map((item) => {
+          const Icon = item.icon;
+          const selected = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => handleTabChange(item.id as Tab)}
+              className={cn(
+                'min-h-[52px] rounded-[18px] text-xs font-black transition-all flex flex-col items-center justify-center gap-1',
+                selected ? 'bg-[#182231] text-white shadow-sm' : 'text-[#64788D] active:bg-[#F4F0F8]'
+              )}
+            >
+              <Icon className="h-4.5 w-4.5" />
+              {item.label}
+            </button>
+          );
+        })}
+      </nav>
+
       {/* --- Desktop Sidebar Removed --- */}
 
-      <main ref={mainRef} className={cn("flex-1 w-full min-h-0 pt-24 overflow-y-auto overflow-x-hidden relative scroll-smooth custom-scrollbar tebyan-route-shell", `tebyan-route-${activeTab}`)}>
+      <main ref={mainRef} className={cn("flex-1 w-full min-h-0 pt-24 pb-24 md:pb-0 overflow-y-auto overflow-x-hidden relative scroll-smooth custom-scrollbar tebyan-route-shell", `tebyan-route-${activeTab}`)}>
         
         {/* Error Banner */}
         {error && (
@@ -1196,8 +1254,9 @@ const AppContent: React.FC = () => {
               {(() => {
                 switch (activeTab) {
                   case 'home':
+                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} onShowLogin={() => setShowLogin(true)} isHome />;
                   case 'discover':
-                    return <SmartGateway language={language} handleTabChange={handleTabChange} tabs={tabs} initialQuery={initialContext} mood={currentMood} onShowLogin={() => setShowLogin(true)} isHome={activeTab === 'home'} />;
+                    return <ServiceExplorer language={language} handleTabChange={handleTabChange} />;
                   case 'strategicarena':
                     return <StrategicArenaTab handleTabChange={handleTabChange} language={language} initialValue={initialContext} />;
                   case 'creativelab':
