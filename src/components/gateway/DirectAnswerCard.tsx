@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowLeft, BrainCircuit, CheckCircle2, ListChecks, Sparkles } from 'lucide-react';
-import { motion } from 'motion/react';
 import { cn } from '../../lib/utils';
 import type { ResponseMode } from './directGuidance';
 
@@ -32,9 +31,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
   const isArabic = language === 'ar';
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
+    <section
       className="tebyan-direct-answer relative overflow-hidden rounded-[30px] border border-[#8E7AAE]/16 bg-white/94 p-5 text-right shadow-[0_20px_65px_rgba(24,34,49,0.09)] md:p-7"
       dir={isArabic ? 'rtl' : 'ltr'}
       aria-live="polite"
@@ -126,6 +123,6 @@ export const DirectAnswerCard: React.FC<Props> = ({
           </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };

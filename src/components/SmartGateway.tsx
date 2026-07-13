@@ -982,12 +982,6 @@ export const SmartGateway: React.FC<
     () => sessionStorage.getItem("tebyan_current_query") || "",
   );
 
-  const { smartSuggestion, isSuggestionLoading, setSmartSuggestion } =
-    useSmartSearch(searchValue);
-  const instantSearch = useInstantSearch(searchValue);
-  const suggestion = smartSuggestion;
-  const setSuggestion = setSmartSuggestion;
-
   const latestInputRef = useRef(searchValue);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -1195,6 +1189,37 @@ export const SmartGateway: React.FC<
   const [responseMode, setResponseMode] = useState<ResponseMode>("quick");
   const [inputSettled, setInputSettled] = useState(false);
   const [showQuestionHelper, setShowQuestionHelper] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches,
+  );
+
+  const deferredSearchValue = React.useDeferredValue(searchValue);
+  const deferredQuery = React.useDeferredValue(query);
+  const {
+    smartSuggestion,
+    isSuggestionLoading,
+    setSmartSuggestion,
+    cancelSuggestion,
+  } = useSmartSearch(
+    searchValue,
+    6,
+    showQuestionHelper && inputSettled && !hasSearched,
+  );
+  const instantSearch = useInstantSearch(
+    inputSettled && !hasSearched ? deferredSearchValue : "",
+    6,
+    inputSettled && !hasSearched,
+  );
+  const suggestion = smartSuggestion;
+  const setSuggestion = setSmartSuggestion;
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobileViewport(media.matches);
+    update();
+    media.addEventListener?.("change", update);
+    return () => media.removeEventListener?.("change", update);
+  }, []);
 
   useEffect(() => {
     setInputSettled(false);
@@ -1226,7 +1251,8 @@ export const SmartGateway: React.FC<
     setSearchValue(value);
     latestInputRef.current = value;
     setSmartSuggestion("");
-    setQuery(value);
+    // Keep the draft isolated from the committed query. This prevents the
+    // entire analysis tree from re-running on every keystroke on mobile.
     onType();
     if (hasSearched) setHasSearched(false);
     setDepthLevel(0);
@@ -1918,13 +1944,13 @@ export const SmartGateway: React.FC<
     if (hasSearched && !isThinking) {
       setTimeout(() => {
         const el =
-          window.innerWidth < 768
+          isMobileViewport
             ? document.getElementById("mobile-results")
             : document.getElementById("desktop-results");
         el?.scrollIntoView({ behavior: "auto", block: "nearest" });
       }, 100);
     }
-  }, [hasSearched, isThinking]);
+  }, [hasSearched, isThinking, isMobileViewport]);
 
   const [emotion, setEmotion] = useState<"neutral" | "stress" | "creative">(
     "neutral",
@@ -2188,7 +2214,7 @@ export const SmartGateway: React.FC<
 
   const handleSubmit = (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
-    const rawQuery = overrideQuery || query;
+    const rawQuery = overrideQuery ?? searchValue ?? query;
     const moodPrefix =
       language === "ar" ? activeMoodOption.prefixAr : activeMoodOption.prefixEn;
     const activeQuery =
@@ -2211,27 +2237,11 @@ export const SmartGateway: React.FC<
       return;
     }
 
-    if (overrideQuery || activeQuery !== rawQuery) {
-      setQuery(activeQuery);
-      setSearchValue(activeQuery);
-      latestInputRef.current = activeQuery;
-    }
+    if (activeQuery !== query) setQuery(activeQuery);
+    if (activeQuery !== searchValue) setSearchValue(activeQuery);
+    latestInputRef.current = activeQuery;
+    cancelSuggestion();
     setShowResumePrompt(false);
-
-    if (activeQuery.trim()) {
-      try {
-        const historyStr = localStorage.getItem("tebyan_search_history");
-        let historyList = historyStr ? JSON.parse(historyStr) : [];
-        if (!historyList.includes(activeQuery)) {
-          historyList.unshift(activeQuery);
-          historyList = historyList.slice(0, 50); // keep recent 50
-          localStorage.setItem(
-            "tebyan_search_history",
-            JSON.stringify(historyList),
-          );
-        }
-      } catch (e) {}
-    }
 
     // Intercept fluid navigation commands
     const qLower = activeQuery.toLowerCase();
@@ -2250,57 +2260,42 @@ export const SmartGateway: React.FC<
       return;
     }
 
-    // Analytics: Log search
-    logEvent("search", language, activeQuery);
-    addToHistory(activeQuery);
-    try {
-      localStorage.setItem(
-        "tebyan_last_session",
-        JSON.stringify({
-          query: activeQuery,
-          tool: "discover",
-          toolLabel: language === "ar" ? "البحث الذكي" : "Smart search",
-          at: new Date().toISOString(),
-        }),
-      );
-    } catch (e) {}
+    // Paint the useful result first. Analytics, storage, and emotion detection
+    // are deliberately moved out of the tap path so the button responds now.
+    setIsThinking(false);
+    setHasSearched(true);
+    setSelectionFeedback("");
 
-    import("../services/gemini").then(({ detectEmotion }) => detectEmotion(activeQuery))
-      .then((emo) => {
-        setEmotion(emo);
-      })
-      .catch(console.error);
+    const runAfterPaint = (task: () => void) => {
+      window.requestAnimationFrame(() => window.setTimeout(task, 0));
+    };
 
-    // Caching check
-    const cacheKey = `tebyan_cache_v1_${activeQuery.trim().toLowerCase()}`;
-    const isCached = localStorage.getItem(cacheKey);
+    runAfterPaint(() => {
+      try {
+        sessionStorage.setItem("tebyan_current_query", activeQuery);
+        sessionStorage.setItem("tebyan_current_has_searched", "true");
+      } catch (e) {}
+      logEvent("search", language, activeQuery);
+      addToHistory(activeQuery);
+      try {
+        localStorage.setItem(
+          "tebyan_last_session",
+          JSON.stringify({
+            query: activeQuery,
+            tool: "discover",
+            toolLabel: language === "ar" ? "البحث الذكي" : "Smart search",
+            at: new Date().toISOString(),
+          }),
+        );
+        const cacheKey = `tebyan_cache_v1_${activeQuery.trim().toLowerCase()}`;
+        localStorage.setItem(cacheKey, "true");
+      } catch (e) {}
 
-    setHasSearched(false);
-    setIsThinking(true);
-    sessionStorage.setItem("tebyan_current_query", activeQuery);
-    sessionStorage.setItem("tebyan_current_has_searched", "false");
-
-    // Performance: Faster analysis if cached, or just reduced base delay
-    const delay = 5; // Ultra fast, almost no fake loading delay
-
-    setTimeout(() => {
-      // Phase 2: Show initial insight if available
-      if (!isCached) {
-        logEvent("feature_use", language, activeQuery, {
-          phase: "pre_insight",
-        });
-      }
-    }, delay * 0.4);
-
-    setTimeout(() => {
-      setIsThinking(false);
-      setHasSearched(true);
-      setSuggestion("");
-      sessionStorage.setItem("tebyan_current_has_searched", "true");
-      setSelectionFeedback("");
-      localStorage.setItem(cacheKey, "true"); // Flag it as "seen" to speed up next time
-      console.log("[SmartGateway] Analysis complete.");
-    }, delay);
+      import("../services/gemini")
+        .then(({ detectEmotion }) => detectEmotion(activeQuery))
+        .then((emo) => setEmotion(emo))
+        .catch(() => {});
+    });
   };
 
   const handlePathSelect = (id: string, q: string) => {
@@ -2525,9 +2520,14 @@ export const SmartGateway: React.FC<
       } as React.CSSProperties);
 
   const suggestions = useMemo(() => {
-    const q = query.toLowerCase();
+    const q = deferredQuery.trim().toLowerCase();
+    if (!q) return [];
     const ranked: any[] = [];
-    const { intent, emotion } = getIntentAndEmotion(query);
+    const { intent, emotion } = getIntentAndEmotion(deferredQuery);
+    let usageStats: Record<string, number> = {};
+    try {
+      usageStats = JSON.parse(localStorage.getItem("tebyan_usage_stats") || "{}");
+    } catch (e) {}
 
     console.log("[SmartGateway] STARTING ANALYSIS FOR:", q, {
       intent,
@@ -2551,9 +2551,6 @@ export const SmartGateway: React.FC<
       if (ranked.some((r) => r.id === id)) return;
 
       // Personalization booster
-      const usageStats = JSON.parse(
-        localStorage.getItem("tebyan_usage_stats") || "{}",
-      );
       const localUsage = usageStats[id] || 0;
       const boost = localUsage * 0.7; // Stronger local weight
 
@@ -2899,27 +2896,31 @@ export const SmartGateway: React.FC<
     );
 
     return ranked;
-  }, [query, language]);
+  }, [deferredQuery, language]);
+
+  const directJourneyProfile = useMemo(
+    () => pickJourneyProfile(query, undefined),
+    [query],
+  );
 
   const journeyProfile = useMemo(
-    () => pickJourneyProfile(query || searchValue, suggestions[0]?.id),
-    [query, searchValue, suggestions],
+    () => pickJourneyProfile(deferredQuery || query, suggestions[0]?.id),
+    [deferredQuery, query, suggestions],
   );
 
   const directGuidance = useMemo(
     () =>
       buildDirectGuidance({
-        query: query || searchValue,
+        query,
         language,
-        journeyId: journeyProfile.id,
+        journeyId: directJourneyProfile.id,
         mode: responseMode,
         specificInsight: smartResponse,
       }),
     [
       query,
-      searchValue,
       language,
-      journeyProfile.id,
+      directJourneyProfile.id,
       responseMode,
       smartResponse,
     ],
@@ -3745,7 +3746,6 @@ export const SmartGateway: React.FC<
                         e.preventDefault();
                         setSearchValue(smartSuggestion);
                         latestInputRef.current = smartSuggestion;
-                        setQuery(smartSuggestion);
                         setSmartSuggestion("");
                       } else if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
@@ -3792,26 +3792,17 @@ export const SmartGateway: React.FC<
                     language === "ar" ? "البحث أو التحليل" : "Search / Analyze"
                   }
                   className={cn(
-                    "bg-[#8E7AAE] text-white w-12 h-12 md:w-16 md:h-16 rounded-[18px] md:rounded-[20px] transition-all hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center shrink-0 tebyan-breathe",
-                    query.length > 0
+                    "bg-[#8E7AAE] text-white w-12 h-12 md:w-16 md:h-16 rounded-[18px] md:rounded-[20px] transition-colors duration-75 active:scale-[0.98] flex items-center justify-center shrink-0",
+                    searchValue.trim().length > 0
                       ? "opacity-100 shadow-[0_16px_38px_rgba(142,122,174,0.20)]"
                       : "opacity-35 pointer-events-none",
                   )}
                 >
                   <span className="relative inline-flex items-center justify-center">
                     {searchValue.trim().length > 0 && (
-                      <motion.span
+                      <span
                         aria-hidden
-                        className="absolute -top-1 -left-1 h-2.5 w-2.5 rounded-full bg-white/90"
-                        animate={{
-                          scale: [0.85, 1.35, 0.85],
-                          opacity: [0.45, 1, 0.45],
-                        }}
-                        transition={{
-                          duration: 1.55,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
+                        className="absolute -top-1 -left-1 h-2 w-2 rounded-full bg-white/90"
                       />
                     )}
                     <TebyanGlyph
@@ -3955,7 +3946,7 @@ export const SmartGateway: React.FC<
                 </motion.div>
               )}
 
-              {(isThinking || hasSearched) && (
+              {(isThinking || hasSearched) && !isMobileViewport && (
                 <motion.div
                   id="desktop-results"
                   key="desktop-suggestions"
@@ -4032,7 +4023,7 @@ export const SmartGateway: React.FC<
                         action={directGuidance.action}
                         context={directGuidance.context}
                         responseMode={responseMode}
-                        accent={journeyProfile.accent}
+                        accent={directJourneyProfile.accent}
                         onExplain={() => {
                           setResponseMode("simple");
                           setDepthLevel((level) => Math.max(level, 1));
@@ -4386,7 +4377,7 @@ export const SmartGateway: React.FC<
               )}
 
               {/* Mobile simplified results */}
-              {(isThinking || hasSearched) && (
+              {(isThinking || hasSearched) && isMobileViewport && (
                 <motion.div
                   id="mobile-results"
                   key="mobile-suggestions"
@@ -4459,7 +4450,7 @@ export const SmartGateway: React.FC<
                         action={directGuidance.action}
                         context={directGuidance.context}
                         responseMode={responseMode}
-                        accent={journeyProfile.accent}
+                        accent={directJourneyProfile.accent}
                         onExplain={() => {
                           setResponseMode("simple");
                           setDepthLevel((level) => Math.max(level, 1));

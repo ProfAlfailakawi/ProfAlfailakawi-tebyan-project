@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { proxyGenerateContent } from '../lib/aiProxy';
 
-export function useSmartSearch(searchValue: string, minLength: number = 6) {
+export function useSmartSearch(searchValue: string, minLength: number = 6, enabled: boolean = true) {
   const [smartSuggestion, setSmartSuggestion] = useState("");
   const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
   const latestInputRef = useRef(searchValue);
@@ -13,8 +13,10 @@ export function useSmartSearch(searchValue: string, minLength: number = 6) {
 
   useEffect(() => {
     const currentText = searchValue.trim();
-    if (currentText.length < minLength) {
+    if (!enabled || currentText.length < minLength) {
+      requestIdRef.current += 1;
       setSmartSuggestion("");
+      setIsSuggestionLoading(false);
       return;
     }
 
@@ -110,10 +112,16 @@ ${latestText}`;
           setIsSuggestionLoading(false);
         }
       }
-    }, 500);
+    }, 850);
 
     return () => clearTimeout(timer);
-  }, [searchValue, minLength]);
+  }, [searchValue, minLength, enabled]);
 
-  return { smartSuggestion, isSuggestionLoading, setSmartSuggestion };
+  const cancelSuggestion = useCallback(() => {
+    requestIdRef.current += 1;
+    setIsSuggestionLoading(false);
+    setSmartSuggestion("");
+  }, []);
+
+  return { smartSuggestion, isSuggestionLoading, setSmartSuggestion, cancelSuggestion };
 }

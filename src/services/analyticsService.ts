@@ -7,31 +7,41 @@ export interface AnalyticsMetadata {
     [key: string]: any;
 }
 
-export const logEvent = async (type: EventType, language: string, query?: string, metadata?: AnalyticsMetadata) => {
+const scheduleAnalytics = (task: () => void) => {
+    const win = window as typeof window & {
+        requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+    };
+    if (typeof win.requestIdleCallback === 'function') {
+        win.requestIdleCallback(task, { timeout: 1800 });
+    } else {
+        window.setTimeout(task, 120);
+    }
+};
+
+const persistEvent = async (type: EventType, language: string, query?: string, metadata?: AnalyticsMetadata) => {
     try {
         const safeMetadata = { ...metadata };
-        if (safeMetadata) {
-            Object.keys(safeMetadata).forEach(key => {
-                if (safeMetadata[key] === undefined) {
-                    delete safeMetadata[key];
-                }
-            });
-        }
+        Object.keys(safeMetadata).forEach(key => {
+            if (safeMetadata[key] === undefined) delete safeMetadata[key];
+        });
         await addDoc(collection(db, 'analytics'), {
             type,
             query: query || null,
-            metadata: safeMetadata || {},
+            metadata: safeMetadata,
             language,
             timestamp: serverTimestamp(),
-            // User agent can be helpful for mobile vs desktop analysis
             platform: /Mobi|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
         });
     } catch (error: any) {
-        // Log to console but don't crash or show user errors
         if (error?.message?.includes('permission')) {
             console.warn('[Analytics] Missing Firestore permissions. Event was not logged:', type);
         } else {
             console.error('Failed to log analytics event:', error);
         }
     }
+};
+
+// Analytics must never sit in the user's click path. Queue it after the UI paints.
+export const logEvent = (type: EventType, language: string, query?: string, metadata?: AnalyticsMetadata) => {
+    scheduleAnalytics(() => { void persistEvent(type, language, query, metadata); });
 };

@@ -276,19 +276,45 @@ const AppContent: React.FC = () => {
       return;
     }
 
-    const start = () => setEnableNonCriticalUi(true);
     const win = window as typeof window & {
       requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
       cancelIdleCallback?: (handle: number) => void;
     };
+    let idleId: number | undefined;
+    const mobile = window.matchMedia('(max-width: 767px)').matches;
+    const timer = window.setTimeout(() => {
+      const start = () => setEnableNonCriticalUi(true);
+      if (typeof win.requestIdleCallback === 'function') {
+        idleId = win.requestIdleCallback(start, { timeout: mobile ? 2200 : 900 });
+      } else {
+        start();
+      }
+    }, mobile ? 2600 : 650);
 
+    return () => {
+      window.clearTimeout(timer);
+      if (idleId !== undefined) win.cancelIdleCallback?.(idleId);
+    };
+  }, [showSplash]);
+
+  // Warm the two highest-frequency routes after the first paint. React.lazy
+  // reuses this module cache, so tapping Ask/Explore never waits for a chunk.
+  useEffect(() => {
+    if (showSplash) return;
+    const win = window as typeof window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout?: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    const preload = () => {
+      void import('./components/SmartGateway');
+      void import('./components/ServiceExplorer');
+    };
     if (typeof win.requestIdleCallback === 'function') {
-      const idleId = win.requestIdleCallback(start, { timeout: 1200 });
-      return () => win.cancelIdleCallback?.(idleId);
+      const id = win.requestIdleCallback(preload, { timeout: 900 });
+      return () => win.cancelIdleCallback?.(id);
     }
-
-    const timer = window.setTimeout(start, 900);
-    return () => window.clearTimeout(timer);
+    const id = window.setTimeout(preload, 250);
+    return () => window.clearTimeout(id);
   }, [showSplash]);
 
 
@@ -1212,6 +1238,10 @@ const AppContent: React.FC = () => {
               <button
                 key={item.id}
                 type="button"
+                onPointerDown={() => {
+                  if (item.id === 'home') void import('./components/SmartGateway');
+                  if (item.id === 'discover') void import('./components/ServiceExplorer');
+                }}
                 onClick={() => handleTabChange(item.id as Tab)}
                 className={cn(
                   'min-h-[46px] rounded-[15px] text-[11px] font-black transition-colors duration-100 flex items-center justify-center gap-1.5 active:scale-[0.97]',
@@ -1255,9 +1285,9 @@ const AppContent: React.FC = () => {
         >
             <motion.div 
               key={activeTab} 
-              initial={{ opacity: 0, y: 5 }} 
+              initial={['home', 'discover', 'mylibrary'].includes(activeTab) ? false : { opacity: 0, y: 5 }} 
               animate={{ opacity: 1, y: 0 }} 
-              transition={{ duration: 0.16, ease: 'easeOut' }}
+              transition={{ duration: ['home', 'discover', 'mylibrary'].includes(activeTab) ? 0.01 : 0.14, ease: 'easeOut' }}
               className="relative z-10"
             >
             <div className="absolute -top-10 left-12 w-32 h-32 bg-mood-glow rounded-full blur-[80px] pointer-events-none opacity-50" />

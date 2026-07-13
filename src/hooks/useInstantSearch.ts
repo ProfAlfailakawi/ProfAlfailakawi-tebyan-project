@@ -55,12 +55,12 @@ async function loadCorpus(): Promise<InstantIndex> {
   return loadPromise;
 }
 
-export function useInstantSearch(query: string, limit = 6) {
+export function useInstantSearch(query: string, limit = 6, enabled = true) {
   const [index, setIndex] = useState<InstantIndex | null>(cachedIndex);
   const [isReady, setIsReady] = useState<boolean>(!!cachedIndex);
 
   useEffect(() => {
-    if (index) return;
+    if (!enabled || index) return;
     let alive = true;
     loadCorpus().then((idx) => {
       if (!alive) return;
@@ -70,12 +70,12 @@ export function useInstantSearch(query: string, limit = 6) {
     return () => {
       alive = false;
     };
-  }, [index]);
+  }, [enabled, index]);
 
   const results: InstantResult[] = useMemo(() => {
-    if (!index) return [];
+    if (!enabled || !index) return [];
     return runSearch(index, query, limit);
-  }, [index, query, limit]);
+  }, [enabled, index, query, limit]);
 
   return { results, isReady, corpusSize: index?.docs.length ?? 0 };
 }
