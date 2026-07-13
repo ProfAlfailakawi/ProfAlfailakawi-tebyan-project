@@ -1205,7 +1205,7 @@ export const SmartGateway: React.FC<
   } = useSmartSearch(
     searchValue,
     6,
-    showQuestionHelper && inputSettled && !hasSearched,
+    inputSettled && !hasSearched && searchValue.trim().length >= 6,
   );
   const instantSearch = useInstantSearch(
     inputSettled && !hasSearched ? deferredSearchValue : "",
@@ -1214,6 +1214,46 @@ export const SmartGateway: React.FC<
   );
   const suggestion = smartSuggestion;
   const setSuggestion = setSmartSuggestion;
+
+  const liveQuestionOptions = useMemo(() => {
+    const raw = searchValue.trim();
+    if (!inputSettled || hasSearched || raw.length < 3) return [];
+
+    const normalized = raw.replace(/[؟?!.،,]+$/g, "").trim();
+    const options: string[] = [];
+    const push = (value: string) => {
+      const clean = value.replace(/\s+/g, " " ).trim();
+      if (clean && clean !== raw && !options.includes(clean)) options.push(clean);
+    };
+
+    if (smartSuggestion && smartSuggestion.length <= 180) push(smartSuggestion);
+
+    if (language === "ar") {
+      const alreadyQuestion = /^(كيف|شنو|وش|ماذا|لماذا|ليش|هل|أبي|ابي|أريد|اريد|عندي|محتار)/.test(normalized);
+      if (alreadyQuestion) {
+        push(`${normalized}، وما أفضل خطوة أبدأ بها؟`);
+        push(`${normalized}، اشرحها لي ببساطة مع خيارات عملية`);
+        push(`${normalized}، وما الأسباب المحتملة وكيف أتعامل معها؟`);
+      } else {
+        push(`أريد أن أفهم ${normalized} بطريقة بسيطة وواضحة`);
+        push(`ما أفضل قرار أو خطوة عملية بخصوص ${normalized}؟`);
+        push(`حلّل لي ${normalized} من أكثر من زاوية`);
+      }
+    } else {
+      const alreadyQuestion = /^(how|what|why|should|can|i want|i need|i am|i'm)/i.test(normalized);
+      if (alreadyQuestion) {
+        push(`${normalized}, and what is the best first step?`);
+        push(`${normalized}. Explain it simply with practical options.`);
+        push(`${normalized}. What are the likely causes and how should I respond?`);
+      } else {
+        push(`Help me understand ${normalized} simply and clearly.`);
+        push(`What is the best practical step regarding ${normalized}?`);
+        push(`Analyze ${normalized} from different angles.`);
+      }
+    }
+
+    return options.slice(0, 3);
+  }, [searchValue, inputSettled, hasSearched, smartSuggestion, language]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
@@ -1229,7 +1269,7 @@ export const SmartGateway: React.FC<
       setShowQuestionHelper(false);
       return;
     }
-    const timer = window.setTimeout(() => setInputSettled(true), 700);
+    const timer = window.setTimeout(() => setInputSettled(true), 320);
     return () => window.clearTimeout(timer);
   }, [searchValue]);
 
@@ -3360,7 +3400,7 @@ export const SmartGateway: React.FC<
                   : `Welcome, ${userName}`}
               </motion.div>
             )}
-            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-black leading-[1.24] tracking-tight text-[#182231] md:text-5xl lg:text-[3.8rem]">
+            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-bold leading-[1.3] tracking-tight text-[#182231] md:text-5xl lg:text-[3.8rem]">
               {language === "ar"
                 ? "وش تبي تفهم أو تحسم اليوم؟"
                 : "What do you want to understand or decide today?"}
@@ -3763,7 +3803,7 @@ export const SmartGateway: React.FC<
                     }}
                     onFocus={() => setIsFocused(true)}
                     onBlur={() => setIsFocused(false)}
-                    className="w-full bg-transparent border-none outline-none px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
+                    className="w-full bg-transparent border-none outline-none px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-medium tracking-[-0.015em] text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
                     dir={language === "ar" ? "rtl" : "ltr"}
                     aria-label={
                       language === "ar" ? "اكتب سؤالك" : "Write your question"
@@ -3823,6 +3863,43 @@ export const SmartGateway: React.FC<
                   </button>
                 )}
               </div>
+
+              {!hasSearched &&
+                !isThinking &&
+                liveQuestionOptions.length > 0 && (
+                  <div
+                    className="tebyan-live-suggestions mx-auto mt-3 w-full max-w-3xl"
+                    dir={language === "ar" ? "rtl" : "ltr"}
+                    aria-live="polite"
+                  >
+                    <div className="mb-2 flex items-center gap-2 px-1">
+                      <Sparkles className="h-3.5 w-3.5 text-[#8E7AAE]" />
+                      <span className="text-[11px] font-semibold text-[#7C8796]">
+                        {language === "ar" ? "يمكن أن تقصد…" : "You may mean…"}
+                      </span>
+                    </div>
+                    <div className="grid gap-2">
+                      {liveQuestionOptions.map((option, index) => (
+                        <button
+                          key={`${option}-${index}`}
+                          type="button"
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={() => {
+                            setSearchValue(option);
+                            latestInputRef.current = option;
+                            setSmartSuggestion("");
+                            setInputSettled(false);
+                            window.requestAnimationFrame(() => inputRef.current?.focus());
+                          }}
+                          className="tebyan-live-suggestion-option group flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border border-[#8FA9C7]/14 bg-white/78 px-4 py-2.5 text-start text-[13px] font-medium leading-6 text-[#465568] shadow-[0_7px_22px_rgba(24,34,49,0.035)] transition-colors duration-100 hover:border-[#8E7AAE]/28 hover:bg-white hover:text-[#182231] active:bg-[#F6F3FA]"
+                        >
+                          <span>{option}</span>
+                          <ArrowLeft className="h-4 w-4 shrink-0 text-[#8E7AAE]/60 transition-transform duration-100 group-hover:-translate-x-0.5" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
               {!hasSearched &&
                 !isThinking &&
