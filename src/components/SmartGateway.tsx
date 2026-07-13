@@ -47,7 +47,10 @@ import { TebyanGlyph } from "./common/TebyanGlyph";
 import TextareaAutosize from "react-textarea-autosize";
 import { TebyanTooltip } from "./TebyanTooltip";
 import { DirectAnswerCard } from "./gateway/DirectAnswerCard";
-import { buildDirectGuidance, type ResponseMode } from "./gateway/directGuidance";
+import {
+  buildDirectGuidance,
+  type ResponseMode,
+} from "./gateway/directGuidance";
 
 const DAILY_CHALLENGES = [
   {
@@ -1108,26 +1111,6 @@ export const SmartGateway: React.FC<
   const [ephemeralTime, setEphemeralTime] = useState({ m: 9, s: 59 });
   const [wisdomIndex, setWisdomIndex] = useState(0);
 
-  useEffect(() => {
-    const updateEphemeralTimer = () => {
-      const now = new Date();
-      const minutes = now.getMinutes();
-      const seconds = now.getSeconds();
-
-      const m = 9 - (minutes % 10);
-      const s = 59 - seconds;
-
-      setEphemeralTime({ m, s });
-      setWisdomIndex(
-        Math.floor(now.getTime() / (10 * 60 * 1000)) % EPHEMERAL_WISDOMS.length,
-      );
-    };
-
-    updateEphemeralTimer();
-    const interval = setInterval(updateEphemeralTimer, 1000);
-    return () => clearInterval(interval);
-  }, [EPHEMERAL_WISDOMS.length]);
-
   const currentWisdom = EPHEMERAL_WISDOMS[wisdomIndex];
 
   const [challengeIndex, setChallengeIndex] = useState(0);
@@ -1180,6 +1163,22 @@ export const SmartGateway: React.FC<
   const [depthLevel, setDepthLevel] = useState(0);
   const [showDirectTools, setShowDirectTools] = useState(false);
   const [showInspiration, setShowInspiration] = useState(false);
+
+  useEffect(() => {
+    if (!showInspiration) return;
+    const updateEphemeralTimer = () => {
+      const now = new Date();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      setEphemeralTime({ m: 9 - (minutes % 10), s: 59 - seconds });
+      setWisdomIndex(
+        Math.floor(now.getTime() / (10 * 60 * 1000)) % EPHEMERAL_WISDOMS.length,
+      );
+    };
+    updateEphemeralTimer();
+    const interval = window.setInterval(updateEphemeralTimer, 1000);
+    return () => window.clearInterval(interval);
+  }, [EPHEMERAL_WISDOMS.length, showInspiration]);
   const [showGateEcho, setShowGateEcho] = useState(false);
   const [selectedMood, setSelectedMood] = useState<
     "calm" | "unsure" | "urgent" | "inspired"
@@ -1187,10 +1186,13 @@ export const SmartGateway: React.FC<
   const [showLivingWorldPanel, setShowLivingWorldPanel] = useState(false);
   const [showDailyDock, setShowDailyDock] = useState(false);
   const [responseMode, setResponseMode] = useState<ResponseMode>("quick");
+  const [exampleIndex, setExampleIndex] = useState(0);
   const [inputSettled, setInputSettled] = useState(false);
   const [showQuestionHelper, setShowQuestionHelper] = useState(false);
-  const [isMobileViewport, setIsMobileViewport] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches,
+  const [isMobileViewport, setIsMobileViewport] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px)").matches,
   );
 
   const deferredSearchValue = React.useDeferredValue(searchValue);
@@ -1327,7 +1329,6 @@ export const SmartGateway: React.FC<
     "Constructing a comprehensive roadmap...",
   ];
 
-
   function normalizeFollowUpQuery(value: any) {
     const raw = String(value || "").trim();
     if (!raw) return "";
@@ -1344,8 +1345,11 @@ export const SmartGateway: React.FC<
       .replace(/\s+/g, " ")
       .trim();
 
-    const repeatedArabicPrefix = /^(أريد\s+فهمًا?\s+واضحًا?\s+لهذا\s+الموضوع[:：]\s*){2,}/i;
-    text = text.replace(repeatedArabicPrefix, "أريد فهمًا واضحًا لهذا الموضوع: ").trim();
+    const repeatedArabicPrefix =
+      /^(أريد\s+فهمًا?\s+واضحًا?\s+لهذا\s+الموضوع[:：]\s*){2,}/i;
+    text = text
+      .replace(repeatedArabicPrefix, "أريد فهمًا واضحًا لهذا الموضوع: ")
+      .trim();
 
     const parts = text
       .split(/(?<=[؟?!.])\s+|\s*[|،؛]\s*/g)
@@ -1811,7 +1815,10 @@ export const SmartGateway: React.FC<
       // Only load memory if it belongs to the current user state
       if (data.uid === currentUid) {
         const normalizedQuery = normalizeFollowUpQuery(data.query);
-        const normalizedData = { ...data, query: normalizedQuery || data.query };
+        const normalizedData = {
+          ...data,
+          query: normalizedQuery || data.query,
+        };
         if (normalizedQuery && normalizedQuery !== data.query) {
           localStorage.setItem("tebyan_memory", JSON.stringify(normalizedData));
         }
@@ -1896,6 +1903,7 @@ export const SmartGateway: React.FC<
     setDepthLevel(0);
     setResponseMode("quick");
     setShowQuestionHelper(false);
+    setShowDirectTools(false);
   };
 
   useEffect(() => {
@@ -1943,10 +1951,9 @@ export const SmartGateway: React.FC<
   useEffect(() => {
     if (hasSearched && !isThinking) {
       setTimeout(() => {
-        const el =
-          isMobileViewport
-            ? document.getElementById("mobile-results")
-            : document.getElementById("desktop-results");
+        const el = isMobileViewport
+          ? document.getElementById("mobile-results")
+          : document.getElementById("desktop-results");
         el?.scrollIntoView({ behavior: "auto", block: "nearest" });
       }, 100);
     }
@@ -2264,6 +2271,7 @@ export const SmartGateway: React.FC<
     // are deliberately moved out of the tap path so the button responds now.
     setIsThinking(false);
     setHasSearched(true);
+    setShowDirectTools(false);
     setSelectionFeedback("");
 
     const runAfterPaint = (task: () => void) => {
@@ -2526,7 +2534,9 @@ export const SmartGateway: React.FC<
     const { intent, emotion } = getIntentAndEmotion(deferredQuery);
     let usageStats: Record<string, number> = {};
     try {
-      usageStats = JSON.parse(localStorage.getItem("tebyan_usage_stats") || "{}");
+      usageStats = JSON.parse(
+        localStorage.getItem("tebyan_usage_stats") || "{}",
+      );
     } catch (e) {}
 
     console.log("[SmartGateway] STARTING ANALYSIS FOR:", q, {
@@ -2917,13 +2927,7 @@ export const SmartGateway: React.FC<
         mode: responseMode,
         specificInsight: smartResponse,
       }),
-    [
-      query,
-      language,
-      directJourneyProfile.id,
-      responseMode,
-      smartResponse,
-    ],
+    [query, language, directJourneyProfile.id, responseMode, smartResponse],
   );
 
   const journeyDoors = useMemo(() => {
@@ -3210,7 +3214,11 @@ export const SmartGateway: React.FC<
     cleanQuery.length > 110 ? `${cleanQuery.slice(0, 110)}…` : cleanQuery;
 
   const livingWorld = useMemo(() => {
-    const combined = [query, ...searchHistory, normalizeFollowUpQuery(lastInteraction?.query) || ""]
+    const combined = [
+      query,
+      ...searchHistory,
+      normalizeFollowUpQuery(lastInteraction?.query) || "",
+    ]
       .join(" ")
       .toLowerCase();
     const count = (words: string[]) =>
@@ -3337,16 +3345,21 @@ export const SmartGateway: React.FC<
           animate={{ opacity: 1, y: 0 }}
           className="tebyan-home-hero text-center mb-3 md:mb-7"
         >
-          <header className="text-center" dir={language === "ar" ? "rtl" : "ltr"}>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="tebyan-home-greeting mb-2 text-xs font-black text-[#8E7AAE] md:text-sm"
-            >
-              {language === "ar"
-                ? (userName && userName !== "ضيف" && userName !== "New User" ? `أهلاً بك يا ${userName}` : "أهلاً بك في تبيان")
-                : `Welcome${userName ? `, ${userName}` : ""}`}
-            </motion.div>
+          <header
+            className="text-center"
+            dir={language === "ar" ? "rtl" : "ltr"}
+          >
+            {userName && userName !== "ضيف" && userName !== "New User" && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="tebyan-home-greeting mb-2 text-xs font-black text-[#8E7AAE] md:text-sm"
+              >
+                {language === "ar"
+                  ? `أهلاً بك يا ${userName}`
+                  : `Welcome, ${userName}`}
+              </motion.div>
+            )}
             <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-black leading-[1.24] tracking-tight text-[#182231] md:text-5xl lg:text-[3.8rem]">
               {language === "ar"
                 ? "وش تبي تفهم أو تحسم اليوم؟"
@@ -3354,38 +3367,11 @@ export const SmartGateway: React.FC<
             </h1>
             <p className="mx-auto mt-2.5 max-w-xl text-[0.92rem] font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
               {language === "ar"
-                ? "اكتب سؤالك بطريقتك، حتى لو كان غير مرتب. تبيان يعطيك الخلاصة أولاً ثم يفتح لك التعمق عند الحاجة."
-                : "Write the question in your own words, even if it is not organized. Tebyan gives the answer first, then opens deeper paths only when needed."}
+                ? "اكتب سؤالك بطريقتك، حتى لو كان غير مرتب."
+                : "Write your question in your own words, even if it is not organized."}
             </p>
           </header>
         </motion.div>
-
-        {!hasSearched && !isThinking && (
-          <div className="tebyan-response-mode mx-auto mb-2.5 flex w-full max-w-[470px] items-center justify-center gap-1 rounded-[18px] border border-[#8FA9C7]/14 bg-white/74 p-1 shadow-sm" dir={language === "ar" ? "rtl" : "ltr"}>
-            {([
-              { id: "quick", ar: "جواب سريع", en: "Quick answer" },
-              { id: "simple", ar: "شرح مبسط", en: "Simple explanation" },
-              { id: "deep", ar: "تحليل عميق", en: "Deep analysis" },
-            ] as Array<{ id: ResponseMode; ar: string; en: string }>).map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                aria-pressed={responseMode === option.id}
-                onClick={() => setResponseMode(option.id)}
-                className={cn(
-                  "min-h-10 flex-1 rounded-[13px] px-2 text-xs font-black leading-none transition-colors duration-100 whitespace-nowrap",
-                  responseMode === option.id
-                    ? "bg-[#7D689E] text-white shadow-[0_6px_16px_rgba(125,104,158,0.18)]"
-                    : "text-[#64788D] hover:bg-white hover:text-[#182231]",
-                )}
-              >
-                <span style={{ color: responseMode === option.id ? '#FFFFFF' : undefined }}>
-                  {language === "ar" ? option.ar : option.en}
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
 
         {false && !hasSearched && !isThinking && isHome && (
           <motion.div
@@ -3433,47 +3419,51 @@ export const SmartGateway: React.FC<
           </motion.div>
         )}
 
-        {false && showLivingWorldPanel && !hasSearched && !isThinking && isHome && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mx-auto mb-5 w-full max-w-3xl rounded-[24px] border border-[#8FA9C7]/14 bg-white/72 p-3 shadow-[0_14px_42px_rgba(24,34,49,0.045)] backdrop-blur-xl"
-            dir={language === "ar" ? "rtl" : "ltr"}
-          >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-              <p className="text-right text-xs md:text-sm font-black leading-relaxed text-[#182231]">
-                {livingWorld.message}
-              </p>
-              <div className="flex flex-wrap items-center justify-end gap-1.5">
-                {livingWorld.map.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      const nextValue =
-                        language === "ar"
-                          ? `أبي أرتب ${item.ar} اليوم بخطوة واضحة`
-                          : `I want to organize my ${item.en.toLowerCase()} today with one clear step`;
-                      setSearchValue(nextValue);
-                      latestInputRef.current = nextValue;
-                      setQuery(nextValue);
-                      setSmartSuggestion("");
-                      handleSubmit(undefined, nextValue);
-                    }}
-                    title={language === "ar" ? item.ar : item.en}
-                    className="inline-flex items-center gap-2 rounded-full border border-[#8FA9C7]/14 bg-[#FAF9F6]/82 px-3 py-1.5 text-[11px] font-black text-[#465568] shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
-                  >
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{ backgroundColor: item.color }}
-                    />
-                    {language === "ar" ? item.ar : item.en}
-                  </button>
-                ))}
+        {false &&
+          showLivingWorldPanel &&
+          !hasSearched &&
+          !isThinking &&
+          isHome && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mx-auto mb-5 w-full max-w-3xl rounded-[24px] border border-[#8FA9C7]/14 bg-white/72 p-3 shadow-[0_14px_42px_rgba(24,34,49,0.045)] backdrop-blur-xl"
+              dir={language === "ar" ? "rtl" : "ltr"}
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <p className="text-right text-xs md:text-sm font-black leading-relaxed text-[#182231]">
+                  {livingWorld.message}
+                </p>
+                <div className="flex flex-wrap items-center justify-end gap-1.5">
+                  {livingWorld.map.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        const nextValue =
+                          language === "ar"
+                            ? `أبي أرتب ${item.ar} اليوم بخطوة واضحة`
+                            : `I want to organize my ${item.en.toLowerCase()} today with one clear step`;
+                        setSearchValue(nextValue);
+                        latestInputRef.current = nextValue;
+                        setQuery(nextValue);
+                        setSmartSuggestion("");
+                        handleSubmit(undefined, nextValue);
+                      }}
+                      title={language === "ar" ? item.ar : item.en}
+                      className="inline-flex items-center gap-2 rounded-full border border-[#8FA9C7]/14 bg-[#FAF9F6]/82 px-3 py-1.5 text-[11px] font-black text-[#465568] shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
+                    >
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      {language === "ar" ? item.ar : item.en}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
 
         <AnimatePresence>
           {showStylePicker && (
@@ -3559,8 +3549,12 @@ export const SmartGateway: React.FC<
                 <button
                   type="button"
                   onClick={() => {
-                    setSearchValue(normalizeFollowUpQuery(lastInteraction.query));
-                    latestInputRef.current = normalizeFollowUpQuery(lastInteraction.query);
+                    setSearchValue(
+                      normalizeFollowUpQuery(lastInteraction.query),
+                    );
+                    latestInputRef.current = normalizeFollowUpQuery(
+                      lastInteraction.query,
+                    );
                     setQuery(normalizeFollowUpQuery(lastInteraction.query));
                     setShowFollowUp(false);
                   }}
@@ -3623,7 +3617,9 @@ export const SmartGateway: React.FC<
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       onClick={() => {
-                        const nextValue = normalizeFollowUpQuery(lastInteraction.query);
+                        const nextValue = normalizeFollowUpQuery(
+                          lastInteraction.query,
+                        );
                         setSearchValue(nextValue);
                         latestInputRef.current = nextValue;
                         setQuery(nextValue);
@@ -3769,7 +3765,9 @@ export const SmartGateway: React.FC<
                     onBlur={() => setIsFocused(false)}
                     className="w-full bg-transparent border-none outline-none px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight text-[#182231] placeholder:text-[#7C8796]/45 z-10 relative resize-none leading-relaxed"
                     dir={language === "ar" ? "rtl" : "ltr"}
-                    aria-label={language === "ar" ? "اكتب سؤالك" : "Write your question"}
+                    aria-label={
+                      language === "ar" ? "اكتب سؤالك" : "Write your question"
+                    }
                   />
 
                   {smartSuggestion &&
@@ -3816,7 +3814,9 @@ export const SmartGateway: React.FC<
                     type="button"
                     onClick={clearSearch}
                     title={language === "ar" ? "مسح السؤال" : "Clear question"}
-                    aria-label={language === "ar" ? "مسح السؤال" : "Clear question"}
+                    aria-label={
+                      language === "ar" ? "مسح السؤال" : "Clear question"
+                    }
                     className="bg-white/90 text-[#64788D] border border-[#8FA9C7]/20 w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
                   >
                     <X className="w-5 h-5 md:w-6 md:h-6" />
@@ -3856,7 +3856,10 @@ export const SmartGateway: React.FC<
                 !isThinking &&
                 inputSettled &&
                 searchValue.trim().length >= 8 && (
-                  <div className="mt-3 w-full max-w-3xl mx-auto text-right" dir={language === "ar" ? "rtl" : "ltr"}>
+                  <div
+                    className="mt-3 w-full max-w-3xl mx-auto text-right"
+                    dir={language === "ar" ? "rtl" : "ltr"}
+                  >
                     <button
                       type="button"
                       onClick={() => setShowQuestionHelper((value) => !value)}
@@ -4024,354 +4027,374 @@ export const SmartGateway: React.FC<
                         context={directGuidance.context}
                         responseMode={responseMode}
                         accent={directJourneyProfile.accent}
+                        showOptions={showDirectTools}
+                        onContinue={() =>
+                          handlePathSelect(
+                            primarySuggestion?.id || "qawlfasl",
+                            query,
+                          )
+                        }
+                        onShowOptions={() =>
+                          setShowDirectTools((value) => !value)
+                        }
                         onExplain={() => {
+                          setShowDirectTools(true);
                           setResponseMode("simple");
                           setDepthLevel((level) => Math.max(level, 1));
                         }}
                         onPlan={() => handlePathSelect("roadmap", query)}
                         onDeepen={() => {
+                          setShowDirectTools(true);
                           setResponseMode("deep");
                           setDepthLevel((level) => Math.max(level, 3));
                         }}
                       />
 
-                      {/* Account status stays quiet; saving is handled once in the knowledge seal below. */}
-                      <div className="border border-[#8FA9C7]/12 bg-white/70 rounded-2xl px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 mt-2">
-                        <div className="flex items-start gap-3 text-right">
-                          <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 mt-0.5 border border-[#DDEDEA]">
-                            {user ? (
-                              <CheckCircle2 className="w-4.5 h-4.5 text-[#0F9F6E]" />
-                            ) : (
-                              <Lock className="w-4.5 h-4.5 text-[#7C8796]" />
-                            )}
-                          </div>
-                          <div className="space-y-0.5 min-w-0">
-                            <h4 className="font-black text-xs md:text-sm text-[#182231] leading-relaxed">
-                              {user
-                                ? language === "ar"
-                                  ? `مرتبط بحسابك: ${userName}`
-                                  : `Linked to your account: ${userName}`
-                                : language === "ar"
-                                  ? "هذه النتيجة متاحة لك الآن"
-                                  : "This result is available to you now"}
-                            </h4>
-                            <p className="text-[11px] text-[#64788D] font-bold leading-normal">
-                              {user
-                                ? language === "ar"
-                                  ? "جاهز للحفظ في نهاية المسار بدون أزرار مكررة."
-                                  : "Ready to save below without repeated buttons."
-                                : language === "ar"
-                                  ? "سجّل فقط إذا تبي تحفظها وتكمل عليها لاحقاً."
-                                  : "Sign in only if you want to save it and continue later."}
-                            </p>
-                          </div>
-                        </div>
-                        {!user && (
-                          <div className="shrink-0 flex w-full md:w-auto self-end md:self-auto justify-end">
-                            <button
-                              type="button"
-                              onClick={() => onShowLogin?.()}
-                              className="bg-[#182231] text-white hover:bg-black font-black text-xs px-5 py-2.5 rounded-full transition-all shadow-sm flex items-center gap-2 cursor-pointer"
-                            >
-                              <Lock className="w-3.5 h-3.5" />
-                              {language === "ar"
-                                ? "حفظ ومتابعة"
-                                : "Save and continue"}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="space-y-8">
-                        <div className="md:grid grid-cols-12 gap-8 mt-8">
-                          <div
-                            className={cn(
-                              "col-span-12",
-                              depthLevel > 2
-                                ? "md:col-span-8"
-                                : "md:col-span-12",
-                            )}
-                          >
-                            {/* Focus Layer: Primary Suggestion */}
-                            {primarySuggestion && (
-                              <div className="space-y-4">
-                                <div className="px-4 py-2 text-[11px] font-black text-[#6E5F8E] uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <span>
-                                      {language === "ar"
-                                        ? "التعمق المقترح"
-                                        : "RECOMMENDED DEEPER PATH"}
-                                    </span>
-                                    <Zap className="w-3 h-3" />
-                                  </div>
-                                </div>
-
+                      {showDirectTools && (
+                        <>
+                          {/* Account status stays quiet; saving is handled once in the knowledge seal below. */}
+                          <div className="border border-[#8FA9C7]/12 bg-white/70 rounded-2xl px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 mt-2">
+                            <div className="flex items-start gap-3 text-right">
+                              <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 mt-0.5 border border-[#DDEDEA]">
+                                {user ? (
+                                  <CheckCircle2 className="w-4.5 h-4.5 text-[#0F9F6E]" />
+                                ) : (
+                                  <Lock className="w-4.5 h-4.5 text-[#7C8796]" />
+                                )}
+                              </div>
+                              <div className="space-y-0.5 min-w-0">
+                                <h4 className="font-black text-xs md:text-sm text-[#182231] leading-relaxed">
+                                  {user
+                                    ? language === "ar"
+                                      ? `مرتبط بحسابك: ${userName}`
+                                      : `Linked to your account: ${userName}`
+                                    : language === "ar"
+                                      ? "هذه النتيجة متاحة لك الآن"
+                                      : "This result is available to you now"}
+                                </h4>
+                                <p className="text-[11px] text-[#64788D] font-bold leading-normal">
+                                  {user
+                                    ? language === "ar"
+                                      ? "جاهز للحفظ في نهاية المسار بدون أزرار مكررة."
+                                      : "Ready to save below without repeated buttons."
+                                    : language === "ar"
+                                      ? "سجّل فقط إذا تبي تحفظها وتكمل عليها لاحقاً."
+                                      : "Sign in only if you want to save it and continue later."}
+                                </p>
+                              </div>
+                            </div>
+                            {!user && (
+                              <div className="shrink-0 flex w-full md:w-auto self-end md:self-auto justify-end">
                                 <button
                                   type="button"
-                                  onClick={() =>
-                                    handlePathSelect(
-                                      primarySuggestion.id,
-                                      query,
-                                    )
-                                  }
-                                  className="tebyan-primary-route-card w-full flex-col md:flex-row flex md:items-center justify-between p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all group text-right border active:scale-[0.98] bg-white text-[#182231] hover:opacity-100 border-[#DED6EA] shadow-[0_22px_60px_rgba(24,34,49,0.08)] relative overflow-hidden"
+                                  onClick={() => onShowLogin?.()}
+                                  className="bg-[#182231] text-white hover:bg-black font-black text-xs px-5 py-2.5 rounded-full transition-all shadow-sm flex items-center gap-2 cursor-pointer"
                                 >
-                                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 relative z-10 w-full md:w-auto">
-                                    <div className="w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[32px] bg-white/76 border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center transition-all group-hover:scale-110 shrink-0 self-end md:self-auto shadow-sm">
-                                      {(() => {
-                                        const Icon = journeyProfile.icon;
-                                        return (
-                                          <Icon className="w-7 h-7 md:w-10 md:h-10" />
-                                        );
-                                      })()}
-                                    </div>
-                                    <div className="text-right w-full">
-                                      <div className="flex items-center gap-2 mb-1 md:mb-2 justify-end md:justify-start">
-                                        <h3 className="text-2xl md:text-3xl font-black">
+                                  <Lock className="w-3.5 h-3.5" />
+                                  {language === "ar"
+                                    ? "حفظ ومتابعة"
+                                    : "Save and continue"}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="space-y-8">
+                            <div className="md:grid grid-cols-12 gap-8 mt-8">
+                              <div
+                                className={cn(
+                                  "col-span-12",
+                                  depthLevel > 2
+                                    ? "md:col-span-8"
+                                    : "md:col-span-12",
+                                )}
+                              >
+                                {/* Focus Layer: Primary Suggestion */}
+                                {primarySuggestion && (
+                                  <div className="space-y-4">
+                                    <div className="px-4 py-2 text-[11px] font-black text-[#6E5F8E] uppercase tracking-widest border-b border-zinc-100 flex items-center justify-between">
+                                      <div className="flex items-center gap-2">
+                                        <span>
                                           {language === "ar"
-                                            ? journeyProfile.firstDoor.ar
-                                            : journeyProfile.firstDoor.en}
-                                        </h3>
+                                            ? "التعمق المقترح"
+                                            : "RECOMMENDED DEEPER PATH"}
+                                        </span>
+                                        <Zap className="w-3 h-3" />
                                       </div>
-                                      <p className="text-sm md:text-base font-semibold text-[#5E6B7A] max-w-md leading-relaxed">
+                                    </div>
+
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        handlePathSelect(
+                                          primarySuggestion.id,
+                                          query,
+                                        )
+                                      }
+                                      className="tebyan-primary-route-card w-full flex-col md:flex-row flex md:items-center justify-between p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all group text-right border active:scale-[0.98] bg-white text-[#182231] hover:opacity-100 border-[#DED6EA] shadow-[0_22px_60px_rgba(24,34,49,0.08)] relative overflow-hidden"
+                                    >
+                                      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 relative z-10 w-full md:w-auto">
+                                        <div className="w-14 h-14 md:w-20 md:h-20 rounded-[20px] md:rounded-[32px] bg-white/76 border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center transition-all group-hover:scale-110 shrink-0 self-end md:self-auto shadow-sm">
+                                          {(() => {
+                                            const Icon = journeyProfile.icon;
+                                            return (
+                                              <Icon className="w-7 h-7 md:w-10 md:h-10" />
+                                            );
+                                          })()}
+                                        </div>
+                                        <div className="text-right w-full">
+                                          <div className="flex items-center gap-2 mb-1 md:mb-2 justify-end md:justify-start">
+                                            <h3 className="text-2xl md:text-3xl font-black">
+                                              {language === "ar"
+                                                ? journeyProfile.firstDoor.ar
+                                                : journeyProfile.firstDoor.en}
+                                            </h3>
+                                          </div>
+                                          <p className="text-sm md:text-base font-semibold text-[#5E6B7A] max-w-md leading-relaxed">
+                                            {language === "ar"
+                                              ? journeyProfile.deepen.ar
+                                              : journeyProfile.deepen.en}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right shrink-0">
+                                        <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] px-6 py-3 rounded-full md:group-hover:bg-white transition-all shadow-sm shrink-0 whitespace-nowrap min-w-[110px] md:min-w-[130px]">
+                                          <span className="font-bold text-sm whitespace-nowrap shrink-0">
+                                            {language === "ar"
+                                              ? "البدء"
+                                              : "Start"}
+                                          </span>
+                                          <ArrowLeft
+                                            className={cn(
+                                              "w-4 h-4 md:w-5 md:h-5 shrink-0",
+                                              language === "ar"
+                                                ? "group-hover:-translate-x-2"
+                                                : "rotate-180 group-hover:translate-x-2",
+                                            )}
+                                          />
+                                        </div>
+                                      </div>
+                                    </button>
+                                  </div>
+                                )}
+
+                                {/* Progressive disclosure layer: keep all tools available without crowding first view */}
+                                {(secondarySuggestions.length > 0 ||
+                                  alternativeSuggestions.length > 0) && (
+                                  <div className="mt-4 rounded-[22px] border border-[#8FA9C7]/12 bg-white/62 p-3.5 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                    <div className="text-right">
+                                      <h4 className="text-sm md:text-base font-black text-zinc-900">
                                         {language === "ar"
-                                          ? journeyProfile.deepen.ar
-                                          : journeyProfile.deepen.en}
+                                          ? "خيارات أخرى عند الحاجة"
+                                          : "Other options if needed"}
+                                      </h4>
+                                      <p className="mt-1 text-xs md:text-sm font-bold text-zinc-500">
+                                        {language === "ar"
+                                          ? "ابدأ بالباب الأول. افتح خياراً إضافياً فقط إذا ما كان مناسباً."
+                                          : "Start with the first door. Open another option only if needed."}
                                       </p>
                                     </div>
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        setDepthLevel((level) =>
+                                          hasMoreDepth ? level + 1 : 0,
+                                        )
+                                      }
+                                      className="shrink-0 px-5 py-2.5 rounded-full bg-white border border-[#8FA9C7]/16 text-[#465568] font-black text-xs shadow-sm hover:border-[#8E7AAE]/24 active:scale-95 transition-all"
+                                    >
+                                      {depthCtaText}
+                                    </button>
                                   </div>
-                                  <div className="mt-6 md:mt-0 relative z-10 w-full md:w-auto text-center md:text-right shrink-0">
-                                    <div className="w-full md:w-auto inline-flex justify-center items-center gap-3 md:gap-4 bg-[#F4F0F8] text-[#6E5F8E] border border-[#DED6EA] px-6 py-3 rounded-full md:group-hover:bg-white transition-all shadow-sm shrink-0 whitespace-nowrap min-w-[110px] md:min-w-[130px]">
-                                      <span className="font-bold text-sm whitespace-nowrap shrink-0">
-                                        {language === "ar" ? "البدء" : "Start"}
-                                      </span>
-                                      <ArrowLeft
-                                        className={cn(
-                                          "w-4 h-4 md:w-5 md:h-5 shrink-0",
-                                          language === "ar"
-                                            ? "group-hover:-translate-x-2"
-                                            : "rotate-180 group-hover:translate-x-2",
-                                        )}
-                                      />
+                                )}
+
+                                {depthLevel > 0 && lastVisibleDoor && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: 8 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mt-4 rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 md:p-5 shadow-[0_14px_44px_rgba(24,34,49,0.05)]"
+                                    dir={language === "ar" ? "rtl" : "ltr"}
+                                  >
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                      <div className="text-right">
+                                        <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">
+                                          {language === "ar"
+                                            ? `العمق ${depthLevel}`
+                                            : `Depth ${depthLevel}`}
+                                        </p>
+                                        <h4 className="mt-1 text-base md:text-lg font-black text-[#182231]">
+                                          {language === "ar"
+                                            ? depthMoment.ar.title
+                                            : depthMoment.en.title}
+                                        </h4>
+                                        <p className="mt-1 text-xs md:text-sm font-bold leading-relaxed text-[#64788D]">
+                                          {lastVisibleDoor.desc ||
+                                            (language === "ar"
+                                              ? depthMoment.ar.desc
+                                              : depthMoment.en.desc)}
+                                        </p>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 justify-end">
+                                        {[0, 1, 2, 3, 4].map((step) => (
+                                          <span
+                                            key={`depth-dot-${step}`}
+                                            className={cn(
+                                              "h-2 rounded-full transition-all",
+                                              step < depthLevel
+                                                ? "w-6 bg-[#8E7AAE]"
+                                                : "w-2 bg-[#D9DEE5]",
+                                            )}
+                                          />
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </motion.div>
+                                )}
+
+                                {/* Focus Layer: Secondary Options */}
+                                {visibleSecondarySuggestions.length > 0 && (
+                                  <div className="mt-8 pt-8 border-t border-zinc-100">
+                                    <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest mb-4 px-2">
+                                      {language === "ar"
+                                        ? "أبواب أعمق"
+                                        : "DEEPER DOORS"}
+                                    </h4>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                      {visibleSecondarySuggestions.map((s) => {
+                                        const Icon = s.icon;
+                                        return (
+                                          <button
+                                            key={`sec-${s.id}`}
+                                            type="button"
+                                            onClick={() =>
+                                              handlePathSelect(s.id, query)
+                                            }
+                                            className="flex items-center justify-between p-5 rounded-[24px] transition-all duration-300 group text-right border bg-white border-zinc-100 hover:border-zinc-300 active:scale-95 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-0.5"
+                                          >
+                                            <div className="flex items-center gap-4">
+                                              <div className="w-12 h-12 rounded-[16px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all duration-300 flex items-center justify-center">
+                                                <Icon className="w-5 h-5" />
+                                              </div>
+                                              <div className="text-right">
+                                                <h4 className="text-sm font-black text-zinc-900">
+                                                  {s.label}
+                                                </h4>
+                                                <p className="text-xs leading-relaxed text-zinc-500 font-bold mt-1 line-clamp-1">
+                                                  {s.desc}
+                                                </p>
+                                              </div>
+                                            </div>
+                                            <ArrowLeft
+                                              className={cn(
+                                                "w-4 h-4 text-[#6E5F8E] group-hover:text-zinc-900 transition-colors",
+                                                language === "ar"
+                                                  ? ""
+                                                  : "rotate-180",
+                                              )}
+                                            />
+                                          </button>
+                                        );
+                                      })}
                                     </div>
                                   </div>
-                                </button>
-                              </div>
-                            )}
+                                )}
 
-                            {/* Progressive disclosure layer: keep all tools available without crowding first view */}
-                            {(secondarySuggestions.length > 0 ||
-                              alternativeSuggestions.length > 0) && (
-                              <div className="mt-4 rounded-[22px] border border-[#8FA9C7]/12 bg-white/62 p-3.5 md:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
-                                <div className="text-right">
-                                  <h4 className="text-sm md:text-base font-black text-zinc-900">
+                                {/* NEW: DEEP COGNITIVE ANALYSIS */}
+                              </div>
+
+                              {/* Alternative Paths */}
+                              {visibleAlternativeSuggestions.length > 0 && (
+                                <div className="col-span-12 md:col-span-4 space-y-4">
+                                  <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest px-2">
                                     {language === "ar"
-                                      ? "خيارات أخرى عند الحاجة"
-                                      : "Other options if needed"}
+                                      ? "إذا تبي أكثر"
+                                      : "MORE IF NEEDED"}
                                   </h4>
-                                  <p className="mt-1 text-xs md:text-sm font-bold text-zinc-500">
-                                    {language === "ar"
-                                      ? "ابدأ بالباب الأول. افتح خياراً إضافياً فقط إذا ما كان مناسباً."
-                                      : "Start with the first door. Open another option only if needed."}
-                                  </p>
+                                  <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
+                                    {visibleAlternativeSuggestions.map(
+                                      (s: any) => {
+                                        const Icon = s.icon;
+                                        return (
+                                          <button
+                                            key={`alt-${s.id}`}
+                                            type="button"
+                                            title={s.tooltip}
+                                            onClick={() =>
+                                              handlePathSelect(s.id, query)
+                                            }
+                                            className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
+                                          >
+                                            <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-[#7C8796] flex items-center justify-center shadow-sm group-hover:text-[#6E5F8E] group-hover:border-zinc-300 transition-colors shrink-0">
+                                              <Icon className="w-4 h-4" />
+                                            </div>
+                                            <div className="text-right flex-1 min-w-0 break-words w-full">
+                                              <div className="font-black text-sm text-zinc-800 truncate mb-0.5">
+                                                {s.label}
+                                              </div>
+                                              <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2 w-full">
+                                                {s.desc}
+                                              </p>
+                                            </div>
+                                          </button>
+                                        );
+                                      },
+                                    )}
+                                  </div>
                                 </div>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    setDepthLevel((level) =>
-                                      hasMoreDepth ? level + 1 : 0,
-                                    )
-                                  }
-                                  className="shrink-0 px-5 py-2.5 rounded-full bg-white border border-[#8FA9C7]/16 text-[#465568] font-black text-xs shadow-sm hover:border-[#8E7AAE]/24 active:scale-95 transition-all"
-                                >
-                                  {depthCtaText}
-                                </button>
-                              </div>
-                            )}
-
-                            {depthLevel > 0 && lastVisibleDoor && (
+                              )}
+                            </div>
+                            {depthLevel >= 3 && (
                               <motion.div
-                                initial={{ opacity: 0, y: 8 }}
+                                initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mt-4 rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 md:p-5 shadow-[0_14px_44px_rgba(24,34,49,0.05)]"
+                                className="rounded-[28px] border border-[#D8C58A]/30 bg-[#FFFDF4]/86 p-5 md:p-6 shadow-[0_18px_55px_rgba(168,137,48,0.08)]"
                                 dir={language === "ar" ? "rtl" : "ltr"}
                               >
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                                <div className="flex items-start justify-between gap-4">
                                   <div className="text-right">
-                                    <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">
+                                    <p className="text-[10px] font-black tracking-[0.24em] uppercase text-[#9C7A28]">
                                       {language === "ar"
-                                        ? `العمق ${depthLevel}`
-                                        : `Depth ${depthLevel}`}
+                                        ? "الخلاصة الذهبية"
+                                        : "Golden summary"}
                                     </p>
-                                    <h4 className="mt-1 text-base md:text-lg font-black text-[#182231]">
+                                    <h4 className="mt-1 text-lg md:text-xl font-black text-[#182231]">
                                       {language === "ar"
-                                        ? depthMoment.ar.title
-                                        : depthMoment.en.title}
+                                        ? "الصورة صارت أوضح"
+                                        : "The picture is clearer now"}
                                     </h4>
-                                    <p className="mt-1 text-xs md:text-sm font-bold leading-relaxed text-[#64788D]">
-                                      {lastVisibleDoor.desc ||
-                                        (language === "ar"
-                                          ? depthMoment.ar.desc
-                                          : depthMoment.en.desc)}
-                                    </p>
                                   </div>
-                                  <div className="flex items-center gap-1.5 justify-end">
-                                    {[0, 1, 2, 3, 4].map((step) => (
-                                      <span
-                                        key={`depth-dot-${step}`}
-                                        className={cn(
-                                          "h-2 rounded-full transition-all",
-                                          step < depthLevel
-                                            ? "w-6 bg-[#8E7AAE]"
-                                            : "w-2 bg-[#D9DEE5]",
-                                        )}
-                                      />
-                                    ))}
-                                  </div>
+                                  <Sparkles className="h-5 w-5 shrink-0 text-[#9C7A28]" />
+                                </div>
+                                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                                  {[
+                                    goldenSummary.truth,
+                                    goldenSummary.risk,
+                                    goldenSummary.choice,
+                                    goldenSummary.step,
+                                  ].map((item, index) => (
+                                    <div
+                                      key={`golden-${index}`}
+                                      className="rounded-2xl border border-[#D8C58A]/18 bg-white/72 p-3 text-sm font-bold leading-relaxed text-[#465568]"
+                                    >
+                                      {item}
+                                    </div>
+                                  ))}
                                 </div>
                               </motion.div>
                             )}
-
-                            {/* Focus Layer: Secondary Options */}
-                            {visibleSecondarySuggestions.length > 0 && (
-                              <div className="mt-8 pt-8 border-t border-zinc-100">
-                                <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest mb-4 px-2">
-                                  {language === "ar"
-                                    ? "أبواب أعمق"
-                                    : "DEEPER DOORS"}
-                                </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  {visibleSecondarySuggestions.map((s) => {
-                                    const Icon = s.icon;
-                                    return (
-                                      <button
-                                        key={`sec-${s.id}`}
-                                        type="button"
-                                        onClick={() =>
-                                          handlePathSelect(s.id, query)
-                                        }
-                                        className="flex items-center justify-between p-5 rounded-[24px] transition-all duration-300 group text-right border bg-white border-zinc-100 hover:border-zinc-300 active:scale-95 shadow-[0_4px_20px_rgb(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.06)] hover:-translate-y-0.5"
-                                      >
-                                        <div className="flex items-center gap-4">
-                                          <div className="w-12 h-12 rounded-[16px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all duration-300 flex items-center justify-center">
-                                            <Icon className="w-5 h-5" />
-                                          </div>
-                                          <div className="text-right">
-                                            <h4 className="text-sm font-black text-zinc-900">
-                                              {s.label}
-                                            </h4>
-                                            <p className="text-xs leading-relaxed text-zinc-500 font-bold mt-1 line-clamp-1">
-                                              {s.desc}
-                                            </p>
-                                          </div>
-                                        </div>
-                                        <ArrowLeft
-                                          className={cn(
-                                            "w-4 h-4 text-[#6E5F8E] group-hover:text-zinc-900 transition-colors",
-                                            language === "ar"
-                                              ? ""
-                                              : "rotate-180",
-                                          )}
-                                        />
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* NEW: DEEP COGNITIVE ANALYSIS */}
                           </div>
-
-                          {/* Alternative Paths */}
-                          {visibleAlternativeSuggestions.length > 0 && (
-                            <div className="col-span-12 md:col-span-4 space-y-4">
-                              <h4 className="text-[11px] leading-[1.6] font-black text-[#7C8796] uppercase tracking-widest px-2">
-                                {language === "ar"
-                                  ? "إذا تبي أكثر"
-                                  : "MORE IF NEEDED"}
-                              </h4>
-                              <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
-                                {visibleAlternativeSuggestions.map((s: any) => {
-                                  const Icon = s.icon;
-                                  return (
-                                    <button
-                                      key={`alt-${s.id}`}
-                                      type="button"
-                                      title={s.tooltip}
-                                      onClick={() =>
-                                        handlePathSelect(s.id, query)
-                                      }
-                                      className="w-full flex items-center gap-4 p-4 rounded-[20px] transition-all duration-300 group text-right bg-zinc-50 border border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-200 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95"
-                                    >
-                                      <div className="w-10 h-10 rounded-xl bg-white border border-zinc-100 text-[#7C8796] flex items-center justify-center shadow-sm group-hover:text-[#6E5F8E] group-hover:border-zinc-300 transition-colors shrink-0">
-                                        <Icon className="w-4 h-4" />
-                                      </div>
-                                      <div className="text-right flex-1 min-w-0 break-words w-full">
-                                        <div className="font-black text-sm text-zinc-800 truncate mb-0.5">
-                                          {s.label}
-                                        </div>
-                                        <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2 w-full">
-                                          {s.desc}
-                                        </p>
-                                      </div>
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        {depthLevel >= 3 && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="rounded-[28px] border border-[#D8C58A]/30 bg-[#FFFDF4]/86 p-5 md:p-6 shadow-[0_18px_55px_rgba(168,137,48,0.08)]"
-                            dir={language === "ar" ? "rtl" : "ltr"}
-                          >
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="text-right">
-                                <p className="text-[10px] font-black tracking-[0.24em] uppercase text-[#9C7A28]">
-                                  {language === "ar"
-                                    ? "الخلاصة الذهبية"
-                                    : "Golden summary"}
-                                </p>
-                                <h4 className="mt-1 text-lg md:text-xl font-black text-[#182231]">
-                                  {language === "ar"
-                                    ? "الصورة صارت أوضح"
-                                    : "The picture is clearer now"}
-                                </h4>
-                              </div>
-                              <Sparkles className="h-5 w-5 shrink-0 text-[#9C7A28]" />
-                            </div>
-                            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                              {[
-                                goldenSummary.truth,
-                                goldenSummary.risk,
-                                goldenSummary.choice,
-                                goldenSummary.step,
-                              ].map((item, index) => (
-                                <div
-                                  key={`golden-${index}`}
-                                  className="rounded-2xl border border-[#D8C58A]/18 bg-white/72 p-3 text-sm font-bold leading-relaxed text-[#465568]"
-                                >
-                                  {item}
-                                </div>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-                      </div>
+                        </>
+                      )}
+                      {hasSearched && showDirectTools && (
+                        <KnowledgeSignature
+                          language={language}
+                          query={query}
+                          kind="مسار فهم"
+                          onSave={handleSaveToLibrary}
+                          onLink={() => handleTabChange("knowledgegraph")}
+                        />
+                      )}
                     </>
-                  )}
-                  {hasSearched && (
-                    <KnowledgeSignature
-                      language={language}
-                      query={query}
-                      kind="مسار فهم"
-                      onSave={handleSaveToLibrary}
-                      onLink={() => handleTabChange("knowledgegraph")}
-                    />
                   )}
                 </motion.div>
               )}
@@ -4451,290 +4474,314 @@ export const SmartGateway: React.FC<
                         context={directGuidance.context}
                         responseMode={responseMode}
                         accent={directJourneyProfile.accent}
+                        showOptions={showDirectTools}
+                        onContinue={() =>
+                          handlePathSelect(
+                            primarySuggestion?.id || "qawlfasl",
+                            query,
+                          )
+                        }
+                        onShowOptions={() =>
+                          setShowDirectTools((value) => !value)
+                        }
                         onExplain={() => {
+                          setShowDirectTools(true);
                           setResponseMode("simple");
                           setDepthLevel((level) => Math.max(level, 1));
                         }}
                         onPlan={() => handlePathSelect("roadmap", query)}
                         onDeepen={() => {
+                          setShowDirectTools(true);
                           setResponseMode("deep");
                           setDepthLevel((level) => Math.max(level, 3));
                         }}
                       />
 
-                      {/* Mobile account status */}
-                      <div className="border border-[#8FA9C7]/12 bg-white rounded-2xl p-3 flex flex-col gap-3 text-right">
-                        <div className="flex items-start gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 border border-[#DDEDEA]">
-                            {user ? (
-                              <CheckCircle2 className="w-4.5 h-4.5 text-[#0F9F6E]" />
-                            ) : (
-                              <Lock className="w-4.5 h-4.5 text-[#7C8796]" />
+                      {showDirectTools && (
+                        <>
+                          {/* Mobile account status */}
+                          <div className="border border-[#8FA9C7]/12 bg-white rounded-2xl p-3 flex flex-col gap-3 text-right">
+                            <div className="flex items-start gap-3">
+                              <div className="w-9 h-9 rounded-xl bg-[#F4F8F7] flex items-center justify-center text-[#5C8B7E] shrink-0 border border-[#DDEDEA]">
+                                {user ? (
+                                  <CheckCircle2 className="w-4.5 h-4.5 text-[#0F9F6E]" />
+                                ) : (
+                                  <Lock className="w-4.5 h-4.5 text-[#7C8796]" />
+                                )}
+                              </div>
+                              <div className="space-y-0.5">
+                                <h4 className="font-black text-xs text-[#182231]">
+                                  {user
+                                    ? language === "ar"
+                                      ? `مرتبط بحسابك: ${userName}`
+                                      : `Linked to account: ${userName}`
+                                    : language === "ar"
+                                      ? "هذه النتيجة متاحة لك الآن"
+                                      : "This result is available now"}
+                                </h4>
+                                <p className="text-[10px] text-zinc-500 font-bold leading-normal">
+                                  {user
+                                    ? language === "ar"
+                                      ? "الحفظ صار في زر واحد فقط بالأسفل."
+                                      : "Saving now lives in one button below."
+                                    : language === "ar"
+                                      ? "سجّل فقط إذا تبي تحفظها وتكمل عليها لاحقاً."
+                                      : "Sign in only to save it and continue later."}
+                                </p>
+                              </div>
+                            </div>
+                            {!user && (
+                              <div className="flex justify-end mt-1">
+                                <button
+                                  type="button"
+                                  onClick={() => onShowLogin?.()}
+                                  className="w-full bg-[#182231] text-white hover:bg-black font-black text-xs py-2 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                                >
+                                  <Lock className="w-3 h-3" />
+                                  {language === "ar"
+                                    ? "حفظ ومتابعة"
+                                    : "Save and continue"}
+                                </button>
+                              </div>
                             )}
                           </div>
-                          <div className="space-y-0.5">
-                            <h4 className="font-black text-xs text-[#182231]">
-                              {user
-                                ? language === "ar"
-                                  ? `مرتبط بحسابك: ${userName}`
-                                  : `Linked to account: ${userName}`
-                                : language === "ar"
-                                  ? "هذه النتيجة متاحة لك الآن"
-                                  : "This result is available now"}
-                            </h4>
-                            <p className="text-[10px] text-zinc-500 font-bold leading-normal">
-                              {user
-                                ? language === "ar"
-                                  ? "الحفظ صار في زر واحد فقط بالأسفل."
-                                  : "Saving now lives in one button below."
-                                : language === "ar"
-                                  ? "سجّل فقط إذا تبي تحفظها وتكمل عليها لاحقاً."
-                                  : "Sign in only to save it and continue later."}
-                            </p>
-                          </div>
-                        </div>
-                        {!user && (
-                          <div className="flex justify-end mt-1">
-                            <button
-                              type="button"
-                              onClick={() => onShowLogin?.()}
-                              className="w-full bg-[#182231] text-white hover:bg-black font-black text-xs py-2 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
-                            >
-                              <Lock className="w-3 h-3" />
-                              {language === "ar"
-                                ? "حفظ ومتابعة"
-                                : "Save and continue"}
-                            </button>
-                          </div>
-                        )}
-                      </div>
 
-                      {/* Mobile Primary */}
-                      {primarySuggestion && (
-                        <div className="space-y-3">
-                          <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
-                            {language === "ar" ? "التعمق المقترح" : "RECOMMENDED PATH"}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handlePathSelect(primarySuggestion.id, query)
-                            }
-                            className="tebyan-primary-route-card w-full flex items-center justify-between p-6 bg-white text-[#182231] rounded-[32px] shadow-[0_18px_52px_rgba(24,34,49,0.08)] border border-[#DED6EA] active:scale-95 transition-all"
-                          >
-                            <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-2xl bg-[#F4F0F8] border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center">
-                                {(() => {
-                                  const Icon = journeyProfile.icon;
-                                  return <Icon className="w-6 h-6" />;
-                                })()}
-                              </div>
-                              <div className="text-right">
-                                <div className="font-black text-lg tracking-tight">
-                                  {language === "ar"
-                                    ? journeyProfile.firstDoor.ar
-                                    : journeyProfile.firstDoor.en}
-                                </div>
-                                <div className="text-[11px] leading-[1.6] text-[#64788D] font-semibold">
-                                  {language === "ar"
-                                    ? "مسار إضافي بعد حصولك على الخلاصة"
-                                    : "An optional path after your summary"}
-                                </div>
-                              </div>
-                            </div>
-                            <ArrowLeft
-                              className={cn(
-                                "w-6 h-6",
-                                language === "ar" ? "" : "rotate-180",
-                              )}
-                            />
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Mobile Secondary */}
-                      {(secondarySuggestions.length > 0 ||
-                        alternativeSuggestions.length > 0) && (
-                        <div className="rounded-[24px] md:rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="text-right">
-                              <div className="font-black text-sm text-zinc-900">
+                          {/* Mobile Primary */}
+                          {primarySuggestion && (
+                            <div className="space-y-3">
+                              <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
                                 {language === "ar"
-                                  ? "باب أعمق إذا احتجت"
-                                  : "A deeper door if needed"}
-                              </div>
-                              <p className="mt-1 text-[11px] font-bold text-zinc-500">
-                                {language === "ar"
-                                  ? "نفتح زاوية ثانية، مو نفس الباب."
-                                  : "We open a second angle, not the same door."}
-                              </p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setDepthLevel((level) =>
-                                  hasMoreDepth ? level + 1 : 0,
-                                )
-                              }
-                              className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all"
-                            >
-                              {depthCtaText}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {depthLevel > 0 && lastVisibleDoor && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]"
-                          dir={language === "ar" ? "rtl" : "ltr"}
-                        >
-                          <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">
-                            {language === "ar"
-                              ? `العمق ${depthLevel}`
-                              : `Depth ${depthLevel}`}
-                          </p>
-                          <h4 className="mt-1 text-base font-black text-[#182231]">
-                            {language === "ar"
-                              ? depthMoment.ar.title
-                              : depthMoment.en.title}
-                          </h4>
-                          <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#64788D]">
-                            {lastVisibleDoor.desc ||
-                              (language === "ar"
-                                ? depthMoment.ar.desc
-                                : depthMoment.en.desc)}
-                          </p>
-                        </motion.div>
-                      )}
-
-                      {visibleSecondarySuggestions.length > 0 && (
-                        <div className="space-y-3">
-                          <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
-                            {language === "ar" ? "أبواب أعمق" : "DEEPER DOORS"}
-                          </span>
-                          <div className="grid grid-cols-1 gap-2">
-                            {visibleSecondarySuggestions.map((s) => {
-                              const Icon = s.icon;
-                              return (
-                                <button
-                                  key={`mob-sec-${s.id}`}
-                                  type="button"
-                                  onClick={() => handlePathSelect(s.id, query)}
-                                  className="w-full flex items-center justify-between p-4 bg-zinc-50 rounded-[24px] border border-zinc-100 active:scale-95 transition-all"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#7C8796] shadow-sm">
-                                      <Icon className="w-5 h-5" />
-                                    </div>
-                                    <div className="text-right">
-                                      <div className="font-bold text-sm text-zinc-900">
-                                        {s.label}
-                                      </div>
-                                      <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">
-                                        {s.desc}
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <ArrowLeft
-                                    className={cn(
-                                      "w-4 h-4 text-[#6E5F8E]",
-                                      language === "ar" ? "" : "rotate-180",
-                                    )}
-                                  />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="h-px bg-zinc-100 mx-4" />
-
-                      {/* Mobile Alternative Paths */}
-                      {visibleAlternativeSuggestions.length > 0 && (
-                        <div className="space-y-3">
-                          <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
-                            {language === "ar"
-                              ? "إذا تبي أكثر"
-                              : "MORE IF NEEDED"}
-                          </span>
-                          <div className="grid grid-cols-2 gap-2">
-                            {visibleAlternativeSuggestions.map((s: any) => {
-                              const Icon = s.icon;
-                              return (
-                                <div
-                                  key={`mob-rest-${s.id}`}
-                                  onClick={() => handlePathSelect(s.id, query)}
-                                  className="flex flex-col items-start gap-4 p-5 bg-white rounded-[24px] border border-zinc-100/80 hover:border-zinc-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95 transition-all group cursor-pointer"
-                                >
-                                  <div className="w-10 h-10 rounded-[14px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
-                                    <Icon className="w-4 h-4" />
+                                  ? "التعمق المقترح"
+                                  : "RECOMMENDED PATH"}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handlePathSelect(primarySuggestion.id, query)
+                                }
+                                className="tebyan-primary-route-card w-full flex items-center justify-between p-6 bg-white text-[#182231] rounded-[32px] shadow-[0_18px_52px_rgba(24,34,49,0.08)] border border-[#DED6EA] active:scale-95 transition-all"
+                              >
+                                <div className="flex items-center gap-4">
+                                  <div className="w-12 h-12 rounded-2xl bg-[#F4F0F8] border border-[#DED6EA] text-[#6E5F8E] flex items-center justify-center">
+                                    {(() => {
+                                      const Icon = journeyProfile.icon;
+                                      return <Icon className="w-6 h-6" />;
+                                    })()}
                                   </div>
                                   <div className="text-right">
-                                    <div className="font-black text-[13px] text-zinc-900 mb-1">
-                                      {s.label}
+                                    <div className="font-black text-lg tracking-tight">
+                                      {language === "ar"
+                                        ? journeyProfile.firstDoor.ar
+                                        : journeyProfile.firstDoor.en}
                                     </div>
-                                    <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2">
-                                      {s.desc}
-                                    </p>
+                                    <div className="text-[11px] leading-[1.6] text-[#64788D] font-semibold">
+                                      {language === "ar"
+                                        ? "مسار إضافي بعد حصولك على الخلاصة"
+                                        : "An optional path after your summary"}
+                                    </div>
                                   </div>
                                 </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
+                                <ArrowLeft
+                                  className={cn(
+                                    "w-6 h-6",
+                                    language === "ar" ? "" : "rotate-180",
+                                  )}
+                                />
+                              </button>
+                            </div>
+                          )}
 
-                      {depthLevel >= 3 && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="rounded-[24px] border border-[#D8C58A]/30 bg-[#FFFDF4]/88 p-4 shadow-[0_14px_44px_rgba(168,137,48,0.08)]"
-                          dir={language === "ar" ? "rtl" : "ltr"}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="text-right">
-                              <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#9C7A28]">
+                          {/* Mobile Secondary */}
+                          {(secondarySuggestions.length > 0 ||
+                            alternativeSuggestions.length > 0) && (
+                            <div className="rounded-[24px] md:rounded-[28px] border border-zinc-100 bg-zinc-50 p-4 space-y-3">
+                              <div className="flex items-center justify-between gap-3">
+                                <div className="text-right">
+                                  <div className="font-black text-sm text-zinc-900">
+                                    {language === "ar"
+                                      ? "باب أعمق إذا احتجت"
+                                      : "A deeper door if needed"}
+                                  </div>
+                                  <p className="mt-1 text-[11px] font-bold text-zinc-500">
+                                    {language === "ar"
+                                      ? "نفتح زاوية ثانية، مو نفس الباب."
+                                      : "We open a second angle, not the same door."}
+                                  </p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setDepthLevel((level) =>
+                                      hasMoreDepth ? level + 1 : 0,
+                                    )
+                                  }
+                                  className="shrink-0 px-4 py-2 rounded-full bg-white border border-zinc-100 text-zinc-800 font-black text-[11px] shadow-sm active:scale-95 transition-all"
+                                >
+                                  {depthCtaText}
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {depthLevel > 0 && lastVisibleDoor && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 8 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="rounded-[24px] border border-[#8E7AAE]/14 bg-[#FAF9F6]/88 p-4 shadow-[0_14px_42px_rgba(24,34,49,0.05)]"
+                              dir={language === "ar" ? "rtl" : "ltr"}
+                            >
+                              <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#8E7AAE]">
                                 {language === "ar"
-                                  ? "الخلاصة الذهبية"
-                                  : "Golden summary"}
+                                  ? `العمق ${depthLevel}`
+                                  : `Depth ${depthLevel}`}
                               </p>
                               <h4 className="mt-1 text-base font-black text-[#182231]">
                                 {language === "ar"
-                                  ? "الصورة صارت أوضح"
-                                  : "The picture is clearer now"}
+                                  ? depthMoment.ar.title
+                                  : depthMoment.en.title}
                               </h4>
-                            </div>
-                            <Sparkles className="h-5 w-5 shrink-0 text-[#9C7A28]" />
-                          </div>
-                          <div className="mt-3 space-y-2">
-                            {[
-                              goldenSummary.truth,
-                              goldenSummary.risk,
-                              goldenSummary.choice,
-                              goldenSummary.step,
-                            ].map((item, index) => (
-                              <div
-                                key={`mob-golden-${index}`}
-                                className="rounded-2xl border border-[#D8C58A]/18 bg-white/74 p-3 text-[11px] font-bold leading-relaxed text-[#465568]"
-                              >
-                                {item}
-                              </div>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
+                              <p className="mt-1 text-[11px] font-bold leading-relaxed text-[#64788D]">
+                                {lastVisibleDoor.desc ||
+                                  (language === "ar"
+                                    ? depthMoment.ar.desc
+                                    : depthMoment.en.desc)}
+                              </p>
+                            </motion.div>
+                          )}
 
-                      {/* NEW: DEEP COGNITIVE ANALYSIS MOBILE */}
-                      <div className="px-1"></div>
+                          {visibleSecondarySuggestions.length > 0 && (
+                            <div className="space-y-3">
+                              <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
+                                {language === "ar"
+                                  ? "أبواب أعمق"
+                                  : "DEEPER DOORS"}
+                              </span>
+                              <div className="grid grid-cols-1 gap-2">
+                                {visibleSecondarySuggestions.map((s) => {
+                                  const Icon = s.icon;
+                                  return (
+                                    <button
+                                      key={`mob-sec-${s.id}`}
+                                      type="button"
+                                      onClick={() =>
+                                        handlePathSelect(s.id, query)
+                                      }
+                                      className="w-full flex items-center justify-between p-4 bg-zinc-50 rounded-[24px] border border-zinc-100 active:scale-95 transition-all"
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#7C8796] shadow-sm">
+                                          <Icon className="w-5 h-5" />
+                                        </div>
+                                        <div className="text-right">
+                                          <div className="font-bold text-sm text-zinc-900">
+                                            {s.label}
+                                          </div>
+                                          <p className="text-[11px] leading-[1.6] text-zinc-500 font-bold mt-1 line-clamp-1">
+                                            {s.desc}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <ArrowLeft
+                                        className={cn(
+                                          "w-4 h-4 text-[#6E5F8E]",
+                                          language === "ar" ? "" : "rotate-180",
+                                        )}
+                                      />
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="h-px bg-zinc-100 mx-4" />
+
+                          {/* Mobile Alternative Paths */}
+                          {visibleAlternativeSuggestions.length > 0 && (
+                            <div className="space-y-3">
+                              <span className="font-black text-[10px] text-[#7C8796] uppercase tracking-widest px-2">
+                                {language === "ar"
+                                  ? "إذا تبي أكثر"
+                                  : "MORE IF NEEDED"}
+                              </span>
+                              <div className="grid grid-cols-2 gap-2">
+                                {visibleAlternativeSuggestions.map((s: any) => {
+                                  const Icon = s.icon;
+                                  return (
+                                    <div
+                                      key={`mob-rest-${s.id}`}
+                                      onClick={() =>
+                                        handlePathSelect(s.id, query)
+                                      }
+                                      className="flex flex-col items-start gap-4 p-5 bg-white rounded-[24px] border border-zinc-100/80 hover:border-zinc-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] active:scale-95 transition-all group cursor-pointer"
+                                    >
+                                      <div className="w-10 h-10 rounded-[14px] bg-zinc-50 border border-zinc-100 text-[#7C8796] group-hover:bg-zinc-900 group-hover:border-zinc-800 group-hover:text-white transition-all flex items-center justify-center shrink-0">
+                                        <Icon className="w-4 h-4" />
+                                      </div>
+                                      <div className="text-right">
+                                        <div className="font-black text-[13px] text-zinc-900 mb-1">
+                                          {s.label}
+                                        </div>
+                                        <p className="text-[11px] leading-relaxed text-zinc-500 font-medium line-clamp-2">
+                                          {s.desc}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {depthLevel >= 3 && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="rounded-[24px] border border-[#D8C58A]/30 bg-[#FFFDF4]/88 p-4 shadow-[0_14px_44px_rgba(168,137,48,0.08)]"
+                              dir={language === "ar" ? "rtl" : "ltr"}
+                            >
+                              <div className="flex items-start justify-between gap-3">
+                                <div className="text-right">
+                                  <p className="text-[10px] font-black tracking-[0.22em] uppercase text-[#9C7A28]">
+                                    {language === "ar"
+                                      ? "الخلاصة الذهبية"
+                                      : "Golden summary"}
+                                  </p>
+                                  <h4 className="mt-1 text-base font-black text-[#182231]">
+                                    {language === "ar"
+                                      ? "الصورة صارت أوضح"
+                                      : "The picture is clearer now"}
+                                  </h4>
+                                </div>
+                                <Sparkles className="h-5 w-5 shrink-0 text-[#9C7A28]" />
+                              </div>
+                              <div className="mt-3 space-y-2">
+                                {[
+                                  goldenSummary.truth,
+                                  goldenSummary.risk,
+                                  goldenSummary.choice,
+                                  goldenSummary.step,
+                                ].map((item, index) => (
+                                  <div
+                                    key={`mob-golden-${index}`}
+                                    className="rounded-2xl border border-[#D8C58A]/18 bg-white/74 p-3 text-[11px] font-bold leading-relaxed text-[#465568]"
+                                  >
+                                    {item}
+                                  </div>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+
+                          {/* NEW: DEEP COGNITIVE ANALYSIS MOBILE */}
+                          <div className="px-1"></div>
+                        </>
+                      )}
                     </div>
                   )}
                 </motion.div>
               )}
-              {hasSearched && !isThinking && (
+              {hasSearched && !isThinking && showDirectTools && (
                 <motion.details
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -4742,7 +4789,11 @@ export const SmartGateway: React.FC<
                   dir={language === "ar" ? "rtl" : "ltr"}
                 >
                   <summary className="cursor-pointer list-none flex items-center justify-between gap-3 text-xs md:text-sm font-black text-[#64788D]">
-                    <span>{language === "ar" ? "لاحقاً إذا احتجت" : "Later if needed"}</span>
+                    <span>
+                      {language === "ar"
+                        ? "لاحقاً إذا احتجت"
+                        : "Later if needed"}
+                    </span>
                     <span className="text-[11px] font-bold text-[#8E7AAE]">
                       {language === "ar" ? "غرفة الغد" : "Tomorrow room"}
                     </span>
@@ -4793,38 +4844,52 @@ export const SmartGateway: React.FC<
               dir={language === "ar" ? "rtl" : "ltr"}
             >
               <div className="w-full space-y-3 text-center">
-                <p className="text-xs font-black text-[#7C8796]">
-                  {language === "ar" ? "أمثلة قريبة من الحياة" : "Everyday examples"}
-                </p>
-                <div className="flex w-full gap-2 overflow-x-auto px-1 pb-2 no-scrollbar md:flex-wrap md:justify-center">
-                  {(language === "ar"
-                    ? [
-                        "ولدي ما يحب المدرسة، شلون أتعامل معاه؟",
-                        "محتار بين وظيفتين، شلون أقرر؟",
-                        "اشرح لي هذا الموضوع ببساطة",
-                      ]
-                    : [
-                        "My child dislikes school. How should I respond?",
-                        "I am choosing between two jobs. How do I decide?",
-                        "Explain this topic to me simply",
-                      ]
-                  ).map((example) => (
-                    <button
-                      key={example}
-                      type="button"
-                      onClick={() => {
-                        setSearchValue(example);
-                        latestInputRef.current = example;
-                        setQuery(example);
-                        setSmartSuggestion("");
-                        inputRef.current?.focus();
-                      }}
-                      className="min-h-11 shrink-0 rounded-full border border-[#8FA9C7]/16 bg-white/76 px-4 py-2 text-xs font-black text-[#465568] shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E] active:scale-[0.98]"
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
+                {(() => {
+                  const examples =
+                    language === "ar"
+                      ? [
+                          "ولدي ما يحب المدرسة، شلون أتعامل معاه؟",
+                          "محتار بين وظيفتين، شلون أقرر؟",
+                          "اشرح لي هذا الموضوع ببساطة",
+                        ]
+                      : [
+                          "My child dislikes school. How should I respond?",
+                          "I am choosing between two jobs. How do I decide?",
+                          "Explain this topic to me simply",
+                        ];
+                  const example = examples[exampleIndex % examples.length];
+                  return (
+                    <div className="flex flex-col items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSearchValue(example);
+                          latestInputRef.current = example;
+                          setQuery(example);
+                          setSmartSuggestion("");
+                          inputRef.current?.focus();
+                        }}
+                        className="min-h-11 max-w-full rounded-full border border-[#8FA9C7]/16 bg-white/80 px-4 py-2 text-[13px] font-black leading-6 text-[#465568] shadow-sm transition-colors hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E] active:scale-[0.98]"
+                      >
+                        <span className="text-[#8E7AAE]">
+                          {language === "ar" ? "مثال: " : "Example: "}
+                        </span>
+                        {example}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExampleIndex(
+                            (value) => (value + 1) % examples.length,
+                          )
+                        }
+                        className="min-h-9 px-3 text-xs font-black text-[#7C8796] hover:text-[#6E5F8E]"
+                      >
+                        {language === "ar" ? "مثال آخر" : "Another example"}
+                      </button>
+                    </div>
+                  );
+                })()}
                 <button
                   type="button"
                   onClick={() => setShowInspiration((value) => !value)}
@@ -5250,10 +5315,12 @@ export const SmartGateway: React.FC<
                     </span>
                   </div>
                   <span className="text-[9px] font-bold text-[#64788D] tracking-widest uppercase bg-[#8FA9C7]/10 px-2.5 py-1 rounded-full border border-[#8FA9C7]/10 shadow-inner">
-                    {language === "ar" ? "البيانات: 2000+ حالة" : "Data: 2000+ cases"}
+                    {language === "ar"
+                      ? "البيانات: 2000+ حالة"
+                      : "Data: 2000+ cases"}
                   </span>
                 </div>
-                
+
                 <h4 className="text-sm md:text-base font-black text-[#182231] leading-snug">
                   {language === "ar"
                     ? currentInsight.titleAr
@@ -5269,9 +5336,11 @@ export const SmartGateway: React.FC<
                         </span>
                         <div className="flex items-baseline gap-0.5">
                           <span className="text-[12px] font-black text-[#182231]">
-                            {item.pct.replace('%', '')}
+                            {item.pct.replace("%", "")}
                           </span>
-                          <span className="text-[9px] font-bold text-[#8FA9C7]">%</span>
+                          <span className="text-[9px] font-bold text-[#8FA9C7]">
+                            %
+                          </span>
                         </div>
                       </div>
                       <div className="h-2 w-full bg-[#E5ECEF]/60 rounded-full overflow-hidden shadow-inner flex p-0.5">
@@ -5279,7 +5348,11 @@ export const SmartGateway: React.FC<
                           className={`h-full ${item.color} rounded-full relative`}
                           initial={{ width: 0 }}
                           whileInView={{ width: item.pct }}
-                          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 * idx }}
+                          transition={{
+                            duration: 1.2,
+                            ease: [0.16, 1, 0.3, 1],
+                            delay: 0.1 * idx,
+                          }}
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 rounded-full" />
                         </motion.div>

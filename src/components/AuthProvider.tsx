@@ -1,162 +1,197 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../lib/firebase';
-import { resolveUserAddressing, setActiveUser, UserGender } from '../utils/genderHelper';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import type { User } from "firebase/auth";
+import {
+  resolveUserAddressing,
+  setActiveUser,
+  UserGender,
+} from "../utils/genderHelper";
 
 interface UserProfile {
   email: string;
-  role: 'admin' | 'user';
+  role: "admin" | "user";
   displayName: string;
   photoURL?: string | null;
 }
 
-const AuthContext = createContext<{ 
-  user: User | null; 
+const AuthContext = createContext<{
+  user: User | null;
   profile: UserProfile | null;
   loading: boolean;
   authReady: boolean;
   userName: string;
   userGender: UserGender;
-}>({ 
-  user: null, 
-  profile: null, 
-  loading: true, 
+}>({
+  user: null,
+  profile: null,
+  loading: true,
   authReady: false,
-  userName: 'ضيف',
-  userGender: 'neutral'
+  userName: "ضيف",
+  userGender: "neutral",
 });
+
+const ADMIN_EMAILS = new Set([
+  "ah_f@hotmail.com",
+  "alfailakawidrahmad@gmail.com",
+  "dr.ahmad@gmail.com",
+  "dr.ahmad.alfailakawi@gmail.com",
+]);
+
+const isAdminUser = (user: User) =>
+  user.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
+  ADMIN_EMAILS.has(user.email?.toLowerCase() || "");
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
-  
-  const [userName, setUserName] = useState<string>('ضيف');
-  const [userGender, setUserGender] = useState<UserGender>('neutral');
+  const [userName, setUserName] = useState<string>("ضيف");
+  const [userGender, setUserGender] = useState<UserGender>("neutral");
 
   useEffect(() => {
-    // We removed the aggressive 10s timeout here to avoid logging out users on slow PWA wakeups.
-    // Firebase will guarantee `onAuthStateChanged` fires when local persistence is resolved.
+    let cancelled = false;
+    let unsubscribe: (() => void) | undefined;
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setAuthReady(true);
-      setUser(user);
-      
-      if (user) {
-        try {
-          const userRef = doc(db, 'users', user.uid);
-          const userSnap = await getDoc(userRef);
-          
-          if (userSnap.exists()) {
-            const profileData = userSnap.data() as UserProfile;
-            const isAdminEmail = user.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || [
-              'ah_f@hotmail.com',
-              'alfailakawidrahmad@gmail.com',
-              'dr.ahmad@gmail.com',
-              'dr.ahmad.alfailakawi@gmail.com'
-            ].includes(user.email?.toLowerCase() || '');
-            if (isAdminEmail) {
-              profileData.role = 'admin';
-              
-              // Self-register in admins collection for reliable firestore rules check
-              try {
-                const adminRef = doc(db, 'admins', user.uid);
-                const adminSnap = await getDoc(adminRef);
-                if (!adminSnap.exists()) {
-                  await setDoc(adminRef, { 
-                    email: user.email, 
-                    registeredAt: serverTimestamp(),
-                    source: 'self-registration'
-                  });
-                  console.log("Admin self-registration successful");
-                }
-              } catch (adminErr) {
-                console.warn("Admin self-registration failed:", adminErr);
-              }
+    const startAuth = async () => {
+      try {
+        // Firebase is intentionally loaded after the first UI paint. Guests can
+        // start typing immediately while the saved session restores quietly.
+        const [{ auth, db }, authApi, firestore] = await Promise.all([
+          import("../lib/firebase"),
+          import("firebase/auth"),
+          import("firebase/firestore"),
+        ]);
 
-              if (userSnap.data().role !== 'admin') {
-                try {
-                  await setDoc(userRef, { ...profileData, role: 'admin' });
-                  console.log("Admin role updated successfully");
-                } catch (error) {
-                  console.error("Failed to update admin role:", error);
-                }
-              }
-            }
-            setProfile(profileData);
-          } else {
-            const isNewAdminEmail = user.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || ([
-                'ah_f@hotmail.com',
-                'alfailakawidrahmad@gmail.com',
-                'dr.ahmad@gmail.com',
-                'dr.ahmad.alfailakawi@gmail.com'
-              ].includes(user.email?.toLowerCase() || ''));
-            
-            const newProfile: UserProfile = {
-              email: user.email || '',
-              role: isNewAdminEmail ? 'admin' : 'user',
-              displayName: user.displayName || 'New User',
-              photoURL: user.photoURL || null
-            };
+        if (cancelled) return;
 
-            if (isNewAdminEmail) {
-              try {
-                const adminRef = doc(db, 'admins', user.uid);
-                await setDoc(adminRef, { 
-                  email: user.email, 
-                  registeredAt: serverTimestamp(),
-                  source: 'self-registration-new'
-                });
-                console.log("New Admin self-registration successful");
-              } catch (adminErr) {
-                console.warn("New Admin self-registration failed:", adminErr);
-              }
-            }
+        unsubscribe = authApi.onAuthStateChanged(auth, async (nextUser) => {
+          if (cancelled) return;
+          setAuthReady(true);
+          setUser(nextUser);
 
-            try {
-              await setDoc(userRef, { ...newProfile, createdAt: serverTimestamp() });
-              setProfile(newProfile);
-            } catch (error) {
-              console.error("Failed to initialize user profile:", error);
-              setProfile(newProfile); // Still set profile even if DB write fails
-            }
+          if (!nextUser) {
+            setProfile(null);
+            setLoading(false);
+            return;
           }
-        } catch (error) {
-          console.error("Failed to fetch user profile, falling back to local info:", error);
-          const isAdminEmail = user.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || [
-            'ah_f@hotmail.com',
-            'alfailakawidrahmad@gmail.com',
-            'dr.ahmad@gmail.com',
-            'dr.ahmad.alfailakawi@gmail.com'
-          ].includes(user.email?.toLowerCase() || '');
 
-          setProfile({
-            email: user.email || '',
-            role: isAdminEmail ? 'admin' : 'user',
-            displayName: user.displayName || 'New User',
-            photoURL: user.photoURL || null
-          });
+          const admin = isAdminUser(nextUser);
+          const fallbackProfile: UserProfile = {
+            email: nextUser.email || "",
+            role: admin ? "admin" : "user",
+            displayName: nextUser.displayName || "New User",
+            photoURL: nextUser.photoURL || null,
+          };
+
+          try {
+            const userRef = firestore.doc(db, "users", nextUser.uid);
+            const userSnap = await firestore.getDoc(userRef);
+            let profileData: UserProfile = userSnap.exists()
+              ? (userSnap.data() as UserProfile)
+              : fallbackProfile;
+
+            if (admin) {
+              profileData = { ...profileData, role: "admin" };
+              try {
+                const adminRef = firestore.doc(db, "admins", nextUser.uid);
+                const adminSnap = await firestore.getDoc(adminRef);
+                if (!adminSnap.exists()) {
+                  await firestore.setDoc(adminRef, {
+                    email: nextUser.email,
+                    registeredAt: firestore.serverTimestamp(),
+                    source: userSnap.exists()
+                      ? "self-registration"
+                      : "self-registration-new",
+                  });
+                }
+              } catch (adminError) {
+                console.warn("Admin self-registration failed:", adminError);
+              }
+            }
+
+            if (
+              !userSnap.exists() ||
+              (admin && userSnap.data().role !== "admin")
+            ) {
+              try {
+                await firestore.setDoc(
+                  userRef,
+                  userSnap.exists()
+                    ? { ...profileData, role: profileData.role }
+                    : {
+                        ...profileData,
+                        createdAt: firestore.serverTimestamp(),
+                      },
+                  userSnap.exists() ? { merge: true } : undefined,
+                );
+              } catch (writeError) {
+                console.warn("User profile sync failed:", writeError);
+              }
+            }
+
+            if (!cancelled) setProfile(profileData);
+          } catch (error) {
+            console.error(
+              "Failed to fetch user profile, using local account details:",
+              error,
+            );
+            if (!cancelled) setProfile(fallbackProfile);
+          } finally {
+            if (!cancelled) setLoading(false);
+          }
+        });
+      } catch (error) {
+        console.error("Authentication initialization failed:", error);
+        if (!cancelled) {
+          setAuthReady(true);
+          setLoading(false);
+          setUser(null);
+          setProfile(null);
         }
-      } else {
-        setProfile(null);
       }
-      setLoading(false);
-    });
+    };
+
+    const win = window as typeof window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout?: number },
+      ) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    let idleId: number | undefined;
+    let timerId: number | undefined;
+    const launch = () => void startAuth();
+
+    if (typeof win.requestIdleCallback === "function") {
+      idleId = win.requestIdleCallback(launch, {
+        timeout: window.matchMedia("(max-width: 767px)").matches ? 1800 : 900,
+      });
+    } else {
+      timerId = window.setTimeout(
+        launch,
+        window.matchMedia("(max-width: 767px)").matches ? 900 : 350,
+      );
+    }
+
     return () => {
-      unsubscribe();
+      cancelled = true;
+      unsubscribe?.();
+      if (idleId !== undefined) win.cancelIdleCallback?.(idleId);
+      if (timerId !== undefined) window.clearTimeout(timerId);
     };
   }, []);
 
   useEffect(() => {
     if (user) {
-      const addressing = resolveUserAddressing(profile?.displayName || user.displayName || 'ضيف');
+      const addressing = resolveUserAddressing(
+        profile?.displayName || user.displayName || "ضيف",
+      );
       setUserName(addressing.name);
       setUserGender(addressing.gender);
       setActiveUser(addressing.name, addressing.gender);
     } else {
-      const guestAddressing = resolveUserAddressing('ضيف', true);
+      const guestAddressing = resolveUserAddressing("ضيف", true);
       setUserName(guestAddressing.name);
       setUserGender(guestAddressing.gender);
       setActiveUser(guestAddressing.name, guestAddressing.gender);
@@ -164,7 +199,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user, profile]);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, authReady, userName, userGender }}>
+    <AuthContext.Provider
+      value={{ user, profile, loading, authReady, userName, userGender }}
+    >
       {children}
     </AuthContext.Provider>
   );

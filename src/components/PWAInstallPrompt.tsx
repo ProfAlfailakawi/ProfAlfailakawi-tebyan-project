@@ -21,7 +21,7 @@ const isIOsDevice = () => {
 // ============================================
 // The Header Icon (Always visible if not installed)
 // ============================================
-export const PWAHeaderButton = () => {
+export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant?: 'icon' | 'menu'; language?: 'ar' | 'en' }) => {
   const [showIcon, setShowIcon] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
 
@@ -53,13 +53,16 @@ export const PWAHeaderButton = () => {
 
   return (
     <>
-      <button 
+      <button
         onClick={handleInstallClick}
-        className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 mx-1 md:mx-2 rounded-xl bg-white/85 text-[#7D689E] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[#C9BEDF]/40 backdrop-blur-xl"
-        title="تثبيت التطبيق"
-        aria-label="تثبيت التطبيق"
+        className={variant === 'menu'
+          ? 'w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-bold text-right text-zinc-600 hover:bg-zinc-100 active:bg-zinc-100 transition-colors'
+          : 'flex items-center justify-center w-10 h-10 md:w-11 md:h-11 mx-1 md:mx-2 rounded-xl bg-white/85 text-[#7D689E] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[#C9BEDF]/40 backdrop-blur-xl'}
+        title={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
+        aria-label={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
       >
-        <Download className="w-4 h-4 text-[#8E7AAE]" />
+        <Download className="w-5 h-5 text-[#8E7AAE] shrink-0" />
+        {variant === 'menu' && <span>{language === 'ar' ? 'ثبّت تبيان على جهازك' : 'Install Tebyan on your device'}</span>}
       </button>
 
       {/* iOS Instructions Modal */}
