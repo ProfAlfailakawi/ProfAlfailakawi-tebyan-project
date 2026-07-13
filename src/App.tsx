@@ -1029,7 +1029,7 @@ const AppContent: React.FC = () => {
       <motion.header 
          animate={{ y: showHeader ? 0 : -100 }}
          transition={{ duration: 0.3, ease: "easeInOut" }}
-         className="fixed top-0 left-0 right-0 z-40 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none"
+         className="tebyan-app-header fixed top-0 left-0 right-0 z-40 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none"
       >
          <div className="tebyan-floating-nav flex items-center gap-2 md:gap-5 pointer-events-auto">
              <button 

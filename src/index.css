@@ -3057,3 +3057,360 @@ body:not(.zen-idle)::after {
     transition-duration: 100ms !important;
   }
 }
+
+/* === Tebyan mobile architecture refinement v5 ===
+   Scoped fixes for the service explorer and mobile navigation.
+   Keeps every service/function while restoring compact visual rhythm. */
+@media (max-width: 767px) {
+  /* A quiet header canopy prevents scrolled content from showing behind controls. */
+  .tebyan-app-header {
+    padding-top: calc(env(safe-area-inset-top, 0px) + .52rem) !important;
+    padding-bottom: 1.05rem !important;
+    background: linear-gradient(
+      180deg,
+      rgba(250, 249, 246, .99) 0%,
+      rgba(250, 249, 246, .96) 72%,
+      rgba(250, 249, 246, 0) 100%
+    ) !important;
+  }
+
+  .tebyan-route-discover.tebyan-route-shell {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4.9rem) !important;
+    padding-inline: .55rem !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.35rem) !important;
+  }
+
+  .tebyan-route-discover > div {
+    padding: .35rem .2rem 0 !important;
+  }
+
+  .tebyan-service-explorer {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.4rem) !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+  }
+
+  /* Compact introduction: still welcoming, no oversized poster typography. */
+  .tebyan-service-hero {
+    padding: .35rem .45rem 0 !important;
+    margin-inline: auto !important;
+    text-align: center !important;
+  }
+
+  .tebyan-service-kicker {
+    min-height: 0 !important;
+    margin-bottom: .55rem !important;
+    padding: .36rem .7rem !important;
+    gap: .36rem !important;
+    border-radius: 999px !important;
+    font-size: .68rem !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 5px 16px rgba(24,34,49,.035) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .tebyan-service-kicker svg {
+    width: .82rem !important;
+    height: .82rem !important;
+  }
+
+  .tebyan-service-title {
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: clamp(1.42rem, 6.2vw, 1.68rem) !important;
+    line-height: 1.27 !important;
+    font-weight: 800 !important;
+    letter-spacing: -.035em !important;
+    text-wrap: balance;
+  }
+
+  .tebyan-service-intro {
+    max-width: 21rem !important;
+    margin-top: .42rem !important;
+    font-size: .78rem !important;
+    line-height: 1.72 !important;
+    font-weight: 600 !important;
+    color: #6f8194 !important;
+    text-wrap: pretty;
+  }
+
+  /* On phones the filter belongs to the document flow. A sticky panel was
+     covering cards and making the page look broken while scrolling. */
+  .tebyan-service-filter {
+    position: relative !important;
+    top: auto !important;
+    z-index: 2 !important;
+    width: calc(100% - .25rem) !important;
+    max-width: none !important;
+    margin-top: .9rem !important;
+    padding: .58rem !important;
+    border-radius: 1.2rem !important;
+    background: rgba(249, 247, 242, .94) !important;
+    box-shadow: 0 8px 24px rgba(24,34,49,.052) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .tebyan-service-search {
+    min-height: 2.9rem !important;
+    padding: .56rem .8rem !important;
+    gap: .55rem !important;
+    border-radius: .95rem !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.8) !important;
+  }
+
+  .tebyan-service-search > svg {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+  }
+
+  .tebyan-service-search-input {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-size: .84rem !important;
+    line-height: 1.55 !important;
+    font-weight: 650 !important;
+  }
+
+  .tebyan-service-search-input::placeholder {
+    font-size: .82rem !important;
+    color: rgba(100,120,141,.62) !important;
+  }
+
+  .tebyan-service-categories {
+    direction: rtl !important;
+    margin-top: .52rem !important;
+    padding: .05rem .08rem .18rem !important;
+    gap: .38rem !important;
+    scroll-padding-inline: .2rem !important;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-inline: contain;
+  }
+
+  .tebyan-service-chip {
+    min-height: 2.15rem !important;
+    height: 2.15rem !important;
+    padding-inline: .78rem !important;
+    border-radius: 999px !important;
+    font-size: .72rem !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: keep-all !important;
+    scroll-snap-align: start;
+    box-shadow: none !important;
+  }
+
+  .tebyan-service-chip.bg-\[\#8E7AAE\] {
+    box-shadow: 0 5px 14px rgba(142,122,174,.18) !important;
+  }
+
+  .tebyan-service-groups {
+    margin-top: 1.15rem !important;
+  }
+
+  .tebyan-service-group + .tebyan-service-group {
+    margin-top: 1.4rem !important;
+  }
+
+  .tebyan-service-group-heading {
+    padding-inline: .45rem !important;
+  }
+
+  .tebyan-service-group-title {
+    margin: 0 !important;
+    font-size: 1.06rem !important;
+    line-height: 1.45 !important;
+    font-weight: 800 !important;
+    letter-spacing: -.022em !important;
+  }
+
+  .tebyan-service-group-copy {
+    margin-top: .12rem !important;
+    font-size: .73rem !important;
+    line-height: 1.65 !important;
+    font-weight: 600 !important;
+    color: #7b8998 !important;
+  }
+
+  .tebyan-service-grid {
+    margin-top: .62rem !important;
+    gap: .62rem !important;
+  }
+
+  /* Service cards become concise information tiles rather than tall posters. */
+  button.tebyan-service-card {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: .82rem .86rem !important;
+    border-radius: 1.22rem !important;
+    text-align: right !important;
+    box-shadow: 0 7px 21px rgba(24,34,49,.045) !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  .tebyan-service-card-inner {
+    min-height: 0 !important;
+  }
+
+  .tebyan-service-card-top {
+    gap: .55rem !important;
+    align-items: center !important;
+  }
+
+  .tebyan-service-card-icon {
+    width: 2.45rem !important;
+    height: 2.45rem !important;
+    border-radius: .82rem !important;
+  }
+
+  .tebyan-service-card-icon svg {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+  }
+
+  .tebyan-service-featured {
+    max-width: 9.5rem !important;
+    padding: .28rem .55rem !important;
+    border-radius: 999px !important;
+    font-size: .63rem !important;
+    line-height: 1.35 !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+  }
+
+  .tebyan-service-card-title {
+    margin-top: .62rem !important;
+    font-size: .98rem !important;
+    line-height: 1.5 !important;
+    font-weight: 800 !important;
+    letter-spacing: -.018em !important;
+  }
+
+  .tebyan-service-card-brand {
+    margin-top: .06rem !important;
+    font-size: .69rem !important;
+    line-height: 1.45 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+  }
+
+  .tebyan-service-card-description {
+    margin-top: .42rem !important;
+    font-size: .78rem !important;
+    line-height: 1.72 !important;
+    font-weight: 600 !important;
+    color: #687c90 !important;
+  }
+
+  .tebyan-service-card-action {
+    margin-top: .58rem !important;
+    gap: .35rem !important;
+    font-size: .75rem !important;
+    line-height: 1.35 !important;
+    font-weight: 750 !important;
+  }
+
+  .tebyan-service-card-action svg {
+    width: .9rem !important;
+    height: .9rem !important;
+  }
+
+  /* Smaller, quieter bottom navigation with guaranteed content clearance. */
+  .tebyan-mobile-dock {
+    inset-inline: .7rem !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + .38rem) !important;
+    min-height: 3rem !important;
+    padding: .18rem !important;
+    gap: .12rem !important;
+    border-radius: 1rem !important;
+    background: rgba(255,255,255,.97) !important;
+    box-shadow: 0 10px 28px rgba(24,34,49,.11) !important;
+  }
+
+  .tebyan-mobile-dock button {
+    min-height: 2.62rem !important;
+    height: 2.62rem !important;
+    padding: 0 .35rem !important;
+    gap: .3rem !important;
+    border-radius: .78rem !important;
+    font-size: .68rem !important;
+    line-height: 1 !important;
+    font-weight: 750 !important;
+  }
+
+  .tebyan-mobile-dock button svg {
+    width: .98rem !important;
+    height: .98rem !important;
+  }
+
+  /* The contact bubble remains available, but no longer sits on top of dock labels. */
+  body:has(.tebyan-mobile-dock) .global-floating-buttons {
+    right: .72rem !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 3.82rem) !important;
+    width: 2.45rem !important;
+    height: 2.45rem !important;
+    min-width: 2.45rem !important;
+    min-height: 2.45rem !important;
+    box-shadow: 0 8px 22px rgba(24,34,49,.11) !important;
+  }
+
+  body:has(.tebyan-mobile-dock) .global-floating-buttons svg {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .tebyan-service-title {
+    font-size: 1.34rem !important;
+  }
+
+  .tebyan-service-intro,
+  .tebyan-service-card-description {
+    font-size: .75rem !important;
+  }
+
+  .tebyan-service-chip {
+    padding-inline: .68rem !important;
+    font-size: .69rem !important;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Beat legacy broad `main .text-*` rules without changing other tools. */
+  main .tebyan-service-title {
+    font-size: clamp(1.34rem, 5.45vw, 1.5rem) !important;
+    line-height: 1.3 !important;
+    font-weight: 800 !important;
+  }
+
+  main .tebyan-service-group-title {
+    font-size: 1.02rem !important;
+    line-height: 1.45 !important;
+    font-weight: 800 !important;
+  }
+
+  main .tebyan-service-card-title {
+    font-size: .98rem !important;
+    line-height: 1.5 !important;
+    font-weight: 800 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .tebyan-service-explorer .tebyan-service-title,
+  .tebyan-service-explorer .tebyan-service-group-title,
+  .tebyan-service-explorer .tebyan-service-card-title {
+    font-weight: 800 !important;
+  }
+}
