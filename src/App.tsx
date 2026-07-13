@@ -489,9 +489,13 @@ const AppContent: React.FC = () => {
       oracle: language === 'ar' ? 'نفتح مجلس المستشارين…' : 'Opening the council…'
     };
     const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (actualTab !== activeTab && !prefersReducedMotion) {
+    const isCompactNavigation = ['home', 'discover', 'mylibrary'].includes(String(actualTab));
+    const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 768;
+    if (actualTab !== activeTab && !prefersReducedMotion && !isCompactNavigation && !isMobileViewport) {
       setDoorTransition({ label: doorLabels[String(actualTab)] || (language === 'ar' ? 'نفتح الباب المناسب…' : 'Opening the right doorway…'), kind: String(actualTab) });
-      setTimeout(() => setDoorTransition(null), 420);
+      setTimeout(() => setDoorTransition(null), 260);
+    } else {
+      setDoorTransition(null);
     }
     if (checkAuth(actualTab as Tab)) {
       setIsLoading(false);
@@ -1027,7 +1031,7 @@ const AppContent: React.FC = () => {
          transition={{ duration: 0.3, ease: "easeInOut" }}
          className="fixed top-0 left-0 right-0 z-40 px-4 md:px-8 py-3 md:py-4 flex items-center justify-between pointer-events-none"
       >
-         <div className="tebyan-floating-nav flex items-center gap-3 md:gap-5 pointer-events-auto rounded-[22px] border border-white/70 bg-white/68 px-2.5 py-2 shadow-[0_12px_34px_rgba(24,34,49,0.07)] backdrop-blur-xl">
+         <div className="tebyan-floating-nav flex items-center gap-2 md:gap-5 pointer-events-auto">
              <button 
                onClick={() => handleTabChange('home')}
                className="flex items-center gap-3 transition-transform active:scale-95"
@@ -1066,11 +1070,11 @@ const AppContent: React.FC = () => {
              </nav>
          </div>
 
-         <div className="flex items-center gap-2 pointer-events-auto">
+         <div className="tebyan-header-actions flex items-center gap-1 pointer-events-auto">
            <button
              type="button"
              onClick={() => setMobileMenuOpen(true)}
-             className="md:hidden flex h-11 w-11 items-center justify-center rounded-2xl border border-white/70 bg-white/82 text-[#182231] shadow-[0_10px_30px_rgba(24,34,49,0.08)] backdrop-blur-xl active:scale-95"
+             className="tebyan-menu-trigger md:hidden flex h-10 w-10 items-center justify-center rounded-xl border border-[#8FA9C7]/18 bg-white/88 text-[#182231] shadow-[0_7px_20px_rgba(24,34,49,0.06)] active:scale-[0.96]"
              aria-label={language === 'ar' ? 'فتح قائمة الخدمات' : 'Open services menu'}
            >
              <Menu className="h-5 w-5" />
@@ -1081,7 +1085,7 @@ const AppContent: React.FC = () => {
            ) : authReady && Object.keys(user || {}).length === 0 ? (
                <button 
                   onClick={() => setShowLogin(true)}
-                  className="bg-white/78 backdrop-blur-xl px-4 py-2 mx-2 rounded-2xl text-zinc-900 shadow-[0_10px_30px_rgba(24,34,49,0.08)] transition-all hover:scale-105 active:scale-95 border border-white/70 flex items-center gap-2"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#8FA9C7]/18 bg-white/88 p-0 text-zinc-900 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
                   title={language === 'ar' ? 'تسجيل الدخول' : 'Login'}
                 >
                   <User className="w-4 h-4" />
@@ -1096,15 +1100,16 @@ const AppContent: React.FC = () => {
         {mobileMenuOpen && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-zinc-900/40 backdrop-blur-sm md:hidden"
+            transition={{ duration: 0.12 }}
+            className="fixed inset-0 z-50 bg-zinc-900/28 md:hidden"
             onClick={() => setMobileMenuOpen(false)}
           >
             <motion.div 
               initial={{ x: language === 'ar' ? '100%' : '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: language === 'ar' ? '100%' : '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute top-0 bottom-0 right-0 w-[85%] max-w-[340px] bg-white shadow-2xl flex flex-col"
+              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute top-0 bottom-0 right-0 w-[82%] max-w-[330px] bg-white shadow-2xl flex flex-col will-change-transform"
               onClick={e => e.stopPropagation()}
             >
               <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
@@ -1191,37 +1196,43 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <nav
-        className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+10px)] z-40 grid grid-cols-3 gap-1 rounded-[24px] border border-white/75 bg-white/88 p-1.5 shadow-[0_18px_55px_rgba(24,34,49,0.18)] backdrop-blur-2xl md:hidden"
-        aria-label={language === 'ar' ? 'التنقل الرئيسي' : 'Primary navigation'}
-      >
-        {[
-          { id: 'home', label: language === 'ar' ? 'اسأل' : 'Ask', icon: Search },
-          { id: 'discover', label: language === 'ar' ? 'استكشف' : 'Explore', icon: Grid3X3 },
-          { id: 'mylibrary', label: language === 'ar' ? 'مكتبتي' : 'Library', icon: LibraryBig },
-        ].map((item) => {
-          const Icon = item.icon;
-          const selected = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => handleTabChange(item.id as Tab)}
-              className={cn(
-                'min-h-[52px] rounded-[18px] text-xs font-black transition-all flex flex-col items-center justify-center gap-1',
-                selected ? 'bg-[#182231] text-white shadow-sm' : 'text-[#64788D] active:bg-[#F4F0F8]'
-              )}
-            >
-              <Icon className="h-4.5 w-4.5" />
-              {item.label}
-            </button>
-          );
-        })}
-      </nav>
+      {(activeTab === 'discover' || activeTab === 'mylibrary') && (
+        <nav
+          className="tebyan-mobile-dock fixed inset-x-5 bottom-[calc(env(safe-area-inset-bottom)+8px)] z-40 grid grid-cols-3 gap-1 rounded-[20px] border border-[#8FA9C7]/18 bg-white/94 p-1 shadow-[0_12px_34px_rgba(24,34,49,0.12)] md:hidden"
+          aria-label={language === 'ar' ? 'التنقل الرئيسي' : 'Primary navigation'}
+        >
+          {[
+            { id: 'home', label: language === 'ar' ? 'اسأل' : 'Ask', icon: Search },
+            { id: 'discover', label: language === 'ar' ? 'استكشف' : 'Explore', icon: Grid3X3 },
+            { id: 'mylibrary', label: language === 'ar' ? 'مكتبتي' : 'Library', icon: LibraryBig },
+          ].map((item) => {
+            const Icon = item.icon;
+            const selected = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handleTabChange(item.id as Tab)}
+                className={cn(
+                  'min-h-[46px] rounded-[15px] text-[11px] font-black transition-colors duration-100 flex items-center justify-center gap-1.5 active:scale-[0.97]',
+                  selected ? 'bg-[#182231] text-white shadow-sm' : 'text-[#64788D] active:bg-[#F4F0F8]'
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      )}
 
       {/* --- Desktop Sidebar Removed --- */}
 
-      <main ref={mainRef} className={cn("flex-1 w-full min-h-0 pt-24 pb-24 md:pb-0 overflow-y-auto overflow-x-hidden relative scroll-smooth custom-scrollbar tebyan-route-shell", `tebyan-route-${activeTab}`)}>
+      <main ref={mainRef} className={cn(
+        "flex-1 w-full min-h-0 pt-24 md:pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
+        activeTab === 'discover' || activeTab === 'mylibrary' ? 'pb-20' : 'pb-3',
+        `tebyan-route-${activeTab}`
+      )}>
         
         {/* Error Banner */}
         {error && (
@@ -1244,9 +1255,9 @@ const AppContent: React.FC = () => {
         >
             <motion.div 
               key={activeTab} 
-              initial={{ opacity: 0, y: 15, filter: 'blur(8px)' }} 
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }} 
-              transition={{ duration: 0.4, type: 'spring', bounce: 0 }}
+              initial={{ opacity: 0, y: 5 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ duration: 0.16, ease: 'easeOut' }}
               className="relative z-10"
             >
             <div className="absolute -top-10 left-12 w-32 h-32 bg-mood-glow rounded-full blur-[80px] pointer-events-none opacity-50" />

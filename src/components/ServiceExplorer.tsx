@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, Search, Sparkles } from 'lucide-react';
-import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 import {
   SERVICE_CATEGORIES,
@@ -55,7 +54,7 @@ export const ServiceExplorer: React.FC<Props> = ({ language, handleTabChange }) 
         </p>
       </header>
 
-      <div className="sticky top-[72px] z-20 mx-auto mt-8 max-w-4xl rounded-[26px] border border-white/70 bg-[#F8F5EF]/90 p-3 shadow-[0_18px_55px_rgba(24,34,49,0.08)] backdrop-blur-2xl">
+      <div className="tebyan-service-filter sticky top-[72px] z-20 mx-auto mt-8 max-w-4xl rounded-[24px] border border-[#8FA9C7]/16 bg-[#F8F5EF]/96 p-3 shadow-[0_12px_34px_rgba(24,34,49,0.07)]">
         <div className="flex items-center gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white px-4 py-3">
           <Search className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
           <input
@@ -112,17 +111,14 @@ export const ServiceExplorer: React.FC<Props> = ({ language, handleTabChange }) 
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                {services.map((service, index) => {
+                {services.map((service) => {
                   const Icon = service.icon;
                   return (
-                    <motion.button
+                    <button
                       type="button"
                       key={service.id}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min(index * 0.025, 0.16) }}
                       onClick={() => handleTabChange(service.id)}
-                      className="group min-h-[190px] rounded-[28px] border border-[#8FA9C7]/14 bg-white/82 p-5 text-right shadow-[0_12px_36px_rgba(24,34,49,0.045)] transition-all hover:-translate-y-1 hover:border-[#8E7AAE]/28 hover:shadow-[0_22px_55px_rgba(24,34,49,0.09)] active:scale-[0.99]"
+                      className="group min-h-[190px] rounded-[28px] border border-[#8FA9C7]/14 bg-white/88 p-5 text-right shadow-[0_10px_28px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_16px_38px_rgba(24,34,49,0.08)] active:scale-[0.985]"
                     >
                       <div className="flex h-full flex-col">
                         <div className="flex items-start justify-between gap-4">
@@ -149,7 +145,7 @@ export const ServiceExplorer: React.FC<Props> = ({ language, handleTabChange }) 
                           <ArrowLeft className={cn('h-4 w-4 text-[#8E7AAE]', language === 'ar' ? '' : 'rotate-180')} />
                         </span>
                       </div>
-                    </motion.button>
+                    </button>
                   );
                 })}
               </div>

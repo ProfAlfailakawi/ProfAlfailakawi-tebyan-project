@@ -3329,29 +3329,29 @@ export const SmartGateway: React.FC<
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-8 py-2 flex flex-col min-h-0">
       {/* One-screen gateway: the user sees one question, while Tebyan routes the full lab behind it. */}
-      <div className="flex flex-col mt-2 md:mt-4 mb-8 md:mb-12">
+      <div className="flex flex-col mt-0 md:mt-4 mb-6 md:mb-12">
         {/* Title Section always visible */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-5 md:mb-7"
+          className="tebyan-home-hero text-center mb-3 md:mb-7"
         >
           <header className="text-center" dir={language === "ar" ? "rtl" : "ltr"}>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mb-3 text-sm font-black text-[#8E7AAE] md:text-base"
+              className="tebyan-home-greeting mb-2 text-xs font-black text-[#8E7AAE] md:text-sm"
             >
               {language === "ar"
-                ? whiteDialectPhrases.helloUser(userName, userGender)
+                ? (userName && userName !== "ضيف" && userName !== "New User" ? `أهلاً بك يا ${userName}` : "أهلاً بك في تبيان")
                 : `Welcome${userName ? `, ${userName}` : ""}`}
             </motion.div>
-            <h1 className="mx-auto max-w-4xl text-3xl font-black leading-[1.25] tracking-tight text-[#182231] md:text-5xl lg:text-6xl">
+            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-black leading-[1.24] tracking-tight text-[#182231] md:text-5xl lg:text-[3.8rem]">
               {language === "ar"
                 ? "وش تبي تفهم أو تحسم اليوم؟"
                 : "What do you want to understand or decide today?"}
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base font-bold leading-8 text-[#64788D] md:text-lg">
+            <p className="mx-auto mt-2.5 max-w-xl text-[0.92rem] font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
               {language === "ar"
                 ? "اكتب سؤالك بطريقتك، حتى لو كان غير مرتب. تبيان يعطيك الخلاصة أولاً ثم يفتح لك التعمق عند الحاجة."
                 : "Write the question in your own words, even if it is not organized. Tebyan gives the answer first, then opens deeper paths only when needed."}
@@ -3360,7 +3360,7 @@ export const SmartGateway: React.FC<
         </motion.div>
 
         {!hasSearched && !isThinking && (
-          <div className="mx-auto mb-4 flex w-full max-w-xl items-center justify-center gap-1 rounded-[20px] border border-[#8FA9C7]/14 bg-white/66 p-1.5 shadow-sm backdrop-blur-xl" dir={language === "ar" ? "rtl" : "ltr"}>
+          <div className="tebyan-response-mode mx-auto mb-2.5 flex w-full max-w-[470px] items-center justify-center gap-1 rounded-[18px] border border-[#8FA9C7]/14 bg-white/74 p-1 shadow-sm" dir={language === "ar" ? "rtl" : "ltr"}>
             {([
               { id: "quick", ar: "جواب سريع", en: "Quick answer" },
               { id: "simple", ar: "شرح مبسط", en: "Simple explanation" },
@@ -3369,15 +3369,18 @@ export const SmartGateway: React.FC<
               <button
                 key={option.id}
                 type="button"
+                aria-pressed={responseMode === option.id}
                 onClick={() => setResponseMode(option.id)}
                 className={cn(
-                  "min-h-11 flex-1 rounded-[15px] px-2 text-xs font-black transition-all sm:text-sm",
+                  "min-h-10 flex-1 rounded-[13px] px-2 text-xs font-black leading-none transition-colors duration-100 whitespace-nowrap",
                   responseMode === option.id
-                    ? "bg-[#182231] text-white shadow-sm"
+                    ? "bg-[#7D689E] text-white shadow-[0_6px_16px_rgba(125,104,158,0.18)]"
                     : "text-[#64788D] hover:bg-white hover:text-[#182231]",
                 )}
               >
-                {language === "ar" ? option.ar : option.en}
+                <span style={{ color: responseMode === option.id ? '#FFFFFF' : undefined }}>
+                  {language === "ar" ? option.ar : option.en}
+                </span>
               </button>
             ))}
           </div>
@@ -3603,7 +3606,7 @@ export const SmartGateway: React.FC<
             onSubmit={handleSubmit}
             className="w-full max-w-4xl flex flex-col items-center"
           >
-            <div className="w-full relative flex flex-col items-center mt-4 mb-6 group">
+            <div className="tebyan-search-stage w-full relative flex flex-col items-center mt-2 mb-5 group">
               {isThinking && (
                 <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
               )}

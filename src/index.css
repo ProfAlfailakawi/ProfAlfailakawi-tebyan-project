@@ -2893,3 +2893,167 @@ body:not(.zen-idle)::after {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Visual recovery + faster touch feedback after the UX architecture update. */
+.tebyan-header-actions,
+.tebyan-header-actions button,
+.tebyan-mobile-dock button,
+.tebyan-response-mode button,
+.tebyan-service-explorer button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tebyan-header-actions button,
+.tebyan-mobile-dock button {
+  transition-property: color, background-color, border-color, transform, opacity !important;
+  transition-duration: 100ms !important;
+}
+
+.tebyan-response-mode button,
+.tebyan-response-mode button span {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+}
+
+.tebyan-response-mode button[aria-pressed="true"],
+.tebyan-response-mode button[aria-selected="true"] {
+  color: #fff !important;
+}
+
+@media (max-width: 767px) {
+  .tebyan-route-home.tebyan-route-shell {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4.7rem) !important;
+    padding-bottom: .75rem !important;
+  }
+
+  .tebyan-route-home > div {
+    padding-top: 0 !important;
+  }
+
+  .tebyan-home-hero {
+    margin-bottom: .72rem !important;
+  }
+
+  .tebyan-home-greeting {
+    margin-bottom: .38rem !important;
+    font-size: .76rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .tebyan-home-hero h1 {
+    max-width: 340px !important;
+    font-size: clamp(1.62rem, 7.4vw, 1.82rem) !important;
+    line-height: 1.24 !important;
+    letter-spacing: -.035em !important;
+    text-wrap: balance;
+  }
+
+  .tebyan-home-hero p {
+    max-width: 335px !important;
+    margin-top: .48rem !important;
+    font-size: .85rem !important;
+    line-height: 1.72 !important;
+    font-weight: 700 !important;
+  }
+
+  .tebyan-response-mode {
+    width: min(100%, 336px) !important;
+    margin-bottom: .48rem !important;
+    padding: .22rem !important;
+    gap: .18rem !important;
+    border-radius: 15px !important;
+    background: rgba(255,255,255,.9) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 7px 22px rgba(24,34,49,.045) !important;
+  }
+
+  .tebyan-response-mode button {
+    min-width: 0 !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding-inline: .34rem !important;
+    border-radius: 11px !important;
+    font-size: .73rem !important;
+    line-height: 1 !important;
+  }
+
+  .tebyan-search-stage {
+    margin-top: .38rem !important;
+    margin-bottom: .9rem !important;
+  }
+
+  .tebyan-header-actions {
+    gap: .2rem !important;
+  }
+
+  .tebyan-header-actions > button,
+  .tebyan-header-actions > div > button,
+  .tebyan-menu-trigger {
+    width: 2.55rem !important;
+    height: 2.55rem !important;
+    min-width: 2.55rem !important;
+    min-height: 2.55rem !important;
+    margin-inline: 0 !important;
+    padding: 0 !important;
+    border-radius: .9rem !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 7px 20px rgba(24,34,49,.055) !important;
+  }
+
+  .tebyan-header-actions svg,
+  .tebyan-menu-trigger svg {
+    width: 1.02rem !important;
+    height: 1.02rem !important;
+  }
+
+  .tebyan-floating-nav {
+    padding: .28rem .34rem !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 7px 22px rgba(24,34,49,.05) !important;
+  }
+
+  .tebyan-floating-nav .tebyan-orb-mark {
+    width: 2.55rem !important;
+    height: 2.55rem !important;
+    border-radius: .95rem !important;
+    box-shadow: 0 8px 24px rgba(142,122,174,.16) !important;
+  }
+
+  .tebyan-mobile-dock {
+    inset-inline: 1rem !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + .5rem) !important;
+    padding: .22rem !important;
+    border-radius: 17px !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .tebyan-mobile-dock button {
+    min-height: 43px !important;
+    border-radius: 13px !important;
+    font-size: .72rem !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+  }
+
+  .tebyan-mobile-dock button span {
+    max-width: none !important;
+    white-space: nowrap !important;
+  }
+
+  .tebyan-service-filter {
+    top: calc(env(safe-area-inset-top, 0px) + 4.4rem) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .tebyan-service-explorer button {
+    transition-duration: 100ms !important;
+  }
+}
