@@ -229,7 +229,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
       <header className="pt-2 md:pt-4 pb-6 md:pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-zinc-200/60 pb-6 md:pb-8 text-right">
           <div className="max-w-2xl">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-zinc-950 leading-[1.12] md:leading-[1.05] tracking-tighter">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-zinc-950 leading-[1.12] md:leading-[1.05] tracking-tighter">
               نصحبك في <br className="hidden md:block"/>
               <span className="text-zinc-500">رحلة البناء</span>
             </h1>
@@ -386,7 +386,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               <div className="inline-flex bg-white/74 backdrop-blur-md px-4 py-2 rounded-full border border-[#E2D6C8] text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#9A6042] shadow-sm">
                 خدمة التدخل السريع
               </div>
-              <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-serif leading-[1.15] tracking-tight">
+              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-serif leading-[1.15] tracking-tight">
                 تواجه موقفاً <br className="hidden md:block"/> 
                 <span className="italic text-[#9A6042]">حرجاً وصعباً؟</span>
               </h2>

@@ -195,7 +195,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                 </span>
               )}
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#182231] leading-[0.98] tracking-tight">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-[#182231] leading-[1.1] tracking-tight">
               {language === 'ar' ? (user ? getGenderWord(userGender, 'نظامك الحي جاهز يا بطل', 'نظامكِ الحي جاهز يا بطلة', 'نظامك الحي جاهز') : 'نظامك الحي جاهز') : 'Your living system is ready'}
             </h1>
             <p className="text-sm md:text-lg text-[#64788D] font-bold leading-relaxed max-w-2xl mt-4" style={{ opacity: helpOpacity, transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
@@ -226,10 +226,10 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           <div className="space-y-gr-1">
             <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
             <h2 className="text-2xl md:text-5xl font-black text-[#182231] tracking-tight leading-tight">
-              {language === 'ar' ? getGenderWord(userGender, 'وش القرار اللي نوضّحه اليوم؟', 'شنو الفكرة اللي نوضّحها اليوم؟', 'وش القرار اللي نوضّحه اليوم؟') : 'What should we clarify today?'}
+              {language === 'ar' ? getGenderWord(userGender, 'ما القرار الذي نوضّحه اليوم؟', 'ما الفكرة التي نوضّحها اليوم؟', 'ما القرار الذي نوضّحه اليوم؟') : 'What should we clarify today?'}
             </h2>
             <p className="text-sm md:text-base text-[#64788D] font-bold leading-relaxed max-w-2xl" style={{ opacity: helpOpacity, transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)', height: helpOpacity === 0 ? 0 : 'auto', overflow: 'hidden' }}>
-              {language === 'ar' ? getGenderWord(userGender, 'اختَر الباب المناسب الآن. كل العمق موجود، لكن البداية لازم تكون خفيفة وواثقة.', 'اختاري الباب المناسب الآن. كل العمق موجود، لكن البداية لازم تكون خفيفة وواثقة.', 'اختَر الباب المناسب الآن. كل العمق موجود، لكن البداية لازم تكون خفيفة وواثقة.') : 'Choose the right door now. The depth is here, but the first move should feel light and confident.'}
+              {language === 'ar' ? getGenderWord(userGender, 'اختر الباب المناسب الآن. العمق متوفر بالكامل، ولكن يجب أن تكون البداية خفيفة وواثقة.', 'اختاري الباب المناسب الآن. العمق متوفر بالكامل، ولكن يجب أن تكون البداية خفيفة وواثقة.', 'اختر الباب المناسب الآن. العمق متوفر بالكامل، ولكن يجب أن تكون البداية خفيفة وواثقة.') : 'Choose the right door now. The depth is here, but the first move should feel light and confident.'}
             </p>
           </div>
           <button

@@ -93,11 +93,11 @@ export const ServiceExplorer: React.FC<Props> = ({
             : "Choose your need; Tebyan finds the right tool"}
         </div>
         <h1 className="tebyan-service-title text-[1.75rem] font-black tracking-tight text-[#182231] md:text-5xl">
-          {isArabic ? "شنو تحتاج تسوي؟" : "What do you need to do?"}
+          {isArabic ? "ماذا تحتاج أن تفعل؟" : "What do you need to do?"}
         </h1>
         <p className="tebyan-service-intro mx-auto mt-2 max-w-2xl text-sm font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
           {isArabic
-            ? "ابدأ بالحاجة، مو باسم الخدمة. كل أدوات تبيان موجودة وتظهر لك في الوقت المناسب."
+            ? "ابدأ بالحاجة، لا باسم الخدمة. كل أدوات تبيان موجودة وتظهر لك في الوقت المناسب."
             : "Start with the need, not the tool name. Every Tebyan capability remains available when it is useful."}
         </p>
       </header>

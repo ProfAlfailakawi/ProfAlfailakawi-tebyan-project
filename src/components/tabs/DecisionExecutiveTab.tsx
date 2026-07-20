@@ -78,10 +78,10 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
 
 
     const decisionPurposes = [
-        { id: 'decide', title: { ar: 'أبي أحسم القرار', en: 'I need to decide' }, hint: { ar: 'حكم واضح وميزان للحجج', en: 'Clear judgment and argument balance' } },
-        { id: 'risk', title: { ar: 'أبي أفحص المخاطر', en: 'Check the risks' }, hint: { ar: 'تحيزات وعواقب ونقاط ضعف', en: 'Biases, consequences, and weak points' } },
-        { id: 'voices', title: { ar: 'أبي أسمع العقول', en: 'Hear different minds' }, hint: { ar: 'خبراء وأسئلة وسياق', en: 'Experts, questions, and context' } },
-        { id: 'future', title: { ar: 'أبي أشوف المستقبل', en: 'See the future' }, hint: { ar: 'محاكاة الأثر والزمن', en: 'Time and impact simulation' } },
+        { id: 'decide', title: { ar: 'أريد حسم القرار', en: 'I need to decide' }, hint: { ar: 'حكم واضح وميزان للحجج', en: 'Clear judgment and argument balance' } },
+        { id: 'risk', title: { ar: 'أريد فحص المخاطر', en: 'Check the risks' }, hint: { ar: 'تحيزات وعواقب ونقاط ضعف', en: 'Biases, consequences, and weak points' } },
+        { id: 'voices', title: { ar: 'أريد سماع العقول', en: 'Hear different minds' }, hint: { ar: 'خبراء وأسئلة وسياق', en: 'Experts, questions, and context' } },
+        { id: 'future', title: { ar: 'أريد رؤية المستقبل', en: 'See the future' }, hint: { ar: 'محاكاة الأثر والزمن', en: 'Time and impact simulation' } },
         { id: 'all', title: { ar: 'الغرفة الكاملة', en: 'Full room' }, hint: { ar: 'كل أدوات القرار كما هي', en: 'All decision tools unchanged' } },
     ];
 

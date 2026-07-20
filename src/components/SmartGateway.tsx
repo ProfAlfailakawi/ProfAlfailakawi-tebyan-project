@@ -437,13 +437,13 @@ const DOOR_COPY: Record<
     {
       ar: "باب المستقبل",
       en: "Future door",
-      descAr: "نشوف أثر القرار قبل لا يصير.",
+      descAr: "نرى أثر القرار قبل حدوثه.",
       descEn: "We preview the decision before it happens.",
     },
     {
       ar: "باب الفجوة",
       en: "Gap door",
-      descAr: "نعرف شنو ناقص قبل الخطوة.",
+      descAr: "نعرف ما ينقصنا قبل الخطوة.",
       descEn: "We find what is missing before the next move.",
     },
     {
@@ -469,13 +469,13 @@ const DOOR_COPY: Record<
     {
       ar: "باب التجربة",
       en: "Rehearsal door",
-      descAr: "نجرب الحوار قبل ما تقوله.",
+      descAr: "نجرب الحوار قبل أن تقوله.",
       descEn: "We rehearse the conversation before you say it.",
     },
     {
       ar: "باب الصورة الكبيرة",
       en: "Big picture door",
-      descAr: "نشوف القوى الخفية في الموقف.",
+      descAr: "نرى القوى الخفية في الموقف.",
       descEn: "We see the hidden forces in the situation.",
     },
     {
@@ -615,7 +615,7 @@ const DOOR_COPY: Record<
     {
       ar: "باب المعنى",
       en: "Meaning door",
-      descAr: "نفهم الموضوع من غير زحمة.",
+      descAr: "نفهم الموضوع دون تشتت.",
       descEn: "We understand the topic without clutter.",
     },
     {
@@ -1308,9 +1308,9 @@ export const SmartGateway: React.FC<
         id: "calm" as const,
         ar: "هادئ",
         en: "Calm",
-        hintAr: "خل تبيان يرتبها بروية",
+        hintAr: "دع تبيان يرتبها بروية",
         hintEn: "Let Tebyan organize it calmly",
-        prefixAr: "أبي أفهم هذا الموضوع بهدوء: ",
+        prefixAr: "أود فهم هذا الموضوع بهدوء: ",
         prefixEn: "I want to understand this calmly: ",
       },
       {
@@ -1333,11 +1333,11 @@ export const SmartGateway: React.FC<
       },
       {
         id: "inspired" as const,
-        ar: "أبي إلهام",
+        ar: "أريد إلهاماً",
         en: "Inspired",
         hintAr: "نفتح زاوية جديدة",
         hintEn: "We open a fresh angle",
-        prefixAr: "أبي زاوية إبداعية جديدة حول: ",
+        prefixAr: "أود الحصول على زاوية إبداعية جديدة حول: ",
         prefixEn: "I want a creative new angle on: ",
       },
     ],
@@ -3083,14 +3083,14 @@ export const SmartGateway: React.FC<
       {
         ar: "اختبر قراراً صغيراً كأنه قرار مصيري",
         en: "Test a small decision like it matters",
-        queryAr: "عندي قرار صغير وأبي أختبر أثره قبل أتسرع",
+        queryAr: "لدي قرار صغير وأريد اختبار أثره قبل أن أتسرع",
         queryEn:
           "I have a small decision and want to test its impact before rushing",
       },
       {
         ar: "حوّل فكرة عادية إلى شيء قابل للتنفيذ",
         en: "Turn an ordinary idea into something buildable",
-        queryAr: "عندي فكرة بسيطة وأبي أحولها إلى خطة قابلة للتنفيذ",
+        queryAr: "لدي فكرة بسيطة وأريد تحويلها إلى خطة قابلة للتنفيذ",
         queryEn:
           "I have a simple idea and want to turn it into an executable plan",
       },
@@ -3103,7 +3103,7 @@ export const SmartGateway: React.FC<
       {
         ar: "درّب نفسك على حوار صعب قبل حدوثه",
         en: "Rehearse a hard conversation before it happens",
-        queryAr: "عندي حوار صعب وأبي أتدرب عليه قبل أقوله",
+        queryAr: "لدي حوار صعب وأريد التدرب عليه قبل خوضه",
         queryEn:
           "I have a difficult conversation and want to rehearse it first",
       },
@@ -3121,22 +3121,22 @@ export const SmartGateway: React.FC<
         queryEn: "What small thing would improve my day if I organized it now?",
       },
       {
-        ar: "اليوم افتح باب: فكرة مؤجلة تستحق فرصة ثانية.",
+        ar: "اليوم افتح باباً لـ: فكرة مؤجلة تستحق فرصة ثانية.",
         en: "Today open: a postponed idea that deserves a second chance.",
-        queryAr: "عندي فكرة مؤجلة وأبي أعرف إذا تستحق فرصة ثانية",
+        queryAr: "لدي فكرة مؤجلة وأريد معرفة ما إذا كانت تستحق فرصة ثانية",
         queryEn:
           "I have a postponed idea and want to know if it deserves a second chance",
       },
       {
-        ar: "اليوم خل تبيان يكشف لك زاوية ما كنت شايفها.",
+        ar: "اليوم دع تبيان يكشف لك عن زاوية لم تكن تراها.",
         en: "Today let Tebyan reveal an angle you were not seeing.",
-        queryAr: "أبي زاوية جديدة لموضوع مأخذ من تفكيري",
+        queryAr: "أريد زاوية جديدة لموضوع يشغل تفكيري",
         queryEn: "I want a new angle on something taking my attention",
       },
       {
-        ar: "اليوم حوّل الحيرة إلى خطوة واحدة بس.",
+        ar: "اليوم حوّل الحيرة إلى خطوة واحدة فقط.",
         en: "Today turn hesitation into just one step.",
-        queryAr: "أنا محتار وأبي خطوة واحدة واضحة أبدأ فيها",
+        queryAr: "أنا محتار وأريد خطوة واحدة واضحة أبدأ بها",
         queryEn: "I am unsure and want one clear step to start with",
       },
     ];
@@ -3149,9 +3149,9 @@ export const SmartGateway: React.FC<
       {
         ar: "اليوم نفهم",
         en: "Today we understand",
-        descAr: "اختر موضوعاً واحداً وخله واضحاً.",
+        descAr: "اختر موضوعاً واحداً واجعله واضحاً.",
         descEn: "Pick one topic and make it clear.",
-        queryAr: "أبي أفهم موضوعاً واحداً مأخذ من تفكيري",
+        queryAr: "أريد فهم موضوع يشغل تفكيري",
         queryEn: "I want to understand one topic taking my attention",
       },
       {
@@ -3159,7 +3159,7 @@ export const SmartGateway: React.FC<
         en: "Today we organize",
         descAr: "نحوّل التشويش إلى نقاط بسيطة.",
         descEn: "We turn noise into simple points.",
-        queryAr: "أبي أرتب أفكاري حول موضوع متداخل",
+        queryAr: "أريد ترتيب أفكاري حول موضوع متداخل",
         queryEn: "I want to organize my thoughts around a tangled topic",
       },
       {
@@ -3175,7 +3175,7 @@ export const SmartGateway: React.FC<
         en: "Today we test",
         descAr: "نشوف قوة الفكرة قبل اعتمادها.",
         descEn: "We test the idea before trusting it.",
-        queryAr: "أبي أختبر فكرة أو قرار قبل أعتمده",
+        queryAr: "أريد اختبار فكرة أو قرار قبل اعتماده",
         queryEn: "I want to test an idea or decision before committing",
       },
       {
@@ -3183,7 +3183,7 @@ export const SmartGateway: React.FC<
         en: "Today we build",
         descAr: "نحوّل الفهم إلى خطوة عملية.",
         descEn: "We turn understanding into action.",
-        queryAr: "أبي أحول فهمي إلى خطوة عملية واضحة",
+        queryAr: "أريد تحويل فهمي إلى خطوة عملية واضحة",
         queryEn: "I want to turn my understanding into one practical step",
       },
       {
@@ -3191,15 +3191,15 @@ export const SmartGateway: React.FC<
         en: "Today we review",
         descAr: "نخفف الأخطاء قبل الحركة.",
         descEn: "We reduce mistakes before moving.",
-        queryAr: "أبي أراجع قراري وأتأكد من مخاطره",
+        queryAr: "أريد مراجعة قراري والتأكد من مخاطره",
         queryEn: "I want to review my decision and check its risks",
       },
       {
         ar: "اليوم نفتح أثره",
         en: "Today we open its impact",
-        descAr: "نشوف شنو يتغير إذا بدأت.",
+        descAr: "لنرى ما الذي سيتغير إذا بدأت.",
         descEn: "We see what changes if you start.",
-        queryAr: "أبي أعرف أثر الخطوة القادمة قبل أبدأ",
+        queryAr: "أريد معرفة أثر الخطوة القادمة قبل أن أبدأ",
         queryEn: "I want to know the impact of the next step before starting",
       },
     ];
@@ -3400,9 +3400,9 @@ export const SmartGateway: React.FC<
                   : `Welcome, ${userName}`}
               </motion.div>
             )}
-            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-bold leading-[1.3] tracking-tight text-[#182231] md:text-5xl lg:text-[3.8rem]">
+            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-bold leading-[1.3] tracking-tight text-[#182231] md:text-5xl lg:text-[2.85rem]">
               {language === "ar"
-                ? "وش تبي تفهم أو تحسم اليوم؟"
+                ? "ماذا تود أن تفهم أو تحسم اليوم؟"
                 : "What do you want to understand or decide today?"}
             </h1>
             <p className="mx-auto mt-2.5 max-w-xl text-[0.92rem] font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
@@ -3482,7 +3482,7 @@ export const SmartGateway: React.FC<
                       onClick={() => {
                         const nextValue =
                           language === "ar"
-                            ? `أبي أرتب ${item.ar} اليوم بخطوة واضحة`
+                            ? `أريد ترتيب ${item.ar} اليوم بخطوة واضحة`
                             : `I want to organize my ${item.en.toLowerCase()} today with one clear step`;
                         setSearchValue(nextValue);
                         latestInputRef.current = nextValue;
@@ -5018,7 +5018,7 @@ export const SmartGateway: React.FC<
                         onClick={() => {
                           const nextValue = livingWorld.isNight
                             ? language === "ar"
-                              ? "أبي أفرغ أفكار اليوم بهدوء وأطلع بخطوة واحدة"
+                              ? "أريد تفريغ أفكار اليوم بهدوء والخروج بخطوة واحدة"
                               : "I want to calmly release today’s thoughts and leave with one step"
                             : language === "ar"
                               ? dailyWow.queryAr
@@ -5220,7 +5220,7 @@ export const SmartGateway: React.FC<
                         onClick={() => {
                           const nextValue =
                             language === "ar"
-                              ? "أبي أفرغ أفكار اليوم بهدوء وأطلع بخطوة واحدة"
+                              ? "أريد تفريغ أفكار اليوم بهدوء والخروج بخطوة واحدة"
                               : "I want to calmly release today’s thoughts and leave with one step";
                           setSearchValue(nextValue);
                           latestInputRef.current = nextValue;

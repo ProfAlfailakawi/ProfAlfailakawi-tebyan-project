@@ -65,7 +65,7 @@ export function buildDirectGuidance({
     summaryAr =
       "لا تبدأ بالإجبار أو اتهامه بالكسل. نفوره من المدرسة قد يكون سببه صعوبة دراسية، موقف مع معلم، تنمّر، قلق، أو إرهاق ونوم غير كافٍ؛ المطلوب معرفة متى بدأ وما الذي يتكرر قبله.";
     actionAr =
-      "اجلس معه اليوم عشر دقائق بلا محاضرة واسأله: «شنو أصعب وقت بالمدرسة؟». تواصل مع المدرسة خلال 48 ساعة، واطلب مساعدة مختص إذا استمر الرفض أو ظهرت آلام وقلق متكرران قبل الدوام.";
+      "اجلس معه اليوم عشر دقائق بلا محاضرة واسأله: «ما أصعب وقت في المدرسة؟». تواصل مع المدرسة خلال 48 ساعة، واطلب مساعدة مختص إذا استمر الرفض أو ظهرت آلام وقلق متكرران قبل الدوام.";
     summaryEn =
       "Do not begin with force or accusations of laziness. School avoidance may reflect learning difficulty, a teacher issue, bullying, anxiety, or poor sleep; first identify when it began and what happens before it.";
     actionEn =
@@ -150,7 +150,7 @@ export function buildDirectGuidance({
     summaryAr =
       "الأولوية الآن ليست كسب النقاش، بل تهدئة التصعيد وفهم الحاجة أو الضغط الموجود خلف الغضب.";
     actionAr =
-      "أوقف الردود الحادة مؤقتاً، سمِّ الشعور بهدوء، ثم اسأل سؤالاً واحداً: «شنو أكثر شي مضايقك الحين؟»";
+      "أوقف الردود الحادة مؤقتاً، سمِّ الشعور بهدوء، ثم اسأل سؤالاً واحداً: «ما أكثر شيء يضايقك الآن؟»";
     summaryEn =
       "The priority is not winning the argument; it is lowering escalation and understanding the need behind the anger.";
     actionEn =

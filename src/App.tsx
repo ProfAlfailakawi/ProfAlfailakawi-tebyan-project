@@ -398,7 +398,7 @@ const SplashScreen = ({
             initial={{ y: 18, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.35, duration: 0.75 }}
-            className="text-5xl md:text-7xl font-black text-[#182231] tracking-tighter"
+            className="text-4xl md:text-5xl font-black text-[#182231] tracking-tighter"
           >
             تبيان
           </motion.h1>
