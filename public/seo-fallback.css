@@ -1,0 +1,19 @@
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #f7f3ee; color: #182231; font-family: Alexandria, system-ui, sans-serif; }
+.seo-landing { position: relative; min-height: 100vh; overflow: hidden; padding: clamp(3rem, 8vw, 7rem) clamp(1.2rem, 6vw, 5rem) 2rem; }
+.seo-landing__halo { position: absolute; inset: -20rem auto auto -14rem; width: 42rem; height: 42rem; border-radius: 999px; background: radial-gradient(circle, rgba(61, 91, 115, .14), transparent 68%); pointer-events: none; }
+.seo-landing__hero { position: relative; max-width: 760px; margin-inline: auto; text-align: center; }
+.seo-landing__logo { border-radius: 22px; box-shadow: 0 16px 50px rgba(24, 34, 49, .12); }
+.seo-landing__eyebrow { margin: 1.5rem 0 .8rem; color: #5c7386; font-size: .76rem; font-weight: 700; letter-spacing: .18em; }
+.seo-landing h1 { margin: 0; font-family: Amiri, Georgia, serif; font-size: clamp(3rem, 9vw, 6.6rem); font-weight: 700; line-height: 1.08; }
+.seo-landing__lead { max-width: 650px; margin: 1.5rem auto 0; color: #5b6874; font-size: clamp(1rem, 2.1vw, 1.18rem); line-height: 2; }
+.seo-landing__button { display: inline-flex; margin-top: 2rem; border: 1px solid rgba(61, 91, 115, .22); border-radius: 999px; padding: .9rem 1.35rem; background: #24394a; color: white; text-decoration: none; font-size: .88rem; font-weight: 700; }
+.seo-landing__grid { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; max-width: 1120px; margin: clamp(4rem, 8vw, 7rem) auto 0; }
+.seo-landing__grid article { border: 1px solid rgba(61, 91, 115, .14); border-radius: 24px; padding: 1.5rem; background: rgba(255, 255, 255, .62); backdrop-filter: blur(8px); }
+.seo-landing__grid span { color: #7890a2; font-size: .7rem; letter-spacing: .12em; }
+.seo-landing__grid h2 { margin: .8rem 0 .55rem; font-family: Amiri, Georgia, serif; font-size: 1.55rem; }
+.seo-landing__grid p { margin: 0; color: #66727c; font-size: .86rem; line-height: 1.85; }
+.seo-landing__footer { max-width: 1120px; margin: 3rem auto 0; border-top: 1px solid rgba(61, 91, 115, .14); padding-top: 1.4rem; color: #73808a; text-align: center; font-size: .75rem; }
+@media (max-width: 820px) { .seo-landing__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .seo-landing__grid { grid-template-columns: 1fr; } .seo-landing { padding-inline: 1rem; } }
