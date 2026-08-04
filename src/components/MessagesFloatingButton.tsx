@@ -4,6 +4,7 @@ import { MessageSquare, X, Send, CheckCircle } from 'lucide-react';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { TebyanTooltip } from './TebyanTooltip';
+import { SmartIconWrapper } from './common/SmartIconGuidance';
 
 export function MessagesFloatingButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,14 +45,21 @@ export function MessagesFloatingButton() {
 
   return (
     <>
-      <motion.button
-        className="fixed bottom-6 right-6 z-[100] h-12 w-12 md:h-13 md:w-13 rounded-full bg-white/90 text-[#6E5F8E] border border-[#C9BEDF]/50 shadow-xl flex items-center justify-center hover:scale-105 transition-transform global-floating-buttons"
-        onClick={() => setIsOpen(!isOpen)}
-        whileTap={{ scale: 0.9 }}
+      <SmartIconWrapper
+        id="messages_floating"
+        guidanceText="رسائل التواصل: لإرسال رسالتك أو استفسارك المباشر لمشرفي تبيان."
+        side="top"
+        className="fixed bottom-6 right-6 z-[100]"
       >
-        <MessageSquare className="w-5 h-5" />
-        <span className="sr-only">تواصل معنا</span>
-      </motion.button>
+        <motion.button
+          className="h-12 w-12 md:h-13 md:w-13 rounded-full bg-white/90 text-[#6E5F8E] border border-[#C9BEDF]/50 shadow-xl flex items-center justify-center hover:scale-105 transition-transform global-floating-buttons"
+          onClick={() => setIsOpen(!isOpen)}
+          whileTap={{ scale: 0.9 }}
+        >
+          <MessageSquare className="w-5 h-5" />
+          <span className="sr-only">تواصل معنا</span>
+        </motion.button>
+      </SmartIconWrapper>
       
       <AnimatePresence>
         {isOpen && (

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp, Brain, Lock, Ghost, Award, HelpCircle, Languages, Eye, Zap, GitBranch, Loader2 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { SmartIconWrapper } from '../common/SmartIconGuidance';
 import { collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, increment, query, orderBy, getDoc, setDoc, writeBatch, where, getDocs, limit } from 'firebase/firestore';
 import { auth, db } from '../../lib/firebase';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
@@ -132,13 +133,20 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                         <div className="flex items-center gap-2">
                                             <span className="font-bold text-xs md:text-sm text-[#3D4A5A]">{node.author}</span>
                                             {onFocusMode && (
-                                                <button 
-                                                    onClick={() => onFocusMode({ text: node.text, author: node.author })}
-                                                    className="p-1 text-zinc-300 hover:text-mood-primary transition-all"
-                                                    title={language === 'ar' ? 'وضع المنارة' : 'Lighthouse Mode'}
+                                                <SmartIconWrapper
+                                                    id="lighthouse_mode"
+                                                    guidanceText="نمط المنارة: تسليط الضوء التركيزي على الفكرة الجوهرية وتصفية المشتتات."
+                                                    side="top"
+                                                    lang={language === 'en' ? 'en' : 'ar'}
                                                 >
-                                                    <Eye className="w-3.5 h-3.5" />
-                                                </button>
+                                                    <button 
+                                                        onClick={() => onFocusMode({ text: node.text, author: node.author })}
+                                                        className="p-1 text-zinc-300 hover:text-mood-primary transition-all"
+                                                        title={language === 'ar' ? 'وضع المنارة' : 'Lighthouse Mode'}
+                                                    >
+                                                        <Eye className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </SmartIconWrapper>
                                             )}
                                         </div>
                                         {userRank && (

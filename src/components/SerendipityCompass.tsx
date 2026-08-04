@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Compass, Sparkles, X, Shuffle } from 'lucide-react';
 import { universalOracle } from '../services/gemini';
 import ReactMarkdown from 'react-markdown';
+import { SmartIconWrapper } from './common/SmartIconGuidance';
 
 export const SerendipityCompass = ({ language = 'ar', contextTopic, handleTabChange }: { language?: string, contextTopic?: string, handleTabChange?: any }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,17 +43,25 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic, handleTabCha
 
   return (
     <>
-      <button 
-        onClick={() => {
-            setIsOpen(true);
-            if (!serendipityPath && !isLoading) exploreTheUnknown();
-        }}
-        className="fixed bottom-40 left-4 md:left-6 z-40 bg-zinc-900 border border-zinc-700 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all group overflow-hidden"
-        title={language === 'ar' ? 'بوصلة التيه (الصدفة)' : 'Serendipity Compass'}
+      <SmartIconWrapper
+        id="serendipity_compass"
+        guidanceText="بوصلة التيه: ترشدك لربط موضوعك بأفكار مدهشة وغير متوقعة."
+        side="top"
+        lang={language === 'en' ? 'en' : 'ar'}
+        className="fixed bottom-40 left-4 md:left-6 z-40"
       >
-        <div className="absolute inset-0 bg-blue-500/20 blur-md group-hover:bg-purple-500/40 transition-colors"></div>
-        <Compass className="w-6 h-6 text-blue-100 relative z-10 group-hover:rotate-180 transition-transform duration-1000" />
-      </button>
+        <button 
+          onClick={() => {
+              setIsOpen(true);
+              if (!serendipityPath && !isLoading) exploreTheUnknown();
+          }}
+          className="bg-zinc-900 border border-zinc-700 w-14 h-14 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.3)] hover:scale-110 active:scale-95 transition-all group overflow-hidden"
+          title={language === 'ar' ? 'بوصلة التيه (الصدفة)' : 'Serendipity Compass'}
+        >
+          <div className="absolute inset-0 bg-blue-500/20 blur-md group-hover:bg-purple-500/40 transition-colors"></div>
+          <Compass className="w-6 h-6 text-blue-100 relative z-10 group-hover:rotate-180 transition-transform duration-1000" />
+        </button>
+      </SmartIconWrapper>
 
       <AnimatePresence>
         {isOpen && (

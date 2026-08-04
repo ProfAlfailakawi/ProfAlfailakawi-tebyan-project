@@ -2,6 +2,7 @@ import { GamificationProvider } from "./components/GamificationProvider";
 import { UserProvider } from "./contexts/UserContext";
 import { CognitiveModeProvider } from "./contexts/CognitiveModeContext";
 import { useAmbientIntelligence } from "./hooks/useAmbientIntelligence";
+import { SmartIconWrapper } from "./components/common/SmartIconGuidance";
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import {
   GraduationCap,
@@ -2261,30 +2262,37 @@ const AppContent: React.FC = () => {
                     {language === "ar" ? "بوصلة الوجدان" : "MOOD COMPASS"}
                   </p>
                 </div>
-                <button
-                  onClick={() => setIsMoodHudOpen(!isMoodHudOpen)}
-                  className={cn(
-                    "tour-mood-compass flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 group relative overflow-hidden active:scale-95",
-                    isMoodHudOpen
-                      ? "bg-mood-primary text-white shadow-[0_0_30px_rgba(var(--mood-primary),0.3)]"
-                      : "bg-white border border-zinc-100 text-zinc-400 hover:text-mood-primary hover:border-mood-primary/30 shadow-sm",
-                  )}
+                <SmartIconWrapper
+                  id="mood_compass"
+                  guidanceText="بوصلة الوجدان: تغير نغمة الألوان والأجواء الفكرية في تبيان."
+                  side="top"
+                  lang={language === "en" ? "en" : "ar"}
                 >
-                  <LivingIcon
-                    icon={Compass}
-                    mood={currentMood}
-                    type="settings"
+                  <button
+                    onClick={() => setIsMoodHudOpen(!isMoodHudOpen)}
                     className={cn(
-                      "w-4 h-4 transition-all duration-1000",
+                      "tour-mood-compass flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 group relative overflow-hidden active:scale-95",
                       isMoodHudOpen
-                        ? "rotate-[360deg] scale-110"
-                        : "rotate-0 transform group-hover:rotate-45",
+                        ? "bg-mood-primary text-white shadow-[0_0_30px_rgba(var(--mood-primary),0.3)]"
+                        : "bg-white border border-zinc-100 text-zinc-400 hover:text-mood-primary hover:border-mood-primary/30 shadow-sm",
                     )}
-                  />
-                  <span className="text-[10px] font-black uppercase tracking-widest">
-                    {language === "ar" ? "بوصلة الوجدان" : "Mood Compass"}
-                  </span>
-                </button>
+                  >
+                    <LivingIcon
+                      icon={Compass}
+                      mood={currentMood}
+                      type="settings"
+                      className={cn(
+                        "w-4 h-4 transition-all duration-1000",
+                        isMoodHudOpen
+                          ? "rotate-[360deg] scale-110"
+                          : "rotate-0 transform group-hover:rotate-45",
+                      )}
+                    />
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                      {language === "ar" ? "بوصلة الوجدان" : "Mood Compass"}
+                    </span>
+                  </button>
+                </SmartIconWrapper>
 
                 <AnimatePresence>
                   {isMoodHudOpen && (
