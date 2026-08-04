@@ -35,22 +35,8 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
   useEffect(() => {
     const handler = () => openTour(true);
     window.addEventListener("tebyan_open_onboarding", handler);
-
-    // Auto open on first visit if not seen
-    const hasSeen = localStorage.getItem(tourKey);
-    const globalSeen = localStorage.getItem("tebyan_onboarding_seen_v3");
-    if (!hasSeen && !globalSeen) {
-      const timer = setTimeout(() => {
-        openTour(false);
-      }, 600);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener("tebyan_open_onboarding", handler);
-      };
-    }
-
     return () => window.removeEventListener("tebyan_open_onboarding", handler);
-  }, [tourKey]);
+  }, []);
 
   const closeTour = () => {
     localStorage.setItem(tourKey, "true");
