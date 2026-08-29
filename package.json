@@ -14,7 +14,7 @@
     "deploy": "npm run build && firebase deploy --only functions:api,hosting,firestore:rules"
   },
   "dependencies": {
-    "@google/genai": "^2.19.0",
+    "@google/genai": "^1.29.0",
     "@google/generative-ai": "^0.24.1",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/typography": "^0.5.19",
@@ -52,6 +52,7 @@
     "esbuild": "^0.28.0",
     "eslint": "^10.2.1",
     "firebase-admin": "^14.3.0",
+    "firebase-tools": "^15.28.2",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

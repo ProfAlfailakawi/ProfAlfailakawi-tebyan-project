@@ -10,6 +10,11 @@ The Tebyan platform consists of:
 - **Hosting**: Firebase Hosting serves the frontend and proxies API requests via `firebase.json` rewrites.
 - **AI Model**: Google Gemini (model `gemini-2.5-flash`).
 
+## Dependencies Note
+The repository contains both `@google/generative-ai` and `@google/genai`.
+- `@google/generative-ai` is used across the frontend and backend core for generating content.
+- `@google/genai` is explicitly required by several local scripts (`test-audio.ts`, `scripts/generate_all.ts`, and `scripts/provisionFileSearch.mjs`) for file-search and provisioning purposes. It cannot be removed without breaking local scripts.
+
 ## Local Setup
 
 **Prerequisites:** Node.js (version 20 or higher)
