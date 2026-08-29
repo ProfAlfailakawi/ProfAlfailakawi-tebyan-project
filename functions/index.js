@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const crypto = require("crypto");
+const aiCore = require("./aiCore.cjs");
 
 const app = express();
 app.use(cors({ origin: true }));
@@ -393,6 +394,36 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
             return res.json({ text: mockResponse });
         } else {
             return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
+        }
+    }
+
+    // --- Evidence Mode (File Search / Google Search grounding) ---------------
+    // Opt-in only: activates when the client asks for it via config.evidenceMode.
+    // On any failure it falls through to the normal ungrounded path below, so
+    // the protected default behaviour is never a regression.
+    const evidenceMode = req.body.config && req.body.config.evidenceMode;
+    if (evidenceMode) {
+        try {
+            const apiKey = getGeminiApiKey();
+            const grounded = await aiCore.generateGrounded({
+                apiKey,
+                model: modelName,
+                contents,
+                config: req.body.config,
+                evidenceMode,
+            });
+            const aiResponse = { text: grounded.text, evidence: grounded.evidence };
+            if (smartCache.size >= CACHE_MAX_ENTRIES) {
+                smartCache.delete(smartCache.keys().next().value);
+            }
+            smartCache.set(cacheKey, { timestamp: Date.now(), response: aiResponse });
+            return res.json(aiResponse);
+        } catch (groundErr) {
+            console.warn(
+                "[Evidence] Grounded generation failed, falling back to ungrounded:",
+                (groundErr && (groundErr.code || groundErr.message)) || groundErr
+            );
+            // fall through to normal generation (source will be reported as 'model')
         }
     }
 

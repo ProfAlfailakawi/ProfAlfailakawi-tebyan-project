@@ -7,7 +7,9 @@ import ReactMarkdown from 'react-markdown';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { BreathingText } from '../../BreathingText';
 import { KnowledgeSignature } from '../../common/KnowledgeSignature';
-import { proxyGenerateAudio } from '../../../lib/aiProxy';
+import { proxyGenerateAudio, proxyGenerateEvidence, type EvidenceEnvelope } from '../../../lib/aiProxy';
+import { EvidenceBadge } from '../../common/EvidenceBadge';
+import { ShieldCheck } from 'lucide-react';
 
 interface Props {
   questions: QawlFaslQuestion[];
@@ -34,7 +36,12 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const [isQuickAudioLoading, setIsQuickAudioLoading] = useState(false);
   const [quickAudioError, setQuickAudioError] = useState<string | null>(null);
   const quickAudioRef = useRef<HTMLAudioElement | null>(null);
-  
+
+  // Evidence Mode: on-demand provenance check against Tebyān's curated base.
+  const [evidence, setEvidence] = useState<EvidenceEnvelope | null>(null);
+  const [evidenceLoading, setEvidenceLoading] = useState(false);
+  const [evidenceError, setEvidenceError] = useState<string | null>(null);
+
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
 
@@ -169,6 +176,29 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     return `data:${audio.mimeType || 'audio/wav'};base64,${audio.audioData}`;
   };
 
+  const handleVerifyEvidence = async () => {
+    if (evidenceLoading) return;
+    setEvidenceLoading(true);
+    setEvidenceError(null);
+    try {
+      const q = question.question || question.title || '';
+      const { evidence: ev } = await proxyGenerateEvidence({
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: `ما الأساس المعرفي في قاعدة تبيان لهذه القضية التربوية؟\n"${q}"\nاذكر المصادر الداعمة بدقة.` }] }],
+        config: { temperature: 0.2 },
+        evidenceMode: 'internal',
+      });
+      setEvidence(ev);
+      if (!ev.citations?.length) {
+        setEvidenceError('لم يُعثر على إسناد داخلي كافٍ لهذه القضية بعد.');
+      }
+    } catch (e) {
+      setEvidenceError('تعذّر التحقق من الإسناد حالياً، حاول لاحقاً.');
+    } finally {
+      setEvidenceLoading(false);
+    }
+  };
+
   const category = CATEGORIES.find(c => c.id === question.categorySlug);
 
   return (
@@ -291,6 +321,25 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   <div className="text-[10px] font-black text-[#7A6B42] mb-1">درجة الحسم</div>
                   <div className="text-2xl font-black text-[#182231]">{question.riskLevel === 'high' ? 'حذر' : 'متزن'}</div>
                 </div>
+              </div>
+              <div className="mb-6">
+                <button
+                  onClick={handleVerifyEvidence}
+                  disabled={evidenceLoading}
+                  className={cn(
+                    'inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border transition-all',
+                    evidenceLoading
+                      ? 'bg-zinc-100 text-[#64788D] border-[#8FA9C7]/20 cursor-wait'
+                      : 'bg-[#EEF4F1] text-emerald-800 border-emerald-200 hover:bg-emerald-100 cursor-pointer'
+                  )}
+                >
+                  {evidenceLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />}
+                  {evidenceLoading ? 'جارٍ التحقق من قاعدة تبيان...' : 'تحقّق من إسناد تبيان'}
+                </button>
+                {evidence && <EvidenceBadge evidence={evidence} language={language} className="mt-3" />}
+                {evidenceError && (
+                  <p className="mt-2 text-xs font-semibold text-[#A6603F]">{evidenceError}</p>
+                )}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[

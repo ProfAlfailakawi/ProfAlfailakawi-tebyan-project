@@ -74,13 +74,55 @@ ${buildUserAddressingInstruction(addressing)}
   }
 
   const data = await response.json();
-  return { 
-    response: { 
+  return {
+    response: {
       get text() { return data.text; }
     },
     get text() { return data.text; },
+    evidence: data.evidence || null,
     _cached: data._cached
   };
+}
+
+export type EvidenceSource = 'internal' | 'web' | 'model' | 'simulation';
+
+export interface EvidenceCitation {
+  index: number;
+  kind: 'internal' | 'web';
+  title: string;
+  uri: string;
+  snippet: string;
+}
+
+export interface EvidenceEnvelope {
+  source: EvidenceSource;
+  confidence: number | null;
+  citations: EvidenceCitation[];
+  queries?: string[];
+}
+
+/**
+ * Evidence Mode generation. Asks the backend to ground the answer in Tebyān's
+ * internal corpus (File Search) or the current web (Google Search) and to
+ * return citations + a confidence signal alongside the text.
+ *
+ * Always resolves to a usable result: if grounding is unavailable server-side,
+ * the backend falls back to normal generation and we report source 'model'.
+ */
+export async function proxyGenerateEvidence(params: {
+  model?: string;
+  contents: any[];
+  config?: any;
+  evidenceMode: 'internal' | 'web' | 'auto';
+}): Promise<{ text: string; evidence: EvidenceEnvelope }> {
+  const { evidenceMode, ...rest } = params;
+  const res = await proxyGenerateContent({
+    ...rest,
+    config: { ...(rest.config || {}), evidenceMode },
+  });
+  const evidence: EvidenceEnvelope =
+    (res as any).evidence || { source: 'model', confidence: null, citations: [] };
+  return { text: res.text || '', evidence };
 }
 
 
