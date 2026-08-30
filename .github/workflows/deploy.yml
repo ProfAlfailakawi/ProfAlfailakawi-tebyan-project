@@ -3,10 +3,14 @@ name: Deploy
 # Deploys to Firebase (Hosting + api function + Firestore rules) automatically
 # whenever main is updated, and on manual request from the Actions tab.
 #
-# Requires one repository secret:
+# Requires one repository secret to actually deploy:
 #   FIREBASE_SERVICE_ACCOUNT  — the full JSON of a service account in the
 #   tebyan-clean-2026 project with permission to deploy Hosting, Functions,
 #   and Firestore rules.
+#
+# Until that secret exists, the workflow still builds (staying green) and
+# simply skips the deploy step with a warning — so it never fails red and
+# turns itself on the moment the secret is added.
 on:
   push:
     branches: [main]
@@ -39,17 +43,33 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
-      # Write the service-account JSON to a file the Firebase CLI can read via
+      # Decide whether we can deploy. Secrets cannot be read directly in `if:`
+      # expressions, so surface presence as a step output first.
+      - name: Check deploy credentials
+        id: creds
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Deploy skipped::FIREBASE_SERVICE_ACCOUNT secret is not set. Add it in Settings → Secrets and variables → Actions to enable automatic deploy."
+          fi
+
+      # Write the service-account JSON to a file the Firebase CLI reads via
       # Application Default Credentials. The file lives only in the runner and
       # is discarded when the job ends.
       - name: Authenticate to Firebase
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/gcp-key.json"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/gcp-key.json" >> "$GITHUB_ENV"
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
       - name: Deploy
+        if: steps.creds.outputs.ready == 'true'
         run: >-
           npx firebase deploy
           --only functions:api,hosting,firestore:rules
