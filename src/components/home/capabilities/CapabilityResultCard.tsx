@@ -10,16 +10,6 @@ const toneClass: Record<string, string> = {
   muted: 'border-[#8FA9C7]/12 bg-[#F7F7FA]',
 };
 
-const confBadge = (c: 'low' | 'medium' | 'high', ar: boolean) => {
-  const map = {
-    high: { ar: 'موثوقية عالية', en: 'high confidence', cls: 'bg-[#EAF4F0] text-[#3E7A66]' },
-    medium: { ar: 'موثوقية متوسطة', en: 'medium confidence', cls: 'bg-[#F1EEF7] text-[#6E5F8E]' },
-    low: { ar: 'موثوقية محدودة', en: 'low confidence', cls: 'bg-[#F7F0EE] text-[#9A6A5E]' },
-  } as const;
-  const m = map[c];
-  return { text: ar ? m.ar : m.en, cls: m.cls };
-};
-
 type Props = {
   result: CapabilityResult;
   language: Language;
@@ -62,14 +52,39 @@ export const CapabilityResultCard: React.FC<Props> = ({ result, language, onNext
 
       {result.claims && result.claims.length > 0 && (
         <div className="mt-3 space-y-2">
+          <p className="text-[11px] font-black text-[#6E5F8E]">{ar ? 'المصادر' : 'Sources'}</p>
           {result.claims.map((c, i) => {
-            const b = confBadge(c.confidence, ar);
+            const typeLabel =
+              c.sourceType === 'internal'
+                ? ar ? 'من مكتبة تبيان' : 'Tebyan library'
+                : c.sourceType === 'file'
+                  ? ar ? 'مرجع داخلي' : 'Internal reference'
+                  : ar ? 'من الويب' : 'Web';
             return (
-              <div key={i} className="rounded-[14px] border border-[#8FA9C7]/14 bg-[#FAF9FC] p-3">
+              <div key={i} className="rounded-[14px] border border-[#A8C3BD]/22 bg-[#F3F8F6] p-3">
                 <p className="text-[13px] font-black leading-[1.8] text-[#273548]">{c.claim}</p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-black', b.cls)}>{b.text}</span>
-                  {c.source && <span className="text-[11px] font-bold text-[#94A3B5]">{c.source}</span>}
+                <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                  {c.verified && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#EAF4F0] px-2 py-0.5 text-[10px] font-black text-[#3E7A66]">
+                      <CheckCircle2 className="h-3 w-3" />
+                      {ar ? 'مصدر موثق' : 'verified source'}
+                    </span>
+                  )}
+                  <span className="rounded-full bg-[#F1EEF7] px-2 py-0.5 text-[10px] font-black text-[#6E5F8E]">{typeLabel}</span>
+                  {c.sourceTitle && !c.sourceUrl && (
+                    <span className="text-[11px] font-bold text-[#64788D]">{c.sourceTitle}</span>
+                  )}
+                  {c.sourceUrl && (
+                    <a
+                      href={c.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-black text-[#4D766B] underline underline-offset-2"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      {c.sourceTitle || (ar ? 'افتح المصدر' : 'open source')}
+                    </a>
+                  )}
                 </div>
               </div>
             );

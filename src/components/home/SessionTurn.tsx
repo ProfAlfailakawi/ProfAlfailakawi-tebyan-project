@@ -26,14 +26,32 @@ const ICONS: Record<string, React.ElementType> = {
 type Props = {
   turn: TebyanTurn;
   language: 'ar' | 'en';
-  priorSummary?: { capability: CapabilityId; title: string; summary?: string }[];
+  /** Real prior capability summaries from the session (never fabricated). */
+  priorCapabilities?: { capability: CapabilityId; title: string; summary?: string }[];
+  /** Compact recent turns for continuity (distinct from capability results). */
+  sessionRecentTurns?: { userInput: string; summary: string }[];
+  sessionKeyFacts?: string[];
+  /** Capabilities used elsewhere in the session (for contextual follow-ups). */
+  usedInSession?: CapabilityId[];
   onOpenTab: (tabId: string, context: string) => void;
   onClarify: (turnId: string, answer: string) => void;
+  /** Lift a capability result into the session so later turns can use it. */
+  onCapabilityResult?: (turnId: string, runId: string, result: CapabilityResult) => void;
 };
 
 type Run = { key: string; capability: CapabilityId };
 
-export const SessionTurn: React.FC<Props> = ({ turn, language, priorSummary = [], onOpenTab, onClarify }) => {
+export const SessionTurn: React.FC<Props> = ({
+  turn,
+  language,
+  priorCapabilities = [],
+  sessionRecentTurns = [],
+  sessionKeyFacts = [],
+  usedInSession = [],
+  onOpenTab,
+  onClarify,
+  onCapabilityResult,
+}) => {
   const ar = language === 'ar';
   const [runs, setRuns] = useState<Run[]>([]);
   const [results, setResults] = useState<Record<string, CapabilityResult>>({});
@@ -51,9 +69,13 @@ export const SessionTurn: React.FC<Props> = ({ turn, language, priorSummary = []
     domain: turn.semantic.domain,
     mode: turn.mode,
     clarifications: turn.clarifications,
+    recentTurns: sessionRecentTurns,
+    keyFacts: sessionKeyFacts,
     highStakes: turn.semantic.highStakes,
+    // Real capability results only — prior ones from the session plus any run
+    // within this turn. No fabricated "compare" placeholder for past turns.
     priorResults: [
-      ...priorSummary,
+      ...priorCapabilities,
       ...runs
         .map((r) => results[r.key])
         .filter(Boolean)
@@ -71,7 +93,7 @@ export const SessionTurn: React.FC<Props> = ({ turn, language, priorSummary = []
   // Follow-up Next Best Action after capabilities have run — contextual, no repeats.
   const followUp = useMemo(() => {
     if (runs.length === 0) return null;
-    return routeCapabilities(turn.semantic, language, usedCaps);
+    return routeCapabilities(turn.semantic, language, usedCaps, usedInSession);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runs.length, turn.semantic, language]);
 
@@ -199,7 +221,10 @@ export const SessionTurn: React.FC<Props> = ({ turn, language, priorSummary = []
               capability={r.capability}
               ctx={buildContext()}
               onOpenTab={onOpenTab}
-              onResult={(res) => setResults((prev) => ({ ...prev, [r.key]: res }))}
+              onResult={(res) => {
+                setResults((prev) => ({ ...prev, [r.key]: res }));
+                onCapabilityResult?.(turn.id, r.key, res);
+              }}
             />
           </div>
         ))}

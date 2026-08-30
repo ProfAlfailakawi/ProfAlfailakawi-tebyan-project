@@ -31,11 +31,19 @@ export interface CapabilitySection {
   tone?: 'neutral' | 'positive' | 'risk' | 'muted';
 }
 
-/** A cited point (research capability). */
+/**
+ * A grounded, cited point (research capability). A claim is only marked
+ * `verified` when it comes from an actually-retrieved source (web/file/internal
+ * corpus) — never from the model inventing a citation.
+ */
 export interface ResearchClaim {
   claim: string;
-  source: string;
+  sourceTitle?: string;
+  sourceUrl?: string;
+  sourceType: 'web' | 'file' | 'internal' | 'none';
+  evidenceSnippet?: string;
   confidence: 'low' | 'medium' | 'high';
+  verified: boolean;
 }
 
 /** What Tebyan can offer to do next, after a capability result. */
@@ -66,6 +74,8 @@ export interface CapabilityResult {
   lean?: string;
   confidence?: number | null;
   source?: 'ai' | 'local' | 'internal' | 'web' | null;
+  /** Research only: true when at least one claim is backed by a real source. */
+  grounded?: boolean;
   nextActions?: CapabilityNextAction[];
   /** True when this is a safe, partial fallback (capability degraded). */
   degraded?: boolean;
@@ -86,8 +96,12 @@ export interface CapabilityContext {
   mode: ResponseMode;
   /** Extra things the user said after the first answer. */
   clarifications: string[];
-  /** Summaries of capabilities already run this session (for continuity + to
-   * avoid repeating suggestions). */
+  /** Compact recent session turns (continuity without token bloat). */
+  recentTurns?: Array<{ userInput: string; summary: string }>;
+  /** Durable facts the user stated this session (age, debts, deadline…). */
+  keyFacts?: string[];
+  /** Summaries of REAL capabilities already run this session (for continuity +
+   * to avoid repeating suggestions). Never fabricated. */
   priorResults: Array<{ capability: CapabilityId; title: string; summary?: string }>;
   /** True for medical / legal / high-stakes-financial / mental-health topics. */
   highStakes: boolean;

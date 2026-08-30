@@ -47,6 +47,17 @@ export const InlineSimulation: React.FC<Props> = ({ ctx, onResult, onRestart, on
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages.length, phase]);
 
+  // The roleplay counterpart is told the full situation — the original message
+  // plus the key facts and understanding gathered this session — so it reacts
+  // in character (e.g. knowing the user has five years of tenure).
+  const scenario = [
+    ctx.originalQuestion,
+    ctx.understanding ? (ar ? `السياق: ${ctx.understanding}` : `Context: ${ctx.understanding}`) : '',
+    ctx.keyFacts && ctx.keyFacts.length ? (ar ? `حقائق: ${ctx.keyFacts.join(' | ')}` : `Facts: ${ctx.keyFacts.join(' | ')}`) : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+
   const send = async () => {
     const msg = input.trim();
     if (!msg || sending) return;
@@ -56,7 +67,7 @@ export const InlineSimulation: React.FC<Props> = ({ ctx, onResult, onRestart, on
     setSending(true);
     try {
       const { generateRoleplayResponse } = await import('../../../services/gemini');
-      const reply = await generateRoleplayResponse(ctx.originalQuestion, msg, next, ctx.language);
+      const reply = await generateRoleplayResponse(scenario, msg, next, ctx.language);
       setMessages((prev) => [...prev, { role: 'ai', text: String(reply || '') }]);
     } catch {
       setMessages((prev) => [

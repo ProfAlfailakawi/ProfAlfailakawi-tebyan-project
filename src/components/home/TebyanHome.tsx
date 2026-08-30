@@ -6,6 +6,7 @@ import { useAuth } from '../AuthProvider';
 import { logFunnel } from '../../services/analyticsService';
 import { HOME_EXAMPLES, homeCopy } from './homeCopy';
 import { SessionTurn } from './SessionTurn';
+import { useTebyanSession } from './useTebyanSession';
 import { composeTurn } from '../../orchestrator/turnComposer';
 import { routeCapabilities } from '../../orchestrator/capabilities/router';
 import { classifyIntent, getLastSession, saveSession, type Domain, type MemorySession, type ResponseMode } from '../../orchestrator';
@@ -44,7 +45,8 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
   const { user } = useAuth();
   const uid = user?.uid ?? null;
 
-  const [turns, setTurns] = useState<TebyanTurn[]>([]);
+  const session = useTebyanSession();
+  const { turns, addTurn, updateTurn, setCapabilityResult, reset: resetSession, buildContext: buildSessionContext, completedCapabilityIds } = session;
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
   const [loadingStage, setLoadingStage] = useState(0);
@@ -93,8 +95,11 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
 
       setThinking(true);
       try {
-        const comp = await composeTurn(query, language, mode);
-        const route = routeCapabilities(comp.semantic, language, []);
+        // Feed the compact session context so a short follow-up ("بس عندي ديون")
+        // is understood against the ongoing topic, not as a new subject.
+        const sessionContext = buildSessionContext();
+        const comp = await composeTurn({ query, language, mode, sessionContext });
+        const route = routeCapabilities(comp.semantic, language, [], completedCapabilityIds);
         const turn: TebyanTurn = {
           id: genId(),
           userInput: query,
@@ -104,12 +109,14 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
           clarifyingQuestion: comp.clarifyingQuestion,
           clarifications: [],
           semantic: comp.semantic,
+          contextRelation: comp.contextRelation,
           mode,
           route,
+          capabilities: [],
           source: comp.source,
           createdAt: Date.now(),
         };
-        setTurns((prev) => [...prev, turn]);
+        addTurn(turn, comp.newKeyFacts);
         logFunnel('first_answer_shown', language, { source: comp.source, capability: route.primary?.capability, mode });
         if (route.primary?.capability === 'simulate') logFunnel('simulation_suggested', language);
         if (route.primary?.capability === 'plan') logFunnel('plan_suggested', language);
@@ -131,7 +138,7 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
         setThinking(false);
       }
     },
-    [language, t.emptyError, t.errorBody, turns.length, uid, doNotSave],
+    [language, t.emptyError, t.errorBody, turns.length, uid, doNotSave, addTurn, buildSessionContext, completedCapabilityIds],
   );
 
   useEffect(() => {
@@ -161,18 +168,26 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
       if (!target) return;
       const clarifications = [...target.clarifications, answer];
       const augmented = `${target.userInput}\n${clarifications.join('\n')}`;
-      // Re-run only this turn's answer; keep the same turn id so inline runs stay.
-      const comp = await composeTurn(augmented, language, target.mode);
-      const route = routeCapabilities(comp.semantic, language, []);
-      setTurns((prev) =>
-        prev.map((x) =>
-          x.id === turnId
-            ? { ...x, understanding: comp.understanding, summary: comp.summary, action: comp.action, clarifyingQuestion: comp.clarifyingQuestion, clarifications, semantic: comp.semantic, route }
-            : x,
-        ),
+      // Re-run only this turn's answer (keep the same id so inline runs stay),
+      // with the full session context so the clarification updates in place.
+      const comp = await composeTurn({ query: augmented, language, mode: target.mode, sessionContext: buildSessionContext() });
+      const route = routeCapabilities(comp.semantic, language, [], completedCapabilityIds);
+      updateTurn(
+        turnId,
+        {
+          understanding: comp.understanding,
+          summary: comp.summary,
+          action: comp.action,
+          clarifyingQuestion: comp.clarifyingQuestion,
+          clarifications,
+          semantic: comp.semantic,
+          contextRelation: comp.contextRelation,
+          route,
+        },
+        comp.newKeyFacts,
       );
     },
-    [turns, language],
+    [turns, language, buildSessionContext, completedCapabilityIds, updateTurn],
   );
 
   // The ONLY place navigation to a standalone tool happens now — the advanced
@@ -194,7 +209,7 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
   };
 
   const newSession = () => {
-    setTurns([]);
+    resetSession();
     setInput('');
     setInlineError(null);
   };
@@ -302,16 +317,29 @@ export const TebyanHome: React.FC<Props> = ({ language, handleTabChange, initial
       </div>
 
       <div className="space-y-5">
-        {turns.map((turn, i) => (
-          <SessionTurn
-            key={turn.id}
-            turn={turn}
-            language={language}
-            priorSummary={i > 0 ? [{ capability: 'compare' as CapabilityId, title: turns[i - 1].userInput, summary: turns[i - 1].summary }] : []}
-            onOpenTab={openTab}
-            onClarify={clarifyTurn}
-          />
-        ))}
+        {turns.map((turn, i) => {
+          const prior = turns.slice(0, i);
+          const priorCapabilities = prior.flatMap((pt) =>
+            pt.capabilities
+              .filter((c) => c.result && !c.result.degraded)
+              .map((c) => ({ capability: c.capability, title: c.result!.title, summary: c.result!.summary || c.result!.lean })),
+          );
+          const sessionRecentTurns = prior.slice(-4).map((pt) => ({ userInput: pt.userInput, summary: pt.summary }));
+          return (
+            <SessionTurn
+              key={turn.id}
+              turn={turn}
+              language={language}
+              priorCapabilities={priorCapabilities}
+              sessionRecentTurns={sessionRecentTurns}
+              sessionKeyFacts={session.keyFacts}
+              usedInSession={completedCapabilityIds}
+              onOpenTab={openTab}
+              onClarify={clarifyTurn}
+              onCapabilityResult={setCapabilityResult}
+            />
+          );
+        })}
       </div>
 
       {thinking && <div className="mt-5"><ThinkingBlock t={t} stage={loadingStage} query={input} compact /></div>}
