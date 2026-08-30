@@ -95,7 +95,7 @@ async function main() {
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const modelName = "gemini-2.5-flash";
+  const modelName = "gemini-1.5-flash";
 
   const indexFile = path.join(process.cwd(), 'questions_index.json');
   const questions = JSON.parse(fs.readFileSync(indexFile, 'utf-8'));

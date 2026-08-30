@@ -179,7 +179,6 @@ const TruthManuscriptTab = React.lazy(
 
 type Tab =
   | "home"
-  | "gateway"
   | "oracle"
   | "concepts"
   | "quizzes"
@@ -237,13 +236,8 @@ const protectedFeatures: Tab[] = [
   "truthmanuscript",
 ];
 
-import { logEvent, logFunnel } from "./services/analyticsService";
+import { logEvent } from "./services/analyticsService";
 
-// TebyanHome is the new "one intelligence" entry point: the user says what is
-// on their mind and the orchestrator decides which engine to use internally.
-const TebyanHome = React.lazy(() => import("./components/home/TebyanHome"));
-// SmartGateway is the previous multi-door gateway. It is retained (not deleted)
-// and reachable from the advanced "Tebyan Lab", but no longer the home path.
 const SmartGateway = React.lazy(() =>
   import("./components/SmartGateway").then((m) => ({
     default: m.SmartGateway,
@@ -299,11 +293,238 @@ const LighthouseMode = React.lazy(() =>
   })),
 );
 
-import { SplashScreen } from "./components/SplashScreen";
-import { OfflineNotice } from "./components/OfflineNotice";
-import { SessionRestoreLoader } from "./components/SessionRestoreLoader";
+const SplashScreen = ({
+  onFinish,
+  language,
+}: {
+  onFinish: () => void;
+  language: "ar" | "en";
+}) => {
+  const quotes =
+    language === "ar"
+      ? [
+          "نفتح بوابة الفهم…",
+          "نرتّب الفكرة بهدوء…",
+          "تبيان يهيّئ مساحة القرار…",
+          "كل سؤال جيد يبدأ من هدوء صغير…",
+        ]
+      : [
+          "Opening the gate of understanding…",
+          "Arranging the idea calmly…",
+          "Tebyan is preparing your decision space…",
+          "Every good question begins with a quiet moment…",
+        ];
+
+  const [randomQuote] = useState(
+    () => quotes[Math.floor(Math.random() * quotes.length)],
+  );
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        sessionStorage.setItem("tebyan_gate_to_search", "true");
+        window.dispatchEvent(new CustomEvent("tebyan_gate_to_search"));
+      } catch (e) {}
+      onFinish();
+    }, 550);
+    return () => clearTimeout(timer);
+  }, [onFinish]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={{
+        opacity: 0,
+        filter: "blur(12px)",
+        transition: { duration: 0.75, ease: "easeInOut" },
+      }}
+      className="fixed inset-0 z-[99999] bg-[#F8F5EF] flex flex-col items-center justify-center overflow-hidden"
+    >
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{ scale: [1, 1.13, 1], opacity: [0.18, 0.3, 0.18] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[10%] right-[14%] w-[520px] h-[520px] bg-[#C9BEDF] rounded-full blur-[145px]"
+        />
+        <motion.div
+          animate={{ scale: [1, 1.17, 1], opacity: [0.14, 0.24, 0.14] }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.7,
+          }}
+          className="absolute bottom-[6%] left-[10%] w-[430px] h-[430px] bg-[#B9D0E7] rounded-full blur-[135px]"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(142,122,174,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(143,169,199,0.055)_1px,transparent_1px)] bg-[size:52px_52px] [mask-image:radial-gradient(circle_at_center,#000_0%,transparent_72%)]" />
+      </div>
+
+      <div className="relative flex flex-col items-center gap-7 px-6 text-center">
+        <motion.div
+          initial={{ scale: 0.88, opacity: 0, rotate: -2 }}
+          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="relative h-36 w-36 md:h-44 md:w-44 flex items-center justify-center"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 rounded-full border border-dashed border-[#8E7AAE]/28"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.08, 1], opacity: [0.65, 1, 0.65] }}
+            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute h-28 w-28 md:h-36 md:w-36 rounded-full bg-white/72 border border-white shadow-[0_28px_80px_rgba(103,88,132,0.18)]"
+          />
+          <motion.div
+            animate={{ y: [-2, 2, -2] }}
+            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+            className="relative z-10 flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-[2rem] bg-[#FBFAF7] border border-[#E8E0F0] text-[#8E7AAE] shadow-inner"
+          >
+            <Globe className="w-10 h-10 md:w-12 md:h-12" />
+            <Sparkles className="absolute -top-1 -left-1 h-4 w-4 text-[#A68F58]" />
+          </motion.div>
+        </motion.div>
+
+        <div className="space-y-3">
+          <motion.p
+            initial={{ y: 12, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+            className="text-[11px] font-black tracking-[0.35em] text-[#8E7AAE]/70 uppercase"
+          >
+            {language === "ar" ? "مختبر فكر هادئ" : "Quiet thinking lab"}
+          </motion.p>
+          <motion.h1
+            initial={{ y: 18, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.35, duration: 0.75 }}
+            className="text-4xl md:text-5xl font-black text-[#182231] tracking-tighter"
+          >
+            تبيان
+          </motion.h1>
+          <motion.p
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.65, duration: 0.75 }}
+            className="text-[#7C8796] font-black flex items-center justify-center gap-2 leading-relaxed"
+          >
+            {randomQuote}
+          </motion.p>
+        </div>
+
+        <div
+          className="mt-5 flex items-center gap-2"
+          aria-label={language === "ar" ? "جاري التحميل" : "Loading"}
+        >
+          {[0, 1, 2].map((i) => (
+            <motion.span
+              key={i}
+              animate={{ opacity: [0.22, 1, 0.22], scale: [0.86, 1.08, 0.86] }}
+              transition={{
+                duration: 1.45,
+                repeat: Infinity,
+                delay: i * 0.2,
+                ease: "easeInOut",
+              }}
+              className="h-2.5 w-2.5 rounded-full bg-[#8E7AAE]/70"
+            />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const SessionRestoreLoader = ({
+  language,
+  slow = false,
+}: {
+  language: "ar" | "en";
+  slow?: boolean;
+}) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className={cn(
+      "fixed left-1/2 z-[9998] -translate-x-1/2 border border-white/70 bg-white/84 shadow-[0_14px_40px_rgba(103,88,132,0.12)] backdrop-blur-xl",
+      slow
+        ? "top-6 rounded-[28px] px-5 py-4 max-w-md w-[calc(100%-2rem)]"
+        : "top-5 rounded-full px-4 py-2",
+    )}
+  >
+    <div className="flex items-center gap-3 text-xs font-black text-[#7D689E]">
+      <Loader2 className="h-4 w-4 animate-spin" />
+      <span>
+        {slow
+          ? language === "ar"
+            ? "نحافظ على مسارك ونستعيد الاتصال بالنظام…"
+            : "Keeping your path while restoring the system…"
+          : language === "ar"
+            ? "جاري استعادة الجلسة…"
+            : "Restoring session…"}
+      </span>
+    </div>
+  </motion.div>
+);
+
+const OfflineNotice = ({ language }: { language: "ar" | "en" }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.35, ease: "easeOut" }}
+    className="fixed inset-0 z-[9999] flex items-end justify-center p-4 md:items-center bg-[#F8F5EF]/62 backdrop-blur-[6px]"
+    dir={language === "ar" ? "rtl" : "ltr"}
+  >
+    <motion.div
+      initial={{ y: 22, scale: 0.98, opacity: 0 }}
+      animate={{ y: 0, scale: 1, opacity: 1 }}
+      exit={{ y: 22, scale: 0.98, opacity: 0 }}
+      className="relative w-full max-w-lg overflow-hidden rounded-[34px] border border-[#F0D8D2] bg-[#FFF9F6]/94 p-5 md:p-7 shadow-[0_34px_110px_rgba(166,96,63,0.16)]"
+    >
+      <div className="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#F1D7CC]/50 blur-[70px]" />
+      <div className="absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-[#C9BEDF]/35 blur-[80px]" />
+      <div className="relative flex items-start gap-4">
+        <div className="relative mt-0.5 flex h-14 w-14 shrink-0 items-center justify-center rounded-[24px] bg-[#FAF0E6] text-[#A6603F]">
+          <motion.span
+            animate={{ scale: [1, 1.7, 1], opacity: [0.5, 0, 0.5] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: "easeOut" }}
+            className="absolute inset-0 rounded-[24px] border border-[#A6603F]/25"
+          />
+          <WifiOff className="h-6 w-6" />
+        </div>
+        <div className="min-w-0 text-right">
+          <p className="text-[11px] font-black tracking-[0.22em] uppercase text-[#A6603F]/75">
+            {language === "ar" ? "وضع الحفاظ على المسار" : "Path-preserve mode"}
+          </p>
+          <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">
+            {language === "ar"
+              ? "الاتصال انقطع… لكن الفكرة لم تضِع"
+              : "Connection paused… the idea is safe"}
+          </h3>
+          <p className="mt-2 text-sm font-bold leading-relaxed text-[#7C8796]">
+            {language === "ar"
+              ? "لا نعيد السبلاش الافتتاحي هنا. تبيان يحفظ حالتك الحالية، وعند عودة الشبكة نكمل من نفس الباب."
+              : "We do not replay the opening splash here. Tebyan keeps your state and resumes from the same doorway when the network returns."}
+          </p>
+          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-[#E9D7CF] bg-white/60 px-3 py-2 text-xs font-black text-[#8D6A58]">
+            <ShieldCheck className="h-4 w-4" />
+            <span>
+              {language === "ar"
+                ? "مسارك الحالي محفوظ مؤقتاً"
+                : "Your current path is temporarily preserved"}
+            </span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  </motion.div>
+);
 
 import { LivingIcon } from "./components/LivingIcon";
+
 const AppContent: React.FC = () => {
   const { user, profile, loading, authReady, userName, userGender } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>("home");
@@ -406,7 +627,8 @@ const AppContent: React.FC = () => {
       cancelIdleCallback?: (handle: number) => void;
     };
     const preload = () => {
-      void import("./components/home/TebyanHome");
+      void import("./components/SmartGateway");
+      void import("./components/ServiceExplorer");
     };
     if (typeof win.requestIdleCallback === "function") {
       const id = win.requestIdleCallback(preload, { timeout: 900 });
@@ -529,11 +751,15 @@ const AppContent: React.FC = () => {
       setActiveTab(tabParam as Tab);
     }
 
-    // Keep a lightweight visit counter (used to time when contextual features
-    // like gamification may appear), but do not apply the cosmetic "patina"
-    // aging effect — it competes with the task and adds no first-value.
+    // Digital Patina Simulation (Accelerated for demonstration)
     const visits = parseInt(localStorage.getItem("app_visits") || "0", 10) + 1;
     localStorage.setItem("app_visits", visits.toString());
+
+    // If visited more than 5 times (or refresh), apply patina (aging effect)
+    if (visits > 2) {
+      // just for show
+      document.body.classList.add("patina-aged");
+    }
   }, []);
 
   useEffect(() => {
@@ -674,14 +900,24 @@ const AppContent: React.FC = () => {
       );
       const isMobileViewport =
         typeof window !== "undefined" && window.innerWidth < 768;
-      // The "opening a doorway" transition on every navigation added theatrics
-      // and latency. Speed matters more: navigate instantly. (doorLabels kept
-      // for reference but no longer shown.)
-      void doorLabels;
-      void prefersReducedMotion;
-      void isCompactNavigation;
-      void isMobileViewport;
-      setDoorTransition(null);
+      if (
+        actualTab !== activeTab &&
+        !prefersReducedMotion &&
+        !isCompactNavigation &&
+        !isMobileViewport
+      ) {
+        setDoorTransition({
+          label:
+            doorLabels[String(actualTab)] ||
+            (language === "ar"
+              ? "نفتح الباب المناسب…"
+              : "Opening the right doorway…"),
+          kind: String(actualTab),
+        });
+        setTimeout(() => setDoorTransition(null), 260);
+      } else {
+        setDoorTransition(null);
+      }
       if (checkAuth(actualTab as Tab)) {
         setIsLoading(false);
         setError(null);
@@ -1394,6 +1630,11 @@ const AppContent: React.FC = () => {
                 icon: Search,
               },
               {
+                id: "discover",
+                label: language === "ar" ? "كل الخدمات" : "All services",
+                icon: Grid3X3,
+              },
+              {
                 id: "mylibrary",
                 label: language === "ar" ? "مكتبتي" : "My library",
                 icon: LibraryBig,
@@ -1499,6 +1740,14 @@ const AppContent: React.FC = () => {
                     icon: Search,
                   },
                   {
+                    id: "discover",
+                    label:
+                      language === "ar"
+                        ? "استكشف حسب حاجتك"
+                        : "Explore by need",
+                    icon: Grid3X3,
+                  },
+                  {
                     id: "mylibrary",
                     label:
                       language === "ar" ? "مكتبتي ومحفوظاتي" : "My library",
@@ -1561,7 +1810,6 @@ const AppContent: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    logFunnel("help_opened", language);
                     window.dispatchEvent(
                       new CustomEvent("tebyan_open_onboarding"),
                     );
@@ -1571,30 +1819,6 @@ const AppContent: React.FC = () => {
                   <HelpCircle className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
                   <span>
                     {language === "ar" ? "دليل الاستخدام" : "How to use Tebyan"}
-                  </span>
-                </button>
-
-                {/* Advanced: the full toolbox, demoted out of the main path. */}
-                <div className="my-3 h-px bg-zinc-100" />
-                <p className="px-4 pb-1 text-[11px] font-black text-[#B2BCC9]">
-                  {language === "ar" ? "للمتعمّقين" : "For power users"}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    logFunnel("services_directory_opened", language);
-                    handleTabChange("discover");
-                  }}
-                  className="w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black text-[#465568] hover:bg-[#F5F3F8]"
-                >
-                  <Grid3X3 className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
-                  <span className="flex flex-col items-start">
-                    <span>{language === "ar" ? "مختبر تبيان" : "Tebyan Lab"}</span>
-                    <span className="text-[10px] font-bold text-[#B2BCC9]">
-                      {language === "ar"
-                        ? "كل الأدوات والتجارب المتقدمة"
-                        : "All tools and advanced experiments"}
-                    </span>
                   </span>
                 </button>
               </div>
@@ -1782,16 +2006,6 @@ const AppContent: React.FC = () => {
               {(() => {
                 switch (activeTab) {
                   case "home":
-                    return (
-                      <TebyanHome
-                        language={language}
-                        handleTabChange={handleTabChange}
-                        initialQuery={initialContext}
-                        onShowLogin={() => setShowLogin(true)}
-                      />
-                    );
-                  case "gateway":
-                    // The classic multi-door gateway, kept for the advanced lab.
                     return (
                       <SmartGateway
                         language={language}
@@ -2041,9 +2255,6 @@ const AppContent: React.FC = () => {
             <p className="text-[13px] font-medium">
               نظامك لفهم العالم &copy; {new Date().getFullYear()}
             </p>
-            {/* Mood Compass + Soul Twin are personalization extras, not part of
-                the first experience. They live only in the advanced lab now. */}
-            {activeTab === "discover" && (
             <div className="mt-8 flex flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-4 py-8 border-t border-zinc-100/50 w-full max-w-xs transition-all duration-700">
                 <div className="flex flex-col items-center gap-1 mb-2">
@@ -2234,12 +2445,11 @@ const AppContent: React.FC = () => {
                   )}
                 </AnimatePresence>
               </div>
-            </div>
-            )}
-            <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
-              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
-                Version 2.6.0.Release
-              </span>
+              <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
+                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
+                  Version 2.6.0.Release
+                </span>
+              </div>
             </div>
           </footer>
         </div>

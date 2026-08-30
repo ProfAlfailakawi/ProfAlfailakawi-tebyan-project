@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ClipboardCheck, Network, BarChart3, Route, ShieldCheck } from 'lucide-react';
+import { ClipboardCheck, Network, BarChart3, Route } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { QuizTab } from './QuizTab';
 import { KnowledgeGraphTab } from './KnowledgeGraphTab';
 import { AnalyticsTab } from './AnalyticsTab';
 import { RoadmapTab } from './RoadmapTab';
-import { KnowledgeEvidencePanel } from './KnowledgeEvidencePanel';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
-  const [activeSubTab, setActiveSubTab] = useState<'evidence' | 'quizzes' | 'analytics' | 'roadmap'>('evidence');
+  const [activeSubTab, setActiveSubTab] = useState<'quizzes' | 'analytics' | 'roadmap'>('quizzes');
 
   const tabs = [
-    { id: 'evidence', label: language === 'ar' ? 'استناد المعرفة' : 'Grounded Knowledge', icon: ShieldCheck },
     { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck },
     { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
     { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route }
@@ -50,7 +48,6 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               transition={{ duration: 0.2 }}
               className="w-full h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar"
             >
-               {activeSubTab === 'evidence' && <KnowledgeEvidencePanel language={language} />}
                {activeSubTab === 'quizzes' && <QuizTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'analytics' && <AnalyticsTab language={language} handleTabChange={handleTabChange} />}
                {activeSubTab === 'roadmap' && <RoadmapTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}

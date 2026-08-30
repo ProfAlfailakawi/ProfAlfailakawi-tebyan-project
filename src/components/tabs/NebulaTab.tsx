@@ -4,7 +4,6 @@ import { Sparkles, Network, Globe, Maximize2, MousePointer2, ZoomIn, ZoomOut, In
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { cn } from '../../lib/utils';
-import { SmartIconWrapper } from '../common/SmartIconGuidance';
 
 type IdeaNode = {
     id: string;
@@ -140,17 +139,10 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
             <AnimatePresence>
               {!isCinematic && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
-                    <SmartIconWrapper
-                      id="nebula_fit_screen"
-                      guidanceText={language === 'ar' ? 'عرض كامل: يعيد ضبط الرؤية لرؤية سديم الأفكار بالكامل.' : 'Fit to screen: Resets the view to see the entire ideas nebula.'}
-                      side="left"
-                      lang={language}
-                    >
                     <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
                         <Maximize2 className="w-5 h-5" />
                         <span className="text-[10px] font-bold hidden group-hover:inline md:hidden">{language === 'ar' ? 'عرض كامل' : 'Fit View'}</span>
                     </button>
-                    </SmartIconWrapper>
                     <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                         <ZoomIn className="w-5 h-5" />
                     </button>

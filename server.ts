@@ -7,10 +7,6 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
-// Shared AI engine (single source of truth with functions/index.js).
-// esbuild inlines this relative CJS module into dist/server.js; tsx loads it in dev.
-// @ts-ignore — CommonJS module without a .d.ts; resolved at bundle/runtime.
-import aiCore from "./functions/aiCore.cjs";
 
 dotenv.config({ override: true });
 
@@ -831,28 +827,6 @@ async function startServer() {
             console.log("[Server] Gemini Client not available (missing or suspended key). Serving smart offline fallback response.");
             const fallbackResult = handleServerSideAIFallback(contents, config, new Error("Gemini Key is suspended or missing."));
             return res.json(fallbackResult);
-        }
-
-        // --- Evidence Mode (File Search / Google Search grounding) -----------
-        // Opt-in only; mirrors functions/index.js. Falls through on any failure.
-        const evidenceMode = config && (config as any).evidenceMode;
-        if (evidenceMode) {
-            try {
-                const apiKey = getGeminiTtsApiKey();
-                const grounded = await aiCore.generateGrounded({
-                    apiKey,
-                    model: modelName,
-                    contents,
-                    config,
-                    evidenceMode,
-                });
-                const aiResponse: any = { text: grounded.text, evidence: grounded.evidence };
-                smartCache.set(cacheKey, { timestamp: Date.now(), response: aiResponse });
-                return res.json(aiResponse);
-            } catch (groundErr: any) {
-                console.warn("[Evidence] Grounded generation failed, falling back to ungrounded:", groundErr?.code || groundErr?.message || groundErr);
-                // fall through to normal generation
-            }
         }
 
         try {

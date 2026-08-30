@@ -31,8 +31,7 @@ service cloud.firestore {
       return data.size() <= maxFields
         && ('timestamp' in data)
         && (!('query' in data) || data.query == null || (data.query is string && data.query.size() <= 1200))
-        && (!('promptSnippet' in data) || (data.promptSnippet is string && data.promptSnippet.size() <= 700))
-        && (!('details' in data) || data.details == null || (data.details is string && data.details.size() <= 2000));
+        && (!('promptSnippet' in data) || (data.promptSnippet is string && data.promptSnippet.size() <= 700));
     }
 
     function isValidRipple(data) {
@@ -50,7 +49,7 @@ service cloud.firestore {
     
     match /system_settings/{docId} {
       allow read: if true;
-      allow write: if isSignedIn() && isAdmin();
+      allow write: if isSignedIn() && (docId == 'cron_state' || isAdmin());
     }
 
     match /daily_prompts/{document=**} {

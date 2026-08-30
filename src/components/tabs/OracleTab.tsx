@@ -8,9 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
-import { proxyGenerateContent, proxyGenerateEvidence, type EvidenceEnvelope } from '../../lib/aiProxy';
-import { EvidenceBadge } from '../common/EvidenceBadge';
-import { ShieldCheck, Globe } from 'lucide-react';
+import { proxyGenerateContent } from '../../lib/aiProxy';
 
 const personas = [
   { id: 'parent', ar: 'الوالد/الوالدة', en: 'Parent/Guardian' },
@@ -29,8 +27,6 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   const [oracleResult, setOracleResult] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [evidenceMode, setEvidenceMode] = React.useState<'off' | 'internal' | 'web'>('off');
-  const [evidence, setEvidence] = React.useState<EvidenceEnvelope | null>(null);
 
   React.useEffect(() => {
     if (initialValue) {
@@ -49,29 +45,9 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
     if (!input.trim() || isLoading) return;
     setIsLoading(true);
     setError(null);
-    setEvidence(null);
     try {
       const promptInstructed = `${input}\n\nيرجى تقديم الإجابة في نقاط قصيرة ومباشرة وفقرات صغيرة جداً لتسهيل القراءة على الهاتف.`;
-
-      // Evidence Mode: ground the answer in Tebyān's base or the live web,
-      // returning citations + provenance. Bypasses the local memory cache path
-      // so the shown source badge reflects the real grounding of THIS answer.
-      if (evidenceMode !== 'off') {
-        const instruction = language === 'ar'
-          ? `أنتِ "تبيان" مستشارة خبيرة (المنظور: ${oraclePersona}). اعتمد حصراً على المصادر المسترجعة. إذا لم تجد سنداً كافياً قل ذلك بوضوح بدل التخمين. أجب بنقاط قصيرة وفقرات صغيرة.`
-          : `You are "Tibyān", an expert counselor (perspective: ${oraclePersona}). Rely strictly on the retrieved sources. If evidence is insufficient, say so instead of guessing. Answer in short points.`;
-        const { text, evidence: ev } = await proxyGenerateEvidence({
-          model: 'gemini-2.5-flash',
-          contents: [{ role: 'user', parts: [{ text: promptInstructed }] }],
-          config: { systemInstruction: instruction, temperature: 0.4 },
-          evidenceMode: evidenceMode === 'web' ? 'web' : 'internal',
-        });
-        setOracleResult(text || '');
-        setEvidence(ev);
-        setIsLoading(false);
-        return;
-      }
-
+      
       const res = await KnowledgeMemoryService.processUnderstanding(
           promptInstructed,
           `أنت مستشار خبير (شخصية: ${oraclePersona}). قدم استشارة شاملة وعميقة ومباشرة.`,
@@ -150,36 +126,8 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           </button>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2 items-center justify-center">
-        <span className="text-xs font-bold text-[#7C8796]">
-          {language === 'ar' ? 'وضع الإسناد:' : 'Evidence Mode:'}
-        </span>
-        {([
-          { id: 'off', ar: 'إيقاف', en: 'Off', icon: null },
-          { id: 'internal', ar: 'قاعدة تبيان', en: 'Tebyān base', icon: ShieldCheck },
-          { id: 'web', ar: 'الويب الحالي', en: 'Live web', icon: Globe },
-        ] as const).map((m) => {
-          const M = m.icon;
-          return (
-            <button
-              key={m.id}
-              onClick={() => setEvidenceMode(m.id)}
-              title={language === 'ar' ? `وضع الإسناد: ${m.ar}` : `Evidence: ${m.en}`}
-              className={cn(
-                'inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer border',
-                evidenceMode === m.id
-                  ? 'bg-[#182231] text-white border-[#182231]'
-                  : 'bg-white text-[#465568] border-[#8FA9C7]/25 hover:border-zinc-300'
-              )}
-            >
-              {M && <M className="w-3.5 h-3.5" />}
-              {language === 'ar' ? m.ar : m.en}
-            </button>
-          );
-        })}
-      </div>
       <div className="relative">
-        <input
+        <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
             "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-[#7C8796] rounded-[16px] border-2 border-[#8FA9C7]/25/80 focus:border-[#8E7AAE] focus:ring-4 focus:ring-zinc-100 outline-none transition-all",
@@ -226,9 +174,6 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           </motion.div>
         ) : oracleResult && (
           <div id="oracle-results" className="space-y-4">
-            {evidence && (
-              <EvidenceBadge evidence={evidence} language={language} className="px-1" />
-            )}
             <div className="markdown-body p-8 border border-[#8FA9C7]/25/80 rounded-[16px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
               <ReactMarkdown>{oracleResult}</ReactMarkdown>
             </div>
