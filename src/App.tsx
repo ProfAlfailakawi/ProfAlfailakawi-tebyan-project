@@ -179,6 +179,7 @@ const TruthManuscriptTab = React.lazy(
 
 type Tab =
   | "home"
+  | "gateway"
   | "oracle"
   | "concepts"
   | "quizzes"
@@ -236,8 +237,13 @@ const protectedFeatures: Tab[] = [
   "truthmanuscript",
 ];
 
-import { logEvent } from "./services/analyticsService";
+import { logEvent, logFunnel } from "./services/analyticsService";
 
+// TebyanHome is the new "one intelligence" entry point: the user says what is
+// on their mind and the orchestrator decides which engine to use internally.
+const TebyanHome = React.lazy(() => import("./components/home/TebyanHome"));
+// SmartGateway is the previous multi-door gateway. It is retained (not deleted)
+// and reachable from the advanced "Tebyan Lab", but no longer the home path.
 const SmartGateway = React.lazy(() =>
   import("./components/SmartGateway").then((m) => ({
     default: m.SmartGateway,
@@ -400,8 +406,7 @@ const AppContent: React.FC = () => {
       cancelIdleCallback?: (handle: number) => void;
     };
     const preload = () => {
-      void import("./components/SmartGateway");
-      void import("./components/ServiceExplorer");
+      void import("./components/home/TebyanHome");
     };
     if (typeof win.requestIdleCallback === "function") {
       const id = win.requestIdleCallback(preload, { timeout: 900 });
@@ -524,15 +529,11 @@ const AppContent: React.FC = () => {
       setActiveTab(tabParam as Tab);
     }
 
-    // Digital Patina Simulation (Accelerated for demonstration)
+    // Keep a lightweight visit counter (used to time when contextual features
+    // like gamification may appear), but do not apply the cosmetic "patina"
+    // aging effect — it competes with the task and adds no first-value.
     const visits = parseInt(localStorage.getItem("app_visits") || "0", 10) + 1;
     localStorage.setItem("app_visits", visits.toString());
-
-    // If visited more than 5 times (or refresh), apply patina (aging effect)
-    if (visits > 2) {
-      // just for show
-      document.body.classList.add("patina-aged");
-    }
   }, []);
 
   useEffect(() => {
@@ -673,24 +674,14 @@ const AppContent: React.FC = () => {
       );
       const isMobileViewport =
         typeof window !== "undefined" && window.innerWidth < 768;
-      if (
-        actualTab !== activeTab &&
-        !prefersReducedMotion &&
-        !isCompactNavigation &&
-        !isMobileViewport
-      ) {
-        setDoorTransition({
-          label:
-            doorLabels[String(actualTab)] ||
-            (language === "ar"
-              ? "نفتح الباب المناسب…"
-              : "Opening the right doorway…"),
-          kind: String(actualTab),
-        });
-        setTimeout(() => setDoorTransition(null), 260);
-      } else {
-        setDoorTransition(null);
-      }
+      // The "opening a doorway" transition on every navigation added theatrics
+      // and latency. Speed matters more: navigate instantly. (doorLabels kept
+      // for reference but no longer shown.)
+      void doorLabels;
+      void prefersReducedMotion;
+      void isCompactNavigation;
+      void isMobileViewport;
+      setDoorTransition(null);
       if (checkAuth(actualTab as Tab)) {
         setIsLoading(false);
         setError(null);
@@ -1403,11 +1394,6 @@ const AppContent: React.FC = () => {
                 icon: Search,
               },
               {
-                id: "discover",
-                label: language === "ar" ? "كل الخدمات" : "All services",
-                icon: Grid3X3,
-              },
-              {
                 id: "mylibrary",
                 label: language === "ar" ? "مكتبتي" : "My library",
                 icon: LibraryBig,
@@ -1513,14 +1499,6 @@ const AppContent: React.FC = () => {
                     icon: Search,
                   },
                   {
-                    id: "discover",
-                    label:
-                      language === "ar"
-                        ? "استكشف حسب حاجتك"
-                        : "Explore by need",
-                    icon: Grid3X3,
-                  },
-                  {
                     id: "mylibrary",
                     label:
                       language === "ar" ? "مكتبتي ومحفوظاتي" : "My library",
@@ -1583,6 +1561,7 @@ const AppContent: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
+                    logFunnel("help_opened", language);
                     window.dispatchEvent(
                       new CustomEvent("tebyan_open_onboarding"),
                     );
@@ -1592,6 +1571,30 @@ const AppContent: React.FC = () => {
                   <HelpCircle className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
                   <span>
                     {language === "ar" ? "دليل الاستخدام" : "How to use Tebyan"}
+                  </span>
+                </button>
+
+                {/* Advanced: the full toolbox, demoted out of the main path. */}
+                <div className="my-3 h-px bg-zinc-100" />
+                <p className="px-4 pb-1 text-[11px] font-black text-[#B2BCC9]">
+                  {language === "ar" ? "للمتعمّقين" : "For power users"}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logFunnel("services_directory_opened", language);
+                    handleTabChange("discover");
+                  }}
+                  className="w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black text-[#465568] hover:bg-[#F5F3F8]"
+                >
+                  <Grid3X3 className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
+                  <span className="flex flex-col items-start">
+                    <span>{language === "ar" ? "مختبر تبيان" : "Tebyan Lab"}</span>
+                    <span className="text-[10px] font-bold text-[#B2BCC9]">
+                      {language === "ar"
+                        ? "كل الأدوات والتجارب المتقدمة"
+                        : "All tools and advanced experiments"}
+                    </span>
                   </span>
                 </button>
               </div>
@@ -1779,6 +1782,16 @@ const AppContent: React.FC = () => {
               {(() => {
                 switch (activeTab) {
                   case "home":
+                    return (
+                      <TebyanHome
+                        language={language}
+                        handleTabChange={handleTabChange}
+                        initialQuery={initialContext}
+                        onShowLogin={() => setShowLogin(true)}
+                      />
+                    );
+                  case "gateway":
+                    // The classic multi-door gateway, kept for the advanced lab.
                     return (
                       <SmartGateway
                         language={language}
@@ -2028,6 +2041,9 @@ const AppContent: React.FC = () => {
             <p className="text-[13px] font-medium">
               نظامك لفهم العالم &copy; {new Date().getFullYear()}
             </p>
+            {/* Mood Compass + Soul Twin are personalization extras, not part of
+                the first experience. They live only in the advanced lab now. */}
+            {activeTab === "discover" && (
             <div className="mt-8 flex flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-4 py-8 border-t border-zinc-100/50 w-full max-w-xs transition-all duration-700">
                 <div className="flex flex-col items-center gap-1 mb-2">
@@ -2218,11 +2234,12 @@ const AppContent: React.FC = () => {
                   )}
                 </AnimatePresence>
               </div>
-              <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
-                  Version 2.6.0.Release
-                </span>
-              </div>
+            </div>
+            )}
+            <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
+              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
+                Version 2.6.0.Release
+              </span>
             </div>
           </footer>
         </div>

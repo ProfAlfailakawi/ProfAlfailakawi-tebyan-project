@@ -1607,7 +1607,9 @@ body.tebyan-focus-mode .tebyan-result-document {
       [class*="bg-rose"]
     ):not([class*="bg-emerald"]):not([class*="bg-amber"]):not(
       [class*="bg-blue"]
-    ):not([class*="bg-mood-primary"]) {
+    ):not([class*="bg-mood-primary"]):not([class*="bg-[#182231]"]):not(
+      [class*="bg-[#182"]
+    ):not([class*="from-[#182231]"]) {
     color: var(--tebyan-ink) !important;
     text-shadow: none !important;
   }
@@ -4525,5 +4527,28 @@ body:not(.zen-idle)::after {
   .tebyan-service-explorer .tebyan-service-card-description,
   .tebyan-service-explorer .tebyan-service-intro {
     font-weight: 420 !important;
+  }
+}
+
+/* === Tebyan "one intelligence" — intentional dark primary surfaces ===
+   The home/orchestrator uses the ink navy (#182231) for primary CTAs and the
+   answer's Next Best Action, mirroring the header nav. Several legacy rules in
+   `@layer components` flatten white text to ink for readability on light cards
+   (e.g. `main .text-white { color: ink !important }`); those must NOT touch
+   these deliberately dark surfaces. Because an !important declaration inside a
+   cascade layer outranks an unlayered one, this override must live in the SAME
+   `components` layer (later + equal-or-higher specificity) to win. It keeps
+   white text white on the ink navy everywhere and repairs the classic
+   DirectAnswerCard primary button too. */
+@layer components {
+  main [class*="bg-[#182231]"],
+  main [class*="bg-[#182231]"] *,
+  main [class*="from-[#182231]"],
+  main [class*="from-[#182231]"] * {
+    color: #fff !important;
+    text-shadow: none !important;
+  }
+  main [class*="bg-[#182231]"] [class*="text-white/"] {
+    color: rgba(255, 255, 255, 0.75) !important;
   }
 }
