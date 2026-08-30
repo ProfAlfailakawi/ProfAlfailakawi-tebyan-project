@@ -19,27 +19,26 @@ jobs:
         node-version: '22.x'
         cache: 'npm'
 
-    # Pin npm to the version the committed package-lock.json was generated with.
-    # The GitHub runner image periodically bumps the npm bundled with Node 22.x,
-    # and a newer npm computes a different dependency tree than the lockfile,
-    # making `npm ci` fail with "Missing: <pkg> from lock file" even though the
-    # dependencies never changed (CI was green on this same lockfile at run #5,
-    # then broke on a later run with no dependency edits). Pinning npm makes
-    # `npm ci` deterministic and immune to that runner drift.
-    - name: Pin npm
-      run: npm install -g npm@10.9.7
-
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
 
+    # The GitHub runner image periodically bumps the npm bundled with Node 22.x.
+    # A newer npm computes a different dependency tree than the committed
+    # package-lock.json and makes `npm ci` fail with "Missing: <pkg> from lock
+    # file" even though no dependency changed (CI was green on this same lockfile
+    # at an earlier run, then broke on a later run with no dependency edits).
+    # Running the clean install through `npx npm@<pinned>` guarantees the exact
+    # npm the lockfile was generated with, regardless of the runner's default —
+    # deterministic and immune to that drift. Regenerate the lockfile with the
+    # same pinned npm if dependencies change.
     - name: Install root dependencies
-      run: npm ci
+      run: npx -y npm@10.9.7 ci
 
     - name: Install functions dependencies
-      run: cd functions && npm ci
+      run: cd functions && npx -y npm@10.9.7 ci
 
     - name: Run lint
       run: npm run lint
