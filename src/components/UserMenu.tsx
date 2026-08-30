@@ -5,7 +5,7 @@ import { useAuth } from './AuthProvider';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import ClientProfilePanel from './ClientProfilePanel';
-import { TebyanTooltip } from './TebyanTooltip';
+import { SmartIconWrapper } from './common/SmartIconGuidance';
 
 export default function UserMenu() {
   const { profile, user } = useAuth();
@@ -40,6 +40,12 @@ export default function UserMenu() {
 
   return (
     <div className="relative" ref={menuRef}>
+      <SmartIconWrapper
+        id="user_menu_icon"
+        guidanceText="القائمة الشخصية: إعدادات حسابك وتفضيلاتك."
+        side="bottom"
+        lang="ar"
+      >
       {/* Trigger */}
       <motion.button 
         onClick={() => setIsOpen(!isOpen)}
@@ -62,6 +68,7 @@ export default function UserMenu() {
           )}
         </div>
       </motion.button>
+      </SmartIconWrapper>
 
       {/* Dropdown Menu */}
       <AnimatePresence>
