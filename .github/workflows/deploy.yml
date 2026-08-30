@@ -1,0 +1,57 @@
+name: Deploy
+
+# Deploys to Firebase (Hosting + api function + Firestore rules) automatically
+# whenever main is updated, and on manual request from the Actions tab.
+#
+# Requires one repository secret:
+#   FIREBASE_SERVICE_ACCOUNT  — the full JSON of a service account in the
+#   tebyan-clean-2026 project with permission to deploy Hosting, Functions,
+#   and Firestore rules.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never let two deploys run at once; a newer push supersedes an in-flight one.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: Install dependencies (reproducible)
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run lint
+
+      - name: Build production bundle
+        run: npm run build
+
+      # Write the service-account JSON to a file the Firebase CLI can read via
+      # Application Default Credentials. The file lives only in the runner and
+      # is discarded when the job ends.
+      - name: Authenticate to Firebase
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/gcp-key.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/gcp-key.json" >> "$GITHUB_ENV"
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Deploy
+        run: >-
+          npx firebase deploy
+          --only functions:api,hosting,firestore:rules
+          --project tebyan-clean-2026
+          --non-interactive
