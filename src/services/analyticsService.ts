@@ -28,20 +28,7 @@ export type FunnelEvent =
   | 'save_result'
   | 'services_directory_opened'
   | 'help_opened'
-  | 'returning_user_resume'
-  // Inline-capability funnel (measuring the zero-navigation experience)
-  | 'capability_suggested'
-  | 'capability_started'
-  | 'capability_completed'
-  | 'capability_abandoned'
-  | 'capability_failed'
-  | 'inline_simulation_started'
-  | 'inline_decision_completed'
-  | 'inline_plan_generated'
-  | 'inline_research_opened'
-  // The number we want to drive DOWN over time: how often we had to leave the
-  // unified session and send the user to a standalone tool.
-  | 'external_tab_handoff';
+  | 'returning_user_resume';
 
 export interface AnalyticsMetadata {
   [key: string]: any;

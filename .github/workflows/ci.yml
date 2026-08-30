@@ -25,10 +25,6 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
 
-    # Reproducible installs: the lockfiles were regenerated fresh so they are
-    # internally consistent (the earlier CI breakage was a stale lockfile with
-    # an internal version inconsistency, e.g. side-channel, that strict `npm ci`
-    # rightly rejected — not a flaw in `npm ci`). Keep `npm ci` for determinism.
     - name: Install root dependencies
       run: npm ci
 

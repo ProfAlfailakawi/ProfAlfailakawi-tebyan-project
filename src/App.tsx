@@ -1501,8 +1501,21 @@ const AppContent: React.FC = () => {
                   {
                     id: "mylibrary",
                     label:
-                      language === "ar" ? "مكتبتي" : "My library",
+                      language === "ar" ? "مكتبتي ومحفوظاتي" : "My library",
                     icon: LibraryBig,
+                  },
+                  {
+                    id: "loyalty",
+                    label:
+                      language === "ar"
+                        ? "تقدمي ومكافآتي"
+                        : "Progress and rewards",
+                    icon: TicketPercent,
+                  },
+                  {
+                    id: "contact",
+                    label: language === "ar" ? "تواصل معنا" : "Contact us",
+                    icon: Mail,
                   },
                 ].map((item) => {
                   const Icon = item.icon;
@@ -1532,18 +1545,7 @@ const AppContent: React.FC = () => {
                 })}
 
                 <div className="my-3 h-px bg-zinc-100" />
-                <p className="px-4 pb-1 text-[11px] font-black text-[#B2BCC9]">
-                  {language === "ar" ? "الحساب والإعدادات" : "Account & settings"}
-                </p>
 
-                <button
-                  type="button"
-                  onClick={() => handleTabChange("loyalty")}
-                  className="w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black text-[#465568] hover:bg-[#F5F3F8]"
-                >
-                  <TicketPercent className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
-                  <span>{language === "ar" ? "تقدمي ومكافآتي" : "Progress & rewards"}</span>
-                </button>
                 <PWAHeaderButton variant="menu" language={language} />
                 <button
                   type="button"
@@ -1554,14 +1556,6 @@ const AppContent: React.FC = () => {
                 >
                   <Globe className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
                   <span>{language === "ar" ? "English" : "العربية"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTabChange("contact")}
-                  className="w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black text-[#465568] hover:bg-[#F5F3F8]"
-                >
-                  <Mail className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
-                  <span>{language === "ar" ? "تواصل معنا" : "Contact us"}</span>
                 </button>
                 <button
                   type="button"
@@ -1576,7 +1570,7 @@ const AppContent: React.FC = () => {
                 >
                   <HelpCircle className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
                   <span>
-                    {language === "ar" ? "المساعدة" : "Help"}
+                    {language === "ar" ? "دليل الاستخدام" : "How to use Tebyan"}
                   </span>
                 </button>
 
