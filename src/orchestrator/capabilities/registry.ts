@@ -115,11 +115,11 @@ export const CAPABILITIES: Record<CapabilityId, CapabilityDef> = {
     intents: ['research', 'understand', 'learn'],
     priority: 6,
     icon: 'BookOpenText',
-    label: pick('أرِني نقاطًا موثقة', 'Show grounded points'),
+    label: pick('ابحث لي في الموضوع', 'Look into this for me'),
     pitch: () =>
       pick(
-        'أجمع لك أهم النقاط الموثوقة حول الموضوع؟',
-        'Shall I gather the key grounded points on this?',
+        'أجمع لك أهم النقاط حول الموضوع مع مصادرها إن توفّرت؟',
+        'Shall I gather the key points on this, with sources where available?',
       ),
   },
 

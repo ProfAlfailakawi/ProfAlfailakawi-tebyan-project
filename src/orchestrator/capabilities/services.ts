@@ -28,6 +28,16 @@ function contextPreamble(ctx: CapabilityContext): string {
   );
   if (ctx.understanding)
     lines.push(ar ? `ما فهمناه: ${ctx.understanding}` : `What we understood: ${ctx.understanding}`);
+  if (ctx.keyFacts && ctx.keyFacts.length)
+    lines.push(
+      ar ? `حقائق مهمة في الجلسة: ${ctx.keyFacts.join(' | ')}` : `Key session facts: ${ctx.keyFacts.join(' | ')}`,
+    );
+  if (ctx.recentTurns && ctx.recentTurns.length)
+    lines.push(
+      ar
+        ? `سياق سابق: ${ctx.recentTurns.map((t) => `"${t.userInput}" → ${t.summary}`).join(' | ')}`
+        : `Prior context: ${ctx.recentTurns.map((t) => `"${t.userInput}" → ${t.summary}`).join(' | ')}`,
+    );
   if (ctx.clarifications.length)
     lines.push(
       ar
@@ -305,48 +315,105 @@ export async function runSimplify(ctx: CapabilityContext): Promise<CapabilityRes
 
 export async function runResearch(ctx: CapabilityContext): Promise<CapabilityResult> {
   const ar = ctx.language === 'ar';
-  const sys = [
-    ar
-      ? 'أنت "تبيان". اجمع أهم 3 نقاط موثوقة حول الموضوع. كن أميناً بشأن درجة الثقة.'
-      : 'You are "Tebyan". Gather the 3 most grounded points. Be honest about confidence.',
+
+  // Real grounding: ask the backend Evidence Mode to answer with retrieved
+  // sources (web search / internal file store). Citations come from the model's
+  // groundingMetadata — never invented. High-stakes prefers web grounding.
+  const { proxyGenerateEvidence } = await import('../../lib/aiProxy');
+  const prompt = [
     contextPreamble(ctx),
     safetyClause(ctx),
     ar
-      ? 'أعد JSON: claims (مصفوفة من عناصر: claim, source (نوع المصدر أو مرجعه العام), confidence: low|medium|high).'
-      : 'Return JSON: claims (array of: claim, source, confidence: low|medium|high).',
+      ? `اجمع أهم 3 نقاط حول: «${ctx.originalQuestion}»، معتمداً على مصادر حقيقية قدر الإمكان. لا تختلق أي مصدر أو دراسة أو رابط.`
+      : `Gather the 3 most important points on: "${ctx.originalQuestion}", grounded in real sources where possible. Never invent a source, study, or URL.`,
   ]
     .filter(Boolean)
     .join('\n');
-  const d = await generateStructured(
-    sys,
-    ctx.originalQuestion,
-    {
-      claims: {
-        type: T.ARRAY,
-        items: {
-          type: T.OBJECT,
-          properties: {
-            claim: { type: T.STRING },
-            source: { type: T.STRING },
-            confidence: { type: T.STRING },
-          },
-        },
+
+  let text = '';
+  let citations: Array<{ title?: string; uri?: string; snippet?: string; kind?: string }> = [];
+  let source: 'web' | 'internal' | 'model' = 'model';
+  try {
+    const res = await proxyGenerateEvidence({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      config: {
+        systemInstruction: ar ? 'أنت "تبيان" باحث أمين.' : 'You are "Tebyan", an honest researcher.',
+        temperature: 0.4,
       },
-    },
-    ['claims'],
-  );
-  const claims = Array.isArray(d.claims) ? d.claims.slice(0, 4) : [];
+      evidenceMode: ctx.highStakes ? 'web' : 'auto',
+    });
+    text = (res.text || '').trim();
+    const ev = res.evidence;
+    if (ev && Array.isArray(ev.citations)) citations = ev.citations as typeof citations;
+    if (ev && (ev.source === 'web' || ev.source === 'internal')) source = ev.source;
+  } catch {
+    /* fall through to analytical (ungrounded) result */
+  }
+
+  // Optionally enrich with Tebyan's own curated corpus (Qawl Fasl) as an
+  // internal source — best-effort, never fabricated.
+  const internalClaims: NonNullable<CapabilityResult['claims']> = [];
+  try {
+    const { qawlFaslService } = await import('../../services/qawlFaslService');
+    // Guard against a slow corpus lookup stalling the capability.
+    const matches = await Promise.race([
+      qawlFaslService.searchQuestions(ctx.originalQuestion),
+      new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), 6000)),
+    ]);
+    (Array.isArray(matches) ? matches : []).slice(0, 1).forEach((m: any) => {
+      const title = m?.question || m?.title;
+      const snippet = m?.quickSummary || m?.quickAnswer;
+      if (title && snippet)
+        internalClaims.push({
+          claim: String(snippet).slice(0, 220),
+          sourceTitle: String(title),
+          sourceType: 'internal',
+          evidenceSnippet: ar ? 'من مكتبة تبيان' : 'From the Tebyan library',
+          confidence: 'medium',
+          verified: true,
+        });
+    });
+  } catch {
+    /* corpus unavailable — skip silently */
+  }
+
+  const webClaims: NonNullable<CapabilityResult['claims']> = citations
+    .filter((c) => c && (c.title || c.uri || c.snippet))
+    .slice(0, 4)
+    .map((c) => ({
+      claim: String(c.snippet || c.title || '').slice(0, 240),
+      sourceTitle: c.title ? String(c.title) : undefined,
+      sourceUrl: c.uri ? String(c.uri) : undefined,
+      sourceType: c.kind === 'internal' ? ('internal' as const) : ('web' as const),
+      evidenceSnippet: c.snippet ? String(c.snippet) : undefined,
+      confidence: 'medium' as const,
+      verified: true,
+    }));
+
+  const claims = [...internalClaims, ...webClaims];
+  const grounded = claims.length > 0;
+
+  if (grounded) {
+    return {
+      type: 'research',
+      title: ar ? 'نقاط بمصادر' : 'Points with sources',
+      summary: text || (ar ? 'إليك ما وجدته مع مصادره.' : "Here's what I found, with its sources."),
+      claims,
+      grounded: true,
+      source: source === 'web' ? 'web' : 'internal',
+    };
+  }
+
+  // No real source retrieved — be honest: analytical, not "grounded".
   return {
     type: 'research',
-    title: ar ? 'نقاط موثوقة' : 'Grounded points',
-    summary: ar
-      ? `وجدت لك ${claims.length} نقاط مرتبة.`
-      : `Found ${claims.length} organised points for you.`,
-    claims: claims.map((c: any) => ({
-      claim: String(c.claim || ''),
-      source: String(c.source || ''),
-      confidence: ['low', 'medium', 'high'].includes(c.confidence) ? c.confidence : 'medium',
-    })),
+    title: ar ? 'نقاط تحليلية' : 'Analytical points',
+    summary:
+      (text ? text + '\n\n' : '') +
+      (ar
+        ? 'هذه خلاصة تحليلية من تبيان وليست معلومة موثقة بمصدر مباشر.'
+        : 'This is Tebyan’s analytical summary, not information verified against a direct source.'),
+    grounded: false,
     source: 'ai',
   };
 }

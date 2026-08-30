@@ -61,7 +61,12 @@ function isRelevant(cap: CapabilityId, s: SemanticIntent): boolean {
 }
 
 /** Score a capability for ranking within the relevant set. */
-function score(cap: CapabilityId, s: SemanticIntent, usedThisTurn: CapabilityId[]): number {
+function score(
+  cap: CapabilityId,
+  s: SemanticIntent,
+  usedThisTurn: CapabilityId[],
+  usedInSession: CapabilityId[],
+): number {
   const def = getCapability(cap);
   let sc = def.priority;
   if (def.intents.includes(s.primaryIntent)) sc += 4;
@@ -71,6 +76,9 @@ function score(cap: CapabilityId, s: SemanticIntent, usedThisTurn: CapabilityId[
   if (cap === 'simulate' && s.social) sc += 5;
   // De-prioritise something already used this turn (still allowed as alt).
   if (usedThisTurn.includes(cap)) sc -= 8;
+  // Lightly de-prioritise something already used elsewhere in the session, so
+  // we don't keep re-suggesting the same capability across turns.
+  else if (usedInSession.includes(cap)) sc -= 3;
   // High-stakes: soften "develop"/"simulate" as primary, favour research/perspectives.
   if (s.highStakes && (cap === 'research' || cap === 'perspectives')) sc += 3;
   return sc;
@@ -101,9 +109,10 @@ export function routeCapabilities(
   s: SemanticIntent,
   language: 'ar' | 'en',
   usedThisTurn: CapabilityId[] = [],
+  usedInSession: CapabilityId[] = [],
 ): CapabilityRoute {
   const relevant = ALL.filter((c) => isRelevant(c, s)).sort(
-    (a, b) => score(b, s, usedThisTurn) - score(a, s, usedThisTurn),
+    (a, b) => score(b, s, usedThisTurn, usedInSession) - score(a, s, usedThisTurn, usedInSession),
   );
 
   // Primary: the top relevant capability not already used (fallback: top overall).
