@@ -1,212 +1,255 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useUser } from '../../contexts/UserContext';
-import { motion } from 'motion/react';
-import { LibraryBig, Shirt, Trash2, ArrowUpRight, Sparkles } from 'lucide-react';
+import { useAuth } from '../AuthProvider';
+import {
+  ArrowLeft,
+  BookmarkX,
+  Compass,
+  RotateCcw,
+  Sparkles,
+  Trash2,
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
-import ReactMarkdown from 'react-markdown';
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
+import {
+  LIBRARY_BUCKETS,
+  groupByBucket,
+  getLastSession,
+  removeSession,
+  type MemorySession,
+} from '../../orchestrator';
 
-const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
-  const counts = items.reduce((acc: any, item: any) => {
-    const type = (item && typeof item === 'object' ? item.type : 'item') || 'item';
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, {});
+type HandleTabChange = (id: string, context?: string) => void;
 
-  const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
-    'qawlfasl': { color: 'bg-emerald-500', labelAr: 'قول فصل', labelEn: 'Decision' },
-    'oracle': { color: 'bg-indigo-500', labelAr: 'المستشار', labelEn: 'Oracle' },
-    'concept': { color: 'bg-amber-500', labelAr: 'الأفكار', labelEn: 'Concepts' },
-    'roadmap': { color: 'bg-rose-500', labelAr: 'المسار', labelEn: 'Roadmap' },
-    'item': { color: 'bg-zinc-500', labelAr: 'مادة', labelEn: 'Items' }
+function timeAgo(at: number, language: string): string {
+  const diff = Date.now() - at;
+  const day = 1000 * 60 * 60 * 24;
+  const ar = language === 'ar';
+  if (diff < 1000 * 60 * 60) return ar ? 'قبل قليل' : 'just now';
+  if (diff < day) return ar ? 'اليوم' : 'today';
+  if (diff < day * 2) return ar ? 'أمس' : 'yesterday';
+  const days = Math.floor(diff / day);
+  return ar ? `قبل ${days} يوم` : `${days} days ago`;
+}
+
+const MyLibraryTab = ({
+  language = 'ar',
+  handleTabChange,
+}: {
+  language?: string;
+  handleTabChange?: HandleTabChange;
+}) => {
+  const ar = language === 'ar';
+  const { preferences, removeFromLibrary } = useUser();
+  const { user } = useAuth();
+  const uid = user?.uid ?? null;
+
+  const [tick, setTick] = useState(0);
+  const refresh = useCallback(() => setTick((n) => n + 1), []);
+
+  const grouped = useMemo(() => groupByBucket(uid), [uid, tick]);
+  const last = useMemo(() => getLastSession(uid), [uid, tick]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {}, [tick]);
+
+  const savedItems = Array.isArray(preferences.savedLibrary)
+    ? preferences.savedLibrary
+    : [];
+
+  const totalSessions = LIBRARY_BUCKETS.reduce(
+    (n, b) => n + (grouped[b.intent]?.length || 0),
+    0,
+  );
+  const isEmpty = totalSessions === 0 && savedItems.length === 0;
+
+  const reopen = (s: MemorySession) => {
+    if (!handleTabChange) return;
+    if (s.lastTabId) handleTabChange(s.lastTabId, s.query);
+    else handleTabChange('home', s.query);
+  };
+
+  const removeAndRefresh = (id: string) => {
+    removeSession(id);
+    refresh();
   };
 
   return (
-    <div className="flex flex-wrap gap-4 mb-16 justify-center">
-       {Object.entries(counts).map(([type, count]: [any, any]) => (
-         <motion.div
-           key={type}
-           initial={{ scale: 0 }}
-           animate={{ scale: 1 }}
-           whileHover={{ y: -5, scale: 1.05 }}
-           className={cn(
-             "px-6 py-4 rounded-[32px] flex items-center gap-4 shadow-xl border-4 border-white text-white",
-             typeData[type]?.color || 'bg-zinc-500'
-           )}
-         >
-           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-black text-xl">
-             {count}
-           </div>
-           <span className="font-black text-xs uppercase tracking-[0.2em]">
-             {language === 'ar' ? (typeData[type]?.labelAr || type) : (typeData[type]?.labelEn || type)}
-           </span>
-         </motion.div>
-       ))}
+    <div className="mx-auto w-full max-w-3xl p-4 md:p-6 pb-28" dir={ar ? 'rtl' : 'ltr'}>
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div className="space-y-1 text-right">
+          <h2 className="text-2xl font-black tracking-tight text-[#182231] md:text-3xl">
+            {ar ? 'مكتبتي' : 'My library'}
+          </h2>
+          <p className="text-[13px] font-bold text-[#64788D]">
+            {ar
+              ? 'كل ما فكّرت فيه مع تبيان، مرتّب حسب حاجتك.'
+              : 'Everything you thought through with Tebyan, organised by your need.'}
+          </p>
+        </div>
+      </div>
+
+      {isEmpty ? (
+        <TebyanEmptyState
+          language={language}
+          icon={Sparkles}
+          title={ar ? 'مكتبتك تبدأ بأول سؤال' : 'Your library starts with your first question'}
+          description={
+            ar
+              ? 'اكتب ما يشغلك في الصفحة الرئيسية، وسيحفظ تبيان رحلتك هنا لتعود إليها.'
+              : 'Write what’s on your mind on the home page, and Tebyan will keep your journey here.'
+          }
+          actionLabel={ar ? 'اسأل تبيان' : 'Ask Tebyan'}
+          onAction={() => handleTabChange?.('home')}
+          className="min-h-[380px]"
+        />
+      ) : (
+        <div className="space-y-8">
+          {/* Smart resume — one card, remembers where we got to */}
+          {last && (
+            <section className="rounded-[22px] border border-[#8E7AAE]/16 bg-white/95 p-4 shadow-[0_10px_30px_rgba(24,34,49,0.05)] md:p-5">
+              <p className="text-[11px] font-black text-[#8E7AAE]">
+                {ar ? 'آخر شيء كنا نعمل عليه' : 'The last thing we worked on'}
+              </p>
+              <p className="mt-1.5 line-clamp-2 text-[15px] font-black leading-7 text-[#182231]">
+                {last.query}
+              </p>
+              {last.note && (
+                <p className="mt-1 line-clamp-2 text-[13px] font-bold leading-6 text-[#64788D]">
+                  {ar ? `آخر مرة وصلنا إلى: ${last.note}` : `Last time we reached: ${last.note}`}
+                </p>
+              )}
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => reopen(last)}
+                  className="inline-flex min-h-10 items-center gap-2 rounded-[13px] bg-[#182231] px-4 text-[13px] font-black text-white active:scale-[0.98]"
+                >
+                  {ar ? 'أكمل من هنا' : 'Continue from here'}
+                  <ArrowLeft className={cn('h-4 w-4', ar ? '' : 'rotate-180')} />
+                </button>
+                <span className="text-[11px] font-bold text-[#94A3B5]">
+                  {timeAgo(last.at, language)}
+                </span>
+              </div>
+            </section>
+          )}
+
+          {/* Intent buckets: أسئلتي / قراراتي / خططي / تجاربي / أفكاري */}
+          {LIBRARY_BUCKETS.map((bucket) => {
+            const items = grouped[bucket.intent] || [];
+            if (items.length === 0) return null;
+            return (
+              <section key={bucket.intent}>
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="text-[15px] font-black text-[#182231]">
+                    {ar ? bucket.ar : bucket.en}
+                  </h3>
+                  <span className="rounded-full bg-[#F4F0F8] px-2.5 py-1 text-[11px] font-black text-[#6E5F8E]">
+                    {items.length}
+                  </span>
+                </div>
+                <ul className="space-y-2">
+                  {items.slice(0, 12).map((s) => (
+                    <li
+                      key={s.id}
+                      className="group flex items-center gap-3 rounded-[16px] border border-[#8FA9C7]/14 bg-white px-4 py-3 text-right transition-colors hover:bg-[#FAF9FC]"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => reopen(s)}
+                        className="flex-1 text-right"
+                      >
+                        <p className="line-clamp-1 text-[14px] font-black text-[#182231]">
+                          {s.query}
+                        </p>
+                        {s.note && (
+                          <p className="mt-0.5 line-clamp-1 text-[12px] font-bold text-[#94A3B5]">
+                            {s.note}
+                          </p>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => reopen(s)}
+                        title={ar ? 'أكمل' : 'Continue'}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] bg-[#F4F0F8] text-[#6E5F8E] hover:bg-[#8E7AAE] hover:text-white"
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeAndRefresh(s.id)}
+                        title={ar ? 'حذف' : 'Remove'}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] text-[#B2BCC9] opacity-0 transition-opacity hover:text-rose-500 group-hover:opacity-100"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+
+          {/* Saved results kept from deeper engines */}
+          {savedItems.length > 0 && (
+            <section>
+              <h3 className="mb-3 text-[15px] font-black text-[#182231]">
+                {ar ? 'نتائج محفوظة' : 'Saved results'}
+              </h3>
+              <ul className="space-y-2">
+                {savedItems.map((item: any, index: number) => {
+                  const title =
+                    typeof item === 'string'
+                      ? item
+                      : item?.question || item?.title || item?.text || '';
+                  const tabId = item && typeof item === 'object' ? item.tabId : undefined;
+                  return (
+                    <li
+                      key={index}
+                      className="group flex items-center gap-3 rounded-[16px] border border-[#8FA9C7]/14 bg-white px-4 py-3 text-right transition-colors hover:bg-[#FAF9FC]"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => tabId && handleTabChange?.(tabId, title)}
+                        className="flex-1 text-right"
+                      >
+                        <p className="line-clamp-2 text-[14px] font-bold text-[#273548]">
+                          {title || (ar ? 'عنصر محفوظ' : 'Saved item')}
+                        </p>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeFromLibrary(item)}
+                        title={ar ? 'حذف' : 'Remove'}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[11px] text-[#B2BCC9] opacity-0 transition-opacity hover:text-rose-500 group-hover:opacity-100"
+                      >
+                        <BookmarkX className="h-4 w-4" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+
+          {/* Quiet path to the advanced toolbox for power users */}
+          {handleTabChange && (
+            <div className="pt-2 text-center">
+              <button
+                type="button"
+                onClick={() => handleTabChange('discover')}
+                className="inline-flex items-center gap-2 text-[13px] font-black text-[#94A3B5] transition-colors hover:text-[#182231]"
+              >
+                <Compass className="h-4 w-4" />
+                {ar ? 'استكشف كل أدوات تبيان' : 'Explore all Tebyan tools'}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
-};
-
-const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string, handleTabChange?: (id: string, context?: string) => void }) => {
-    const { preferences, removeFromLibrary } = useUser();
-    
-    return (
-        <div className="p-4 md:p-6 pb-28 md:pb-32">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12">
-                <div className="space-y-1 text-right">
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
-                  <p className="text-zinc-500 font-bold text-xs md:text-sm tracking-widest uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
-                </div>
-                {handleTabChange && (
-                    <button 
-                        onClick={() => handleTabChange('discover')}
-                        className="w-full sm:w-auto px-5 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-[20px] text-sm font-black transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
-                    >
-                        {language === 'ar' ? 'استكشف تبيان' : 'Explore Tebyan'}
-                    </button>
-                )}
-            </div>
-
-            {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length > 0 && (
-              <MoodCloud items={preferences.savedLibrary} language={language} />
-            )}
-
-            {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length === 0 ? (
-                <TebyanEmptyState
-                  language={language}
-                  icon={Sparkles}
-                  title={language === 'ar' ? 'لم يبدأ النسيج بعد' : 'The fabric has not begun yet'}
-                  description={language === 'ar' ? 'اكتب أول فكرة أو احفظ أول نتيجة، وسنحوّلها إلى عقدة في خريطتك المعرفية.' : 'Write or save your first thought, and it will become a node in your knowledge map.'}
-                  actionLabel={language === 'ar' ? 'ابدأ أول فكرة' : 'Start first idea'}
-                  onAction={() => handleTabChange?.('discover')}
-                  className="min-h-[420px]"
-                />
-            ) : (
-                <div className="relative w-full min-h-[58vh] md:h-[65vh] bg-white rounded-[32px] md:rounded-[40px] shadow-2xl border border-zinc-200 overflow-hidden flex flex-col pt-8 md:pt-12 items-center">
-                    <div className="text-xs font-black uppercase tracking-[0.4em] text-zinc-400 mb-8 z-10 text-center px-4 leading-relaxed group-hover:text-black transition-colors">
-                      {language === 'ar' ? 'المعرض الإدراكي - اسحب لاستعراض اللوحات' : 'COGNITIVE GALLERY - SCROLL TO EXPLORE'}
-                      <div className="w-32 h-px bg-zinc-300 mx-auto mt-4"></div>
-                    </div>
-                    
-                    {/* Dark/Warm lighting effect for wall */}
-                    <div className="absolute inset-0 bg-stone-100 pointer-events-none -z-10 bg-[url('https://www.transparenttextures.com/patterns/concrete-wall.png')] opacity-30"></div>
-                    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
-                    <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
-
-                    <ul className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full h-full custom-scrollbar items-center my-auto">
-                        {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
-                            let content = '';
-                            let title = '';
-                            let type = 'item';
-                            const item = stored;
-                            const tabId = item && typeof item === 'object' ? item.tabId : undefined;
-                            
-                            if (typeof item === 'string') {
-                                content = item;
-                                type = 'text';
-                            } else if (item && typeof item === 'object') {
-                                type = item.type || 'item';
-                                if (type === 'qawlfasl') {
-                                    title = item.question || item.title || '';
-                                    content = item.quickSummary || '';
-                                } else if (type === 'oracle') {
-                                    title = item.question || '';
-                                    content = item.content || '';
-                                } else if (type === 'concept') {
-                                    title = item.question || '';
-                                    content = item.content || '';
-                                } else if (type === 'roadmap') {
-                                    title = item.title || '';
-                                    content = item.estimated_duration || '';
-                                } else {
-                                    title = item.title || '';
-                                    content = item.text || item.content || item.question || JSON.stringify(item);
-                                }
-                            }
-
-                            const typeLabels: Record<string, { ar: string, color: string }> = {
-                                'qawlfasl': { ar: 'قول فصل', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                                'oracle': { ar: 'المستشار الكلي', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
-                                'concept': { ar: 'هندسة الأفكار', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-                                'roadmap': { ar: 'طريق النجاح', color: 'bg-rose-50 text-rose-600 border-rose-100' },
-                                'text': { ar: 'نص', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' },
-                                'item': { ar: 'مادة', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' }
-                            };
-
-                            const label = typeLabels[type] || typeLabels.item;
-
-                            return (
-                                <motion.li 
-                                    initial={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1, duration: 0.8 }}
-                                    key={index} 
-                                    className="relative flex-none snap-center group w-[88vw] max-w-[350px] md:w-[450px]"
-                                >
-                                    {/* Gallery Frame Shadow/Spotlight */}
-                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-40 h-2 bg-yellow-100/50 blur-xl group-hover:bg-yellow-200/80 transition-all pointer-events-none"></div>
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-[150%] bg-white/20 blur-3xl opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none"></div>
-                                    
-                                    {/* Physical Frame and Matting */}
-                                    <div className="bg-stone-900 p-3 md:p-4 rounded-sm shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border-t border-zinc-700 border-l border-r border-zinc-800 border-b-8 border-b-black transition-transform duration-700 hover:-translate-y-2 hover:rotate-1">
-                                      <div className="bg-[#f0ece1] p-6 md:p-10 border border-[#e0d6c8] shadow-inner relative overflow-hidden h-[400px] md:h-[500px] flex flex-col justify-center text-center">
-                                          <div className="absolute inset-0 bg-[#e9dbce] mix-blend-multiply opacity-20 pointer-events-none"></div>
-                                          
-                                          <div className="relative z-10 h-full overflow-y-auto custom-scrollbar pr-2 flex flex-col justify-center">
-                                            {title && <h3 className="text-[#2a1e12] font-black text-xl md:text-3xl leading-snug mb-6" style={{ fontFamily: 'Amiri, serif' }}>{title}</h3>}
-                                            <div className="text-[#4a3b2c] font-medium leading-loose text-sm md:text-lg italic" style={{ fontFamily: 'Aref Ruqaa, auto' }}>
-                                                {type === 'oracle' ? <ReactMarkdown>{content.substring(0, 300) + (content.length > 300 ? '...' : '')}</ReactMarkdown> : content}
-                                            </div>
-                                          </div>
-                                      </div>
-                                    </div>
-                                    
-                                    {/* Museum Label */}
-                                    <div className="mx-auto mt-6 md:mt-10 bg-white border border-stone-300 p-4 md:p-6 shadow-md w-11/12 max-w-[300px] text-center relative pointer-events-auto flex flex-col gap-4">
-                                       <div className="w-2 h-2 rounded-full bg-stone-300 mx-auto absolute top-2 left-1/2 -translate-x-1/2 shadow-inner"></div>
-                                       <div>
-                                           <div className="text-xs font-black text-black uppercase tracking-widest leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
-                                           <div className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">Item No. {String(index + 1).padStart(3, '0')}</div>
-                                       </div>
-                                       <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
-                                          <div className="flex gap-2">
-                                            <button 
-                                                onClick={() => removeFromLibrary(item)}
-                                                className="flex-1 py-2 bg-stone-50 text-stone-400 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-xs font-black transition-all border border-transparent hover:border-rose-100 flex items-center justify-center gap-2"
-                                            >
-                                                <Trash2 className="w-3 h-3" />
-                                                {language === 'ar' ? 'إزالة' : 'Remove'}
-                                            </button>
-                                            <button 
-                                                onClick={() => {
-                                                  alert(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.');
-                                                }}
-                                                className="flex-1 py-2 bg-stone-900 text-white hover:bg-black rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
-                                            >
-                                                <Shirt className="w-3 h-3" />
-                                                {language === 'ar' ? 'ارتداء' : 'Wear'}
-                                            </button>
-                                          </div>
-                                          {tabId && (
-                                            <button 
-                                                onClick={() => {
-                                                  if (handleTabChange) handleTabChange(tabId, title);
-                                                }}
-                                                className="w-full py-2 bg-mood-primary text-white hover:opacity-90 rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
-                                            >
-                                                <ArrowUpRight className="w-3 h-3" />
-                                                {language === 'ar' ? 'العودة للمساحة' : 'Return'}
-                                            </button>
-                                          )}
-                                       </div>
-                                    </div>
-                                </motion.li>
-                            );
-                        })}
-                    </ul>
-                </div>
-            )}
-        </div>
-    );
 };
 
 export default MyLibraryTab;
