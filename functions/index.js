@@ -429,7 +429,10 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
             requestInput = contents;
         }
 
-        const result = await model.generateContent(requestInput);
+        const result = await generateWithRetry(
+            () => model.generateContent(requestInput),
+            `Gemini AI (${finalModel})`
+        );
         const responseText = result.response.text();
 
         const aiResponse = { text: responseText };
@@ -451,6 +454,13 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
             } else {
                 return res.status(500).json({ error: "GEMINI_API_KEY is not configured on the server." });
             }
+        }
+        if (isGeminiBusyError(error)) {
+            return res.status(429).json({
+                error: "AI_HIGH_DEMAND",
+                message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
+                details: error.message,
+            });
         }
         res.status(500).json({ error: error.message || "AI Generation Failed" });
     }
