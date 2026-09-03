@@ -739,7 +739,7 @@ function handleServerSideAIFallback(contents: any, config: any, error: any) {
 
 async function startServer() {
     const app = express();
-    const PORT = process.env.PORT || 3000;
+    const PORT = process.env.NODE_ENV === "production" ? (process.env.PORT || 3000) : 3000;
 
     app.set('trust proxy', 1);
     
