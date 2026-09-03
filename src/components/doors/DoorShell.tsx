@@ -56,7 +56,7 @@ export const DoorShell = ({
           <div
             className="flex gap-2 overflow-x-auto pb-1 justify-start md:justify-center"
             role="tablist"
-            aria-label={ar ? "أنماط الباب" : "Door modes"}
+            aria-label={ar ? "اختر الأسلوب" : "Choose a style"}
           >
             {modes.map((m) => {
               const Icon = m.icon;

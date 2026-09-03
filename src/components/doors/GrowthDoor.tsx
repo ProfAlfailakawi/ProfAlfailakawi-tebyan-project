@@ -48,8 +48,8 @@ export const GrowthDoor = ({
     <DoorShell
       titleAr="خارطة الطريق والتقدم"
       titleEn="Roadmap & Progress"
-      subtitleAr="خطّط، تتبّع، تحقّق — رحلة واحدة نحو هدفك"
-      subtitleEn="Plan, track, verify — one journey toward your goal"
+      subtitleAr="من هدفك إلى خطة تمشي عليها"
+      subtitleEn="From your goal to a plan you can follow"
       modes={MODES}
       activeMode={mode}
       onModeChange={setMode}

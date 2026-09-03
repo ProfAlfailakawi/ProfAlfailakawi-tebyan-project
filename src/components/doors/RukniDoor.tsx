@@ -42,8 +42,8 @@ export const RukniDoor = ({
     <DoorShell
       titleAr="ركني"
       titleEn="My Corner"
-      subtitleAr="كل ما بنيته في تبيان — في مكان واحد"
-      subtitleEn="Everything you built in Tebyan — in one place"
+      subtitleAr="محفوظاتك ونقاطك في مكان واحد"
+      subtitleEn="Your saves and points in one place"
       modes={MODES}
       activeMode={mode}
       onModeChange={setMode}

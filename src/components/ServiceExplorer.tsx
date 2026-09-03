@@ -47,25 +47,64 @@ export const ServiceExplorer: React.FC<Props> = ({
   const isArabic = language === "ar";
 
   const filteredServices = useMemo(() => {
-    const needle = query.trim().toLowerCase();
-    return TEBYAN_SERVICES.filter((service) => {
-      if (selectedCategory && service.category !== selectedCategory)
-        return false;
-      if (!needle) return true;
-      const haystack = [
+    // Match on individual words, not the whole phrase, and treat common Arabic
+    // letter variants as equal — so "ولدي بدا يدخن" still finds the right door.
+    const normalize = (value: string) =>
+      value
+        .toLowerCase()
+        .replace(/[إأآا]/g, "ا")
+        .replace(/[ىي]/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/[\u064B-\u0652]/g, "");
+    const words = normalize(query)
+      .split(/[\s،,.؟?!]+/)
+      .filter((word) => word.length >= 3);
+    const inCategory = TEBYAN_SERVICES.filter(
+      (service) => !selectedCategory || service.category === selectedCategory,
+    );
+    if (!words.length) return inCategory;
+
+    // Score by how well each door matches, then rank — a partial match should
+    // reorder the list, never empty it.
+    // Compare whole words, not raw substrings: "بدا" must not match inside
+    // "الإبداع". Tolerate Arabic possessive endings ("طفلي" ↔ "طفل").
+    const tokens = (value: string) =>
+      normalize(value)
+        .split(/[^\u0621-\u064Aa-z0-9]+/)
+        .filter(Boolean);
+    const hitScore = (field: string, word: string) => {
+      const list = tokens(field);
+      if (list.includes(word)) return 2;
+      if (
+        list.some(
+          (item) =>
+            (item.length >= 3 && item.startsWith(word)) ||
+            (item.length >= 3 && word.startsWith(item)),
+        )
+      )
+        return 1;
+      return 0;
+    };
+    const scored = inCategory.map((service) => {
+      const name = [
         service.titleAr,
         service.titleEn,
         service.brandAr,
         service.brandEn,
-        service.descriptionAr,
-        service.descriptionEn,
-        ...service.keywordsAr,
-        ...service.keywordsEn,
-      ]
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(needle);
+      ].join(" ");
+      const keywords = [...service.keywordsAr, ...service.keywordsEn].join(" ");
+      const body = [service.descriptionAr, service.descriptionEn].join(" ");
+      let score = 0;
+      for (const word of words) {
+        score += hitScore(keywords, word) * 3;
+        score += hitScore(name, word) * 3;
+        score += hitScore(body, word);
+      }
+      return { service, score };
     });
+    const hits = scored.filter((item) => item.score > 0);
+    if (!hits.length) return inCategory;
+    return hits.sort((a, b) => b.score - a.score).map((item) => item.service);
   }, [query, selectedCategory]);
 
   const isDirectoryView =
@@ -88,17 +127,15 @@ export const ServiceExplorer: React.FC<Props> = ({
       <header className="tebyan-service-hero mx-auto max-w-3xl pt-2 text-center md:pt-6">
         <div className="tebyan-service-kicker mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/78 px-3.5 py-2 text-xs font-black text-[#6E5F8E] shadow-sm">
           <Sparkles className="h-4 w-4" />
-          {isArabic
-            ? "المشكاة — كل أبواب تبيان في مكان واحد"
-            : "Mishkat — every Tebyan door in one place"}
+          {isArabic ? "ابدأ من حاجتك" : "Start from your need"}
         </div>
         <h1 className="tebyan-service-title text-[1.75rem] font-black tracking-tight text-[#182231] md:text-5xl">
-          {isArabic ? "تسعة أبواب، لكل حاجة باب" : "Nine doors, one for every need"}
+          {isArabic ? "وش تحتاج تسوي؟" : "What do you need to do?"}
         </h1>
         <p className="tebyan-service-intro mx-auto mt-2 max-w-2xl text-sm font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
           {isArabic
-            ? "كل قدرات تبيان اندمجت في تسعة أبواب واضحة — ادخل الباب، وبداخله أنماطه."
-            : "All of Tebyan lives behind nine clear doors — enter one, and its modes are inside."}
+            ? "اختر ما يقربك من هدفك، أو اكتب حاجتك بكلماتك."
+            : "Pick what fits your goal, or type your need in your own words."}
         </p>
       </header>
 
@@ -181,8 +218,8 @@ export const ServiceExplorer: React.FC<Props> = ({
                     ? selectedCategoryMeta.titleAr
                     : selectedCategoryMeta.titleEn
                   : isArabic
-                    ? "الخدمات المناسبة"
-                    : "Matching services"}
+                    ? "المناسب لك"
+                    : "Suggested for you"}
               </p>
               <h2 className="mt-0.5 text-lg font-black text-[#182231] md:text-2xl">
                 {query.trim()
@@ -194,8 +231,8 @@ export const ServiceExplorer: React.FC<Props> = ({
                       ? selectedCategoryMeta.descriptionAr
                       : selectedCategoryMeta.descriptionEn
                     : isArabic
-                      ? "كل خدمات تبيان"
-                      : "All Tebyan services"}
+                      ? "اختر ما يناسبك"
+                      : "Choose what fits"}
               </h2>
             </div>
             <button

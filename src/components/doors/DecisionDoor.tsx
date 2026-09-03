@@ -45,8 +45,8 @@ export const DecisionDoor = ({
     <DoorShell
       titleAr="غرفة القرار"
       titleEn="Decision Room"
-      subtitleAr="اكتب قضيتك مرة واحدة — وكل أدوات الحسم حولك"
-      subtitleEn="Write your case once — every decision tool around you"
+      subtitleAr="اكتب قضيتك، واختر ما يساعدك على الحسم"
+      subtitleEn="Write your case, then choose what helps you decide"
       modes={MODES}
       activeMode={mode}
       onModeChange={setMode}

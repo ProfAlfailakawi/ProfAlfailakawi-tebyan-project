@@ -40,13 +40,12 @@ export function buildDirectGuidance({
         ? "Simple explanation"
         : "Deeper analysis";
 
+  let matched = false;
   let summaryAr =
-    specificInsight ||
     "الموضوع يحتاج فصل المشكلة الأساسية عن التفاصيل المحيطة بها، ثم البدء بأقرب خطوة يمكن التحكم بها الآن.";
   let actionAr =
     "اكتب النتيجة التي تريد الوصول إليها في جملة واحدة، ثم حدّد أصغر خطوة آمنة تستطيع تنفيذها اليوم.";
   let summaryEn =
-    specificInsight ||
     "The issue needs the core problem separated from surrounding details, followed by the nearest controllable step.";
   let actionEn =
     "Write the outcome you want in one sentence, then choose the smallest safe step you can take today.";
@@ -62,6 +61,7 @@ export function buildDirectGuidance({
       "classroom",
     ])
   ) {
+    matched = true;
     summaryAr =
       "لا تبدأ بالإجبار أو اتهامه بالكسل. نفوره من المدرسة قد يكون سببه صعوبة دراسية، موقف مع معلم، تنمّر، قلق، أو إرهاق ونوم غير كافٍ؛ المطلوب معرفة متى بدأ وما الذي يتكرر قبله.";
     actionAr =
@@ -73,6 +73,7 @@ export function buildDirectGuidance({
   } else if (
     includesAny(q, ["تنمر", "يتنمر", "يتنمرون", "bully", "bullying"])
   ) {
+    matched = true;
     summaryAr =
       "التنمّر ليس خلافاً عادياً ولا يُعالج بطلب التجاهل فقط. الأولوية حماية الطفل، توثيق ما يحدث، وإشراك المدرسة بخطة واضحة من دون لومه أو إجباره على المواجهة وحده.";
     actionAr =
@@ -94,6 +95,7 @@ export function buildDirectGuidance({
       "concentration",
     ])
   ) {
+    matched = true;
     summaryAr =
       "ضعف الدراسة لا يعني دائماً قلة الرغبة؛ قد تكون المهمة أكبر من قدرته على البدء، أو أن البيئة مشتتة، أو أن هناك صعوبة تحتاج كشفاً. المطلوب تقليل حجم البداية وقياس ما يحدث فعلاً.";
     actionAr =
@@ -114,6 +116,7 @@ export function buildDirectGuidance({
       "workplace",
     ])
   ) {
+    matched = true;
     summaryAr =
       "المشكلة المهنية تصبح أوضح عندما تفصل بين السلوك القابل للملاحظة وبين الحكم على الشخص. ناقش الأثر والتوقع المطلوب، لا النوايا المفترضة.";
     actionAr =
@@ -136,6 +139,7 @@ export function buildDirectGuidance({
       "budget",
     ])
   ) {
+    matched = true;
     summaryAr =
       "الضغط المالي يحتاج أرقاماً هادئة قبل القرارات الكبيرة. البداية هي معرفة التدفق الحقيقي: ما يدخل، وما يجب دفعه، وما يمكن تأجيله أو خفضه.";
     actionAr =
@@ -147,6 +151,7 @@ export function buildDirectGuidance({
   } else if (
     includesAny(q, ["غضب", "صراخ", "عصبي", "منفعل", "angry", "anger", "scream"])
   ) {
+    matched = true;
     summaryAr =
       "الأولوية الآن ليست كسب النقاش، بل تهدئة التصعيد وفهم الحاجة أو الضغط الموجود خلف الغضب.";
     actionAr =
@@ -156,6 +161,7 @@ export function buildDirectGuidance({
     actionEn =
       "Pause sharp replies, name the emotion calmly, then ask one question: “What is bothering you most right now?”";
   } else if (includesAny(q, ["كذب", "كاذب", "lie", "lying"])) {
+    matched = true;
     summaryAr =
       "تكرار الكذب غالباً لا يُعالج بالعقوبة وحدها؛ المطلوب حماية الصدق من الخوف ومعرفة الدافع قبل الحكم.";
     actionAr =
@@ -176,6 +182,7 @@ export function buildDirectGuidance({
       "anxious",
     ])
   ) {
+    matched = true;
     summaryAr =
       "الخوف هنا يحتاج شعوراً بالأمان قبل النصائح. تقليل الشعور أو السخرية منه قد يزيده حتى لو كانت النية طيبة.";
     actionAr =
@@ -197,6 +204,7 @@ export function buildDirectGuidance({
       "partner",
     ])
   ) {
+    matched = true;
     summaryAr =
       "الخلاف لا يُحل بكثرة الحجج إذا كان كل طرف يشعر أنه غير مسموع. افصل بين الموقف الحالي وبين التعميمات القديمة، وحدد طلباً واضحاً قابلاً للتنفيذ.";
     actionAr =
@@ -218,6 +226,7 @@ export function buildDirectGuidance({
       "parenting",
     ])
   ) {
+    matched = true;
     summaryAr =
       "ابدأ بفهم الحاجة خلف السلوك قبل تصحيحه؛ السلوك رسالة، لكنه لا يعني قبول الخطأ. اجمع بين الهدوء وحدّ واضح وثابت يناسب العمر.";
     actionAr =
@@ -240,6 +249,7 @@ export function buildDirectGuidance({
       "diagnosis",
     ])
   ) {
+    matched = true;
     summaryAr =
       "المعلومات العامة قد تساعدك على ترتيب الصورة لكنها لا تكفي للتشخيص. الأعراض الجديدة أو الشديدة أو المتفاقمة تحتاج تقييماً طبياً، خصوصاً مع ضيق التنفس أو الإغماء أو الألم الحاد.";
     actionAr =
@@ -260,6 +270,7 @@ export function buildDirectGuidance({
       "time management",
     ])
   ) {
+    matched = true;
     summaryAr =
       "التسويف غالباً مشكلة بداية غامضة أو ثقيلة، لا نقص إرادة فقط. كلما صغرت أول حركة ووضحت نهايتها، قلّت مقاومة البدء.";
     actionAr =
@@ -279,6 +290,7 @@ export function buildDirectGuidance({
       "unsure",
     ])
   ) {
+    matched = true;
     summaryAr =
       "الحيرة غالباً سببها خلط ما هو مهم فعلاً بما هو مخيف أو عاجل. القرار يصبح أوضح عندما تفصل القيم عن الضغوط المؤقتة.";
     actionAr =
@@ -298,6 +310,7 @@ export function buildDirectGuidance({
       "project",
     ])
   ) {
+    matched = true;
     summaryAr =
       "قوة الفكرة لا تبدأ بكثرة المزايا، بل بوضوح المشكلة التي تحلها ولمن تحلها ولماذا سيهتم بها الناس.";
     actionAr =
@@ -318,6 +331,7 @@ export function buildDirectGuidance({
       "roadmap",
     ])
   ) {
+    matched = true;
     summaryAr =
       "الهدف يبدو كبيراً لأن بدايته ونقطة قياسه غير محددتين. تحويله إلى نتيجة أسبوعية يقلل التشتت ويكشف التقدم.";
     actionAr =
@@ -327,6 +341,7 @@ export function buildDirectGuidance({
     actionEn =
       "Choose one outcome for next week, then keep only three tasks that directly serve it.";
   } else if (journeyId === "situation") {
+    matched = true;
     summaryAr =
       "الموقف يحتاج تهدئة الانفعال أولاً، ثم تحديد ما الذي حدث فعلاً وما الذي تم تفسيره أو افتراضه.";
     actionAr =
@@ -336,6 +351,7 @@ export function buildDirectGuidance({
     actionEn =
       "Write three lines: what happened, what you felt, and what you need now. Use them before responding.";
   } else if (journeyId === "future") {
+    matched = true;
     summaryAr =
       "لا يمكن ضمان المستقبل، لكن يمكن تقليل المفاجآت ببناء أكثر من سيناريو وتحديد العلامات المبكرة لكل واحد.";
     actionAr =
@@ -344,6 +360,12 @@ export function buildDirectGuidance({
       "The future cannot be guaranteed, but surprises can be reduced through scenarios and early signals.";
     actionEn =
       "Write best, likely, and worst scenarios, then one early signal for each.";
+  }
+
+  // A weak keyword guess must never override a real topic match.
+  if (!matched && specificInsight) {
+    summaryAr = specificInsight;
+    summaryEn = specificInsight;
   }
 
   if (mode === "deep") {

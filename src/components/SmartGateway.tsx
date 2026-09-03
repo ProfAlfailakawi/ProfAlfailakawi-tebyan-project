@@ -622,13 +622,18 @@ const decorateJourneyDoors = (
     if (!base || used.has(id)) return null;
     used.add(id);
     const copy = copySet[index % copySet.length];
+    // Show the door's real name and its own description: a poetic alias made
+    // people guess what "باب الفجرة" means before they could click it.
+    const realLabel = base.label || (language === "ar" ? copy.ar : copy.en);
+    const realDesc =
+      base.tooltip || (language === "ar" ? copy.descAr : copy.descEn);
     return {
       ...base,
       id,
       icon: base.icon || Sparkles,
-      label: language === "ar" ? copy.ar : copy.en,
-      desc: language === "ar" ? copy.descAr : copy.descEn,
-      tooltip: language === "ar" ? copy.descAr : copy.descEn,
+      label: realLabel,
+      desc: realDesc,
+      tooltip: realDesc,
       doorIndex: index + 1,
     };
   };
@@ -1102,6 +1107,8 @@ export const SmartGateway: React.FC<
   const liveQuestionOptions = useMemo(() => {
     const raw = searchValue.trim();
     if (!inputSettled || hasSearched || raw.length < 3) return [];
+    // Once the question is already detailed, rephrasings only repeat it back.
+    if (raw.length > 42) return [];
 
     const normalized = raw.replace(/[؟?!.،,]+$/g, "").trim();
     const options: string[] = [];
@@ -1136,7 +1143,7 @@ export const SmartGateway: React.FC<
       }
     }
 
-    return options.slice(0, 3);
+    return options.slice(0, 2);
   }, [searchValue, inputSettled, hasSearched, smartSuggestion, language]);
 
   useEffect(() => {
@@ -3405,20 +3412,6 @@ export const SmartGateway: React.FC<
                 )}
                 style={clarityRingStyle}
               >
-                {searchValue.trim().length >= 3 && (
-                  <div className="pointer-events-none absolute -top-9 right-5 z-20 hidden md:flex items-center gap-2 rounded-full border border-[#8E7AAE]/12 bg-white/82 px-3 py-1.5 shadow-sm backdrop-blur-xl">
-                    <span
-                      className="h-2 w-2 rounded-full"
-                      style={{
-                        backgroundColor: cognitiveMood.accent,
-                        boxShadow: `0 0 14px ${cognitiveMood.glow}`,
-                      }}
-                    />
-                    <span className="text-[10px] font-black text-[#465568]">
-                      {cognitiveMood.label}
-                    </span>
-                  </div>
-                )}
                 {showGateEcho && (
                   <div className="pointer-events-none absolute -inset-10 z-0 flex items-center justify-center">
                     <motion.div
@@ -3659,8 +3652,8 @@ export const SmartGateway: React.FC<
                   <div className="mt-4 w-full max-w-3xl mx-auto">
                     <p className="mb-2 text-center text-[11px] font-black uppercase tracking-widest text-[#8E7AAE]/80">
                       {language === "ar"
-                        ? "أبوابك الأنسب — ظهرت من كلماتك"
-                        : "Your best doors — drawn from your words"}
+                        ? "يناسب سؤالك"
+                        : "Fits your question"}
                     </p>
                     <div className="flex flex-wrap justify-center gap-2.5">
                       {liveTypingDoors.map((door: any, i: number) => (
@@ -3735,9 +3728,9 @@ export const SmartGateway: React.FC<
                 <motion.div
                   id="desktop-results"
                   key="desktop-suggestions"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   className="border-t border-zinc-100 mt-2 p-4 hidden md:block space-y-4"
                 >
                   <div className="flex justify-center mb-4">
@@ -3806,7 +3799,6 @@ export const SmartGateway: React.FC<
                         query={shortQuery || query}
                         summary={directGuidance.summary}
                         action={directGuidance.action}
-                        context={directGuidance.context}
                         responseMode={responseMode}
                         accent={directJourneyProfile.accent}
                         showOptions={showDirectTools}
@@ -3824,7 +3816,6 @@ export const SmartGateway: React.FC<
                           setResponseMode("simple");
                           setDepthLevel((level) => Math.max(level, 1));
                         }}
-                        onPlan={() => handlePathSelect("roadmap", query)}
                         onDeepen={() => {
                           setShowDirectTools(true);
                           setResponseMode("deep");
@@ -3835,7 +3826,7 @@ export const SmartGateway: React.FC<
                       {showDirectTools && (
                         <div className="mt-3 space-y-2">
                           <p className="px-1 text-[11px] font-black uppercase tracking-widest text-[#8E7AAE]">
-                            {language === "ar" ? "أبواب أخرى تناسب سؤالك" : "Other doors for your question"}
+                            {language === "ar" ? "مسارات أخرى" : "Other paths"}
                           </p>
                           {[...secondarySuggestions, ...alternativeSuggestions]
                             .slice(0, 4)
@@ -3947,7 +3938,6 @@ export const SmartGateway: React.FC<
                         query={shortQuery || query}
                         summary={directGuidance.summary}
                         action={directGuidance.action}
-                        context={directGuidance.context}
                         responseMode={responseMode}
                         accent={directJourneyProfile.accent}
                         showOptions={showDirectTools}
@@ -3965,7 +3955,6 @@ export const SmartGateway: React.FC<
                           setResponseMode("simple");
                           setDepthLevel((level) => Math.max(level, 1));
                         }}
-                        onPlan={() => handlePathSelect("roadmap", query)}
                         onDeepen={() => {
                           setShowDirectTools(true);
                           setResponseMode("deep");
@@ -3976,7 +3965,7 @@ export const SmartGateway: React.FC<
                       {showDirectTools && (
                         <div className="mt-3 space-y-2">
                           <p className="px-1 text-[11px] font-black uppercase tracking-widest text-[#8E7AAE]">
-                            {language === "ar" ? "أبواب أخرى تناسب سؤالك" : "Other doors for your question"}
+                            {language === "ar" ? "مسارات أخرى" : "Other paths"}
                           </p>
                           {[...secondarySuggestions, ...alternativeSuggestions]
                             .slice(0, 4)

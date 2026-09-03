@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   ChevronDown,
-  ListChecks,
   Sparkles,
 } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -14,14 +13,12 @@ type Props = {
   query: string;
   summary: string;
   action: string;
-  context: string;
   responseMode: ResponseMode;
   accent: string;
   showOptions: boolean;
   onContinue: () => void;
   onShowOptions: () => void;
   onExplain: () => void;
-  onPlan: () => void;
   onDeepen: () => void;
 };
 
@@ -30,14 +27,12 @@ export const DirectAnswerCard: React.FC<Props> = ({
   query,
   summary,
   action,
-  context,
   responseMode,
   accent,
   showOptions,
   onContinue,
   onShowOptions,
   onExplain,
-  onPlan,
   onDeepen,
 }) => {
   const isArabic = language === "ar";
@@ -60,18 +55,10 @@ export const DirectAnswerCard: React.FC<Props> = ({
             <span className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-[#F4F0F8] text-[#6E5F8E]">
               <Sparkles className="h-4 w-4" />
             </span>
-            <div>
-              <p className="text-[11px] font-black text-[#8E7AAE]">
-                {isArabic ? "جواب تبيان" : "Tebyan answer"}
-              </p>
-              <h2 className="mt-0.5 text-[17px] font-black leading-6 text-[#182231] md:text-xl">
-                {isArabic ? "الخلاصة أولاً" : "The answer first"}
-              </h2>
-            </div>
+            <h2 className="text-[17px] font-black leading-6 text-[#182231] md:text-xl">
+              {isArabic ? "الخلاصة أولاً" : "The answer first"}
+            </h2>
           </div>
-          <span className="hidden rounded-full border border-[#8E7AAE]/12 bg-[#F8F5FB] px-3 py-1.5 text-[11px] font-black text-[#6E5F8E] sm:block">
-            {context}
-          </span>
         </div>
 
         <details className="group mt-3 rounded-[16px] border border-[#8FA9C7]/10 bg-[#FAF9F6]/82 px-3.5 py-2.5">
@@ -88,10 +75,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
 
         <div className="mt-4 space-y-3">
           <div className="rounded-[20px] border border-[#8E7AAE]/11 bg-[#F7F3FA] p-4 md:p-5">
-            <p className="text-[11px] font-black text-[#6E5F8E]">
-              {isArabic ? "الجواب" : "Answer"}
-            </p>
-            <p className="mt-2 text-[15px] font-bold leading-[1.95] text-[#273548] md:text-[17px]">
+            <p className="text-[15px] font-bold leading-[1.95] text-[#273548] md:text-[17px]">
               {summary}
             </p>
           </div>
@@ -135,11 +119,9 @@ export const DirectAnswerCard: React.FC<Props> = ({
         {showOptions && (
           <div className="mt-3 border-t border-[#8FA9C7]/10 pt-3">
             <p className="mb-2 text-[12px] font-black text-[#64788D]">
-              {isArabic
-                ? "اختر فقط إذا تحتاج مساراً مختلفاً"
-                : "Choose only if you need a different path"}
+              {isArabic ? "تحب الجواب أبسط أو أعمق؟" : "Want it simpler or deeper?"}
             </p>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={onExplain}
@@ -151,14 +133,6 @@ export const DirectAnswerCard: React.FC<Props> = ({
                 )}
               >
                 {isArabic ? "بسّط أكثر" : "Simplify more"}
-              </button>
-              <button
-                type="button"
-                onClick={onPlan}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-[15px] border border-[#A8C3BD]/24 bg-white px-3 text-[13px] font-black text-[#4D766B] hover:bg-[#F3F8F6] active:scale-[0.98]"
-              >
-                <ListChecks className="h-4 w-4" />
-                {isArabic ? "أعطني خطة" : "Give me a plan"}
               </button>
               <button
                 type="button"

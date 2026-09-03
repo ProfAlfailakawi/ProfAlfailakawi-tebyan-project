@@ -28,7 +28,7 @@ const TruthManuscriptTab = React.lazy(() =>
 );
 
 const MODES: DoorMode[] = [
-  { id: "counsel", labelAr: "مستشار", labelEn: "Counsel", hintAr: "جواب متوازن من مستشار حكيم — النمط الأساسي", hintEn: "A balanced answer from a wise counselor", icon: MessageCircleQuestion },
+  { id: "counsel", labelAr: "مستشار", labelEn: "Counsel", hintAr: "جواب متوازن وشامل", hintEn: "A balanced, complete answer", icon: MessageCircleQuestion },
   { id: "simplify", labelAr: "بسّط لي", labelEn: "Simplify", hintAr: "يفكك الفكرة المعقدة خطوة خطوة", hintEn: "Breaks the complex idea down step by step", icon: Lightbulb },
   { id: "map", labelAr: "خريطة", labelEn: "Map", hintAr: "يرتب الجواب خريطة متفرعة تربط الفكرة بجذورها", hintEn: "Arranges the answer as a branching map", icon: Network },
   { id: "story", labelAr: "قصة", labelEn: "Story", hintAr: "يحوّل الجواب قصة ممتعة لطفل أو طالب", hintEn: "Turns the answer into an engaging story", icon: BookOpenText },
@@ -63,8 +63,8 @@ export const AskTebyanDoor = ({
     <DoorShell
       titleAr="اسأل تبيان"
       titleEn="Ask Tebyan"
-      subtitleAr="سؤال واحد — وأنت تختار أسلوب الجواب"
-      subtitleEn="One question — you choose the style of the answer"
+      subtitleAr="اكتب سؤالك، واختر الأسلوب الذي يريحك"
+      subtitleEn="Write your question, then pick the style that suits you"
       modes={MODES}
       activeMode={mode}
       onModeChange={setMode}

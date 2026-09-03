@@ -308,7 +308,7 @@ const SplashScreen = ({
         window.dispatchEvent(new CustomEvent("tebyan_gate_to_search"));
       } catch (e) {}
       onFinish();
-    }, 1400);
+    }, 2600);
     return () => clearTimeout(timer);
   }, [onFinish]);
 
@@ -444,7 +444,14 @@ const AppContent: React.FC = () => {
     type: "info" | "error" | "success";
   } | null>(null);
   const [language, setLanguage] = useState<"ar" | "en">("ar");
-  const [showSplash, setShowSplash] = useState(false);
+  // Show the opening mark once per session, long enough to actually be seen.
+  const [showSplash, setShowSplash] = useState(() => {
+    try {
+      return sessionStorage.getItem("tebyan_splash_seen") !== "true";
+    } catch (e) {
+      return false;
+    }
+  });
   const [isOffline, setIsOffline] = useState(() =>
     typeof navigator !== "undefined" ? !navigator.onLine : false,
   );
@@ -1231,7 +1238,12 @@ const AppContent: React.FC = () => {
         {showSplash && (
           <SplashScreen
             key="splash"
-            onFinish={() => setShowSplash(false)}
+            onFinish={() => {
+              try {
+                sessionStorage.setItem("tebyan_splash_seen", "true");
+              } catch (e) {}
+              setShowSplash(false);
+            }}
             language={language}
           />
         )}

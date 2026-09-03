@@ -1430,7 +1430,11 @@ body.tebyan-focus-mode .tebyan-result-document {
       [class*="bg-rose"]
     ):not([class*="bg-emerald"]):not([class*="bg-amber"]):not(
       [class*="bg-blue"]
-    ):not([class*="bg-mood-primary"]) {
+    ):not([class*="bg-mood-primary"]):not([class*="bg-[#18"]):not(
+      [class*="bg-zinc-9"]
+    ):not([class*="bg-black"]):not([class*="bg-slate-9"]):not(
+      [class*="bg-neutral-9"]
+    ) {
     color: var(--tebyan-ink) !important;
     text-shadow: none !important;
   }
@@ -1907,7 +1911,13 @@ body.tebyan-focus-mode .tebyan-result-document {
     border-color: rgba(139, 126, 165, 0.18) !important;
   }
 
-  main .text-white {
+  /* Lighten legacy dark sections, but never repaint text that sits on a
+     deliberately dark surface — that turned dark buttons into blank slabs. */
+  main .text-white:not([class*="bg-["]):not([class*="bg-zinc-9"]):not(
+      [class*="bg-black"]
+    ):not([class*="bg-slate-9"]):not([class*="bg-neutral-9"]):not(
+      [class*="bg-mood-primary"]
+    ) {
     color: var(--tebyan-ink) !important;
   }
 
