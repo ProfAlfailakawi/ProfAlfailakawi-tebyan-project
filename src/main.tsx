@@ -28,6 +28,8 @@ createRoot(document.getElementById('root')!).render(
         }>
           <Routes>
             <Route path="/" element={<App />} />
+            <Route path="/qawl" element={<App />} />
+            <Route path="/qawl/:qid" element={<App />} />
             <Route path="/admin" element={
               <AdminRoute>
                 <AdminDashboard />

@@ -326,13 +326,8 @@ export const SmartIconWrapper: React.FC<SmartIconWrapperProps> = ({
     }
 
     // First time touch on mobile for specialized icon:
-    e.preventDefault();
-    e.stopPropagation();
-
-    // Mark as learned globally across the entire app
+    // show the coach mark WITHOUT swallowing the tap — the action must always fire.
     markIconAsLearned(id);
-
-    // Show coach mark tooltip
     setActiveGuidance(textToDisplay);
   };
 

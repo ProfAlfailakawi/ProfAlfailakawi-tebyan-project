@@ -62,7 +62,7 @@
 
 @theme {
   --font-sans: "Alexandria", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Amiri", "Playfair Display", ui-serif, Georgia, serif;
+  --font-serif: "Amiri", ui-serif, Georgia, serif;
 
   --color-brand-primary: #6e5f8e;
   --color-brand-accent: #8fa9c7;
@@ -345,40 +345,8 @@ body.scroll-dwelling main {
   transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body.scroll-dwelling .marginalia-hint {
-  opacity: 1;
-  transform: translateX(0);
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
+body.scroll-dwelling 
 
-.marginalia-hint {
-  opacity: 0;
-  transform: translateX(-10px);
-  pointer-events: none;
-}
-
-/* 
-  Digital Patina (الزنجار الرقمي)
-  These variables represents the "age" of the application install.
-  We will map this directly in CSS. Over time, bg-zinc-50 becomes slightly warmer.
-*/
-:root {
-  --patina-warmth: 0%; /* Default */
-}
-
-body.patina-aged {
-  /* Simulate 6 months of aging: warmer tone, softer contrasts */
-  --patina-warmth: 100%;
-  background-color: color-mix(in srgb, #f4f4f5, #fcfaf5 var(--patina-warmth));
-}
-
-body.patina-aged .bg-white {
-  background-color: color-mix(in srgb, #ffffff, #fffdf8 var(--patina-warmth));
-}
-
-body.patina-aged .text-zinc-900 {
-  color: color-mix(in srgb, #18181b, #2d2620 var(--patina-warmth));
-}
 body.mode-focus main {
   max-width: 800px;
   margin: 0 auto;
@@ -483,20 +451,6 @@ body:not(.zen-idle) nav {
   height: auto;
 }
 
-.markdown-inner p {
-  margin-bottom: 0.75rem;
-}
-.markdown-inner p:last-child {
-  margin-bottom: 0;
-}
-.markdown-inner ul {
-  list-style-type: disc;
-  padding-inline-start: 1.25rem;
-  margin-bottom: 0.75rem;
-}
-.markdown-inner li {
-  margin-bottom: 0.5rem;
-}
 
 /* Immersive & Luxurious Interactive Styles (Tebyan Premium Upgrades) */
 
@@ -554,52 +508,9 @@ body:not(.zen-idle) nav {
 }
 
 /* 2. Kinetic & Decisive Breathing Typography */
-.text-kinetic-breathe {
-  animation: kineticBreath 6s ease-in-out infinite alternate;
-}
 
-@keyframes kineticBreath {
-  0% {
-    font-weight: 300;
-    font-variation-settings:
-      "wght" 300,
-      "wdth" 80;
-    letter-spacing: -0.01em;
-  }
-  50% {
-    font-weight: 500;
-    font-variation-settings:
-      "wght" 500,
-      "wdth" 105;
-    letter-spacing: 0.02em;
-  }
-  100% {
-    font-weight: 700;
-    font-variation-settings:
-      "wght" 700,
-      "wdth" 120;
-    letter-spacing: 0em;
-  }
-}
 
 /* Hard Decisive Metal Strike (قول فصل) Text appearance effect */
-.text-strike-gold {
-  background: linear-gradient(
-    135deg,
-    #18181b 0%,
-    #2a2925 30%,
-    #a1a1aa 50%,
-    #5a5a40 70%,
-    #2a2925 100%
-  );
-  background-size: 200% auto;
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: shineBronze 3s linear infinite;
-  font-weight: 900;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
-}
 
 @keyframes shineBronze {
   to {
@@ -608,38 +519,8 @@ body:not(.zen-idle) nav {
 }
 
 /* 3. 3D Tectonic Islands & Organic Living Wisdom Containers */
-.tectonic-island-3d {
-  background: linear-gradient(145deg, #fffbfa, #faf6f0);
-  border: 1px solid rgba(90, 90, 64, 0.12);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.02),
-    0 2px 4px -1px rgba(0, 0, 0, 0.01),
-    0 10px 15px -3px rgba(90, 90, 64, 0.04),
-    inset 0 1px 0 rgba(255, 255, 215, 0.4);
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  transition:
-    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
-.tectonic-island-3d:hover {
-  transform: translateZ(20px) rotateX(1deg) rotateY(-1deg);
-  box-shadow:
-    0 20px 25px -5px rgba(90, 90, 64, 0.06),
-    0 10px 10px -5px rgba(90, 90, 64, 0.04),
-    inset 0 2px 4px rgba(255, 255, 255, 0.8),
-    0 1px 2px rgba(180, 150, 100, 0.15);
-}
 
-.organic-gold-rim {
-  border: 2px solid transparent;
-  background-image:
-    linear-gradient(white, white),
-    radial-gradient(circle at top left, #dfc18b, #c49a45, #dfc18b);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-}
 
 @keyframes tebyan-breathe {
   0%,
@@ -664,9 +545,6 @@ body:not(.zen-idle) nav {
   backdrop-filter: blur(18px);
 }
 
-.tebyan-soft-glow {
-  box-shadow: 0 18px 55px rgba(142, 122, 174, 0.14);
-}
 
 .tebyan-intellectual-gradient {
   background:
@@ -687,28 +565,8 @@ body:not(.zen-idle) nav {
     );
 }
 
-.tebyan-deep-soft {
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(142, 122, 174, 0.2),
-      transparent 30%
-    ),
-    linear-gradient(135deg, #f8f6f2, #eef2f6);
-}
 
 /* Tebyan v12 premium experience layer: soft, calm, non-destructive */
-@keyframes tebyan-living-hush {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 0.55;
-  }
-  50% {
-    transform: translate3d(0, -6px, 0) scale(1.035);
-    opacity: 0.78;
-  }
-}
 
 .tebyan-living-background {
   position: relative;
@@ -734,7 +592,6 @@ body:not(.zen-idle) nav {
   pointer-events: none;
   border-radius: 9999px;
   filter: blur(96px);
-  animation: tebyan-living-hush 9s ease-in-out infinite;
 }
 
 .tebyan-living-background::before {
@@ -770,24 +627,6 @@ body:not(.zen-idle) nav {
   box-shadow: 0 24px 70px rgba(24, 34, 49, 0.07);
 }
 
-.tebyan-mode-understanding {
-  --mode-accent: #8fa9c7;
-}
-.tebyan-mode-decision {
-  --mode-accent: #8e7aae;
-}
-.tebyan-mode-judgment {
-  --mode-accent: #d8c28a;
-}
-.tebyan-mode-creative {
-  --mode-accent: #c8a9cb;
-}
-.tebyan-mode-knowledge {
-  --mode-accent: #7c8796;
-}
-.tebyan-mode-warning {
-  --mode-accent: #a6603f;
-}
 
 body.tebyan-focus-mode .global-floating-buttons,
 body.tebyan-focus-mode .tour-search-input ~ *:not(.tebyan-focus-keep) {
@@ -932,15 +771,6 @@ body.tebyan-focus-mode .tebyan-result-document {
 }
 
 /* Softer special document stamp */
-.tebyan-knowledge-stamp {
-  background: linear-gradient(
-    135deg,
-    rgba(251, 250, 247, 0.96),
-    rgba(244, 241, 248, 0.92)
-  );
-  border: 1px solid rgba(142, 122, 174, 0.14);
-  box-shadow: 0 16px 44px rgba(142, 122, 174, 0.08);
-}
 
 /* Tebyan v16 — cognitive mood + thought journey, soft and non-destructive */
 .tebyan-cognitive-mood {
@@ -1262,11 +1092,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   /* Hide spatial ghost hints on phones; they create ghost text over content */
-  .marginalia-hint,
-  [class*="SpatialGhost"] {
-    display: none !important;
-  }
-
+  
   /* Floating utilities: keep useful, but small and non-invasive */
   .global-floating-buttons {
     width: 2.8rem !important;
@@ -1478,9 +1304,6 @@ body.tebyan-focus-mode .tebyan-result-document {
 /* Tebyan light luxury refinement — aesthetic-only layer */
 @layer base {
   :root {
-    --tebyan-ink: #182231;
-    --tebyan-muted: #64788d;
-    --tebyan-paper: #fffcf7;
     --tebyan-sand: #f8f5ef;
     --tebyan-line: rgba(142, 122, 174, 0.16);
     --tebyan-lift: 0 22px 70px rgba(24, 34, 49, 0.07);
@@ -1879,10 +1702,6 @@ body.tebyan-focus-mode .tebyan-result-document {
       inset 0 1px 0 rgba(255, 255, 255, 0.82);
   }
 
-  .tebyan-orb-mark {
-    background: linear-gradient(135deg, #8e7aae, #8fa9c7) !important;
-  }
-
   main h1,
   main h2 {
     font-weight: 850 !important;
@@ -1976,13 +1795,9 @@ body.tebyan-focus-mode .tebyan-result-document {
 /* Tebyan visual harmony correction: lighter pearl palette, stronger contrast, softer purple blocks */
 @layer components {
   :root {
-    --tebyan-ink: #1f2937;
-    --tebyan-muted: #5f6e7f;
     --tebyan-soft-muted: #738196;
     --tebyan-pearl: #fbfaf7;
     --tebyan-paper: #ffffff;
-    --tebyan-lilac: #dcd4e9;
-    --tebyan-lilac-strong: #78659b;
     --tebyan-sky: #dce7f2;
     --tebyan-line: rgba(139, 126, 165, 0.18);
   }
@@ -2995,9 +2810,6 @@ body {
   backdrop-filter: blur(18px);
   padding: 0.35rem 0.45rem;
 }
-.tebyan-floating-nav span {
-  display: none !important;
-}
 .tebyan-floating-nav button {
   gap: 0.45rem !important;
 }
@@ -3351,7 +3163,7 @@ body {
   input,
   textarea,
   button {
-    font-family: "Alexandria", ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans);
   }
 }
 
@@ -3504,14 +3316,14 @@ input,
 textarea,
 select,
 svg text {
-  font-family: "Alexandria", "Tahoma", "Arial", system-ui, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: geometricPrecision;
 }
 
 .tebyan-svg-arabic-text {
-  font-family: "Alexandria", "Tahoma", "Arial", sans-serif !important;
+  font-family: var(--font-sans);
   paint-order: stroke fill;
   stroke: rgba(255, 255, 255, 0.72);
   stroke-width: 3px;
@@ -3742,11 +3554,6 @@ body:not(.zen-idle)::after {
 .tebyan-header-actions,
 .tebyan-header-actions button,
 .tebyan-mobile-dock button,
-.tebyan-response-mode button,
-.tebyan-service-explorer button {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
 
 .tebyan-header-actions button,
 .tebyan-mobile-dock button {
@@ -3755,17 +3562,7 @@ body:not(.zen-idle)::after {
   transition-duration: 100ms !important;
 }
 
-.tebyan-response-mode button,
-.tebyan-response-mode button span {
-  white-space: nowrap !important;
-  overflow-wrap: normal !important;
-  word-break: keep-all !important;
-}
 
-.tebyan-response-mode button[aria-pressed="true"],
-.tebyan-response-mode button[aria-selected="true"] {
-  color: #fff !important;
-}
 
 @media (max-width: 767px) {
   .tebyan-route-home.tebyan-route-shell {
@@ -3803,28 +3600,8 @@ body:not(.zen-idle)::after {
     font-weight: 700 !important;
   }
 
-  .tebyan-response-mode {
-    width: min(100%, 336px) !important;
-    margin-bottom: 0.48rem !important;
-    padding: 0.22rem !important;
-    gap: 0.18rem !important;
-    border-radius: 15px !important;
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: 0 7px 22px rgba(24, 34, 49, 0.045) !important;
-  }
-
-  .tebyan-response-mode button {
-    min-width: 0 !important;
-    min-height: 36px !important;
-    height: 36px !important;
-    padding-inline: 0.34rem !important;
-    border-radius: 11px !important;
-    font-size: 0.73rem !important;
-    line-height: 1 !important;
-  }
-
+  
+  
   .tebyan-search-stage {
     margin-top: 0.38rem !important;
     margin-bottom: 0.9rem !important;
@@ -4149,14 +3926,7 @@ body:not(.zen-idle)::after {
     letter-spacing: 0 !important;
   }
 
-  .tebyan-service-card-description {
-    margin-top: 0.42rem !important;
-    font-size: 0.78rem !important;
-    line-height: 1.72 !important;
-    font-weight: 600 !important;
-    color: #687c90 !important;
-  }
-
+  
   .tebyan-service-card-action {
     margin-top: 0.58rem !important;
     gap: 0.35rem !important;
@@ -4221,10 +3991,7 @@ body:not(.zen-idle)::after {
   }
 
   .tebyan-service-intro,
-  .tebyan-service-card-description {
-    font-size: 0.75rem !important;
-  }
-
+  
   .tebyan-service-chip {
     padding-inline: 0.68rem !important;
     font-size: 0.69rem !important;
@@ -4438,7 +4205,7 @@ body:not(.zen-idle)::after {
 .tebyan-route-home,
 .tebyan-service-explorer,
 .tebyan-direct-answer {
-  font-family: "Alexandria", "Inter", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-synthesis-weight: none;
 }
 

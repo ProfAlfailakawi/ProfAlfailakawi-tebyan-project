@@ -43,7 +43,7 @@ export const ServiceExplorer: React.FC<Props> = ({
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<ServiceCategory | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
   const isArabic = language === "ar";
 
   const filteredServices = useMemo(() => {
@@ -89,16 +89,16 @@ export const ServiceExplorer: React.FC<Props> = ({
         <div className="tebyan-service-kicker mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/78 px-3.5 py-2 text-xs font-black text-[#6E5F8E] shadow-sm">
           <Sparkles className="h-4 w-4" />
           {isArabic
-            ? "اختر حاجتك، وتبيان يختار لك الأداة"
-            : "Choose your need; Tebyan finds the right tool"}
+            ? "المشكاة — كل أبواب تبيان في مكان واحد"
+            : "Mishkat — every Tebyan door in one place"}
         </div>
         <h1 className="tebyan-service-title text-[1.75rem] font-black tracking-tight text-[#182231] md:text-5xl">
-          {isArabic ? "ماذا تحتاج أن تفعل؟" : "What do you need to do?"}
+          {isArabic ? "تسعة أبواب، لكل حاجة باب" : "Nine doors, one for every need"}
         </h1>
         <p className="tebyan-service-intro mx-auto mt-2 max-w-2xl text-sm font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
           {isArabic
-            ? "ابدأ بالحاجة، لا باسم الخدمة. كل أدوات تبيان موجودة وتظهر لك في الوقت المناسب."
-            : "Start with the need, not the tool name. Every Tebyan capability remains available when it is useful."}
+            ? "كل قدرات تبيان اندمجت في تسعة أبواب واضحة — ادخل الباب، وبداخله أنماطه."
+            : "All of Tebyan lives behind nine clear doors — enter one, and its modes are inside."}
         </p>
       </header>
 

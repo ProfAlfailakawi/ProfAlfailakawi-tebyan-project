@@ -41,21 +41,20 @@ import {
   Brain,
   Loader2,
   WifiOff,
-  DoorOpen,
   ShieldCheck,
   ArrowLeft,
   HelpCircle,
   Grid3X3,
+  Lamp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { TebyanMark } from "./components/TebyanMark";
 import { cn } from "./lib/utils";
 import { useAuth } from "./components/AuthProvider";
-import { GamificationBadge } from "./components/GamificationBadge";
 import {
   PWAInstallPrompt,
   PWAHeaderButton,
 } from "./components/PWAInstallPrompt";
-import { SpatialGhost } from "./components/SpatialGhost";
 import { OnboardingTour } from "./components/OnboardingTour";
 import { TebyanTooltip } from "./components/TebyanTooltip";
 import { getServiceTabs } from "./constants/serviceRegistry";
@@ -206,7 +205,10 @@ type Tab =
   | "knowledgecenter"
   | "ar"
   | "ripple"
-  | "truthmanuscript";
+  | "truthmanuscript"
+  | "ask"
+  | "growth"
+  | "rukni";
 
 type Mood = "default" | "revolutionary" | "calm" | "melancholic" | "optimistic";
 
@@ -234,6 +236,10 @@ const protectedFeatures: Tab[] = [
   "knowledgecenter",
   "mylibrary",
   "truthmanuscript",
+  // New consolidated doors inherit the same protection as their contents.
+  "ask",
+  "growth",
+  "rukni",
 ];
 
 import { logEvent } from "./services/analyticsService";
@@ -243,6 +249,14 @@ const SmartGateway = React.lazy(() =>
     default: m.SmartGateway,
   })),
 );
+const AskTebyanDoor = React.lazy(
+  () => import("./components/doors/AskTebyanDoor"),
+);
+const DecisionDoor = React.lazy(
+  () => import("./components/doors/DecisionDoor"),
+);
+const GrowthDoor = React.lazy(() => import("./components/doors/GrowthDoor"));
+const RukniDoor = React.lazy(() => import("./components/doors/RukniDoor"));
 const Login = React.lazy(() => import("./components/Login"));
 const UserMenu = React.lazy(() => import("./components/UserMenu"));
 const ServiceExplorer = React.lazy(
@@ -269,22 +283,9 @@ const AdminContactTab = React.lazy(() =>
     default: m.AdminContactTab,
   })),
 );
-const VoiceCanvas = React.lazy(() =>
-  import("./components/VoiceCanvas").then((m) => ({ default: m.VoiceCanvas })),
-);
 const GlobalCommand = React.lazy(() =>
   import("./components/GlobalCommand").then((m) => ({
     default: m.GlobalCommand,
-  })),
-);
-const MessagesFloatingButton = React.lazy(() =>
-  import("./components/MessagesFloatingButton").then((m) => ({
-    default: m.MessagesFloatingButton,
-  })),
-);
-const SerendipityCompass = React.lazy(() =>
-  import("./components/SerendipityCompass").then((m) => ({
-    default: m.SerendipityCompass,
   })),
 );
 const LighthouseMode = React.lazy(() =>
@@ -300,25 +301,6 @@ const SplashScreen = ({
   onFinish: () => void;
   language: "ar" | "en";
 }) => {
-  const quotes =
-    language === "ar"
-      ? [
-          "نفتح بوابة الفهم…",
-          "نرتّب الفكرة بهدوء…",
-          "تبيان يهيّئ مساحة القرار…",
-          "كل سؤال جيد يبدأ من هدوء صغير…",
-        ]
-      : [
-          "Opening the gate of understanding…",
-          "Arranging the idea calmly…",
-          "Tebyan is preparing your decision space…",
-          "Every good question begins with a quiet moment…",
-        ];
-
-  const [randomQuote] = useState(
-    () => quotes[Math.floor(Math.random() * quotes.length)],
-  );
-
   useEffect(() => {
     const timer = setTimeout(() => {
       try {
@@ -326,7 +308,7 @@ const SplashScreen = ({
         window.dispatchEvent(new CustomEvent("tebyan_gate_to_search"));
       } catch (e) {}
       onFinish();
-    }, 550);
+    }, 1400);
     return () => clearTimeout(timer);
   }, [onFinish]);
 
@@ -335,101 +317,29 @@ const SplashScreen = ({
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
-        filter: "blur(12px)",
-        transition: { duration: 0.75, ease: "easeInOut" },
+        transition: { duration: 0.5, ease: "easeInOut" },
       }}
-      className="fixed inset-0 z-[99999] bg-[#F8F5EF] flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[99999] bg-[#F8F5EF] flex flex-col items-center justify-center"
     >
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.13, 1], opacity: [0.18, 0.3, 0.18] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[10%] right-[14%] w-[520px] h-[520px] bg-[#C9BEDF] rounded-full blur-[145px]"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.17, 1], opacity: [0.14, 0.24, 0.14] }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 0.7,
-          }}
-          className="absolute bottom-[6%] left-[10%] w-[430px] h-[430px] bg-[#B9D0E7] rounded-full blur-[135px]"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(142,122,174,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(143,169,199,0.055)_1px,transparent_1px)] bg-[size:52px_52px] [mask-image:radial-gradient(circle_at_center,#000_0%,transparent_72%)]" />
-      </div>
-
-      <div className="relative flex flex-col items-center gap-7 px-6 text-center">
-        <motion.div
-          initial={{ scale: 0.88, opacity: 0, rotate: -2 }}
-          animate={{ scale: 1, opacity: 1, rotate: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="relative h-36 w-36 md:h-44 md:w-44 flex items-center justify-center"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-full border border-dashed border-[#8E7AAE]/28"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.08, 1], opacity: [0.65, 1, 0.65] }}
-            transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute h-28 w-28 md:h-36 md:w-36 rounded-full bg-white/72 border border-white shadow-[0_28px_80px_rgba(103,88,132,0.18)]"
-          />
-          <motion.div
-            animate={{ y: [-2, 2, -2] }}
-            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
-            className="relative z-10 flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-[2rem] bg-[#FBFAF7] border border-[#E8E0F0] text-[#8E7AAE] shadow-inner"
-          >
-            <Globe className="w-10 h-10 md:w-12 md:h-12" />
-            <Sparkles className="absolute -top-1 -left-1 h-4 w-4 text-[#A68F58]" />
-          </motion.div>
-        </motion.div>
-
-        <div className="space-y-3">
-          <motion.p
-            initial={{ y: 12, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.7 }}
-            className="text-[11px] font-black tracking-[0.35em] text-[#8E7AAE]/70 uppercase"
-          >
-            {language === "ar" ? "مختبر فكر هادئ" : "Quiet thinking lab"}
-          </motion.p>
+      <div className="relative flex flex-col items-center gap-6 px-6 text-center">
+        <TebyanMark size={104} animated />
+        <div className="space-y-2">
           <motion.h1
-            initial={{ y: 18, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.35, duration: 0.75 }}
-            className="text-4xl md:text-5xl font-black text-[#182231] tracking-tighter"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="font-serif text-5xl font-bold text-[#182231] tracking-tight"
           >
             تبيان
           </motion.h1>
           <motion.p
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.65, duration: 0.75 }}
-            className="text-[#7C8796] font-black flex items-center justify-center gap-2 leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.25, duration: 0.5 }}
+            className="text-[#7C8796] font-medium text-sm"
           >
-            {randomQuote}
+            {language === "ar" ? "نورٌ لما تريد فهمه" : "Light for what you seek"}
           </motion.p>
-        </div>
-
-        <div
-          className="mt-5 flex items-center gap-2"
-          aria-label={language === "ar" ? "جاري التحميل" : "Loading"}
-        >
-          {[0, 1, 2].map((i) => (
-            <motion.span
-              key={i}
-              animate={{ opacity: [0.22, 1, 0.22], scale: [0.86, 1.08, 0.86] }}
-              transition={{
-                duration: 1.45,
-                repeat: Infinity,
-                delay: i * 0.2,
-                ease: "easeInOut",
-              }}
-              className="h-2.5 w-2.5 rounded-full bg-[#8E7AAE]/70"
-            />
-          ))}
         </div>
       </div>
     </motion.div>
@@ -539,10 +449,6 @@ const AppContent: React.FC = () => {
     typeof navigator !== "undefined" ? !navigator.onLine : false,
   );
   const [showSlowRecovery, setShowSlowRecovery] = useState(false);
-  const [doorTransition, setDoorTransition] = useState<{
-    label: string;
-    kind: string;
-  } | null>(null);
   const [showPageHelp, setShowPageHelp] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -551,10 +457,8 @@ const AppContent: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showGlobalCommand, setShowGlobalCommand] = useState(false);
-  const [showVoiceCanvas, setShowVoiceCanvas] = useState(false);
   const [initialContext, setInitialContext] = useState<string>("");
   const [showHeader, setShowHeader] = useState(true);
-  const [isMoodHudOpen, setIsMoodHudOpen] = useState(false);
   const [currentMood, setCurrentMood] = useState<Mood>("default");
   const [prevMood, setPrevMood] = useState<Mood>("default");
   const [showMoodTransition, setShowMoodTransition] = useState(false);
@@ -680,8 +584,6 @@ const AppContent: React.FC = () => {
     text: string;
     author: string;
   } | null>(null);
-  const [soulTwinMsg, setSoulTwinMsg] = useState<string | null>(null);
-  const [isAnalyzingTwin, setIsAnalyzingTwin] = useState(false);
   const lastScrollTop = useRef(0);
   const mainRef = useRef<HTMLElement>(null);
 
@@ -738,27 +640,32 @@ const AppContent: React.FC = () => {
       setSidebarOpen(false);
     }
 
-    // Check if there's a tab in the URL
-    const searchParams = new URLSearchParams(window.location.search);
-    const tabParam = searchParams.get("tab");
-    if (
-      tabParam &&
-      (tabs.some((t) => t.id === tabParam) ||
-        ["adminusers", "adminqawlfasl", "adminmessages", "loyalty"].includes(
-          tabParam,
-        ))
-    ) {
-      setActiveTab(tabParam as Tab);
+    // Real URLs for Qawl Fasl: /qawl and /qawl/<question-id> open the reference directly.
+    if (window.location.pathname.startsWith("/qawl")) {
+      const qid = decodeURIComponent(
+        window.location.pathname.split("/")[2] || "",
+      );
+      if (qid) setInitialContext(qid);
+      setActiveTab("qawlfasl");
+      return;
     }
 
-    // Digital Patina Simulation (Accelerated for demonstration)
-    const visits = parseInt(localStorage.getItem("app_visits") || "0", 10) + 1;
-    localStorage.setItem("app_visits", visits.toString());
-
-    // If visited more than 5 times (or refresh), apply patina (aging effect)
-    if (visits > 2) {
-      // just for show
-      document.body.classList.add("patina-aged");
+    // Check if there's a tab in the URL (new door ids and legacy ids both work)
+    const searchParams = new URLSearchParams(window.location.search);
+    const tabParam = searchParams.get("tab");
+    const legacyTabs = [
+      "oracle", "concepts", "quizzes", "timemachine", "council", "mindmap",
+      "analytics", "loyalty", "roadmap", "story", "mylibrary", "contact",
+      "strategicarena", "creativelab", "knowledgecenter", "ar",
+      "truthmanuscript", "adminusers", "adminqawlfasl", "adminmessages",
+    ];
+    if (
+      tabParam &&
+      (tabs.some((t) => t.id === tabParam) || legacyTabs.includes(tabParam))
+    ) {
+      const ctx = searchParams.get("q");
+      if (ctx) setInitialContext(ctx);
+      setActiveTab(tabParam as Tab);
     }
   }, []);
 
@@ -847,7 +754,6 @@ const AppContent: React.FC = () => {
       setMobileMenuOpen(false);
       setSidebarOpen(false); // Force close
       setShowGlobalCommand(false);
-      setShowVoiceCanvas(false);
       setShowPageHelp(false);
       // Dispatch event to close all other potential overlays (like Serendipity Compass)
       window.dispatchEvent(new CustomEvent("close_overlays"));
@@ -864,60 +770,6 @@ const AppContent: React.FC = () => {
         targetTab === "home" || (targetTab as string) === "dashboard"
           ? "home"
           : targetTab;
-      const doorLabels: Record<string, string> = {
-        home:
-          language === "ar"
-            ? "نعود إلى الواجهة الهادئة…"
-            : "Returning to the calm dashboard…",
-        qawlfasl:
-          language === "ar" ? "نفتح باب قول فصل…" : "Opening Qawl Fasl…",
-        decisionroom:
-          language === "ar"
-            ? "نفتح غرفة القرار…"
-            : "Opening the decision room…",
-        creativelab:
-          language === "ar"
-            ? "نفتح مفاعل الإبداع…"
-            : "Opening the idea reactor…",
-        knowledgecenter:
-          language === "ar"
-            ? "نفتح مركز المعرفة…"
-            : "Opening the knowledge center…",
-        knowledgegraph:
-          language === "ar" ? "نفتح نسيج الأفكار…" : "Opening the idea fabric…",
-        strategicarena:
-          language === "ar"
-            ? "نفتح الميدان الاستراتيجي…"
-            : "Opening the strategic arena…",
-        oracle:
-          language === "ar" ? "نفتح مجلس المستشارين…" : "Opening the council…",
-      };
-      const prefersReducedMotion =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const isCompactNavigation = ["home", "discover", "mylibrary"].includes(
-        String(actualTab),
-      );
-      const isMobileViewport =
-        typeof window !== "undefined" && window.innerWidth < 768;
-      if (
-        actualTab !== activeTab &&
-        !prefersReducedMotion &&
-        !isCompactNavigation &&
-        !isMobileViewport
-      ) {
-        setDoorTransition({
-          label:
-            doorLabels[String(actualTab)] ||
-            (language === "ar"
-              ? "نفتح الباب المناسب…"
-              : "Opening the right doorway…"),
-          kind: String(actualTab),
-        });
-        setTimeout(() => setDoorTransition(null), 260);
-      } else {
-        setDoorTransition(null);
-      }
       if (checkAuth(actualTab as Tab)) {
         setIsLoading(false);
         setError(null);
@@ -988,9 +840,9 @@ const AppContent: React.FC = () => {
     ...getServiceTabs(language),
     {
       id: "discover",
-      label: language === "ar" ? "كل الخدمات" : "All services",
-      brand: language === "ar" ? "دليل تبيان" : "Tebyan directory",
-      icon: Grid3X3,
+      label: language === "ar" ? "المشكاة" : "Mishkat",
+      brand: language === "ar" ? "كل أدوات تبيان" : "All of Tebyan",
+      icon: Lamp,
       tooltip:
         language === "ar"
           ? "استكشف جميع خدمات تبيان حسب حاجتك"
@@ -1386,26 +1238,6 @@ const AppContent: React.FC = () => {
         {isOffline && !showSplash && (
           <OfflineNotice key="offline-notice" language={language} />
         )}
-        {doorTransition && !showSplash && (
-          <motion.div
-            key="door-transition"
-            initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, scale: 1.02, filter: "blur(10px)" }}
-            transition={{ duration: 0.34, ease: "easeOut" }}
-            className="fixed inset-0 z-[120] pointer-events-none flex items-center justify-center bg-[#F8F5EF]/36 backdrop-blur-[2px]"
-          >
-            <div className="relative rounded-[34px] border border-white/75 bg-white/82 px-8 py-6 shadow-[0_30px_100px_rgba(142,122,174,0.16)] overflow-hidden">
-              <div className="absolute -top-20 -right-20 h-44 w-44 rounded-full bg-[#C9BEDF]/45 blur-[60px]" />
-              <div className="relative flex items-center gap-4 text-[#6E5F8E]">
-                <DoorOpen className="w-7 h-7" />
-                <span className="text-base md:text-lg font-black">
-                  {doorTransition.label}
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
       </AnimatePresence>
 
       {/* Background Elements (Volume & Texture) */}
@@ -1517,51 +1349,6 @@ const AppContent: React.FC = () => {
           })()}
       </AnimatePresence>
 
-      {/* Spatial Ghosting (الذاكرة المكانية الوهمية) */}
-      {false && activeTab === "discover" && (
-        <SpatialGhost
-          message={
-            language === "ar"
-              ? "في زيارتك السابقة، توقفت مطولاً عند مقال عن الوعي الاصطناعي.."
-              : "During your last visit, you lingered on an article about artificial consciousness.."
-          }
-          x="left-8"
-          y="top-1/3"
-        />
-      )}
-      {false && activeTab === "mindmap" && (
-        <SpatialGhost
-          message={
-            language === "ar"
-              ? "هناك رابط خفي لم تكتشفه بعد بين الفلسفة والتكنولوجيا.."
-              : "There is a hidden link you haven't discovered yet between philosophy and tech.."
-          }
-          x="right-10"
-          y="top-1/4"
-        />
-      )}
-      {false && activeTab === "qawlfasl" && (
-        <SpatialGhost
-          message={
-            language === "ar"
-              ? "في الشهر الماضي، سألت عن معنى 'الحقيقة المطلقة'..."
-              : "Last month, you asked for the meaning of 'absolute truth'..."
-          }
-          x="left-10"
-          y="bottom-1/3"
-        />
-      )}
-      {false && activeTab === "mylibrary" && (
-        <SpatialGhost
-          message={
-            language === "ar"
-              ? "كتاب 'تأملات' لا يزال ينتظر أن تكمله منذ أسبوعين.."
-              : "The book 'Meditations' is still waiting for you to finish it since two weeks ago.."
-          }
-          x="right-8"
-          y="top-1/2"
-        />
-      )}
 
       <AnimatePresence>
         {toast && (
@@ -1604,15 +1391,10 @@ const AppContent: React.FC = () => {
             className="flex items-center gap-3 transition-transform active:scale-95"
             aria-label={language === "ar" ? "الصفحة الرئيسية" : "Home"}
           >
-            <div className="w-10 h-10 bg-mood-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-mood-glow transition-all duration-700 tebyan-orb-mark">
-              <LivingIcon
-                icon={Globe}
-                mood={currentMood}
-                type="home"
-                className="w-5 h-5"
-              />
+            <div className="w-10 h-10 bg-white/90 border border-[#8E7AAE]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
+              <TebyanMark size={26} />
             </div>
-            <span className="font-black text-xl text-[#182231] tracking-tighter transition-colors group-hover:text-mood-primary">
+            <span className="font-serif text-2xl font-bold text-[#182231] tracking-tight transition-colors group-hover:text-mood-primary">
               تبيان
             </span>
           </button>
@@ -1631,12 +1413,12 @@ const AppContent: React.FC = () => {
               },
               {
                 id: "discover",
-                label: language === "ar" ? "كل الخدمات" : "All services",
-                icon: Grid3X3,
+                label: language === "ar" ? "المشكاة" : "Mishkat",
+                icon: Lamp,
               },
               {
-                id: "mylibrary",
-                label: language === "ar" ? "مكتبتي" : "My library",
+                id: "rukni",
+                label: language === "ar" ? "ركني" : "My corner",
                 icon: LibraryBig,
               },
             ].map((item) => {
@@ -1743,14 +1525,14 @@ const AppContent: React.FC = () => {
                     id: "discover",
                     label:
                       language === "ar"
-                        ? "استكشف حسب حاجتك"
-                        : "Explore by need",
-                    icon: Grid3X3,
+                        ? "المشكاة — كل الأدوات"
+                        : "Mishkat — all tools",
+                    icon: Lamp,
                   },
                   {
-                    id: "mylibrary",
+                    id: "rukni",
                     label:
-                      language === "ar" ? "مكتبتي ومحفوظاتي" : "My library",
+                      language === "ar" ? "ركني — مكتبتي ونقاطي" : "My corner",
                     icon: LibraryBig,
                   },
                   {
@@ -1899,7 +1681,7 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {(activeTab === "discover" || activeTab === "mylibrary") && (
+      {(activeTab === "discover" || activeTab === "mylibrary" || activeTab === "rukni") && (
         <nav
           className="tebyan-mobile-dock fixed inset-x-5 bottom-[calc(env(safe-area-inset-bottom)+8px)] z-40 grid grid-cols-3 gap-1 rounded-[20px] border border-[#8FA9C7]/18 bg-white/94 p-1 shadow-[0_12px_34px_rgba(24,34,49,0.12)] md:hidden"
           aria-label={
@@ -1914,12 +1696,12 @@ const AppContent: React.FC = () => {
             },
             {
               id: "discover",
-              label: language === "ar" ? "استكشف" : "Explore",
-              icon: Grid3X3,
+              label: language === "ar" ? "المشكاة" : "Mishkat",
+              icon: Lamp,
             },
             {
-              id: "mylibrary",
-              label: language === "ar" ? "مكتبتي" : "Library",
+              id: "rukni",
+              label: language === "ar" ? "ركني" : "My corner",
               icon: LibraryBig,
             },
           ].map((item) => {
@@ -1957,7 +1739,7 @@ const AppContent: React.FC = () => {
         ref={mainRef}
         className={cn(
           "flex-1 w-full min-h-0 pt-24 md:pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
-          activeTab === "discover" || activeTab === "mylibrary"
+          activeTab === "discover" || activeTab === "mylibrary" || activeTab === "rukni"
             ? "pb-20"
             : "pb-3",
           `tebyan-route-${activeTab}`,
@@ -1988,13 +1770,13 @@ const AppContent: React.FC = () => {
           <motion.div
             key={activeTab}
             initial={
-              ["home", "discover", "mylibrary"].includes(activeTab)
+              ["home", "discover", "mylibrary", "rukni"].includes(activeTab)
                 ? false
                 : { opacity: 0, y: 5 }
             }
             animate={{ opacity: 1, y: 0 }}
             transition={{
-              duration: ["home", "discover", "mylibrary"].includes(activeTab)
+              duration: ["home", "discover", "mylibrary", "rukni"].includes(activeTab)
                 ? 0.01
                 : 0.14,
               ease: "easeOut",
@@ -2022,6 +1804,29 @@ const AppContent: React.FC = () => {
                       <ServiceExplorer
                         language={language}
                         handleTabChange={handleTabChange}
+                      />
+                    );
+                  case "ask":
+                    return (
+                      <AskTebyanDoor
+                        handleTabChange={handleTabChange}
+                        language={language}
+                        initialValue={initialContext}
+                      />
+                    );
+                  case "growth":
+                    return (
+                      <GrowthDoor
+                        handleTabChange={handleTabChange}
+                        language={language}
+                        initialValue={initialContext}
+                      />
+                    );
+                  case "rukni":
+                    return (
+                      <RukniDoor
+                        handleTabChange={handleTabChange}
+                        language={language}
                       />
                     );
                   case "strategicarena":
@@ -2190,7 +1995,7 @@ const AppContent: React.FC = () => {
                     );
                   case "decisionroom":
                     return (
-                      <DecisionExecutiveTab
+                      <DecisionDoor
                         handleTabChange={handleTabChange}
                         language={language}
                         initialValue={initialContext}
@@ -2255,201 +2060,10 @@ const AppContent: React.FC = () => {
             <p className="text-[13px] font-medium">
               نظامك لفهم العالم &copy; {new Date().getFullYear()}
             </p>
-            <div className="mt-8 flex flex-col items-center gap-6">
-              <div className="flex flex-col items-center gap-4 py-8 border-t border-zinc-100/50 w-full max-w-xs transition-all duration-700">
-                <div className="flex flex-col items-center gap-1 mb-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-mood-primary/70 animate-pulse">
-                    {language === "ar" ? "بوصلة الوجدان" : "MOOD COMPASS"}
-                  </p>
-                </div>
-                <SmartIconWrapper
-                  id="mood_compass"
-                  guidanceText="بوصلة الوجدان: تغير نغمة الألوان والأجواء الفكرية في تبيان."
-                  side="top"
-                  lang={language === "en" ? "en" : "ar"}
-                >
-                  <button
-                    onClick={() => setIsMoodHudOpen(!isMoodHudOpen)}
-                    className={cn(
-                      "tour-mood-compass flex items-center gap-3 px-6 py-3 rounded-full transition-all duration-500 group relative overflow-hidden active:scale-95",
-                      isMoodHudOpen
-                        ? "bg-mood-primary text-white shadow-[0_0_30px_rgba(var(--mood-primary),0.3)]"
-                        : "bg-white border border-zinc-100 text-zinc-400 hover:text-mood-primary hover:border-mood-primary/30 shadow-sm",
-                    )}
-                  >
-                    <LivingIcon
-                      icon={Compass}
-                      mood={currentMood}
-                      type="settings"
-                      className={cn(
-                        "w-4 h-4 transition-all duration-1000",
-                        isMoodHudOpen
-                          ? "rotate-[360deg] scale-110"
-                          : "rotate-0 transform group-hover:rotate-45",
-                      )}
-                    />
-                    <span className="text-[10px] font-black uppercase tracking-widest">
-                      {language === "ar" ? "بوصلة الوجدان" : "Mood Compass"}
-                    </span>
-                  </button>
-                </SmartIconWrapper>
-
-                <AnimatePresence>
-                  {isMoodHudOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                      className="flex items-center gap-2 p-2 bg-white/95 backdrop-blur-xl border border-zinc-200/60 rounded-[24px] shadow-2xl mt-4"
-                    >
-                      <button
-                        onClick={() => {
-                          setCurrentMood("revolutionary");
-                          setIsMoodHudOpen(false);
-                        }}
-                        className={cn(
-                          "p-3 rounded-xl transition-all",
-                          currentMood === "revolutionary"
-                            ? "bg-mood-primary text-white shadow-lg shadow-mood-glow"
-                            : "text-zinc-400 hover:bg-zinc-50",
-                        )}
-                        title={language === "ar" ? "ثوري" : "Revolutionary"}
-                      >
-                        <LivingIcon
-                          icon={Zap}
-                          mood="revolutionary"
-                          className="w-5 h-5"
-                        />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setCurrentMood("calm");
-                          setIsMoodHudOpen(false);
-                        }}
-                        className={cn(
-                          "p-3 rounded-xl transition-all",
-                          currentMood === "calm"
-                            ? "bg-mood-primary text-white shadow-lg shadow-mood-glow"
-                            : "text-zinc-400 hover:bg-zinc-50",
-                        )}
-                        title={language === "ar" ? "هادئ" : "Calm"}
-                      >
-                        <LivingIcon
-                          icon={Moon}
-                          mood="calm"
-                          className="w-5 h-5"
-                        />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setCurrentMood("melancholic");
-                          setIsMoodHudOpen(false);
-                        }}
-                        className={cn(
-                          "p-3 rounded-xl transition-all",
-                          currentMood === "melancholic"
-                            ? "bg-mood-primary text-white shadow-lg shadow-mood-glow"
-                            : "text-zinc-400 hover:bg-zinc-50",
-                        )}
-                        title={language === "ar" ? "عميق" : "Melancholic"}
-                      >
-                        <LivingIcon
-                          icon={Heart}
-                          mood="melancholic"
-                          className="w-5 h-5"
-                        />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setCurrentMood("optimistic");
-                          setIsMoodHudOpen(false);
-                        }}
-                        className={cn(
-                          "p-3 rounded-xl transition-all",
-                          currentMood === "optimistic"
-                            ? "bg-mood-primary text-white shadow-lg shadow-mood-glow"
-                            : "text-zinc-400 hover:bg-zinc-50",
-                        )}
-                        title={language === "ar" ? "متفائل" : "Optimistic"}
-                      >
-                        <LivingIcon
-                          icon={Sun}
-                          mood="optimistic"
-                          className="w-5 h-5"
-                        />
-                      </button>
-                      <div className="w-px h-8 bg-zinc-100 mx-1" />
-                      <button
-                        onClick={async () => {
-                          if (!user) {
-                            showToast(
-                              language === "ar"
-                                ? "سجل دخولك لتجد توأمك الفكري"
-                                : "Sign in to find your intellectual twin",
-                              "info",
-                            );
-                            setShowLogin(true);
-                            return;
-                          }
-                          setIsAnalyzingTwin(true);
-                          try {
-                            const [{ db }, firestore, soul] = await Promise.all(
-                              [
-                                import("./lib/firebase"),
-                                import("firebase/firestore"),
-                                import("./services/geminiService"),
-                              ],
-                            );
-                            const q = firestore.query(
-                              firestore.collection(db, "ripples"),
-                              firestore.where("authorId", "==", user.uid),
-                              firestore.limit(5),
-                            );
-                            const snap = await firestore.getDocs(q);
-                            const posts = snap.docs.map((d) => d.data().text);
-                            if (posts.length < 2) {
-                              showToast(
-                                language === "ar"
-                                  ? "انشر بذوراً أكثر لنحلل نمطك الفكري!"
-                                  : "Post more seeds to analyze your pattern!",
-                                "info",
-                              );
-                              return;
-                            }
-                            const res = await soul.findSoulMatch(
-                              posts,
-                              language,
-                            );
-                            if (res) setSoulTwinMsg(res);
-                          } finally {
-                            setIsAnalyzingTwin(false);
-                          }
-                        }}
-                        className={cn(
-                          "p-3 rounded-xl transition-all relative group",
-                          isAnalyzingTwin
-                            ? "bg-zinc-50"
-                            : "bg-zinc-900 text-white",
-                        )}
-                      >
-                        {isAnalyzingTwin ? (
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                          <>
-                            <Brain className="w-5 h-5 relative z-10" />
-                            <div className="absolute inset-0 bg-mood-primary opacity-0 group-hover:opacity-20 transition-opacity rounded-xl" />
-                          </>
-                        )}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-              <div className="mt-12 flex flex-col items-center gap-1 opacity-40 scale-75 pt-8 border-t border-zinc-100/30 w-full max-w-[200px]">
-                <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
-                  Version 2.6.0.Release
-                </span>
-              </div>
+            <div className="mt-6 opacity-40">
+              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
+                Version 3.0.0
+              </span>
             </div>
           </footer>
         </div>
@@ -2499,21 +2113,7 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {enableNonCriticalUi && activeTab === "discover" && (
-        <React.Suspense fallback={null}>
-          <MessagesFloatingButton />
-        </React.Suspense>
-      )}
 
-      {showVoiceCanvas && (
-        <React.Suspense fallback={null}>
-          <VoiceCanvas
-            isOpen={showVoiceCanvas}
-            onClose={() => setShowVoiceCanvas(false)}
-            language={language}
-          />
-        </React.Suspense>
-      )}
 
       {showGlobalCommand && (
         <React.Suspense fallback={null}>
@@ -2527,92 +2127,7 @@ const AppContent: React.FC = () => {
         </React.Suspense>
       )}
 
-      {false && (activeTab === "home" || activeTab === "discover") && (
-        <SerendipityCompass
-          language={language}
-          contextTopic={initialContext || activeTab}
-          handleTabChange={handleTabChange}
-        />
-      )}
 
-      <AnimatePresence>
-        {isAnalyzingTwin && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm bg-zinc-950 border border-zinc-800 rounded-[40px] p-10 flex flex-col items-center justify-center relative overflow-hidden shadow-2xl"
-            >
-              {/* Artistic Particle/Wave Animation */}
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-emerald-500/10 animate-pulse pointer-events-none" />
-              <div className="w-24 h-24 relative mb-8">
-                <motion.div
-                  initial={{ rotate: 0 }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 border-[2px] border-dashed border-zinc-700 rounded-full"
-                />
-                <motion.div
-                  initial={{ rotate: 360 }}
-                  animate={{ rotate: 0 }}
-                  transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  className="absolute inset-2 border-[1px] border-zinc-600 rounded-full opacity-60"
-                />
-                <div className="absolute inset-4 bg-zinc-900 rounded-full flex items-center justify-center border border-zinc-800 shadow-inner">
-                  <Brain className="w-8 h-8 text-indigo-400 animate-pulse" />
-                </div>
-              </div>
-              <h4 className="font-serif text-white text-xl mb-3">
-                {language === "ar"
-                  ? "نقرأ نسيجك الفكري..."
-                  : "Reading your thought fabric..."}
-              </h4>
-              <p className="text-zinc-500 text-sm text-center font-medium leading-relaxed">
-                {language === "ar"
-                  ? "نقارن نبضاتك مع آلاف العقول بحثاً عن توأم روحك"
-                  : "Comparing your pulses with thousands of minds..."}
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-        {soulTwinMsg && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed bottom-32 z-50 left-8 right-8 md:left-auto md:right-8 md:w-[400px] p-8 bg-zinc-950 border border-zinc-800 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.4)] overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-emerald-500" />
-            <button
-              onClick={() => setSoulTwinMsg(null)}
-              className="absolute top-6 right-6 p-2 text-zinc-500 hover:text-white transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-[18px] flex items-center justify-center text-indigo-400 shadow-inner">
-                <Sparkles className="w-6 h-6" strokeWidth={1.5} />
-              </div>
-              <h4 className="font-serif text-white text-lg">
-                {language === "ar" ? "توأم الروح الفكري" : "Intellectual Twin"}
-              </h4>
-            </div>
-            <p className="text-zinc-400 font-serif leading-relaxed text-[15px]">
-              {soulTwinMsg}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <PWAInstallPrompt />
       <OnboardingTour language={language} />

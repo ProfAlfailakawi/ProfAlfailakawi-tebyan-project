@@ -1,15 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  ArrowLeft,
-  BookOpen,
-  Compass,
-  Network,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { cn } from "../lib/utils";
+
+/**
+ * دليل البداية — «ثلاث ومضات»
+ * علامة تبيان تُبنى أمام الزائر خطوة خطوة:
+ * القوس (مكان واحد لكل شيء) ← الألِف (الجواب يصعد أولاً) ← النور (يبقى محفوظاً).
+ * عند آخر خطوة تكتمل العلامة — واكتمالها هو نهاية الجولة.
+ */
+const ProgressiveMark = ({ stage }: { stage: number }) => {
+  const stroke = "#8E7AAE";
+  const gold = "#A68F58";
+  const drawn = { pathLength: 1, opacity: 1 };
+  const hidden = { pathLength: 0, opacity: 0 };
+  return (
+    <svg width={120} height={120} viewBox="0 0 96 96" fill="none" aria-hidden>
+      <motion.path
+        d="M24 78 V46 C24 30 34 20 48 14 C62 20 72 30 72 46 V78"
+        stroke={stroke}
+        strokeWidth="4.5"
+        strokeLinecap="round"
+        initial={hidden}
+        animate={stage >= 0 ? drawn : hidden}
+        transition={{ duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
+      />
+      <motion.path
+        d="M18 78 H78"
+        stroke={stroke}
+        strokeWidth="4.5"
+        strokeLinecap="round"
+        initial={hidden}
+        animate={stage >= 0 ? drawn : hidden}
+        transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
+      />
+      <motion.path
+        d="M48 66 V40"
+        stroke={gold}
+        strokeWidth="4"
+        strokeLinecap="round"
+        initial={hidden}
+        animate={stage >= 1 ? drawn : hidden}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      />
+      <motion.circle
+        cx="48"
+        cy="31"
+        r="5"
+        fill={gold}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={stage >= 2 ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+      />
+    </svg>
+  );
+};
 
 export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
   const { user } = useAuth();
@@ -47,9 +93,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
   useEffect(() => {
     if (!isOpen) return;
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeTour();
-      }
+      if (event.key === "Escape") closeTour();
     };
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
@@ -59,53 +103,46 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
     language === "ar"
       ? [
           {
-            icon: BookOpen,
-            eyebrow: "البداية",
-            title: "اسأل تبيان كما تسأل إنساناً حكيماً",
-            body: "اكتب موقفك أو فكرتك بكلماتك الطبيعية، وتبيان يحوّلها إلى مسار فهم واضح بدل أن يتركك أمام أدوات كثيرة.",
-            action: "اكتب سؤالك الأول",
+            title: "مكانٌ واحد لكل ما يشغل بالك",
+            body: "اكتب موقفك بكلماتك — سؤال، حيرة، هدف — وتبيان يفتح لك الباب الأنسب. لا تحتاج أن تعرف أسماء الأدوات؛ كلماتك تكفي.",
+            hint: "القوس: مشكاة تتسع لكل أسئلتك",
+            action: "التالي",
           },
           {
-            icon: Compass,
-            eyebrow: "النية",
-            title: "خذ الجواب أولاً ثم تعمّق",
-            body: "يعطيك تبيان خلاصة واضحة وخطوة عملية، وبعدها تختار التبسيط أو الخطة أو التحليل فقط عندما تحتاجها.",
-            action: "تابع الرحلة",
+            title: "الجواب يصعد إليك أولاً",
+            body: "قبل أي تفاصيل، تصلك خلاصة واضحة وخطوة عملية واحدة. وبعدها — إن أردت — تتعمق في التحليل أو الخطة على راحتك.",
+            hint: "الألِف: خيط الجواب الصاعد",
+            action: "التالي",
           },
           {
-            icon: Network,
-            eyebrow: "الذاكرة",
-            title: "كل فكرة تتحول إلى معرفة محفوظة",
-            body: "احفظ الأفكار، اربطها، وعد إليها من نسيج الأفكار وحسابك. تبيان ليس إجابة عابرة؛ إنه ذاكرة تفكير.",
+            title: "وكل فهمٍ يبقى نوراً محفوظاً",
+            body: "ما تفهمه لا يضيع: يُحفظ في مكتبتك، يترابط مع أفكارك، وتعود إليه متى شئت. تبيان ذاكرة تفكير، لا إجابة عابرة.",
+            hint: "النور: اكتملت العلامة — وابتدأت رحلتك",
             action: "ابدأ الآن",
           },
         ]
       : [
           {
-            icon: BookOpen,
-            eyebrow: "Start",
-            title: "Ask Tebyan like you would ask a wise person",
-            body: "Write your situation naturally. Tebyan turns it into a clear thinking path instead of overwhelming you with tools.",
-            action: "Write your first question",
+            title: "One place for whatever is on your mind",
+            body: "Write your situation in your own words — a question, a dilemma, a goal — and Tebyan opens the right door. You never need to know tool names.",
+            hint: "The arch: a niche wide enough for every question",
+            action: "Next",
           },
           {
-            icon: Compass,
-            eyebrow: "Intent",
-            title: "Get the answer first, then go deeper",
-            body: "Tebyan gives you a clear answer and one practical step, then offers simplification, planning, or deeper analysis only when needed.",
-            action: "Continue",
+            title: "The answer rises to you first",
+            body: "Before any detail, you get a clear takeaway and one practical step. Then — only if you want — you go deeper.",
+            hint: "The alif: the rising thread of the answer",
+            action: "Next",
           },
           {
-            icon: Network,
-            eyebrow: "Memory",
-            title: "Every idea becomes saved knowledge",
-            body: "Save, connect, and revisit your ideas through Thought Weave and your account. Tebyan is a thinking memory.",
+            title: "And every understanding stays as light",
+            body: "What you understand is never lost: it is saved to your library, linked to your ideas, waiting for your return.",
+            hint: "The light: the mark is complete — and your journey begins",
             action: "Start now",
           },
         ];
 
   const current = steps[step];
-  const Icon = current.icon;
 
   return (
     <AnimatePresence>
@@ -114,78 +151,56 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100000] flex items-end md:items-center justify-center bg-[#F7F3EE]/70 backdrop-blur-2xl p-4"
+          className="fixed inset-0 z-[100000] flex items-end md:items-center justify-center bg-[#F7F3EE]/75 backdrop-blur-xl p-4"
           dir={language === "ar" ? "rtl" : "ltr"}
         >
           <motion.div
-            initial={{ y: 28, scale: 0.98, opacity: 0 }}
-            animate={{ y: 0, scale: 1, opacity: 1 }}
-            exit={{ y: 28, scale: 0.98, opacity: 0 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
-            className="relative w-full max-w-xl overflow-hidden rounded-[36px] border border-white/70 bg-white/85 shadow-[0_30px_90px_rgba(103,88,132,0.18)]"
+            initial={{ y: 24, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 24, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="relative w-full max-w-lg overflow-hidden rounded-[32px] border border-[#8E7AAE]/12 bg-white shadow-[0_30px_90px_rgba(103,88,132,0.16)]"
           >
-            <div className="pointer-events-none absolute -top-28 -left-20 h-64 w-64 rounded-full bg-[#C9BEDF]/35 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-24 -right-16 h-56 w-56 rounded-full bg-[#B9D0E7]/35 blur-3xl" />
-
             <button
               type="button"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                closeTour();
-              }}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                closeTour();
-              }}
-              className="absolute left-5 top-5 z-[60] rounded-full bg-white/80 p-2 text-slate-400 shadow-sm transition hover:bg-white hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#8E7AAE]/30"
+              onClick={closeTour}
+              className="absolute left-5 top-5 z-10 rounded-full bg-[#F7F3EE] p-2 text-slate-400 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#8E7AAE]/30"
               aria-label={language === "ar" ? "إغلاق الدليل" : "Close guide"}
             >
               <X className="h-4 w-4" />
             </button>
 
-            <div className="relative z-10 p-7 md:p-9 text-right">
-              <div className="mb-8 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
-                  {steps.map((_, i) => (
-                    <span
-                      key={i}
-                      className={cn(
-                        "h-2.5 rounded-full transition-all duration-500",
-                        i === step ? "w-8 bg-[#8E7AAE]" : "w-2.5 bg-slate-200",
-                      )}
-                    />
-                  ))}
-                </div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/15 bg-[#8E7AAE]/8 px-3 py-1.5 text-xs font-black text-[#7D689E]">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  {language === "ar" ? "دليل البداية" : "Start guide"}
-                </div>
+            <div className="relative z-[5] px-7 pt-10 pb-7 md:px-10 text-center">
+              <div className="mb-2 flex justify-center">
+                <ProgressiveMark stage={step} />
               </div>
+              <p className="mb-6 text-[11px] font-bold tracking-wide text-[#A68F58]">
+                {current.hint}
+              </p>
 
-              <div className="mb-7 flex items-center gap-4">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[24px] border border-[#8E7AAE]/15 bg-[#F3EEF8] text-[#8E7AAE] shadow-inner">
-                  <Icon className="h-7 w-7" />
-                </div>
-                <div>
-                  <p className="mb-1 text-xs font-black tracking-[0.22em] text-[#8E7AAE]/70">
-                    {current.eyebrow}
-                  </p>
-                  <h2 className="text-2xl md:text-3xl font-black leading-tight text-slate-900">
-                    {current.title}
-                  </h2>
-                </div>
-              </div>
-
-              <p className="text-base md:text-lg font-bold leading-8 text-slate-600">
+              <h2 className="font-serif mb-3 text-2xl md:text-[1.7rem] font-bold leading-snug text-slate-900">
+                {current.title}
+              </h2>
+              <p className="mx-auto max-w-md text-[15px] font-medium leading-8 text-slate-500">
                 {current.body}
               </p>
 
-              <div className="mt-9 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="mt-8 flex items-center justify-center gap-2">
+                {steps.map((_, i) => (
+                  <span
+                    key={i}
+                    className={cn(
+                      "h-2 rounded-full transition-all duration-500",
+                      i === step ? "w-7 bg-[#8E7AAE]" : "w-2 bg-slate-200",
+                    )}
+                  />
+                ))}
+              </div>
+
+              <div className="mt-7 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-center gap-3">
                 <button
                   onClick={closeTour}
-                  className="rounded-2xl px-5 py-3 text-sm font-black text-slate-400 transition hover:bg-slate-50 hover:text-slate-700"
+                  className="rounded-2xl px-5 py-3 text-sm font-bold text-slate-400 transition hover:bg-slate-50 hover:text-slate-700"
                 >
                   {language === "ar" ? "تخطي" : "Skip"}
                 </button>
@@ -193,9 +208,9 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
                   onClick={() =>
                     step < steps.length - 1 ? setStep(step + 1) : closeTour()
                   }
-                  className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#8E7AAE] px-6 py-3.5 text-sm font-black text-white shadow-[0_14px_30px_rgba(142,122,174,0.25)] transition hover:bg-[#806D9F] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#8E7AAE] px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(142,122,174,0.25)] transition hover:bg-[#806D9F] active:scale-[0.98]"
                 >
-                  {step < steps.length - 1 ? current.action : current.action}
+                  {current.action}
                   <ArrowLeft
                     className={cn("h-4 w-4", language !== "ar" && "rotate-180")}
                   />
