@@ -1,3 +1,22 @@
+// ⚠️ OBSOLETE DRAFT — DO NOT DEPLOY THIS FILE. ⚠️
+//
+// Its only real contribution — the role-escalation guard on /users/{userId} —
+// now lives in the published `firestore.rules`, which is the file firebase.json
+// actually deploys.
+//
+// Deploying this draft would take the live site down: it declares a default-deny
+// and then defines rules for /users only, so every other collection the app
+// depends on (ripples, daily_prompts, qawl_fasl_questions, system_settings,
+// system_config, search_logs, ai_logs, analytics, admins) would be denied.
+// It would also block legitimate writes the app makes today:
+//   - `incoming().role == 'user'` on create forbids the owner's own admin
+//     profile sync in src/components/AuthProvider.tsx;
+//   - `incoming().email == request.auth.token.email` forbids any account
+//     without an e-mail claim;
+//   - `allow list: if false` breaks the admin user list.
+//
+// Kept only as a historical record of the fix. See SECURITY-TODO.md §2.
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {

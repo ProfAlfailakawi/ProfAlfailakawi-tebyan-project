@@ -123,9 +123,18 @@ export default function AdminUsersDashboard() {
                   source: 'manual-repair'
                 });
                 
-                const userRef = doc(db, 'users', user!.uid);
-                await updateDoc(userRef, { role: 'admin' });
-                
+                // The /admins document above is what actually grants access in
+                // firestore.rules. Mirroring role:'admin' onto the profile is a
+                // convenience only, and the role-escalation guard in the rules
+                // legitimately rejects it for anyone who is not already an admin —
+                // so a failure here must not be reported as a failed repair.
+                try {
+                  const userRef = doc(db, 'users', user!.uid);
+                  await updateDoc(userRef, { role: 'admin' });
+                } catch (roleError) {
+                  console.warn('Profile role mirror skipped (blocked by security rules):', roleError);
+                }
+
                 alert('تم تحديث الصلاحيات بنجاح. يرجى تحديث الصفحة.');
                 window.location.reload();
               } catch (e: any) {

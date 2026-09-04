@@ -13,6 +13,41 @@ dotenv.config({ override: true });
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ---------------------------------------------------------------------------
+// CORS allowlist (mirrors functions/index.js)
+// ---------------------------------------------------------------------------
+// The /api/ai/* routes spend the owner's Gemini key, so they must not be
+// callable from arbitrary third-party pages. Override with a comma-separated
+// TEBYAN_ALLOWED_ORIGINS; otherwise the project's own domains are used.
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+const DEFAULT_ALLOWED_ORIGINS = [
+    "https://tebyan.dr-alfailakawi.com",
+    "https://tebyan-clean-2026.web.app",
+    "https://tebyan-clean-2026.firebaseapp.com",
+];
+const LOCAL_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+const stripTrailingSlash = (value: unknown) => String(value ?? "").trim().replace(/\/+$/, "");
+
+const allowedOrigins = (): string[] => {
+    const configured = String(process.env.TEBYAN_ALLOWED_ORIGINS || "")
+        .split(",")
+        .map(stripTrailingSlash)
+        .filter(Boolean);
+    return configured.length > 0 ? configured : DEFAULT_ALLOWED_ORIGINS;
+};
+
+function isOriginAllowed(origin?: string): boolean {
+    // No Origin header: same-origin browser traffic, curl, uptime probes. CORS
+    // is not the control for those, so refusing here would only break
+    // legitimate same-origin requests without stopping any attacker.
+    if (!origin) return true;
+    const normalized = stripTrailingSlash(origin);
+    if (allowedOrigins().includes(normalized)) return true;
+    return !IS_PRODUCTION && LOCAL_ORIGIN_PATTERN.test(normalized);
+}
+
 // Initialize Gemini API
 const getGenAI = () => {
     let apiKey = (process.env.Nee || process.env.GEMINI_API_KEY || "").trim();
@@ -743,11 +778,14 @@ async function startServer() {
 
     app.set('trust proxy', 1);
     
-    // إعدادات CORS للسماح للواجهة الأمامية بالاتصال بالخادم
+    // إعدادات CORS: مقصورة على نطاقات المشروع (وlocalhost في التطوير فقط).
+    // Returning `false` omits the CORS headers so the browser blocks the
+    // response; throwing would surface a confusing 500 instead.
     app.use(cors({
-        origin: '*', // يمكنك تحديد الدومين الخاص بك هنا بدل * لزيادة الأمان مثل ['https://yourfrontend.com']
+        origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
         methods: ['GET', 'POST', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization']
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Firebase-AppCheck'],
+        maxAge: 3600
     }));
     
     app.use(express.json());
@@ -775,15 +813,22 @@ async function startServer() {
         });
     });
 
-    // AI Rate Limiter (Increased substantially to prevent blocking)
+    // AI Rate Limiter. Deliberately generous so real users are never blocked;
+    // tighten with TEBYAN_AI_RATE_MAX / TEBYAN_AI_RATE_WINDOW_MS if the Gemini
+    // bill shows abuse.
+    const toPositiveInt = (value: unknown, fallback: number) => {
+        const parsed = Number.parseInt(String(value ?? ""), 10);
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+    };
     const aiRateLimit = rateLimit({
-        windowMs: 15 * 60 * 1000,
-        max: 2000, // Increased from 50 to 2000
+        windowMs: toPositiveInt(process.env.TEBYAN_AI_RATE_WINDOW_MS, 15 * 60 * 1000),
+        max: toPositiveInt(process.env.TEBYAN_AI_RATE_MAX, 2000),
         message: { error: "Too many requests, please try again later." }
     });
 
-    // AI Proxy Route
-    app.post("/api/ai/audio", async (req, res) => {
+    // AI Proxy Route — the audio route hits the same paid Gemini key as
+    // /api/ai/generate, so it gets the same per-IP budget.
+    app.post("/api/ai/audio", aiRateLimit, async (req, res) => {
         try {
             const audio = await generateTtsAudio(req.body || {});
             return res.json(audio);
