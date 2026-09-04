@@ -67,7 +67,7 @@ export function MessagesFloatingButton() {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-[90] w-[340px] bg-white rounded-[32px] shadow-2xl border border-zinc-200 overflow-hidden flex flex-col"
+            className="fixed bottom-24 right-6 z-[90] w-[min(340px,calc(100vw-2rem))] max-h-[min(600px,calc(100dvh-8rem))] bg-white rounded-[32px] shadow-2xl border border-zinc-200 overflow-y-auto overflow-x-hidden flex flex-col"
           >
             <div className="p-5 border-b border-zinc-100 flex justify-between items-center bg-zinc-50/50">
               <h3 className="font-bold text-lg text-slate-900">أرسل لي رسالة</h3>

@@ -51,8 +51,8 @@ export const CouponsManager = ({ language }: { language: string }) => {
   if (loading) return <div className="p-20 text-center text-zinc-400">جاري التحميل...</div>;
 
   return (
-    <div className="w-full flex gap-8">
-      <div className="flex-1">
+    <div className="w-full flex flex-col lg:flex-row gap-8">
+      <div className="flex-1 min-w-0">
         <h3 className="text-xl font-bold mb-4">{language === 'ar' ? 'الكوبونات النشطة' : 'Active Coupons'}</h3>
         <div className="space-y-4">
           <AnimatePresence>
@@ -91,7 +91,7 @@ export const CouponsManager = ({ language }: { language: string }) => {
         </div>
       </div>
 
-      <div className="w-[350px]">
+      <div className="w-full lg:w-[350px] shrink-0">
         <div className="bg-white p-6 rounded-3xl border border-zinc-200 shadow-sm sticky top-6">
           <h3 className="font-bold text-lg mb-4">{language === 'ar' ? 'إنشاء كوبون جديد' : 'Create New Coupon'}</h3>
           <form onSubmit={handleCreateCoupon} className="space-y-4">

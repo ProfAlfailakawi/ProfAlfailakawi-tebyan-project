@@ -1087,7 +1087,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="space-y-8 min-w-[320px]"
+                                className="space-y-8 min-w-0 w-full"
                             >
                                 {ripples.map((node) => (
                                     <RippleNodeComponent 
