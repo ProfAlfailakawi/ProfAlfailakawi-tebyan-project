@@ -27,6 +27,7 @@ import {
   Eye,
   CheckCircle2,
   LayoutGrid,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { logEvent } from "../services/analyticsService";
@@ -2871,6 +2872,16 @@ export const SmartGateway: React.FC<
     return decorateJourneyDoors([], tabs, profile.id, language).slice(0, 3);
   }, [deferredSearchValue, hasSearched, tabs, language]);
 
+  // بطاقة "اقتراح بسيط": لا تظهر إلا بعد استقرار الصياغة، وبعد انتهاء قائمة
+  // "يمكن أن تقصد" — حتى لا تتكدّس ثلاث نصائح فوق بعضها في نفس اللحظة.
+  const showClarityCard =
+    !hasSearched &&
+    !isThinking &&
+    inputSettled &&
+    liveQuestionOptions.length === 0 &&
+    !!questionClarity &&
+    questionClarity.score < 60;
+
   // Split the journey into progressive doors: first door, then deeper different doors.
   const { primarySuggestion, secondarySuggestions, alternativeSuggestions } =
     useMemo(() => {
@@ -3568,6 +3579,7 @@ export const SmartGateway: React.FC<
               {!hasSearched &&
                 !isThinking &&
                 inputSettled &&
+                liveQuestionOptions.length === 0 &&
                 instantSearch.results.length > 0 && (
                   <details
                     className="mt-4 w-full max-w-3xl mx-auto rounded-2xl border border-[#8FA9C7]/14 bg-white/70 px-4 py-3 text-right shadow-sm"
@@ -3593,9 +3605,12 @@ export const SmartGateway: React.FC<
                   </details>
                 )}
 
+              {/* زر مساعد الصياغة يظهر منفرداً فقط حين لا توجد بطاقة "اقتراح بسيط"،
+                  لأن البطاقة تحمل الزر بداخلها ولا داعي لتكرار نفس الدعوة مرتين. */}
               {!hasSearched &&
                 !isThinking &&
                 inputSettled &&
+                !showClarityCard &&
                 searchValue.trim().length >= 8 && (
                   <div
                     className="mt-3 w-full max-w-3xl mx-auto text-right"
@@ -3646,8 +3661,11 @@ export const SmartGateway: React.FC<
                   </div>
                 )}
 
+              {/* الأبواب تنتظر أن تستقر الصياغة: لا تُعرض مع قائمة "يمكن أن تقصد". */}
               {!hasSearched &&
                 !isThinking &&
+                inputSettled &&
+                liveQuestionOptions.length === 0 &&
                 liveTypingDoors.length > 0 && (
                   <div className="mt-4 w-full max-w-3xl mx-auto">
                     <p className="mb-2 text-center text-[11px] font-black uppercase tracking-widest text-[#8E7AAE]/80">
@@ -3680,25 +3698,37 @@ export const SmartGateway: React.FC<
                   </div>
                 )}
 
-              {questionClarity &&
-                !hasSearched &&
-                !isThinking &&
-                inputSettled &&
-                questionClarity.score < 60 && (
-                  <div
-                    className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#D8C58A]/22 bg-[#FFFDF4]/78 px-4 py-3 tebyan-focus-keep text-right"
-                    dir={language === "ar" ? "rtl" : "ltr"}
-                  >
-                    <p className="text-xs font-black text-[#9C7A28]">
-                      {language === "ar"
-                        ? "اقتراح بسيط ليكون الجواب أدق"
-                        : "A small suggestion for a more precise answer"}
-                    </p>
-                    <p className="mt-1 text-sm font-bold leading-relaxed text-[#64788D]">
-                      {questionClarity.hint}
-                    </p>
-                  </div>
-                )}
+              {showClarityCard && questionClarity && (
+                <div
+                  className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#D8C58A]/22 bg-[#FFFDF4]/78 px-4 py-3 tebyan-focus-keep text-right"
+                  dir={language === "ar" ? "rtl" : "ltr"}
+                >
+                  <p className="text-xs font-black text-[#9C7A28]">
+                    {language === "ar"
+                      ? "اقتراح بسيط ليكون الجواب أدق"
+                      : "A small suggestion for a more precise answer"}
+                  </p>
+                  <p className="mt-1 text-sm font-bold leading-relaxed text-[#64788D]">
+                    {questionClarity.hint}
+                  </p>
+                  {searchValue.trim().length >= 8 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowQuestionHelper((value) => !value)}
+                      className="mt-2 inline-flex min-h-9 items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/80 px-3.5 py-1.5 text-[11px] font-black text-[#6E5F8E] transition-all hover:bg-[#F7F3FA] active:scale-[0.98]"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      {showQuestionHelper
+                        ? language === "ar"
+                          ? "إخفاء مساعد الصياغة"
+                          : "Hide question helper"
+                        : language === "ar"
+                          ? "ساعدني أصيغ السؤال"
+                          : "Help me phrase the question"}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             <AnimatePresence>
@@ -4051,14 +4081,16 @@ export const SmartGateway: React.FC<
             </AnimatePresence>
           </form>
 
-          {/* Simple entry layer: only inspiration toggle stays on demand */}
-          {!hasSearched && !isThinking && (
+          {/* طبقة البداية: أمثلة ومساحة استكشاف — تختفي فور بدء الكتابة،
+              لأن الاقتراحات الحية أعلى الصفحة تغني عنها ولا تكررها. */}
+          {!hasSearched && !isThinking && searchValue.trim().length === 0 && (
             <div
               className="mt-4 md:mt-6 w-full max-w-3xl mx-auto flex flex-col items-center gap-3 md:gap-4"
               dir={language === "ar" ? "rtl" : "ltr"}
             >
               <div className="w-full space-y-3 text-center">
-                {(() => {
+                {/* عند وجود شريط «نكمل؟» يصبح المثال دعوة ثانية منافسة، فنكتفي بالشريط. */}
+                {!lastInteraction?.query && (() => {
                   const examples =
                     language === "ar"
                       ? [
@@ -4073,7 +4105,7 @@ export const SmartGateway: React.FC<
                         ];
                   const example = examples[exampleIndex % examples.length];
                   return (
-                    <div className="flex flex-col items-center gap-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
                       <button
                         type="button"
                         onClick={() => {
@@ -4097,9 +4129,13 @@ export const SmartGateway: React.FC<
                             (value) => (value + 1) % examples.length,
                           )
                         }
-                        className="min-h-9 px-3 text-xs font-black text-[#7C8796] hover:text-[#6E5F8E]"
+                        title={language === "ar" ? "مثال آخر" : "Another example"}
+                        aria-label={
+                          language === "ar" ? "مثال آخر" : "Another example"
+                        }
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-[#8FA9C7]/16 bg-white/70 text-[#7C8796] transition-colors hover:text-[#6E5F8E] active:scale-95"
                       >
-                        {language === "ar" ? "مثال آخر" : "Another example"}
+                        <RefreshCw className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   );

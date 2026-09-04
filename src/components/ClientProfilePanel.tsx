@@ -34,7 +34,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const { profile, user } = useAuth();
   const { preferences } = useUser();
   const { sageProgress } = useGamificationContext();
-  const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'tasks' | 'tools' | 'settings' | 'archive'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'tasks' | 'tools' | 'settings'>('overview');
   
   const [sessionTime, setSessionTime] = useState(0);
   const [selectedAvatar, setSelectedAvatar] = useState('default');
@@ -48,8 +48,10 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   // Time Capsule
   const [capsuleItem, setCapsuleItem] = useState('');
   const [isCapsuled, setIsCapsuled] = useState(false);
+  const [capsuleDue, setCapsuleDue] = useState<string | null>(null);
 
   const [showAllLibrary, setShowAllLibrary] = useState(false);
+  const [showAllArchive, setShowAllArchive] = useState(false);
   const [knowledgeTree, setKnowledgeTree] = useState<ThoughtNode[]>([]);
 
   // Rage Room
@@ -66,8 +68,6 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   const [lastAnalysisCount, setLastAnalysisCount] = useState(0);
   const [commitments, setCommitments] = useState<string[]>([]);
 
-  // Growth / Contradictions (Fake data to show concept based on existing UI pattern)
-  const [showRage, setShowRage] = useState(false);
 
   // Handlers to open Library and Knowledge Network tabs from within the profile panel.
   // Dispatch a custom event that App listens to for navigation. Close the panel afterwards.
@@ -353,12 +353,37 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
     }
   };
 
+  // يمحو فعلياً كل ما يعتمد عليه هذا اللوح: الذاكرة، السجل، والتحليل المخزّن.
   const clearMemory = () => {
-    if(window.confirm('هل أنت متأكد من مسح الذاكرة المعرفية للنظام عنك؟')) {
-      localStorage.removeItem('tebyan_memory');
+    if(window.confirm('سيتم محو سجل أسئلتك وتحليلها المحفوظ على هذا الجهاز. لا يمكن التراجع. هل تريد المتابعة؟')) {
+      ['tebyan_memory', 'tebyan_search_history', 'tebyan_galaxy_cache'].forEach(k => localStorage.removeItem(k));
       setContextKeywords([]);
-      setFrequentKeyword('تم المسح');
+      setFrequentKeyword('لا يوجد بعد');
+      setArchivedSessions([]);
+      setTotalQuestions(0);
+      setGalaxyAnalysis(null);
+      setCommitments([]);
+      setLastAnalysisCount(0);
     }
+  };
+
+  // كبسولة الزمن: تُحفظ فعلياً بتاريخ فتح، بدل حالة مؤقتة تختفي بإغلاق اللوح.
+  const sealCapsule = (months: number) => {
+    const text = capsuleItem.trim();
+    if (!text) return;
+    const due = new Date();
+    due.setMonth(due.getMonth() + months);
+    try {
+      const raw = localStorage.getItem('tebyan_time_capsules');
+      const list = raw ? JSON.parse(raw) : [];
+      const next = Array.isArray(list) ? list : [];
+      next.push({ text, sealedAt: new Date().toISOString(), dueAt: due.toISOString() });
+      localStorage.setItem('tebyan_time_capsules', JSON.stringify(next));
+    } catch (e) {
+      // تخزين محلي غير متاح — نُبقي التجربة تعمل دون ادعاء الحفظ
+    }
+    setCapsuleDue(due.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }));
+    setIsCapsuled(true);
   };
 
   const handleAvatarChange = (id: string) => {
@@ -371,6 +396,18 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
 
   const ActiveAvatar = AVATARS.find(a => a.id === selectedAvatar)?.icon || UserIcon;
   const activeAvatarColor = AVATARS.find(a => a.id === selectedAvatar)?.color || 'bg-slate-100 text-[#64788D]';
+
+  // بصمة التفكير: تُشتق من بيانات حقيقية فقط، ولا تُعرض كوصف جاهز قبل توفر إشارة كافية.
+  const hasEnoughSignal = totalQuestions >= 3 && frequentKeyword !== 'لا يوجد بعد';
+  const thinkingSignature = hasEnoughSignal
+    ? {
+        title: contextKeywords[0] || frequentKeyword,
+        note: `تتكرر في ${totalQuestions} سؤال حتى الآن`,
+      }
+    : {
+        title: 'قيد التكوّن',
+        note: 'اطرح ٣ أسئلة على الأقل لتظهر بصمتك',
+      };
 
   const panelContent = (
     <AnimatePresence>
@@ -439,14 +476,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
               >
                 النشاط
               </button>
-              <button 
-                onClick={() => setActiveTab('archive')} 
-                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors flex items-center justify-center gap-1 ${activeTab === 'archive' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
-              >
-                إحصائيات وأرشيف <Clock size={10} className="opacity-50"/>
-              </button>
-              <button 
-                onClick={() => setActiveTab('insights')} 
+              <button
+                onClick={() => setActiveTab('insights')}
                 className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors flex items-center justify-center gap-1 ${activeTab === 'insights' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
               >
                 البصمة <ShieldAlert size={10} className="opacity-50"/>
@@ -488,16 +519,15 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           <p className="text-xs text-[#64788D] font-bold mt-1">بصمتك الفكرية كما تظهر من استخدامك لتبيان.</p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div className="bg-white/70 border border-white/70 rounded-2xl p-3">
-                          <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">بياناتي</div>
-                          <div className="text-sm font-black text-[#182231] truncate">{profile.displayName || 'مفكر مجهول'}</div>
-                          <div className="text-[11px] text-[#64788D] truncate mt-1">{profile.email || 'بريد غير مرفق'}</div>
-                        </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="bg-white/70 border border-white/70 rounded-2xl p-3">
                           <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">نشاطي الفكري</div>
                           <div className="text-sm font-black text-[#182231]">{totalQuestions} سؤال · {preferences.savedLibrary?.length || 0} محفوظ</div>
-                          <div className="text-[11px] text-[#64788D] mt-1">آخر جلسة: {sessionTime} دقيقة</div>
+                          <div className="text-[11px] text-[#64788D] mt-1">
+                            {hasEnoughSignal
+                              ? `أبرز كلمة متكررة: "${frequentKeyword}"`
+                              : 'لم تتراكم أسئلة كافية لقراءة نمطك بعد'}
+                          </div>
                         </div>
                         <div className="bg-white/70 border border-white/70 rounded-2xl p-3">
                           <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">بصمة التفكير</div>
@@ -505,9 +535,9 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             <div className="w-9 h-9 rounded-full bg-[#8E7AAE]/10 border border-[#8E7AAE]/15 flex items-center justify-center text-[#6E5F8E] tebyan-breathe">
                               <Compass size={16} />
                             </div>
-                            <div>
-                              <div className="text-sm font-black text-[#182231]">{contextKeywords[0] || frequentKeyword || 'استكشاف'}</div>
-                              <div className="text-[11px] text-[#64788D]">يميل إلى التحليل والقرار</div>
+                            <div className="min-w-0">
+                              <div className="text-sm font-black text-[#182231] truncate">{thinkingSignature.title}</div>
+                              <div className="text-[11px] text-[#64788D]">{thinkingSignature.note}</div>
                             </div>
                           </div>
                         </div>
@@ -525,81 +555,6 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             <p className="text-xs text-[#64788D] mt-1">استمر في طرح الأسئلة العميقة لترقية مستواك.</p>
                         </div>
                     </div>
-                  </div>
-
-                  <div>
-                     <div className="flex justify-between items-center mb-3">
-                        <h4 className="font-bold text-[#182231] flex items-center gap-2"><Sparkles size={16} className="text-[#8E7AAE]"/> مجرة الأفكار</h4>
-                        <button 
-                           onClick={() => analyzeGalaxyAndMaturity()}
-                           disabled={isAnalyzingGalaxy}
-                           className="text-[10px] bg-[#F1EEF4] text-[#6E5F8E] px-3 py-1.5 rounded-xl border border-[#8E7AAE]/18 hover:bg-[#EAE3EF] transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
-                        >
-                           {isAnalyzingGalaxy ? (
-                              <>
-                                 <RefreshCw className="w-3 h-3 animate-spin" />
-                                 <span>أقرأ مساراتك...</span>
-                              </>
-                           ) : (
-                              <>
-                                 <RefreshCw className="w-3 h-3" />
-                                 <span>تحديث التحليل</span>
-                              </>
-                           )}
-                        </button>
-                     </div>
-                     <div className="bg-[#EEF2F6] p-6 md:p-10 rounded-[32px] relative overflow-hidden h-72 flex items-center justify-center border border-[#8FA9C7]/20 shadow-[0_18px_60px_rgba(24,34,49,0.08)] group">
-                         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#8E7AAE]/18 via-[#EEF2F6] to-[#F7F5F2]" />
-                         
-                         {/* Grid background effect */}
-                         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(24,34,49,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(24,34,49,0.04)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-
-                         <div className="relative w-full h-full flex items-center justify-center">
-                            <AnimatePresence>
-                               {isAnalyzingGalaxy ? (
-                                  <motion.div 
-                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                    className="flex flex-col items-center gap-4 text-[#64788D]"
-                                  >
-                                     <Globe className="w-12 h-12 text-[#8E7AAE] animate-pulse" />
-                                     <p className="text-xs font-black tracking-widest tebyan-breathe">أستجمع شتات أفكارك...</p>
-                                  </motion.div>
-                               ) : contextKeywords.length > 0 ? (
-                                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full relative">
-                                     {contextKeywords.map((kw, i) => (
-                                        <motion.div 
-                                          key={i}
-                                          initial={{ scale: 0, opacity: 0 }}
-                                          animate={{ scale: 1, opacity: 1 }}
-                                          drag
-                                          dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-[#F1EEF4]0/20 backdrop-blur-md border border-indigo-500/30 rounded-full text-indigo-100 text-[10px] md:text-xs font-black shadow-lg"
-                                          style={{ 
-                                            top: `${15 + (i * 20) % 70}%`, 
-                                            left: `${10 + (i * 25) % 80}%` 
-                                          }}
-                                        >
-                                           {kw}
-                                        </motion.div>
-                                     ))}
-                                  </motion.div>
-                               ) : (
-                                  <div className="text-[#64788D] text-xs font-bold text-center italic max-w-[200px]">
-                                     تبيان لا يرى أي أفكار متبلورة بعد.. حاول استكشاف مواضيع جديدة في غرفة "قول فصل".
-                                  </div>
-                               )}
-                            </AnimatePresence>
-                         </div>
-  
-                         <motion.div 
-                            animate={{ opacity: isAnalyzingGalaxy ? 0 : 1 }}
-                            className="absolute bottom-4 inset-x-6 text-center"
-                         >
-                            <div className="bg-slate-900/80 backdrop-blur-xl text-[10px] text-[#64788D]/70 p-3 rounded-2xl border border-white/5 font-medium leading-relaxed shadow-xl">
-                                {galaxyAnalysis ? galaxyAnalysis : `الأفكار تشكل مجرتك الشخصية بناءً على اهتماماتك وتفاعلك مع النظام.`}
-                            </div>
-                         </motion.div>
-                     </div>
                   </div>
 
                   <div>
@@ -675,91 +630,117 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         </div>
                      )}
                   </div>
-                </motion.div>
-              )}
-
-              {activeTab === 'archive' && (
-                <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
-                  <div className="bg-[#F7F5F2] p-5 rounded-2xl border border-[#8FA9C7]/15 flex flex-col gap-4">
-                      <h4 className="font-bold text-[#182231] mb-2 flex items-center gap-2"><Activity size={16} className="text-blue-500"/> إحصائيات شاملة</h4>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-white p-3 rounded-xl border border-[#8FA9C7]/15 flex flex-col gap-1 items-center justify-center text-center shadow-sm">
-                              <span className="text-[10px] text-[#64788D] font-bold uppercase tracking-wider">إجمالي الأسئلة</span>
-                              <span className="text-xl font-black text-[#273548]">{totalQuestions}</span>
-                          </div>
-                          <div className="bg-white p-3 rounded-xl border border-[#8FA9C7]/15 flex flex-col gap-1 items-center justify-center text-center shadow-sm">
-                              <span className="text-[10px] text-[#64788D] font-bold uppercase tracking-wider">المدة (دقائق)</span>
-                              <span className="text-xl font-black text-[#6E5F8E]">{sessionTime}</span>
-                          </div>
-                      </div>
-
-                      {frequentKeyword && frequentKeyword !== 'لا يوجد بعد' && (
-                          <div className="bg-white p-3 rounded-xl border border-[#8FA9C7]/15 flex flex-col gap-1 items-center justify-center text-center shadow-sm">
-                              <span className="text-[10px] text-[#64788D] font-bold uppercase tracking-wider">الكلمة الأكثر تكراراً بعقلك</span>
-                              <span className="text-lg font-black text-emerald-600">"{frequentKeyword}"</span>
-                          </div>
-                      )}
-                  </div>
 
                   <div>
-                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Clock size={16} className="text-[#8E7AAE]"/> سجل الجلسات السابقة (Deep Archive)</h4>
-                     <p className="text-xs text-[#64788D] mb-4">عد بالزمن لترى أين كان عقلك في الفترات الماضية.</p>
+                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Clock size={16} className="text-[#8E7AAE]"/> سجل أسئلتك السابقة</h4>
+                     <p className="text-xs text-[#64788D] mb-4">مرتّبة من الأحدث إلى الأقدم كما هي محفوظة على جهازك.</p>
 
                      {archivedSessions.length > 0 ? (
-                        <div className="space-y-3 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
-                            {archivedSessions.map((query, idx) => {
-                                const d = new Date();
-                                d.setDate(d.getDate() - (idx * 3)); // simulate past dates gradually
-                                const dateStr = d.toLocaleDateString('ar-EG', { month: 'long', day: 'numeric', year: idx > 30 ? 'numeric' : undefined });
-                                
-                                return (
-                                <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                                    <div className="flex items-center justify-center w-5 h-5 rounded-full border-2 border-white bg-[#F1EEF4]0 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                                       <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
-                                    </div>
-                                    
-                                    <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-3 bg-white border border-[#8FA9C7]/15 rounded-xl shadow-sm hover:border-[#8E7AAE]/18 transition-colors">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <span className="text-[10px] font-bold text-[#8E7AAE]">{dateStr}</span>
-                                        </div>
-                                        <p className="text-sm font-bold text-[#3D4A5A] line-clamp-2 leading-relaxed">{query}</p>
-                                    </div>
+                        <div className="space-y-2">
+                            {[...archivedSessions].reverse().slice(0, showAllArchive ? undefined : 5).map((query, idx) => (
+                                <div key={idx} className="flex items-start gap-3 p-3 bg-white border border-[#8FA9C7]/15 rounded-xl shadow-sm hover:border-[#8E7AAE]/25 transition-colors">
+                                    <span className="text-[10px] font-black text-[#8E7AAE] bg-[#F1EEF4] rounded-lg px-2 py-1 shrink-0">{idx + 1}</span>
+                                    <p className="text-sm font-bold text-[#3D4A5A] line-clamp-2 leading-relaxed">{query}</p>
                                 </div>
-                            )})}
+                            ))}
+                            {archivedSessions.length > 5 && (
+                                <button onClick={() => setShowAllArchive(v => !v)} className="w-full text-center text-xs text-[#6E5F8E] font-bold py-3 bg-[#F1EEF4] rounded-xl transition-colors hover:bg-[#EAE3EF]">
+                                    {showAllArchive ? 'إخفاء البقية' : `عرض كل الأسئلة (${archivedSessions.length})`}
+                                </button>
+                            )}
                         </div>
                      ) : (
                          <div className="text-center p-6 bg-[#F7F5F2] rounded-2xl border border-[#8FA9C7]/15 border-dashed text-[#7C8796] text-sm">
-                             لا يوجد سجل لجلسات سابقة حتى الآن.
+                             لا يوجد سجل لأسئلة سابقة حتى الآن.
                          </div>
                      )}
                   </div>
+
                 </motion.div>
               )}
-
               {activeTab === 'insights' && (
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
                   
                   <div className="bg-[#F1EEF4] p-4 rounded-2xl border border-[#8E7AAE]/18">
                     <p className="font-bold text-indigo-900 mb-2 flex items-center gap-2"><Fingerprint size={16}/> ماذا يعرف تبيان عني؟</p>
-                    <p className="text-sm text-indigo-700/80 mb-4 leading-relaxed">
-                        يتعلم الذكاء الاصطناعي باستمرار من سياق حواراتك ليقدم لك استشارات مصممة خصيصاً لنمط تفكيرك.
+                    <p className="text-sm text-indigo-700/80 leading-relaxed">
+                        ما تراه هنا مبني على أسئلتك المحفوظة على جهازك فقط. للتحكم بهذه البيانات أو محوها، افتح تبويب «إعدادات».
                     </p>
-                    
-                    <div className="bg-white p-3 rounded-xl shadow-sm mb-4">
-                        <span className="text-xs text-[#64788D] block mb-2">الكلمات الأكثر تكراراً في عقلك بآخر جلسات:</span>
-                        <div className="flex gap-2 flex-wrap">
-                            {contextKeywords.length > 0 ? contextKeywords.map((k, i) => (
-                                <span key={i} className="px-2.5 py-1 bg-slate-100 text-[#3D4A5A] rounded-md text-sm font-medium">{k}</span>
-                            )) : <span className="text-[#7C8796] text-sm">لا توجد مساحات معرفية كافية بعد.</span>}
-                        </div>
-                    </div>
+                  </div>
 
-                    <p className="text-xs text-[#6E5F8E] font-medium mb-3">حالتك الذهنية الغالبة: <span className="font-bold">مستكشف باحث عن العمق</span></p>
+                  <div>
+                     <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-bold text-[#182231] flex items-center gap-2"><Sparkles size={16} className="text-[#8E7AAE]"/> مجرة الأفكار</h4>
+                        <button 
+                           onClick={() => analyzeGalaxyAndMaturity()}
+                           disabled={isAnalyzingGalaxy}
+                           className="text-[10px] bg-[#F1EEF4] text-[#6E5F8E] px-3 py-1.5 rounded-xl border border-[#8E7AAE]/18 hover:bg-[#EAE3EF] transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
+                        >
+                           {isAnalyzingGalaxy ? (
+                              <>
+                                 <RefreshCw className="w-3 h-3 animate-spin" />
+                                 <span>أقرأ مساراتك...</span>
+                              </>
+                           ) : (
+                              <>
+                                 <RefreshCw className="w-3 h-3" />
+                                 <span>تحديث التحليل</span>
+                              </>
+                           )}
+                        </button>
+                     </div>
+                     <div className="bg-[#EEF2F6] p-6 md:p-10 rounded-[32px] relative overflow-hidden h-72 flex items-center justify-center border border-[#8FA9C7]/20 shadow-[0_18px_60px_rgba(24,34,49,0.08)] group">
+                         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#8E7AAE]/18 via-[#EEF2F6] to-[#F7F5F2]" />
+                         
+                         {/* Grid background effect */}
+                         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(24,34,49,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(24,34,49,0.04)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-                    <button onClick={clearMemory} className="w-full py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50 transition-colors">
-                        محو الذاكرة المعرفية (Reset Context)
-                    </button>
+                         <div className="relative w-full h-full flex items-center justify-center">
+                            <AnimatePresence>
+                               {isAnalyzingGalaxy ? (
+                                  <motion.div 
+                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                    className="flex flex-col items-center gap-4 text-[#64788D]"
+                                  >
+                                     <Globe className="w-12 h-12 text-[#8E7AAE] animate-pulse" />
+                                     <p className="text-xs font-black tracking-widest tebyan-breathe">أستجمع شتات أفكارك...</p>
+                                  </motion.div>
+                               ) : contextKeywords.length > 0 ? (
+                                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full relative">
+                                     {contextKeywords.map((kw, i) => (
+                                        <motion.div 
+                                          key={i}
+                                          initial={{ scale: 0, opacity: 0 }}
+                                          animate={{ scale: 1, opacity: 1 }}
+                                          drag
+                                          dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
+                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-white/85 backdrop-blur-md border border-[#8E7AAE]/30 rounded-full text-[#3D4A5A] text-[10px] md:text-xs font-black shadow-lg"
+                                          style={{ 
+                                            top: `${15 + (i * 20) % 70}%`, 
+                                            left: `${10 + (i * 25) % 80}%` 
+                                          }}
+                                        >
+                                           {kw}
+                                        </motion.div>
+                                     ))}
+                                  </motion.div>
+                               ) : (
+                                  <div className="text-[#64788D] text-xs font-bold text-center italic max-w-[200px]">
+                                     تبيان لا يرى أي أفكار متبلورة بعد.. حاول استكشاف مواضيع جديدة في غرفة "قول فصل".
+                                  </div>
+                               )}
+                            </AnimatePresence>
+                         </div>
+  
+                         <motion.div 
+                            animate={{ opacity: isAnalyzingGalaxy ? 0 : 1 }}
+                            className="absolute bottom-4 inset-x-6 text-center"
+                         >
+                            <div className="bg-slate-900/85 backdrop-blur-xl text-[10px] text-slate-100 p-3 rounded-2xl border border-white/10 font-medium leading-relaxed shadow-xl">
+                                {galaxyAnalysis ? galaxyAnalysis : `الأفكار تشكل مجرتك الشخصية بناءً على اهتماماتك وتفاعلك مع النظام.`}
+                            </div>
+                         </motion.div>
+                     </div>
                   </div>
 
                   {/* Contradiction Detector */}
@@ -819,20 +800,13 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
 
                       {/* Commitments Display */}
                       {commitments.length > 0 && (
-                        <div className="mt-4 pt-6 border-t border-[#8FA9C7]/15 space-y-4">
-                           <h5 className="text-xs font-black text-[#273548] uppercase tracking-widest flex items-center gap-2">
-                             <Target className="w-4 h-4 text-emerald-500" />
-                             التزامات واقعية مقترحة
-                           </h5>
-                           <div className="space-y-3">
-                              {commitments.map((c, i) => (
-                                <div key={i} className="flex items-start gap-3 p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
-                                   <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-                                   <p className="text-sm font-bold text-emerald-900 leading-relaxed">{c}</p>
-                                </div>
-                              ))}
-                           </div>
-                        </div>
+                        <button
+                          onClick={() => setActiveTab('tasks')}
+                          className="mt-2 w-full text-xs font-black text-[#6E5F8E] bg-[#F1EEF4] hover:bg-[#EAE3EF] rounded-xl py-3 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <CheckCircle className="w-4 h-4 text-emerald-600" />
+                          {commitments.length} التزام مرصود — افتح «تتبّع»
+                        </button>
                       )}
                   </div>
                   
@@ -947,15 +921,18 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-indigo-300/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none h-24"
                                 />
                                 <div className="flex gap-2">
-                                    <button onClick={() => {if(capsuleItem) setIsCapsuled(true)}} className="flex-1 py-2.5 bg-[#F1EEF4]0 hover:bg-indigo-600 rounded-xl text-sm font-bold transition-colors">تجميد لمدة 3 أشهر</button>
-                                    <button onClick={() => {if(capsuleItem) setIsCapsuled(true)}} className="flex-1 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-colors">تجميد لسنة</button>
+                                    <button onClick={() => sealCapsule(3)} className="flex-1 py-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-sm font-bold transition-colors">تجميد لمدة 3 أشهر</button>
+                                    <button onClick={() => sealCapsule(12)} className="flex-1 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-colors">تجميد لسنة</button>
                                 </div>
                             </div>
                         ) : (
                             <motion.div initial={{scale: 0.9, opacity:0}} animate={{scale:1, opacity:1}} className="relative z-10 bg-white/10 border border-white/20 p-4 rounded-xl text-center space-y-2">
-                                <div className="w-12 h-12 bg-[#F1EEF4]0/30 rounded-full flex items-center justify-center mx-auto mb-2"><Moon size={24} className="text-indigo-300" /></div>
+                                <div className="w-12 h-12 bg-indigo-500/30 rounded-full flex items-center justify-center mx-auto mb-2"><Moon size={24} className="text-indigo-300" /></div>
                                 <p className="font-bold text-sm">تم إغلاق الكبسولة بنجاح</p>
-                                <p className="text-xs text-[#64788D]">سنوقظ هذه الفكرة بعد انقضاء المدة. امضِ في حياتك مطمئناً.</p>
+                                <p className="text-xs text-indigo-200/80">
+                                  {capsuleDue ? `ستفتح في ${capsuleDue}. محفوظة على هذا الجهاز فقط.` : 'محفوظة على هذا الجهاز فقط.'}
+                                </p>
+                                <button onClick={() => { setIsCapsuled(false); setCapsuleItem(''); }} className="text-[11px] font-bold text-indigo-200/70 hover:text-white pt-1">كبسولة أخرى</button>
                             </motion.div>
                         )}
                     </div>
@@ -1000,7 +977,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     <div className="flex items-center gap-3">
                                         <span className="text-xs font-bold w-12 text-indigo-700">خذلان</span>
                                         <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-[#F1EEF4]0 rounded-full transition-all duration-1000 delay-300" style={{width: `${rageAnalysis.sad}%`}} />
+                                            <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000 delay-300" style={{width: `${rageAnalysis.sad}%`}} />
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -1037,6 +1014,16 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                              )
                          })}
                      </div>
+                  </div>
+
+                  <div className="border-t border-[#8FA9C7]/15 pt-6">
+                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Shield size={16} className="text-rose-500"/> بياناتي وخصوصيتي</h4>
+                     <p className="text-xs text-[#64788D] mb-3 leading-relaxed">
+                        أسئلتك وتحليلاتها محفوظة على هذا الجهاز. المحو يشمل السجل والكلمات المتكررة والتحليل المخزّن، ولا يمكن التراجع عنه.
+                     </p>
+                     <button onClick={clearMemory} className="w-full py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50 transition-colors">
+                        محو الذاكرة المعرفية (Reset Context)
+                     </button>
                   </div>
 
                   <div className="border-t border-[#8FA9C7]/15 pt-6">
