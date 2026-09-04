@@ -1,0 +1,41 @@
+name: فحص تبيان — قبل النشر
+
+# النشر يتم عبر Cloud Build، وكان يمضي دون فحصٍ للأنواع. هذا الفحص
+# يمسك الكسر في GitHub قبل أن يصل الموقع الحيّ.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tebyan-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: تثبيت من ملف القفل
+        run: npm ci
+
+      # فحص الأنواع كان يفشل بستة أخطاء TS2307 في 4 سبتمبر 2026، لأن
+      # نسختين أحدث من SmartGateway و ClientProfilePanel كانتا في جذر
+      # المستودع بدل src/components — فلم يشملهما البناء ولم تظهر
+      # تحسيناتهما في الموقع. البناء كان يمرّ صامتاً؛ هذه الخطوة تمسكه.
+      - name: فحص الأنواع
+        run: npm run lint
+
+      - name: البناء
+        run: npm run build
