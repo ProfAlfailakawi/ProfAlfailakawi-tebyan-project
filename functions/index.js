@@ -106,16 +106,20 @@ function rateLimited(req) {
 // CORS is browser-only and the rate limiter merely slows an attacker down.
 //
 // Policy:
-//   * ON by default in production (deployed function).
-//   * OFF by default in development / the emulator.
-//   * APP_CHECK_ENFORCE=true  -> force on anywhere (useful to test locally).
-//   * APP_CHECK_ENFORCE=false -> force off, honoured ONLY outside production,
-//                                so a stray env var cannot silently reopen the
-//                                proxy on the live site.
-//   * APP_CHECK_MONITOR_ONLY=true -> verify and log, but still serve. This is
-//     the staged-rollout switch: turn it on for the first deploy, confirm the
-//     logs show tokens arriving, then remove it. It is the only way to relax
-//     enforcement in production, and it is deliberately explicit.
+//   * Tokens are VERIFIED and logged by default in production (deployed
+//     function), and left off in development / the emulator.
+//   * Production defaults to MONITOR-ONLY: a request that fails App Check is
+//     still served (and logged), so deploying before the client's
+//     VITE_RECAPTCHA_SITE_KEY is wired does not 401 every AI call. CORS and the
+//     rate limiter still apply. Strict rejection is an explicit opt-in.
+//   * APP_CHECK_ENFORCE=true  -> strict rejection on a missing/invalid token
+//     (anywhere). Set this once the browser is confirmed to send App Check
+//     tokens; it is the only way to fully close the proxy.
+//   * APP_CHECK_ENFORCE=false -> in production still verify+log (monitor-only,
+//     never fully off, so a stray env var cannot silently reopen the proxy);
+//     in development, off.
+//   * APP_CHECK_MONITOR_ONLY=false -> in production, force strict rejection
+//     even without APP_CHECK_ENFORCE (the explicit way to leave monitor-only).
 //
 // Requires, on the client side, VITE_RECAPTCHA_SITE_KEY at build time (see
 // src/lib/firebase.ts) so the browser attaches an X-Firebase-AppCheck header.
@@ -123,11 +127,21 @@ let _adminAppCheck = null;
 
 function appCheckPolicy() {
     const explicit = String(process.env.APP_CHECK_ENFORCE || "").trim().toLowerCase();
-    const monitorOnly = String(process.env.APP_CHECK_MONITOR_ONLY || "").trim().toLowerCase() === "true";
+    const monitorEnv = String(process.env.APP_CHECK_MONITOR_ONLY || "").trim().toLowerCase();
+    // `enforcing` = verify the token at all. Production always verifies; a
+    // production off-switch is deliberately not honoured (only dev can disable).
     let enforcing;
     if (explicit === "true") enforcing = true;
     else if (explicit === "false") enforcing = IS_PRODUCTION; // dev-only off switch
     else enforcing = IS_PRODUCTION;
+    // `monitorOnly` = verify+log but still serve on failure. Default ON in
+    // production (unless strict enforcement is explicitly requested) so a deploy
+    // before reCAPTCHA is wired keeps the AI endpoints working instead of
+    // returning 401 to every visitor.
+    let monitorOnly;
+    if (monitorEnv === "true") monitorOnly = true;
+    else if (monitorEnv === "false") monitorOnly = false;
+    else monitorOnly = IS_PRODUCTION && explicit !== "true";
     return { enforcing, monitorOnly };
 }
 
