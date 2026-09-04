@@ -7,3 +7,5 @@ functions/.env.*
 .DS_Store
 .firebase/
 *.log
+build/
+*.tsbuildinfo
