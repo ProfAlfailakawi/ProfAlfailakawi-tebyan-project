@@ -100,10 +100,18 @@ service cloud.firestore {
       // Role-escalation guard: a user may create/update only their OWN doc and may NOT
       // grant themselves the 'admin' role, nor change an existing role, via the client.
       // (Admin management of OTHER users is already blocked by request.auth.uid == userId.)
+      //
+      // The `|| isAdmin()` escape is NOT a hole: isAdmin() is not self-grantable.
+      // It resolves only via the hard-coded owner UID, the fixed owner e-mail list,
+      // or an /admins/{uid} document — and writing that document is itself gated on
+      // the same fixed e-mail list below. Without this escape the owner's own
+      // profile sync (src/components/AuthProvider.tsx, which writes role:'admin'
+      // onto the owner's user doc at sign-in) would be permanently denied.
       allow create: if isSignedIn() && request.auth.uid == userId
-        && request.resource.data.get('role', 'user') != 'admin';
+        && (request.resource.data.get('role', 'user') != 'admin' || isAdmin());
       allow update: if isSignedIn() && request.auth.uid == userId
-        && request.resource.data.get('role', resource.data.get('role', 'user')) == resource.data.get('role', 'user');
+        && (request.resource.data.get('role', resource.data.get('role', 'user')) == resource.data.get('role', 'user')
+            || isAdmin());
     }
 
     match /admins/{userId} {

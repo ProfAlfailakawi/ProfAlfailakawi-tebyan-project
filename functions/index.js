@@ -5,7 +5,61 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const crypto = require("crypto");
 
 const app = express();
-app.use(cors({ origin: true }));
+
+// ---------------------------------------------------------------------------
+// Deployment context
+// ---------------------------------------------------------------------------
+// The Firebase Functions emulator sets FUNCTIONS_EMULATOR=true; a deployed
+// function always has K_SERVICE / FUNCTION_TARGET set by the runtime.
+const IS_EMULATOR = process.env.FUNCTIONS_EMULATOR === "true";
+const IS_PRODUCTION = !IS_EMULATOR && (
+    process.env.NODE_ENV === "production" ||
+    !!process.env.K_SERVICE ||
+    !!process.env.FUNCTION_TARGET
+);
+
+// ---------------------------------------------------------------------------
+// CORS allowlist
+// ---------------------------------------------------------------------------
+// The AI endpoints spend the owner's Gemini key, so they must not be callable
+// from arbitrary third-party pages. Override the list with a comma-separated
+// TEBYAN_ALLOWED_ORIGINS env var; otherwise the project's own domains are used.
+const DEFAULT_ALLOWED_ORIGINS = [
+    "https://tebyan.dr-alfailakawi.com",
+    "https://tebyan-clean-2026.web.app",
+    "https://tebyan-clean-2026.firebaseapp.com",
+];
+const LOCAL_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+const stripTrailingSlash = (value) => String(value || "").trim().replace(/\/+$/, "");
+
+const allowedOrigins = () => {
+    const configured = String(process.env.TEBYAN_ALLOWED_ORIGINS || "")
+        .split(",")
+        .map(stripTrailingSlash)
+        .filter(Boolean);
+    return configured.length > 0 ? configured : DEFAULT_ALLOWED_ORIGINS;
+};
+
+function isOriginAllowed(origin) {
+    // No Origin header: same-origin browser navigation, curl, uptime probes.
+    // CORS is not the control for those (an attacker simply omits the header),
+    // so refusing here would only break legitimate same-origin traffic.
+    if (!origin) return true;
+    const normalized = stripTrailingSlash(origin);
+    if (allowedOrigins().includes(normalized)) return true;
+    // localhost is accepted only outside production, for `firebase emulators:start`.
+    return !IS_PRODUCTION && LOCAL_ORIGIN_PATTERN.test(normalized);
+}
+
+app.use(cors({
+    // Returning `false` simply omits the CORS headers, so the browser blocks the
+    // response. Throwing instead would surface a confusing 500.
+    origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Firebase-AppCheck"],
+    maxAge: 3600,
+}));
 app.use(express.json());
 
 // In-memory AI response cache (per function instance).
@@ -19,8 +73,12 @@ const hashString = (str) => crypto.createHash("sha256").update(str).digest("hex"
 // Lightweight per-instance rate limiter (fixed window) to curb abuse and
 // runaway Gemini cost from automated floods. Generous for real users.
 const rateBuckets = new Map();
-const RATE_WINDOW_MS = 60 * 1000;
-const RATE_MAX = 60; // requests per IP per minute per instance
+const toPositiveInt = (value, fallback) => {
+    const parsed = Number.parseInt(String(value ?? ""), 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+};
+const RATE_WINDOW_MS = toPositiveInt(process.env.TEBYAN_AI_RATE_WINDOW_MS, 60 * 1000);
+const RATE_MAX = toPositiveInt(process.env.TEBYAN_AI_RATE_MAX, 60); // per IP per window per instance
 function rateLimited(req) {
     const ip = String(req.headers["x-forwarded-for"] || req.ip || "unknown")
         .split(",")[0]
@@ -40,26 +98,68 @@ function rateLimited(req) {
     return bucket.count > RATE_MAX;
 }
 
-// Optional Firebase App Check enforcement. Inert by default; enable by setting
-// APP_CHECK_ENFORCE=true in the function env after configuring App Check +
-// reCAPTCHA. Then only verified app instances can reach the AI endpoints.
+// ---------------------------------------------------------------------------
+// Firebase App Check enforcement
+// ---------------------------------------------------------------------------
+// App Check is the only control that actually stops a scripted client (curl,
+// a scraper, a competitor's server) from spending the owner's Gemini quota:
+// CORS is browser-only and the rate limiter merely slows an attacker down.
+//
+// Policy:
+//   * ON by default in production (deployed function).
+//   * OFF by default in development / the emulator.
+//   * APP_CHECK_ENFORCE=true  -> force on anywhere (useful to test locally).
+//   * APP_CHECK_ENFORCE=false -> force off, honoured ONLY outside production,
+//                                so a stray env var cannot silently reopen the
+//                                proxy on the live site.
+//   * APP_CHECK_MONITOR_ONLY=true -> verify and log, but still serve. This is
+//     the staged-rollout switch: turn it on for the first deploy, confirm the
+//     logs show tokens arriving, then remove it. It is the only way to relax
+//     enforcement in production, and it is deliberately explicit.
+//
+// Requires, on the client side, VITE_RECAPTCHA_SITE_KEY at build time (see
+// src/lib/firebase.ts) so the browser attaches an X-Firebase-AppCheck header.
 let _adminAppCheck = null;
+
+function appCheckPolicy() {
+    const explicit = String(process.env.APP_CHECK_ENFORCE || "").trim().toLowerCase();
+    const monitorOnly = String(process.env.APP_CHECK_MONITOR_ONLY || "").trim().toLowerCase() === "true";
+    let enforcing;
+    if (explicit === "true") enforcing = true;
+    else if (explicit === "false") enforcing = IS_PRODUCTION; // dev-only off switch
+    else enforcing = IS_PRODUCTION;
+    return { enforcing, monitorOnly };
+}
+
 async function appCheckOk(req) {
-    if (process.env.APP_CHECK_ENFORCE !== "true") return true;
+    const { enforcing, monitorOnly } = appCheckPolicy();
+    if (!enforcing) return true;
+
     const token = req.header("X-Firebase-AppCheck");
-    if (!token) return false;
-    try {
-        if (!_adminAppCheck) {
-            const admin = require("firebase-admin");
-            if (!admin.apps.length) admin.initializeApp();
-            _adminAppCheck = admin.appCheck();
+    let verified = false;
+    if (token) {
+        try {
+            if (!_adminAppCheck) {
+                const admin = require("firebase-admin");
+                if (!admin.apps.length) admin.initializeApp();
+                _adminAppCheck = admin.appCheck();
+            }
+            await _adminAppCheck.verifyToken(token);
+            verified = true;
+        } catch (err) {
+            console.warn("App Check verification failed:", err && err.message ? err.message : err);
         }
-        await _adminAppCheck.verifyToken(token);
-        return true;
-    } catch (err) {
-        console.warn("App Check verification failed:", err && err.message ? err.message : err);
-        return false;
     }
+
+    if (!verified && monitorOnly) {
+        console.warn(
+            "[AppCheck] monitor-only mode: serving a request with %s App Check token. " +
+            "Unset APP_CHECK_MONITOR_ONLY once the client is confirmed to send tokens.",
+            token ? "an invalid" : "no"
+        );
+        return true;
+    }
+    return verified;
 }
 
 // Initialize Gemini

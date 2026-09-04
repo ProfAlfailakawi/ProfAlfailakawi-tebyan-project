@@ -1,5 +1,6 @@
 
 import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
+import { getAppCheckHeaders } from "./appCheck";
 
 /**
  * AI Proxy for Client-side usage.
@@ -45,11 +46,15 @@ ${buildUserAddressingInstruction(addressing)}
   // we use root-relative path for /api calls, which is safest in a container
   const apiPath = `/api/ai/generate`;
 
+  // App Check proves the call comes from the real app, so the backend can
+  // refuse scripts that would otherwise burn the owner's Gemini quota.
+  const appCheckHeaders = await getAppCheckHeaders();
+
   let response;
   try {
     response = await fetch(apiPath, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...appCheckHeaders },
       body: JSON.stringify(modifiedParams),
     });
   } catch (fetchError: any) {
@@ -68,6 +73,12 @@ ${buildUserAddressingInstruction(addressing)}
 
   if (!response.ok) {
     const error = await response.json();
+    if (response.status === 401) {
+      // App Check rejected the call: the build is missing VITE_RECAPTCHA_SITE_KEY
+      // or App Check is not registered for this domain in the Firebase console.
+      console.error('[AI Proxy] App Check rejected the request:', error);
+      throw new Error('تعذر التحقق من هوية التطبيق. يرجى تحديث الصفحة والمحاولة مرة أخرى.');
+    }
     const e = new Error(error.message || error.error || 'AI request failed');
     (e as any).code = error.code || error.error;
     throw e;
@@ -125,11 +136,13 @@ export async function proxyGenerateAudio(params: {
   // we use root-relative path for /api calls
   const apiPath = `/api/ai/audio`;
 
+  const appCheckHeaders = await getAppCheckHeaders();
+
   let response;
   try {
     response = await fetch(apiPath, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...appCheckHeaders },
       body: JSON.stringify({ ...params, text: sanitizeTextForAudio(params.text, params.style === 'podcast' ? 3200 : 1400, params.style === 'podcast') }),
     });
   } catch (err) {
