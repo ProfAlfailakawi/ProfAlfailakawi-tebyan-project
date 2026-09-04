@@ -97,8 +97,13 @@ service cloud.firestore {
     match /users/{userId} {
       allow get: if isSignedIn() && request.auth.uid == userId;
       allow list: if isAdmin();
-      allow create: if isSignedIn() && request.auth.uid == userId;
-      allow update: if isSignedIn() && request.auth.uid == userId;
+      // Role-escalation guard: a user may create/update only their OWN doc and may NOT
+      // grant themselves the 'admin' role, nor change an existing role, via the client.
+      // (Admin management of OTHER users is already blocked by request.auth.uid == userId.)
+      allow create: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.get('role', 'user') != 'admin';
+      allow update: if isSignedIn() && request.auth.uid == userId
+        && request.resource.data.get('role', resource.data.get('role', 'user')) == resource.data.get('role', 'user');
     }
 
     match /admins/{userId} {
