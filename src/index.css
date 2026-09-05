@@ -3619,25 +3619,7 @@ body:not(.zen-idle)::after {
 
   .tebyan-header-actions > button,
   .tebyan-header-actions > div > button,
-  .tebyan-menu-trigger {
-    width: 2.55rem !important;
-    height: 2.55rem !important;
-    min-width: 2.55rem !important;
-    min-height: 2.55rem !important;
-    margin-inline: 0 !important;
-    padding: 0 !important;
-    border-radius: 0.9rem !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    box-shadow: 0 7px 20px rgba(24, 34, 49, 0.055) !important;
-  }
-
   .tebyan-header-actions svg,
-  .tebyan-menu-trigger svg {
-    width: 1.02rem !important;
-    height: 1.02rem !important;
-  }
-
   .tebyan-floating-nav {
     padding: 0.28rem 0.34rem !important;
     backdrop-filter: none !important;
@@ -4121,8 +4103,7 @@ body:not(.zen-idle)::after {
     box-shadow: none !important;
   }
 
-  .tebyan-floating-nav .tebyan-orb-mark,
-  .tebyan-menu-trigger {
+  .tebyan-floating-nav .tebyan-orb-mark {
     width: 2.75rem !important;
     height: 2.75rem !important;
     min-width: 2.75rem !important;

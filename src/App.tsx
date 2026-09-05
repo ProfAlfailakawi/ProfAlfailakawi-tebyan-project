@@ -19,15 +19,11 @@ import {
   RefreshCw,
   X,
   MessageCircleQuestion,
-  Menu,
   LogOut,
   LayoutDashboard,
-  Search,
   Network,
   BarChart3,
-  LibraryBig,
   Route,
-  TicketPercent,
   Mail,
   Settings,
   User,
@@ -492,7 +488,6 @@ const AppContent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLogin, setShowLogin] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [showGlobalCommand, setShowGlobalCommand] = useState(false);
   const [initialContext, setInitialContext] = useState<string>("");
@@ -789,7 +784,6 @@ const AppContent: React.FC = () => {
         sessionStorage.removeItem("tebyan_current_query");
         sessionStorage.removeItem("tebyan_current_has_searched");
       }
-      setMobileMenuOpen(false);
       setSidebarOpen(false); // Force close
       setShowGlobalCommand(false);
       setShowPageHelp(false);
@@ -839,7 +833,6 @@ const AppContent: React.FC = () => {
       checkAuth,
       language,
       activeTab,
-      setMobileMenuOpen,
       setSidebarOpen,
       setIsLoading,
       setError,
@@ -1446,17 +1439,7 @@ const AppContent: React.FC = () => {
         </div>
 
         <div className="tebyan-header-actions flex items-center gap-1 pointer-events-auto">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="tebyan-menu-trigger md:hidden flex h-10 w-10 items-center justify-center rounded-xl border border-[#8FA9C7]/18 bg-white/88 text-[#182231] shadow-[0_7px_20px_rgba(24,34,49,0.06)] active:scale-[0.96]"
-            aria-label={
-              language === "ar" ? "فتح قائمة الخدمات" : "Open services menu"
-            }
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <div className="hidden md:block">
+          <div className="block">
             <PWAHeaderButton language={language} />
           </div>
           <div className="block">
@@ -1476,222 +1459,6 @@ const AppContent: React.FC = () => {
           </div>
         </div>
       </motion.header>
-
-      {/* --- Menu Overlay --- */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.12 }}
-            className="fixed inset-0 z-50 bg-zinc-900/28 md:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <motion.div
-              initial={{ x: language === "ar" ? "100%" : "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: language === "ar" ? "100%" : "-100%" }}
-              transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute top-0 bottom-0 right-0 w-[82%] max-w-[330px] bg-white shadow-2xl flex flex-col will-change-transform"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
-                <button
-                  onClick={() => {
-                    handleTabChange("home");
-                    setMobileMenuOpen(false);
-                  }}
-                  className="flex items-center gap-3 active:scale-95 transition-transform text-right"
-                >
-                  <div className="w-8 h-8 bg-mood-primary rounded-lg flex items-center justify-center shadow-lg shadow-mood-glow">
-                    <Globe className="w-4 h-4 text-white" />
-                  </div>
-                  <span className="font-bold text-lg text-black">تبيان</span>
-                </button>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 bg-zinc-200/50 rounded-full text-zinc-600 hover:text-black"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1.5">
-                {[
-                  {
-                    id: "home",
-                    label: language === "ar" ? "اسأل تبيان" : "Ask Tebyan",
-                    icon: Search,
-                  },
-                  {
-                    id: "discover",
-                    label:
-                      language === "ar"
-                        ? "المشكاة — كل الأدوات"
-                        : "Mishkat — all tools",
-                    icon: Lamp,
-                  },
-                  {
-                    id: "rukni",
-                    label:
-                      language === "ar" ? "ركني — مكتبتي ونقاطي" : "My corner",
-                    icon: LibraryBig,
-                  },
-                  {
-                    id: "loyalty",
-                    label:
-                      language === "ar"
-                        ? "تقدمي ومكافآتي"
-                        : "Progress and rewards",
-                    icon: TicketPercent,
-                  },
-                  {
-                    id: "contact",
-                    label: language === "ar" ? "تواصل معنا" : "Contact us",
-                    icon: Mail,
-                  },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      // Warm the route while the finger is still down. The bottom
-                      // dock used to do this; the drawer is the only way in now.
-                      onPointerDown={() => {
-                        if (item.id === "home")
-                          void import("./components/SmartGateway");
-                        if (item.id === "discover")
-                          void import("./components/ServiceExplorer");
-                      }}
-                      onClick={() => handleTabChange(item.id as Tab)}
-                      className={cn(
-                        "w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black transition-colors",
-                        activeTab === item.id
-                          ? "bg-[#182231] text-white"
-                          : "text-[#465568] hover:bg-[#F5F3F8]",
-                      )}
-                    >
-                      <Icon
-                        className={cn(
-                          "h-5 w-5 shrink-0",
-                          activeTab === item.id
-                            ? "text-white"
-                            : "text-[#8E7AAE]",
-                        )}
-                      />
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
-
-                <div className="my-3 h-px bg-zinc-100" />
-
-                <PWAHeaderButton variant="menu" language={language} />
-                <button
-                  type="button"
-                  onClick={() =>
-                    setLanguage((value) => (value === "ar" ? "en" : "ar"))
-                  }
-                  className="w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black text-[#465568] hover:bg-[#F5F3F8]"
-                >
-                  <Globe className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
-                  <span>{language === "ar" ? "English" : "العربية"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    window.dispatchEvent(
-                      new CustomEvent("tebyan_open_onboarding"),
-                    );
-                  }}
-                  className="w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black text-[#465568] hover:bg-[#F5F3F8]"
-                >
-                  <HelpCircle className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
-                  <span>
-                    {language === "ar" ? "دليل الاستخدام" : "How to use Tebyan"}
-                  </span>
-                </button>
-              </div>
-
-              <div className="border-t border-zinc-100 bg-zinc-50/60 p-4 space-y-2">
-                {authReady && !user && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowLogin(true);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full min-h-12 rounded-[16px] bg-[#182231] px-4 text-sm font-black text-white"
-                  >
-                    {language === "ar"
-                      ? "تسجيل الدخول للحفظ والمتابعة"
-                      : "Sign in to save and continue"}
-                  </button>
-                )}
-                {user && (
-                  <>
-                    <div className="flex min-h-12 items-center justify-between rounded-[16px] border border-zinc-200 bg-white px-4">
-                      <div className="flex items-center gap-3 text-sm font-black text-[#182231]">
-                        <User className="h-5 w-5 text-[#8E7AAE]" />
-                        <span>
-                          {language === "ar" ? "حسابي" : "My account"}
-                        </span>
-                      </div>
-                      <React.Suspense fallback={null}>
-                        <UserMenu />
-                      </React.Suspense>
-                    </div>
-                    {(profile?.role === "admin" ||
-                      user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-                      user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-                      user?.email
-                        ?.toLowerCase()
-                        .includes("alfailakawidrahmad") ||
-                      user?.email?.toLowerCase().includes("dr.ahmad")) && (
-                      <button
-                        type="button"
-                        onClick={() => handleTabChange("admindashboard")}
-                        className="w-full min-h-12 rounded-[16px] bg-zinc-900 px-4 text-sm font-black text-white"
-                      >
-                        {language === "ar" ? "لوحة الإدارة" : "Admin dashboard"}
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        [
-                          "tebyan_memory",
-                          "tebyan_cognitive_memory",
-                          "tebyan_sage_progress",
-                          "tebyan_search_history",
-                          "tebyan_usage_stats",
-                          "tebyan_analytics_logs",
-                          "tebyan_galaxy_cache",
-                          "tebyan_custom_avatar",
-                          "tebyan_style_confirmed",
-                        ].forEach((key) => localStorage.removeItem(key));
-                        import("./lib/firebase").then(({ auth }) =>
-                          import("firebase/auth").then(({ signOut }) =>
-                            signOut(auth),
-                          ),
-                        );
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full min-h-12 rounded-[16px] border border-rose-200 bg-white px-4 text-sm font-black text-rose-600"
-                    >
-                      {language === "ar" ? "تسجيل الخروج" : "Sign out"}
-                    </button>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* --- Desktop Sidebar Removed --- */}
 
       <main
         ref={mainRef}
