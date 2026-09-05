@@ -38,9 +38,9 @@ const head = (title, description, url) => `<!doctype html>
 <meta property="og:url" content="${url}">
 <meta property="og:image" content="${SITE}/og-tabyan-v2.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600&family=Amiri:wght@400;700&display=swap">
+<!-- Same self-hosted faces the app shell uses, so a reader arriving straight on a qawl
+     page gets type from our origin and, once installed, offline. -->
+<link rel="stylesheet" href="/fonts/fonts.css">
 <style>
   :root{--paper:#FBF8F1;--surface:#fff;--ink:#29241C;--muted:#7C7361;--line:#E9E1CF;
   --accent:#8A6B2B;--accent-soft:#F4EDDD;--lilac:#8E7AAE;
