@@ -1459,7 +1459,7 @@ const AppContent: React.FC = () => {
           <div className="hidden md:block">
             <PWAHeaderButton language={language} />
           </div>
-          <div className="hidden md:block">
+          <div className="block">
             <React.Suspense fallback={null}>
               {user ? (
                 <UserMenu />
@@ -1556,6 +1556,14 @@ const AppContent: React.FC = () => {
                     <button
                       key={item.id}
                       type="button"
+                      // Warm the route while the finger is still down. The bottom
+                      // dock used to do this; the drawer is the only way in now.
+                      onPointerDown={() => {
+                        if (item.id === "home")
+                          void import("./components/SmartGateway");
+                        if (item.id === "discover")
+                          void import("./components/ServiceExplorer");
+                      }}
                       onClick={() => handleTabChange(item.id as Tab)}
                       className={cn(
                         "w-full min-h-12 flex items-center gap-3 rounded-[16px] px-4 text-right text-sm font-black transition-colors",
@@ -1683,63 +1691,12 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <nav
-        className="tebyan-mobile-dock fixed inset-x-5 bottom-[calc(env(safe-area-inset-bottom)+8px)] z-40 grid grid-cols-3 gap-1 rounded-[20px] border border-[#8FA9C7]/18 bg-white/94 p-1 shadow-[0_12px_34px_rgba(24,34,49,0.12)] md:hidden"
-        aria-label={
-          language === "ar" ? "التنقل الرئيسي" : "Primary navigation"
-        }
-      >
-        {[
-          {
-            id: "home",
-            label: language === "ar" ? "اسأل" : "Ask",
-            icon: Search,
-          },
-          {
-            id: "discover",
-            label: language === "ar" ? "المشكاة" : "Mishkat",
-            icon: Lamp,
-          },
-          {
-            id: "rukni",
-            label: language === "ar" ? "ركني" : "My corner",
-            icon: LibraryBig,
-          },
-        ].map((item) => {
-          const Icon = item.icon;
-          const selected = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onPointerDown={() => {
-                if (item.id === "home")
-                  void import("./components/SmartGateway");
-                if (item.id === "discover")
-                  void import("./components/ServiceExplorer");
-              }}
-              onClick={() => handleTabChange(item.id as Tab)}
-              className={cn(
-                "min-h-[46px] rounded-[15px] text-[11px] font-black transition-colors duration-100 flex items-center justify-center gap-1.5 active:scale-[0.97]",
-                selected
-                  ? "bg-[#182231] text-white shadow-sm"
-                  : "text-[#64788D] active:bg-[#F4F0F8]",
-              )}
-            >
-              <Icon className="h-4 w-4" />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-
       {/* --- Desktop Sidebar Removed --- */}
 
       <main
         ref={mainRef}
         className={cn(
-          "flex-1 w-full min-h-0 pt-24 md:pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
-          "pb-20 md:pb-0",
+          "flex-1 w-full min-h-0 pt-24 pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
           `tebyan-route-${activeTab}`,
         )}
       >
