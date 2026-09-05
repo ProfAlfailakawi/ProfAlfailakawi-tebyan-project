@@ -295,22 +295,32 @@ const pickJourneyProfile = (
 const JOURNEY_DOOR_ORDER: Record<string, string[]> = {
   decision: [
     "decisionroom",
-    "qawlfasl",
     "strategicarena",
-    "knowledgecenter",
+    "council",
     "oracle",
+    "simulation",
+    "qawlfasl",
+    "timemachine",
+    "knowledgecenter",
+    "roadmap",
     "ripple",
   ],
   conflict: [
     "qawlfasl",
-    "simulation_roleplay",
+    "simulation",
+    "council",
     "strategicarena",
     "oracle",
     "knowledgecenter",
     "decisionroom",
+    "truthmanuscript",
   ],
   idea: [
     "creativelab",
+    "lab",
+    "story",
+    "mindmap",
+    "ar",
     "oracle",
     "knowledgecenter",
     "strategicarena",
@@ -318,25 +328,35 @@ const JOURNEY_DOOR_ORDER: Record<string, string[]> = {
     "decisionroom",
   ],
   execution: [
-    "knowledgecenter",
     "roadmap",
+    "growth",
+    "analytics",
     "strategicarena",
+    "quizzes",
+    "knowledgecenter",
     "qawlfasl",
     "oracle",
     "decisionroom",
   ],
   future: [
     "strategicarena",
+    "timemachine",
     "decisionroom",
     "oracle",
     "knowledgecenter",
+    "roadmap",
     "qawlfasl",
     "ripple",
   ],
   understanding: [
+    "ask",
     "oracle",
     "knowledgecenter",
+    "concepts",
+    "mindmap",
     "qawlfasl",
+    "story",
+    "truthmanuscript",
     "strategicarena",
     "creativelab",
     "decisionroom",
@@ -585,23 +605,7 @@ const DOOR_COPY: Record<
 };
 
 const LEGACY_DOOR_ALIAS: Record<string, string> = {
-  oracle: "ask",
-  concepts: "ask",
-  mindmap: "ask",
-  story: "ask",
-  timemachine: "ask",
-  truthmanuscript: "ask",
-  council: "decisionroom",
-  strategicarena: "decisionroom",
-  creativelab: "lab",
-  ar: "lab",
-  knowledgecenter: "growth",
-  quizzes: "growth",
-  analytics: "growth",
-  roadmap: "growth",
-  loyalty: "rukni",
-  contact: "rukni",
-  mylibrary: "rukni",
+  simulation_roleplay: "simulation",
 };
 
 const decorateJourneyDoors = (
@@ -1079,6 +1083,7 @@ export const SmartGateway: React.FC<
   const [exampleIndex, setExampleIndex] = useState(0);
   const [inputSettled, setInputSettled] = useState(false);
   const [showQuestionHelper, setShowQuestionHelper] = useState(false);
+  const enablePreQuestionAssist = false;
   const [isMobileViewport, setIsMobileViewport] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -3541,6 +3546,7 @@ export const SmartGateway: React.FC<
 
               {!hasSearched &&
                 !isThinking &&
+                enablePreQuestionAssist &&
                 liveQuestionOptions.length > 0 && (
                   <div
                     className="tebyan-live-suggestions mx-auto mt-3 w-full max-w-3xl"
@@ -3578,6 +3584,7 @@ export const SmartGateway: React.FC<
 
               {!hasSearched &&
                 !isThinking &&
+                enablePreQuestionAssist &&
                 inputSettled &&
                 liveQuestionOptions.length === 0 &&
                 instantSearch.results.length > 0 && (
@@ -3609,6 +3616,7 @@ export const SmartGateway: React.FC<
                   لأن البطاقة تحمل الزر بداخلها ولا داعي لتكرار نفس الدعوة مرتين. */}
               {!hasSearched &&
                 !isThinking &&
+                enablePreQuestionAssist &&
                 inputSettled &&
                 !showClarityCard &&
                 searchValue.trim().length >= 8 && (
@@ -3635,6 +3643,7 @@ export const SmartGateway: React.FC<
 
               {!hasSearched &&
                 !isThinking &&
+                enablePreQuestionAssist &&
                 showQuestionHelper &&
                 searchValue.trim().length >= 3 && (
                   <div className="mt-4 w-full max-w-3xl mx-auto">
@@ -3664,6 +3673,7 @@ export const SmartGateway: React.FC<
               {/* الأبواب تنتظر أن تستقر الصياغة: لا تُعرض مع قائمة "يمكن أن تقصد". */}
               {!hasSearched &&
                 !isThinking &&
+                enablePreQuestionAssist &&
                 inputSettled &&
                 liveQuestionOptions.length === 0 &&
                 liveTypingDoors.length > 0 && (
@@ -3698,7 +3708,7 @@ export const SmartGateway: React.FC<
                   </div>
                 )}
 
-              {showClarityCard && questionClarity && (
+              {enablePreQuestionAssist && showClarityCard && questionClarity && (
                 <div
                   className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#D8C58A]/22 bg-[#FFFDF4]/78 px-4 py-3 tebyan-focus-keep text-right"
                   dir={language === "ar" ? "rtl" : "ltr"}
@@ -4140,21 +4150,6 @@ export const SmartGateway: React.FC<
                     </div>
                   );
                 })()}
-                <button
-                  type="button"
-                  onClick={() => setShowInspiration((value) => !value)}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[#C9BEDF]/34 bg-white/60 px-4 py-2 text-xs font-black text-[#7C8796] shadow-sm transition-all hover:bg-white hover:text-[#6E5F8E] active:scale-[0.98]"
-                  aria-expanded={showInspiration}
-                >
-                  <Sparkles className="h-4 w-4" />
-                  {showInspiration
-                    ? language === "ar"
-                      ? "إخفاء مساحة الاستكشاف"
-                      : "Hide discovery space"
-                    : language === "ar"
-                      ? "استكشف شيئاً جديداً اليوم"
-                      : "Discover something new today"}
-                </button>
               </div>
 
 
@@ -4166,7 +4161,7 @@ export const SmartGateway: React.FC<
           )}
 
           {/* Dynamic Suggestion Chips - hidden until requested */}
-          {showInspiration && !hasSearched && !isThinking && (
+          {enablePreQuestionAssist && showInspiration && !hasSearched && !isThinking && (
             <div className="mt-4 flex overflow-x-auto pb-3 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full px-1">
               {proactiveInsights.dynamicSuggests.map((chip, idx) => (
                 <button
@@ -4209,7 +4204,7 @@ export const SmartGateway: React.FC<
         </div>
       </div>
 
-      {!hasSearched && showInspiration && (
+      {enablePreQuestionAssist && !hasSearched && showInspiration && (
         <>
           {/* Ephemeral Wisdom Feature (FOMO) — compact whisper */}
           <div className="mt-4">

@@ -1411,48 +1411,6 @@ const AppContent: React.FC = () => {
             </span>
           </button>
 
-          <nav
-            className="hidden md:flex items-center gap-1 border-r border-[#8FA9C7]/14 pr-3"
-            aria-label={
-              language === "ar" ? "التنقل الرئيسي" : "Primary navigation"
-            }
-          >
-            {[
-              {
-                id: "home",
-                label: language === "ar" ? "اسأل" : "Ask",
-                icon: Search,
-              },
-              {
-                id: "discover",
-                label: language === "ar" ? "المشكاة" : "Mishkat",
-                icon: Lamp,
-              },
-              {
-                id: "rukni",
-                label: language === "ar" ? "ركني" : "My corner",
-                icon: LibraryBig,
-              },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleTabChange(item.id as Tab)}
-                  className={cn(
-                    "min-h-10 rounded-xl px-3.5 text-sm font-black transition-all flex items-center gap-2",
-                    activeTab === item.id
-                      ? "bg-[#182231] text-white shadow-sm"
-                      : "text-[#64788D] hover:bg-[#F4F0F8] hover:text-[#182231]",
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </button>
-              );
-            })}
-          </nav>
         </div>
 
         <div className="tebyan-header-actions flex items-center gap-1 pointer-events-auto">
@@ -1693,57 +1651,55 @@ const AppContent: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {(activeTab === "discover" || activeTab === "mylibrary" || activeTab === "rukni") && (
-        <nav
-          className="tebyan-mobile-dock fixed inset-x-5 bottom-[calc(env(safe-area-inset-bottom)+8px)] z-40 grid grid-cols-3 gap-1 rounded-[20px] border border-[#8FA9C7]/18 bg-white/94 p-1 shadow-[0_12px_34px_rgba(24,34,49,0.12)] md:hidden"
-          aria-label={
-            language === "ar" ? "التنقل الرئيسي" : "Primary navigation"
-          }
-        >
-          {[
-            {
-              id: "home",
-              label: language === "ar" ? "اسأل" : "Ask",
-              icon: Search,
-            },
-            {
-              id: "discover",
-              label: language === "ar" ? "المشكاة" : "Mishkat",
-              icon: Lamp,
-            },
-            {
-              id: "rukni",
-              label: language === "ar" ? "ركني" : "My corner",
-              icon: LibraryBig,
-            },
-          ].map((item) => {
-            const Icon = item.icon;
-            const selected = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onPointerDown={() => {
-                  if (item.id === "home")
-                    void import("./components/SmartGateway");
-                  if (item.id === "discover")
-                    void import("./components/ServiceExplorer");
-                }}
-                onClick={() => handleTabChange(item.id as Tab)}
-                className={cn(
-                  "min-h-[46px] rounded-[15px] text-[11px] font-black transition-colors duration-100 flex items-center justify-center gap-1.5 active:scale-[0.97]",
-                  selected
-                    ? "bg-[#182231] text-white shadow-sm"
-                    : "text-[#64788D] active:bg-[#F4F0F8]",
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-      )}
+      <nav
+        className="tebyan-mobile-dock fixed inset-x-5 bottom-[calc(env(safe-area-inset-bottom)+8px)] z-40 grid grid-cols-3 gap-1 rounded-[20px] border border-[#8FA9C7]/18 bg-white/94 p-1 shadow-[0_12px_34px_rgba(24,34,49,0.12)] md:hidden"
+        aria-label={
+          language === "ar" ? "التنقل الرئيسي" : "Primary navigation"
+        }
+      >
+        {[
+          {
+            id: "home",
+            label: language === "ar" ? "اسأل" : "Ask",
+            icon: Search,
+          },
+          {
+            id: "discover",
+            label: language === "ar" ? "المشكاة" : "Mishkat",
+            icon: Lamp,
+          },
+          {
+            id: "rukni",
+            label: language === "ar" ? "ركني" : "My corner",
+            icon: LibraryBig,
+          },
+        ].map((item) => {
+          const Icon = item.icon;
+          const selected = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              type="button"
+              onPointerDown={() => {
+                if (item.id === "home")
+                  void import("./components/SmartGateway");
+                if (item.id === "discover")
+                  void import("./components/ServiceExplorer");
+              }}
+              onClick={() => handleTabChange(item.id as Tab)}
+              className={cn(
+                "min-h-[46px] rounded-[15px] text-[11px] font-black transition-colors duration-100 flex items-center justify-center gap-1.5 active:scale-[0.97]",
+                selected
+                  ? "bg-[#182231] text-white shadow-sm"
+                  : "text-[#64788D] active:bg-[#F4F0F8]",
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </nav>
 
       {/* --- Desktop Sidebar Removed --- */}
 
@@ -1751,9 +1707,7 @@ const AppContent: React.FC = () => {
         ref={mainRef}
         className={cn(
           "flex-1 w-full min-h-0 pt-24 md:pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
-          activeTab === "discover" || activeTab === "mylibrary" || activeTab === "rukni"
-            ? "pb-20"
-            : "pb-3",
+          "pb-20 md:pb-0",
           `tebyan-route-${activeTab}`,
         )}
       >

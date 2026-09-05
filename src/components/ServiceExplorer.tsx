@@ -271,10 +271,10 @@ export const ServiceExplorer: React.FC<Props> = ({
                       )}
                     </div>
                     <h3 className="mt-3 text-[15px] font-black leading-6 text-[#182231] md:text-base">
-                      {getServiceLabel(service, language)}
+                      {getServiceBrand(service, language)}
                     </h3>
                     <p className="mt-0.5 text-[11px] font-black text-[#8E7AAE]">
-                      {getServiceBrand(service, language)}
+                      {getServiceLabel(service, language)}
                     </p>
                     <p className="mt-2 flex-1 text-[13px] font-bold leading-6 text-[#64788D]">
                       {getServiceDescription(service, language)}
