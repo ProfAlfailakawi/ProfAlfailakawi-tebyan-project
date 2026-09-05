@@ -18,12 +18,15 @@ export default function UserMenu() {
   const [savedAvatar, setSavedAvatar] = useState('default');
   
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
+    // This menu is reachable on phones now, and a tap does not always deliver a
+    // mousedown before the menu would need to close, so listen for the touch too.
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
     
     // Listen to local storage changes for avatar immediately if possible, or just interval/event
     const interval = setInterval(() => {
@@ -32,6 +35,7 @@ export default function UserMenu() {
 
     return () => {
         document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("touchstart", handleClickOutside);
         clearInterval(interval);
     }
   }, []);

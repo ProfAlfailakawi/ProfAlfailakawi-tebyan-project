@@ -3562,11 +3562,7 @@ body:not(.zen-idle)::after {
 
 /* Visual recovery + faster touch feedback after the UX architecture update. */
 .tebyan-header-actions,
-.tebyan-header-actions button,
-.tebyan-mobile-dock button,
-
-.tebyan-header-actions button,
-.tebyan-mobile-dock button {
+.tebyan-header-actions button {
   transition-property:
     color, background-color, border-color, transform, opacity !important;
   transition-duration: 100ms !important;
@@ -3654,29 +3650,6 @@ body:not(.zen-idle)::after {
     height: 2.55rem !important;
     border-radius: 0.95rem !important;
     box-shadow: 0 8px 24px rgba(142, 122, 174, 0.16) !important;
-  }
-
-  .tebyan-mobile-dock {
-    inset-inline: 1rem !important;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem) !important;
-    padding: 0.22rem !important;
-    border-radius: 17px !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  .tebyan-mobile-dock button {
-    min-height: 43px !important;
-    border-radius: 13px !important;
-    font-size: 0.72rem !important;
-    line-height: 1 !important;
-    white-space: nowrap !important;
-    overflow-wrap: normal !important;
-  }
-
-  .tebyan-mobile-dock button span {
-    max-width: none !important;
-    white-space: nowrap !important;
   }
 
   .tebyan-service-filter {
@@ -3950,49 +3923,6 @@ body:not(.zen-idle)::after {
     height: 0.9rem !important;
   }
 
-  /* Smaller, quieter bottom navigation with guaranteed content clearance. */
-  .tebyan-mobile-dock {
-    inset-inline: 0.7rem !important;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.38rem) !important;
-    min-height: 3rem !important;
-    padding: 0.18rem !important;
-    gap: 0.12rem !important;
-    border-radius: 1rem !important;
-    background: rgba(255, 255, 255, 0.97) !important;
-    box-shadow: 0 10px 28px rgba(24, 34, 49, 0.11) !important;
-  }
-
-  .tebyan-mobile-dock button {
-    min-height: 2.62rem !important;
-    height: 2.62rem !important;
-    padding: 0 0.35rem !important;
-    gap: 0.3rem !important;
-    border-radius: 0.78rem !important;
-    font-size: 0.68rem !important;
-    line-height: 1 !important;
-    font-weight: 750 !important;
-  }
-
-  .tebyan-mobile-dock button svg {
-    width: 0.98rem !important;
-    height: 0.98rem !important;
-  }
-
-  /* The contact bubble remains available, but no longer sits on top of dock labels. */
-  body:has(.tebyan-mobile-dock) .global-floating-buttons {
-    right: 0.72rem !important;
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 3.82rem) !important;
-    width: 2.45rem !important;
-    height: 2.45rem !important;
-    min-width: 2.45rem !important;
-    min-height: 2.45rem !important;
-    box-shadow: 0 8px 22px rgba(24, 34, 49, 0.11) !important;
-  }
-
-  body:has(.tebyan-mobile-dock) .global-floating-buttons svg {
-    width: 1rem !important;
-    height: 1rem !important;
-  }
 }
 
 @media (max-width: 380px) {
