@@ -297,20 +297,51 @@ const LighthouseMode = React.lazy(() =>
 const SplashScreen = ({
   onFinish,
   language,
+  ready = false,
 }: {
   onFinish: () => void;
   language: "ar" | "en";
+  ready?: boolean;
 }) => {
+  const mountedAt = useRef(Date.now());
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Deliberately unhurried. The mark's pathLength draw runs to ~1.6s and the
+    // wordmark and tagline land at 0.9s / 1.25s, so the floor is set at 2200ms:
+    // long enough for the draw to complete plus a beat to read the line. The
+    // ceiling stays at the original 2600ms, so a slow auth can lengthen the hold
+    // only within the choreography and never trap the splash. The response to
+    // readiness is on the SLOW side only — this never gets shorter than 2200ms,
+    // because a sub-second splash reads as a glitch rather than a brand moment.
+    const reduce =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Reduced motion: the mark is painted complete rather than drawn, so there
+    // is no draw to wait for — but still hold it long enough to register as a
+    // deliberate screen instead of a flash.
+    const MIN_FLOOR = reduce ? 1200 : 2200;
+    const MAX_HOLD = reduce ? 1200 : 2600;
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
       try {
         sessionStorage.setItem("tebyan_gate_to_search", "true");
         window.dispatchEvent(new CustomEvent("tebyan_gate_to_search"));
       } catch (e) {}
       onFinish();
-    }, 2600);
-    return () => clearTimeout(timer);
-  }, [onFinish]);
+    };
+    const elapsed = Date.now() - mountedAt.current;
+    const maxTimer = setTimeout(finish, Math.max(0, MAX_HOLD - elapsed));
+    let readyTimer: ReturnType<typeof setTimeout> | undefined;
+    if (ready) {
+      readyTimer = setTimeout(finish, Math.max(0, MIN_FLOOR - elapsed));
+    }
+    return () => {
+      clearTimeout(maxTimer);
+      if (readyTimer) clearTimeout(readyTimer);
+    };
+  }, [onFinish, ready]);
 
   return (
     <motion.div
@@ -1245,6 +1276,7 @@ const AppContent: React.FC = () => {
               setShowSplash(false);
             }}
             language={language}
+            ready={authReady}
           />
         )}
         {isOffline && !showSplash && (

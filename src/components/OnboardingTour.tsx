@@ -4,6 +4,11 @@ import { ArrowLeft, X } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { cn } from "../lib/utils";
 
+const prefersReducedMotion = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 /**
  * دليل البداية — «ثلاث ومضات»
  * علامة تبيان تُبنى أمام الزائر خطوة خطوة:
@@ -13,8 +18,12 @@ import { cn } from "../lib/utils";
 const ProgressiveMark = ({ stage }: { stage: number }) => {
   const stroke = "#8E7AAE";
   const gold = "#A68F58";
+  const reduce = prefersReducedMotion();
   const drawn = { pathLength: 1, opacity: 1 };
   const hidden = { pathLength: 0, opacity: 0 };
+  // Respect prefers-reduced-motion: draw the mark instantly instead of tracing it.
+  const draw = (delay: number, duration: number, ease: any) =>
+    reduce ? { duration: 0 } : { duration, delay, ease };
   return (
     <svg width={120} height={120} viewBox="0 0 96 96" fill="none" aria-hidden>
       <motion.path
@@ -24,7 +33,7 @@ const ProgressiveMark = ({ stage }: { stage: number }) => {
         strokeLinecap="round"
         initial={hidden}
         animate={stage >= 0 ? drawn : hidden}
-        transition={{ duration: 0.8, ease: [0.65, 0, 0.35, 1] }}
+        transition={draw(0, 0.8, [0.65, 0, 0.35, 1])}
       />
       <motion.path
         d="M18 78 H78"
@@ -33,7 +42,7 @@ const ProgressiveMark = ({ stage }: { stage: number }) => {
         strokeLinecap="round"
         initial={hidden}
         animate={stage >= 0 ? drawn : hidden}
-        transition={{ duration: 0.5, delay: 0.5, ease: "easeOut" }}
+        transition={draw(0.5, 0.5, "easeOut")}
       />
       <motion.path
         d="M48 66 V40"
@@ -42,7 +51,7 @@ const ProgressiveMark = ({ stage }: { stage: number }) => {
         strokeLinecap="round"
         initial={hidden}
         animate={stage >= 1 ? drawn : hidden}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={draw(0, 0.6, "easeOut")}
       />
       <motion.circle
         cx="48"
@@ -51,7 +60,7 @@ const ProgressiveMark = ({ stage }: { stage: number }) => {
         fill={gold}
         initial={{ scale: 0, opacity: 0 }}
         animate={stage >= 2 ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-        transition={{ duration: 0.45, ease: "easeOut" }}
+        transition={reduce ? { duration: 0 } : { duration: 0.45, ease: "easeOut" }}
       />
     </svg>
   );
@@ -66,29 +75,72 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
     ? `tebyan_onboarding_seen_v3_${user.uid}`
     : "tebyan_onboarding_seen_v3_guest";
 
-  const openTour = (force = false) => {
+  const openTour = () => {
     setStep(0);
     setIsOpen(true);
-    if (!force) {
+  };
+
+  const markSeen = () => {
+    try {
       localStorage.setItem(tourKey, "true");
       localStorage.setItem("tebyan_onboarding_seen_v3", "true");
+    } catch {
+      /* storage unavailable — ignore */
     }
   };
 
-  // The guide remains available on demand from the menu. It never interrupts
-  // a first visit: the interface should explain itself through use, not a modal.
+  const closeTour = () => {
+    markSeen();
+    setIsOpen(false);
+  };
+
+  // Auto-open the guide once for first-time visitors. It fires only when the
+  // "seen" key for the current identity (uid or guest) is absent, and never
+  // stacks on top of the splash: if the splash is still on screen it waits for
+  // the `tebyan_gate_to_search` handover, then lets the interface settle for a
+  // beat before the modal arrives. The menu item replays it on demand via the
+  // `tebyan_open_onboarding` event.
+  useEffect(() => {
+    let seen = false;
+    try {
+      seen = localStorage.getItem(tourKey) === "true";
+    } catch {
+      seen = true; // if storage is blocked, don't nag on every visit
+    }
+    if (seen) return;
+
+    let timer: number | undefined;
+    const schedule = () => {
+      if (timer !== undefined) return;
+      timer = window.setTimeout(() => openTour(), 900);
+    };
+
+    let splashDone = true;
+    try {
+      splashDone = sessionStorage.getItem("tebyan_splash_seen") === "true";
+    } catch {
+      /* storage unavailable — assume the splash is not blocking */
+    }
+
+    if (splashDone) {
+      schedule();
+      return () => {
+        if (timer !== undefined) window.clearTimeout(timer);
+      };
+    }
+
+    window.addEventListener("tebyan_gate_to_search", schedule);
+    return () => {
+      window.removeEventListener("tebyan_gate_to_search", schedule);
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [tourKey]);
 
   useEffect(() => {
-    const handler = () => openTour(true);
+    const handler = () => openTour();
     window.addEventListener("tebyan_open_onboarding", handler);
     return () => window.removeEventListener("tebyan_open_onboarding", handler);
   }, []);
-
-  const closeTour = () => {
-    localStorage.setItem(tourKey, "true");
-    localStorage.setItem("tebyan_onboarding_seen_v3", "true");
-    setIsOpen(false);
-  };
 
   useEffect(() => {
     if (!isOpen) return;
