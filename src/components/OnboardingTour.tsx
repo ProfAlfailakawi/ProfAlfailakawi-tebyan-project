@@ -95,9 +95,11 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
   };
 
   // Auto-open the guide once for first-time visitors. It fires only when the
-  // "seen" key for the current identity (uid or guest) is absent, after a small
-  // delay so it never competes with auth resolution or the first paint. The menu
-  // item replays it on demand via the `tebyan_open_onboarding` event.
+  // "seen" key for the current identity (uid or guest) is absent, and never
+  // stacks on top of the splash: if the splash is still on screen it waits for
+  // the `tebyan_gate_to_search` handover, then lets the interface settle for a
+  // beat before the modal arrives. The menu item replays it on demand via the
+  // `tebyan_open_onboarding` event.
   useEffect(() => {
     let seen = false;
     try {
@@ -106,8 +108,32 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
       seen = true; // if storage is blocked, don't nag on every visit
     }
     if (seen) return;
-    const timer = window.setTimeout(() => openTour(), 1200);
-    return () => window.clearTimeout(timer);
+
+    let timer: number | undefined;
+    const schedule = () => {
+      if (timer !== undefined) return;
+      timer = window.setTimeout(() => openTour(), 900);
+    };
+
+    let splashDone = true;
+    try {
+      splashDone = sessionStorage.getItem("tebyan_splash_seen") === "true";
+    } catch {
+      /* storage unavailable — assume the splash is not blocking */
+    }
+
+    if (splashDone) {
+      schedule();
+      return () => {
+        if (timer !== undefined) window.clearTimeout(timer);
+      };
+    }
+
+    window.addEventListener("tebyan_gate_to_search", schedule);
+    return () => {
+      window.removeEventListener("tebyan_gate_to_search", schedule);
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
   }, [tourKey]);
 
   useEffect(() => {

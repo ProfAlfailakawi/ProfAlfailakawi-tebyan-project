@@ -17,7 +17,8 @@
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
     </noscript>
-    <link rel="icon" type="image/png" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="/seo-fallback.css" />
@@ -68,9 +69,102 @@
         ]
       }
     </script>
+    <style>
+      /* Pre-React boot splash (markup lives at the top of #root). */
+      #tebyan-boot {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        background: #f8f5ef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: env(safe-area-inset-top) env(safe-area-inset-right)
+          env(safe-area-inset-bottom) env(safe-area-inset-left);
+        opacity: 1;
+        transition: opacity 300ms ease;
+      }
+      #tebyan-boot.is-done {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .tebyan-boot__stack {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+      }
+      .tebyan-boot__mark {
+        display: block;
+        animation: tebyan-boot-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+      .tebyan-boot__reserve {
+        height: 76px;
+      }
+      .tebyan-boot__halo {
+        position: absolute;
+        top: 52px;
+        left: 50%;
+        width: 260px;
+        height: 260px;
+        margin: -130px 0 0 -130px;
+        border-radius: 9999px;
+        background: radial-gradient(
+          circle,
+          rgba(142, 122, 174, 0.16) 0%,
+          rgba(166, 143, 88, 0.08) 42%,
+          rgba(248, 245, 239, 0) 70%
+        );
+        animation: tebyan-boot-shimmer 2600ms ease-in-out infinite;
+      }
+      @keyframes tebyan-boot-rise {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: none; }
+      }
+      @keyframes tebyan-boot-shimmer {
+        0%, 100% { opacity: 0.55; transform: scale(0.96); }
+        50% { opacity: 1; transform: scale(1.04); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tebyan-boot__mark,
+        .tebyan-boot__halo { animation: none; }
+        #tebyan-boot { transition: none; }
+      }
+    </style>
   </head>
   <body>
     <div id="root">
+      <!--
+        Pre-React splash. Paints the تبيان mark at the exact geometry, size and
+        optical centre used by <SplashScreen> in src/App.tsx, so the handover to
+        the React splash is invisible. No wordmark here on purpose: El Messiri is
+        not loaded at first paint and would flash in a fallback face.
+        The boot script below moves this node out of #root before React mounts,
+        then cross-fades it away.
+      -->
+      <div id="tebyan-boot" aria-hidden="true">
+        <div class="tebyan-boot__stack">
+          <div class="tebyan-boot__halo"></div>
+          <svg
+            class="tebyan-boot__mark"
+            width="104"
+            height="104"
+            viewBox="0 0 96 96"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M24 78 V46 C24 30 34 20 48 14 C62 20 72 30 72 46 V78" stroke="#8E7AAE" stroke-width="4.5" stroke-linecap="round" />
+            <path d="M18 78 H78" stroke="#8E7AAE" stroke-width="4.5" stroke-linecap="round" />
+            <path d="M48 66 V40" stroke="#A68F58" stroke-width="4" stroke-linecap="round" />
+            <circle cx="48" cy="31" r="5" fill="#A68F58" />
+          </svg>
+          <!-- Reserves the exact height of the wordmark + tagline block in the
+               React splash (48px title + 8px gap + 20px tagline) so the mark
+               keeps the same optical centre across the handover. -->
+          <div class="tebyan-boot__reserve"></div>
+        </div>
+      </div>
       <main class="seo-landing" aria-labelledby="seo-title">
         <div class="seo-landing__halo" aria-hidden="true"></div>
         <section class="seo-landing__hero">
@@ -89,6 +183,27 @@
         <footer class="seo-landing__footer">تبيان — مختبر للفهم، التحليل، والحسم.</footer>
       </main>
     </div>
+    <script>
+      // Move the boot splash out of #root so React's first render cannot wipe it
+      // mid-fade, expose a dismissal hook for main.tsx, and keep a safety timeout
+      // so a failed bundle never leaves the splash stuck on screen.
+      (function () {
+        var boot = document.getElementById("tebyan-boot");
+        if (!boot) return;
+        document.body.appendChild(boot);
+        var removed = false;
+        function dismiss() {
+          if (removed) return;
+          removed = true;
+          boot.classList.add("is-done");
+          window.setTimeout(function () {
+            if (boot.parentNode) boot.parentNode.removeChild(boot);
+          }, 320);
+        }
+        window.__tebyanBootDone = dismiss;
+        window.setTimeout(dismiss, 6000);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

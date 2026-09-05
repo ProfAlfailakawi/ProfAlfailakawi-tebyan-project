@@ -17,14 +17,21 @@ export const TebyanMark = ({
 }) => {
   const stroke = "#8E7AAE";
   const gold = "#A68F58";
-  const draw = animated
+  // Under prefers-reduced-motion, render the completed mark statically —
+  // never a blank or half-drawn glyph.
+  const reduce =
+    typeof window !== "undefined" &&
+    typeof window.matchMedia === "function" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const active = animated && !reduce;
+  const draw = active
     ? {
         initial: { pathLength: 0, opacity: 0 },
         animate: { pathLength: 1, opacity: 1 },
       }
     : {};
   const drawTransition = (delay: number) =>
-    animated
+    active
       ? { duration: 0.9, delay, ease: [0.65, 0, 0.35, 1] as const }
       : undefined;
 
@@ -72,10 +79,10 @@ export const TebyanMark = ({
         cy="31"
         r="5"
         fill={gold}
-        initial={animated ? { scale: 0, opacity: 0 } : undefined}
-        animate={animated ? { scale: 1, opacity: 1 } : undefined}
+        initial={active ? { scale: 0, opacity: 0 } : undefined}
+        animate={active ? { scale: 1, opacity: 1 } : undefined}
         transition={
-          animated
+          active
             ? { duration: 0.45, delay: 1.15, ease: "easeOut" }
             : undefined
         }

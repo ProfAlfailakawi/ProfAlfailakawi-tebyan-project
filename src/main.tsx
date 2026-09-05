@@ -17,6 +17,21 @@ if ('serviceWorker' in navigator) {
 
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
 
+declare global {
+  interface Window {
+    __tebyanBootDone?: () => void;
+  }
+}
+
+// Hand the pre-React boot splash over to <SplashScreen> once React has painted.
+// Both draw the same mark at the same optical centre, so the 300ms cross-fade
+// reads as one continuous screen. index.html keeps a safety timeout of its own.
+const dismissBootSplash = () => {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => window.__tebyanBootDone?.());
+  });
+};
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
@@ -41,3 +56,5 @@ createRoot(document.getElementById('root')!).render(
     </AuthProvider>
   </StrictMode>,
 );
+
+dismissBootSplash();
