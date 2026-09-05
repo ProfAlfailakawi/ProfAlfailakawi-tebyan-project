@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "node fix_script.js && NODE_ENV=development tsx server.ts",
     "start": "node dist/server.js",
-    "build": "node scripts/generate-qawl-pages.mjs && vite build && esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
+    "build": "npm run verify:pwa && node scripts/generate-qawl-pages.mjs && vite build && esbuild server.ts --bundle --platform=node --format=esm --packages=external --outfile=dist/server.js",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "deploy": "npm run build && firebase deploy --only functions:api,hosting,firestore:rules"
+    "deploy": "npm run build && firebase deploy --only functions:api,hosting,firestore:rules",
+    "verify:pwa": "PWA_GUARD_SPLASH_IN_ROOT=ok node scripts/verify-pwa.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
