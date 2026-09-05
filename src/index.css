@@ -4103,7 +4103,12 @@ body:not(.zen-idle)::after {
     box-shadow: none !important;
   }
 
-  .tebyan-floating-nav .tebyan-orb-mark,
+  .tebyan-floating-nav .tebyan-orb-mark {
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+    min-width: 2.75rem !important;
+    min-height: 2.75rem !important;
+  }
 }
 
 @media (max-width: 350px) {
