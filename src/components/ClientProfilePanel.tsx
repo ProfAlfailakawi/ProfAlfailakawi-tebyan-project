@@ -454,49 +454,36 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-xl">{profile.displayName || 'مفكر مجهول'}</h3>
+                    <h3 className="font-bold text-xl">
+                      {profile.displayName && profile.displayName !== 'New User'
+                        ? profile.displayName
+                        : language === 'ar'
+                          ? 'حسابك في تبيان'
+                          : 'Your Tebyan account'}
+                    </h3>
                     <p className="text-sm text-[#64788D]">{profile.email || 'لم يتم ربط البريد'}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Quick Session Overview */}
-            <div className="px-6 py-4 flex gap-4 text-sm font-medium border-b shrink-0 bg-[#F7F5F2] text-[#64788D] border-[#8FA9C7]/15">
-              <div className="flex items-center gap-1.5"><Clock size={14} className="text-[#8E7AAE]"/> الجلسة: {sessionTime} دقيقة</div>
-              <div className="flex items-center gap-1.5"><Activity size={14} className="text-emerald-500"/> أسئلة: {totalQuestions}</div>
-              <div className="flex items-center gap-1.5"><Flame size={14} className="text-orange-500"/> الشعلة: {sageProgress.points}</div>
-            </div>
-
             {/* Tabs */}
-            <div className="flex px-2 pt-2 gap-1 border-b border-zinc-100 shrink-0 overflow-x-auto hide-scrollbar">
+            <div className="grid grid-cols-3 px-2 pt-2 gap-1 border-b border-zinc-100 shrink-0">
               <button 
                 onClick={() => setActiveTab('overview')} 
-                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
+                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
               >
-                النشاط
-              </button>
-              <button
-                onClick={() => setActiveTab('insights')}
-                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors flex items-center justify-center gap-1 ${activeTab === 'insights' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
-              >
-                البصمة <ShieldAlert size={10} className="opacity-50"/>
-              </button>
-              <button 
-                onClick={() => setActiveTab('tasks')} 
-                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'tasks' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
-              >
-                تتبّع
+                ملخص
               </button>
               <button 
                 onClick={() => setActiveTab('tools')} 
-                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors flex items-center justify-center gap-1 ${activeTab === 'tools' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
+                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'tools' || activeTab === 'tasks' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
               >
-                أدوات <Sparkles size={10} className="text-amber-500 animate-pulse"/>
+                حفظ وتتبّع
               </button>
               <button 
                 onClick={() => setActiveTab('settings')} 
-                className={`flex-1 min-w-[70px] py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'settings' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
+                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'settings' ? 'border-[#8E7AAE] text-[#6E5F8E]' : 'border-transparent text-[#7C8796] hover:text-[#6E5F8E] hover:bg-[#F1EEF4]'} rounded-t-lg`}
               >
                 إعدادات
               </button>
@@ -522,7 +509,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="bg-white/70 border border-white/70 rounded-2xl p-3">
                           <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">نشاطي الفكري</div>
-                          <div className="text-sm font-black text-[#182231]">{totalQuestions} سؤال · {preferences.savedLibrary?.length || 0} محفوظ</div>
+                          <div className="text-sm font-black text-[#182231]">{totalQuestions} سؤال · {preferences.savedLibrary?.length || 0} محفوظ · {sessionTime} د</div>
                           <div className="text-[11px] text-[#64788D] mt-1">
                             {hasEnoughSignal
                               ? `أبرز كلمة متكررة: "${frequentKeyword}"`
@@ -541,23 +528,22 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             </div>
                           </div>
                         </div>
+                        <div className="bg-white/70 border border-white/70 rounded-2xl p-3 sm:col-span-2">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">التقدم</div>
+                              <div className="text-sm font-black text-[#182231]">نقاط الاستنارة: {sageProgress.points}</div>
+                              <div className="text-[11px] text-[#64788D] mt-1">كلما زادت الأسئلة النوعية، اتضحت بصمتك أكثر.</div>
+                            </div>
+                            <div className="w-12 h-12 rounded-full border-4 border-[#8E7AAE]/18 flex items-center justify-center text-[#6E5F8E] font-black bg-white">
+                              {sageProgress.level.charAt(0).toUpperCase()}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                   <div>
-                    <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Target size={16} className="text-blue-500"/> مستوى التقدم (Gamification)</h4>
-                    <div className="bg-[#F7F5F2] p-4 rounded-2xl border border-[#8FA9C7]/15 flex gap-4 items-center">
-                        <div className="w-12 h-12 rounded-full border-4 border-[#8E7AAE]/18 flex items-center justify-center text-[#6E5F8E] font-black">
-                            {sageProgress.level.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                            <p className="font-bold text-[#273548]">نقاط الاستنارة: {sageProgress.points}</p>
-                            <p className="text-xs text-[#64788D] mt-1">استمر في طرح الأسئلة العميقة لترقية مستواك.</p>
-                        </div>
-                    </div>
-                  </div>
-
-                  <div>
+	                  <div>
                      <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Medal size={16} className="text-amber-500"/> معرض الأوسمة</h4>
                      {sageProgress.badges.length > 0 ? (
                         <div className="grid grid-cols-3 gap-3">
@@ -801,7 +787,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       {/* Commitments Display */}
                       {commitments.length > 0 && (
                         <button
-                          onClick={() => setActiveTab('tasks')}
+                          onClick={() => setActiveTab('tools')}
                           className="mt-2 w-full text-xs font-black text-[#6E5F8E] bg-[#F1EEF4] hover:bg-[#EAE3EF] rounded-xl py-3 transition-colors flex items-center justify-center gap-2"
                         >
                           <CheckCircle className="w-4 h-4 text-emerald-600" />
@@ -813,8 +799,37 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                 </motion.div>
               )}
 
-              {activeTab === 'tasks' && (
+              {activeTab === 'tools' && (
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
+                    <div className="grid grid-cols-1 gap-3">
+                        <button
+                          type="button"
+                          onClick={openLibrary}
+                          className="flex items-center gap-4 p-4 rounded-2xl border border-amber-100 bg-amber-50 hover:bg-amber-100 transition-colors shadow-sm"
+                        >
+                          <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-white text-amber-500 shadow">
+                            <LibraryBig className="w-5 h-5" />
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-sm text-[#182231]">{language === 'ar' ? 'مكتبتي' : 'My Library'}</div>
+                            <div className="text-xs text-[#64788D] leading-relaxed">{language === 'ar' ? 'افتح الأسئلة والجلسات المحفوظة.' : 'Open saved questions and sessions.'}</div>
+                          </div>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={openKnowledge}
+                          className="flex items-center gap-4 p-4 rounded-2xl border border-[#8E7AAE]/18 bg-[#F1EEF4] hover:bg-[#EAE3EF] transition-colors shadow-sm"
+                        >
+                          <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-white text-[#8E7AAE] shadow">
+                            <Network className="w-5 h-5" />
+                          </div>
+                          <div className="text-right">
+                            <div className="font-bold text-sm text-[#182231]">{language === 'ar' ? 'شبكتي المعرفية' : 'Knowledge Network'}</div>
+                            <div className="text-xs text-[#64788D] leading-relaxed">{language === 'ar' ? 'شاهد روابط أفكارك عندما تحتاج العمق.' : 'See idea connections when you need depth.'}</div>
+                          </div>
+                        </button>
+                    </div>
+
                     <div>
                         <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><ListTodo size={16} className="text-emerald-500"/> متتبع المهام والقرارات</h4>
                         <div className="bg-[#F7F5F2] p-4 rounded-2xl border border-emerald-100/50 mb-4">
@@ -873,7 +888,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                 </motion.div>
               )}
 
-              {activeTab === 'tools' && (
+              {false && activeTab === 'tools' && (
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-8">
 
                     {/* Personal Library & Knowledge Network quick links */}
