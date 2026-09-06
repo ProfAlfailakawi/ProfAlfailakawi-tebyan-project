@@ -25,5 +25,8 @@
     "@types/node-fetch": "^2.6.4",
     "typescript": "^4.9.0"
   },
+  "overrides": {
+    "qs": "6.16.0"
+  },
   "private": true
 }

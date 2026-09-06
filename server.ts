@@ -128,7 +128,7 @@ async function generateWithRetry(operation: () => Promise<any>, label: string = 
             if (!isGeminiBusyError(err)) {
                 throw err;
             }
-            console.warn(`[Server] ${label} busy/high demand on attempt ${attempt + 1}:`, err?.message || err);
+            console.warn("[Server] %s busy/high demand on attempt %s:", label, attempt + 1, err?.message || err);
         }
     }
 
@@ -910,7 +910,7 @@ async function startServer() {
                 const isExpired = firstErrStr.includes("expired") || firstErrStr.includes("api_key_invalid");
                 const isBusy = isGeminiBusyError(firstError);
                 
-                console.warn(`[Server] First AI attempt failed with ${finalModel}:`, firstError.message);
+                console.warn("[Server] First AI attempt failed with %s:", finalModel, firstError.message);
                 
                 if (isExpired || isSuspended) {
                     console.log("[Server] Gemini key is suspended or expired. Activating smart offline fallback.");

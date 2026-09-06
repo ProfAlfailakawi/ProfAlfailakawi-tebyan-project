@@ -433,7 +433,7 @@ const generateWithRetry = async (operation, label = "Gemini request") => {
             if (!isGeminiBusyError(error)) {
                 throw error;
             }
-            console.warn(`${label} busy/high demand on attempt ${attempt + 1}:`, error?.message || error);
+            console.warn("%s busy/high demand on attempt %s:", label, attempt + 1, error?.message || error);
         }
     }
 
