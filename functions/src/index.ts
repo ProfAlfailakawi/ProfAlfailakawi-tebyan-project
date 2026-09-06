@@ -3,8 +3,29 @@ import * as functions from "firebase-functions";
 import fetch from "node-fetch";
 import cors from "cors";
 
-// إعداد CORS للسماح بالطلبات من أي مصدر (Frontend)
-const corsHandler = cors({ origin: true });
+// إعداد CORS: نقتصر على نطاقات المشروع بدل السماح لأي مصدر، حتى لا يستطيع
+// أي موقع طرف ثالث استدعاء الدالة وإنفاق مفتاح Gemini. يمكن تجاوز القائمة
+// عبر متغيّر البيئة TEBYAN_ALLOWED_ORIGINS (مفصولة بفواصل).
+const DEFAULT_ALLOWED_ORIGINS = [
+  "https://tebyan.dr-alfailakawi.com",
+  "https://tebyan-clean-2026.web.app",
+  "https://tebyan-clean-2026.firebaseapp.com",
+];
+const allowedOrigins = () => {
+  const configured = String(process.env.TEBYAN_ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((v) => v.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+  return configured.length > 0 ? configured : DEFAULT_ALLOWED_ORIGINS;
+};
+const corsHandler = cors({
+  origin: (origin, callback) => {
+    // بدون ترويسة Origin: تنقّل من نفس الأصل أو أدوات مثل curl — لا نمنعها.
+    if (!origin) return callback(null, true);
+    const normalized = origin.trim().replace(/\/+$/, "");
+    callback(null, allowedOrigins().includes(normalized));
+  },
+});
 
 export const generateAI = functions.https.onRequest((req, res) => {
   corsHandler(req, res, async () => {
