@@ -1,4 +1,4 @@
-const functions = require("firebase-functions");
+const functions = require("firebase-functions/v1");
 const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -154,9 +154,10 @@ async function appCheckOk(req) {
     if (token) {
         try {
             if (!_adminAppCheck) {
-                const admin = require("firebase-admin");
-                if (!admin.apps.length) admin.initializeApp();
-                _adminAppCheck = admin.appCheck();
+                const { getApps, initializeApp } = require("firebase-admin/app");
+                const { getAppCheck } = require("firebase-admin/app-check");
+                if (!getApps().length) initializeApp();
+                _adminAppCheck = getAppCheck();
             }
             await _adminAppCheck.verifyToken(token);
             verified = true;
