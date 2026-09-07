@@ -2,11 +2,13 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
+// @ts-ignore -- إضافة بلا أنواع: تحقن بصمة البناء وتطبعها في dist/build-id.json و sw.js
+import {buildStamp} from './scripts/build-stamp.mjs';
 
 export default defineConfig(({mode}) => {
   loadEnv(mode, '.', '');
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [react(), tailwindcss(), buildStamp()],
     define: {
       // Gemini API keys must stay server-side in Cloud Functions.
       // Do not inject GEMINI_API_KEY into the frontend bundle.

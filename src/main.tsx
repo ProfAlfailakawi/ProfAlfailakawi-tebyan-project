@@ -3,9 +3,13 @@ import {createRoot} from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
+import { installAppUpdate } from './lib/app-update';
 
 import { AuthProvider } from './components/AuthProvider';
 import AdminRoute from './components/AdminRoute';
+
+// التحديث الذاتي الصامت: بصمة الإصدار، منارتها، ثم التحديث والتصعيد عند اللزوم.
+installAppUpdate();
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
