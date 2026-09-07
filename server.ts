@@ -799,6 +799,28 @@ async function startServer() {
         next();
     });
 
+    /*
+     * نقطة خفيفة تعرض بصمة البناء الحالية: هي الحقيقة الوحيدة التي يقارنها العميل
+     * بثابت الحزمة (__BUILD_ID__)، وتُكتب في dist/build-id.json عند البناء.
+     */
+    let cachedBuildId = "";
+    const currentBuildId = () => {
+        if (cachedBuildId) return cachedBuildId;
+        // الخادم المبني يعيش داخل dist/، والتطوير يعمل من جذر المشروع: نجرّب الاثنين.
+        for (const candidate of [path.join(process.cwd(), "dist", "build-id.json"), path.join(__dirname, "build-id.json")]) {
+            try {
+                cachedBuildId = String(JSON.parse(fs.readFileSync(candidate, "utf8")).build || "");
+            } catch { cachedBuildId = ""; }
+            if (cachedBuildId) return cachedBuildId;
+        }
+        cachedBuildId = process.env.BUILD_ID || "dev";
+        return cachedBuildId;
+    };
+    app.get("/api/version", (_req, res) => {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        res.json({ build: currentBuildId() });
+    });
+
     // Health Endpoint
     app.get("/api/health", (req, res) => {
         const rawGemini = (process.env.GEMINI_API_KEY || "").trim();
@@ -999,7 +1021,7 @@ async function startServer() {
           maxAge: '1y',
           immutable: true,
           setHeaders: (res, filePath) => {
-            if (filePath.endsWith('index.html') || filePath.endsWith('sw.js') || filePath.endsWith('site.webmanifest')) {
+            if (filePath.endsWith('index.html') || filePath.endsWith('sw.js') || filePath.endsWith('build-id.json') || filePath.endsWith('site.webmanifest')) {
               res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
               return;
             }
