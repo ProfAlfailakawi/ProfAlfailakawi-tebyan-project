@@ -30,6 +30,10 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { cn } from "../lib/utils";
+import {
+  TebyanHeroEntrance,
+  consumeHeroEntrancePlay,
+} from "./TebyanHeroEntrance";
 import { logEvent } from "../services/analyticsService";
 import { useUser } from "../contexts/UserContext";
 import { useAuth } from "../components/AuthProvider";
@@ -883,6 +887,24 @@ export const SmartGateway: React.FC<
   const { user, userName, userGender } = useAuth();
   const { state: gamificationState } = useGamification();
   const helpOpacity = Math.max(0, 1 - (gamificationState.level - 1) * 0.35);
+
+  // المدخل السينمائي «نور في مشكاة»: يُقرر مرة واحدة عند أول تركيب
+  // للواجهة الرئيسية في هذا التحميل، ويحترم prefers-reduced-motion.
+  const [entrancePlaying] = useState(
+    () => isHome && consumeHeroEntrancePlay(),
+  );
+  const entranceReveal = (delay: number) =>
+    entrancePlaying
+      ? {
+          initial: { opacity: 0, y: 14 },
+          animate: { opacity: 1, y: 0 },
+          transition: {
+            delay,
+            duration: 0.65,
+            ease: [0.22, 1, 0.36, 1] as const,
+          },
+        }
+      : {};
 
   const { onType, fluidTheme, getFluidStyles, getFluidAmbient } =
     useFluidTyping();
@@ -3294,7 +3316,9 @@ export const SmartGateway: React.FC<
       <div className="flex flex-col mt-0 md:mt-4 mb-6 md:mb-12">
         {/* Title Section always visible */}
         <div className="tebyan-home-hero text-center mb-3 md:mb-7">
-          <header
+          {isHome && <TebyanHeroEntrance play={entrancePlaying} />}
+          <motion.header
+            {...entranceReveal(2.05)}
             className="text-center"
             dir={language === "ar" ? "rtl" : "ltr"}
           >
@@ -3315,14 +3339,14 @@ export const SmartGateway: React.FC<
                 ? "اكتب سؤالك بطريقتك، حتى لو كان غير مرتب."
                 : "Write your question in your own words, even if it is not organized."}
             </p>
-          </header>
+          </motion.header>
         </div>
 
         {!hasSearched && !isThinking && lastInteraction?.query && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.15 }}
+            transition={{ duration: 0.4, delay: entrancePlaying ? 2.45 : 0.15 }}
             className="mx-auto mb-4 flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-2xl border border-[#E5DFD4] bg-white/75 px-5 py-3 text-center"
             dir={language === "ar" ? "rtl" : "ltr"}
           >
@@ -3363,7 +3387,10 @@ export const SmartGateway: React.FC<
 
 
 
-        <div className="relative z-20 flex flex-col items-center justify-center min-h-0">
+        <motion.div
+          {...entranceReveal(2.35)}
+          className="relative z-20 flex flex-col items-center justify-center min-h-0"
+        >
           <MoodBackgroundEffect mood={mood || "default"} />
           <form
             onSubmit={handleSubmit}
@@ -4201,7 +4228,7 @@ export const SmartGateway: React.FC<
               ))}
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
 
       {enablePreQuestionAssist && !hasSearched && showInspiration && (
