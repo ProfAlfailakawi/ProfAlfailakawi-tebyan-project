@@ -830,7 +830,6 @@ async function startServer() {
             status: "ok",
             env: process.env.NODE_ENV || 'development',
             geminiKeyExists: !!rawGemini,
-            geminiKeyLength: rawGemini.length,
             googleApiKeyExists: !!process.env.GOOGLE_API_KEY
         });
     });
@@ -942,7 +941,6 @@ async function startServer() {
                     return res.status(429).json({
                         error: "AI_HIGH_DEMAND",
                         message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
-                        details: firstError.message
                     });
                 } else {
                     const fallbackModel = "gemini-2.5-flash";

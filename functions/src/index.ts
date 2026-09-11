@@ -1,4 +1,10 @@
 // @ts-nocheck
+// ⚠️ GHOST / DO NOT DEPLOY — this file is NOT the live function. ⚠️
+// functions/package.json points `main` at ../index.js (the hardened Express app
+// exporting `api`); `tsc` compiles this file to lib/src/index.js which nothing
+// loads. If this `generateAI` endpoint were ever wired up as-is it would expose
+// the Gemini key with NO rate limiting and NO App Check verification.
+// Any future work belongs in functions/index.js; delete this file after owner review.
 import * as functions from "firebase-functions";
 import fetch from "node-fetch";
 import cors from "cors";
