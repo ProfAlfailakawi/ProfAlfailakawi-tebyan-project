@@ -57,9 +57,16 @@ const PARTICLES: Array<{
 
 export const TebyanHeroEntrance = ({
   play,
+  veiled = false,
   className = "",
 }: {
   play: boolean;
+  /**
+   * أثناء الافتتاحية الكاملة «الظلمة والنور» تبقى العلامة والاسم هنا
+   * محجوبين؛ فإذا انتهت (أو تُخطّيت) ظهرت العلامة في موضعها فوراً
+   * وانبثق الاسم بهدوء — وهو الإيقاع الختامي للافتتاحية.
+   */
+  veiled?: boolean;
   className?: string;
 }) => {
   const draw = (delay: number, dur: number) =>
@@ -82,6 +89,7 @@ export const TebyanHeroEntrance = ({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className="w-[84px] h-[84px] md:w-[108px] md:h-[108px] overflow-visible"
+        style={{ visibility: veiled ? "hidden" : "visible" }}
         role="img"
         aria-label="تبيان — نور في مشكاة"
       >
@@ -198,9 +206,11 @@ export const TebyanHeroEntrance = ({
       {/* الاسم يظهر بعد اكتمال العلامة */}
       <motion.h2
         initial={play ? { opacity: 0, y: 10 } : false}
-        animate={{ opacity: 1, y: 0 }}
+        animate={veiled ? { opacity: 0, y: 10 } : { opacity: 1, y: 0 }}
         transition={
-          play ? { delay: 1.85, duration: 0.55, ease: EASE } : { duration: 0 }
+          play
+            ? { delay: 1.85, duration: 0.55, ease: EASE }
+            : { duration: 0.55, ease: EASE }
         }
         className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-[#182231]"
         dir="rtl"

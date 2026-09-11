@@ -34,6 +34,7 @@ import {
   TebyanHeroEntrance,
   consumeHeroEntrancePlay,
 } from "./TebyanHeroEntrance";
+import { TebyanOverture, consumeOverturePlay } from "./TebyanOverture";
 import { logEvent } from "../services/analyticsService";
 import { useUser } from "../contexts/UserContext";
 import { useAuth } from "../components/AuthProvider";
@@ -890,6 +891,11 @@ export const SmartGateway: React.FC<
 
   // المدخل السينمائي «نور في مشكاة»: يُقرر مرة واحدة عند أول تركيب
   // للواجهة الرئيسية في هذا التحميل، ويحترم prefers-reduced-motion.
+  // الافتتاحية الكاملة «الظلمة والنور»: مرة واحدة لكل جلسة متصفح.
+  // حين تعمل فهي تستهلك المدخل الداخلي أيضاً فلا يُعرض المشهدان معاً.
+  const [overturePlaying, setOverturePlaying] = useState(
+    () => isHome && consumeOverturePlay(),
+  );
   const [entrancePlaying] = useState(
     () => isHome && consumeHeroEntrancePlay(),
   );
@@ -3316,7 +3322,12 @@ export const SmartGateway: React.FC<
       <div className="flex flex-col mt-0 md:mt-4 mb-6 md:mb-12">
         {/* Title Section always visible */}
         <div className="tebyan-home-hero text-center mb-3 md:mb-7">
-          {isHome && <TebyanHeroEntrance play={entrancePlaying} />}
+          {isHome && (
+            <TebyanHeroEntrance play={entrancePlaying} veiled={overturePlaying} />
+          )}
+          {overturePlaying && (
+            <TebyanOverture onDone={() => setOverturePlaying(false)} />
+          )}
           <motion.header
             {...entranceReveal(2.05)}
             className="text-center"
