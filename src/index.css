@@ -1294,9 +1294,12 @@ body.tebyan-focus-mode .tebyan-result-document {
     opacity: 0.86 !important;
   }
 
-  /* Remove decorative ghost text that washed out the UI */
-  [class*="opacity-5"],
-  [class*="opacity-10"] {
+  /* Remove decorative ghost text that washed out the UI.
+     Match the class token exactly (~=), not as a substring (*=): "opacity-10"
+     as a substring also matches "opacity-100", which hid every fully-opaque
+     element on phones — among them the Smart Gateway search/submit button. */
+  [class~="opacity-5"],
+  [class~="opacity-10"] {
     opacity: 0.04 !important;
   }
 }
