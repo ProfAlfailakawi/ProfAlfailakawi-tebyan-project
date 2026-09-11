@@ -3563,7 +3563,7 @@ export const SmartGateway: React.FC<
                     )}
                     <TebyanGlyph
                       kind="gateway"
-                      className="w-7 h-7 md:w-8 md:h-8"
+                      className="w-8 h-8 md:w-10 md:h-10"
                     />
                   </span>
                 </button>
