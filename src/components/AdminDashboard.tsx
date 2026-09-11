@@ -204,7 +204,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen overflow-x-hidden">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen overflow-x-clip">
         <header className="flex flex-col gap-6 mb-10">
           <div className="flex items-center">
             <button onClick={() => navigate('/')} className="flex items-center justify-center p-3 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-colors font-bold cursor-pointer shadow-sm active:scale-95" title="العودة للرئيسية">

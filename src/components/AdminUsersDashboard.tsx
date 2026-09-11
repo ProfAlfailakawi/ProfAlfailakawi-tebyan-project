@@ -102,7 +102,7 @@ export default function AdminUsersDashboard() {
   if (!isAuthorized) return <div className="p-10 text-center">غير مصرح لك بالوصول.</div>;
   
   return (
-    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen overflow-x-hidden">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto bg-slate-50 min-h-screen overflow-x-clip">
       <h1 className="text-2xl md:text-3xl font-black mb-6 md:mb-8 flex items-center gap-3 leading-snug">
         <Users className="w-7 h-7 md:w-8 md:h-8 shrink-0" /> إدارة المستخدمين
       </h1>

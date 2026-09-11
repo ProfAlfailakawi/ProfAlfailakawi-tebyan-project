@@ -128,7 +128,8 @@
   #root {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    /* overflow-x: clip يقصّ الفائض الأفقي دون إنشاء حاوية تمرير، فتبقى القوائم اللاصقة (position: sticky) ثابتة على الجوال. */
+    overflow-x: hidden; overflow-x: clip;
   }
 
   *,
@@ -142,7 +143,7 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-x: clip;
     background:
       radial-gradient(
         circle at top right,
@@ -892,10 +893,10 @@ body.tebyan-focus-mode .tebyan-result-document {
     font-size: 14px;
   }
   body {
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-x: clip;
   }
   #root {
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-x: clip;
   }
 
   /* Global mobile canvas */
@@ -1124,7 +1125,7 @@ body.tebyan-focus-mode .tebyan-result-document {
 @media (max-width: 767px) {
   html,
   body {
-    overflow-x: hidden !important;
+    overflow-x: hidden !important; overflow-x: clip !important;
   }
   main {
     padding-left: 0.65rem !important;
@@ -2144,7 +2145,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   html {
     width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-x: clip;
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
   }
@@ -2153,7 +2154,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   #root {
     width: 100%;
     min-width: 0;
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-x: clip;
   }
 
   body {
@@ -2970,7 +2971,7 @@ body {
   body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden !important;
+    overflow-x: hidden !important; overflow-x: clip !important;
   }
 
   * {
@@ -3173,7 +3174,7 @@ body {
   body,
   #root {
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-x: clip;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
