@@ -347,6 +347,9 @@ const SplashScreen = ({
         transition: { duration: 0.5, ease: "easeInOut" },
       }}
       className="fixed inset-0 z-[99999] bg-[#F8F5EF] flex flex-col items-center justify-center"
+      // خلفية وz-index مثبّتان inline أيضًا: غطاء الافتتاحية يجب ألا يعتمد على توليد
+      // كلاسات Tailwind الاعتباطية — أي فشل فيها يجعل الغطاء شفافًا فتظهر العلامة فوق نص الصفحة.
+      style={{ backgroundColor: "#F8F5EF", zIndex: 99999 }}
     >
       <div className="relative flex flex-col items-center gap-6 px-6 text-center">
         <TebyanMark size={104} animated />
