@@ -1018,6 +1018,16 @@ body.tebyan-focus-mode .tebyan-result-document {
     width: 1.05rem !important;
     height: 1.05rem !important;
   }
+
+  /* The gateway glyph is the screen's primary action, not a toolbar icon: the
+     blanket phone-sizing above shrank it to 1.05rem inside a ~2.9rem button,
+     about a third of the surface. Its viewBox is also mostly air (the magnifier
+     spans roughly 63% of the 48-unit canvas), so the drawn mark reads smaller
+     still. Size it against its own button instead. */
+  main .tour-search-input button[type="submit"] svg {
+    width: 1.85rem !important;
+    height: 1.85rem !important;
+  }
   main [class*="w-14"][class*="h-14"],
   main [class*="w-16"][class*="h-16"] {
     width: 3.05rem !important;
