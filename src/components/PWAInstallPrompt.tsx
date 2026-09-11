@@ -91,15 +91,15 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
                <ol className="space-y-5 px-2">
                  <li className="flex items-start gap-4 text-sm font-medium text-zinc-700">
                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 font-bold text-zinc-500 shadow-inner">1</div>
-                   <span className="leading-relaxed mt-1">اضغط على زر المشاركة <Share className="w-4 h-4 inline mx-1 text-blue-500 drop-shadow-sm" /> في أسفل الشاشة الخاصة بمتصفح سفاري</span>
+                   <span className="flex-1 min-w-0 break-words leading-relaxed mt-1">اضغط على زر المشاركة <Share className="w-4 h-4 inline mx-1 text-blue-500 drop-shadow-sm" /> في أسفل الشاشة الخاصة بمتصفح سفاري</span>
                  </li>
                  <li className="flex items-start gap-4 text-sm font-medium text-zinc-700">
                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 font-bold text-zinc-500 shadow-inner">2</div>
-                   <span className="leading-relaxed mt-1">اختر "إضافة إلى الشاشة الرئيسية" <br/><span className="text-xs text-zinc-400 font-mono mt-1 block">(Add to Home Screen)</span></span>
+                   <span className="flex-1 min-w-0 break-words leading-relaxed mt-1">اختر "إضافة إلى الشاشة الرئيسية" <br/><span className="text-xs text-zinc-400 font-mono mt-1 block">(Add to Home Screen)</span></span>
                  </li>
                  <li className="flex items-start gap-4 text-sm font-medium text-zinc-700">
                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 font-bold text-zinc-500 shadow-inner">3</div>
-                   <span className="leading-relaxed mt-1">اضغط "إضافة" (Add) في الزاوية العلوية لتأكيد التثبيت</span>
+                   <span className="flex-1 min-w-0 break-words leading-relaxed mt-1">اضغط "إضافة" (Add) في الزاوية العلوية لتأكيد التثبيت</span>
                  </li>
                </ol>
                <button 
