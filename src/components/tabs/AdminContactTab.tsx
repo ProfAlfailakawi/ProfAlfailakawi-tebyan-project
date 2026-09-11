@@ -60,7 +60,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
   const newMessagesCount = messages.filter(m => m.status === 'new').length;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 overflow-x-hidden">
+    <div className="max-w-4xl mx-auto space-y-6 overflow-x-clip">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <TabHeader
           title={{ ar: 'صندوق الوارد', en: 'Inbox' }}
