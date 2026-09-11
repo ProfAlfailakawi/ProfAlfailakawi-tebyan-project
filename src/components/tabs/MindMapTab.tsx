@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Network, Sparkles, Brain, ArrowRight, Loader2, Save } from 'lucide-react';
+import { Network, Sparkles, Brain, ArrowRight, Save } from 'lucide-react';
 import { universalOracle } from '../../services/gemini';
 import { useAuth } from '../AuthProvider';
 import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
+import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 
 export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: string, initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { userGender } = useAuth();
@@ -85,7 +86,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
             disabled={isGenerating || !topic.trim()}
             className="bg-black hover:bg-zinc-800 text-white rounded-[20px] px-8 py-4 font-bold text-lg flex items-center justify-center gap-3 transition-colors disabled:opacity-50 shrink-0"
           >
-            {isGenerating ? <Loader2 className="w-6 h-6 animate-spin" /> : <Sparkles className="w-6 h-6" />}
+            {isGenerating ? <TebyanButtonLoader className="text-current" /> : <Sparkles className="w-6 h-6" />}
             {language === 'ar' ? 'توليد الخريطة' : 'Generate Map'}
           </button>
         </form>
@@ -93,11 +94,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
 
         {isGenerating && (
           <div className="py-20 flex flex-col items-center justify-center">
-            <div className="relative">
-              <div className="w-24 h-24 border-4 border-zinc-100 rounded-full"></div>
-              <div className="w-24 h-24 border-4 border-black rounded-full border-t-transparent animate-spin absolute inset-0"></div>
-              <Network className="w-8 h-8 text-black animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-            </div>
+            <TebyanLoader size={48} label={language === 'ar' ? 'جاري بناء الخريطة' : 'Building the map'} />
             <p className="mt-6 text-zinc-500 font-bold animate-pulse text-lg">
               {language === 'ar' ? 'جاري فك تشفير الفكرة وهندسة الخريطة...' : 'Decoding the concept and engineering the map...'}
             </p>

@@ -1,6 +1,7 @@
 import React, { useState, Suspense } from "react";
-import { Loader2, LibraryBig, TicketPercent, Mail } from "lucide-react";
+import { LibraryBig, TicketPercent, Mail } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
+import { TebyanLoader } from "../ui/TebyanLoader";
 
 /**
  * باب «ركني» — مساحتك الشخصية: محفوظاتك، نقاطك، وتواصلك — في مكان واحد.
@@ -21,7 +22,7 @@ const MODES: DoorMode[] = [
 
 const Fallback = () => (
   <div className="flex justify-center py-16">
-    <Loader2 className="w-6 h-6 animate-spin text-[#8E7AAE]" />
+    <TebyanLoader size={32} />
   </div>
 );
 

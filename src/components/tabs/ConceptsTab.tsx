@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, RefreshCw, Bookmark, BookmarkCheck, Box } from 'lucide-react';
+import { Sparkles, Bookmark, BookmarkCheck, Box } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 
 interface ConceptsTabProps {
   input: string;
@@ -102,7 +103,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
         >
           {isLoading ? (
             <>
-              <RefreshCw className="w-5 h-5 animate-spin" />
+              <TebyanButtonLoader className="text-current" />
               <span>{language === 'ar' ? 'جاري التبسيط...' : 'Simplifying...'}</span>
             </>
           ) : (
@@ -118,7 +119,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           )}
         >
           {isLoading && isBrutalMode ? (
-             <RefreshCw className="w-5 h-5 animate-spin" />
+             <TebyanButtonLoader className="text-current" />
           ) : null}
           <span>{language === 'ar' ? 'حطّم فكرتي 🩸' : 'Destroy My Idea 🩸'}</span>
         </button>
@@ -131,13 +132,11 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
             animate={{ opacity: 1 }}
             className="w-full bg-zinc-50 rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-zinc-200/80"
           >
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-zinc-200/80 rounded-full"></div>
-              <RefreshCw className="w-16 h-16 text-black animate-spin absolute top-0 left-0" />
-            </div>
-            <div className="text-xl font-semibold text-zinc-600">
-              {language === 'ar' ? 'جاري اختزال المفهوم وتبسيطه...' : 'Simplifying logic...'}
-            </div>
+            <TebyanLoader
+              size={48}
+              label={language === 'ar' ? 'جاري التبسيط' : 'Simplifying'}
+              statusText={language === 'ar' ? 'جاري اختزال المفهوم وتبسيطه…' : 'Simplifying the concept…'}
+            />
           </motion.div>
         ) : output && (
           <div id="concepts-results" className="space-y-4">
