@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Brain, Search, Loader2, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight, Scale, LayoutGrid, ChevronDown } from 'lucide-react';
+import { TebyanLoader } from '../ui/TebyanLoader';
+import { Brain, Search, Sparkles, ShieldAlert, Users, History, MessageSquareQuote, GitBranch, Hourglass, Eye, Lock, VolumeX, X, ArrowRight, Scale, LayoutGrid, ChevronDown } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { IntellectualKintsugi } from '../common/IntellectualKintsugi';
@@ -459,7 +460,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
              <AnimatePresence>
               {isLoading && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4 py-20 text-indigo-600">
-                    <Loader2 className="w-12 h-12 animate-spin" />
+                    <TebyanLoader size={48} label={language === 'ar' ? 'جاري تحليل القرار' : 'Analyzing the decision'} />
                     <p className="font-black text-xs tracking-widest">{language === 'ar' ? 'تبيان تقوم بالمعالجة الاستراتيجية والتحليل العميق...' : 'TIBYAN PROCESSING STRATEGIC ANALYSIS...'}</p>
                 </motion.div>
             )}

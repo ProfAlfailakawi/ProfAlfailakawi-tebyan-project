@@ -4215,3 +4215,101 @@ body:not(.zen-idle)::after {
     font-weight: 420 !important;
   }
 }
+
+/* ============================================================
+   TebyanLoader — branded micro loader (mishkat / point of light)
+   Assembly runs ONCE (~900ms), then a calm idle pulse only.
+   transform + opacity only; respects prefers-reduced-motion.
+   ============================================================ */
+.tbn-loader-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--mood-primary, #8e7aae);
+  /* delayed appearance: invisible until --tbn-delay elapses */
+  opacity: 0;
+  animation: tbn-appear 160ms ease-out forwards;
+  animation-delay: var(--tbn-delay, 250ms);
+}
+.tbn-loader-wrap.tbn-inline { display: inline-flex; flex-direction: row; }
+@keyframes tbn-appear { to { opacity: 1; } }
+
+.tbn-status {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--mood-primary, #8e7aae);
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* arch draws once, then stays */
+.tbn-arch {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0.9;
+  animation: tbn-arch-draw 700ms cubic-bezier(0.22, 1, 0.36, 1) 120ms forwards;
+}
+@keyframes tbn-arch-draw { to { stroke-dashoffset: 0; } }
+
+/* rays converge once toward the light, then fade to a faint rest state */
+.tbn-ray {
+  opacity: 0;
+  transform-origin: 24px 26px;
+  animation: tbn-ray-in 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.tbn-ray2 { animation-delay: 90ms; }
+.tbn-ray3 { animation-delay: 180ms; }
+@keyframes tbn-ray-in {
+  0% { opacity: 0; transform: scale(1.35); }
+  55% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0.35; transform: scale(1); }
+}
+
+/* dots settle once at the base */
+.tbn-dot {
+  opacity: 0;
+  animation: tbn-dot-in 500ms cubic-bezier(0.22, 1, 0.36, 1) 350ms forwards;
+}
+.tbn-dot2 { animation-delay: 450ms; }
+@keyframes tbn-dot-in {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 0.55; transform: translateY(0); }
+}
+
+/* point of light: appears, then a very calm idle breathing pulse */
+.tbn-core {
+  transform-origin: 24px 26px;
+  animation:
+    tbn-core-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    tbn-idle 2.8s ease-in-out 900ms infinite;
+}
+.tbn-halo {
+  transform-origin: 24px 26px;
+  animation:
+    tbn-core-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    tbn-idle 2.8s ease-in-out 900ms infinite;
+}
+@keyframes tbn-core-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes tbn-idle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.12); opacity: 0.82; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tbn-arch { animation: none; stroke-dashoffset: 0; }
+  .tbn-ray { animation: none; opacity: 0.35; transform: none; }
+  .tbn-dot { animation: none; opacity: 0.55; transform: none; }
+  .tbn-core, .tbn-halo {
+    animation: tbn-idle-soft 3s ease-in-out infinite;
+    transform: none;
+  }
+  .tbn-loader-wrap { animation-duration: 1ms; }
+}
+@keyframes tbn-idle-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}

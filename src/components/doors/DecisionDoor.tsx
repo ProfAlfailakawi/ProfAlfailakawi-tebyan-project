@@ -1,6 +1,7 @@
 import React, { useState, Suspense } from "react";
-import { Loader2, Command, Users } from "lucide-react";
+import { Command, Users } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
+import { TebyanLoader } from "../ui/TebyanLoader";
 
 /**
  * باب «غرفة القرار» — أدوات الحسم الكاملة + مجلس الحكماء تحت سقف واحد.
@@ -21,7 +22,7 @@ const MODES: DoorMode[] = [
 
 const Fallback = () => (
   <div className="flex justify-center py-16">
-    <Loader2 className="w-6 h-6 animate-spin text-[#8E7AAE]" />
+    <TebyanLoader size={32} />
   </div>
 );
 

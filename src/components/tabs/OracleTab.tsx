@@ -7,6 +7,7 @@ import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 
@@ -147,7 +148,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         >
           {isLoading ? (
             <>
-              <RefreshCw className="w-5 h-5 animate-spin" />
+              <TebyanButtonLoader className="text-current" label={language === 'ar' ? 'جاري التفكير' : 'Thinking'} />
               <span className="hidden md:inline">{language === 'ar' ? 'جاري التفكير...' : 'Thinking...'}</span>
             </>
           ) : (
@@ -164,13 +165,11 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             animate={{ opacity: 1 }}
             className="w-full bg-transparent rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-[#8FA9C7]/25/80"
           >
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-[#8FA9C7]/25/80 rounded-full"></div>
-              <RefreshCw className="w-16 h-16 text-[#182231] animate-spin absolute top-0 left-0" />
-            </div>
-            <div className="text-xl font-semibold text-[#465568]">
-              {language === 'ar' ? 'جاري استحضار الإجابة...' : 'Summoning the answer...'}
-            </div>
+            <TebyanLoader
+              size={48}
+              label={language === 'ar' ? 'جاري تحليل السؤال' : 'Analyzing the question'}
+              statusText={language === 'ar' ? 'جاري تحليل سؤالك وترتيب الجواب…' : 'Analyzing your question and composing the answer…'}
+            />
           </motion.div>
         ) : oracleResult && (
           <div id="oracle-results" className="space-y-4">
