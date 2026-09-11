@@ -197,7 +197,6 @@ app.get(["/health", "/api/health"], (req, res) => {
     res.json({
         status: "ok",
         geminiKeyExists: !!apiKey && apiKey !== "MY_GEMINI_API_KEY",
-        geminiKeyLength: apiKey ? apiKey.length : 0,
         aiClientInitialized: !!getGenAI()
     });
 });
@@ -574,10 +573,10 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
             return res.status(429).json({
                 error: "AI_HIGH_DEMAND",
                 message: "خدمة الذكاء الاصطناعي عليها ضغط حالياً. حاول مرة أخرى بعد قليل.",
-                details: error.message,
             });
         }
-        res.status(500).json({ error: error.message || "AI Generation Failed" });
+        // The raw error is logged above; do not echo upstream/internal details to the client.
+        res.status(500).json({ error: "AI Generation Failed" });
     }
 });
 
