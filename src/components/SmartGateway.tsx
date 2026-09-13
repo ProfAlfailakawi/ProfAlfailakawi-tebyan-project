@@ -57,34 +57,6 @@ import {
   type ResponseMode,
 } from "./gateway/directGuidance";
 
-const DAILY_CHALLENGES = [
-  {
-    titleAr: "كيف تدير صراعاً حاداً بين أفراد فريقك أو عائلتك؟",
-    titleEn: "How to manage severe conflict among your team or family?",
-    query: "كيف أتعامل مع توتر حاد وصدام بين شخصين في فريقي؟",
-    path: "simulation_roleplay",
-  },
-  {
-    titleAr: "كيف تتصرف مع عميل أو شريك غاضب جداً؟",
-    titleEn: "How do you handle a very angry client or partner?",
-    query: "كيف أتصرف بذكاء مع شخص منفعل وغاضب يهاجمني الآن؟",
-    path: "simulation_roleplay",
-  },
-  {
-    titleAr: "كيف تتخذ قراراً صعباً وسط ضغوط متضاربة؟",
-    titleEn: "How to make a difficult decision amid conflicting pressures?",
-    query: "أواجه قراراً معقداً ولا أعرف من أين أبدأ أو كيف أوازن المخاطر؟",
-    path: "simulation_roleplay",
-  },
-  {
-    titleAr: "كيف تقنع طرفاً عنيداً بتوجه جديد دون صدام؟",
-    titleEn: "How to convince a stubborn party without a clash?",
-    query: "كيف أقنع شخصاً عنيداً بتغيير المسار وتجربة شيء جديد؟",
-    path: "simulation_roleplay",
-  },
-];
-
-
 const colorMap: Record<string, string> = {
   mood: "var(--mood-primary)",
   secondary: "var(--mood-secondary)",
@@ -1001,28 +973,6 @@ export const SmartGateway: React.FC<
     }
   };
 
-  const [challengeIndex, setChallengeIndex] = useState(0);
-
-  useEffect(() => {
-    setChallengeIndex(Math.floor(Math.random() * DAILY_CHALLENGES.length));
-  }, []);
-
-  const currentChallenge =
-    DAILY_CHALLENGES[challengeIndex % DAILY_CHALLENGES.length];
-
-  /**
-   * Handle the "Surprise" button by selecting a random challenge each time
-   * it is clicked. This ensures the user receives varied suggestions rather
-   * than the same preset challenge on each interaction. After selecting a
-   * random challenge, navigate to its path using onPathSelect.
-   */
-  const handleSurprise = () => {
-    const randomIndex = Math.floor(Math.random() * DAILY_CHALLENGES.length);
-    setChallengeIndex(randomIndex);
-    const randomChallenge = DAILY_CHALLENGES[randomIndex];
-    onPathSelect(randomChallenge.path as any, randomChallenge.query);
-  };
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -1046,7 +996,6 @@ export const SmartGateway: React.FC<
   );
   const [depthLevel, setDepthLevel] = useState(0);
   const [showDirectTools, setShowDirectTools] = useState(false);
-  const [showInspiration, setShowInspiration] = useState(true);
 
   const [showGateEcho, setShowGateEcho] = useState(false);
   const [selectedMood, setSelectedMood] = useState<
@@ -1056,7 +1005,6 @@ export const SmartGateway: React.FC<
   const [showDailyDock, setShowDailyDock] = useState(false);
   const [responseMode, setResponseMode] = useState<ResponseMode>("quick");
   const [exampleIndex, setExampleIndex] = useState(0);
-  const [inputSettled, setInputSettled] = useState(false);
   const [showQuestionHelper, setShowQuestionHelper] = useState(false);
   const enablePreQuestionAssist = true;
   const [isMobileViewport, setIsMobileViewport] = useState(
@@ -1089,13 +1037,9 @@ export const SmartGateway: React.FC<
   }, []);
 
   useEffect(() => {
-    setInputSettled(false);
     if (searchValue.trim().length < 2) {
       setShowQuestionHelper(false);
-      return;
     }
-    const timer = window.setTimeout(() => setInputSettled(true), 200);
-    return () => window.clearTimeout(timer);
   }, [searchValue]);
 
   useEffect(() => {
@@ -2323,9 +2267,6 @@ export const SmartGateway: React.FC<
   const allPossibleQueries = useMemo(() => {
     const list = [
       ...ALL_CHIP_SUGGESTIONS.map((s) => (language === "ar" ? s.ar : s.en)),
-      ...DAILY_CHALLENGES.map((c) =>
-        language === "ar" ? c.titleAr : c.titleEn,
-      ),
       ...proactiveInsights.dynamicSuggests.map((s) =>
         language === "ar" ? s.ar : s.en,
       ),
@@ -2826,15 +2767,6 @@ export const SmartGateway: React.FC<
     const profile = pickJourneyProfile(text, suggestions[0]?.id);
     return decorateJourneyDoors(suggestions, tabs, profile.id, language).slice(0, 3);
   }, [deferredSearchValue, searchValue, hasSearched, suggestions, tabs, language]);
-
-  // بطاقة "اقتراح بسيط": لا تظهر إلا بعد استقرار الصياغة، وبعد انتهاء قائمة
-  // "يمكن أن تقصد" — حتى لا تتكدّس ثلاث نصائح فوق بعضها في نفس اللحظة.
-  const showClarityCard =
-    !hasSearched &&
-    !isThinking &&
-    inputSettled &&
-    !!questionClarity &&
-    questionClarity.score < 60;
 
   // Split the journey into progressive doors: first door, then deeper different doors.
   const { primarySuggestion, secondarySuggestions, alternativeSuggestions } =
@@ -3647,37 +3579,6 @@ export const SmartGateway: React.FC<
                   </div>
                 )}
 
-              {enablePreQuestionAssist && showClarityCard && questionClarity && (
-                <div
-                  className="mt-3 w-full max-w-3xl mx-auto rounded-2xl border border-[#D8C58A]/22 bg-[#FFFDF4]/78 px-4 py-3 tebyan-focus-keep text-right"
-                  dir={language === "ar" ? "rtl" : "ltr"}
-                >
-                  <p className="text-xs font-black text-[#9C7A28]">
-                    {language === "ar"
-                      ? "اقتراح بسيط ليكون الجواب أدق"
-                      : "A small suggestion for a more precise answer"}
-                  </p>
-                  <p className="mt-1 text-sm font-bold leading-relaxed text-[#64788D]">
-                    {questionClarity.hint}
-                  </p>
-                  {searchValue.trim().length >= 8 && (
-                    <button
-                      type="button"
-                      onClick={() => setShowQuestionHelper((value) => !value)}
-                      className="mt-2 inline-flex min-h-9 items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/80 px-3.5 py-1.5 text-[11px] font-black text-[#6E5F8E] transition-all hover:bg-[#F7F3FA] active:scale-[0.98]"
-                    >
-                      <Sparkles className="h-3.5 w-3.5" />
-                      {showQuestionHelper
-                        ? language === "ar"
-                          ? "إخفاء مساعد الصياغة"
-                          : "Hide question helper"
-                        : language === "ar"
-                          ? "ساعدني أصيغ السؤال"
-                          : "Help me phrase the question"}
-                    </button>
-                  )}
-                </div>
-              )}
             </div>
 
             <AnimatePresence>
@@ -4099,93 +4000,9 @@ export const SmartGateway: React.FC<
             </div>
           )}
 
-          {/* Dynamic Suggestion Chips - hidden until requested */}
-          {enablePreQuestionAssist && showInspiration && !hasSearched && !isThinking && (
-            <div className="mt-4 flex overflow-x-auto pb-3 gap-2 snap-x snap-mandatory no-scrollbar w-full max-w-full px-1">
-              {proactiveInsights.dynamicSuggests.map((chip, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    const val = language === "ar" ? chip.ar : chip.en;
-                    setSearchValue(val);
-                    latestInputRef.current = val;
-                    setQuery(val);
-                    handleSubmit(undefined, val);
-                    setIsFocused(true);
-                  }}
-                  className={cn(
-                    "px-3.5 md:px-5 py-2 md:py-2.5 rounded-full border border-zinc-200 transition-all active:scale-95 shadow-sm whitespace-nowrap snap-center shrink-0 cursor-pointer overflow-hidden group relative",
-                    "bg-white text-zinc-500 hover:border-mood-primary hover:text-[#6E5F8E]",
-                    mood
-                      ? getMoodTypography(mood)
-                      : "font-bold text-xs md:text-sm",
-                  )}
-                >
-                  <span className="relative z-10">
-                    {language === "ar" ? chip.ar : chip.en}
-                  </span>
-                  {mood === "revolutionary" && (
-                    <motion.div
-                      initial={{ x: "-100%" }}
-                      animate={{ x: "100%" }}
-                      transition={{
-                        duration: 1.5,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-mood-primary/10 to-transparent skew-x-[-20deg]"
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
         </motion.div>
       </div>
 
-      {enablePreQuestionAssist && !hasSearched && showInspiration && (
-        <>
-          {/* Daily Challenge & Insights Section */}
-          <div className="emotion-hide mt-5 md:mt-6 grid grid-cols-1 gap-3 md:gap-4 items-start">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="bg-white/72 backdrop-blur-xl rounded-[18px] md:rounded-[22px] p-3 md:p-3.5 text-[#182231] relative overflow-hidden group border border-[#8E7AAE]/10 shadow-[0_8px_22px_rgba(24,34,49,0.035)] self-start"
-            >
-              <div className="relative z-10">
-                <h3 className="flex items-start gap-2.5 text-base md:text-lg font-black mb-3 leading-tight tracking-tight">
-                  <span className="mt-0.5 inline-flex w-5 h-5 items-center justify-center shrink-0 rounded-full bg-[#8E7AAE]/10 text-[#6E5F8E]">
-                    <Gamepad2 className="w-3 h-3" />
-                  </span>
-                  <span>
-                    {language === "ar"
-                      ? currentChallenge.titleAr
-                      : currentChallenge.titleEn}
-                  </span>
-                </h3>
-                <button
-                  onClick={() =>
-                    onPathSelect(
-                      currentChallenge.path as any,
-                      currentChallenge.query,
-                    )
-                  }
-                  className="w-full py-2.5 md:py-2.5 bg-[#F3EFF9] text-[#4F4369] border border-[#8E7AAE]/16 rounded-2xl font-black text-sm md:text-sm hover:bg-[#EDE6F6] hover:-translate-y-0.5 transition-all active:scale-95 shadow-sm"
-                >
-                  {language === "ar" ? "ابدأ التحدي" : "Start Challenge"}
-                </button>
-              </div>
-              {/* Abstract background element */}
-              <div className="absolute -bottom-14 -right-14 w-44 h-44 bg-[#8FA9C7]/10 rounded-full blur-[54px] group-hover:scale-105 transition-transform duration-1000 pointer-events-none" />
-            </motion.div>
-
-          </div>
-
-        </>
-      )}
       {/* Gravity of Intent Demonstration */}
     </div>
   );
