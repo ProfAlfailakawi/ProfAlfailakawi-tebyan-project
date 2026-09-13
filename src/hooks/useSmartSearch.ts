@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { proxyGenerateContent } from '../lib/aiProxy';
 
-export function useSmartSearch(searchValue: string, minLength: number = 6, enabled: boolean = true) {
+export function useSmartSearch(searchValue: string, minLength: number = 2, enabled: boolean = true) {
   const [smartSuggestion, setSmartSuggestion] = useState("");
   const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
   const latestInputRef = useRef(searchValue);
@@ -112,7 +112,7 @@ ${latestText}`;
           setIsSuggestionLoading(false);
         }
       }
-    }, 380);
+    }, 240);
 
     return () => clearTimeout(timer);
   }, [searchValue, minLength, enabled]);

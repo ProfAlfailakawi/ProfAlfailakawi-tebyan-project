@@ -1189,11 +1189,11 @@ export const SmartGateway: React.FC<
 
   useEffect(() => {
     setInputSettled(false);
-    if (searchValue.trim().length < 4) {
+    if (searchValue.trim().length < 2) {
       setShowQuestionHelper(false);
       return;
     }
-    const timer = window.setTimeout(() => setInputSettled(true), 320);
+    const timer = window.setTimeout(() => setInputSettled(true), 200);
     return () => window.clearTimeout(timer);
   }, [searchValue]);
 
