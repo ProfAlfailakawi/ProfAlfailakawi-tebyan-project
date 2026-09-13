@@ -112,7 +112,7 @@ ${latestText}`;
           setIsSuggestionLoading(false);
         }
       }
-    }, 850);
+    }, 380);
 
     return () => clearTimeout(timer);
   }, [searchValue, minLength, enabled]);

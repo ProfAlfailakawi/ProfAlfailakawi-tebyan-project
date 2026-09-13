@@ -1093,7 +1093,7 @@ export const SmartGateway: React.FC<
   );
   const [depthLevel, setDepthLevel] = useState(0);
   const [showDirectTools, setShowDirectTools] = useState(false);
-  const [showInspiration, setShowInspiration] = useState(false);
+  const [showInspiration, setShowInspiration] = useState(true);
 
   useEffect(() => {
     if (!showInspiration) return;
@@ -1111,7 +1111,7 @@ export const SmartGateway: React.FC<
   const [exampleIndex, setExampleIndex] = useState(0);
   const [inputSettled, setInputSettled] = useState(false);
   const [showQuestionHelper, setShowQuestionHelper] = useState(false);
-  const enablePreQuestionAssist = false;
+  const enablePreQuestionAssist = true;
   const [isMobileViewport, setIsMobileViewport] = useState(
     () =>
       typeof window !== "undefined" &&
@@ -1127,22 +1127,21 @@ export const SmartGateway: React.FC<
     cancelSuggestion,
   } = useSmartSearch(
     searchValue,
-    6,
-    inputSettled && !hasSearched && searchValue.trim().length >= 6,
+    3,
+    !hasSearched && searchValue.trim().length >= 3,
   );
   const instantSearch = useInstantSearch(
-    inputSettled && !hasSearched ? deferredSearchValue : "",
-    6,
-    inputSettled && !hasSearched,
+    !hasSearched && (deferredSearchValue.trim().length >= 2 ? deferredSearchValue : searchValue.trim().length >= 2 ? searchValue : ""),
+    4,
+    !hasSearched && searchValue.trim().length >= 2,
   );
   const suggestion = smartSuggestion;
   const setSuggestion = setSmartSuggestion;
 
   const liveQuestionOptions = useMemo(() => {
     const raw = searchValue.trim();
-    if (!inputSettled || hasSearched || raw.length < 3) return [];
-    // Once the question is already detailed, rephrasings only repeat it back.
-    if (raw.length > 42) return [];
+    if (hasSearched || raw.length < 2) return [];
+    if (raw.length > 55) return [];
 
     const normalized = raw.replace(/[؟?!.،,]+$/g, "").trim();
     const options: string[] = [];
@@ -2491,10 +2490,16 @@ export const SmartGateway: React.FC<
       } as React.CSSProperties);
 
   const suggestions = useMemo(() => {
-    const q = deferredQuery.trim().toLowerCase();
+    const activeText = (
+      searchValue.trim() ||
+      deferredSearchValue.trim() ||
+      query.trim() ||
+      deferredQuery.trim()
+    );
+    const q = activeText.toLowerCase();
     if (!q) return [];
     const ranked: any[] = [];
-    const { intent, emotion } = getIntentAndEmotion(deferredQuery);
+    const { intent, emotion } = getIntentAndEmotion(activeText);
     let usageStats: Record<string, number> = {};
     try {
       usageStats = JSON.parse(
@@ -2582,7 +2587,7 @@ export const SmartGateway: React.FC<
 
     // --- DIMENSION MAPPING ---
 
-    // 1. Action (Solution Bank)
+    // 1. Action (Solution Bank / Qawl Fasl)
     const actionMatch =
       !q ||
       q.includes("حل") ||
@@ -2591,6 +2596,22 @@ export const SmartGateway: React.FC<
       q.includes("عاجل") ||
       q.includes("طوارئ") ||
       q.includes("قرار") ||
+      q.includes("دخن") ||
+      q.includes("تدخين") ||
+      q.includes("ولد") ||
+      q.includes("ابن") ||
+      q.includes("بنت") ||
+      q.includes("طفل") ||
+      q.includes("مراهق") ||
+      q.includes("تربي") ||
+      q.includes("سلوك") ||
+      q.includes("عناد") ||
+      q.includes("عصب") ||
+      q.includes("مشكل") ||
+      q.includes("استشار") ||
+      q.includes("نصيح") ||
+      q.includes("موقف") ||
+      q.includes("تصرف") ||
       q.includes("solve");
     addPath(
       "qawlfasl",
@@ -2602,7 +2623,7 @@ export const SmartGateway: React.FC<
       "Direct certified answer",
       "لأن الحالة تتطلب توجيهاً عملياً وقراراً واضحاً في هذه اللحظة",
       "Because you seek direct practical guidance",
-      actionMatch ? 10 : 2,
+      actionMatch ? 16 : 2,
     );
 
     // 2. Analysis (Expert Council)
@@ -2869,7 +2890,7 @@ export const SmartGateway: React.FC<
     );
 
     return ranked;
-  }, [deferredQuery, language]);
+  }, [searchValue, deferredSearchValue, query, deferredQuery, language, userGender]);
 
   const directJourneyProfile = useMemo(
     () => pickJourneyProfile(query, undefined),
@@ -2899,11 +2920,11 @@ export const SmartGateway: React.FC<
 
   // الأبواب تنبثق من كلماتك: اقتراح حي أثناء الكتابة، قبل أي إرسال.
   const liveTypingDoors = useMemo(() => {
-    const text = deferredSearchValue.trim();
-    if (hasSearched || text.length < 3) return [];
-    const profile = pickJourneyProfile(text, undefined);
-    return decorateJourneyDoors([], tabs, profile.id, language).slice(0, 3);
-  }, [deferredSearchValue, hasSearched, tabs, language]);
+    const text = (deferredSearchValue || searchValue).trim();
+    if (hasSearched || text.length < 2) return [];
+    const profile = pickJourneyProfile(text, suggestions[0]?.id);
+    return decorateJourneyDoors(suggestions, tabs, profile.id, language).slice(0, 3);
+  }, [deferredSearchValue, searchValue, hasSearched, suggestions, tabs, language]);
 
   // بطاقة "اقتراح بسيط": لا تظهر إلا بعد استقرار الصياغة، وبعد انتهاء قائمة
   // "يمكن أن تقصد" — حتى لا تتكدّس ثلاث نصائح فوق بعضها في نفس اللحظة.
@@ -3585,60 +3606,108 @@ export const SmartGateway: React.FC<
               {!hasSearched &&
                 !isThinking &&
                 enablePreQuestionAssist &&
-                liveQuestionOptions.length > 0 && (
+                searchValue.trim().length >= 2 && (
                   <div
-                    className="tebyan-live-suggestions mx-auto mt-3 w-full max-w-3xl"
+                    className="tebyan-live-search-surface mx-auto mt-4 w-full max-w-3xl space-y-4"
                     dir={language === "ar" ? "rtl" : "ltr"}
                     aria-live="polite"
                   >
-                    <div className="mb-2 flex items-center gap-2 px-1">
-                      <Sparkles className="h-3.5 w-3.5 text-[#8E7AAE]" />
-                      <span className="text-[11px] font-semibold text-[#7C8796]">
-                        {language === "ar" ? "يمكن أن تقصد…" : "You may mean…"}
-                      </span>
-                    </div>
-                    <div className="grid gap-2">
-                      {liveQuestionOptions.map((option, index) => (
-                        <button
-                          key={`${option}-${index}`}
-                          type="button"
-                          onMouseDown={(event) => event.preventDefault()}
-                          onClick={() => {
-                            setSearchValue(option);
-                            latestInputRef.current = option;
-                            setSmartSuggestion("");
-                            setInputSettled(false);
-                            window.requestAnimationFrame(() => inputRef.current?.focus());
-                          }}
-                          className="tebyan-live-suggestion-option group flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border border-[#8FA9C7]/14 bg-white/78 px-4 py-2.5 text-start text-[13px] font-medium leading-6 text-[#465568] shadow-[0_7px_22px_rgba(24,34,49,0.035)] transition-colors duration-100 hover:border-[#8E7AAE]/28 hover:bg-white hover:text-[#182231] active:bg-[#F6F3FA]"
-                        >
-                          <span>{option}</span>
-                          <ArrowLeft className="h-4 w-4 shrink-0 text-[#8E7AAE]/60 transition-transform duration-100 group-hover:-translate-x-0.5" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                    {/* 1. الأبواب المقترحة حسب السؤال (Suggested Doors: Top Recommended Door like 'قول فصل' + Companion Doors) */}
+                    {liveTypingDoors.length > 0 && (
+                      <div className="overflow-hidden rounded-3xl border border-[#8E7AAE]/20 bg-gradient-to-br from-white/96 via-[#FAF9F6]/95 to-[#F6F1FA]/92 p-4 md:p-6 shadow-[0_16px_44px_rgba(142,122,174,0.12)] backdrop-blur-xl transition-all">
+                        <div className="flex items-center justify-between pb-3.5 border-b border-[#8E7AAE]/12">
+                          <div className="flex items-center gap-2">
+                            <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#8E7AAE]/15 text-[#6E5F8E]">
+                              <Sparkles className="h-4 w-4" />
+                            </span>
+                            <span className="text-xs md:text-sm font-black text-[#182231]">
+                              {language === "ar"
+                                ? "المسار الأنسب لسؤالك"
+                                : "Best door for your question"}
+                            </span>
+                          </div>
+                          <span className="rounded-full bg-[#8E7AAE]/12 px-2.5 py-0.5 text-[10px] md:text-[11px] font-bold text-[#6E5F8E]">
+                            {language === "ar" ? "اقتراح ذكي فوري" : "Instant Smart Route"}
+                          </span>
+                        </div>
 
-              {!hasSearched &&
-                !isThinking &&
-                enablePreQuestionAssist &&
-                inputSettled &&
-                liveQuestionOptions.length === 0 &&
-                instantSearch.results.length > 0 && (
-                  <details
-                    className="mt-4 w-full max-w-3xl mx-auto rounded-2xl border border-[#8FA9C7]/14 bg-white/70 px-4 py-3 text-right shadow-sm"
-                    dir={language === "ar" ? "rtl" : "ltr"}
-                  >
-                    <summary className="cursor-pointer list-none text-xs md:text-sm font-black text-[#64788D] flex items-center justify-between gap-3">
-                      <span>
-                        {language === "ar"
-                          ? "وجدت نتائج جاهزة قريبة من سؤالك"
-                          : "I found ready results close to your question"}
-                      </span>
-                      <Search className="h-4 w-4 text-[#8E7AAE]" />
-                    </summary>
-                    <div className="mt-3 border-t border-[#8FA9C7]/10 pt-3">
+                        {/* Top Primary Recommended Door */}
+                        {(() => {
+                          const topDoor = liveTypingDoors[0];
+                          const TopIcon = topDoor.icon || Zap;
+                          return (
+                            <div className="mt-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 rounded-2xl border border-[#8E7AAE]/25 bg-white/92 p-4 shadow-sm hover:border-[#8E7AAE]/50 transition-all">
+                              <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8E7AAE] to-[#5E4D7A] text-white shadow-md">
+                                  <TopIcon className="h-5 w-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-2">
+                                    <h3 className="font-serif text-base md:text-lg font-bold text-[#182231]">
+                                      {topDoor.label}
+                                    </h3>
+                                    <span className="rounded-md bg-[#8E7AAE]/12 px-2 py-0.5 text-[10px] font-bold text-[#6E5F8E]">
+                                      {topDoor.badge || (language === "ar" ? "توجيه وحلول مباشرة" : "Direct certified solution")}
+                                    </span>
+                                  </div>
+                                  <p className="mt-1 text-xs md:text-sm font-bold text-[#465568] leading-relaxed">
+                                    {topDoor.reason || topDoor.desc}
+                                  </p>
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handlePathSelect(topDoor.id, searchValue)}
+                                className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#182231] hover:bg-[#273548] px-4 py-2.5 text-xs md:text-sm font-bold text-white shadow-md transition-all active:scale-95 cursor-pointer"
+                              >
+                                <span>{language === "ar" ? `دخول ${topDoor.label}` : `Open ${topDoor.label}`}</span>
+                                <ArrowLeft className={`h-4 w-4 ${language === "ar" ? "" : "rotate-180"}`} />
+                              </button>
+                            </div>
+                          );
+                        })()}
+
+                        {/* Companion Doors */}
+                        {liveTypingDoors.length > 1 && (
+                          <div className="mt-3.5 pt-3.5 border-t border-[#8E7AAE]/10">
+                            <p className="mb-2 text-[11px] font-bold text-[#7C8796]">
+                              {language === "ar" ? "أو يمكنك استكشاف هذه الأبواب البديلة:" : "Or explore these alternative doors:"}
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {liveTypingDoors.slice(1, 3).map((companion: any) => {
+                                const CompIcon = companion.icon || Hourglass;
+                                return (
+                                  <button
+                                    key={companion.id}
+                                    type="button"
+                                    onClick={() => handlePathSelect(companion.id, searchValue)}
+                                    className="group flex items-center justify-between gap-2.5 rounded-xl border border-[#8FA9C7]/18 bg-white/75 px-3.5 py-2.5 text-right transition-all hover:bg-white hover:border-[#8E7AAE]/40 hover:shadow-sm cursor-pointer"
+                                  >
+                                    <div className="flex items-center gap-2.5 min-w-0">
+                                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FAF7FD] text-[#6E5F8E] group-hover:bg-[#8E7AAE] group-hover:text-white transition-colors">
+                                        <CompIcon className="h-4 w-4" />
+                                      </div>
+                                      <div className="min-w-0 text-right">
+                                        <span className="block text-xs font-bold text-[#182231] truncate">
+                                          {companion.label}
+                                        </span>
+                                        <span className="block text-[10px] text-[#64788D] truncate">
+                                          {companion.desc}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[#8E7AAE]/50 group-hover:text-[#8E7AAE] group-hover:-translate-x-0.5 transition-transform ${language === "ar" ? "" : "rotate-180"}`} />
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* 2. استشارات وإجابات جاهزة من قول فصل (Instant Results) */}
+                    {instantSearch.results.length > 0 && (
                       <InstantResults
                         results={instantSearch.results}
                         query={searchValue}
@@ -3646,103 +3715,78 @@ export const SmartGateway: React.FC<
                         corpusSize={instantSearch.corpusSize}
                         onPick={(q) => handlePathSelect("qawlfasl", q)}
                       />
-                    </div>
-                  </details>
-                )}
+                    )}
 
-              {/* زر مساعد الصياغة يظهر منفرداً فقط حين لا توجد بطاقة "اقتراح بسيط"،
-                  لأن البطاقة تحمل الزر بداخلها ولا داعي لتكرار نفس الدعوة مرتين. */}
-              {!hasSearched &&
-                !isThinking &&
-                enablePreQuestionAssist &&
-                inputSettled &&
-                !showClarityCard &&
-                searchValue.trim().length >= 8 && (
-                  <div
-                    className="mt-3 w-full max-w-3xl mx-auto text-right"
-                    dir={language === "ar" ? "rtl" : "ltr"}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setShowQuestionHelper((value) => !value)}
-                      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/72 px-4 py-2 text-xs font-black text-[#6E5F8E] transition-all hover:bg-[#F7F3FA] active:scale-[0.98]"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      {showQuestionHelper
-                        ? language === "ar"
-                          ? "إخفاء مساعد الصياغة"
-                          : "Hide question helper"
-                        : language === "ar"
-                          ? "ساعدني أصيغ السؤال"
-                          : "Help me phrase the question"}
-                    </button>
-                  </div>
-                )}
-
-              {!hasSearched &&
-                !isThinking &&
-                enablePreQuestionAssist &&
-                showQuestionHelper &&
-                searchValue.trim().length >= 3 && (
-                  <div className="mt-4 w-full max-w-3xl mx-auto">
-                    <SmartIntentEngine
-                      language={language}
-                      value={searchValue}
-                      onApply={(nextValue) => {
-                        setSearchValue(nextValue);
-                        latestInputRef.current = nextValue;
-                        setQuery(nextValue);
-                        setSmartSuggestion("");
-                        inputRef.current?.focus();
-                      }}
-                      onSubmit={(nextValue) =>
-                        handleSubmit(undefined, nextValue)
-                      }
-                      onQawlFasl={(nextValue) =>
-                        handlePathSelect("qawlfasl", nextValue)
-                      }
-                      onOpenPath={(path, nextValue) =>
-                        handlePathSelect(path, nextValue)
-                      }
-                    />
-                  </div>
-                )}
-
-              {/* الأبواب تنتظر أن تستقر الصياغة: لا تُعرض مع قائمة "يمكن أن تقصد". */}
-              {!hasSearched &&
-                !isThinking &&
-                enablePreQuestionAssist &&
-                inputSettled &&
-                liveQuestionOptions.length === 0 &&
-                liveTypingDoors.length > 0 && (
-                  <div className="mt-4 w-full max-w-3xl mx-auto">
-                    <p className="mb-2 text-center text-[11px] font-black uppercase tracking-widest text-[#8E7AAE]/80">
-                      {language === "ar"
-                        ? "يناسب سؤالك"
-                        : "Fits your question"}
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-2.5">
-                      {liveTypingDoors.map((door: any, i: number) => (
-                        <motion.button
-                          key={door.id}
-                          type="button"
-                          initial={{ opacity: 0, y: 12, filter: "blur(3px)" }}
-                          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                          transition={{ duration: 0.35, delay: i * 0.08, ease: "easeOut" }}
-                          onClick={() => handlePathSelect(door.id, searchValue)}
-                          className="min-w-[190px] max-w-[240px] rounded-2xl border border-[#E5DFD4] bg-white/90 px-4 py-3 text-right shadow-[0_8px_22px_rgba(24,34,49,0.05)] transition-[border-color,transform] hover:border-[#8E7AAE]/55 hover:-translate-y-0.5 active:scale-[0.98]"
-                        >
-                          <span className="block font-serif text-[15px] font-bold text-[#182231] leading-6 truncate">
-                            {door.label}
+                    {/* 3. صياغات ذكية مقترحة (Smart Suggestion Options) */}
+                    {liveQuestionOptions.length > 0 && (
+                      <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/85 p-3.5 md:p-4 shadow-[0_8px_24px_rgba(24,34,49,0.04)] backdrop-blur-md">
+                        <div className="mb-2.5 flex items-center gap-2 px-1">
+                          <Sparkles className="h-3.5 w-3.5 text-[#8E7AAE]" />
+                          <span className="text-[11px] font-bold text-[#7C8796]">
+                            {language === "ar" ? "صياغات مقترحة قد تناسبك:" : "Suggested phrasings for your question:"}
                           </span>
-                          {door.desc && (
-                            <span className="block text-[11px] font-bold text-[#64788D] leading-5 truncate">
-                              {door.desc}
-                            </span>
-                          )}
-                        </motion.button>
-                      ))}
-                    </div>
+                        </div>
+                        <div className="grid gap-1.5">
+                          {liveQuestionOptions.map((option, index) => (
+                            <button
+                              key={`${option}-${index}`}
+                              type="button"
+                              onMouseDown={(event) => event.preventDefault()}
+                              onClick={() => {
+                                setSearchValue(option);
+                                latestInputRef.current = option;
+                                setSmartSuggestion("");
+                                setInputSettled(false);
+                                window.requestAnimationFrame(() => inputRef.current?.focus());
+                              }}
+                              className="group flex min-h-10 w-full items-center justify-between gap-3 rounded-xl border border-transparent bg-white/70 px-3.5 py-2 text-start text-xs md:text-[13px] font-medium leading-6 text-[#465568] transition-all hover:border-[#8E7AAE]/30 hover:bg-white hover:text-[#182231] active:bg-[#F6F3FA] cursor-pointer"
+                            >
+                              <span className="truncate">{option}</span>
+                              <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[#8E7AAE]/60 transition-transform group-hover:-translate-x-1 ${language === "ar" ? "" : "rotate-180"}`} />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 4. مساعد الصياغة الذكي */}
+                    {searchValue.trim().length >= 6 && !showQuestionHelper && (
+                      <div className="text-center pt-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowQuestionHelper(true)}
+                          className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-4 py-1.5 text-xs font-bold text-[#6E5F8E] transition-all hover:bg-[#F7F3FA] hover:border-[#8E7AAE]/40 active:scale-[0.98] shadow-xs cursor-pointer"
+                        >
+                          <Sparkles className="h-3.5 w-3.5" />
+                          <span>{language === "ar" ? "ساعدني أصيغ السؤال بدقة أكبر" : "Help me phrase this more accurately"}</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {showQuestionHelper && searchValue.trim().length >= 3 && (
+                      <div className="mt-2">
+                        <SmartIntentEngine
+                          language={language}
+                          value={searchValue}
+                          onApply={(nextValue) => {
+                            setSearchValue(nextValue);
+                            latestInputRef.current = nextValue;
+                            setQuery(nextValue);
+                            setSmartSuggestion("");
+                            inputRef.current?.focus();
+                          }}
+                          onSubmit={(nextValue) =>
+                            handleSubmit(undefined, nextValue)
+                          }
+                          onQawlFasl={(nextValue) =>
+                            handlePathSelect("qawlfasl", nextValue)
+                          }
+                          onOpenPath={(path, nextValue) =>
+                            handlePathSelect(path, nextValue)
+                          }
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
 
