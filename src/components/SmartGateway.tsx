@@ -20,7 +20,6 @@ import {
   X,
   Lock,
   Box,
-  Waves,
   ScrollText,
   Compass,
   Moon,
@@ -63,12 +62,6 @@ const DAILY_CHALLENGES = [
     titleAr: "كيف تدير صراعاً حاداً بين أفراد فريقك أو عائلتك؟",
     titleEn: "How to manage severe conflict among your team or family?",
     query: "كيف أتعامل مع توتر حاد وصدام بين شخصين في فريقي؟",
-    path: "simulation_roleplay",
-  },
-  {
-    titleAr: "ماذا تفعل إذا انهارت خطتك في اللحظة الأخيرة؟",
-    titleEn: "What to do if your plan falls apart at the last minute?",
-    query: "خطة مهمة جداً فشلت فجأة، كيف ألملم الوضع وأتخذ قراراً؟",
     path: "simulation_roleplay",
   },
   {
@@ -863,8 +856,6 @@ const ThoughtJourney = ({
 const MoodBackgroundEffect = (_props: { mood: string }) => null;
 
 import { useSmartSearch } from "../hooks/useSmartSearch";
-import { useInstantSearch } from "../hooks/useInstantSearch";
-import { InstantResults } from "./InstantResults";
 import { useGamification } from "../hooks/useGamification";
 
 export const SmartGateway: React.FC<
@@ -1010,44 +1001,6 @@ export const SmartGateway: React.FC<
     }
   };
 
-  const EPHEMERAL_WISDOMS = useMemo(
-    () => [
-      {
-        ar: "الشك هو بداية اليقين.. لا تخف من إعادة النظر في قناعاتك اليوم.",
-        en: "Doubt is the beginning of certainty.. don't fear reconsidering your convictions today.",
-      },
-      {
-        ar: "القرار الذي تتجنبه هو غالباً القرار الذي تحتاجه.",
-        en: "The decision you are avoiding is often the one you need.",
-      },
-      {
-        ar: "ليس كل تراجع فشل، بعض التراجعات هي إعادة تموضع.",
-        en: "Not every retreat is a failure; some are repositioning.",
-      },
-      {
-        ar: "عندما تتساوى الخيارات، اختر الخيار الذي يوسع آفاقك.",
-        en: "When options are equal, choose the one that expands your horizons.",
-      },
-      {
-        ar: "الصمت في بعض الحوارات هو أقوى إجابة.",
-        en: "Silence in some dialogues is the most powerful answer.",
-      },
-      {
-        ar: "لا تقيم قراراً جيداً بناءً على نتيجة سيئة حدثت بالصدفة.",
-        en: "Do not judge a good decision by a bad outcome that happened by chance.",
-      },
-      {
-        ar: "الخوف من اتخاذ القرار أسوأ من القرار الخاطئ.",
-        en: "The fear of making a decision is worse than making a wrong one.",
-      },
-    ],
-    [],
-  );
-
-  const [wisdomIndex, setWisdomIndex] = useState(0);
-
-  const currentWisdom = EPHEMERAL_WISDOMS[wisdomIndex];
-
   const [challengeIndex, setChallengeIndex] = useState(0);
 
   useEffect(() => {
@@ -1095,12 +1048,6 @@ export const SmartGateway: React.FC<
   const [showDirectTools, setShowDirectTools] = useState(false);
   const [showInspiration, setShowInspiration] = useState(true);
 
-  useEffect(() => {
-    if (!showInspiration) return;
-    setWisdomIndex(
-      Math.floor(Date.now() / (10 * 60 * 1000)) % EPHEMERAL_WISDOMS.length,
-    );
-  }, [EPHEMERAL_WISDOMS.length, showInspiration]);
   const [showGateEcho, setShowGateEcho] = useState(false);
   const [selectedMood, setSelectedMood] = useState<
     "calm" | "unsure" | "urgent" | "inspired"
@@ -1130,54 +1077,8 @@ export const SmartGateway: React.FC<
     3,
     !hasSearched && searchValue.trim().length >= 3,
   );
-  const instantSearch = useInstantSearch(
-    !hasSearched && (deferredSearchValue.trim().length >= 2 ? deferredSearchValue : searchValue.trim().length >= 2 ? searchValue : ""),
-    4,
-    !hasSearched && searchValue.trim().length >= 2,
-  );
   const suggestion = smartSuggestion;
   const setSuggestion = setSmartSuggestion;
-
-  const liveQuestionOptions = useMemo(() => {
-    const raw = searchValue.trim();
-    if (hasSearched || raw.length < 2) return [];
-    if (raw.length > 55) return [];
-
-    const normalized = raw.replace(/[؟?!.،,]+$/g, "").trim();
-    const options: string[] = [];
-    const push = (value: string) => {
-      const clean = value.replace(/\s+/g, " " ).trim();
-      if (clean && clean !== raw && !options.includes(clean)) options.push(clean);
-    };
-
-    if (smartSuggestion && smartSuggestion.length <= 180) push(smartSuggestion);
-
-    if (language === "ar") {
-      const alreadyQuestion = /^(كيف|شنو|وش|ماذا|لماذا|ليش|هل|أبي|ابي|أريد|اريد|عندي|محتار)/.test(normalized);
-      if (alreadyQuestion) {
-        push(`${normalized}، وما أفضل خطوة أبدأ بها؟`);
-        push(`${normalized}، اشرحها لي ببساطة مع خيارات عملية`);
-        push(`${normalized}، وما الأسباب المحتملة وكيف أتعامل معها؟`);
-      } else {
-        push(`أريد أن أفهم ${normalized} بطريقة بسيطة وواضحة`);
-        push(`ما أفضل قرار أو خطوة عملية بخصوص ${normalized}؟`);
-        push(`حلّل لي ${normalized} من أكثر من زاوية`);
-      }
-    } else {
-      const alreadyQuestion = /^(how|what|why|should|can|i want|i need|i am|i'm)/i.test(normalized);
-      if (alreadyQuestion) {
-        push(`${normalized}, and what is the best first step?`);
-        push(`${normalized}. Explain it simply with practical options.`);
-        push(`${normalized}. What are the likely causes and how should I respond?`);
-      } else {
-        push(`Help me understand ${normalized} simply and clearly.`);
-        push(`What is the best practical step regarding ${normalized}?`);
-        push(`Analyze ${normalized} from different angles.`);
-      }
-    }
-
-    return options.slice(0, 2);
-  }, [searchValue, inputSettled, hasSearched, smartSuggestion, language]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
@@ -2932,7 +2833,6 @@ export const SmartGateway: React.FC<
     !hasSearched &&
     !isThinking &&
     inputSettled &&
-    liveQuestionOptions.length === 0 &&
     !!questionClarity &&
     questionClarity.score < 60;
 
@@ -3706,49 +3606,6 @@ export const SmartGateway: React.FC<
                       </div>
                     )}
 
-                    {/* 2. استشارات وإجابات جاهزة من قول فصل (Instant Results) */}
-                    {instantSearch.results.length > 0 && (
-                      <InstantResults
-                        results={instantSearch.results}
-                        query={searchValue}
-                        language={language}
-                        corpusSize={instantSearch.corpusSize}
-                        onPick={(q) => handlePathSelect("qawlfasl", q)}
-                      />
-                    )}
-
-                    {/* 3. صياغات ذكية مقترحة (Smart Suggestion Options) */}
-                    {liveQuestionOptions.length > 0 && (
-                      <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/85 p-3.5 md:p-4 shadow-[0_8px_24px_rgba(24,34,49,0.04)] backdrop-blur-md">
-                        <div className="mb-2.5 flex items-center gap-2 px-1">
-                          <Sparkles className="h-3.5 w-3.5 text-[#8E7AAE]" />
-                          <span className="text-[11px] font-bold text-[#7C8796]">
-                            {language === "ar" ? "صياغات مقترحة قد تناسبك:" : "Suggested phrasings for your question:"}
-                          </span>
-                        </div>
-                        <div className="grid gap-1.5">
-                          {liveQuestionOptions.map((option, index) => (
-                            <button
-                              key={`${option}-${index}`}
-                              type="button"
-                              onMouseDown={(event) => event.preventDefault()}
-                              onClick={() => {
-                                setSearchValue(option);
-                                latestInputRef.current = option;
-                                setSmartSuggestion("");
-                                setInputSettled(false);
-                                window.requestAnimationFrame(() => inputRef.current?.focus());
-                              }}
-                              className="group flex min-h-10 w-full items-center justify-between gap-3 rounded-xl border border-transparent bg-white/70 px-3.5 py-2 text-start text-xs md:text-[13px] font-medium leading-6 text-[#465568] transition-all hover:border-[#8E7AAE]/30 hover:bg-white hover:text-[#182231] active:bg-[#F6F3FA] cursor-pointer"
-                            >
-                              <span className="truncate">{option}</span>
-                              <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[#8E7AAE]/60 transition-transform group-hover:-translate-x-1 ${language === "ar" ? "" : "rotate-180"}`} />
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
                     {/* 4. مساعد الصياغة الذكي */}
                     {searchValue.trim().length >= 6 && !showQuestionHelper && (
                       <div className="text-center pt-1">
@@ -4288,30 +4145,6 @@ export const SmartGateway: React.FC<
 
       {enablePreQuestionAssist && !hasSearched && showInspiration && (
         <>
-          {/* Ephemeral Wisdom Feature (FOMO) — compact whisper */}
-          <div className="mt-4">
-            <motion.div
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 24 }}
-              className="bg-white/58 backdrop-blur-xl border border-[#8FA9C7]/12 rounded-full px-3.5 py-2 flex items-center justify-between gap-3 shadow-[0_8px_24px_rgba(24,34,49,0.035)] relative overflow-hidden"
-              dir={language === "ar" ? "rtl" : "ltr"}
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <Sparkles
-                  className="w-3.5 h-3.5 text-[#8E7AAE] shrink-0 opacity-70"
-                  strokeWidth={1.7}
-                />
-                <span className="text-[10px] md:text-[11px] font-black text-[#8E7AAE] whitespace-nowrap">
-                  {language === "ar" ? "همسة عابرة" : "Passing whisper"}
-                </span>
-                <p className="text-xs md:text-sm font-bold text-[#465568] leading-relaxed truncate">
-                  {language === "ar" ? currentWisdom.ar : currentWisdom.en}
-                </p>
-              </div>
-            </motion.div>
-          </div>
-
           {/* Daily Challenge & Insights Section */}
           <div className="emotion-hide mt-5 md:mt-6 grid grid-cols-1 gap-3 md:gap-4 items-start">
             <motion.div
@@ -4351,53 +4184,6 @@ export const SmartGateway: React.FC<
 
           </div>
 
-          {/* Signature Gate: Idea Fabric — keep it special and remove duplicate Knowledge Graph from dashboard */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="emotion-hide mt-4 md:mt-5 mb-9"
-          >
-            <motion.button
-              type="button"
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.995 }}
-              className="w-full p-3 sm:p-3.5 md:p-4 tebyan-fabric-hero-card rounded-[20px] md:rounded-[24px] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-4 transition-all duration-500 group cursor-pointer relative overflow-hidden text-right"
-              onClick={() => handleTabChange("ripple")}
-            >
-              <div className="absolute -top-20 -right-20 w-56 h-56 bg-[#D8CEE9]/22 rounded-full blur-[68px] group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
-              <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-[#DCEAF4]/26 rounded-full blur-[68px] group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
-              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4 justify-end flex-1">
-                <div>
-                  <h3 className="text-lg md:text-xl font-black text-[#182231] mb-1 tracking-tight leading-[1.12]">
-                    {language === "ar" ? "نسيج الأفكار" : "Idea Fabric"}
-                  </h3>
-                  <p className="text-[#566276] font-bold text-xs md:text-sm leading-relaxed max-w-xl">
-                    {language === "ar"
-                      ? "اربط أفكارك وشوف كيف تتقاطع."
-                      : "Connect your ideas and see how they intersect."}
-                  </p>
-                </div>
-                <div className="tebyan-fabric-orb w-10 h-10 md:w-11 md:h-11 rounded-[16px] bg-white/82 flex items-center justify-center text-[#6E5F8E] border border-[#8E7AAE]/12 shadow-sm transform group-hover:rotate-1 group-hover:scale-[1.02] transition-transform shrink-0">
-                  <Waves className="w-5 h-5 md:w-6 md:h-6 opacity-80" />
-                </div>
-              </div>
-              <div className="relative z-10 flex items-center justify-center gap-2 md:min-w-[110px] bg-white/72 border border-[#8E7AAE]/12 rounded-[16px] md:rounded-[18px] px-3 py-2.5 shadow-sm backdrop-blur-xl">
-                <span className="text-[10px] md:text-[11px] text-[#7C8796] font-black uppercase tracking-widest">
-                  {language === "ar" ? "افتح النسيج" : "Open fabric"}
-                </span>
-                <ArrowLeft
-                  className={cn(
-                    "w-4 h-4 text-[#6E5F8E]",
-                    language === "ar"
-                      ? "group-hover:-translate-x-1"
-                      : "rotate-180 group-hover:translate-x-1",
-                    "transition-transform",
-                  )}
-                />
-              </div>
-            </motion.button>
-          </motion.div>
         </>
       )}
       {/* Gravity of Intent Demonstration */}
