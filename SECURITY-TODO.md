@@ -125,3 +125,85 @@
 - في هذه الجولة **لم يُحذف أي ملف PII حقيقي** (لم يُعثر على ملفات عملاء/هواتف حقيقية ضمن
   ما جرى حذفه؛ الملف الوحيد التالف المحذوف هو `modified_files.zip`).
 - تنظيف التاريخ (إن لزم لاحقاً لأي ملف حسّاس) يحتاج موافقة منفصلة و rebase/filter (لم يُنفَّذ).
+
+---
+
+# Round 2 — Comprehensive white-box audit (2026-09-17)
+
+Re-audited the whole app (server.ts, functions/, firestore.rules, storage config,
+src/, scripts/). The earlier rounds already closed the high-severity items
+(open AI proxy → CORS allowlist + App Check + rate limiting on the LIVE `api`
+function; firestore role-escalation; security headers in `firebase.json`; health
+endpoint no longer leaks the key). This round found the codebase largely clean.
+Confirmed NOT vulnerable and left unchanged: no `dangerouslySetInnerHTML`/`innerHTML`
+sinks in `src/`; external link in `CouncilTab.tsx` uses `rel="noreferrer"`;
+`AdminDashboard` `window.location.href` uses a static hardcoded action list (no
+open redirect); `scripts/guard.js` `execSync` uses a hardcoded pattern list (no
+command injection); no hardcoded secrets (only the PUBLIC Firebase web config,
+which is expected); the highlight regex in `InstantResults.tsx` is a literal
+alternation of escaped words (no ReDoS).
+
+## R2-1. Unbounded AI response cache in `server.ts` — ✅ FIXED (LOW, defense-in-depth)
+- File: `server.ts`, `smartCache` (declared ~line 82; write ~line 977).
+- Was: `smartCache = new Map()` with a TTL but NO size cap. A flood of unique
+  prompts could grow the map without limit → memory-exhaustion DoS on the
+  Cloud Run / dev server that hosts the AI proxy.
+- Fix: added `CACHE_MAX_ENTRIES = 500` and evict the oldest entry before insert,
+  mirroring the existing bound in `functions/index.js`. Minimal, backwards-compatible.
+- Note: `server.ts` is not on the live deploy path (see R2-2), so live impact was
+  nil; applied as a safe hardening that matches the live function's behavior.
+
+## R2-2. `server.ts` AI proxy has no App Check / auth — 🚫 LEFT (documented, not live)
+- File: `server.ts` — `/api/ai/generate`, `/api/ai/audio` enforce CORS + per-IP
+  rate limiting but NOT App Check (unlike the live `functions/index.js`).
+- Why left: `cloudbuild.yaml` deploys **hosting only**, and `firebase.json`
+  rewrites `/api/**` to the `api` Cloud Function; the npm `deploy` script targets
+  `functions:api,hosting,firestore:rules`. `server.ts` is the dev / non-live
+  Cloud Run server. Adding `firebase-admin` (App Check verify) is a heavy dep on
+  a non-live path. Already noted in Round-1 §1; reconfirmed still non-live.
+- Recommended fix (only if `server.ts` is ever promoted to production): port the
+  `appCheckOk()` gate from `functions/index.js` onto both routes.
+
+## R2-3. Rate-limiter IP is taken from the leftmost `X-Forwarded-For` — 🚫 LEFT (MEDIUM, risky to change)
+- File: `functions/index.js`, `rateLimited()` (~line 83):
+  `String(req.headers["x-forwarded-for"] || req.ip).split(",")[0].trim()`.
+- Issue: the **leftmost** XFF entry is client-controlled, so an attacker can send
+  a rotating/forged `X-Forwarded-For` header to land in a fresh per-IP bucket on
+  every request and bypass the fixed-window limiter.
+- Why left: the correct trusted position in the XFF chain depends on the exact
+  GFE → Hosting → Function hop count; picking the wrong index either lumps all
+  users under one IP (limiter rate-limits everyone) or stays bypassable. This is
+  defense-in-depth only — App Check is the real cost-control gate — and a wrong
+  change risks the live flow (guardrail: document instead of risk breakage).
+- Recommended fix: rely on the platform-derived client IP (e.g. trust the GFE and
+  take the correct fixed-offset entry from the right of XFF, validated against
+  Firebase Hosting → Functions header behavior), and/or move enforcement fully to
+  App Check strict mode (`APP_CHECK_ENFORCE=true`) once reCAPTCHA is wired.
+
+## R2-4. `system_settings/{docId}` writable by any signed-in user when `docId == 'cron_state'` — 🚫 LEFT (LOW, not provably safe)
+- File: `firestore.rules`, `match /system_settings/{docId}`:
+  `allow write: if isSignedIn() && (docId == 'cron_state' || isAdmin());`
+- Issue: any authenticated (incl. anonymous, if enabled) user can overwrite the
+  `cron_state` document, which the client-driven generation cron reads. Potential
+  tampering / trigger-manipulation.
+- Why left: this appears intentional (the client advances `cron_state` without
+  admin rights); tightening it (e.g. bounding fields or restricting to a Cloud
+  Function) is not **provably** safe without confirming the live cron writer, and
+  the guardrail forbids risky rules changes. Left unchanged.
+- Recommended fix: move `cron_state` advancement to an admin/Cloud-Function-only
+  write, or shape-bound the document (allow only a `lastRun` timestamp field).
+
+## R2-5. CSP is `Content-Security-Policy-Report-Only` — 🚫 LEFT (LOW, owner decision)
+- File: `firebase.json` hosting headers — a report-only CSP (with `'unsafe-inline'`
+  in `script-src`) is present but never enforced.
+- Why left: enforcing it (and removing `'unsafe-inline'`) can break the Vite/React
+  inline bootstrap and inline styles; this is a rollout decision for the owner.
+- Recommended fix: monitor CSP reports, migrate inline scripts to nonces/hashes,
+  then switch the header to enforcing `Content-Security-Policy`.
+
+### Validation (Round 2)
+- `npx esbuild server.ts --bundle --platform=node --format=esm --packages=external`
+  (the project's own server build step) — **passed**, no errors.
+- Full `tsc --noEmit` could not be run: dependencies are not installed
+  (`node_modules` absent) in the audit environment. No test script exists
+  (`npm run lint` is `tsc --noEmit`).

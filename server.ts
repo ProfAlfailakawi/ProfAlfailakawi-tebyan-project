@@ -82,6 +82,9 @@ const getGenAI = () => {
 // Simple In-memory Cache for AI responses
 const smartCache = new Map();
 const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 hours
+// Bound the cache so a flood of unique prompts cannot grow it without limit
+// (memory-exhaustion DoS). Mirrors functions/index.js.
+const CACHE_MAX_ENTRIES = 500;
 
 // Helper to hash cache key
 function hashString(str: string) {
@@ -974,6 +977,9 @@ async function startServer() {
             console.log(`[Server] AI Response length: ${responseText.length}`);
             
             const aiResponse = { text: responseText };
+            if (smartCache.size >= CACHE_MAX_ENTRIES) {
+                smartCache.delete(smartCache.keys().next().value);
+            }
             smartCache.set(cacheKey, { timestamp: Date.now(), response: aiResponse });
             
             res.json(aiResponse);
