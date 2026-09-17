@@ -21,6 +21,15 @@ const DEMO_FLAG_KEY = 'tebyan_demo_active_v1';
 export const DEMO_AVAILABLE =
   (import.meta as any).env?.VITE_DISABLE_DEMO_MODE !== 'true';
 
+/**
+ * إظهار زر الدخول إلى العرض في الواجهة.
+ *
+ * مخفيّ الآن بطلبٍ صريح من صاحب المنتج. والإخفاء مقصورٌ على الزر وحده: الوضع
+ * نفسه ومنعُ الكتابة ونقطةُ الحراسة واختباراتها كلها باقية على حالها، فلا شيء
+ * يحتاج إعادةَ بناء حين يُطلب رجوعه — تحويل هذه القيمة إلى true وحدها يكفي.
+ */
+export const DEMO_ENTRY_VISIBLE: boolean = false;
+
 function readFlag(): boolean {
   if (typeof window === 'undefined') return false;
   try {

@@ -50,7 +50,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { TebyanMark } from "./components/TebyanMark";
 import { cn } from "./lib/utils";
 import { useAuth } from "./components/AuthProvider";
-import { IS_DEMO_MODE, DEMO_AVAILABLE, enterDemoMode, exitDemoMode, resetDemoMode } from "./lib/demoMode";
+import { IS_DEMO_MODE, DEMO_AVAILABLE, DEMO_ENTRY_VISIBLE, enterDemoMode, exitDemoMode, resetDemoMode } from "./lib/demoMode";
 import {
   PWAInstallPrompt,
   PWAHeaderButton,
@@ -1476,7 +1476,7 @@ const AppContent: React.FC = () => {
                 <ExitDemoIcon className="w-3.5 h-3.5" />
               </button>
             </div>
-          ) : DEMO_AVAILABLE && !user ? (
+          ) : DEMO_ENTRY_VISIBLE && DEMO_AVAILABLE && !user ? (
             /* يُعرض للزائر غير المسجّل فقط: من سجّل دخوله له بياناته، فلا يُقحم في عرض. */
             <button
               type="button"
