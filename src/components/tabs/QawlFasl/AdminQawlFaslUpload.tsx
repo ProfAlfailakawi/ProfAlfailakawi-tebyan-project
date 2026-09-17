@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { collection, getDocs, doc, writeBatch, serverTimestamp, query, where } from 'firebase/firestore';
+import { collection, getDocs, doc, serverTimestamp, query, where } from 'firebase/firestore';
+import { writeBatch } from '../../../lib/firestoreWrites';
 import { db } from '../../../lib/firebase';
 import { UploadCloud, CheckCircle, AlertTriangle, Loader2, PlayCircle, StopCircle, RefreshCw } from 'lucide-react';
 import { generateQawlFaslContent, GeminiKeyMissingError } from '../../../services/qawlFaslAiService';

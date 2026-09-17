@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { db } from '../../lib/firebase';
-import { collection, onSnapshot, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, serverTimestamp, doc } from 'firebase/firestore';
+import { addDoc, deleteDoc } from '../../lib/firestoreWrites';
 import { TicketPercent, Plus, Trash2, Tag, Percent } from 'lucide-react';
 import { cn } from '../../lib/utils';
 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Mail, CheckCircle2, AlertCircle, Send } from 'lucide-react';
 import { db } from '../../lib/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc } from '../../lib/firestoreWrites';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 

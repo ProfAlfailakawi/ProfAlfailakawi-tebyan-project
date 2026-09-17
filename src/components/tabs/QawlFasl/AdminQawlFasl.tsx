@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, doc, setDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, onSnapshot, doc, serverTimestamp } from 'firebase/firestore';
+import { setDoc, deleteDoc } from '../../../lib/firestoreWrites';
 import { db } from '../../../lib/firebase';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { Plus, Edit2, Trash2, Check, X, Sparkles, Loader2, Database, Wand2, UploadCloud } from 'lucide-react';

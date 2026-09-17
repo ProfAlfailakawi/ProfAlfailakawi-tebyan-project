@@ -42,11 +42,15 @@ import {
   HelpCircle,
   Grid3X3,
   Lamp,
+  FlaskConical,
+  RotateCcw,
+  LogOut as ExitDemoIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { TebyanMark } from "./components/TebyanMark";
 import { cn } from "./lib/utils";
 import { useAuth } from "./components/AuthProvider";
+import { IS_DEMO_MODE, DEMO_AVAILABLE, enterDemoMode, exitDemoMode, resetDemoMode } from "./lib/demoMode";
 import {
   PWAInstallPrompt,
   PWAHeaderButton,
@@ -1442,6 +1446,48 @@ const AppContent: React.FC = () => {
         </div>
 
         <div className="tebyan-header-actions flex items-center gap-1 pointer-events-auto">
+          {/* وسم البيئة التجريبية: صريح ودائم طوال الجلسة. من يُعرض عليه المنتج،
+              أو من ينظر إلى الشاشة من بعيد، يجب أن يعرف بنظرة أن هذه ليست بيانات
+              جهة حقيقية — ومعه زرّا إعادة التعيين والخروج. */}
+          {IS_DEMO_MODE ? (
+            <div
+              role="status"
+              aria-label={language === "ar" ? "بيئة تجريبية معزولة" : "Isolated demo environment"}
+              className="flex items-center gap-1 rounded-xl border border-amber-400/45 bg-amber-50/95 px-2 py-1 text-[10px] font-black text-amber-800"
+            >
+              <FlaskConical className="w-3.5 h-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">{language === "ar" ? "بيئة تجريبية" : "DEMO"}</span>
+              <button
+                type="button"
+                onClick={() => resetDemoMode()}
+                title={language === "ar" ? "إعادة تعيين العرض" : "Reset demo"}
+                aria-label={language === "ar" ? "إعادة تعيين العرض" : "Reset demo"}
+                className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-amber-200/70"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => exitDemoMode()}
+                title={language === "ar" ? "الخروج من العرض" : "Leave demo"}
+                aria-label={language === "ar" ? "الخروج من العرض" : "Leave demo"}
+                className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-amber-200/70"
+              >
+                <ExitDemoIcon className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : DEMO_AVAILABLE && !user ? (
+            /* يُعرض للزائر غير المسجّل فقط: من سجّل دخوله له بياناته، فلا يُقحم في عرض. */
+            <button
+              type="button"
+              onClick={() => enterDemoMode()}
+              title={language === "ar" ? "استعراض ببيانات تجريبية" : "Explore with demo data"}
+              aria-label={language === "ar" ? "استعراض ببيانات تجريبية" : "Explore with demo data"}
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-400/35 bg-amber-50/90 p-0 text-amber-800 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
+            >
+              <FlaskConical className="w-4 h-4" />
+            </button>
+          ) : null}
           <div className="block">
             <PWAHeaderButton language={language} />
           </div>

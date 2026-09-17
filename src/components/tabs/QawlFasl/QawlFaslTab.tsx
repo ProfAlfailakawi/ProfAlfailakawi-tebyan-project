@@ -9,6 +9,8 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { mockQuestions as fallbackMock } from './mockData';
 import { qawlFaslService } from '../../../services/qawlFaslService';
+import { IS_DEMO_MODE } from '../../../lib/demoMode';
+import { loadDemoLibrary } from '../../../data/demoLibrary';
 
 import { MessageCircleQuestion } from 'lucide-react';
 import { TabHeader } from '../../TabHeader';
@@ -31,6 +33,8 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   }, [initialValue]);
 
   useEffect(() => {
+    // التوليد اليومي يكتب إلى Firestore، فلا مكان له في وضع العرض.
+    if (IS_DEMO_MODE) return;
     // Trigger daily generation if needed
     qawlFaslService.triggerDailyGenerationIfNecessary().catch(err => {
       console.warn("Daily trigger skipped or failed (common if not admin or quota reached):", err);
@@ -55,6 +59,18 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   }, []);
 
   useEffect(() => {
+    /* في وضع العرض لا نشترك في Firestore إطلاقًا — لا لأن الكتابة محروسة فحسب،
+       بل لأن الزائر يجب أن يرى مكتبة المنتج المنشورة كاملة (٤٧ سؤالًا موزّعة على
+       الفئات التسع) لا ما تصادف وجوده في قاعدة بيانات نشرٍ بعينه. */
+    if (IS_DEMO_MODE) {
+      let cancelled = false;
+      void loadDemoLibrary().then(library => {
+        if (cancelled || library.length === 0) return;
+        setQuestions(library);
+      });
+      return () => { cancelled = true; };
+    }
+
     // Fetch only published real questions
     const q = query(collection(db, 'qawl_fasl_questions'), where('status', '==', 'published'));
     const unsub = onSnapshot(q, (snap) => {

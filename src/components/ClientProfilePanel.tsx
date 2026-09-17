@@ -11,7 +11,8 @@ import {
 import { useAuth } from './AuthProvider';
 import { useUser } from '../contexts/UserContext';
 import { auth, db } from '../lib/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
+import { updateDoc } from '../lib/firestoreWrites';
 import { useGamificationContext } from './GamificationProvider';
 import { proxyGenerateContent } from '../lib/aiProxy';
 import { KnowledgeMemoryService, ThoughtNode } from '../services/knowledgeMemoryService';

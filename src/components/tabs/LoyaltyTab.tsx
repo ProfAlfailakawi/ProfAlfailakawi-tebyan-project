@@ -7,7 +7,8 @@ import {
   ExternalLink, CheckCircle2, MoreHorizontal, Sparkles, X, TicketPercent
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { collection, onSnapshot, query, where, orderBy, limit, doc, updateDoc, Timestamp, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, orderBy, limit, doc, Timestamp, getDocs } from 'firebase/firestore';
+import { updateDoc } from '../../lib/firestoreWrites';
 import { db } from '../../lib/firebase';
 import { TabHeader } from '../TabHeader';
 

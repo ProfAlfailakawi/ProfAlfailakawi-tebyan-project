@@ -88,7 +88,8 @@ export default function UserMenu() {
                         onBlur={async (e) => {
                             if(e.target.value.includes('@')) {
                                 try {
-                                    const { doc, updateDoc } = await import('firebase/firestore');
+                                    const { doc } = await import('firebase/firestore');
+                                    const { updateDoc } = await import('../lib/firestoreWrites');
                                     await updateDoc(doc(db, 'users', user!.uid), { email: e.target.value });
                                     window.location.reload(); // Refresh to update profile
                                 } catch (e) {

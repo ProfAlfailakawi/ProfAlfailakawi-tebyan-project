@@ -80,7 +80,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const checkAndAutoGenerate = async () => {
         try {
-            const { doc, getDoc, setDoc, serverTimestamp } = await import('firebase/firestore');
+            const { doc, getDoc, serverTimestamp } = await import('firebase/firestore');
+            const { setDoc } = await import('../lib/firestoreWrites');
             const { db } = await import('../lib/firebase');
             
             const statsRef = doc(db, 'system_configs', 'qawl_fasl_gen');

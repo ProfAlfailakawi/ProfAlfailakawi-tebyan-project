@@ -11,7 +11,8 @@ const Type = {
 import { perfMonitor } from "../lib/performance";
 import { proxyGenerateContent } from "../lib/aiProxy";
 import { db } from "../lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, serverTimestamp } from "firebase/firestore";
+import { addDoc } from "../lib/firestoreWrites";
 import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
 
 export const ai: any = {

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Brain, Upload, CheckCircle2, AlertCircle, Play, FileJson, Download } from 'lucide-react';
 import { generateQawlFaslContent, GeminiKeyMissingError } from '../services/qawlFaslAiService';
 import { db } from '../lib/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
+import { addDoc } from '../lib/firestoreWrites';
 
 interface CategorizedQuestion {
   question: string;

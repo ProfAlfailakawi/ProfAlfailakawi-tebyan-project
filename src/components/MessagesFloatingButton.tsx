@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, CheckCircle } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc } from '../lib/firestoreWrites';
 import { db } from '../lib/firebase';
 import { TebyanTooltip } from './TebyanTooltip';
 import { SmartIconWrapper } from './common/SmartIconGuidance';

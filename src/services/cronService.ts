@@ -1,4 +1,5 @@
-import { doc, getDoc, setDoc, runTransaction } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
+import { setDoc, runTransaction } from '../lib/firestoreWrites';
 import { db } from '../lib/firebase';
 import { qawlFaslService } from './qawlFaslService';
 import { handleFirestoreError, OperationType } from '../lib/firestoreError';
