@@ -56,10 +56,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Firebase is intentionally loaded after the first UI paint. Guests can
         // start typing immediately while the saved session restores quietly.
-        const [{ auth, db }, authApi, firestore] = await Promise.all([
+        const [{ auth, db }, authApi, firestore, { setDoc }] = await Promise.all([
           import("../lib/firebase"),
           import("firebase/auth"),
           import("firebase/firestore"),
+          import("../lib/firestoreWrites"),
         ]);
 
         if (cancelled) return;
@@ -96,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 const adminRef = firestore.doc(db, "admins", nextUser.uid);
                 const adminSnap = await firestore.getDoc(adminRef);
                 if (!adminSnap.exists()) {
-                  await firestore.setDoc(adminRef, {
+                  await setDoc(adminRef, {
                     email: nextUser.email,
                     registeredAt: firestore.serverTimestamp(),
                     source: userSnap.exists()
@@ -114,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               (admin && userSnap.data().role !== "admin")
             ) {
               try {
-                await firestore.setDoc(
+                await setDoc(
                   userRef,
                   userSnap.exists()
                     ? { ...profileData, role: profileData.role }

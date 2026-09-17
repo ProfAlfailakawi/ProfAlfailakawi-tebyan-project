@@ -23,15 +23,16 @@ const persistEvent = async (
 ) => {
   try {
     // Analytics must not make Firebase part of the first-load bundle.
-    const [{ db }, firestore] = await Promise.all([
+    const [{ db }, firestore, { addDoc }] = await Promise.all([
       import('../lib/firebase'),
       import('firebase/firestore'),
+      import('../lib/firestoreWrites'),
     ]);
     const safeMetadata = { ...metadata };
     Object.keys(safeMetadata).forEach((key) => {
       if (safeMetadata[key] === undefined) delete safeMetadata[key];
     });
-    await firestore.addDoc(firestore.collection(db, 'analytics'), {
+    await addDoc(firestore.collection(db, 'analytics'), {
       type,
       query: query || null,
       metadata: safeMetadata,

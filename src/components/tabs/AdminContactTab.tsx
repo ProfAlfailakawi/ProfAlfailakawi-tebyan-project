@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, CheckCircle2, Trash2, Clock, Inbox, CircleDot } from 'lucide-react';
 import { db } from '../../lib/firebase';
-import { collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc } from 'firebase/firestore';
+import { updateDoc, deleteDoc } from '../../lib/firestoreWrites';
 import { motion, AnimatePresence } from 'motion/react';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';

@@ -1,4 +1,5 @@
-import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, updateDoc, increment, addDoc, setDoc, serverTimestamp, writeBatch, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, orderBy, limit, increment, serverTimestamp } from 'firebase/firestore';
+import { updateDoc, addDoc, setDoc, writeBatch, deleteDoc } from '../lib/firestoreWrites';
 import { db } from '../lib/firebase';
 import { QawlFaslQuestion as Question } from '../components/tabs/QawlFasl/types';
 import { generateQawlFaslContent, GeminiKeyMissingError } from './qawlFaslAiService';
