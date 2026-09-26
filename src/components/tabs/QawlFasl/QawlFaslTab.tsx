@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import HomeView from './HomeView';
 import EmergencyView from './EmergencyView';
@@ -52,6 +52,21 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
       }
     }
   }, [initialValue]);
+
+  // Deep link from the static /qawl/q-* pages: /?tab=qawlfasl&q=<questionId>
+  // opens that answer directly once the library has loaded.
+  const deepLinkHandled = useRef(false);
+  useEffect(() => {
+    if (deepLinkHandled.current) return;
+    const id = (initialValue || '').trim();
+    if (!/^[A-Za-z0-9_-]{1,128}$/.test(id)) return;
+    const match = questions.find(q => q.id === id);
+    if (match) {
+      deepLinkHandled.current = true;
+      goToQuestion(match);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialValue, questions]);
 
   useEffect(() => {
     const saved = localStorage.getItem('lastViewedQawlFaslId');

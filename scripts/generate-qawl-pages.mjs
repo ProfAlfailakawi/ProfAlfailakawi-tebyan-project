@@ -22,6 +22,36 @@ const esc = (s = "") =>
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
 
+// ── طبقة الثقة (مطابقة لـ src/lib/qawlTrust.ts) ──
+const DEFAULT_REVIEWER = "د. أحمد الفيلكاوي";
+const clean = (v) => String(v ?? "").replace(/\s+/g, " ").trim();
+const extractReligiousCitation = (ref) => {
+  const text = clean(ref);
+  if (!text) return null;
+  const quran = text.match(/سورة\s+([\u0621-\u064A]+(?:\s+[\u0621-\u064A]+)?)\s*(?:،\s*الآي(?:ة|ات)\s*|:\s*)([\d٠-٩]+(?:\s*[-–]\s*[\d٠-٩]+)?)/);
+  if (quran) return `القرآن الكريم — سورة ${quran[1]}، الآية ${quran[2].replace(/\s+/g, "")}`;
+  const hadith = text.match(/((?:رواه|صحيح)\s+[^()\-–.،"']+)/);
+  return hadith ? `الحديث الشريف — ${hadith[1].trim()}` : null;
+};
+const trustOf = (q) => {
+  const sources = [];
+  for (const s of Array.isArray(q.sources) ? q.sources : []) {
+    if (typeof s === "string" && clean(s)) sources.push({ title: clean(s) });
+    else if (s && clean(s.title)) sources.push({ title: clean(s.title), url: /^https?:\/\//.test(s.url || "") ? s.url : undefined });
+  }
+  if (!sources.length) {
+    const cite = extractReligiousCitation(q.religiousReference);
+    if (cite) sources.push({ title: cite });
+  }
+  const rb = q.reviewedBy;
+  const reviewers = (Array.isArray(rb) ? rb : rb ? [rb] : []).map(clean).filter(Boolean);
+  if (!reviewers.length) reviewers.push(DEFAULT_REVIEWER);
+  const raw = q.reviewedAt ?? q.updatedAt;
+  const d = raw != null && raw !== "" ? new Date(raw) : null;
+  return { sources, reviewers, reviewedAt: d && !Number.isNaN(d.getTime()) ? d : null };
+};
+const arDate = (d) => new Intl.DateTimeFormat("ar-u-nu-latn", { day: "numeric", month: "long", year: "numeric" }).format(d);
+
 const head = (title, description, url) => `<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -88,6 +118,15 @@ const head = (title, description, url) => `<!doctype html>
   .cta a{display:inline-block;background:var(--lilac);color:#FBF9FF;font-weight:500;border-radius:12px;padding:12px 30px;font-size:.95rem}
   .cta p{font-size:.8rem;color:var(--muted);margin:10px 0 0}
   footer{border-top:1px solid var(--line);padding:22px;text-align:center;font-size:.78rem;color:var(--muted)}
+  .trust{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:40px;font-size:.9rem}
+  .trust dl{display:grid;gap:12px;margin:0}
+  @media(min-width:640px){.trust dl{grid-template-columns:1fr 1fr}.trust .src{grid-column:1/-1}}
+  .trust dt{font-size:.75rem;font-weight:600;color:var(--lilac);margin-bottom:2px}
+  .trust dd{margin:0;font-weight:500}
+  .trust ul{padding-inline-start:18px;margin:0}
+  .trust .rep{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:14px;padding-top:12px;font-size:.78rem;color:var(--muted)}
+  .trust .rep a{border:1px solid var(--line);border-radius:999px;padding:3px 14px;color:var(--dont);background:var(--dont-bg)}
+  :focus-visible{outline:2px solid var(--lilac);outline-offset:2px}
   .grid{display:grid;gap:12px;margin-top:26px}
   @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
   .qcard{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:18px 20px;display:block;color:var(--ink)}
@@ -107,9 +146,20 @@ const footer = `<footer>قول فصل — مكتبة الأجوبة التربو
 const questionPage = (q) => {
   const url = `${SITE}/qawl/${q.id}`;
   const desc = q.quickSummary || "";
+  const trust = trustOf(q);
+  const author = { "@type": "Person", name: trust.reviewers[0], url: SITE };
   const ld = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    url,
+    inLanguage: "ar",
+    author,
+    reviewedBy: trust.reviewers.map((name) => ({ "@type": "Person", name })),
+    ...(q.createdAt ? { datePublished: new Date(q.createdAt).toISOString() } : {}),
+    ...(trust.reviewedAt ? { dateModified: trust.reviewedAt.toISOString(), lastReviewed: trust.reviewedAt.toISOString() } : {}),
+    ...(trust.sources.length
+      ? { citation: trust.sources.map((s) => (s.url ? { "@type": "CreativeWork", name: s.title, url: s.url } : s.title)) }
+      : {}),
     mainEntity: [
       {
         "@type": "Question",
@@ -153,6 +203,12 @@ ${desc ? `<p class="summary">${esc(desc)}</p>` : ""}`;
   if (Array.isArray(q.resources) && q.resources.length)
     body += `<section><h2>للاستزادة</h2><div class="res">${q.resources.map((r) => `<div class="box"><b>${esc(r.title)}</b><br><span style="font-size:.85rem;color:var(--muted)">${esc(r.description || "")}</span></div>`).join("")}</div></section>`;
   if (q.closingThought) body += `<p class="closing">${esc(q.closingThought)}</p>`;
+
+  body += `<aside class="trust" aria-label="التحقق من الجواب"><dl>
+${trust.sources.length ? `<div class="src"><dt>${trust.sources.length > 1 ? "المصادر" : "المصدر"}</dt><dd><ul>${trust.sources.map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" rel="noopener" target="_blank">${esc(s.title)}</a>` : esc(s.title)}</li>`).join("")}</ul></dd></div>` : ""}
+<div><dt>راجعه</dt><dd>${esc(trust.reviewers.join("، "))}</dd></div>
+${trust.reviewedAt ? `<div><dt>آخر مراجعة</dt><dd><time datetime="${trust.reviewedAt.toISOString()}">${esc(arDate(trust.reviewedAt))}</time></dd></div>` : ""}
+</dl><div class="rep"><span>لاحظت معلومة غير دقيقة؟ نراجع كل بلاغ.</span><a href="/?tab=qawlfasl&q=${encodeURIComponent(q.id)}&report=1">بلّغ عن خطأ</a></div></aside>`;
 
   body += `<div class="cta">
   <a href="/?tab=qawlfasl&q=${encodeURIComponent(q.id)}">تحتاج تحليلاً أعمق لحالتك؟ أكمل في تبيان</a>

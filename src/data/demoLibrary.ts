@@ -47,6 +47,9 @@ interface RawQuestion {
   scientificStat?: string;
   closingThought?: string;
   resources?: { type: string; title: string; url?: string }[];
+  sources?: (string | { title: string; url?: string })[];
+  reviewedBy?: string | string[];
+  reviewedAt?: string | number;
 }
 
 /* مطابقة كلمات مفتاحية بسيطة ومقروءة — الترتيب مقصود: الأخصّ أولًا، فلا يبتلع
@@ -118,6 +121,9 @@ function adapt(raw: RawQuestion): QawlFaslQuestion {
     scientificStat: raw.scientificStat,
     closingThought: raw.closingThought,
     resources: (raw.resources || []) as QawlFaslQuestion['resources'],
+    ...(raw.sources ? { sources: raw.sources } : {}),
+    ...(raw.reviewedBy ? { reviewedBy: raw.reviewedBy } : {}),
+    ...(raw.reviewedAt ? { reviewedAt: raw.reviewedAt } : {}),
   } as QawlFaslQuestion;
 }
 

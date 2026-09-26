@@ -23,6 +23,11 @@ service cloud.firestore {
       );
     }
     
+    function privilegedUserFields() {
+      return ['points', 'tier', 'level', 'coupons', 'rewards', 'balance', 'credits',
+              'status', 'adminNotes', 'isPremium', 'subscription', 'badges'];
+    }
+
     function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
 
     // Guards public log/analytics writes: shape-bounded so anonymous clients
@@ -49,7 +54,9 @@ service cloud.firestore {
     
     match /system_settings/{docId} {
       allow read: if true;
-      allow write: if isSignedIn() && (docId == 'cron_state' || isAdmin());
+      // cron_state is written only by src/services/cronService.ts, which runs
+      // exclusively for admins (App.tsx) — so ordinary users may not write it.
+      allow write: if isAdmin();
     }
 
     match /daily_prompts/{document=**} {
@@ -84,6 +91,22 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // «بلّغ عن خطأ» on Qawl Fasl answers. Anyone (incl. signed-out visitors)
+    // may create a bounded report; only admins can read or triage them.
+    match /answer_reports/{reportId} {
+      allow create: if request.resource.data.keys().hasOnly(['questionId', 'questionTitle', 'note', 'contact', 'status', 'createdAt'])
+        && request.resource.data.keys().hasAll(['questionId', 'status', 'createdAt'])
+        && isValidId(request.resource.data.questionId)
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time
+        && (!('questionTitle' in request.resource.data) || (request.resource.data.questionTitle is string && request.resource.data.questionTitle.size() <= 300))
+        && (!('note' in request.resource.data) || (request.resource.data.note is string && request.resource.data.note.size() <= 1000))
+        && (!('contact' in request.resource.data) || (request.resource.data.contact is string && request.resource.data.contact.size() <= 200));
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+    }
+
     match /search_logs/{document=**} {
       allow read: if isAdmin();
       allow create: if isBoundedLog(request.resource.data, 8);
@@ -107,17 +130,27 @@ service cloud.firestore {
       // the same fixed e-mail list below. Without this escape the owner's own
       // profile sync (src/components/AuthProvider.tsx, which writes role:'admin'
       // onto the owner's user doc at sign-in) would be permanently denied.
+      //
+      // Privileged fields (points, tier, coupons, status, adminNotes, ...) are
+      // written only by admins (LoyaltyTab "add points", AdminUsersDashboard).
+      // The client's own profile sync writes only email/displayName/photoURL/
+      // role/createdAt, and gamification points live in localStorage, so users
+      // may not set these fields on their own doc.
       allow create: if isSignedIn() && request.auth.uid == userId
-        && (request.resource.data.get('role', 'user') != 'admin' || isAdmin());
-      allow update: if isSignedIn() && request.auth.uid == userId
-        && (request.resource.data.get('role', resource.data.get('role', 'user')) == resource.data.get('role', 'user')
-            || isAdmin());
+        && (request.resource.data.get('role', 'user') != 'admin' || isAdmin())
+        && (!request.resource.data.keys().hasAny(privilegedUserFields()) || isAdmin());
+      allow update: if (isSignedIn() && request.auth.uid == userId
+        && request.resource.data.get('role', resource.data.get('role', 'user')) == resource.data.get('role', 'user')
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(privilegedUserFields()))
+        || isAdmin();
+      allow delete: if isAdmin();
     }
 
     match /admins/{userId} {
       allow read: if isSignedIn() && request.auth.uid == userId;
       allow write: if isSignedIn() && request.auth.uid == userId && (
         request.auth.token.get('email', '').lower() == "alfailakawidrahmad@gmail.com" ||
+        request.auth.token.get('email', '').lower() == "alfailakawidrahmad@outlook.com" ||
         request.auth.token.get('email', '').lower() == "dr.ahmad@gmail.com" ||
         request.auth.token.get('email', '').lower() == "dr.ahmad.alfailakawi@gmail.com" ||
         request.auth.token.get('email', '').lower() == "ah_f@hotmail.com"
@@ -127,10 +160,14 @@ service cloud.firestore {
     match /ripples/{rippleId} {
       allow list: if true;
       allow get: if true;
-      allow create: if isSignedIn() && isValidRipple(request.resource.data) && (request.resource.data.authorId == request.auth.uid || request.resource.data.authorId == null);
+      allow create: if isSignedIn() && isValidRipple(request.resource.data) && request.resource.data.authorId == request.auth.uid;
       allow update: if (isSignedIn() && (
-        // Like action
-        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']) && request.resource.data.likes == resource.data.likes + 1) ||
+        // Like action: +1 only together with creating this user's like doc in
+        // the same batch (and only if that user had not liked before).
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes'])
+          && request.resource.data.likes == resource.data.likes + 1
+          && !exists(/databases/$(database)/documents/ripples/$(rippleId)/likes/$(request.auth.uid))
+          && existsAfter(/databases/$(database)/documents/ripples/$(rippleId)/likes/$(request.auth.uid))) ||
         // Owner edit
         (request.auth.uid == resource.data.authorId && isValidRipple(request.resource.data))
       )) || isAdmin();
@@ -142,7 +179,12 @@ service cloud.firestore {
       
       match /likes/{userId} {
         allow read: if true;
-        allow write: if isSignedIn() && request.auth.uid == userId;
+        // Create-only (no un-like path exists in the client); removing a like
+        // doc would otherwise allow liking again and inflating the counter.
+        allow create: if isSignedIn() && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly(['userId'])
+          && request.resource.data.userId == request.auth.uid;
+        allow delete: if isAdmin();
       }
     }
     

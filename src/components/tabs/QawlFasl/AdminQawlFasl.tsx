@@ -21,6 +21,10 @@ export default function AdminQawlFasl() {
   const [isMigrating, setIsMigrating] = useState(false);
   const [aiContext, setAiContext] = useState('');
   const [missingQuestions, setMissingQuestions] = useState<any[]>([]);
+  const [answerReports, setAnswerReports] = useState<any[]>([]);
+  const loadReports = () => {
+    qawlFaslService.getAnswerReports().then(setAnswerReports).catch((e) => console.warn('[Admin] answer reports unavailable:', e));
+  };
   const [confirmDialog, setConfirmDialog] = useState<{ message: string, onConfirm: () => void } | null>(null);
   const [alertDialog, setAlertDialog] = useState<string | null>(null);
 
@@ -43,6 +47,7 @@ export default function AdminQawlFasl() {
     
     // Load missing
     loadMissing();
+    loadReports();
 
     return () => unsub();
   }, []);
@@ -461,6 +466,30 @@ export default function AdminQawlFasl() {
                     </div>
                 ))}
             </div>
+        )}
+      </div>
+
+      {/* «بلّغ عن خطأ» reports from the answer trust panel */}
+      <div className="mt-8 bg-white rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border p-6">
+        <h3 className="text-xl font-bold mb-6 border-b pb-4">بلاغات الأخطاء في الأجوبة</h3>
+        {answerReports.length === 0 ? <p className="text-zinc-500">لا توجد بلاغات حالياً.</p> : (
+          <div className="space-y-3">
+            {answerReports.map(r => (
+              <div key={r.id} className={"p-4 border rounded-xl flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 " + (r.status === 'resolved' ? 'bg-white opacity-60' : 'bg-zinc-50')}>
+                <div className="min-w-0 space-y-1">
+                  <p className="font-bold">{r.questionTitle || r.questionId}</p>
+                  <p className="text-xs text-zinc-500">{r.questionId}{r.createdAt?.toDate ? ' · ' + r.createdAt.toDate().toLocaleString('ar-u-nu-latn') : ''}</p>
+                  {r.note && <p className="text-sm text-zinc-700 whitespace-pre-wrap break-words">{r.note}</p>}
+                  {r.contact && <p className="text-xs text-zinc-600 break-all">للتواصل: {r.contact}</p>}
+                </div>
+                {r.status !== 'resolved' && (
+                  <button className="w-full sm:w-auto shrink-0 bg-black text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={async () => {
+                    try { await qawlFaslService.resolveAnswerReport(r.id); loadReports(); } catch (e) { console.error(e); }
+                  }}>تمت المعالجة</button>
+                )}
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

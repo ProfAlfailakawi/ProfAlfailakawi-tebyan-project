@@ -49,7 +49,12 @@ export interface QawlFaslQuestion {
     negative?: number;
   };
   savedBy?: string[];
-  reviewedBy?: string[];
+  /** Reviewer name(s); defaults to the platform owner when absent. */
+  reviewedBy?: string | string[];
+  /** ISO date or epoch ms of the last editorial review; falls back to updatedAt. */
+  reviewedAt?: string | number;
+  /** Citations for the answer (plain titles or {title, url}). */
+  sources?: (string | { title: string; url?: string })[];
   mainCategory?: string;
   isDailyPick?: boolean;
   dailyPickDate?: string;

@@ -78,7 +78,7 @@ const toPositiveInt = (value, fallback) => {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
 const RATE_WINDOW_MS = toPositiveInt(process.env.TEBYAN_AI_RATE_WINDOW_MS, 60 * 1000);
-const RATE_MAX = toPositiveInt(process.env.TEBYAN_AI_RATE_MAX, 60); // per IP per window per instance
+const RATE_MAX = toPositiveInt(process.env.TEBYAN_AI_RATE_MAX, 30); // per IP per window per instance
 function rateLimited(req) {
     const ip = String(req.headers["x-forwarded-for"] || req.ip || "unknown")
         .split(",")[0]
@@ -151,6 +151,19 @@ async function appCheckOk(req) {
 
     const token = req.header("X-Firebase-AppCheck");
     let verified = false;
+    // A signed-in user's Firebase ID token is accepted as an alternative proof.
+    const authz = String(req.header("Authorization") || "");
+    if (authz.startsWith("Bearer ")) {
+        try {
+            const { getApps, initializeApp } = require("firebase-admin/app");
+            const { getAuth } = require("firebase-admin/auth");
+            if (!getApps().length) initializeApp();
+            await getAuth().verifyIdToken(authz.slice(7).trim());
+            return true;
+        } catch (err) {
+            console.warn("ID token verification failed:", err && err.code ? err.code : err);
+        }
+    }
     if (token) {
         try {
             if (!_adminAppCheck) {
@@ -193,12 +206,8 @@ const getGenAI = () => {
 
 // Health check
 app.get(["/health", "/api/health"], (req, res) => {
-    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-    res.json({
-        status: "ok",
-        geminiKeyExists: !!apiKey && apiKey !== "MY_GEMINI_API_KEY",
-        aiClientInitialized: !!getGenAI()
-    });
+    // Key status is intentionally not exposed publicly.
+    res.json({ status: "ok" });
 });
 
 
@@ -490,6 +499,9 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
     if (!contents) {
         return res.status(400).json({ error: "Missing contents" });
     }
+    if (JSON.stringify(contents).length > 60000) {
+        return res.status(413).json({ error: "PAYLOAD_TOO_LARGE", message: "النص طويل جداً، يرجى اختصاره." });
+    }
 
     // Serve identical prompts from cache (big win for repeated searches).
     const cacheKey = hashString(JSON.stringify({ modelName, contents, config: req.body.config }));
@@ -511,19 +523,15 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
     }
 
     try {
-        let finalModel = modelName || "gemini-2.5-flash";
-        if (finalModel.includes("gemini-1.5")) {
-            if (finalModel.includes("pro")) finalModel = "gemini-2.5-pro";
-            else finalModel = "gemini-2.5-flash";
-        } else if (finalModel === "gemini" || finalModel === "gemini-pro") {
-            finalModel = "gemini-2.5-flash";
-        }
+        // Server-side model allow-list: only models the client actually uses.
+        const ALLOWED_MODELS = new Set(["gemini-2.5-flash"]);
+        const finalModel = ALLOWED_MODELS.has(String(modelName || "")) ? modelName : "gemini-2.5-flash";
 
         const generativeModelConfig = { model: finalModel };
         const config = req.body.config;
         if (config) {
-            if (config.systemInstruction) {
-                generativeModelConfig.systemInstruction = config.systemInstruction;
+            if (typeof config.systemInstruction === "string") {
+                generativeModelConfig.systemInstruction = config.systemInstruction.slice(0, 20000);
             }
             const genConfig = {};
             if (config.temperature !== undefined) genConfig.temperature = config.temperature;
