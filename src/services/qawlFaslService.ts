@@ -438,6 +438,29 @@ export const qawlFaslService = {
     await Promise.all(trendPromises);
   },
   
+    /** «بلّغ عن خطأ» — create-only report (see answer_reports in firestore.rules). */
+    async submitAnswerReport(input: { questionId: string; questionTitle?: string; note?: string; contact?: string }) {
+      const payload: Record<string, unknown> = {
+        questionId: String(input.questionId).slice(0, 128),
+        questionTitle: String(input.questionTitle || '').slice(0, 300),
+        note: String(input.note || '').trim().slice(0, 1000),
+        contact: String(input.contact || '').trim().slice(0, 200),
+        status: 'new',
+        createdAt: serverTimestamp(),
+      };
+      await addDoc(collection(db, 'answer_reports'), payload);
+    },
+
+    async getAnswerReports(limitCount = 50): Promise<any[]> {
+      const q = query(collection(db, 'answer_reports'), orderBy('createdAt', 'desc'), limit(limitCount));
+      const snap = await getDocs(q);
+      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    },
+
+    async resolveAnswerReport(id: string) {
+      await updateDoc(doc(db, 'answer_reports', id), { status: 'resolved' });
+    },
+
     async getMissingQuestions(): Promise<any[]> {
       const q = query(collection(db, 'missing_questions'), where('status', '==', 'pending'));
       const snap = await getDocs(q);

@@ -736,8 +736,12 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
         const likeSnap = await getDoc(likeRef);
         
         if (!likeSnap.exists()) {
-            await setDoc(likeRef, { userId: auth.currentUser.uid });
-            await updateDoc(doc(db, 'ripples', node.id), { likes: increment(1) });
+            // Atomic: the rules only accept the +1 when the per-user like doc is
+            // created in the same write (one like per user per ripple).
+            const batch = writeBatch(db);
+            batch.set(likeRef, { userId: auth.currentUser.uid });
+            batch.update(doc(db, 'ripples', node.id), { likes: increment(1) });
+            await batch.commit();
             // Mock email notification
             console.log(`[Email Notification] تم التفاعل مع فكرتك في تبيان: تم عمل Like على فكرتك "${node.text.slice(0,20)}"`);
         }

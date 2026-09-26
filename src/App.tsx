@@ -1,4 +1,5 @@
 import { GamificationProvider } from "./components/GamificationProvider";
+import { isAdminIdentity } from "./lib/adminAccess";
 import { UserProvider } from "./contexts/UserContext";
 import { CognitiveModeProvider } from "./contexts/CognitiveModeContext";
 import { useAmbientIntelligence } from "./hooks/useAmbientIntelligence";
@@ -46,7 +47,7 @@ import {
   RotateCcw,
   LogOut as ExitDemoIcon,
 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { TebyanMark } from "./components/TebyanMark";
 import { cn } from "./lib/utils";
 import { useAuth } from "./components/AuthProvider";
@@ -649,12 +650,7 @@ const AppContent: React.FC = () => {
 
   useEffect(() => {
     // Automatically check and run daily tasks when user is available and is an admin
-    const isPrimaryAdmin =
-      user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-      user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-      user?.email?.toLowerCase() === "alfailakawidrahmad@gmail.com" ||
-      user?.email?.toLowerCase() === "alfailakawidrahmad@outlook.com" ||
-      user?.email?.toLowerCase().includes("dr.ahmad");
+    const isPrimaryAdmin = isAdminIdentity(user);
 
     if (authReady && user && (profile?.role === "admin" || isPrimaryAdmin)) {
       void import("./services/cronService").then(({ cronService }) =>
@@ -1913,7 +1909,10 @@ const App = () => (
     <GamificationProvider>
       <UserProvider>
         <TooltipProvider delayDuration={300}>
-          <AppContent />
+          {/* Honour the OS "reduce motion" setting for JS-driven animations. */}
+          <MotionConfig reducedMotion="user">
+            <AppContent />
+          </MotionConfig>
         </TooltipProvider>
       </UserProvider>
     </GamificationProvider>

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { isAdminIdentity } from "../lib/adminAccess";
 import type { User } from "firebase/auth";
 import {
   resolveUserAddressing,
@@ -29,16 +30,7 @@ const AuthContext = createContext<{
   userGender: "neutral",
 });
 
-const ADMIN_EMAILS = new Set([
-  "ah_f@hotmail.com",
-  "alfailakawidrahmad@gmail.com",
-  "dr.ahmad@gmail.com",
-  "dr.ahmad.alfailakawi@gmail.com",
-]);
-
-const isAdminUser = (user: User) =>
-  user.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-  ADMIN_EMAILS.has(user.email?.toLowerCase() || "");
+const isAdminUser = (user: User) => isAdminIdentity(user);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);

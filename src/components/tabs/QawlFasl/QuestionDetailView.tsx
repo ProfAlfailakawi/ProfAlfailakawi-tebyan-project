@@ -8,6 +8,7 @@ import { qawlFaslService } from '../../../services/qawlFaslService';
 import { BreathingText } from '../../BreathingText';
 import { KnowledgeSignature } from '../../common/KnowledgeSignature';
 import { proxyGenerateAudio } from '../../../lib/aiProxy';
+import AnswerTrustPanel from './AnswerTrustPanel';
 
 interface Props {
   questions: QawlFaslQuestion[];
@@ -606,6 +607,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             )}
           </div>
         )}
+
+        {/* Answer verification: sources, reviewer, last review, report an error */}
+        <AnswerTrustPanel question={question} />
       </div>
       
     </div>

@@ -659,7 +659,6 @@ body.tebyan-focus-mode main {
   content: "";
   position: absolute;
   inset: -2px;
-  border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(
     120deg,
@@ -792,7 +791,6 @@ body.tebyan-focus-mode .tebyan-result-document {
   content: "";
   position: absolute;
   inset: -1px;
-  border-radius: inherit;
   pointer-events: none;
   opacity: 0.56;
   background: linear-gradient(
@@ -3435,7 +3433,6 @@ body:not(.zen-idle)::after {
   content: "";
   position: absolute;
   inset: 1px;
-  border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(
     135deg,
@@ -4326,4 +4323,25 @@ body:not(.zen-idle)::after {
 @keyframes tbn-idle-soft {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+/* ------------------------------------------------------------------
+   Accessibility baseline (no visual change for mouse/touch users)
+   - Keyboard focus ring in the brand's muted plum, only on :focus-visible.
+   - Ambient/looping motion is stilled for users who ask for reduced motion.
+   ------------------------------------------------------------------ */
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--color-brand-primary, #6e5f8e);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

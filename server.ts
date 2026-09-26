@@ -48,9 +48,109 @@ function isOriginAllowed(origin?: string): boolean {
     return !IS_PRODUCTION && LOCAL_ORIGIN_PATTERN.test(normalized);
 }
 
+// ---------------------------------------------------------------------------
+// AI endpoint guard: caller must present a Firebase ID token (Authorization:
+// Bearer) OR a valid App Check token (X-Firebase-AppCheck).
+// ---------------------------------------------------------------------------
+// Policy (mirrors functions/index.js appCheckPolicy):
+//   * development: not enforced unless TEBYAN_AI_AUTH_ENFORCE=true.
+//   * production: verified always. By default *monitor-only* (logs and still
+//     serves) until the owner confirms clients send tokens (reCAPTCHA site key
+//     configured), then set TEBYAN_AI_AUTH_ENFORCE=true (or
+//     APP_CHECK_ENFORCE=true) to reject unauthenticated calls with 401.
+let _adminPromise: Promise<{ auth: any; appCheck: any } | null> | null = null;
+function getAdmin() {
+    if (!_adminPromise) {
+        _adminPromise = (async () => {
+            try {
+                const appMod: any = await import("firebase-admin/app");
+                const authMod: any = await import("firebase-admin/auth");
+                const acMod: any = await import("firebase-admin/app-check");
+                let projectId: string | undefined;
+                try {
+                    projectId = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "firebase-applet-config.json"), "utf8")).projectId;
+                } catch {
+                    try { projectId = JSON.parse(fs.readFileSync(path.join(__dirname, "firebase-applet-config.json"), "utf8")).projectId; } catch { /* ignore */ }
+                }
+                if (!appMod.getApps().length) appMod.initializeApp(projectId ? { projectId } : undefined);
+                return { auth: authMod.getAuth(), appCheck: acMod.getAppCheck() };
+            } catch (err: any) {
+                console.error("[AuthGuard] firebase-admin init failed:", err?.message || err);
+                return null;
+            }
+        })();
+    }
+    return _adminPromise;
+}
+
+function aiAuthPolicy() {
+    const flag = String(process.env.TEBYAN_AI_AUTH_ENFORCE || process.env.APP_CHECK_ENFORCE || "").trim().toLowerCase();
+    const enforcing = IS_PRODUCTION || flag === "true";
+    const strict = flag === "true";
+    return { enforcing, strict };
+}
+
+export async function verifyAiCaller(req: express.Request): Promise<"id-token" | "app-check" | null> {
+    const admin = await getAdmin();
+    if (!admin) return null;
+    const authz = String(req.header("Authorization") || "");
+    const idToken = authz.startsWith("Bearer ") ? authz.slice(7).trim() : "";
+    if (idToken) {
+        try { await admin.auth.verifyIdToken(idToken); return "id-token"; }
+        catch (err: any) { console.warn("[AuthGuard] ID token rejected:", err?.code || err?.message); }
+    }
+    const acToken = String(req.header("X-Firebase-AppCheck") || "");
+    if (acToken) {
+        try { await admin.appCheck.verifyToken(acToken); return "app-check"; }
+        catch (err: any) { console.warn("[AuthGuard] App Check token rejected:", err?.code || err?.message); }
+    }
+    return null;
+}
+
+async function requireAiCaller(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const { enforcing, strict } = aiAuthPolicy();
+    if (!enforcing) return next();
+    const via = await verifyAiCaller(req);
+    if (via) return next();
+    if (!strict) {
+        console.warn("[AuthGuard] monitor-only: serving unauthenticated AI call. Set TEBYAN_AI_AUTH_ENFORCE=true once clients send tokens.");
+        return next();
+    }
+    return res.status(401).json({ error: "AUTH_REQUIRED", message: "تعذر التحقق من الطلب. يرجى تحديث الصفحة والمحاولة مرة أخرى." });
+}
+
+// Only models the client actually uses are accepted; anything else is mapped
+// to the default so callers cannot pick expensive models.
+const ALLOWED_AI_MODELS = new Set(["gemini-2.5-flash"]);
+const DEFAULT_AI_MODEL = "gemini-2.5-flash";
+const MAX_AI_CONTENTS_CHARS = 60000;
+function resolveAllowedModel(requested: unknown): string {
+    const name = String(requested || "").trim();
+    return ALLOWED_AI_MODELS.has(name) ? name : DEFAULT_AI_MODEL;
+}
+function sanitizeAiConfig(config: any) {
+    if (!config || typeof config !== "object") return undefined;
+    const out: any = {};
+    if (typeof config.temperature === "number") out.temperature = Math.min(Math.max(config.temperature, 0), 2);
+    if (config.responseMimeType === "application/json" || config.responseMimeType === "text/plain") out.responseMimeType = config.responseMimeType;
+    if (config.responseSchema && typeof config.responseSchema === "object") out.responseSchema = config.responseSchema;
+    if (typeof config.systemInstruction === "string") out.systemInstruction = config.systemInstruction.slice(0, 20000);
+    return out;
+}
+
 // Initialize Gemini API
+// Legacy: some deployments stored the key under the odd name `Nee`. It is
+// still honoured for backward compatibility, but GEMINI_API_KEY is preferred.
+const readPrimaryGeminiKey = () => {
+    if (process.env.Nee && !(globalThis as any).__teb_nee_warned) {
+        (globalThis as any).__teb_nee_warned = true;
+        console.warn("[Server] Using legacy env var `Nee` for the Gemini key; please rename it to GEMINI_API_KEY.");
+    }
+    return (process.env.Nee || process.env.GEMINI_API_KEY || "").trim();
+};
+
 const getGenAI = () => {
-    let apiKey = (process.env.Nee || process.env.GEMINI_API_KEY || "").trim();
+    let apiKey = readPrimaryGeminiKey();
     
     if (apiKey === "MY_GEMINI_API_KEY" || apiKey === "YOUR_ACTUAL_AI_KEY_HERE" || apiKey === "INVALID_KEY_PLACEHOLDER") {
         apiKey = "";
@@ -140,7 +240,7 @@ async function generateWithRetry(operation: () => Promise<any>, label: string = 
 
 
 function getGeminiTtsApiKey() {
-    let apiKey = (process.env.Nee || process.env.GEMINI_API_KEY || "").trim();
+    let apiKey = readPrimaryGeminiKey();
     if (apiKey === "MY_GEMINI_API_KEY" || apiKey === "YOUR_ACTUAL_AI_KEY_HERE" || apiKey === "INVALID_KEY_PLACEHOLDER") {
         apiKey = "";
     }
@@ -522,7 +622,7 @@ function buildAdaptiveFallbackText(query: string, isEnglish: boolean): string {
 function formatOfflineResponse(item: any, isEnglish: boolean): string {
     if (isEnglish) {
         return `[Tebyan Preview - Smart Emergency Offline Mode activated]
-Note: The default system API Key is currently suspended (403 CONSUMER_SUSPENDED) by Google. To restore real cloud-native generation, please insert your own active GEMINI_API_KEY in the platform.
+Note: Live AI generation is temporarily unavailable, so this answer comes from Tebyan's built-in guide.
 
 Here is an authentic clinical educational response for your request:
 
@@ -548,7 +648,7 @@ ${item.educationalView || "Child acts on sensory or safety needs. Reframing the 
 *Note: This response comes from the integrated Tebyan educational manual (Qawl-Fasl).*`;
     } else {
         return `[معاينة تبيان - تفعيل وضع الاستجابة الذكي المحلي (Offline Mode)]
-ملاحظة: مفتاح الذكاء الاصطناعي الافتراضي معلّق حالياً من قِبل المزود (CONSUMER_SUSPENDED). لتشغيل التحليل الفعلي السحابي، يرجى تزويد المنصة بمفتاح GEMINI_API_KEY صالح في الإعدادات.
+ملاحظة: خدمة التوليد الذكي غير متاحة مؤقتاً، لذا نقدّم لك هذه الإجابة من دليل تبيان المدمج.
 
 إليك استجابة تربوية منهجية كاملة من دليلك التربوي المدمج:
 
@@ -578,7 +678,7 @@ ${item.educationalView || "الأطفال يعبرون عن رغبات غير م
 function generateSmartGenerativeResponse(query: string, isEnglish: boolean): string {
     if (isEnglish) {
         return `[Tebyan Preview - Smart Emergency Response Mode (No-Connection AI)]
-Note: The system GEMINI_API_KEY is currently suspended on Google Cloud. You can insert a valid key in the platform settings of AI Studio.
+Note: Live AI generation is temporarily unavailable; here is a structured answer from Tebyan's guidance rules.
 
 In the meantime, Tebyan has applied child psychology rules to provide this educational response:
 
@@ -599,7 +699,7 @@ Analyzing your situation: "${query}". We recognize the developmental significanc
 Behind every challenging behavior is an unmet developmental need. Safe emotional outlets allow healthy growth.`;
     } else {
         return `[معاينة تبيان - تفعيل وضع الطوارئ والاتصال الذكي المحاكي للذكاء الاصطناعي]
-ملاحظة: مفتاح الذكاء الاصطناعي الافتراضي معلّق حالياً (CONSUMER_SUSPENDED). يرجى تعبئة أو تجديد مفتاح GEMINI_API_KEY في إعدادات المنصة.
+ملاحظة: خدمة التوليد الذكي مشغولة مؤقتاً، وهذه إجابة منهجية من قواعد تبيان التربوية.
 
 في هذه الأثناء، طبق تبيان قواعد التربية وعلم نفس الطفل لتقديم هذه الاستجابة المنهجية لطلبك:
 
@@ -826,14 +926,10 @@ async function startServer() {
 
     // Health Endpoint
     app.get("/api/health", (req, res) => {
-        const rawGemini = (process.env.GEMINI_API_KEY || "").trim();
-
-        // Never expose the raw key value in a public endpoint.
+        // Key presence/status is logged server-side only; never exposed publicly.
         res.json({
             status: "ok",
-            env: process.env.NODE_ENV || 'development',
-            geminiKeyExists: !!rawGemini,
-            googleApiKeyExists: !!process.env.GOOGLE_API_KEY
+            env: process.env.NODE_ENV || 'development'
         });
     });
 
@@ -846,13 +942,15 @@ async function startServer() {
     };
     const aiRateLimit = rateLimit({
         windowMs: toPositiveInt(process.env.TEBYAN_AI_RATE_WINDOW_MS, 15 * 60 * 1000),
-        max: toPositiveInt(process.env.TEBYAN_AI_RATE_MAX, 2000),
-        message: { error: "Too many requests, please try again later." }
+        max: toPositiveInt(process.env.TEBYAN_AI_RATE_MAX, 300),
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: "RATE_LIMITED", message: "عدد الطلبات كبير حالياً، يرجى المحاولة بعد قليل." }
     });
 
     // AI Proxy Route — the audio route hits the same paid Gemini key as
     // /api/ai/generate, so it gets the same per-IP budget.
-    app.post("/api/ai/audio", aiRateLimit, async (req, res) => {
+    app.post("/api/ai/audio", aiRateLimit, requireAiCaller, async (req, res) => {
         try {
             const audio = await generateTtsAudio(req.body || {});
             return res.json(audio);
@@ -867,18 +965,23 @@ async function startServer() {
                     audioData: "",
                     mimeType: "audio/wav",
                     offline: true,
-                    message: "وضع القراءة الصوتية متوقف مؤقتاً بسبب تعليق أو تعطيل المفتاح الذكي في الإعدادات."
+                    message: "القراءة الصوتية غير متاحة مؤقتاً، يمكنك متابعة القراءة نصياً."
                 });
             }
             return res.status(500).json({ error: "أعتذر، المحرك الصوتي مزدحم حالياً.. جرّب مرة أخرى بعد قليل." });
         }
     });
 
-    app.post("/api/ai/generate", aiRateLimit, async (req, res) => {
-        const { model: modelName, contents, config } = req.body;
-        
+    app.post("/api/ai/generate", aiRateLimit, requireAiCaller, async (req, res) => {
+        const { model: requestedModel, contents } = req.body || {};
+        const config = sanitizeAiConfig(req.body?.config);
+        const modelName = resolveAllowedModel(requestedModel);
+
         if (!contents) {
             return res.status(400).json({ error: "Missing contents" });
+        }
+        if (JSON.stringify(contents).length > MAX_AI_CONTENTS_CHARS) {
+            return res.status(413).json({ error: "PAYLOAD_TOO_LARGE", message: "النص طويل جداً، يرجى اختصاره." });
         }
 
         // Cache check

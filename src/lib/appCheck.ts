@@ -11,6 +11,25 @@
  * minted, it returns an empty object and the backend decides what to do.
  */
 export async function getAppCheckHeaders(): Promise<Record<string, string>> {
+  const [appCheckHeaders, idTokenHeaders] = await Promise.all([appCheckHeader(), idTokenHeader()]);
+  return { ...appCheckHeaders, ...idTokenHeaders };
+}
+
+/** Firebase ID token of the signed-in user (if any) — accepted by the backend as an alternative to App Check. */
+async function idTokenHeader(): Promise<Record<string, string>> {
+  try {
+    const { auth } = await import('./firebase');
+    const user = auth.currentUser;
+    if (!user) return {};
+    const token = await user.getIdToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch (err) {
+    console.warn('[Auth] ID token unavailable:', err);
+    return {};
+  }
+}
+
+async function appCheckHeader(): Promise<Record<string, string>> {
   try {
     const [{ appCheck }, appCheckApi] = await Promise.all([
       import('./firebase'),
