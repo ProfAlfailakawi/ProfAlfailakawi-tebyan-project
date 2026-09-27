@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, ShieldEllipsis, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -312,8 +312,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="space-y-4">
               <DnaStatusHeader
-                icon={<ShieldCheck />}
-                title="جواب مُراجَع ومعتمد"
+                icon={allApproved ? <ShieldCheck /> : <ShieldEllipsis />}
+                tone={allApproved ? 'accent' : 'warn'}
+                title={allApproved ? 'جواب مُراجَع ومعتمد' : 'قيد المراجعة'}
                 subtitle={<>
                   {trust.reviewers.join('، ')}
                   {trust.reviewedAt && <> · <time dateTime={trust.reviewedAt.toISOString()}>{formatArabicDate(trust.reviewedAt)}</time></>}
