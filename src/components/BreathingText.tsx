@@ -99,7 +99,7 @@ export const BreathingText = ({
                   ) : roots ? (
                       <div className="flex gap-4 items-start">
                           <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
-                              <span className="text-indigo-400 font-serif rtl:font-sans">⚜️</span>
+                              <Sparkles className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
                           </div>
                           <p className="text-zinc-600 italic font-medium leading-relaxed font-serif rtl:font-sans">
                               {roots.replace(/[*#]/g, '')}

@@ -113,7 +113,8 @@ const head = (title, description, url) => `<!doctype html>
   .res{display:grid;gap:10px}
   @media(min-width:640px){.res{grid-template-columns:1fr 1fr}}
   .closing{text-align:center;font-family:"Amiri",serif;font-size:1.2rem;color:var(--accent);max-width:46ch;margin:44px auto 0}
-  .closing::before{content:"❦";display:block;font-size:.95rem;margin-bottom:10px}
+  .closing::before{content:"";display:block;width:36px;height:0;border-top:1px dashed currentColor;margin:0 auto 14px;opacity:.6}
+  .ic{width:.95em;height:.95em;vertical-align:-.12em;margin-inline-end:4px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .cta{margin-top:44px;text-align:center}
   .cta a{display:inline-block;background:var(--lilac);color:#FBF9FF;font-weight:500;border-radius:12px;padding:12px 30px;font-size:.95rem}
   .cta p{font-size:.8rem;color:var(--muted);margin:10px 0 0}
@@ -173,7 +174,7 @@ const questionPage = (q) => {
 <article>
 <h1>${esc(q.title)}</h1>
 <div class="meta">
-  <span class="chip ok">✓ جواب مُراجَع ومعتمد</span>
+  <span class="chip ok"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>جواب مُراجَع ومعتمد</span>
   ${(q.ageGroups || []).length ? `<span class="chip">الأعمار: ${esc(String(q.ageGroups[0]).split("-")[0])}–${esc(String(q.ageGroups[q.ageGroups.length - 1]).split("-").pop())} سنة</span>` : ""}
 </div>
 ${desc ? `<p class="summary">${esc(desc)}</p>` : ""}`;
@@ -188,7 +189,7 @@ ${desc ? `<p class="summary">${esc(desc)}</p>` : ""}`;
   if (q.commonMistake)
     body += `<section><h2>الخطأ الشائع</h2><div class="box warn"><b style="color:var(--dont)">احذر:</b> ${esc(q.commonMistake)}</div></section>`;
   if (q.educationalView)
-    body += `<section><h2>الرؤية التربوية</h2><p>${esc(q.educationalView)}</p>${q.scientificStat ? `<p class="chip" style="display:inline-block">📊 ${esc(q.scientificStat)}</p>` : ""}</section>`;
+    body += `<section><h2>الرؤية التربوية</h2><p>${esc(q.educationalView)}</p>${q.scientificStat ? `<p class="chip" style="display:inline-block"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>${esc(q.scientificStat)}</p>` : ""}</section>`;
   if (q.suggestedAnswer)
     body += `<section><h2>الجواب المقترح</h2><p>${esc(q.suggestedAnswer)}</p></section>`;
   if (Array.isArray(q.byAgeVersions) && q.byAgeVersions.length)

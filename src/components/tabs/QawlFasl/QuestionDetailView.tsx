@@ -585,9 +585,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="bg-white border border-[#8FA9C7]/15 rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 text-center space-y-6">
                <p className="text-[#182231] font-bold text-xl">تم إعداد هذه الإجابة عبر مصادر موثوقة</p>
                <div className="flex justify-center gap-3 flex-wrap">
-                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-[#64788D] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ تدقيق واعتماد الحالة</span>}
-                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ التدقيق الشرعي</span>}
-                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-[#182231] px-4 py-2 rounded-full text-sm font-bold tracking-wide">✓ المصادر والمراجع</span>}
+                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-[#64788D] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />تدقيق واعتماد الحالة</span>}
+                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />التدقيق الشرعي</span>}
+                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-[#182231] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
                </div>
 
                <div className="pt-8 border-t border-[#8FA9C7]/15 mt-8">

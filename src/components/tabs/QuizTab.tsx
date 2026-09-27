@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ClipboardCheck, RefreshCw } from 'lucide-react';
+import { ClipboardCheck, RefreshCw, Crown, PartyPopper, CheckCircle2, XCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { getGenderWord } from '../../utils/genderHelper';
@@ -152,8 +152,8 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center py-20 space-y-8"
               >
-                <div className="w-32 h-32 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-3xl md:text-5xl">
-                   {score === questions.length ? '👑' : '🎉'}
+                <div className="w-32 h-32 bg-[#EFEAF6] text-[#6E5B91] rounded-full flex items-center justify-center mx-auto">
+                   {score === questions.length ? <Crown className="w-14 h-14" aria-hidden="true" /> : <PartyPopper className="w-14 h-14" aria-hidden="true" />}
                 </div>
                 <div className="space-y-2">
                    <h3 className="text-3xl md:text-4xl font-bold text-black">{language === 'ar' ? 'اكتمل الاختبار!' : 'Quiz Completed!'}</h3>
@@ -210,8 +210,8 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                           )}
                         >
                           <span>{opt}</span>
-                          {showFeedback && isCorrect && <span className="ml-2">✅</span>}
-                          {showFeedback && isSelected && !isCorrect && <span className="ml-2">❌</span>}
+                          {showFeedback && isCorrect && <CheckCircle2 className="ml-2 w-5 h-5 shrink-0" aria-label="صحيح" />}
+                          {showFeedback && isSelected && !isCorrect && <XCircle className="ml-2 w-5 h-5 shrink-0" aria-label="خطأ" />}
                         </button>
                       );
                     })}

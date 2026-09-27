@@ -959,100 +959,100 @@ const AppContent: React.FC = () => {
       switch (activeTab) {
         case "qawlfasl":
           return {
-            title: getGreetingTitle("قول فصل ⚖️"),
+            title: getGreetingTitle("قول فصل"),
             intro: "مساحة الحكمة لفض النزاعات وحسم النقاشات برأي عادل ومنقح.",
             steps: [
-              "1️⃣ اكتب السؤال أو القضية المعقدة في الخانة لتهيئة الحوار.",
-              "2️⃣ سيقوم تبيان بفصل القضية مستشهداً بالحجج والمنطق دون انحياز.",
-              "3️⃣ اضغط على التفاصيل الإضافية لتعميق الرؤية أو حفظ النتيجة.",
+              "اكتب السؤال أو القضية المعقدة في الخانة لتهيئة الحوار.",
+              "سيقوم تبيان بفصل القضية مستشهداً بالحجج والمنطق دون انحياز.",
+              "اضغط على التفاصيل الإضافية لتعميق الرؤية أو حفظ النتيجة.",
             ],
-            tip: "💡 يمكنك الاسترشاد بالآراء التاريخية لتوسيع أفق الفهم!",
+            tip: "يمكنك الاسترشاد بالآراء التاريخية لتوسيع أفق الفهم!",
           };
         case "decisionroom":
           return {
-            title: getGreetingTitle("غرفة القرار 🤫"),
+            title: getGreetingTitle("غرفة القرار"),
             intro:
               "لتفكيك الحيرة والوصول إلى أفضل الخيارات الممكنة بهدوء وعمق.",
             steps: [
-              "1️⃣ وضع القرار الذي يشغل بالك وصيغه بوضوح.",
-              '2️⃣ تدرج عبر تسلسل الجلسة بتفعيل "النبضة الأولى" ثم "زد العمق".',
-              "3️⃣ تابع تسلسل الخطوات الأربعة لتأكيد اليقين وفحص كل زاوية.",
+              "وضع القرار الذي يشغل بالك وصيغه بوضوح.",
+              'تدرج عبر تسلسل الجلسة بتفعيل "النبضة الأولى" ثم "زد العمق".',
+              "تابع تسلسل الخطوات الأربعة لتأكيد اليقين وفحص كل زاوية.",
             ],
-            tip: "💡 ابدأ بزاوية واحدة، وإذا احتجت عمقاً أكثر افتح زاوية إضافية بهدوء.",
+            tip: "ابدأ بزاوية واحدة، وإذا احتجت عمقاً أكثر افتح زاوية إضافية بهدوء.",
           };
         case "strategicarena":
           return {
-            title: getGreetingTitle("الميدان الاستراتيجي 🏹"),
+            title: getGreetingTitle("الميدان الاستراتيجي"),
             intro:
               "لتحويل الأهداف المعقدة والرؤى البعيدة إلى خطة تكتيكية جاهزة.",
             steps: [
-              "1️⃣ عبّر عن الهدف أو المشروع الاستراتيجي الخاص بك.",
-              "2️⃣ حدد المدى وطريقة التوجيه والسرعة للتخطيط المثالي.",
-              "3️⃣ طبّق التحليل للحصول على مسار تنفيذي تتابعه خطوة بخطوة.",
+              "عبّر عن الهدف أو المشروع الاستراتيجي الخاص بك.",
+              "حدد المدى وطريقة التوجيه والسرعة للتخطيط المثالي.",
+              "طبّق التحليل للحصول على مسار تنفيذي تتابعه خطوة بخطوة.",
             ],
-            tip: "💡 استخدم الخرائط المفتوحة لتوقع العقبات قبل حدوثها!",
+            tip: "استخدم الخرائط المفتوحة لتوقع العقبات قبل حدوثها!",
           };
         case "creativelab":
           return {
-            title: getGreetingTitle("المختبر الإبداعي ⚛️"),
+            title: getGreetingTitle("المختبر الإبداعي"),
             intro:
               "مصنعك الخاص لمزج الأفكار المتباعدة وولادة الابتكار غير المألوف.",
             steps: [
-              "1️⃣ حدد المواد المعرفية أو الهوايات أو المجالات التي تريد دمجها.",
-              "2️⃣ اطلق الشرارة الإبداعية وشاهد نقاط تلاقٍ مدهشة وذكية.",
-              "3️⃣ طوّر التصاميم الجديدة وافرغ أفكارك في ركن الورشة التفاعلية.",
+              "حدد المواد المعرفية أو الهوايات أو المجالات التي تريد دمجها.",
+              "اطلق الشرارة الإبداعية وشاهد نقاط تلاقٍ مدهشة وذكية.",
+              "طوّر التصاميم الجديدة وافرغ أفكارك في ركن الورشة التفاعلية.",
             ],
-            tip: "💡 الخروج عن المألوف يحتاج لجرأة... جرّب دمج أفكار متناقضة!",
+            tip: "الخروج عن المألوف يحتاج لجرأة... جرّب دمج أفكار متناقضة!",
           };
         case "ar":
           return {
-            title: getGreetingTitle("تبيان الروابط (AR) 🕶️"),
+            title: getGreetingTitle("تبيان الروابط (AR)"),
             intro: "شاهد أفكارك ومجسمات المعرفة المجردة كروابط حية تتجسد حولك.",
             steps: [
-              "1️⃣ اسمح بفتح الكاميرا لتفعيل تجربة واقع تبيان المعزز.",
-              "2️⃣ شاهد حركة الأوراق الفكرية وشبكات المفاهيم في الفضاء.",
-              "3️⃣ المس أي مجسم معرفي لاستجلاء باطنه ورواسب فكرته.",
+              "اسمح بفتح الكاميرا لتفعيل تجربة واقع تبيان المعزز.",
+              "شاهد حركة الأوراق الفكرية وشبكات المفاهيم في الفضاء.",
+              "المس أي مجسم معرفي لاستجلاء باطنه ورواسب فكرته.",
             ],
-            tip: "💡 تفاعل بكاميرا الهاتف أو شاشتك في بيئة نظيفة وجيدة الإضاءة!",
+            tip: "تفاعل بكاميرا الهاتف أو شاشتك في بيئة نظيفة وجيدة الإضاءة!",
           };
         case "truthmanuscript":
           return {
-            title: getGreetingTitle("مخطوطة الحقيقة 📜"),
+            title: getGreetingTitle("مخطوطة الحقيقة"),
             intro:
               "لتحويل هواجسك، مشاعرك وتأملاتك العميقة إلى مخطوطة فنية خالدة.",
             steps: [
-              "1️⃣ اكتب ما تشعر به أو الفكرة التي تعصف بذهنك الآن.",
-              "2️⃣ اختر الأقلام الفكرية والأسلوب الفلسفي المفضل لديك لحياكة النص.",
-              "3️⃣ اضغط صناعة المخطوطة الفنية واحتفظ بها كإرث ينبض بوعيك.",
+              "اكتب ما تشعر به أو الفكرة التي تعصف بذهنك الآن.",
+              "اختر الأقلام الفكرية والأسلوب الفلسفي المفضل لديك لحياكة النص.",
+              "اضغط صناعة المخطوطة الفنية واحتفظ بها كإرث ينبض بوعيك.",
             ],
-            tip: "💡 عبّر بعفوية مطلقة... الفن يولد من قلب الصدق!",
+            tip: "عبّر بعفوية مطلقة... الفن يولد من قلب الصدق!",
           };
         case "knowledgecenter":
           return {
-            title: getGreetingTitle("مركز المعرفة 🕸️"),
+            title: getGreetingTitle("مركز المعرفة"),
             intro:
               "استكشف المفاهيم المعقدة من خلال شجرة مترابطة من العلوم والمعرفة.",
             steps: [
-              "1️⃣ افتح مربع البحث العلمي المعزز واكتب مفهوماً يشغلك.",
-              "2️⃣ انظر للعلامات وشبكة الروابط لتغوص في أصل المفهوم وجذوره.",
-              "3️⃣ اقرأ التفاصيل الجانبية للحصول على إضاءات فلسفية وعلمية نادرة.",
+              "افتح مربع البحث العلمي المعزز واكتب مفهوماً يشغلك.",
+              "انظر للعلامات وشبكة الروابط لتغوص في أصل المفهوم وجذوره.",
+              "اقرأ التفاصيل الجانبية للحصول على إضاءات فلسفية وعلمية نادرة.",
             ],
-            tip: "💡 تتبع الروابط المتشابكة لتكشف خبايا لم تكن ظاهرة للعيان!",
+            tip: "تتبع الروابط المتشابكة لتكشف خبايا لم تكن ظاهرة للعيان!",
           };
         case "oracle":
           return {
-            title: getGreetingTitle("المستشار الكلي 🔮"),
+            title: getGreetingTitle("المستشار الكلي"),
             intro: "فريق استشاري متكامل ومكون من عقول بشرية مبدعة لحل معضلاتك.",
             steps: [
-              "1️⃣ حدد المستشار الأقرب لطبيعة سؤالك (عقلي، مالي، أو مهني).",
-              "2️⃣ وجه سؤالك بدقة للحصول على فتوى ورؤية من عمق التخصص.",
-              "3️⃣ بدّل بين النوافذ لتسمع آراء متعددة ومختلفة للقضية الواحدة.",
+              "حدد المستشار الأقرب لطبيعة سؤالك (عقلي، مالي، أو مهني).",
+              "وجه سؤالك بدقة للحصول على فتوى ورؤية من عمق التخصص.",
+              "بدّل بين النوافذ لتسمع آراء متعددة ومختلفة للقضية الواحدة.",
             ],
-            tip: "💡 الرأي الحكيم يبنى على رؤية المشكلة من زوايا متعددة!",
+            tip: "الرأي الحكيم يبنى على رؤية المشكلة من زوايا متعددة!",
           };
         case "mylibrary":
           return {
-            title: getGreetingTitle("مكتبتك الخاصة 🔖"),
+            title: getGreetingTitle("مكتبتك الخاصة"),
             intro:
               "المستودع الآمن لجميع كنوزك المعرفية، مخطوطاتك وقراراتك التاريخية.",
             steps: [
@@ -1060,11 +1060,11 @@ const AppContent: React.FC = () => {
               "• تحكم بروتين الحفظ والاستدعاء لتنظيم مخزون أفكارك الثمينة.",
               "• يمكنك مشاركتها مع الرفقاء أو تركها سراً فكرياً لك وحده.",
             ],
-            tip: "💡 مراجعة أفكارك القديمة تمنحك وعياً أفضل لتطورك الفكري!",
+            tip: "مراجعة أفكارك القديمة تمنحك وعياً أفضل لتطورك الفكري!",
           };
         case "loyalty":
           return {
-            title: getGreetingTitle("الولاء والهدايا 🎁"),
+            title: getGreetingTitle("الولاء والهدايا"),
             intro:
               "عقد تبيان المميز لتقدير رحلتك المعرفية معنا وتقديم الهدايا الفريدة.",
             steps: [
@@ -1072,132 +1072,132 @@ const AppContent: React.FC = () => {
               "• فعّل الهدايا والكوبونات للاستفادة من الميزات الخاصة بعضويتك.",
               "• تفقّد مستواك الفكري الحالي والامتيازات الصاحبة له.",
             ],
-            tip: "💡 استخدامك اليومي الذكي يقودك لبلوغ مراتب علمية أعلى في النظام!",
+            tip: "استخدامك اليومي الذكي يقودك لبلوغ مراتب علمية أعلى في النظام!",
           };
         case "contact":
           return {
-            title: getGreetingTitle("تواصل معنا ✉️"),
+            title: getGreetingTitle("تواصل معنا"),
             intro: "بوابة مفتوحة لإرسال مقترحاتك وملاحظاتك لمطوري تبيان.",
             steps: [
-              "1️⃣ املأ البيانات وحدد نوع استفسارك بدقة.",
-              "2️⃣ اكتب رسالتك مع تفاصيل كافية لمساعدتنا على فهم غرضك.",
-              "3️⃣ اضغط على إرسال لنقوم بالتجاوب معك ودعمك بأسرع وقت.",
+              "املأ البيانات وحدد نوع استفسارك بدقة.",
+              "اكتب رسالتك مع تفاصيل كافية لمساعدتنا على فهم غرضك.",
+              "اضغط على إرسال لنقوم بالتجاوب معك ودعمك بأسرع وقت.",
             ],
-            tip: "💡 نحن نصغي لكل رسالة بحب وعمق لنرتقي بتبيان معاً!",
+            tip: "نحن نصغي لكل رسالة بحب وعمق لنرتقي بتبيان معاً!",
           };
         default:
           return {
-            title: getGreetingTitle("تبيان ✨"),
+            title: getGreetingTitle("تبيان"),
             intro: "مساحة التمكين المعرفي والوعي المتكامل لأفكارك وقراراتك.",
             steps: [
               "• اختر الأداة التي تناسب احتياجك أو اطرح سؤالك ليقودك تبيان.",
               "• تنقل بسلاسة عبر القوائم لاستكشاف الابتكارات المصممة لأجلك.",
               "• استخدم زر الرجوع أعلى اليسار للتنقّل دون فقدان سياق حديثك.",
             ],
-            tip: "💡 تبيان صُمم ليكون امتداداً واعياً لعقلك وتأملاتك!",
+            tip: "تبيان صُمم ليكون امتداداً واعياً لعقلك وتأملاتك!",
           };
       }
     } else {
       switch (activeTab) {
         case "qawlfasl":
           return {
-            title: "Welcome to Qawl Fasl ⚖️",
+            title: "Welcome to Qawl Fasl",
             intro:
               "A precise space to resolve disputes and complex debates using neutrality and logic.",
             steps: [
-              "1️⃣ Type your issue or complex debate in the designated box.",
-              "2️⃣ Tebyan will break down the arguments with philosophical and logical balance.",
-              "3️⃣ Access extra details or save the final judgment easily.",
+              "Type your issue or complex debate in the designated box.",
+              "Tebyan will break down the arguments with philosophical and logical balance.",
+              "Access extra details or save the final judgment easily.",
             ],
-            tip: "💡 Use historic opinions to expand your analytical framework!",
+            tip: "Use historic opinions to expand your analytical framework!",
           };
         case "decisionroom":
           return {
-            title: "Welcome to Decision Room 🤫",
+            title: "Welcome to Decision Room",
             intro:
               "Deconstruct hesitation and reach optimal paths with clarity and profound focus.",
             steps: [
-              "1️⃣ Enter the decision or dilemma on your mind clearly.",
-              '2️⃣ Progress through the session by selecting "First pulse" and then "Go deeper".',
-              "3️⃣ Follow the 4-step sequence to stress-test your confidence and trace every angle.",
+              "Enter the decision or dilemma on your mind clearly.",
+              'Progress through the session by selecting "First pulse" and then "Go deeper".',
+              "Follow the 4-step sequence to stress-test your confidence and trace every angle.",
             ],
-            tip: "💡 Switch to the full lab version if you need raw customized tools!",
+            tip: "Switch to the full lab version if you need raw customized tools!",
           };
         case "strategicarena":
           return {
-            title: "Welcome to Strategic Arena 🏹",
+            title: "Welcome to Strategic Arena",
             intro:
               "Convert complex objectives and abstract visions into a solid, structured roadmap.",
             steps: [
-              "1️⃣ Express your major strategic goal or personal project.",
-              "2️⃣ Select the appropriate time depth, balancing mode, and execution pace.",
-              "3️⃣ Apply analysis to generate a visual, sequential action plan.",
+              "Express your major strategic goal or personal project.",
+              "Select the appropriate time depth, balancing mode, and execution pace.",
+              "Apply analysis to generate a visual, sequential action plan.",
             ],
-            tip: "💡 Map unforeseen obstacles before taking real life actions!",
+            tip: "Map unforeseen obstacles before taking real life actions!",
           };
         case "creativelab":
           return {
-            title: "Welcome to Creative Lab ⚛️",
+            title: "Welcome to Creative Lab",
             intro:
               "Your workshop to fuse unrelated domains and trigger raw, out-of-the-box innovation.",
             steps: [
-              "1️⃣ Define the topics, fields, or hobbies you wish to combine.",
-              "2️⃣ Spark the connection and witness intelligent, unexpected crossovers.",
-              "3️⃣ Polish your mock designs and map ideas freely in the interactive workbench.",
+              "Define the topics, fields, or hobbies you wish to combine.",
+              "Spark the connection and witness intelligent, unexpected crossovers.",
+              "Polish your mock designs and map ideas freely in the interactive workbench.",
             ],
-            tip: "💡 Great breakthroughs often come from fusing completely opposite thoughts!",
+            tip: "Great breakthroughs often come from fusing completely opposite thoughts!",
           };
         case "ar":
           return {
-            title: "Welcome to Tebyan AR 🕶️",
+            title: "Welcome to Tebyan AR",
             intro:
               "Visualize abstract ideas and cognitive networks as living objects around you.",
             steps: [
-              "1️⃣ Allow camera access to initialize the augmented reality platform.",
-              "2️⃣ Observe the flow of knowledge nodes and intellectual concept structures.",
-              "3️⃣ Interact with floating objects to reveal their inner depth.",
+              "Allow camera access to initialize the augmented reality platform.",
+              "Observe the flow of knowledge nodes and intellectual concept structures.",
+              "Interact with floating objects to reveal their inner depth.",
             ],
-            tip: "💡 Use a well-lit, quiet environment for the best spatial tracking!",
+            tip: "Use a well-lit, quiet environment for the best spatial tracking!",
           };
         case "truthmanuscript":
           return {
-            title: "Welcome to Truth Manuscript 📜",
+            title: "Welcome to Truth Manuscript",
             intro:
               "Turn your inner struggles, deep emotions, or thoughts into an elegant historic manuscript.",
             steps: [
-              "1️⃣ Type whatever occupies your soul or mind in an unfiltered way.",
-              "2️⃣ Choose your preferred philosophical writer filter and creative writing tools.",
-              "3️⃣ Click to finalize and bind the manuscript to store in your private library.",
+              "Type whatever occupies your soul or mind in an unfiltered way.",
+              "Choose your preferred philosophical writer filter and creative writing tools.",
+              "Click to finalize and bind the manuscript to store in your private library.",
             ],
-            tip: "💡 Express yourself with complete honesty, where masterpieces are born!",
+            tip: "Express yourself with complete honesty, where masterpieces are born!",
           };
         case "knowledgecenter":
           return {
-            title: "Welcome to Knowledge Center 🕸️",
+            title: "Welcome to Knowledge Center",
             intro:
               "Explore complex subjects via a highly interconnected neural network of wisdom.",
             steps: [
-              "1️⃣ Open the advanced research input and type a concept you wish to study.",
-              "2️⃣ Track the lines and visual bonds to map related domains and origin points.",
-              "3️⃣ Open side panels to read rare philosophical or academic insights.",
+              "Open the advanced research input and type a concept you wish to study.",
+              "Track the lines and visual bonds to map related domains and origin points.",
+              "Open side panels to read rare philosophical or academic insights.",
             ],
-            tip: "💡 Follow adjacent paths to discover secrets hidden on first sight!",
+            tip: "Follow adjacent paths to discover secrets hidden on first sight!",
           };
         case "oracle":
           return {
-            title: "Welcome to Omni Counselor 🔮",
+            title: "Welcome to Omni Counselor",
             intro:
               "Consult a highly balanced cabinet of historic and modern expert intellects.",
             steps: [
-              "1️⃣ Set the master advisor closest to your problem field (clinical, engineering, philosophy).",
-              "2️⃣ Type your query to hear advice woven from high-tier professional wisdom.",
-              "3️⃣ Toggle between advisors to notice opposite point of views on the same challenge.",
+              "Set the master advisor closest to your problem field (clinical, engineering, philosophy).",
+              "Type your query to hear advice woven from high-tier professional wisdom.",
+              "Toggle between advisors to notice opposite point of views on the same challenge.",
             ],
-            tip: "💡 Balanced choices are made by checking multiple sound viewpoints!",
+            tip: "Balanced choices are made by checking multiple sound viewpoints!",
           };
         case "mylibrary":
           return {
-            title: "Welcome to My Library 🔖",
+            title: "Welcome to My Library",
             intro:
               "The secure repository for all your saved manuscripts, decisions, and intellectual steps.",
             steps: [
@@ -1205,11 +1205,11 @@ const AppContent: React.FC = () => {
               "• Customize categorization to tidy your cognitive shelf of precious assets.",
               "• Keep them entirely confidential or export your gems to friends.",
             ],
-            tip: "💡 Revisiting older reflections often rewards you with instant clarity on your personal growth!",
+            tip: "Revisiting older reflections often rewards you with instant clarity on your personal growth!",
           };
         case "loyalty":
           return {
-            title: "Welcome to Loyalty & Coupons 🎁",
+            title: "Welcome to Loyalty & Coupons",
             intro:
               "Tebyan’s token of appreciation for your loyalty, unlocking deep benefits and badges.",
             steps: [
@@ -1217,30 +1217,30 @@ const AppContent: React.FC = () => {
               "• Activate promo coupons or special gifts granted to members.",
               "• Track your current level and the associated premium benefits.",
             ],
-            tip: "💡 Consistent daily intellectual engagement rises your standing in the global hierarchy!",
+            tip: "Consistent daily intellectual engagement rises your standing in the global hierarchy!",
           };
         case "contact":
           return {
-            title: "Welcome to Contact Us ✉️",
+            title: "Welcome to Contact Us",
             intro:
               "An open gate to suggest features or talk directly to Tebyan developers.",
             steps: [
-              "1️⃣ Fill in your active contact information and select the message topic.",
-              "2️⃣ Write down your feedback or bug report with optional details.",
-              "3️⃣ Click send and we will review and reply swiftly.",
+              "Fill in your active contact information and select the message topic.",
+              "Write down your feedback or bug report with optional details.",
+              "Click send and we will review and reply swiftly.",
             ],
-            tip: "💡 We read every single note with care to shape the future of Tebyan together!",
+            tip: "We read every single note with care to shape the future of Tebyan together!",
           };
         default:
           return {
-            title: `Welcome to Tebyan ✨`,
+            title: `Welcome to Tebyan`,
             intro: `An ambient platform for cognitive growth, strategic action, and elevated decisions.`,
             steps: [
               "• Select a specialised tab or ask your core mind question at the main entry.",
               "• Move smoothly between menus with responsive transitions.",
               "• The global back button keeps you in flow without resetting states.",
             ],
-            tip: "💡 Tebyan is designed to be an extensions of your cognitive thinking flow!",
+            tip: "Tebyan is designed to be an extensions of your cognitive thinking flow!",
           };
       }
     }
@@ -1374,15 +1374,19 @@ const AppContent: React.FC = () => {
                   {helpData.steps.map((step, idx) => (
                     <div
                       key={idx}
-                      className="text-xs font-semibold leading-relaxed text-[#465568] border-r-2 border-[#8E7AAE]/16 pr-2"
+                      className="flex items-start gap-2 text-xs font-semibold leading-relaxed text-[#465568]"
                     >
-                      {step}
+                      <span aria-hidden="true" className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#EFEAF6] text-[10px] font-black text-[#6E5B91]">
+                        {idx + 1}
+                      </span>
+                      <span>{step}</span>
                     </div>
                   ))}
                 </div>
 
-                <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-[11px] font-bold text-[#6E5F8E] leading-relaxed">
-                  {helpData.tip}
+                <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-[11px] font-bold text-[#6E5F8E] leading-relaxed flex items-start gap-1.5">
+                  <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
+                  <span>{helpData.tip}</span>
                 </div>
               </motion.div>
             );
