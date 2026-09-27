@@ -71,7 +71,6 @@ export default function AdminDashboard() {
   const valuationMetrics = [
     { title: 'نضج البنية التحتية', value: '٩٥٪', trend: '+٤٪', icon: BookOpen, color: 'text-emerald-600' },
     { title: 'القيمة التجارية المقدرة', value: 'مستقرة', trend: 'نمو مستمر', icon: DollarSign, color: 'text-sky-600' },
-    { title: 'جاهزية العرض للاستحواذ', value: '٨٠٪', trend: 'قريباً', icon: TrendingUp, trendColor: 'text-amber-500', color: 'text-indigo-600' },
   ];
 
   const [genStatus, setGenStatus] = useState<any>(null);

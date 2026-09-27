@@ -224,10 +224,6 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         <div className="tebyan-decision-room space-y-5 md:space-y-6 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-6 md:mb-12">
              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#EEF4F1]0 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#5F837A]">{language === 'ar' ? 'الوضع الآمن فعال' : 'SECURE MODE ACTIVE'}</span>
-                </div>
                 <h1 className="text-[2rem] md:text-5xl font-extrabold text-[#182231] tracking-tight leading-tight uppercase">
                     {language === 'ar' ? 'غرفة القرار السرية' : 'SECRET DECISION ROOM'}
                 </h1>
@@ -663,31 +659,9 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                         </p>
                                     </div>
                                 </div>
-                                <div className="hidden md:block">
-                                    <div className="text-[10px] font-mono font-bold text-zinc-300 tracking-widest text-right">
-                                        ID: {Math.random().toString(36).substring(7).toUpperCase()}<br/>
-                                        ENCRYPTION: AES-256<br/>
-                                        CLEARANCE: L6
-                                    </div>
-                                </div>
                             </div>
                             <div className="markdown-body prose prose-zinc md:prose-xl max-w-none text-[#273548] prose-headings:text-[#182231] prose-strong:text-[#182231] prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
                               <ReactMarkdown>{result.content}</ReactMarkdown>
-                            </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-10 border-t border-[#8FA9C7]/15">
-                                <div className="p-6 bg-[#F7F5F2] rounded-3xl border border-[#8FA9C7]/15">
-                                   <div className="text-[10px] font-black text-[#7C8796] uppercase tracking-widest mb-2">Internal Consistency</div>
-                                   <div className="w-full h-1 bg-zinc-200 rounded-full overflow-hidden">
-                                      <motion.div initial={{ width: 0 }} animate={{ width: '94%' }} className="h-full bg-[#EEF4F1]0" />
-                                   </div>
-                                </div>
-                                <div className="p-6 bg-[#F7F5F2] rounded-3xl border border-[#8FA9C7]/15">
-                                   <div className="text-[10px] font-black text-[#7C8796] uppercase tracking-widest mb-2">Strategic Resonance</div>
-                                   <div className="w-full h-1 bg-zinc-200 rounded-full overflow-hidden">
-                                      <motion.div initial={{ width: 0 }} animate={{ width: '87%' }} className="h-full bg-indigo-500" />
-                                   </div>
-                                </div>
                             </div>
                         </div>
                     )}

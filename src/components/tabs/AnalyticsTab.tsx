@@ -32,7 +32,6 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
   const [error, setError] = useState<string | null>(null);
 
   const stats = [
-    { label: language === 'ar' ? 'مستوى الاستجابة' : 'Response Level', value: '87%', trend: '+5%', icon: Target },
     { label: language === 'ar' ? 'السجلات' : 'Logs Entered', value: logs.length.toString(), trend: 'جديد', icon: Activity },
     { label: language === 'ar' ? 'التنبؤات' : 'Predictions', value: prediction ? '1' : '0', trend: 'AI', icon: Radar },
   ];
