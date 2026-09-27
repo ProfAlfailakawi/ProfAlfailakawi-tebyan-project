@@ -99,7 +99,7 @@ export const InstantResults: React.FC<InstantResultsProps> = ({
                     {highlight(r.question, query)}
                   </span>
                   {summary && (
-                    <span className="mt-0.5 block truncate text-[11px] font-medium text-[#7C8796]">
+                    <span className="mt-0.5 block break-words md:truncate text-[11px] font-medium text-[#7C8796]">
                       {summary}
                     </span>
                   )}

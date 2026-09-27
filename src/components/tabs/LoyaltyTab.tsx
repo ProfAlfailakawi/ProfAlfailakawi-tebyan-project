@@ -128,7 +128,9 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                             <p className="text-lg font-black tracking-tight">KWD {myLoyaltyData.totalSpent}</p>
                         </div>
                         <div className="bg-white/10 px-4 py-2 rounded-xl text-xs font-black">
-                            {myLoyaltyData.status}
+                            {language === 'ar'
+                              ? ({ Active: 'نشط', VIP: 'مميّز', New: 'جديد', 'At Risk': 'بحاجة لمتابعة', Inactive: 'غير نشط' } as Record<string, string>)[myLoyaltyData.status] || myLoyaltyData.status
+                              : myLoyaltyData.status}
                         </div>
                     </div>
                 </div>
@@ -357,12 +359,12 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                          )} />
                       </div>
                       <div className="text-right min-w-0">
-                         <h4 className="font-black text-black text-sm truncate">{customer.displayName}</h4>
+                         <h4 className="font-black text-black text-sm break-words md:truncate" title={customer.displayName}>{customer.displayName}</h4>
                          <p className="text-xs text-zinc-600 font-mono" dir="ltr">{customer.phone}</p>
                       </div>
                    </div>
 
-                   <div className="hidden md:flex items-center gap-12 px-6">
+                   <div className="flex w-full order-last sm:order-none sm:w-auto items-center gap-8 md:gap-12 pt-3 sm:pt-0 sm:px-6 border-t sm:border-0 border-zinc-100">
                       <div className="text-right">
                          <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'النقاط' : 'Points'}</p>
                          <p className="text-sm font-black text-indigo-600">{customer.points.toLocaleString()}</p>

@@ -282,7 +282,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               <p className="text-[11px] font-black tracking-widest text-[#8E7AAE] uppercase">
                 {language === 'ar' ? getGenderWord(userGender, 'آخر ما كنت تفكر فيه', 'آخر ما كنتِ تفكرين فيه', 'آخر ما كنت تفكر فيه') : 'Where you left off'}
               </p>
-              <h3 className="mt-1 text-base md:text-xl font-black text-[#182231] truncate max-w-3xl">
+              <h3 className="mt-1 text-base md:text-xl font-black text-[#182231] break-words md:truncate max-w-3xl">
                 {lastSession?.query || (language === 'ar' ? 'لم تبدأ جلسة محفوظة بعد' : 'No saved session yet')}
               </h3>
               <p className="mt-1 text-xs md:text-sm font-bold text-[#7C8796]" style={!lastSession ? { opacity: helpOpacity, transition: 'opacity 0.8s' } : undefined}>

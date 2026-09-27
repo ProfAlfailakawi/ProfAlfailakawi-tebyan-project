@@ -63,8 +63,8 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
   };
 
   return (
-    <div className="w-full bg-white max-h-[85vh] overflow-y-auto rounded-[32px] p-8 shadow-sm border border-zinc-200 custom-scrollbar">
-      <div className="max-w-5xl mx-auto space-y-12 position-relative px-2">
+    <div className="w-full bg-white md:max-h-[85vh] md:overflow-y-auto rounded-[24px] md:rounded-[32px] p-4 md:p-8 shadow-sm border border-zinc-200 custom-scrollbar">
+      <div className="max-w-5xl mx-auto space-y-8 md:space-y-12 position-relative md:px-2">
         <TabHeader 
           icon={Radar}
           title={{ ar: 'الرادار الاستباقي', en: 'Predictive Radar' }}

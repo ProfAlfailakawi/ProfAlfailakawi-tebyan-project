@@ -524,7 +524,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                               <Compass size={16} />
                             </div>
                             <div className="min-w-0">
-                              <div className="text-sm font-black text-[#182231] truncate">{thinkingSignature.title}</div>
+                              <div className="text-sm font-black text-[#182231] break-words md:truncate">{thinkingSignature.title}</div>
                               <div className="text-[11px] text-[#64788D]">{thinkingSignature.note}</div>
                             </div>
                           </div>
