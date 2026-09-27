@@ -54,7 +54,6 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       onClose={() => handleTabChange('discover', '', true)}
     />
     <div className="bg-white border border-[#8FA9C7]/12 text-[#182231] p-4 md:p-10 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#EFEAF6] rounded-full blur-[120px] pointer-events-none -z-10"></div>
       
       <div className="space-y-6 z-10 relative text-right">
         <div className="mb-10 text-right">
@@ -271,7 +270,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
                      </h4>
                      <div className="flex flex-wrap gap-2 justify-end">
                         {councilData?.global_references?.map((r: string, i: number) => (
-                          <span key={i} className="bg-white/10 px-4 py-2 rounded-lg text-xs font-bold text-[#182231]">{r}</span>
+                          <span key={i} className="bg-[#F8F5EF] px-4 py-2 rounded-lg text-xs font-bold text-[#182231]">{r}</span>
                         ))}
                      </div>
                   </div>
