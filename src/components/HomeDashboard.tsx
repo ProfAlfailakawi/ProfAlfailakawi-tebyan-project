@@ -407,7 +407,6 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
              className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4"
            />
-           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
              <div className="w-16 h-16 bg-white/80 backdrop-blur-xl text-[#6E5F8E] rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-[#F1EEF4] group-hover:text-[#6E5F8E] transition-all duration-500 border border-white/20">
                <Box className="w-8 h-8" />

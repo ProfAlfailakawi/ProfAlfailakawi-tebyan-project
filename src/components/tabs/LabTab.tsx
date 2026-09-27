@@ -567,7 +567,6 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      className="bg-[#F1EEF4] text-[#182231] p-8 md:p-12 rounded-[40px] flex flex-col items-center gap-10 overflow-hidden relative shadow-2xl border border-white/5"
                    >
                      {/* ... sound UI ... */}
-                     <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none"></div>
                      
                      <div className="w-full max-w-lg space-y-4 text-center mb-4 relative z-20">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 text-xs text-brand-emerald font-black tracking-wide">

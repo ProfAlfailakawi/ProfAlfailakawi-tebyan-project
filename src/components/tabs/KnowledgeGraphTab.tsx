@@ -156,7 +156,6 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   return (
     <div className="tebyan-knowledge-fabric w-full bg-[#FBFAF7] text-[#182231] min-h-[82vh] rounded-[24px] md:rounded-[32px] p-3 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.10)] relative overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 border border-[#E9E2F1]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(216,206,233,0.34)_0%,transparent_58%),radial-gradient(circle_at_15%_75%,rgba(220,234,244,0.42)_0%,transparent_38%)] pointer-events-none"></div>
-      <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay"></div>
       
       <div className="absolute top-4 inset-x-4 md:top-8 md:end-8 md:start-auto z-50 flex justify-between md:justify-end">
         <div className="md:hidden" />
