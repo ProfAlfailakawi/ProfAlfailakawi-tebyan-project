@@ -190,7 +190,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                       : 'Here we don’t just give you canned answers; we show you the cognitive galaxy surrounding them. Ideas don’t live in isolation. Discover the hidden connections between your decisions.'}
                 </p>
                 <div className="mt-4 flex items-center gap-3 text-[#5A8C75] font-bold text-sm">
-                    <Sparkles className="w-5 h-5 animate-pulse" />
+                    <Sparkles className="w-5 h-5" />
                     <span>{language === 'ar' ? 'تحليل شبكتك: تتركز اهتماماتك بقوة حول مفاهيمك الحالية، استكشف لربطها وتوسيع مداركك.' : 'Network Analysis: Your focus is strong on current concepts, merge them to expand your mindset.'}</span>
                 </div>
             </div>

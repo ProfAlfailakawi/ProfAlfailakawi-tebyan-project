@@ -62,8 +62,8 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
       />
       
       <div className="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-rose-50 p-8 rounded-[40px] shadow-2xl border border-white/50 backdrop-blur-sm">
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-200/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-200/30 rounded-full blur-3xl"></div>
         
         <div className="relative flex flex-col gap-6">
           <label className={cn("block text-sm font-black text-zinc-500 uppercase tracking-widest", language === 'ar' ? 'text-right' : 'text-left')}>

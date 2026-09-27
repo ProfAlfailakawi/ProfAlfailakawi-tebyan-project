@@ -3263,7 +3263,7 @@ export const SmartGateway: React.FC<
           >
             <div className="tebyan-search-stage w-full relative flex flex-col items-center mt-2 mb-5 group">
               {isThinking && (
-                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
+                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 pointer-events-none transition-colors duration-1000" />
               )}
 
               {!hasSearched && !isThinking && (

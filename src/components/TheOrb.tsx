@@ -57,7 +57,7 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
       >
         <div className="absolute inset-0 rounded-full bg-gradient-to-t from-indigo-500 via-purple-500 to-emerald-500 opacity-20 group-hover:opacity-60 blur-xl transition-all duration-500"></div>
         <div className="absolute inset-0 rounded-full bg-gradient-to-b from-transparent to-black/50 pointer-events-none" />
-        <Sparkles className="w-8 h-8 md:w-10 md:h-10 relative z-10 animate-pulse transition-transform text-white/90" />
+        <Sparkles className="w-8 h-8 md:w-10 md:h-10 relative z-10 transition-transform text-white/90" />
       </motion.button>
     </motion.div>
   );

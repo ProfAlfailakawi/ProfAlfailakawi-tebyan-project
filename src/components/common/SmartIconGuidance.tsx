@@ -233,7 +233,7 @@ const GuidancePortalTooltip: React.FC<PortalTooltipProps> = ({
       {/* Main Tooltip Body */}
       <div className="relative bg-zinc-950/95 text-white backdrop-blur-md border border-amber-500/40 px-3.5 py-2.5 rounded-2xl shadow-2xl shadow-black/70 text-right">
         <div className="flex items-start gap-2 dir-rtl">
-          <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5 animate-pulse" />
+          <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div className="text-[11px] leading-snug font-medium text-zinc-100">
             <span>{guidanceText}</span>
             <span className="block text-[10px] text-amber-300 font-bold mt-1 dir-rtl">
