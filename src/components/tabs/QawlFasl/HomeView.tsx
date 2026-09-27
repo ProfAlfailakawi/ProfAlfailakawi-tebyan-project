@@ -5,6 +5,21 @@ import { CATEGORIES, MAIN_CATEGORIES, QawlFaslQuestion } from './types';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { useSmartSearch } from '../../../hooks/useSmartSearch';
+import { DnaIconTile, DnaCount } from '../../dna/DnaKit';
+import type { DnaTone } from '../../dna/DnaKit';
+import { Sparkles, Compass, HeartHandshake, GraduationCap, Smartphone, ShieldCheck, Rocket, UserRound, Wallet, BookOpenCheck, Clock3 } from 'lucide-react';
+
+const QAWL_CATEGORY_TILES: Record<string, { icon: React.ComponentType<any>; tone: DnaTone }> = {
+  'faith-religious-questions': { icon: Sparkles, tone: 'lilac' },
+  behavior: { icon: Compass, tone: 'sky' },
+  emotions: { icon: HeartHandshake, tone: 'coral' },
+  education: { icon: GraduationCap, tone: 'indigo' },
+  digital: { icon: Smartphone, tone: 'slate' },
+  prevention: { icon: ShieldCheck, tone: 'mint' },
+  future: { icon: Rocket, tone: 'amber' },
+  personality: { icon: UserRound, tone: 'sand' },
+  money: { icon: Wallet, tone: 'mint' },
+};
 
 
 const normalizeQawlSearchText = (value: string) => {
@@ -486,23 +501,14 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 <button 
                   key={category.id}
                   onClick={() => onCategory(category.id)}
-                  className="group bg-white border border-zinc-200/60 rounded-[18px] md:rounded-[28px] p-3 md:p-6 text-right hover:border-[#5A5A40] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all flex flex-col min-h-[104px] md:min-h-[190px] justify-between relative overflow-hidden cursor-pointer active:scale-95 z-50 pointer-events-auto"
+                  title="تصفح دراسات الحالات، القرارات الصعبة، والحلول الإستراتيجية."
+                  className="dna-surface group text-right p-3 md:p-5 flex flex-col items-start gap-3 min-h-[118px] md:min-h-[160px] transition-transform hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer z-50 pointer-events-auto"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50 rounded-full blur-2xl group-hover:bg-[#F5F5F0] transition-colors translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-                  <div className="relative z-10 w-full text-right">
-                    <h4 className="font-serif text-[0.82rem] sm:text-[0.95rem] md:text-2xl text-black group-hover:text-[#5A5A40] transition-colors mb-2 md:mb-4 leading-snug line-clamp-2">{category.title}</h4>
-                    <p className="text-zinc-600 text-[10px] md:text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      تصفح دراسات الحالات، القرارات الصعبة، والحلول الإستراتيجية.
-                    </p>
-                  </div>
-                  <div className="relative z-10 flex items-center justify-between w-full mt-auto">
-                    <span className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                      {count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"}
-                    </span>
-                    <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-zinc-100 bg-white flex items-center justify-center group-hover:bg-[#5A5A40] group-hover:text-white group-hover:border-[#5A5A40] transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                      <ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5 -scale-x-100" />
-                    </div>
-                  </div>
+                  {(() => { const meta = QAWL_CATEGORY_TILES[category.id] || { icon: Library, tone: 'lilac' as const }; const Icon = meta.icon; return <DnaIconTile icon={<Icon />} tone={meta.tone} size="md" />; })()}
+                  <h4 className="font-bold text-[0.82rem] sm:text-[0.95rem] md:text-lg text-[#182231] leading-snug line-clamp-2">{category.title}</h4>
+                  <span className="mt-auto">
+                    <DnaCount value={count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"} icon={count > 0 ? <BookOpenCheck className="w-3.5 h-3.5" /> : <Clock3 className="w-3.5 h-3.5" />} />
+                  </span>
                 </button>
               );
             })}

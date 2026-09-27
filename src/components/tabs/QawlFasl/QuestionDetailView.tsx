@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2 } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -9,6 +9,9 @@ import { BreathingText } from '../../BreathingText';
 import { KnowledgeSignature } from '../../common/KnowledgeSignature';
 import { proxyGenerateAudio } from '../../../lib/aiProxy';
 import AnswerTrustPanel from './AnswerTrustPanel';
+import { DnaStatusHeader, DnaStepper, DnaHubMap } from '../../dna/DnaKit';
+import type { DnaStepState } from '../../dna/DnaKit';
+import { getAnswerTrust, formatArabicDate } from '../../../lib/qawlTrust';
 
 interface Props {
   questions: QawlFaslQuestion[];
@@ -172,6 +175,33 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
   const category = CATEGORIES.find(c => c.id === question.categorySlug);
 
+  const trust = getAnswerTrust(question);
+  const isApproved = (v?: string) => v === 'published' || v === 'approved' || v === 'verified';
+  const reviewFlags = [
+    isApproved(question.reviewStatus?.educational),
+    isApproved(question.reviewStatus?.religious),
+    isApproved(question.reviewStatus?.sources),
+  ];
+  const allApproved = reviewFlags.every(Boolean);
+  const firstPending = reviewFlags.findIndex(f => !f);
+  const reviewSteps: { key: string; label: string; state: DnaStepState }[] = [
+    ...['التربوية', 'الشرعية', 'المصادر'].map((label, i) => ({
+      key: `r${i}`,
+      label,
+      state: (reviewFlags[i] ? 'done' : i === firstPending ? 'current' : 'pending') as DnaStepState,
+    })),
+    { key: 'ok', label: 'معتمد', state: (allApproved ? 'done' : 'pending') as DnaStepState },
+  ];
+  const sourcesCount = (question.resources?.length || 0) || trust.sources.length;
+  const answerNodes = [
+    { key: 'say', icon: <MessageSquareQuote />, tone: 'mint' as const, label: 'قُل هذا', title: question.quickAnswer?.sayThis, state: question.quickAnswer?.sayThis ? 'ok' as const : 'off' as const, onClick: () => setActiveTab('quick') },
+    { key: 'dont', icon: <Ban />, tone: 'coral' as const, label: 'لا تَقُل', title: question.quickAnswer?.dontSayThis, state: question.quickAnswer?.dontSayThis ? 'ok' as const : 'off' as const, onClick: () => setActiveTab('quick') },
+    { key: 'do', icon: <Zap />, tone: 'lilac' as const, label: 'افعل الآن', title: question.quickAnswer?.doThisNow, state: question.quickAnswer?.doThisNow ? 'ok' as const : 'off' as const, onClick: () => setActiveTab('quick') },
+    { key: 'age', icon: <Users />, tone: 'sky' as const, label: 'الأعمار', value: question.byAgeVersions?.length || 0, state: question.byAgeVersions?.length ? 'ok' as const : 'off' as const, onClick: () => setActiveTab('age') },
+    { key: 'steps', icon: <ListChecks />, tone: 'amber' as const, label: 'الخطوات', value: question.practicalSteps?.length || 0, state: question.practicalSteps?.length ? 'ok' as const : 'off' as const, onClick: () => setActiveTab('steps') },
+    { key: 'res', icon: <Library />, tone: 'sand' as const, label: 'المصادر', value: sourcesCount, state: sourcesCount ? 'ok' as const : 'off' as const, onClick: () => setActiveTab('resources') },
+  ];
+
   return (
     <div className="flex flex-col h-full bg-[#FAF9F6]/70 backdrop-blur-2xl min-h-[80vh] font-sans pb-24 overflow-x-clip">
       {/* Header */}
@@ -280,37 +310,43 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         {/* Quick Tab */}
         {activeTab === 'quick' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-            <div className="tebyan-result-document rounded-[32px] md:rounded-[42px] p-5 md:p-8 lg:p-10 relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-l from-[#D8C28A]/70 via-[#8E7AAE]/30 to-transparent" />
-              <div className="flex flex-col md:flex-row md:items-start justify-between gap-5 border-b border-[#8FA9C7]/14 pb-6 mb-6">
-                <div>
-                  <p className="text-[11px] font-black text-[#A68F58] uppercase">وثيقة قول فصل</p>
-                  <h2 className="mt-2 text-2xl md:text-4xl font-black text-[#182231] leading-tight">{question.question || question.title}</h2>
-                  <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-[#64788D]">رتّب القضية، اعرض المعطيات، واخرج بخلاصة متزنة دون تغيير منطق الإجابة الأصلية.</p>
-                </div>
-                <div className="shrink-0 rounded-[24px] bg-[#F6F0E3] border border-[#D8C28A]/28 px-5 py-4 text-center">
-                  <div className="text-[10px] font-black text-[#7A6B42] mb-1">درجة الحسم</div>
-                  <div className="text-2xl font-black text-[#182231]">{question.riskLevel === 'high' ? 'حذر' : 'متزن'}</div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[
-                  { label: 'القضية', value: question.quickSummary || question.question || question.title },
-                  { label: 'الأطراف', value: `الطفل / ولي الأمر / السياق التربوي` },
-                  { label: 'الحجج', value: question.quickAnswer?.sayThis || 'يحتاج الموقف إلى خطاب هادئ ومباشر.' },
-                  { label: 'نقاط القوة', value: question.practicalSteps?.[0] || 'الهدوء وبناء الثقة قبل التوجيه.' },
-                  { label: 'نقاط الضعف', value: question.quickAnswer?.dontSayThis || 'التسرع أو إصدار حكم مباشر قد يزيد المقاومة.' },
-                  { label: 'المغالطة المحتملة', value: question.commonMistake || 'علاج العرض وترك السبب العميق.' },
-                  { label: 'الخلاصة', value: question.closingThought || question.quickSummary },
-                  { label: 'المسار العملي', value: question.practicalSteps?.slice(0, 2).join(' — ') || 'ابدأ بسؤال هادئ ثم خطوة صغيرة قابلة للتطبيق.' },
-                ].map((item) => (
-                  <div key={item.label} className="rounded-2xl bg-white/72 border border-[#8FA9C7]/14 p-4">
-                    <p className="text-[10px] font-black text-[#8E7AAE] mb-2">{item.label}</p>
-                    <p className="text-sm md:text-base font-bold leading-relaxed text-[#465568]">{item.value}</p>
-                  </div>
-                ))}
-              </div>
-              <KnowledgeSignature language={language} query={question.question || question.title} kind="قول فصل" onLink={() => { try { window.dispatchEvent(new CustomEvent('navigate_tab', { detail: { tab: 'knowledgegraph' } })); } catch(e) {} }} />
+            <div className="dna-surface p-4 md:p-6 space-y-5">
+              <DnaStatusHeader
+                icon={<ShieldCheck />}
+                title="جواب مُراجَع ومعتمد"
+                subtitle={<>
+                  {trust.reviewers.join('، ')}
+                  {trust.reviewedAt && <> · <time dateTime={trust.reviewedAt.toISOString()}>{formatArabicDate(trust.reviewedAt)}</time></>}
+                </>}
+                actions={
+        <button
+          onClick={handleQuickAudio}
+          disabled={isQuickAudioLoading}
+          className={cn("dna-btnp", isQuickAudioLoading && "cursor-wait")}
+          title="استمع للجواب"
+        >
+          {isQuickAudioLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume2 className="w-4 h-4" />}
+          {isQuickAudioLoading ? 'جارٍ التجهيز' : 'استمع للجواب'}
+        </button>
+                }
+                divider="dashed"
+              >
+                <DnaStepper
+                  size="sm"
+                  ariaLabel="مراحل مراجعة الجواب"
+                  steps={reviewSteps}
+                />
+              </DnaStatusHeader>
+              <DnaHubMap
+                ariaLabel="خريطة الجواب"
+                center={{ icon: <MessageCircleQuestion />, label: question.question || question.title, ariaLabel: question.question || question.title }}
+                count={{ value: question.riskLevel === 'high' ? 'حذر' : 'متزن', icon: <Gauge className="w-3.5 h-3.5" />, label: 'درجة الحسم' }}
+                overline="وثيقة قول فصل"
+                title={question.quickSummary}
+                animate={false}
+                nodes={answerNodes}
+              />
+                <KnowledgeSignature language={language} query={question.question || question.title} kind="قول فصل" onLink={() => { try { window.dispatchEvent(new CustomEvent('navigate_tab', { detail: { tab: 'knowledgegraph' } })); } catch(e) {} }} />
             </div>
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <div className="flex-1">
@@ -318,20 +354,6 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   <h3 className="text-xl font-black text-[#182231] flex items-center gap-2">
                      <Lightbulb className="text-[#64788D] w-6 h-6" /> الملخص السريع
                   </h3>
-                  <button
-                    onClick={handleQuickAudio}
-                    disabled={isQuickAudioLoading}
-                    className={cn(
-                      "inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-black transition-all border shadow-sm self-start md:self-auto",
-                      isQuickAudioLoading
-                        ? "bg-[#F6F5F0] text-[#8FA9C7] border-[#8FA9C7]/15 cursor-wait"
-                        : "bg-[#8E7AAE] text-white border-[#8E7AAE] hover:bg-[#7D6A9B]"
-                    )}
-                    title="استمع للجواب"
-                  >
-                    {isQuickAudioLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Volume2 className="w-4 h-4" />}
-                    {isQuickAudioLoading ? 'جارٍ التجهيز' : 'استمع للجواب'}
-                  </button>
                 </div>
                 <p className="text-[#465568] font-medium leading-[1.85] text-base md:text-xl">{question.quickSummary}</p>
                 {quickAudioUrl && (

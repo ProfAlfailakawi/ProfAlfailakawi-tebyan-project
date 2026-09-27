@@ -23,12 +23,12 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
   return (
     <section
       aria-label="التحقق من الجواب"
-      className="rounded-[24px] md:rounded-[28px] bg-white/72 border border-[#8FA9C7]/15 px-5 py-5 md:px-8 md:py-6"
+      className="dna-surface px-5 py-5 md:px-8 md:py-6"
     >
       <dl className="grid gap-4 sm:grid-cols-2 text-sm">
         {trust.sources.length > 0 && (
           <div className="sm:col-span-2">
-            <dt className="flex items-center gap-1.5 text-xs font-black text-[#8E7AAE] mb-1.5">
+            <dt className="flex items-center gap-1.5 text-xs font-black text-[#6E5B91] mb-1.5">
               <BookMarked className="w-3.5 h-3.5" aria-hidden="true" />
               {trust.sources.length > 1 ? 'المصادر' : 'المصدر'}
             </dt>
@@ -50,7 +50,7 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
           </div>
         )}
         <div>
-          <dt className="flex items-center gap-1.5 text-xs font-black text-[#8E7AAE] mb-1">
+          <dt className="flex items-center gap-1.5 text-xs font-black text-[#6E5B91] mb-1">
             <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
             راجعه
           </dt>
@@ -58,7 +58,7 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
         </div>
         {trust.reviewedAt && (
           <div>
-            <dt className="flex items-center gap-1.5 text-xs font-black text-[#8E7AAE] mb-1">
+            <dt className="flex items-center gap-1.5 text-xs font-black text-[#6E5B91] mb-1">
               <CalendarCheck2 className="w-3.5 h-3.5" aria-hidden="true" />
               آخر مراجعة
             </dt>
@@ -69,12 +69,12 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
         )}
       </dl>
 
-      <div className="mt-4 pt-4 border-t border-[#8FA9C7]/12 flex items-center justify-between gap-3 flex-wrap">
+      <div className="mt-4 pt-4 border-t border-dashed border-[#182231]/12 flex items-center justify-between gap-3 flex-wrap">
         <p className="text-xs font-bold text-[#64788D]">لاحظت معلومة غير دقيقة؟ نراجع كل بلاغ.</p>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-1.5 rounded-full border border-[#A6603F]/20 bg-[#FAF0E6]/60 hover:bg-[#FAF0E6] px-4 py-2 text-xs font-black text-[#A6603F] transition-colors"
+          className="dna-btn text-xs font-black"
         >
           <Flag className="w-3.5 h-3.5" aria-hidden="true" />
           بلّغ عن خطأ
@@ -145,7 +145,7 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
         ) : (
           <form onSubmit={submit} className="space-y-3">
             <label className="block">
-              <span className="block text-xs font-black text-[#8E7AAE] mb-1.5">ما الذي تراه غير دقيق؟ (اختياري)</span>
+              <span className="block text-xs font-black text-[#6E5B91] mb-1.5">ما الذي تراه غير دقيق؟ (اختياري)</span>
               <textarea
                 ref={noteRef}
                 value={note}
@@ -156,7 +156,7 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
               />
             </label>
             <label className="block">
-              <span className="block text-xs font-black text-[#8E7AAE] mb-1.5">وسيلة تواصل إن أحببت الرد (اختياري)</span>
+              <span className="block text-xs font-black text-[#6E5B91] mb-1.5">وسيلة تواصل إن أحببت الرد (اختياري)</span>
               <input
                 value={contact}
                 onChange={(e) => setContact(e.target.value.slice(0, 200))}
