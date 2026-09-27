@@ -374,7 +374,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                           type="button"
                           onClick={() => runAnalysis(activeSceneTool)}
                           disabled={isLoading}
-                          className="flex-1 rounded-2xl bg-white px-6 py-4 text-sm font-black text-[#182231] shadow-[0_16px_36px_rgba(24,34,49,0.22)] transition-all hover:bg-[#F8F5EF] active:scale-[0.98] disabled:opacity-60"
+                          className="flex-1 rounded-2xl bg-[#6E5B91] px-6 py-4 text-sm font-black text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] transition-all hover:bg-[#5F4E7F] active:scale-[0.98] disabled:opacity-60"
                         >
                           {language === 'ar' ? activeScene.cta.ar : activeScene.cta.en}
                         </button>
@@ -516,18 +516,18 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                          <div className="bg-white border border-[#182231]/10 p-8 md:p-16 rounded-[40px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden">
                              <div className="flex flex-col md:flex-row items-center gap-12 max-w-4xl mx-auto">
                                  {/* Scale Visual */}
-                                 <div className="flex-1 w-full flex flex-col items-center justify-center relative">
-                                    <div className="w-1 h-32 bg-white mx-auto"></div>
+                                 <div className="flex-1 w-full flex flex-col items-center justify-center relative px-[2.25rem] md:px-0">
+                                    <div className="w-1 h-32 bg-[#64788D] rounded-full mx-auto"></div>
                                     <motion.div 
                                         initial={{ rotate: 0 }}
                                         animate={{ rotate: (result.content.certainty - 50) * 0.4 }}
                                         transition={{ type: 'spring', damping: 10, stiffness: 50 }}
-                                        className="w-full max-w-xs h-2 bg-white rounded-full relative Origin-center"
+                                        className="w-full max-w-xs h-2 bg-[#6E5B91] rounded-full relative Origin-center"
                                     >
-                                        <div className="absolute -top-16 -left-8 w-16 h-16 rounded-full border-2 border-[#6E5B91]/30 bg-[#EEF4F1]0/10 flex items-center justify-center">
+                                        <div className="absolute -top-[4rem] -left-8 w-16 h-16 rounded-full border-2 border-[#6E5B91] bg-white flex items-center justify-center">
                                             <span className="text-[#6E5B91] font-black">{result.content.certainty}%</span>
                                         </div>
-                                        <div className="absolute -top-16 -right-8 w-16 h-16 rounded-full border-2 border-[#6E5B91]/30 bg-[#EFEAF6] flex items-center justify-center">
+                                        <div className="absolute -top-[4rem] -right-8 w-16 h-16 rounded-full border-2 border-dashed border-[#6E5B91] bg-[#EFEAF6] flex items-center justify-center">
                                             <span className="text-[#6E5B91] font-black">{result.content.doubt}%</span>
                                         </div>
                                     </motion.div>
@@ -545,7 +545,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                  <div className="flex-1 w-full space-y-8">
                                      <div>
                                         <h4 className="text-[#6E5B91] font-black tracking-widest text-sm uppercase mb-4 mb-4 flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-[#EEF4F1]0"></div>
+                                            <div className="w-2 h-2 rounded-full bg-[#6E5B91]"></div>
                                             {language === 'ar' ? 'ركائز اليقين' : 'Pillars of Certainty'}
                                         </h4>
                                         <ul className="space-y-3">
@@ -556,10 +556,10 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                             ))}
                                         </ul>
                                      </div>
-                                     <div className="w-full h-px bg-white"></div>
+                                     <div className="w-full border-t border-dashed border-[#182231]/20"></div>
                                      <div>
                                         <h4 className="text-[#6E5B91] font-black tracking-widest text-sm uppercase mb-4 flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-[#6E5B91]"></div>
+                                            <div className="w-2 h-2 rounded-full border-2 border-[#6E5B91]"></div>
                                             {language === 'ar' ? 'أثقال الشك' : 'Weights of Doubt'}
                                         </h4>
                                         <ul className="space-y-3">
@@ -612,7 +612,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                      ) : result.tool === 'vault' ? (
                         <div className="bg-white border-[6px] md:border-[12px] border-[#182231]/10 p-8 md:p-24 rounded-[32px] md:rounded-[60px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden text-[#182231]">
                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
-                             <div className="absolute top-0 left-0 w-full h-1.5 bg-white opacity-80"></div>
+                             <div className="absolute top-0 left-0 w-full h-1.5 bg-[#6E5B91] opacity-60"></div>
                              
                              <div className="flex flex-col items-center justify-center gap-6 mb-16 md:mb-24 relative z-10">
                                <div className="p-6 bg-[#EFEAF6] rounded-3xl border-2 border-[#6E5B91]/30 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]">
