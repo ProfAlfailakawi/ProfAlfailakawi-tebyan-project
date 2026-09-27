@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import localforage from 'localforage';
+import { IS_DEMO_MODE } from '../lib/demoMode';
+import { DEMO_KIDS, DEMO_SAVED_LIBRARY } from '../data/demoFixtures';
 
 export interface Child {
   id: string;
@@ -31,7 +33,13 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [preferences, setPreferences] = useState<UserPreferences>({ 
+  const [preferences, setPreferences] = useState<UserPreferences>(() => IS_DEMO_MODE ? {
+    // العرض يبدأ بمكتبة مأهولة ولا يقرأ تفضيلات الزائر المحفوظة ولا يكتب فوقها.
+    kids: DEMO_KIDS,
+    savedLibrary: DEMO_SAVED_LIBRARY,
+    cache: {},
+    userStyle: 'practical'
+  } : { 
     kids: [], 
     savedLibrary: [], 
     cache: {},
@@ -39,6 +47,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     localforage.getItem<UserPreferences>('userPreferences').then(saved => {
       if (saved) {
         // Migration: ensure userStyle exists
@@ -51,6 +60,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     localforage.setItem('userPreferences', preferences);
   }, [preferences]);
 

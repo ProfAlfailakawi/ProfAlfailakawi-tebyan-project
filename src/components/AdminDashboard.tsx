@@ -298,7 +298,23 @@ export default function AdminDashboard() {
             {topQueries.length > 0 && (
                 <div className="mt-8 bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                     <h3 className="text-xl font-bold mb-4 text-slate-800">أكثر الأسئلة والاستعلامات تكراراً (Top 20)</h3>
-                    <div className="tebyan-scroll-contained">
+                    {/* الجوال: بطاقات تُظهر نص الاستعلام كاملاً بدل جدول يحتاج تمريراً أفقياً. */}
+                    <ul className="md:hidden divide-y divide-slate-100">
+                        {topQueries.map((q, i) => (
+                            <li key={i} className="py-3 flex flex-col gap-2">
+                                <p className="text-slate-800 font-medium text-sm leading-relaxed break-words">{q.query}</p>
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <span className="bg-slate-100 text-slate-700 py-1 px-3 rounded-full text-xs font-bold">{q.count} مرات</span>
+                                    {q.count > 3 ? (
+                                        <span className="text-emerald-600 text-xs font-bold flex items-center gap-1"><Lightbulb className="w-3 h-3"/> مرشح للإضافة</span>
+                                    ) : (
+                                        <span className="text-slate-400 text-xs font-bold">عادي</span>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                    <div className="tebyan-scroll-contained hidden md:block">
                         <table className="w-full min-w-[620px] text-right text-sm">
                             <thead>
                                 <tr className="border-b border-slate-100 text-slate-500">
@@ -310,7 +326,7 @@ export default function AdminDashboard() {
                             <tbody>
                                 {topQueries.map((q, i) => (
                                     <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                                        <td className="py-3 px-4 text-slate-800 font-medium truncate max-w-[300px]">{q.query}</td>
+                                        <td className="py-3 px-4 text-slate-800 font-medium truncate max-w-[300px]" title={q.query}>{q.query}</td>
                                         <td className="py-3 px-4 text-slate-600">
                                             <span className="bg-slate-100 text-slate-700 py-1 px-3 rounded-full text-xs font-bold">{q.count} مرات</span>
                                         </td>

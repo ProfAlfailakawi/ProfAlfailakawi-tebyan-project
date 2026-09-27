@@ -891,7 +891,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 animate={{ opacity: 1, x: 0 }}
                                 className="bg-gradient-to-r from-mood-primary to-emerald-500 p-0.5 rounded-2xl mb-2"
                             >
-                                <div className="bg-white/95 backdrop-blur-sm p-4 rounded-2xl flex items-center justify-between gap-4">
+                                <div className="bg-white/95 backdrop-blur-sm p-4 rounded-2xl flex flex-col items-stretch sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 bg-mood-primary rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-mood-glow">
                                             <HelpCircle className="w-5 h-5" />
@@ -907,7 +907,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                     </div>
                                     <button 
                                         onClick={() => setNewIdea(dailyPrompt.question + '\n\n')}
-                                        className="bg-mood-primary text-white px-4 py-2 rounded-xl text-xs font-black whitespace-nowrap hover:opacity-90 transition-all shadow-lg active:scale-95"
+                                        className="bg-mood-primary text-white px-4 py-2 min-h-[44px] sm:min-h-0 shrink-0 rounded-xl text-xs font-black whitespace-nowrap hover:opacity-90 transition-all shadow-lg active:scale-95"
                                     >
                                         {language === 'ar' ? 'ازرع غصن' : 'Plant Branch'}
                                     </button>

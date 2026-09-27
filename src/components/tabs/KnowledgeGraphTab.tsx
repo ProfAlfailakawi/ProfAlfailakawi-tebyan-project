@@ -4,6 +4,8 @@ import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit, Lightbulb,
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { getDemoFixtures } from '../../data/demoFixtures';
 
 export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const [history, setHistory] = useState<string[]>([]);
@@ -13,6 +15,10 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (IS_DEMO_MODE) {
+      setHistory(getDemoFixtures(language).searchHistory);
+      return;
+    }
     const saved = localStorage.getItem('tebyan_search_history');
     if (saved) {
       try {
@@ -22,7 +28,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         }
       } catch (e) {}
     }
-  }, []);
+  }, [language]);
 
   const { nodes, edges } = useMemo(() => {
     const n: any[] = [];
@@ -200,7 +206,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           <div className="tebyan-fabric-list mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             {nodes.filter(n => n.type !== 'core').map(node => (
               <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className="tebyan-fabric-node-card text-right rounded-[24px] border border-[#8FA9C7]/16 bg-white/82 p-4 hover:border-[#8E7AAE]/30 transition-all">
-                <p className="text-[10px] font-black tracking-widest text-[#8E7AAE] mb-1">{node.category || node.type}</p>
+                <p className="text-[10px] font-black tracking-widest text-[#8E7AAE] mb-1">{language === 'ar' ? (({ concept: 'مفهوم', scientific: 'علمي', philosophical: 'فلسفي', practical: 'عملي', historical: 'تاريخي', golden: 'عقدة ذهبية', idea: 'فكرة' } as Record<string, string>)[node.category || node.type] || node.category || node.type) : (node.category || node.type)}</p>
                 <h4 className="font-black text-[#182231]">{node.label}</h4>
                 <p className="text-xs font-bold text-[#7C8796] mt-2">{language === 'ar' ? 'اضغط لفتح البطاقة الجانبية والروابط.' : 'Tap to open the side card and links.'}</p>
               </button>

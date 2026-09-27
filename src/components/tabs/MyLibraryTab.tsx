@@ -5,6 +5,8 @@ import { LibraryBig, Shirt, Trash2, ArrowUpRight, Sparkles } from 'lucide-react'
 import { cn } from '../../lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { localizeDemoLibrary } from '../../data/demoFixtures';
 
 const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
   const counts = items.reduce((acc: any, item: any) => {
@@ -48,6 +50,11 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
 
 const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string, handleTabChange?: (id: string, context?: string) => void }) => {
     const { preferences, removeFromLibrary } = useUser();
+    // في العرض تظهر المحفوظات النموذجية بلغة الواجهة؛ الحذف يبقى على العنصر المخزَّن.
+    const displayLibrary = React.useMemo(
+        () => (IS_DEMO_MODE && Array.isArray(preferences.savedLibrary) ? localizeDemoLibrary(preferences.savedLibrary, language) : preferences.savedLibrary),
+        [preferences.savedLibrary, language],
+    );
     
     return (
         <div className="p-4 md:p-6 pb-28 md:pb-32">
@@ -67,7 +74,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
             </div>
 
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length > 0 && (
-              <MoodCloud items={preferences.savedLibrary} language={language} />
+              <MoodCloud items={displayLibrary} language={language} />
             )}
 
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length === 0 ? (
@@ -97,7 +104,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                             let content = '';
                             let title = '';
                             let type = 'item';
-                            const item = stored;
+                            const item = displayLibrary[index] ?? stored;
                             const tabId = item && typeof item === 'object' ? item.tabId : undefined;
                             
                             if (typeof item === 'string') {
@@ -170,7 +177,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                                        <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
                                           <div className="flex gap-2">
                                             <button 
-                                                onClick={() => removeFromLibrary(item)}
+                                                onClick={() => removeFromLibrary(stored)}
                                                 className="flex-1 py-2 bg-stone-50 text-stone-400 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-xs font-black transition-all border border-transparent hover:border-rose-100 flex items-center justify-center gap-2"
                                             >
                                                 <Trash2 className="w-3 h-3" />

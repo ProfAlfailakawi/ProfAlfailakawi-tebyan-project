@@ -1311,7 +1311,7 @@ const AppContent: React.FC = () => {
         </React.Suspense>
       )}
       {isInternalPage && (
-        <div className="fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[1000] flex items-center gap-2.5 pointer-events-auto">
+        <div className="tebyan-page-controls fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[1000] flex items-center gap-2.5 pointer-events-auto">
           <button
             type="button"
             onClick={(e) => {
@@ -1356,7 +1356,7 @@ const AppContent: React.FC = () => {
                 initial={{ opacity: 0, y: -8, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                className="fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
+                className="tebyan-page-help-popup fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
                 dir={language === "ar" ? "rtl" : "ltr"}
               >
                 <div className="flex items-center gap-2 mb-2 text-[#6E5F8E] border-b border-[#8E7AAE]/10 pb-2">

@@ -422,7 +422,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="text-[10px] font-black text-[#8E7AAE]">{language === 'ar' ? scene.eyebrow.ar : scene.eyebrow.en}</p>
-                              <p className="text-sm font-black text-[#182231] truncate">{language === 'ar' ? scene.title.ar : scene.title.en}</p>
+                              <p className="text-sm font-black text-[#182231] leading-snug md:truncate">{language === 'ar' ? scene.title.ar : scene.title.en}</p>
                             </div>
                           </button>
                         );

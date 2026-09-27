@@ -3217,7 +3217,7 @@ export const SmartGateway: React.FC<
             <span className="text-[12.5px] font-bold text-[#64788D]">
               {language === "ar" ? "أهلاً بعودتك — وقفنا عند:" : "Welcome back — we stopped at:"}
             </span>
-            <span className="max-w-[280px] truncate font-serif text-[13.5px] font-bold text-[#5E4D7A] md:max-w-[380px]">
+            <span className="max-w-full break-words md:max-w-[280px] md:truncate font-serif text-[13.5px] font-bold text-[#5E4D7A] md:max-w-[380px]">
               «{normalizeFollowUpQuery(lastInteraction.query)}»
             </span>
             <button
@@ -3520,10 +3520,10 @@ export const SmartGateway: React.FC<
                                         <CompIcon className="h-4 w-4" />
                                       </div>
                                       <div className="min-w-0 text-right">
-                                        <span className="block text-xs font-bold text-[#182231] truncate">
+                                        <span className="block text-xs font-bold text-[#182231] break-words md:truncate">
                                           {companion.label}
                                         </span>
-                                        <span className="block text-[10px] text-[#64788D] truncate">
+                                        <span className="block text-[10px] text-[#64788D] break-words md:truncate">
                                           {companion.desc}
                                         </span>
                                       </div>
@@ -3718,11 +3718,11 @@ export const SmartGateway: React.FC<
                                 className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[#8E7AAE]/50 hover:-translate-y-0.5 active:scale-[0.99]"
                               >
                                 <span className="min-w-0">
-                                  <span className="block text-sm font-black text-[#182231] leading-6 truncate">
+                                  <span className="block text-sm font-black text-[#182231] leading-6 break-words md:truncate">
                                     {door.label}
                                   </span>
                                   {door.desc && (
-                                    <span className="block text-[11.5px] font-bold text-[#64788D] leading-5 truncate">
+                                    <span className="block text-[11.5px] font-bold text-[#64788D] leading-5 break-words md:truncate">
                                       {door.desc}
                                     </span>
                                   )}
@@ -3857,11 +3857,11 @@ export const SmartGateway: React.FC<
                                 className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[#8E7AAE]/50 hover:-translate-y-0.5 active:scale-[0.99]"
                               >
                                 <span className="min-w-0">
-                                  <span className="block text-sm font-black text-[#182231] leading-6 truncate">
+                                  <span className="block text-sm font-black text-[#182231] leading-6 break-words md:truncate">
                                     {door.label}
                                   </span>
                                   {door.desc && (
-                                    <span className="block text-[11.5px] font-bold text-[#64788D] leading-5 truncate">
+                                    <span className="block text-[11.5px] font-bold text-[#64788D] leading-5 break-words md:truncate">
                                       {door.desc}
                                     </span>
                                   )}

@@ -918,8 +918,8 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
   header.fixed button,
   header.fixed [role="button"] {
-    min-width: 2.55rem !important;
-    min-height: 2.55rem !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
   header.fixed svg {
     width: 1.05rem !important;
@@ -2748,8 +2748,8 @@ body.tebyan-focus-mode .tebyan-result-document {
     top: 0.75rem !important;
     inset-inline-start: 0.75rem !important;
     left: auto !important;
-    width: 2.55rem !important;
-    height: 2.55rem !important;
+    width: 44px !important;
+    height: 44px !important;
     border-radius: 0.95rem !important;
     background: #182231 !important;
     color: #fff !important;
@@ -3639,8 +3639,8 @@ body:not(.zen-idle)::after {
   }
 
   .tebyan-floating-nav .tebyan-orb-mark {
-    width: 2.55rem !important;
-    height: 2.55rem !important;
+    width: 44px !important;
+    height: 44px !important;
     border-radius: 0.95rem !important;
     box-shadow: 0 8px 24px rgba(142, 122, 174, 0.16) !important;
   }
@@ -4343,5 +4343,114 @@ body:not(.zen-idle)::after {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==================================================================
+   Mobile pass (phones + small tablets, < 768px). Desktop is untouched.
+   - Legibility: 16px root (body ≥ 14px, labels ≥ 12px); 16px inputs so
+     iOS never zooms the page when the keyboard opens.
+   - Touch: every control ≥ 44×44.
+   - Header icons were shrunk to ~6px by padding applied to the <svg>
+     itself; the icon keeps its box now.
+   - The page back/help cluster moves from the top edge (where it covered
+     page titles) to the bottom, in thumb reach, above the safe area;
+     its help card opens as a bottom sheet above it.
+   ================================================================== */
+@media (max-width: 767px) {
+  html {
+    font-size: 16px !important;
+  }
+
+  html body :is(.text-xs, .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[11\.5px\]) {
+    font-size: max(12px, 0.75rem) !important;
+  }
+
+  html body :is(.text-sm, .text-\[12px\], .text-\[12\.5px\], .text-\[13px\], .text-\[13\.5px\]):is(p, li, dd, blockquote) {
+    font-size: max(14px, 0.875rem) !important;
+  }
+
+  html body :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select) {
+    font-size: 16px !important;
+  }
+
+  html body :is(button, [role="button"], [role="tab"], a[href], select, summary):not(.tebyan-tap-exempt) {
+    min-height: 44px;
+  }
+  html body :is(button, [role="button"], [role="tab"]):not(.tebyan-tap-exempt) {
+    min-width: 44px;
+  }
+
+  /* Header: icons keep their size; every header control is a 44px target. */
+  .tebyan-header-actions svg {
+    padding: 0 !important;
+    box-shadow: none !important;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+  .tebyan-header-actions button,
+  .tebyan-floating-nav > button,
+  .tebyan-floating-nav .tebyan-orb-mark {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  .tebyan-header-actions [role="status"] {
+    padding-block: 0 !important;
+  }
+  .tebyan-floating-nav {
+    transform: none !important;
+  }
+  .tebyan-floating-nav .tebyan-orb-mark svg {
+    width: 1.65rem !important;
+    height: 1.65rem !important;
+  }
+
+  /* Back + page help: bottom-left, thumb reach, clear of the home indicator. */
+  .tebyan-page-controls {
+    top: auto !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 14px) !important;
+    left: 14px !important;
+  }
+  .tebyan-page-controls .tebyan-page-help-button {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .tebyan-page-help-popup {
+    top: auto !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 74px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-height: min(62dvh, 520px) !important;
+  }
+
+  /* While typing, the keyboard owns the bottom edge: step the controls aside. */
+  body:has(:is(input:not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]):focus) .tebyan-page-controls {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Internal pages get room at the end so the controls never sit on content. */
+  main.tebyan-route-shell:not(.tebyan-route-home):not(.tebyan-route-discover) {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem) !important;
+  }
+}
+
+/* Tablets (768–1023px) keep the desktop layout but are still touch
+   devices: same 12px label floor and 44px touch targets as phones. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  html body :is(.text-xs, .text-\[9px\], .text-\[10px\], .text-\[11px\], .text-\[11\.5px\]) {
+    font-size: 12px !important;
+  }
+  html body :is(button, [role="button"], [role="tab"], a[href], select, summary):not(.tebyan-tap-exempt) {
+    min-height: 44px;
+  }
+  html body :is(button, [role="button"], [role="tab"]):not(.tebyan-tap-exempt) {
+    min-width: 44px;
+  }
+  .tebyan-header-actions button,
+  .tebyan-page-controls button {
+    min-width: 44px !important;
+    min-height: 44px !important;
   }
 }

@@ -5,15 +5,25 @@ import { cn } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { generatePredictiveRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { getDemoFixtures } from '../../data/demoFixtures';
 
 export const AnalyticsTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const { profile } = useAuth();
   
   const [logs, setLogs] = useState<{date: string, feeling: string, behavior: string}[]>(() => {
+    if (IS_DEMO_MODE) return getDemoFixtures(language).analyticsLogs;
     const saved = localStorage.getItem('tebyan_analytics_logs');
     return saved ? JSON.parse(saved) : [];
   });
   
+  // العرض: سجلّات النموذج تتبع لغة الواجهة، وما أضافه الزائر يبقى بعدها كما هو.
+  React.useEffect(() => {
+    if (!IS_DEMO_MODE) return;
+    const demo = getDemoFixtures(language).analyticsLogs;
+    setLogs(prev => [...demo, ...prev.slice(demo.length)]);
+  }, [language]);
+
   const [feeling, setFeeling] = useState('');
   const [behavior, setBehavior] = useState('');
   
@@ -32,7 +42,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
     if (!feeling || !behavior) return;
     const newLogs = [...logs, { date: new Date().toLocaleDateString(), feeling, behavior }];
     setLogs(newLogs);
-    localStorage.setItem('tebyan_analytics_logs', JSON.stringify(newLogs));
+    if (!IS_DEMO_MODE) localStorage.setItem('tebyan_analytics_logs', JSON.stringify(newLogs));
     setFeeling('');
     setBehavior('');
   };
@@ -53,8 +63,8 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
   };
 
   return (
-    <div className="w-full bg-white max-h-[85vh] overflow-y-auto rounded-[32px] p-8 shadow-sm border border-zinc-200 custom-scrollbar">
-      <div className="max-w-5xl mx-auto space-y-12 position-relative px-2">
+    <div className="w-full bg-white md:max-h-[85vh] md:overflow-y-auto rounded-[24px] md:rounded-[32px] p-4 md:p-8 shadow-sm border border-zinc-200 custom-scrollbar">
+      <div className="max-w-5xl mx-auto space-y-8 md:space-y-12 position-relative md:px-2">
         <TabHeader 
           icon={Radar}
           title={{ ar: 'الرادار الاستباقي', en: 'Predictive Radar' }}
@@ -141,7 +151,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                           { date: '2024-05-03', feeling: language === 'ar' ? 'مستفز' : 'Provocative', behavior: language === 'ar' ? 'تجاهل النداء المتكرر' : 'Ignored repeated calls' }
                         ];
                         setLogs(demoLogs);
-                        localStorage.setItem('tebyan_analytics_logs', JSON.stringify(demoLogs));
+                        if (!IS_DEMO_MODE) localStorage.setItem('tebyan_analytics_logs', JSON.stringify(demoLogs));
                       }}
                       className="px-4 bg-zinc-100 text-zinc-600 rounded-xl py-3 font-bold hover:bg-zinc-200 transition-colors"
                       title={language === 'ar' ? 'تحميل بيانات تجريبية' : 'Load Demo Data'}
