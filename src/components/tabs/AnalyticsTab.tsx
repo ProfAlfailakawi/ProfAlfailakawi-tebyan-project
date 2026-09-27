@@ -5,11 +5,14 @@ import { cn } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { generatePredictiveRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { DEMO_ANALYTICS_LOGS } from '../../data/demoFixtures';
 
 export const AnalyticsTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const { profile } = useAuth();
   
   const [logs, setLogs] = useState<{date: string, feeling: string, behavior: string}[]>(() => {
+    if (IS_DEMO_MODE) return DEMO_ANALYTICS_LOGS;
     const saved = localStorage.getItem('tebyan_analytics_logs');
     return saved ? JSON.parse(saved) : [];
   });
@@ -32,7 +35,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
     if (!feeling || !behavior) return;
     const newLogs = [...logs, { date: new Date().toLocaleDateString(), feeling, behavior }];
     setLogs(newLogs);
-    localStorage.setItem('tebyan_analytics_logs', JSON.stringify(newLogs));
+    if (!IS_DEMO_MODE) localStorage.setItem('tebyan_analytics_logs', JSON.stringify(newLogs));
     setFeeling('');
     setBehavior('');
   };
@@ -141,7 +144,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                           { date: '2024-05-03', feeling: language === 'ar' ? 'مستفز' : 'Provocative', behavior: language === 'ar' ? 'تجاهل النداء المتكرر' : 'Ignored repeated calls' }
                         ];
                         setLogs(demoLogs);
-                        localStorage.setItem('tebyan_analytics_logs', JSON.stringify(demoLogs));
+                        if (!IS_DEMO_MODE) localStorage.setItem('tebyan_analytics_logs', JSON.stringify(demoLogs));
                       }}
                       className="px-4 bg-zinc-100 text-zinc-600 rounded-xl py-3 font-bold hover:bg-zinc-200 transition-colors"
                       title={language === 'ar' ? 'تحميل بيانات تجريبية' : 'Load Demo Data'}

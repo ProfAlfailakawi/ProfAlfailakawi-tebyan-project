@@ -11,6 +11,8 @@ import { collection, onSnapshot, query, where, orderBy, limit, doc, Timestamp, g
 import { updateDoc } from '../../lib/firestoreWrites';
 import { db } from '../../lib/firebase';
 import { TabHeader } from '../TabHeader';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { DEMO_LOYALTY } from '../../data/demoFixtures';
 
 interface Customer {
   id: string;
@@ -38,9 +40,12 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [demoNotice, setDemoNotice] = useState(false);
 
   // Real-time listener for users
   useEffect(() => {
+    // العرض لا يقرأ قائمة المستخدمين الحقيقية؛ رصيد الزائر يأتي من بيانات العرض.
+    if (IS_DEMO_MODE) { setLoading(false); return; }
     // If not admin, we only care about ourselves, but we'll fetch all if admin
     const unsub = onSnapshot(collection(db, 'users'), (snap) => {
       const list = snap.docs.map(d => {
@@ -74,6 +79,9 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
   }, []);
 
   const myLoyaltyData = useMemo(() => {
+    if (IS_DEMO_MODE) {
+      return { id: 'demo-visitor', displayName: 'أنت', email: '', points: DEMO_LOYALTY.points, totalSpent: DEMO_LOYALTY.totalSpent, status: DEMO_LOYALTY.status } as any;
+    }
     return customers.find(c => c.id === user?.uid) || {
       id: user?.uid || '',
       displayName: user?.displayName || 'أنت',
@@ -150,9 +158,14 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       </div>
                    </div>
                 </div>
-                <button className="w-full mt-8 py-4 bg-zinc-900 text-white rounded-2xl font-black shadow-lg hover:bg-black transition-all">
+                <button onClick={IS_DEMO_MODE ? () => setDemoNotice(true) : undefined} className="w-full mt-8 py-4 bg-zinc-900 text-white rounded-2xl font-black shadow-lg hover:bg-black transition-all">
                     {language === 'ar' ? 'استبدال النقاط' : 'Redeem Points'}
                 </button>
+                {IS_DEMO_MODE && demoNotice && (
+                    <p className="mt-3 text-xs font-bold text-zinc-500 text-center" role="status">
+                        {language === 'ar' ? 'الاستبدال غير متاح في البيئة التجريبية — لا يكتب العرض أي بيانات.' : 'Redeeming is disabled in the demo — it writes no data.'}
+                    </p>
+                )}
             </div>
         </div>
 
@@ -163,10 +176,26 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                 {language === 'ar' ? 'تاريخ العمليات' : 'Points History'}
             </h3>
             <div className="bg-zinc-50 rounded-2xl border border-zinc-200 overflow-hidden">
+                {IS_DEMO_MODE ? (
+                  <ul className="divide-y divide-zinc-200">
+                    {DEMO_LOYALTY.history.map(h => (
+                      <li key={h.id} className="p-4 md:px-6 flex items-center justify-between gap-4 text-sm">
+                        <div className="min-w-0">
+                          <p className="font-black text-zinc-900">{h.label}</p>
+                          <p className="text-[10px] text-zinc-500 font-bold">{h.date}</p>
+                        </div>
+                        <span className={cn('font-black shrink-0', h.points >= 0 ? 'text-emerald-600' : 'text-rose-600')} dir="ltr">
+                          {h.points >= 0 ? `+${h.points}` : h.points}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
                 <div className="p-6 flex flex-col items-center justify-center text-zinc-400 text-sm italic font-medium gap-2">
                     <Sparkles className="w-6 h-6 opacity-20" />
                     <p>{language === 'ar' ? 'سيتم عرض تاريخ عمليات كسب واسترداد النقاط هنا لاحقاً.' : 'Points earning and redemption history will appear here.'}</p>
                 </div>
+                )}
             </div>
         </div>
       </div>

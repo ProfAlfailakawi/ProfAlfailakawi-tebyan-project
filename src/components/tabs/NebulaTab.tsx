@@ -4,6 +4,16 @@ import { Sparkles, Network, Globe, Maximize2, MousePointer2, ZoomIn, ZoomOut, In
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { cn } from '../../lib/utils';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { seedData } from '../../data/seedData';
+
+/* أفكار العرض في السديم: الإعجابات في بيانات البذور كبيرة (حتى ٤٥) والحجم يُشتق منها
+   خطياً، فتُضغط هنا إلى مدى الأفكار الحقيقية كي لا تبتلع الدوائرُ الخريطة. */
+const DEMO_NEBULA_SEEDS = seedData.map((s, i) => ({
+    ...s,
+    likes: Math.min(6, Math.round((s.likes || 0) / 8)),
+    timestamp: new Date(Date.UTC(2026, 8, 1 + (i % 26), 9 + (i % 10))).toISOString(),
+}));
 
 type IdeaNode = {
     id: string;
@@ -18,7 +28,7 @@ type IdeaNode = {
 };
 
 export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', onViewDetails: (nodeId: string) => void }) => {
-    const [ripples, setRipples] = useState<any[]>([]);
+    const [ripples, setRipples] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_NEBULA_SEEDS : []));
     const [selectedNode, setSelectedNode] = useState<IdeaNode | null>(null);
     const [zoom, setZoom] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768 ? 0.4 : 1);
     const [isCinematic, setIsCinematic] = useState(false);
@@ -38,7 +48,16 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
         const q = query(collection(db, 'ripples'), orderBy('timestamp', 'desc'));
         const unsubscribe = onSnapshot(q, (snapshot) => {
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // في العرض تظهر الأفكار النموذجية نفسها التي تعرضها قائمة الشبكة،
+            // فلا يبدو السديم فارغاً بجوار قائمةٍ مأهولة.
+            if (IS_DEMO_MODE && data.length <= 15) {
+                const ids = new Set(data.map(d => d.id));
+                setRipples([...data, ...DEMO_NEBULA_SEEDS.filter(s => !ids.has(s.id))]);
+                return;
+            }
             setRipples(data);
+        }, () => {
+            if (IS_DEMO_MODE) setRipples(DEMO_NEBULA_SEEDS);
         });
         return unsubscribe;
     }, []);

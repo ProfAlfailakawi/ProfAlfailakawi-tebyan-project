@@ -4,6 +4,8 @@ import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit, Lightbulb,
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { DEMO_SEARCH_HISTORY } from '../../data/demoFixtures';
 
 export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const [history, setHistory] = useState<string[]>([]);
@@ -13,6 +15,10 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (IS_DEMO_MODE) {
+      setHistory(DEMO_SEARCH_HISTORY);
+      return;
+    }
     const saved = localStorage.getItem('tebyan_search_history');
     if (saved) {
       try {
