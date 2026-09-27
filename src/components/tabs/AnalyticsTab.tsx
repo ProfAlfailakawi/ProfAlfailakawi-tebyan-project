@@ -6,17 +6,24 @@ import { useAuth } from '../AuthProvider';
 import { generatePredictiveRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
-import { DEMO_ANALYTICS_LOGS } from '../../data/demoFixtures';
+import { getDemoFixtures } from '../../data/demoFixtures';
 
 export const AnalyticsTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const { profile } = useAuth();
   
   const [logs, setLogs] = useState<{date: string, feeling: string, behavior: string}[]>(() => {
-    if (IS_DEMO_MODE) return DEMO_ANALYTICS_LOGS;
+    if (IS_DEMO_MODE) return getDemoFixtures(language).analyticsLogs;
     const saved = localStorage.getItem('tebyan_analytics_logs');
     return saved ? JSON.parse(saved) : [];
   });
   
+  // العرض: سجلّات النموذج تتبع لغة الواجهة، وما أضافه الزائر يبقى بعدها كما هو.
+  React.useEffect(() => {
+    if (!IS_DEMO_MODE) return;
+    const demo = getDemoFixtures(language).analyticsLogs;
+    setLogs(prev => [...demo, ...prev.slice(demo.length)]);
+  }, [language]);
+
   const [feeling, setFeeling] = useState('');
   const [behavior, setBehavior] = useState('');
   

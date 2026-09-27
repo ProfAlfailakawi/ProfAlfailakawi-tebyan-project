@@ -45,19 +45,12 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
     };
 
     useEffect(() => {
+        // العرض لا يشترك في «ripples» إطلاقاً: مشاركات الإنتاج الحية لا تختلط
+        // بالأفكار النموذجية ولا تحلّ محلها. البذور مُحمّلة سلفاً في الحالة الأولى.
+        if (IS_DEMO_MODE) return;
         const q = query(collection(db, 'ripples'), orderBy('timestamp', 'desc'));
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // في العرض تظهر الأفكار النموذجية نفسها التي تعرضها قائمة الشبكة،
-            // فلا يبدو السديم فارغاً بجوار قائمةٍ مأهولة.
-            if (IS_DEMO_MODE && data.length <= 15) {
-                const ids = new Set(data.map(d => d.id));
-                setRipples([...data, ...DEMO_NEBULA_SEEDS.filter(s => !ids.has(s.id))]);
-                return;
-            }
-            setRipples(data);
-        }, () => {
-            if (IS_DEMO_MODE) setRipples(DEMO_NEBULA_SEEDS);
+            setRipples(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         });
         return unsubscribe;
     }, []);

@@ -5,7 +5,7 @@ import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
-import { DEMO_SEARCH_HISTORY } from '../../data/demoFixtures';
+import { getDemoFixtures } from '../../data/demoFixtures';
 
 export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const [history, setHistory] = useState<string[]>([]);
@@ -16,7 +16,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
   useEffect(() => {
     if (IS_DEMO_MODE) {
-      setHistory(DEMO_SEARCH_HISTORY);
+      setHistory(getDemoFixtures(language).searchHistory);
       return;
     }
     const saved = localStorage.getItem('tebyan_search_history');
@@ -28,7 +28,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         }
       } catch (e) {}
     }
-  }, []);
+  }, [language]);
 
   const { nodes, edges } = useMemo(() => {
     const n: any[] = [];

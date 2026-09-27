@@ -12,7 +12,7 @@ import { updateDoc } from '../../lib/firestoreWrites';
 import { db } from '../../lib/firebase';
 import { TabHeader } from '../TabHeader';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
-import { DEMO_LOYALTY } from '../../data/demoFixtures';
+import { getDemoFixtures } from '../../data/demoFixtures';
 
 interface Customer {
   id: string;
@@ -80,7 +80,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
   const myLoyaltyData = useMemo(() => {
     if (IS_DEMO_MODE) {
-      return { id: 'demo-visitor', displayName: 'أنت', email: '', points: DEMO_LOYALTY.points, totalSpent: DEMO_LOYALTY.totalSpent, status: DEMO_LOYALTY.status } as any;
+      const demo = getDemoFixtures(language);
+      return { id: 'demo-visitor', displayName: demo.visitorName, email: '', points: demo.loyalty.points, totalSpent: demo.loyalty.totalSpent, status: demo.loyalty.status } as any;
     }
     return customers.find(c => c.id === user?.uid) || {
       id: user?.uid || '',
@@ -178,7 +179,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
             <div className="bg-zinc-50 rounded-2xl border border-zinc-200 overflow-hidden">
                 {IS_DEMO_MODE ? (
                   <ul className="divide-y divide-zinc-200">
-                    {DEMO_LOYALTY.history.map(h => (
+                    {getDemoFixtures(language).loyalty.history.map(h => (
                       <li key={h.id} className="p-4 md:px-6 flex items-center justify-between gap-4 text-sm">
                         <div className="min-w-0">
                           <p className="font-black text-zinc-900">{h.label}</p>
