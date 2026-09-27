@@ -102,7 +102,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
               ? "bg-white text-[#64788D] cursor-not-allowed" 
               : isShadowCouncil
                 ? "bg-[#6E5B91] hover:bg-[#6E5B91] text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
-                : "bg-white text-black hover:bg-zinc-100 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
+                : "bg-[#6E5B91] text-white hover:bg-[#5F4E7F] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
           )}
         >
           {isLoading ? (
