@@ -310,7 +310,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         {/* Quick Tab */}
         {activeTab === 'quick' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
-            <div className="dna-surface p-4 md:p-6 space-y-5">
+            <div className="space-y-4">
               <DnaStatusHeader
                 icon={<ShieldCheck />}
                 title="جواب مُراجَع ومعتمد"
@@ -339,10 +339,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               </DnaStatusHeader>
               <DnaHubMap
                 ariaLabel="خريطة الجواب"
-                center={{ icon: <MessageCircleQuestion />, label: question.question || question.title, ariaLabel: question.question || question.title }}
+                center={{ icon: <MessageCircleQuestion />, ariaLabel: question.question || question.title }}
                 count={{ value: question.riskLevel === 'high' ? 'حذر' : 'متزن', icon: <Gauge className="w-3.5 h-3.5" />, label: 'درجة الحسم' }}
                 overline="وثيقة قول فصل"
-                title={question.quickSummary}
                 animate={false}
                 nodes={answerNodes}
               />
