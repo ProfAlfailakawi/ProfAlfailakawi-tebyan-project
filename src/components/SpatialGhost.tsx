@@ -34,7 +34,7 @@ export const SpatialGhost = ({
       >
         {!isHovered && (
           <div className="w-8 h-8 flex items-center justify-center">
-            <Infinity className="w-4 h-4 text-zinc-400 animate-pulse" />
+            <Infinity className="w-4 h-4 text-zinc-400" />
           </div>
         )}
         

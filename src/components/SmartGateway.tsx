@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   LayoutGrid,
   RefreshCw,
+  Coffee,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import {
@@ -1222,7 +1223,7 @@ export const SmartGateway: React.FC<
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
-            <span>، هل القهوة جاهزة لنكمل؟ ☕</span>
+            <span>، هل القهوة جاهزة لنكمل؟</span><Coffee className="inline w-4 h-4 text-[#6E5B91] align-[-2px]" aria-hidden="true" />
           </div>
         );
         enSub = (
@@ -1236,7 +1237,7 @@ export const SmartGateway: React.FC<
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
-            <span>, is your coffee ready to continue? ☕</span>
+            <span>, is your coffee ready to continue?</span><Coffee className="inline w-4 h-4 text-[#6E5B91] align-[-2px]" aria-hidden="true" />
           </div>
         );
         dynamicSuggests = [
@@ -1330,7 +1331,7 @@ export const SmartGateway: React.FC<
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
-            <span>، هل نكمل الاستكشاف؟ ☕</span>
+            <span>، هل نكمل الاستكشاف؟</span><Coffee className="inline w-4 h-4 text-[#6E5B91] align-[-2px]" aria-hidden="true" />
           </div>
         );
         enSub = (
@@ -1344,7 +1345,7 @@ export const SmartGateway: React.FC<
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
-            <span>, shall we continue exploring? ☕</span>
+            <span>, shall we continue exploring?</span><Coffee className="inline w-4 h-4 text-[#6E5B91] align-[-2px]" aria-hidden="true" />
           </div>
         );
         dynamicSuggests = [
@@ -1436,7 +1437,7 @@ export const SmartGateway: React.FC<
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
-            <span>.. هل كان يوماً مثمراً؟ 🌟</span>
+            <span>.. هل كان يوماً مثمراً؟</span><Sparkles className="inline w-4 h-4 text-[#6E5B91] align-[-2px]" aria-hidden="true" />
           </div>
         );
         enSub = (
@@ -1450,7 +1451,7 @@ export const SmartGateway: React.FC<
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
-            <span>, how was your day? 🌟</span>
+            <span>, how was your day?</span><Sparkles className="inline w-4 h-4 text-[#6E5B91] align-[-2px]" aria-hidden="true" />
           </div>
         );
         dynamicSuggests = [
@@ -3232,7 +3233,7 @@ export const SmartGateway: React.FC<
               }}
               className="rounded-full bg-[#8E7AAE] px-4 py-1.5 text-[12px] font-bold text-white transition-transform active:scale-95"
             >
-              {language === "ar" ? "نكمل؟ ☕" : "Continue? ☕"}
+              <span className="inline-flex items-center gap-1.5"><Coffee className="w-3.5 h-3.5" aria-hidden="true" />{language === "ar" ? "نكمل؟" : "Continue?"}</span>
             </button>
             <button
               type="button"
@@ -3243,7 +3244,7 @@ export const SmartGateway: React.FC<
               aria-label={language === "ar" ? "إخفاء" : "Dismiss"}
               className="text-[12px] font-bold text-[#A8A29B] transition-colors hover:text-[#64788D]"
             >
-              ✕
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
           </motion.div>
         )}
@@ -3262,7 +3263,7 @@ export const SmartGateway: React.FC<
           >
             <div className="tebyan-search-stage w-full relative flex flex-col items-center mt-2 mb-5 group">
               {isThinking && (
-                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 animate-pulse pointer-events-none transition-colors duration-1000" />
+                <div className="absolute inset-0 bg-mood-glow blur-[100px] rounded-full scale-150 pointer-events-none transition-colors duration-1000" />
               )}
 
               {!hasSearched && !isThinking && (

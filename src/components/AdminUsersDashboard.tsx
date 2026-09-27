@@ -4,7 +4,7 @@ import { updateDoc, deleteDoc, setDoc } from '../lib/firestoreWrites';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
-import { Users, Trash2, Edit2, Shield, X, KeyRound, Save, Activity, FileText, Ban, CheckCircle, Award } from 'lucide-react';
+import { Users, Trash2, Edit2, Shield, X, KeyRound, Save, Activity, FileText, Ban, CheckCircle, Award, Lightbulb } from 'lucide-react';
 
 export default function AdminUsersDashboard() {
   const { profile, user, loading: authLoading } = useAuth();
@@ -403,7 +403,7 @@ export default function AdminUsersDashboard() {
             {/* Answer to the client question */}
             <div className="mt-4 bg-amber-50 border border-amber-100 rounded-2xl p-4 md:p-5 text-right">
                <h4 className="font-black text-amber-900 mb-2 flex items-center gap-2">
-                 💡 إجابة على سؤالك
+                 <Lightbulb className="w-4 h-4" aria-hidden="true" /> إجابة على سؤالك
                </h4>
                <p className="text-amber-800 text-sm font-medium leading-relaxed">
                  بخصوص سؤالك: "هل تنصح الرد بالإيميل عليه في نفس المكان كذلك أو عن طريق الإيميل الشخصي؟"

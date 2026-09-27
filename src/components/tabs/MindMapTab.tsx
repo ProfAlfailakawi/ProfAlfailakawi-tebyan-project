@@ -67,7 +67,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
         onClose={() => handleTabChange('discover', '', true)}
       />
       
-      <div className="bg-white/60 backdrop-blur-2xl min-h-[60vh] rounded-[32px] overflow-hidden relative border border-white/40 shadow-sm p-8 md:p-12">
+      <div className="bg-white/60 backdrop-blur-2xl min-h-[60vh] rounded-[32px] overflow-hidden relative border border-[#182231]/10 shadow-sm p-8 md:p-12">
         <div className="max-w-4xl mx-auto space-y-12">
 
         <form onSubmit={(e) => { e.preventDefault(); handleGenerate(); }} className="relative z-10 flex flex-col md:flex-row gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -77,14 +77,14 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder={language === 'ar' ? 'مثال: التنمر المدرسي، تعزيز الثقة بالنفس، صعوبات التعلم...' : 'e.g. School Bullying, Self-confidence...'}
-              className="w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 px-6 text-lg font-bold text-black placeholder:text-zinc-400 outline-none focus:border-black focus:shadow-lg transition-all"
+              className="w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 px-6 text-lg font-bold text-black placeholder:text-[#64788D] outline-none focus:border-black focus:shadow-lg transition-all"
             />
-            <Brain className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-300 ${language === 'ar' ? 'left-6' : 'right-6'}`} />
+            <Brain className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 text-[#182231] ${language === 'ar' ? 'left-6' : 'right-6'}`} />
           </div>
           <button
             type="submit"
             disabled={isGenerating || !topic.trim()}
-            className="bg-black hover:bg-zinc-800 text-white rounded-[20px] px-8 py-4 font-bold text-lg flex items-center justify-center gap-3 transition-colors disabled:opacity-50 shrink-0"
+            className="bg-[#6E5B91] hover:bg-[#5F4E7F] text-white rounded-[20px] px-8 py-4 font-bold text-lg flex items-center justify-center gap-3 transition-colors disabled:opacity-50 shrink-0"
           >
             {isGenerating ? <TebyanButtonLoader className="text-current" /> : <Sparkles className="w-6 h-6" />}
             {language === 'ar' ? 'توليد الخريطة' : 'Generate Map'}
@@ -95,7 +95,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
         {isGenerating && (
           <div className="py-20 flex flex-col items-center justify-center">
             <TebyanLoader size={48} label={language === 'ar' ? 'جاري بناء الخريطة' : 'Building the map'} />
-            <p className="mt-6 text-zinc-500 font-bold animate-pulse text-lg">
+            <p className="mt-6 text-[#64788D] font-bold animate-pulse text-lg">
               {language === 'ar' ? 'جاري فك تشفير الفكرة وهندسة الخريطة...' : 'Decoding the concept and engineering the map...'}
             </p>
           </div>
@@ -106,24 +106,22 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
             id="mindmap-results"
             initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            className="bg-black border border-white/10 rounded-[40px] p-8 md:p-14 shadow-[0_20px_80px_rgba(0,0,0,0.5)] relative overflow-hidden"
+            className="bg-white border border-[#182231]/10 rounded-[40px] p-8 md:p-14 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden"
             dir={language === 'ar' ? 'rtl' : 'ltr'}
           >
             {/* Subtle glow effect */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none translate-y-1/2 -translate-x-1/2" />
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-10 pb-8 border-b border-white/10">
+              <div className="flex items-center justify-between mb-10 pb-8 border-b border-[#182231]/10">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
-                    <Brain className="w-7 h-7 text-white" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#F8F5EF] flex items-center justify-center">
+                    <Brain className="w-7 h-7 text-[#182231]" />
                   </div>
                   <div>
-                    <h3 className="text-3xl font-black text-white m-0 tracking-tight">
+                    <h3 className="text-3xl font-black text-[#182231] m-0 tracking-tight">
                       {language === 'ar' ? 'التحليل الهيكلي' : 'Structural Analysis'}
                     </h3>
-                    <p className="text-zinc-500 text-sm font-bold mt-1">
+                    <p className="text-[#64788D] text-sm font-bold mt-1">
                       {language === 'ar' ? 'رؤية عميقة مسبارة' : 'In-depth probing vision'}
                     </p>
                   </div>
@@ -137,7 +135,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
                     a.download = `mindmap-${topic.slice(0, 20)}.md`;
                     a.click();
                   }}
-                  className="p-3 bg-white/5 hover:bg-white/10 text-white rounded-full transition-colors group"
+                  className="p-3 bg-[#F8F5EF] hover:bg-[#F8F5EF] text-[#182231] rounded-full transition-colors group"
                 >
                   <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>

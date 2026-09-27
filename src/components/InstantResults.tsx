@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, ChevronLeft } from 'lucide-react';
+import { Zap, ChevronLeft, Check } from 'lucide-react';
 import type { InstantResult } from '../services/instantSearch';
 
 interface InstantResultsProps {
@@ -122,7 +122,7 @@ export const InstantResults: React.FC<InstantResultsProps> = ({
                       </span>
                     </div>
                     <p className="text-[12.5px] font-bold leading-relaxed text-[#2C3A4B]">
-                      <span className="text-[#3F9E6A]">{isAr ? '✓ قل: ' : '✓ Say: '}</span>
+                      <span className="text-[#3F9E6A] inline-flex items-center gap-1"><Check className="w-3.5 h-3.5" aria-hidden="true" />{isAr ? 'قل: ' : 'Say: '}</span>
                       {quick.sayThis}
                     </p>
                     {typeof quick.doThisNow === 'string' && quick.doThisNow.trim() && (

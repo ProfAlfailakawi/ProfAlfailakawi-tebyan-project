@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Command, RefreshCw, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Command, RefreshCw, Bookmark, BookmarkCheck, History, FlaskConical, Network } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import { useAuth } from '../AuthProvider';
 import { getGenderWord } from '../../utils/genderHelper';
@@ -178,16 +178,16 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             </div>
             {/* Fluid Bridges */}
             <div className="flex flex-wrap gap-2 mt-4">
-                 <button onClick={() => handleTabChange('timemachine', input)} className="px-4 py-2 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
-                     <Command className="w-4 h-4" />
+                 <button onClick={() => handleTabChange('timemachine', input)} className="dna-btn text-sm font-bold">
+                     <History className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
                      {language === 'ar' ? getGenderWord(userGender, 'خذ هذه الفكرة لآلة الزمن', 'خذي هذه الفكرة لآلة الزمن', 'خذ هذه الفكرة لآلة الزمن') : 'Take to Time Machine'}
                  </button>
-                 <button onClick={() => handleTabChange('simulation', input)} className="px-4 py-2 bg-[#EEF4F1] text-emerald-700 hover:bg-emerald-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
-                     <Command className="w-4 h-4" />
+                 <button onClick={() => handleTabChange('simulation', input)} className="dna-btn text-sm font-bold">
+                     <FlaskConical className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
                      {language === 'ar' ? getGenderWord(userGender, 'اختبرها في المحاكي', 'اختبريها في المحاكي', 'اختبرها في المحاكي') : 'Test in Simulator'}
                  </button>
-                 <button onClick={() => handleTabChange('mindmap', input)} className="px-4 py-2 bg-[#F6F0E3] text-amber-700 hover:bg-amber-100 rounded-lg text-sm font-bold transition-all shadow-sm flex items-center gap-2">
-                     <Command className="w-4 h-4" />
+                 <button onClick={() => handleTabChange('mindmap', input)} className="dna-btn text-sm font-bold">
+                     <Network className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
                      {language === 'ar' ? getGenderWord(userGender, 'فككها في الخريطة الذهنية', 'فككيها في الخريطة الذهنية', 'فككها في الخريطة الذهنية') : 'Breakdown in Mindmap'}
                  </button>
             </div>

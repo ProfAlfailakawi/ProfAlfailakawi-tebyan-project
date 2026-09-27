@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ScrollText, Sparkles, Wand2, RefreshCw, Eye, X } from 'lucide-react';
+import { ScrollText, Sparkles, Wand2, RefreshCw, Eye, X, Mail } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
 import ReactMarkdown from 'react-markdown';
@@ -127,14 +127,14 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
 
     // Draw dusty layer
     ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = '#bfa580'; // Sandy dust color
+    ctx.fillStyle = '#E9E3EF'; // Soft lilac veil
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Add noise/texture to dust
     const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imgData.data;
     for (let i = 0; i < data.length; i += 4) {
-      const noise = Math.random() * 40 - 20;
+      const noise = Math.random() * 12 - 6;
       data[i] = Math.max(0, Math.min(255, data[i] + noise));
       data[i+1] = Math.max(0, Math.min(255, data[i+1] + noise));
       data[i+2] = Math.max(0, Math.min(255, data[i+2] + noise));
@@ -142,8 +142,8 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
     ctx.putImageData(imgData, 0, 0);
 
     // Islamic geometric pattern faintly on dust
-    ctx.strokeStyle = 'rgba(100, 80, 50, 0.4)';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(110, 91, 145, 0.22)';
+    ctx.lineWidth = 1.2;
     for (let i = 0; i < canvas.width; i += 100) {
       for (let j = 0; j < canvas.height; j += 100) {
         ctx.beginPath();
@@ -293,9 +293,9 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="عن ماذا تبحث الحكمة؟"
-            className="flex-1 bg-white/50 border border-amber-900/20 rounded-xl px-4 py-3 placeholder-amber-900/40 text-amber-950 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="flex-1 bg-white/50 border border-[#182231]/10 rounded-xl px-4 py-3 placeholder-[#8A97A6] text-[#182231] font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
          />
-         <button type="submit" disabled={isLoading} className="bg-amber-900 hover:bg-amber-800 text-amber-50 px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50">
+         <button type="submit" disabled={isLoading} className="bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50">
            {isLoading ? <RefreshCw className="w-5 h-5 animate-spin"/> : <Sparkles className="w-5 h-5" />}
            <span>استنبط</span>
          </button>
@@ -304,26 +304,25 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
       {/* Manuscript Container */}
       <div className="flex-1 w-full relative group">
           {isLoading ? (
-             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-[#e9dbce] rounded-lg shadow-inner border border-[#d3ba9f]">
-                <RefreshCw className="w-12 h-12 text-amber-900/50 animate-spin mb-4" />
-                <p className="text-amber-900 font-bold animate-pulse text-lg" style={{ fontFamily: 'Amiri, serif' }}>يتم استحضار الأرواح المعرفية...</p>
+             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-white rounded-[28px] border border-[#182231]/10">
+                <RefreshCw className="w-12 h-12 text-[#6E5B91] animate-spin mb-4" />
+                <p className="text-[#182231] font-bold animate-pulse text-lg" style={{ fontFamily: 'Amiri, serif' }}>يتم استحضار الأرواح المعرفية...</p>
              </div>
           ) : (
              <div 
                ref={containerRef}
-               className="relative w-full h-full flex flex-col items-center p-8 overflow-hidden rounded-lg custom-scrollbar overflow-y-auto"
+               className="relative w-full h-full flex flex-col items-center p-8 overflow-hidden rounded-[28px] custom-scrollbar overflow-y-auto"
                style={{
-                   backgroundColor: '#e9dbce', // Parchment color
-                   backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23d3ba9f' stroke-width='1' fill='none' d='M0 50 l50 -50 l50 50 l-50 50 z M25 50 l25 -25 l25 25 l-25 25 z'/%3E%3C/svg%3E")`,
-                   boxShadow: 'inset 0 0 50px rgba(100,60,20,0.5), 0 10px 30px rgba(0,0,0,0.1)'
+                   backgroundColor: '#FFFFFF',
+                   boxShadow: '0 1px 2px rgba(24,34,49,0.04), 0 12px 30px -18px rgba(24,34,49,0.2)', border: '1px solid rgba(24,34,49,0.08)'
                }}
              >
                 {/* The Revealed Content */}
                 <div className="relative z-0 max-w-2xl mx-auto py-12 text-center pointer-events-auto">
                     <ReactMarkdown 
-                       className="markdown-body text-xl md:text-3xl leading-relaxed font-bold text-[#2a1e12]"
+                       className="markdown-body text-xl md:text-3xl leading-relaxed font-bold text-[#182231]"
                        components={{
-                           p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, Aref Ruqaa, serif', textShadow: '0 1px 1px rgba(255,255,255,0.5)' }} className="mb-6" {...props} />
+                           p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, Aref Ruqaa, serif', }} className="mb-6" {...props} />
                        }}
                     >
                         {manuscriptContent || ''}
@@ -331,22 +330,20 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
                     
                     {isRevealed && (
                       <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="mt-12 flex flex-col items-center gap-6">
-                          <Wand2 className="w-8 h-8 text-amber-800 opacity-50" />
+                          <Wand2 className="w-8 h-8 text-[#6E5B91] opacity-50" />
                           <div className="flex flex-wrap gap-4 justify-center">
                             <button
                                onClick={() => setIsZenMode(true)}
-                               className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-full shadow-lg hover:bg-zinc-800 transition-all font-bold group"
+                               className="flex items-center gap-2 bg-[#6E5B91] text-white px-6 py-3 rounded-full hover:bg-[#5F4E7F] transition-all font-bold group"
                             >
                                <Eye className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                {language === 'ar' ? 'وضع التأمل العميق' : 'Zen Reading Mode'}
                             </button>
                             <a 
                                href={`mailto:?subject=حكمة بليغة من مخطوطة الحقيقة الضائعة&body=${encodeURIComponent(manuscriptContent || '')}`}
-                               className="flex items-center gap-2 bg-amber-900 text-amber-50 px-6 py-3 rounded-full shadow-lg hover:bg-amber-800 transition-all font-bold group"
+                               className="flex items-center gap-2 bg-white text-[#6E5B91] border border-[#6E5B91]/30 px-6 py-3 rounded-full hover:bg-[#EFEAF6] transition-all font-bold group"
                             >
-                               <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                               </svg>
+                               <Mail className="w-5 h-5 group-hover:-translate-y-1 transition-transform" aria-hidden="true" />
                                إرسال إلى بريدي
                             </a>
                           </div>
@@ -381,19 +378,19 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-black/95 backdrop-blur-3xl overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-[#F8F5EF] overflow-y-auto"
           >
             <button
               onClick={() => setIsZenMode(false)}
-              className="fixed top-8 right-8 z-50 p-4 text-white/50 hover:text-white transition-colors rounded-full hover:bg-white/10"
+              className="fixed top-8 right-8 z-50 p-4 text-[#64788D] hover:text-[#182231] transition-colors rounded-full hover:bg-white"
             >
               <X className="w-8 h-8" />
             </button>
             <div className="max-w-4xl mx-auto py-20 text-center">
               <ReactMarkdown 
-                 className="markdown-body text-2xl md:text-5xl leading-loose font-bold text-white/90 drop-shadow-2xl"
+                 className="markdown-body text-2xl md:text-5xl leading-loose font-bold text-[#182231]"
                  components={{
-                     p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, auto', lineHeight: '2.5' }} className="mb-12 drop-shadow-lg opacity-80" {...props} />
+                     p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, auto', lineHeight: '2.5' }} className="mb-12" {...props} />
                  }}
               >
                   {manuscriptContent || ''}

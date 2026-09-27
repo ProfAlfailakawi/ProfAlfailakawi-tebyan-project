@@ -402,12 +402,6 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           onClick={() => closeFullDashboardAndGo('ar')}
           className="tebyan-glass-card tebyan-tool-tile group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[#8E7AAE]/18 active:scale-[0.98] transition-all"
         >
-           <motion.div 
-             animate={{ opacity: [0.1, 0.4, 0.1], scale: [1, 1.5, 1], rotate: [0, 90, 0] }} 
-             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-             className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4"
-           />
-           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
              <div className="w-16 h-16 bg-white/80 backdrop-blur-xl text-[#6E5F8E] rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-[#F1EEF4] group-hover:text-[#6E5F8E] transition-all duration-500 border border-white/20">
                <Box className="w-8 h-8" />
@@ -430,15 +424,10 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             onClick={() => closeFullDashboardAndGo(tab.id)}
             className="tebyan-glass-card tebyan-tool-tile group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[#F7F5F2] via-[#EEF2F6] to-[#F1EEF4] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[#8FA9C7]/18 active:scale-[0.98] transition-all"
           >
-             <motion.div 
-               animate={{ opacity: [0.1, 0.3, 0.1], scale: [1, 1.2, 1] }} 
-               transition={{ duration: 5, repeat: Infinity }}
-               className="absolute top-0 right-0 w-64 h-64 md:w-80 md:h-80 bg-amber-200/20 rounded-full blur-[80px] md:blur-[100px] -translate-x-1/4 -translate-y-1/4"
-             />
              <div className="relative z-10 h-full flex flex-col justify-between">
                 <div>
                    <div className="bg-white text-[#6E5F8E] w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
-                      <tab.icon className="w-7 h-7 md:w-11 md:h-11 animate-pulse" />
+                      <tab.icon className="w-7 h-7 md:w-11 md:h-11" />
                    </div>
                    <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
                       {language === 'ar' ? 'البوصلة النوعية' : 'THE CORE EDGE'}

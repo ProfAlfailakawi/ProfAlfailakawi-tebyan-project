@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
+import './components/dna/dna-theme.css';
 import { installAppUpdate } from './lib/app-update';
 
 import { AuthProvider } from './components/AuthProvider';

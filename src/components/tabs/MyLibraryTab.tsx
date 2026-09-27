@@ -95,7 +95,6 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                     </div>
                     
                     {/* Dark/Warm lighting effect for wall */}
-                    <div className="absolute inset-0 bg-stone-100 pointer-events-none -z-10 bg-[url('https://www.transparenttextures.com/patterns/concrete-wall.png')] opacity-30"></div>
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
 

@@ -1438,7 +1438,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   main
-    [class*="text-white"]:not([class*="bg-[#8E7AAE]"]):not(
+    [class*="text-white"]:not([class*="bg-[#8E7AAE]"]):not([class*="bg-[#6E5B91]"]):not(
       [class*="bg-rose"]
     ):not([class*="bg-emerald"]):not([class*="bg-amber"]):not(
       [class*="bg-blue"]

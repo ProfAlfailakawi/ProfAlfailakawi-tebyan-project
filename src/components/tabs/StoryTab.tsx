@@ -48,35 +48,34 @@ export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange 
         onBack={() => handleTabChange('discover', '')}
         onClose={() => handleTabChange('discover', '', true)}
       />
-      <div className="bg-gradient-to-br from-indigo-900 to-black text-white rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-[120px] opacity-10"></div>
+      <div className="bg-white text-[#182231] rounded-[32px] p-8 md:p-12 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden">
         
         <div className="relative z-10 flex flex-col md:flex-row gap-12">
           <div className="w-full md:w-1/3 space-y-6">
             <div className="space-y-4">
               <div>
-                <label className="block text-indigo-300 text-sm font-bold mb-2">{language === 'ar' ? 'موضوع القصة' : 'Story Topic'}</label>
+                <label className="block text-[#6E5B91] text-sm font-bold mb-2">{language === 'ar' ? 'موضوع القصة' : 'Story Topic'}</label>
                 <input 
                   value={topic}
                   onChange={e => setTopic(e.target.value)}
                   placeholder={language === 'ar' ? 'مثال: التنمر في المدرسة' : 'e.g. Bullying at school'}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-[#F8F5EF] border border-[#182231]/10 rounded-xl px-5 py-4 text-[#182231] font-bold outline-none focus:border-[#6E5B91]/30 transition-colors"
                 />
               </div>
               <div>
-                <label className="block text-indigo-300 text-sm font-bold mb-2">{language === 'ar' ? 'القيمة المطلوبة / تفاصيل' : 'Moral / Details'}</label>
+                <label className="block text-[#6E5B91] text-sm font-bold mb-2">{language === 'ar' ? 'القيمة المطلوبة / تفاصيل' : 'Moral / Details'}</label>
                 <textarea 
                   value={details}
                   onChange={e => setDetails(e.target.value)}
                   placeholder={language === 'ar' ? 'مثال: أريد أن يتعلم أن الكلمة الطيبة صدقة.' : 'e.g. I want them to learn that kind words matter.'}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none focus:border-indigo-500 transition-colors h-32 resize-none"
+                  className="w-full bg-[#F8F5EF] border border-[#182231]/10 rounded-xl px-5 py-4 text-[#182231] font-bold outline-none focus:border-[#6E5B91]/30 transition-colors h-32 resize-none"
                 />
               </div>
               
               <button 
                 onClick={handleGenerate}
                 disabled={isLoading || !topic.trim()}
-                className="w-full py-4 bg-indigo-500 text-white hover:bg-indigo-600 rounded-xl font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-4 bg-[#6E5B91] text-white hover:bg-[#6E5B91] rounded-xl font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : <Wand2 className="w-6 h-6" />}
                 {language === 'ar' ? 'انسج القصة' : 'Weave Story'}
@@ -85,9 +84,9 @@ export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange 
             {error && <div className="text-rose-400 font-bold mt-2">{error}</div>}
           </div>
 
-          <div className="w-full md:w-2/3 bg-white/5 border border-white/10 rounded-[24px] p-8 min-h-[400px]">
+          <div className="w-full md:w-2/3 bg-[#F8F5EF] border border-[#182231]/10 rounded-[24px] p-8 min-h-[400px]">
             {isLoading ? (
-              <div className="h-full flex items-center justify-center flex-col gap-4 text-indigo-300">
+              <div className="h-full flex items-center justify-center flex-col gap-4 text-[#6E5B91]">
                 <Sparkles className="w-12 h-12 animate-pulse" />
                 <span className="font-bold">{language === 'ar' ? 'الخيال ينسج خيوطه...' : 'Weaving magic...'}</span>
               </div>
@@ -96,7 +95,7 @@ export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange 
                 <Markdown>{story}</Markdown>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center flex-col gap-4 text-white/20">
+              <div className="h-full flex items-center justify-center flex-col gap-4 text-[#465568]">
                 <BookOpen className="w-20 h-20" />
                 <span className="font-bold text-xl">{language === 'ar' ? 'الصفحة البيضاء بانتظارك' : 'The blank page awaits'}</span>
               </div>

@@ -80,7 +80,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                     transition={{ type: 'spring', damping: 15, stiffness: 80 }}
                     className="relative group"
                 >
-                    <div className="absolute inset-0 bg-mood-primary/30 rounded-full blur-3xl group-hover:bg-mood-primary/40 transition-all duration-1000 animate-pulse" />
+                    <div className="absolute inset-0 bg-mood-primary/30 rounded-full blur-3xl group-hover:bg-mood-primary/40 transition-all duration-1000" />
                     <div className="relative w-24 h-24 bg-mood-primary/10 rounded-full flex items-center justify-center text-mood-primary border border-mood-primary/20 backdrop-blur-2xl shadow-[0_0_50px_rgba(var(--mood-primary),0.3)]">
                         <Anchor className="w-10 h-10 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
                     </div>

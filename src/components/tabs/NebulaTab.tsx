@@ -112,8 +112,8 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
         <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "fixed inset-0 z-50 h-screen bg-black rounded-none" : "h-[68vh] md:h-[70vh] bg-black rounded-[24px] md:rounded-[40px] border border-zinc-800")}>
             {/* Nebula Background */}
             <div className={cn("absolute inset-0 pointer-events-none transition-opacity duration-1000", isCinematic ? "opacity-20" : "opacity-40")}>
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-[150px] animate-pulse" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500 rounded-full blur-[150px] animate-pulse delay-1000" />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-[150px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500 rounded-full blur-[150px]" />
             </div>
 
             {/* Instruction Overlay */}

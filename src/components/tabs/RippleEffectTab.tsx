@@ -221,7 +221,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                 <button onClick={() => {
                                     if (!auth.currentUser) {
                                         setToast({ 
-                                            message: language === 'ar' ? '🚀 سجل دخولك الآن لتنضم لعائلتنا وتساهم بتطوير الأفكار!' : '🚀 Log in now to join our family and help evolve ideas!', 
+                                            message: language === 'ar' ? 'سجل دخولك الآن لتنضم لعائلتنا وتساهم بتطوير الأفكار!' : 'Log in now to join our family and help evolve ideas!', 
                                             type: 'error' 
                                         });
                                         return;
@@ -240,7 +240,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                 <button onClick={() => {
                                     if (!auth.currentUser) {
                                         setToast({ 
-                                            message: language === 'ar' ? '💡 الأفكار العظيمة تبدأ بتسجيل الدخول! انضم إلينا لتطوير هذه الفكرة.' : '💡 Great ideas start with a login! Join us to evolve this idea.', 
+                                            message: language === 'ar' ? 'الأفكار العظيمة تبدأ بتسجيل الدخول! انضم إلينا لتطوير هذه الفكرة.' : 'Great ideas start with a login! Join us to evolve this idea.', 
                                             type: 'error' 
                                         });
                                         return;
@@ -266,7 +266,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                         
                                         navigator.clipboard.writeText(shareUrl).then(() => {
                                              setToast({ 
-                                                message: language === 'ar' ? '✅ تم نسخ الرابط بنجاح.. انشر الإلهام!' : '✅ Link copied successfully.. Spread the inspiration!', 
+                                                message: language === 'ar' ? 'تم نسخ الرابط بنجاح.. انشر الإلهام!' : 'Link copied successfully.. Spread the inspiration!', 
                                                 type: 'success' 
                                             });
                                         }).catch(() => {
@@ -278,7 +278,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                              document.execCommand('copy');
                                              document.body.removeChild(input);
                                              setToast({ 
-                                                message: language === 'ar' ? '✅ تم نسخ الرابط!' : '✅ Link copied!', 
+                                                message: language === 'ar' ? 'تم نسخ الرابط!' : 'Link copied!', 
                                                 type: 'success' 
                                             });
                                         });
@@ -695,7 +695,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
     const handleDropIdea = async () => {
         if (!auth.currentUser) {
             setToast({ 
-                message: language === 'ar' ? '🚀 رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' : '🚀 A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.', 
+                message: language === 'ar' ? 'رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' : 'A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.', 
                 type: 'error' 
             });
             return;
@@ -931,8 +931,8 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             </div>
                             <p className="text-sm font-bold flex-1">
                                 {language === 'ar' 
-                                    ? '🚀 رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' 
-                                    : '🚀 A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.'}
+                                    ? 'رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' 
+                                    : 'A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.'}
                             </p>
                         </motion.div>
                     )}

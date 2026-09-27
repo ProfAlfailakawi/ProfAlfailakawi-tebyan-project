@@ -1,0 +1,27 @@
+/* Tebyan mapping of the DNA kit tokens (cream canvas, white cards, one lilac accent). */
+:root:root {
+  --dna-canvas: #f8f5ef;
+  --dna-surface: #ffffff;
+  --dna-surface-2: #f6f2ea;
+  --dna-ink: #182231;
+  --dna-muted: #5b6e82;
+  --dna-line: rgba(24, 34, 49, 0.08);
+  --dna-line-2: rgba(24, 34, 49, 0.15);
+  /* lilac #8E7AAE family; deepened for ≥4.5:1 on white text/buttons */
+  --dna-accent: #6e5b91;
+  --dna-accent-soft: #efeaf6;
+  --dna-core: #182231;
+  --dna-on-core: #ffffff;
+}
+/* Tones collapse into calm, lilac-leaning pastel tiles */
+[data-dna-tone='lilac'][data-dna-tone] { --t-fg: #6e5b91; --t-bgl: #efeaf6; }
+
+/* Neutralise legacy global rules inside the kit (svg stroke, text-white repaint, wildcard shadows). */
+.dna svg.lucide,
+.dna .lucide,
+.dna-btn svg.lucide,
+.dna-btnp svg.lucide,
+.dna-ibtn svg.lucide { stroke-width: 1.6 !important; }
+.dna-btnp,
+.dna-btnp * { color: var(--dna-on-accent) !important; }
+
