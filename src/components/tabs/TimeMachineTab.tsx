@@ -4,6 +4,7 @@ import { Hourglass, RefreshCw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [timeMachineTopic, setTimeMachineTopic] = React.useState(initialValue || 'طرق التدريس');
@@ -88,6 +89,9 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
 
        {error && <div className="text-[#6E5B91] font-bold">{error}</div>}
        <div className="relative min-h-[300px]">
+         {!isLoading && !timeMachineData && (
+           <ToolEmptyHint icon={Hourglass} text={language === 'ar' ? 'شاهد كيف تطور العلم وسيتطور مستقبلاً عبر رحلة مشوقة في العصور المختلفة.' : 'See how education evolved and will evolve in the future through an exciting journey across different eras.'} />
+         )}
          {isLoading ? (
            <motion.div 
              initial={{ opacity: 0 }}

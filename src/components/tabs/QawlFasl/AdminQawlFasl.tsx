@@ -313,7 +313,7 @@ export default function AdminQawlFasl() {
         <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 md:gap-3 w-full lg:w-auto">
           <button 
             disabled={isProcessing}
-            onClick={handleRunAnalysis} className="bg-orange-100 text-orange-700 hover:bg-orange-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
+            onClick={handleRunAnalysis} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="تحليل البحث"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -337,7 +337,7 @@ export default function AdminQawlFasl() {
               } finally {
                 setIsProcessing(false);
               }
-            }} className="bg-purple-100 text-purple-700 hover:bg-purple-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
+            }} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="توليد مسودات ذكية"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -346,28 +346,28 @@ export default function AdminQawlFasl() {
           <button 
             onClick={handleMigrateCategories} 
             disabled={isMigrating || isProcessing} 
-            className="bg-amber-100 text-amber-700 hover:bg-amber-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
+            className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="تحديث التصنيفات"
           >
             <Wand2 className="w-4 h-4"/> <span className="inline">{(isMigrating || isProcessing) ? 'جاري التحديث...' : 'تحديث التصنيفات'}</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowBulkGen(true)} className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
+            onClick={() => setShowBulkGen(true)} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="التوليد الشامل"
           >
             <Database className="w-4 h-4"/> <span className="inline">التوليد الشامل</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowUpload(true)} className="bg-teal-100 text-teal-700 hover:bg-teal-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
+            onClick={() => setShowUpload(true)} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="رفع الأسئلة"
           >
             <UploadCloud className="w-4 h-4"/> <span className="inline">رفع الأسئلة</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={openNew} className="bg-black text-white hover:bg-zinc-900 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
+            onClick={openNew} className="bg-[#6E5B91] text-white hover:bg-[#5F4E7F] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="سؤال جديد"
           >
              <Plus className="w-4 h-4"/> <span className="inline">سؤال جديد</span>
@@ -375,7 +375,7 @@ export default function AdminQawlFasl() {
         </div>
       </div>
 
-      <div className="bg-rose-50 border border-rose-200 rounded-[16px] p-4 md:p-6 mb-8 text-[#7A1F33] shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="bg-[#FBF8F8] border border-rose-200/60 rounded-[16px] p-4 md:p-6 mb-8 text-[#7A1F33] shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="min-w-0">
            <h3 className="text-lg font-bold flex items-center gap-2 mb-1"><Database className="w-5 h-5"/> إدارة النظام الآلي والتهيئة</h3>
            <p className="text-sm">هذه الإجراءات تؤثر بشكل كبير على قاعدة البيانات. استخدمها بحذر.</p>
@@ -397,9 +397,9 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-rose-100 hover:bg-rose-200 disabled:opacity-60 text-[#7A1F33] border border-rose-300 font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
+            }} className="bg-white hover:bg-rose-50 disabled:opacity-60 text-[#7A1F33] border border-rose-300/70 font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
-                تهيئة ومسح النظام (Backup & Reset)
+                تهيئة ومسح النظام <bdi dir="ltr">(Backup & Reset)</bdi>
             </button>
 
             <button 
@@ -418,12 +418,33 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-black hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
+            }} className="bg-[#6E5B91] hover:bg-[#5F4E7F] disabled:opacity-60 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
-                توليد 10 أسئلة (Daily Batch)
+                توليد 10 أسئلة <bdi dir="ltr">(Daily Batch)</bdi>
             </button>
         </div>
       </div>
+
+      {questions.length > 0 && (() => {
+        const publishedCount = questions.filter(q => q.status === 'published').length;
+        const draftCount = questions.length - publishedCount;
+        const R = 30;
+        const C = 2 * Math.PI * R;
+        const publishedLen = (publishedCount / questions.length) * C;
+        return (
+          <div className="mb-4 flex items-center gap-5 rounded-[16px] border border-[#8E7AAE]/12 bg-white px-5 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" role="img" aria-label={`منشور ${publishedCount} · مسودة ${draftCount} · ${questions.length}`}>
+            <svg width="76" height="76" viewBox="0 0 76 76" className="shrink-0 -rotate-90" aria-hidden="true">
+              <circle cx="38" cy="38" r={R} fill="none" stroke="#E9E2F1" strokeWidth="7" />
+              <circle cx="38" cy="38" r={R} fill="none" stroke="#8E7AAE" strokeWidth="7" strokeLinecap="round" strokeDasharray={`${publishedLen} ${C}`} />
+              <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[#182231]" style={{ fontSize: 18, fontWeight: 900 }}>{questions.length}</text>
+            </svg>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[#6E5F8E]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />منشور <span className="font-black">{publishedCount}</span></span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F6F8] px-3 py-1.5 text-[#64788D]"><span className="h-2 w-2 rounded-full bg-[#E9E2F1] ring-1 ring-[#8E7AAE]/30" />مسودة <span className="font-black">{draftCount}</span></span>
+            </div>
+          </div>
+        );
+      })()}
 
       <div className="bg-white rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border overflow-hidden">
         <table className="hidden md:table w-full text-right text-sm">

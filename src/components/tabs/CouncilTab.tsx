@@ -5,6 +5,7 @@ import { Users, RefreshCw, BookOpen, Search, Library, ExternalLink, Box, Swords 
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { useUser } from '../../contexts/UserContext';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [councilTopic, setCouncilTopic] = React.useState('');
@@ -124,6 +125,9 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       {error && <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-6 rounded-3xl font-bold text-lg text-center">{error}</div>}
 
       <div className="relative min-h-[300px]">
+        {!isLoading && !councilData && (
+          <ToolEmptyHint icon={Users} text={language === 'ar' ? 'اجمع الخبراء والمفكرين ليتجادلوا ويقدموا خلاصة عميقة ومدروسة لحالتك أو تحديك الخاص.' : 'Gather historical and educational experts to debate and provide a deep, well-thought-out verdict for your specific challenge.'} />
+        )}
         {isLoading ? (
           <motion.div 
             initial={{ opacity: 0 }}

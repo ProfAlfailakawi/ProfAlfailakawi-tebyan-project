@@ -8,6 +8,7 @@ import { useAuth } from '../AuthProvider';
 import { getGenderWord } from '../../utils/genderHelper';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
@@ -105,6 +106,9 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
       </div>
 
       <div id="roadmap-results">
+      {!isLoading && !roadmap && (
+        <ToolEmptyHint icon={Map} text={language === 'ar' ? getGenderWord(userGender, 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 'رؤية واضحة لمساركِ الشخصي نحو كل هدف تطمحين إليه.', 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.') : 'A clear vision of your personal path towards every goal you aspire to.'} />
+      )}
       <AnimatePresence mode="wait">
         {roadmap && !isLoading && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">

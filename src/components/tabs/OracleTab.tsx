@@ -11,6 +11,7 @@ import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent } from '../../lib/aiProxy';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 const personas = [
   { id: 'parent', ar: 'الوالد/الوالدة', en: 'Parent/Guardian' },
@@ -161,6 +162,9 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
+        {!isLoading && !oracleResult && (
+          <ToolEmptyHint icon={Command} text={language === 'ar' ? 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.' : 'Total guidance and predictive analysis for your personal perspective.'} />
+        )}
         {isLoading ? (
           <motion.div 
             initial={{ opacity: 0 }}
