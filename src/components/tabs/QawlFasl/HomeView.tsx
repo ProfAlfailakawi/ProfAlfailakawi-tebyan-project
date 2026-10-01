@@ -486,7 +486,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
             <div className="h-px flex-1 bg-zinc-200/60 mx-0 md:mx-8 w-full md:w-auto"></div>
           </div>
           
-          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 md:gap-5 lg:gap-6 relative z-10">
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-6 relative z-10">
             {categoriesWithQuestions.map((category: any) => {
               const count = questions.filter(q => 
                 q.categoryId === category.id || 
