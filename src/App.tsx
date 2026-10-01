@@ -1797,11 +1797,6 @@ const AppContent: React.FC = () => {
             <p className="text-[13px] font-medium">
               نظامك لفهم العالم &copy; {new Date().getFullYear()}
             </p>
-            <div className="mt-6 opacity-40">
-              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-zinc-500">
-                Version 3.0.0
-              </span>
-            </div>
           </footer>
         </div>
       </main>
