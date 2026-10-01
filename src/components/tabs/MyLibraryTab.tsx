@@ -23,8 +23,45 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
     'item': { color: 'bg-[#f2f2f4] text-[#5b6472]', labelAr: 'مادة', labelEn: 'Items' }
   };
 
+  const ringColors: Record<string, string> = {
+    qawlfasl: '#3f6b55', oracle: '#6e5f8e', concept: '#8a6a3b', roadmap: '#8e5a63', item: '#8b93a1'
+  };
+  const entries = Object.entries(counts) as [string, number][];
+  const total = entries.reduce((sum, [, c]) => sum + c, 0);
+  const R = 52;
+  const C = 2 * Math.PI * R;
+  const GAP = entries.length > 1 ? 4 : 0;
+  let offset = 0;
+
   return (
-    <div className="flex flex-wrap gap-4 mb-16 justify-center">
+    <div className="mb-16 flex flex-col items-center gap-8">
+    {total > 0 && (
+      <div className="relative h-36 w-36 md:h-44 md:w-44" role="img" aria-label={entries.map(([t, c]) => `${language === 'ar' ? (typeData[t]?.labelAr || t) : (typeData[t]?.labelEn || t)} ${c}`).join(' · ')}>
+        <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90" aria-hidden="true">
+          <circle cx="64" cy="64" r={R} fill="none" stroke="#EFEAF4" strokeWidth="10" />
+          {entries.map(([type, count]) => {
+            const len = (count / total) * C;
+            const seg = (
+              <circle
+                key={type}
+                cx="64" cy="64" r={R}
+                fill="none"
+                stroke={ringColors[type] || ringColors.item}
+                strokeWidth="10"
+                strokeLinecap="butt"
+                strokeDasharray={`${Math.max(len - GAP, 0.5)} ${C}`}
+                strokeDashoffset={-offset}
+                opacity={0.85}
+              />
+            );
+            offset += len;
+            return seg;
+          })}
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-[#182231]">{total}</div>
+      </div>
+    )}
+    <div className="flex flex-wrap gap-4 justify-center">
        {Object.entries(counts).map(([type, count]: [any, any]) => (
          <motion.div
            key={type}
@@ -44,6 +81,7 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
            </span>
          </motion.div>
        ))}
+    </div>
     </div>
   );
 };
