@@ -1,6 +1,8 @@
 
 import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
 import { getAppCheckHeaders } from "./appCheck";
+import { IS_DEMO_MODE } from "./demoMode";
+import { demoAiResponse, demoAudioResponse } from "./demoAi";
 
 /**
  * AI Proxy for Client-side usage.
@@ -39,6 +41,9 @@ ${buildUserAddressingInstruction(addressing)}
      modifiedParams.config.systemInstruction = modifiedParams.config.systemInstruction + panicInstruction;
   }
 
+
+  // وضع العرض: ردود محلية جاهزة، بلا أي نداء شبكة (لا /api/ai ولا App Check).
+  if (IS_DEMO_MODE) return demoAiResponse(params);
 
   // استخدام الرابط الأساسي للخادم إذا كان معرفاً في 환경 الإنتاج، وإلا استخدام مسار نسبي
   const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
@@ -133,6 +138,8 @@ export async function proxyGenerateAudio(params: {
   voiceName?: string;
   style?: string;
 }) {
+  if (IS_DEMO_MODE) return demoAudioResponse();
+
   // we use root-relative path for /api calls
   const apiPath = `/api/ai/audio`;
 

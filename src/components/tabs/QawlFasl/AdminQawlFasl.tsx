@@ -33,6 +33,7 @@ export default function AdminQawlFasl() {
   const [alertDialog, setAlertDialog] = useState<string | null>(null);
 
   const showAlert = (msg: string) => setAlertDialog(msg);
+  const DEMO_NOTE = '\n(نسخة العرض: تمت العملية في الذاكرة فقط ولا يُحفظ شيء.)';
   const showConfirm = (msg: string, onConfirm: () => void) => setConfirmDialog({ message: msg, onConfirm });
 
   const loadMissing = () => {
@@ -122,6 +123,7 @@ export default function AdminQawlFasl() {
 
   const handleMigrateCategories = async () => {
     showConfirm('هل أنت متأكد؟ سيتم تحديث تصنيفات جميع الأسئلة تلقائيًا.', async () => {
+        if (IS_DEMO_MODE) { showAlert('تم التحديث بنجاح!' + DEMO_NOTE); return; }
         setIsMigrating(true);
         try {
             await qawlFaslService.migrateAllQuestionsToMainCategory();
@@ -136,6 +138,7 @@ export default function AdminQawlFasl() {
   };
 
   const handleRunAnalysis = async () => {
+      if (IS_DEMO_MODE) { showAlert('تم التحليل بنجاح! لا أسئلة ناقصة جديدة.' + DEMO_NOTE); return; }
       setIsProcessing(true);
       try {
           await qawlFaslService.analyzeSearchLogs();
@@ -151,6 +154,13 @@ export default function AdminQawlFasl() {
 
   const save = async () => {
     const isNew = editingId === 'new';
+    if (IS_DEMO_MODE) {
+      const id = isNew ? `demo-new-${Date.now()}` : editingId!;
+      setQuestions(prev => isNew ? [{ ...(formData as any), id } as QawlFaslQuestion, ...prev] : prev.map(q => (q.id === id ? ({ ...q, ...(formData as any) } as QawlFaslQuestion) : q)));
+      setEditingId(null);
+      showAlert('تم الحفظ.' + DEMO_NOTE);
+      return;
+    }
     const ref = isNew ? doc(collection(db, 'qawl_fasl_questions')) : doc(db, 'qawl_fasl_questions', editingId!);
     try {
       await setDoc(ref, {
@@ -166,6 +176,7 @@ export default function AdminQawlFasl() {
 
   const remove = async (id: string) => {
     showConfirm('هل أنت متأكد من حذف هذا السؤال؟', async () => {
+      if (IS_DEMO_MODE) { setQuestions(prev => prev.filter(q => q.id !== id)); showAlert('تم الحذف بنجاح' + DEMO_NOTE); return; }
       setIsProcessing(true);
       try {
         await deleteDoc(doc(db, 'qawl_fasl_questions', id));
@@ -311,6 +322,7 @@ export default function AdminQawlFasl() {
           <button 
             disabled={isProcessing}
             onClick={async () => {
+              if (IS_DEMO_MODE) { showAlert('تم توليد 5 مسودات جديدة!' + DEMO_NOTE); return; }
               setIsProcessing(true);
               try {
                 await qawlFaslService.autoGenerateMissingDrafts();
@@ -373,6 +385,7 @@ export default function AdminQawlFasl() {
               disabled={isProcessing}
               onClick={async () => {
                 showConfirm('هل أنت متأكد من مسح جميع البيانات؟ سيتم تصفير النظام تماماً للبدء من جديد.', async () => {
+                  if (IS_DEMO_MODE) { showAlert('في العرض لا يُمسح النظام: هذا الزر معطّل عمدًا حتى لا تُفقد البيانات النموذجية.'); return; }
                   setIsProcessing(true);
                   try {
                     const result = await qawlFaslService.backupAndResetQuestions();
@@ -393,6 +406,7 @@ export default function AdminQawlFasl() {
               disabled={isProcessing}
               onClick={async () => {
                 showConfirm('سيتم توليد 10 أسئلة جديدة الآن موزعة على المحاور. سيستغرق ذلك بضع دقائق. هل تريد المتابعة؟', async () => {
+                  if (IS_DEMO_MODE) { showAlert('اكتملت العملية!\nنُشر: 7\nبحاجة لمراجعة: 2\nتخطي للتكرار: 1\nأخطاء: 0' + DEMO_NOTE); return; }
                   setIsProcessing(true);
                   try {
                     const res = await qawlFaslService.generateDailyQawlFaslQuestions();
@@ -473,6 +487,7 @@ export default function AdminQawlFasl() {
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto">
                             <button className="w-full sm:w-auto bg-black text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={() => {
+                                if (IS_DEMO_MODE) { setMissingQuestions(prev => prev.filter(x => x.id !== mq.id)); showAlert('تم إعداد إجابة مقترحة للسؤال «' + mq.query + '» وانتقل إلى المسودات.' + DEMO_NOTE); return; }
                                 // Simple approve hook
                                 qawlFaslService.updateMissingQuestionStatus(mq.id, 'approved', mq.query, 'جاري إعداد الإجابة...');
                                 qawlFaslService.getMissingQuestions().then(setMissingQuestions);
@@ -499,6 +514,7 @@ export default function AdminQawlFasl() {
                 </div>
                 {r.status !== 'resolved' && (
                   <button className="w-full sm:w-auto shrink-0 bg-black text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={async () => {
+                    if (IS_DEMO_MODE) { setAnswerReports(prev => prev.map(x => (x.id === r.id ? { ...x, status: 'resolved' } : x))); return; }
                     try { await qawlFaslService.resolveAnswerReport(r.id); loadReports(); } catch (e) { console.error(e); }
                   }}>تمت المعالجة</button>
                 )}

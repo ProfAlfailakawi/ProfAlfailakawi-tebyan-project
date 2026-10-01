@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { isAdminIdentity } from "../lib/adminAccess";
+import { IS_DEMO_MODE } from "../lib/demoMode";
 import type { User } from "firebase/auth";
 import {
   resolveUserAddressing,
@@ -32,15 +33,36 @@ const AuthContext = createContext<{
 
 const isAdminUser = (user: User) => isAdminIdentity(user);
 
+/**
+ * جلسة العرض: مستخدمة خيالية (وليّة الأمر «أم سعود») مسجَّلة الدخول محليًا.
+ * لا يُستورد Firebase Auth ولا يُقرأ حساب حقيقي ولا يُكتب شيء: تظهر القائمة
+ * الشخصية ولوحة الملف بدل زر الدخول، ولا تُحجب الأبواب المحمية بنافذة تسجيل.
+ * البريد نطاقه `.invalid` المحجوز، فلا يطابق أي حساب أو مشرف حقيقي.
+ */
+const DEMO_USER = {
+  uid: "demo-user-um-saud",
+  email: "um.saud@demo.invalid",
+  displayName: "أم سعود",
+  photoURL: null,
+  isAnonymous: false,
+} as unknown as User;
+const DEMO_PROFILE: UserProfile = {
+  email: "um.saud@demo.invalid",
+  role: "user",
+  displayName: "أم سعود",
+  photoURL: null,
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [authReady, setAuthReady] = useState(false);
+  const [user, setUser] = useState<User | null>(IS_DEMO_MODE ? DEMO_USER : null);
+  const [profile, setProfile] = useState<UserProfile | null>(IS_DEMO_MODE ? DEMO_PROFILE : null);
+  const [loading, setLoading] = useState(!IS_DEMO_MODE);
+  const [authReady, setAuthReady] = useState(IS_DEMO_MODE);
   const [userName, setUserName] = useState<string>("ضيف");
   const [userGender, setUserGender] = useState<UserGender>("neutral");
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return; // لا Firebase Auth في العرض.
     let cancelled = false;
     let unsubscribe: (() => void) | undefined;
 

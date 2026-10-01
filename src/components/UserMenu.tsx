@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { LogOut, User as UserIcon, Shield, LayoutDashboard, UserCircle, Sparkles } from 'lucide-react';
 import { auth, db } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
+import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import ClientProfilePanel from './ClientProfilePanel';
@@ -151,6 +152,7 @@ export default function UserMenu() {
                   localStorage.removeItem('tebyan_galaxy_cache');
                   localStorage.removeItem('tebyan_custom_avatar');
                   localStorage.removeItem('tebyan_style_confirmed');
+                  if (IS_DEMO_MODE) { exitDemoMode(); return; }
                   auth.signOut();
                 }}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-zinc-600 hover:bg-rose-50 hover:text-rose-600 transition-colors w-full text-start group"

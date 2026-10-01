@@ -26,6 +26,7 @@ export default function AdminUsersDashboard() {
 
   const deleteUser = async (userId: string) => {
     if (!window.confirm('هل أنت متأكد من رغبتك في حذف هذا المستخدم؟ لا يمكن التراجع عن هذه الخطوة.')) return;
+    if (IS_DEMO_MODE) { setUsers(prev => prev.filter(u => u.id !== userId)); return; }
     try {
       await deleteDoc(doc(db, 'users', userId));
       // No need to alert success usually as onSnapshot will update the list
@@ -53,6 +54,12 @@ export default function AdminUsersDashboard() {
 
   const saveEdit = async () => {
     if (!editingUser) return;
+    if (IS_DEMO_MODE) {
+      setUsers(prev => prev.map(u => (u.id === editingUser.id ? { ...u, ...editFormData } : u)));
+      setActionMessage('تم حفظ التعديلات (نسخة العرض: في الذاكرة فقط).');
+      setTimeout(() => closeEditModal(), 1500);
+      return;
+    }
     try {
       await updateDoc(doc(db, 'users', editingUser.id), {
         displayName: editFormData.displayName,

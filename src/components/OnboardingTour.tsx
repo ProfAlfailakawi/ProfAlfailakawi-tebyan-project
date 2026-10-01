@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, X } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { cn } from "../lib/utils";
+import { IS_DEMO_MODE } from "../lib/demoMode";
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
@@ -101,6 +102,9 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
   // beat before the modal arrives. The menu item replays it on demand via the
   // `tebyan_open_onboarding` event.
   useEffect(() => {
+    // العرض: كل تبويب جديد بذاكرة نظيفة، فلا يُفتح الدليل تلقائيًا فوق العرض.
+    // (يبقى متاحًا يدويًا من القائمة عبر حدث tebyan_open_onboarding.)
+    if (IS_DEMO_MODE) return;
     let seen = false;
     try {
       seen = localStorage.getItem(tourKey) === "true";

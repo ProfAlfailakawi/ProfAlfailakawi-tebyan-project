@@ -4,6 +4,7 @@ import { generateQawlFaslContent, GeminiKeyMissingError } from '../services/qawl
 import { db } from '../lib/firebase';
 import { collection } from 'firebase/firestore';
 import { addDoc } from '../lib/firestoreWrites';
+import { IS_DEMO_MODE } from '../lib/demoMode';
 
 interface CategorizedQuestion {
   question: string;
@@ -185,10 +186,11 @@ export default function AdminQawlFaslBulkGen() {
                     ...generatedData
                 };
                 
-                await addDoc(collection(db, 'qawl_fasl_questions'), docData);
+                // العرض: النتيجة تُعرض في القائمة فقط ولا تُكتب إلى قاعدة البيانات.
+                if (!IS_DEMO_MODE) await addDoc(collection(db, 'qawl_fasl_questions'), docData);
                 results.push(docData);
                 setGeneratedResults([...results]); 
-                addLog(`✅ Saved to DB.`, 'success');
+                addLog(IS_DEMO_MODE ? `✅ Generated (demo: in memory only, not saved).` : `✅ Saved to DB.`, 'success');
                 successCount++;
             } catch (error: any) {
                 if (error instanceof GeminiKeyMissingError) {

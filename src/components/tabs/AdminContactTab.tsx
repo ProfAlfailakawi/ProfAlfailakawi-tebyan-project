@@ -44,6 +44,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
 
   const markAsRead = async (id: string, currentStatus: string) => {
     if (currentStatus === 'read') return;
+    if (IS_DEMO_MODE) { setMessages(prev => prev.map(m => (m.id === id ? { ...m, status: 'read' } : m))); return; }
     try {
       await updateDoc(doc(db, 'contact_requests', id), {
         status: 'read'
@@ -54,6 +55,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
   };
 
   const deleteMessage = async (id: string) => {
+    if (IS_DEMO_MODE) { setMessages(prev => prev.filter(m => m.id !== id)); return; }
     try {
       await deleteDoc(doc(db, 'contact_requests', id));
     } catch (error) {
