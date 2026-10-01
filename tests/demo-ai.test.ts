@@ -35,3 +35,24 @@ test('demo AI: json without schema returns parseable JSON; audio is offline', ()
   assert.equal(typeof j.rage, 'number');
   assert.equal(demoAudioResponse().offline, true);
 });
+
+test('demo AI: council, mind map and simulation weave the topic keywords in', () => {
+  const council = JSON.parse(demoAiText({
+    contents: [{ parts: [{ text: 'You are a supreme council of 5 experts. Analyze "العناد عند الأطفال في المساء".' }] }],
+    config: { responseMimeType: 'application/json', responseSchema: { type: 'OBJECT', properties: { council_discussion: { type: 'ARRAY', items: { type: 'OBJECT', properties: {} } }, consultants: { type: 'ARRAY', items: { type: 'OBJECT', properties: {} } } } } },
+  }));
+  assert.equal(council.consultants.length, 5);
+  assert.match(JSON.stringify(council), /العناد/);
+  const map = JSON.parse(demoAiText({
+    contents: [{ parts: [{ text: 'تنظيم وقت الدراسة' }] }],
+    config: { responseSchema: { type: 'OBJECT', properties: { central: { type: 'STRING' }, branches: { type: 'ARRAY', items: { type: 'OBJECT', properties: {} } } } } },
+  }));
+  assert.equal(map.central, 'تنظيم وقت الدراسة');
+  assert.ok(map.branches.length >= 6);
+  const sim = JSON.parse(demoAiText({
+    contents: [{ parts: [{ text: 'ابدأ المحاكاة الآن حول: رفض الواجبات' }] }],
+    config: { responseSchema: { type: 'OBJECT', properties: { scenario: { type: 'STRING' }, decisions: { type: 'ARRAY', items: { type: 'OBJECT', properties: { metrics: { type: 'OBJECT' } } } } } } },
+  }));
+  assert.match(sim.scenario, /رفض الواجبات/);
+  assert.equal(sim.decisions.filter((d: any) => d.isCorrect).length, 1);
+});

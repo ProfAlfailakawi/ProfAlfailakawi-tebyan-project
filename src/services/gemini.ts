@@ -9,6 +9,7 @@ const Type = {
 };
 
 import { perfMonitor } from "../lib/performance";
+import { IS_DEMO_MODE } from "../lib/demoMode";
 import { proxyGenerateContent } from "../lib/aiProxy";
 import { db } from "../lib/firebase";
 import { collection, serverTimestamp } from "firebase/firestore";
@@ -380,7 +381,7 @@ export async function generateSimulation(topic: string = 'Digital Transformation
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: [{ parts: [{ text: "ابدأ المحاكاة الآن" }] }],
+        contents: [{ parts: [{ text: IS_DEMO_MODE ? `ابدأ المحاكاة الآن حول: ${topic}` : "ابدأ المحاكاة الآن" }] }],
         config: {
           systemInstruction,
           responseMimeType: "application/json",
