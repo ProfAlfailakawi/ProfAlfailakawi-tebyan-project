@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { Network, Sparkles, Brain, ArrowRight, Save } from 'lucide-react';
 import { universalOracle } from '../../services/gemini';
@@ -70,6 +71,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
       <div className="bg-white/60 backdrop-blur-2xl min-h-[60vh] rounded-[32px] overflow-hidden relative border border-[#182231]/10 shadow-sm p-8 md:p-12">
         <div className="max-w-4xl mx-auto space-y-12">
 
+<DemoStarters tab="mindmap" language={language} onPick={setTopic} className="mb-3" />
         <form onSubmit={(e) => { e.preventDefault(); handleGenerate(); }} className="relative z-10 flex flex-col md:flex-row gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="flex-1 relative">
             <input
@@ -141,7 +143,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
                 </button>
               </div>
 
-              <div className="prose prose-invert prose-indigo max-w-none prose-p:text-white prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-white prose-headings:font-black prose-li:text-white prose-li:marker:text-indigo-400 prose-strong:text-indigo-400">
+              <div className="prose max-w-none prose-p:text-[#182231] prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-[#182231] prose-headings:font-black prose-li:text-[#182231] prose-li:marker:text-[#6E5B91] prose-strong:text-[#4B3F6B]">
                 <ReactMarkdown>{mindMapData}</ReactMarkdown>
               </div>
             </div>

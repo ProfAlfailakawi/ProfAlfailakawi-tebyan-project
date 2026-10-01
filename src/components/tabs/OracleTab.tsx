@@ -1,4 +1,5 @@
 import React from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { Command, RefreshCw, Bookmark, BookmarkCheck, History, FlaskConical, Network } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
@@ -127,6 +128,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           </button>
         ))}
       </div>
+<DemoStarters tab="oracle" language={language} onPick={setInput} className="mb-3" />
       <div className="relative">
         <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}

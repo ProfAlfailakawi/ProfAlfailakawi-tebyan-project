@@ -88,7 +88,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                   className="min-h-[420px]"
                 />
             ) : (
-                <div className="relative w-full min-h-[58vh] md:h-[65vh] bg-white rounded-[32px] md:rounded-[40px] shadow-2xl border border-zinc-200 overflow-hidden flex flex-col pt-8 md:pt-12 items-center">
+                <div className="relative w-full min-h-[58vh] md:min-h-[65vh] bg-white rounded-[32px] md:rounded-[40px] shadow-2xl border border-zinc-200 overflow-hidden flex flex-col pt-8 md:pt-12 items-center">
                     <div className="text-xs font-black uppercase tracking-[0.4em] text-zinc-400 mb-8 z-10 text-center px-4 leading-relaxed group-hover:text-black transition-colors">
                       {language === 'ar' ? 'المعرض الإدراكي - اسحب لاستعراض اللوحات' : 'COGNITIVE GALLERY - SCROLL TO EXPLORE'}
                       <div className="w-32 h-px bg-zinc-300 mx-auto mt-4"></div>
@@ -98,7 +98,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
 
-                    <ul className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full h-full custom-scrollbar items-center my-auto">
+                    <ul className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
                         {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
                             let content = '';
                             let title = '';

@@ -1225,17 +1225,29 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   /* Result/document cards: improve contrast on tinted backgrounds */
-  main [class*="bg-rose"],
+  main [class*="bg-rose-500"],
+  main [class*="bg-rose-600"],
+  main [class*="bg-rose-700"],
+  main [class*="bg-rose-800"],
+  main [class*="bg-rose-900"],
   main [class*="bg-zinc-9"],
   main [class*="bg-stone-9"],
   main [class*="bg-black"] {
     color: #fff !important;
   }
-  main [class*="bg-rose"] p,
+  main [class*="bg-rose-500"] p,
+  main [class*="bg-rose-600"] p,
+  main [class*="bg-rose-700"] p,
+  main [class*="bg-rose-800"] p,
+  main [class*="bg-rose-900"] p,
   main [class*="bg-zinc-9"] p,
   main [class*="bg-stone-9"] p,
   main [class*="bg-black"] p,
-  main [class*="bg-rose"] li,
+  main [class*="bg-rose-500"] li,
+  main [class*="bg-rose-600"] li,
+  main [class*="bg-rose-700"] li,
+  main [class*="bg-rose-800"] li,
+  main [class*="bg-rose-900"] li,
   main [class*="bg-zinc-9"] li,
   main [class*="bg-stone-9"] li,
   main [class*="bg-black"] li {
@@ -4472,14 +4484,35 @@ main .overflow-x-auto > [role="tab"] {
 }
 
 /* الطباعة: التطبيق قشرة بارتفاع الشاشة وتمرير داخلي، فكانت الطباعة تقصّ كل شيء
-   عدا الشاشة الأولى. هنا تُفكّ القيود ويُخفى الإطار (الشريط والأزرار العائمة). */
+   عدا الشاشة الأولى. هنا تُفكّ القيود، ويُخفى الإطار (الشريط والأزرار والعناصر
+   الثابتة)، وتُرسم ترويسة بسيطة بعلامة تبيان، وتُحفظ الفقرات والبطاقات من القطع. */
+@page { size: A4; margin: 16mm 14mm; }
 @media print {
   html, body, #root { height: auto !important; overflow-y: visible !important; overflow-x: clip !important; background: #fff !important; }
   .tebyan-living-background { height: auto !important; min-height: 0 !important; overflow-y: visible !important; overflow-x: clip !important; display: block !important; background: #fff !important; }
-  .tebyan-route-shell { overflow-y: visible !important; overflow-x: clip !important; height: auto !important; padding-top: 0 !important; }
-  header, nav, footer, .fixed, [role="dialog"], .tour-menu-button, button { display: none !important; }
-  main button { display: none !important; }
-  * { animation: none !important; transition: none !important; box-shadow: none !important; backdrop-filter: none !important; }
-  .tebyan-living-background *, .tebyan-route-shell * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .tebyan-route-shell { overflow-y: visible !important; overflow-x: clip !important; height: auto !important; padding: 0 !important; background: #fff !important; }
+  /* ترويسة الصفحة المطبوعة */
+  .tebyan-route-shell::before {
+    content: "تبيان · نظامك لفهم العالم";
+    display: block;
+    margin: 0 0 14pt;
+    padding-bottom: 6pt;
+    border-bottom: 1.5pt solid #8E7AAE;
+    font-size: 13pt;
+    font-weight: 800;
+    color: #4B3F6B;
+  }
+  header, nav, footer, .fixed, [role="dialog"], .tour-menu-button, main button, [data-demo-starters] { display: none !important; }
+  /* حبر أقل ونص مقروء: بلا خلفيات ولا ظلال ولا حركة */
+  .tebyan-route-shell *:not(svg):not(svg *) { background: transparent !important; box-shadow: none !important; text-shadow: none !important; backdrop-filter: none !important; filter: none !important; animation: none !important; transition: none !important; color: #111 !important; opacity: 1 !important; }
+  /* ما يقطع التجزئة بين الصفحات: min-height وtransform وoverflow (ومعرض المكتبة الأفقي يلتفّ) */
+  .tebyan-route-shell *:not(svg):not(svg *) { min-height: 0 !important; transform: none !important; overflow: visible !important; max-height: none !important; }
+  .tebyan-route-shell ul.snap-x { flex-wrap: wrap !important; justify-content: center !important; gap: 14pt !important; padding: 0 !important; height: auto !important; }
+  .tebyan-route-shell ul.snap-x > li { width: 47% !important; min-width: 0 !important; flex: 0 0 47% !important; break-inside: avoid; page-break-inside: avoid; }
+  .tebyan-route-shell [class*="border"] { border-color: #cfcad8 !important; }
+  .tebyan-route-shell h1, .tebyan-route-shell h2, .tebyan-route-shell h3, .tebyan-route-shell h4 { break-after: avoid; page-break-after: avoid; color: #2b2347 !important; }
+  .tebyan-route-shell p, .tebyan-route-shell li, .tebyan-route-shell blockquote, .tebyan-route-shell tr, .tebyan-route-shell img, .tebyan-route-shell svg { break-inside: avoid; page-break-inside: avoid; }
+  .tebyan-route-shell p, .tebyan-route-shell li { orphans: 3; widows: 3; line-height: 1.75 !important; }
+  .tebyan-route-shell ul { max-height: none !important; overflow: visible !important; }
   a[href^="http"]::after { content: none !important; }
 }

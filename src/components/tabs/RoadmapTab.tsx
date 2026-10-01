@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion, AnimatePresence } from 'motion/react';
 import { Map, Flag, CheckCircle, Loader2, ArrowRight, Bookmark, BookmarkCheck } from 'lucide-react';
 import { generateRoadmap } from '../../services/gemini';
@@ -69,6 +70,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <label className={cn("block text-sm font-bold text-[#64788D]", language === 'ar' ? 'text-right' : 'text-left')}>
             {language === 'ar' ? 'حدد وجهتك القادمة' : 'Define your next destination'}
           </label>
+<DemoStarters tab="roadmap" language={language} onPick={setGoal} className="mb-3" />
           <div className="relative">
             <input 
               value={goal}

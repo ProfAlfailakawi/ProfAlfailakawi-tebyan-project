@@ -6,12 +6,18 @@ import App from './App.tsx';
 import './index.css';
 import './components/dna/dna-theme.css';
 import { installAppUpdate } from './lib/app-update';
+import { IS_DEMO_MODE } from './lib/demoMode';
 
 import { AuthProvider } from './components/AuthProvider';
 import AdminRoute from './components/AdminRoute';
 
 // التحديث الذاتي الصامت: بصمة الإصدار، منارتها، ثم التحديث والتصعيد عند اللزوم.
 installAppUpdate();
+
+// العرض: تسخين مكتبة قول فصل أثناء ظهور الشاشة الأولى كي لا يرى الزائر هيكلًا رماديًا عند فتحها.
+if (IS_DEMO_MODE) {
+  window.setTimeout(() => { void import('./data/demoLibrary').then((m) => m.loadDemoLibrary()); }, 600);
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

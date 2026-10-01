@@ -1,4 +1,5 @@
 import React from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { ClipboardCheck, RefreshCw, Crown, PartyPopper, CheckCircle2, XCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -120,6 +121,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
             {!questions.length ? (
               <div className="space-y-4">
                 <p className="text-zinc-500 font-bold">{language === 'ar' ? 'أدخل الموضوع الذي جئت من أجله لإنشاء الاختبار المخصص لك:' : 'Enter the topic you came for to create your custom quiz:'}</p>
+<DemoStarters tab="quiz" language={language} onPick={setQuizTopic} className="mb-3" />
                 <input 
                   value={quizTopic} 
                   onChange={(e) => setQuizTopic(e.target.value)} 
