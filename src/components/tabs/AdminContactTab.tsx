@@ -75,7 +75,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
           language={language}
         />
         {newMessagesCount > 0 && (
-          <div className="bg-rose-100 text-rose-700 px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 w-fit">
+          <div className="bg-[#F4F0F8] text-[#6E5F8E] px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 w-fit">
             <CircleDot className="w-4 h-4 animate-pulse" />
             <span>{newMessagesCount} {language === 'ar' ? 'رسائل جديدة' : 'New messages'}</span>
           </div>
@@ -105,19 +105,19 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                   transition={{ delay: idx * 0.05 }}
                   className={cn(
                     "p-4 md:p-6 transition-colors group relative",
-                    msg.status === 'new' ? "bg-blue-50/30" : "hover:bg-zinc-50"
+                    msg.status === 'new' ? "bg-[#F4F0F8]/50" : "hover:bg-zinc-50"
                   )}
                   onClick={() => markAsRead(msg.id, msg.status)}
                 >
                   {msg.status === 'new' && (
-                    <div aria-hidden className="absolute top-3 rtl:left-3 ltr:right-3 rounded-full bg-blue-500" style={{ width: 8, height: 8, minWidth: 0, minHeight: 0 }} />
+                    <div aria-hidden className="absolute top-3 rtl:left-3 ltr:right-3 rounded-full bg-[#8E7AAE]" style={{ width: 8, height: 8, minWidth: 0, minHeight: 0 }} />
                   )}
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4 pl-4 rtl:pr-4 rtl:pl-0">
                     <div className="min-w-0">
                       <h3 className="font-bold text-lg text-black flex flex-wrap items-center gap-2 leading-snug">
                         {msg.name}
                         {msg.status === 'new' && (
-                          <span className="text-[10px] uppercase font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] uppercase font-bold bg-[#F4F0F8] text-[#6E5F8E] px-2 py-0.5 rounded-full">
                             {language === 'ar' ? 'جديد' : 'New'}
                           </span>
                         )}
@@ -135,7 +135,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                         {msg.status === 'new' && (
                           <button
                             onClick={(e) => { e.stopPropagation(); markAsRead(msg.id, msg.status); }}
-                            className="p-2 rounded-full text-zinc-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                            className="p-2 rounded-full text-zinc-500 hover:text-[#6E5F8E] hover:bg-[#F4F0F8] transition-colors"
                             title={language === 'ar' ? 'تحديد كمقروء' : 'Mark as read'}
                           >
                             <CheckCircle2 className="w-4 h-4" />

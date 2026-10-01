@@ -183,9 +183,9 @@ export default function AdminUsersDashboard() {
                   users.map((user: any) => (
                     <tr key={user.id} className="border-t border-slate-100 whitespace-nowrap">
                       <td className="p-4">{user.displayName || 'لا يوجد اسم'}</td>
-                      <td className="p-4 text-left font-mono" dir="ltr">{user.email}</td>
+                      <td className="p-4 text-left" dir="ltr">{user.email}</td>
                       <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}`}>
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
                           {user.role}
                         </span>
                       </td>
@@ -220,16 +220,16 @@ export default function AdminUsersDashboard() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-black text-slate-900 leading-snug">{user.displayName || 'لا يوجد اسم'}</p>
-                      <p className="mt-1 text-xs text-slate-500 font-mono leading-relaxed" dir="ltr">{user.email}</p>
+                      <p className="mt-1 text-xs text-slate-500 leading-relaxed" dir="ltr">{user.email}</p>
                     </div>
-                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}`}>
+                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
                       {user.role}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <button 
                       onClick={() => openEditModal(user)}
-                      className="min-h-11 rounded-xl bg-blue-50 text-blue-700 font-bold flex items-center justify-center gap-2"
+                      className="min-h-11 rounded-xl bg-[#F4F0F8] text-[#6E5F8E] font-bold flex items-center justify-center gap-2"
                       title="تعديل المستخدم"
                     >
                       <Edit2 size={16} />
@@ -278,7 +278,7 @@ export default function AdminUsersDashboard() {
                   )}
                 </div>
                 <h3 className="font-bold text-lg mb-1 text-center">{editingUser.displayName || 'بدون اسم'}</h3>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
                   {editingUser.role === 'admin' ? 'مدير النظام (Admin)' : 'مستخدم (User)'}
                 </span>
 
