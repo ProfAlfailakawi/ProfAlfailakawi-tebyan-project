@@ -424,12 +424,12 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                  }} 
                  title={language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}
                  className={cn(
-                   "px-6 py-3 rounded-full border-2 text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
+                   "shrink-0 w-[13.5rem] md:w-auto px-6 py-3 rounded-[22px] md:rounded-full border text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
                    activeLabTool === tool.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white text-[#64788D] border-[#8FA9C7]/15 hover:border-zinc-300"
                  )}
                >
                  <span>{language === 'ar' ? tool.ar : tool.en}</span>
-                 <span className={cn("block text-[10px] mt-1 font-bold", activeLabTool === tool.id ? "text-white/60" : "text-[#7C8796]")}>{language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}</span>
+                 <span className={cn("block text-xs mt-1 font-medium", activeLabTool === tool.id ? "text-white/60" : "text-[#7C8796]")}>{language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}</span>
                </button>
              ))}
            </div>
@@ -458,7 +458,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 <input 
                   value={labInput} 
                   onChange={(e) => setLabInput(e.target.value)} 
-                  className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-[#8FA9C7]/25/80 outline-none transition-all" 
+                  className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-[#8FA9C7]/40 outline-none transition-all" 
                   placeholder={language === 'ar' ? "أدخل الموضوع أو التحدي..." : "Enter topic or challenge..."} 
                 />
             )}
@@ -496,7 +496,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                <motion.div 
                  initial={{ opacity: 0 }}
                  animate={{ opacity: 1 }}
-                 className="w-full bg-transparent rounded-[24px] md:rounded-[32px] flex flex-col items-center justify-center space-y-6 py-32 border-2 border-dashed border-[#8FA9C7]/25/80"
+                 className="w-full bg-transparent rounded-[24px] md:rounded-[32px] flex flex-col items-center justify-center space-y-6 py-32 border-2 border-dashed border-[#8FA9C7]/40"
                >
                  <div className="relative">
                    <div className="w-20 h-20 border-8 border-[#8FA9C7]/15 rounded-full"></div>
@@ -550,7 +550,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                         <p className="text-[#465568] font-bold leading-relaxed italic text-xl px-8 block">
                            {labSymbol.description}
                         </p>
-                        <div className="pt-8 border-t border-[#8FA9C7]/25/60 mt-6 w-full">
+                        <div className="pt-8 border-t border-[#8FA9C7]/40 mt-6 w-full">
                            <div className="inline-block px-5 py-1.5 bg-[#F1EEF4] text-[#64788D] text-[10px] font-black uppercase tracking-[0.2em] mb-4 rounded-full border border-[#8FA9C7]/25">
                               {language === 'ar' ? 'البعد الفلسفي' : 'PHILOSOPHICAL ESSENCE'}
                            </div>
@@ -842,7 +842,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="bg-white rounded-[24px] p-6 border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:border-[#8FA9C7]/25/80 transition-all flex flex-col h-full"
+                            className="bg-white rounded-[24px] p-6 border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden group hover:border-[#8FA9C7]/40 transition-all flex flex-col h-full"
                           >
                             <div className={cn("absolute top-0 right-0 w-2 h-full", step.color)}></div>
                             <div className="flex flex-col h-full">
@@ -871,7 +871,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: i * 0.1 }}
-                        className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-blue-200 transition-all"
+                        className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-blue-200 transition-all"
                       >
                         <div className="w-12 h-12 bg-blue-50 rounded-[16px] flex items-center justify-center mb-6">
                            <Zap className="text-blue-500 w-6 h-6" />
@@ -894,7 +894,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          initial={{ opacity: 0, y: 20 }}
                          animate={{ opacity: 1, y: 0 }}
                          transition={{ delay: i * 0.1 }}
-                         className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden"
+                         className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden"
                        >
                           <div className="absolute top-0 left-0 w-full h-2 bg-indigo-500/10"></div>
                           <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-6">
@@ -929,7 +929,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          initial={{ opacity: 0, x: -20 }}
                          animate={{ opacity: 1, x: 0 }}
                          transition={{ delay: i * 0.1 }}
-                         className="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white p-6 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#A8C3BD]/25 transition-colors"
+                         className="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white p-6 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#A8C3BD]/25 transition-colors"
                        >
                          <div className="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold break-words text-wrap md:whitespace-nowrap shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                            {item.category}
@@ -964,7 +964,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="bg-white p-8 rounded-[24px] md:rounded-[32px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#8FA9C7]/25/80 relative z-10 hover:border-[#8E7AAE] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                            className="bg-white p-8 rounded-[24px] md:rounded-[32px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-[#8FA9C7]/40 relative z-10 hover:border-[#8E7AAE] transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
                           >
                              <h4 className="text-xl font-bold text-[#182231] mb-3">{b.title}</h4>
                              <p className="text-sm font-bold text-[#64788D] leading-relaxed">{b.description}</p>
@@ -998,7 +998,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          initial={{ opacity: 0, scale: 0.95 }}
                          animate={{ opacity: 1, scale: 1 }}
                          transition={{ delay: i * 0.1 }}
-                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#8E7AAE] transition-all group relative overflow-hidden"
+                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#8E7AAE] transition-all group relative overflow-hidden"
                        >
                          <div className="absolute top-0 left-0 w-2 h-full bg-black transition-all group-hover:w-4"></div>
                          <h4 className="text-2xl font-bold text-[#182231] mb-4 group-hover:text-[#182231] transition-colors">{job.title}</h4>
@@ -1037,7 +1037,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        <motion.div 
                          initial={{ y: 20, opacity: 0 }}
                          animate={{ y: 0, opacity: 1 }}
-                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
                        >
                           <h4 className="text-xl font-bold text-[#7C8796] uppercase tracking-widest mb-6"><Target className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /> {language === 'ar' ? 'الأهداف الرئيسية' : 'Core Objectives'}</h4>
                           <ul className="space-y-4">
@@ -1054,7 +1054,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          initial={{ y: 20, opacity: 0 }}
                          animate={{ y: 0, opacity: 1 }}
                          transition={{ delay: 0.1 }}
-                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
+                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)]"
                        >
                           <h4 className="text-xl font-bold text-[#7C8796] uppercase tracking-widest mb-6"><Wrench className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /> {language === 'ar' ? 'الأدوات والمواد' : 'Materials & Tools'}</h4>
                           <div className="flex flex-wrap gap-3">
@@ -1071,7 +1071,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        <motion.div 
                          initial={{ x: -20, opacity: 0 }}
                          animate={{ x: 0, opacity: 1 }}
-                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow"
+                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow"
                        >
                           <h4 className="text-2xl font-bold text-[#182231] mb-6 flex items-center gap-3">
                              <span className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-[#182231] text-xl"><Snowflake className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /></span>
@@ -1084,14 +1084,14 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        <motion.div 
                          initial={{ x: 20, opacity: 0 }}
                          animate={{ x: 0, opacity: 1 }}
-                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow"
+                         className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow"
                        >
                           <h4 className="text-2xl font-bold text-[#182231] mb-6 flex items-center gap-3">
                              <span className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-[#5F837A] text-xl"><Handshake className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /></span>
                              {language === 'ar' ? 'النشاط التفاعلي' : 'Interactive Activity'}
                           </h4>
                           <h5 className="text-2xl font-bold text-[#182231] mb-3">{labWorkshop?.interactive_activity?.title}</h5>
-                          <p className="text-[#64788D] font-bold leading-relaxed bg-[#EEF4F1]/50 p-6 rounded-[16px] border border-[#A8C3BD]/25/50 italic">
+                          <p className="text-[#64788D] font-bold leading-relaxed bg-[#EEF4F1]/50 p-6 rounded-[16px] border border-[#A8C3BD]/40 italic">
                              {labWorkshop?.interactive_activity?.instructions}
                           </p>
                        </motion.div>
@@ -1109,7 +1109,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                                initial={{ y: 20, opacity: 0 }}
                                animate={{ y: 0, opacity: 1 }}
                                transition={{ delay: i * 0.1 }}
-                               className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/25/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:scale-[1.02] transition-all group"
+                               className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:scale-[1.02] transition-all group"
                              >
                                <div className="flex justify-between items-start mb-6">
                                   <div className="w-12 h-12 bg-[#8E7AAE] text-white rounded-[16px] flex items-center justify-center font-bold text-xl group-hover:bg-black transition-colors">

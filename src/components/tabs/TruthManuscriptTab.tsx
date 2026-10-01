@@ -293,9 +293,9 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="عن ماذا تبحث الحكمة؟"
-            className="flex-1 bg-white/50 border border-[#182231]/10 rounded-xl px-4 py-3 placeholder-[#8A97A6] text-[#182231] font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="flex-1 min-w-0 bg-white/50 border border-[#182231]/10 rounded-xl px-4 py-3 placeholder-[#8A97A6] text-[#182231] font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
          />
-         <button type="submit" disabled={isLoading} className="bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-md active:scale-95 disabled:opacity-50">
+         <button type="submit" disabled={isLoading} className="shrink-0 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95 disabled:opacity-50">
            {isLoading ? <RefreshCw className="w-5 h-5 animate-spin"/> : <Sparkles className="w-5 h-5" />}
            <span>استنبط</span>
          </button>
