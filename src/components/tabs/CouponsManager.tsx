@@ -5,15 +5,18 @@ import { collection, onSnapshot, serverTimestamp, doc } from 'firebase/firestore
 import { addDoc, deleteDoc } from '../../lib/firestoreWrites';
 import { TicketPercent, Plus, Trash2, Tag, Percent } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { DEMO_COUPONS } from '../../data/demoAdmin';
 
 export const CouponsManager = ({ language }: { language: string }) => {
-  const [coupons, setCoupons] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [coupons, setCoupons] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_COUPONS : []));
+  const [loading, setLoading] = useState(!IS_DEMO_MODE);
   const [code, setCode] = useState('');
   const [discount, setDiscount] = useState('');
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     const unsub = onSnapshot(collection(db, 'coupons'), (snap) => {
       const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setCoupons(list);

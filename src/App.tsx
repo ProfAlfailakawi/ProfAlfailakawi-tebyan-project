@@ -472,6 +472,14 @@ import { LivingIcon } from "./components/LivingIcon";
 
 const AppContent: React.FC = () => {
   const { user, profile, loading, authReady, userName, userGender } = useAuth();
+  // في وضع العرض تُفتح شاشات الإدارة ببيانات نموذجية فقط (لا Firestore ولا حساب حقيقي).
+  const isAdminViewer =
+    IS_DEMO_MODE ||
+    profile?.role === "admin" ||
+    user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
+    user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
+    !!user?.email?.toLowerCase().includes("alfailakawidrahmad") ||
+    !!user?.email?.toLowerCase().includes("dr.ahmad");
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const isInternalPage = activeTab !== "home" && activeTab !== "discover";
   const [toast, setToast] = useState<{
@@ -889,13 +897,7 @@ const AppContent: React.FC = () => {
       icon: Users,
       tooltip:
         language === "ar" ? "لوحة تحكم إدارة المستخدمين" : "User Management",
-      hidden: !(
-        profile?.role === "admin" ||
-        user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-        user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-        user?.email?.toLowerCase().includes("alfailakawidrahmad") ||
-        user?.email?.toLowerCase().includes("dr.ahmad")
-      ),
+      hidden: !isAdminViewer,
     },
     {
       id: "adminqawlfasl",
@@ -905,13 +907,7 @@ const AppContent: React.FC = () => {
         language === "ar"
           ? "لوحة تحكم إدارة أسئلة قول فصل"
           : "Manage Qawl Fasl Questions",
-      hidden: !(
-        profile?.role === "admin" ||
-        user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-        user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-        user?.email?.toLowerCase().includes("alfailakawidrahmad") ||
-        user?.email?.toLowerCase().includes("dr.ahmad")
-      ),
+      hidden: !isAdminViewer,
     },
     {
       id: "adminmessages",
@@ -921,13 +917,7 @@ const AppContent: React.FC = () => {
         language === "ar"
           ? "لوحة إدارة رسائل الدعم والاتصال"
           : "Support Tickets",
-      hidden: !(
-        profile?.role === "admin" ||
-        user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-        user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-        user?.email?.toLowerCase().includes("alfailakawidrahmad") ||
-        user?.email?.toLowerCase().includes("dr.ahmad")
-      ),
+      hidden: !isAdminViewer,
     },
   ];
 
@@ -1773,43 +1763,19 @@ const AppContent: React.FC = () => {
                       />
                     );
                   case "adminusers":
-                    return profile?.role === "admin" ||
-                      user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-                      user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-                      user?.email
-                        ?.toLowerCase()
-                        .includes("alfailakawidrahmad") ||
-                      user?.email?.toLowerCase().includes("dr.ahmad") ? (
+                    return isAdminViewer ? (
                       <AdminUsersDashboard />
                     ) : null;
                   case "adminqawlfasl":
-                    return profile?.role === "admin" ||
-                      user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-                      user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-                      user?.email
-                        ?.toLowerCase()
-                        .includes("alfailakawidrahmad") ||
-                      user?.email?.toLowerCase().includes("dr.ahmad") ? (
+                    return isAdminViewer ? (
                       <AdminQawlFasl />
                     ) : null;
                   case "adminmessages":
-                    return profile?.role === "admin" ||
-                      user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-                      user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-                      user?.email
-                        ?.toLowerCase()
-                        .includes("alfailakawidrahmad") ||
-                      user?.email?.toLowerCase().includes("dr.ahmad") ? (
+                    return isAdminViewer ? (
                       <AdminContactTab language={language} />
                     ) : null;
                   case "admindashboard":
-                    return profile?.role === "admin" ||
-                      user?.uid === "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-                      user?.email?.toLowerCase() === "ah_f@hotmail.com" ||
-                      user?.email
-                        ?.toLowerCase()
-                        .includes("alfailakawidrahmad") ||
-                      user?.email?.toLowerCase().includes("dr.ahmad") ? (
+                    return isAdminViewer ? (
                       <AdminDashboard />
                     ) : null;
                   case "contact":

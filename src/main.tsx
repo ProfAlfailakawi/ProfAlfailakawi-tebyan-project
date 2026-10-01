@@ -1,3 +1,4 @@
+import './lib/demoStorage';
 import React, {StrictMode, lazy, Suspense} from 'react';
 import {createRoot} from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

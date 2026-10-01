@@ -4,14 +4,16 @@ import { updateDoc, deleteDoc, setDoc } from '../lib/firestoreWrites';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { db, auth } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
+import { IS_DEMO_MODE } from '../lib/demoMode';
+import { DEMO_USERS } from '../data/demoAdmin';
 import { Users, Trash2, Edit2, Shield, X, KeyRound, Save, Activity, FileText, Ban, CheckCircle, Award, Lightbulb } from 'lucide-react';
 
 export default function AdminUsersDashboard() {
   const { profile, user, loading: authLoading } = useAuth();
   
-  const isAuthorized = profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
-  const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const isAuthorized = IS_DEMO_MODE || profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+  const [users, setUsers] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_USERS : []));
+  const [loading, setLoading] = useState(!IS_DEMO_MODE);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<any>(null);
   const [editFormData, setEditFormData] = useState({ 
@@ -78,6 +80,7 @@ export default function AdminUsersDashboard() {
   };
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     if (authLoading) return;
     
     // Allow if either profile role is admin OR email matches hardcoded admins

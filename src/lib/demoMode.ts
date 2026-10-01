@@ -79,6 +79,13 @@ export function resetDemoMode(): boolean {
     // ما يكتبه الزائر أثناء العرض يعيش في تخزين التبويب وحده؛ مسحه يعيد البداية.
     window.sessionStorage.removeItem('tebyan_current_query');
     window.sessionStorage.removeItem('tebyan_current_has_searched');
+    // مساحة التخزين المعزولة (انظر demoStorage.ts): ما كتبه الزائر يُمحى، وتعود البذور.
+    const drop: string[] = [];
+    for (let i = 0; i < window.sessionStorage.length; i++) {
+      const k = window.sessionStorage.key(i);
+      if (k && k.startsWith('tebyan_demo_ls_v1:')) drop.push(k);
+    }
+    drop.forEach((k) => window.sessionStorage.removeItem(k));
   } catch {
     return false;
   }

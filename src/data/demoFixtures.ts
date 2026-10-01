@@ -52,6 +52,61 @@ export const DEMO_SAVED_LIBRARY: any[] = [
     title: 'خطة أسرية لتنظيم الشاشات خلال الفصل الدراسي الأول',
     estimated_duration: '٦ أسابيع — من ٤ أكتوبر إلى ١٥ نوفمبر ٢٠٢٦',
   },
+  {
+    id: 'demo-lib-q6',
+    type: 'qawlfasl',
+    tabId: 'qawlfasl',
+    question: 'طفلي يرفض الذهاب إلى المدرسة ويبكي كل صباح.',
+    quickSummary:
+      'ابدئي بفهم السبب (فراق، صديق، معلمة، اختبار) قبل الحل، وثبّتي روتين صباح هادئاً ومشجّعاً دون تهديد.',
+  },
+  {
+    id: 'demo-lib-q5',
+    type: 'qawlfasl',
+    tabId: 'qawlfasl',
+    question: 'كيف أتعامل مع نوبات الغضب الشديدة عند الأطفال؟',
+    quickSummary:
+      'اهدئي أولاً، وسمّي الشعور بكلمات بسيطة، وانتظري انتهاء النوبة قبل أي حوار؛ فالتعلّم يحدث بعد الهدوء لا أثناءه.',
+  },
+  {
+    id: 'demo-lib-oracle-2',
+    type: 'oracle',
+    tabId: 'oracle',
+    question: 'نورة تخجل من المشاركة في الصف، كيف أساعدها؟',
+    content:
+      '**ابدئي بالبيت:** اجعلي لها دقيقتين كل مساء تحكي فيهما شيئاً من يومها دون مقاطعة.\n\n**تدرّجي:** سؤال واحد تجيب عنه في الصف هذا الأسبوع، ثم سؤالان.\n\n**احتفي بالمحاولة** لا بالنتيجة: «أعجبني أنك رفعتِ يدك».',
+  },
+  {
+    id: 'demo-lib-oracle-3',
+    type: 'oracle',
+    tabId: 'oracle',
+    question: 'كيف أعلّم سعود قيمة المال والادخار في سن السابعة؟',
+    content:
+      '**اعطه حصّالة شفافة** ليرى المبلغ يكبر.\n\n**اربط الادخار بهدف قريب:** لعبة تركيب يريدها خلال شهرين.\n\n**دعه يشتري بنفسه** ليعيش أثر قراره.',
+  },
+  {
+    id: 'demo-lib-concept-2',
+    type: 'concept',
+    tabId: 'concepts',
+    question: 'الإنذار المسبق',
+    content:
+      'تنبيه الطفل قبل الانتقال من نشاط إلى آخر بوقت كافٍ («بعد عشر دقائق»، ثم «دقيقتان»)، فيتهيأ نفسياً ويقلّ العناد.',
+  },
+  {
+    id: 'demo-lib-concept-3',
+    type: 'concept',
+    tabId: 'concepts',
+    question: 'الحدود الحازمة الدافئة',
+    content:
+      'قاعدة واضحة لا تتغير بتغيّر المزاج، تُقال بنبرة هادئة ومحبّة: «لا نستخدم الجهاز بعد الثامنة والنصف، وأنا هنا لألعب معك».',
+  },
+  {
+    id: 'demo-lib-roadmap-2',
+    type: 'roadmap',
+    tabId: 'roadmap',
+    title: 'مسار تنظيم وقت الدراسة لنورة قبل الاختبارات',
+    estimated_duration: '٤ أسابيع — من ٦ سبتمبر إلى ٤ أكتوبر ٢٠٢٦',
+  },
   'قاعدة البيت: لا أجهزة على مائدة العشاء، ولا في غرف النوم بعد الساعة ٨:٣٠ مساءً.',
 ];
 
@@ -144,6 +199,61 @@ export const DEMO_SAVED_LIBRARY_EN: any[] = [
     title: 'A family screen plan for the first school term',
     estimated_duration: '6 weeks — 4 October to 15 November 2026',
   },
+  {
+    id: 'demo-lib-q6',
+    type: 'qawlfasl',
+    tabId: 'qawlfasl',
+    question: 'My child refuses to go to school and cries every morning.',
+    quickSummary:
+      'Start by understanding the cause (separation, a friend, a teacher, a test) before the solution, and set a calm, encouraging morning routine without threats.',
+  },
+  {
+    id: 'demo-lib-q5',
+    type: 'qawlfasl',
+    tabId: 'qawlfasl',
+    question: 'How do I deal with intense tantrums in children?',
+    quickSummary:
+      'Calm yourself first, name the feeling in simple words, and wait for the outburst to end before any conversation; learning happens after calm, not during it.',
+  },
+  {
+    id: 'demo-lib-oracle-2',
+    type: 'oracle',
+    tabId: 'oracle',
+    question: 'Noura is shy about taking part in class. How can I help her?',
+    content:
+      '**Start at home:** give her two minutes every evening to talk about her day without interruption.\n\n**Go step by step:** one question she answers in class this week, then two.\n\n**Celebrate the attempt**, not the result: "I liked that you raised your hand."',
+  },
+  {
+    id: 'demo-lib-oracle-3',
+    type: 'oracle',
+    tabId: 'oracle',
+    question: 'How do I teach Saud the value of money and saving at age seven?',
+    content:
+      '**Give him a clear piggy bank** so he sees the amount grow.\n\n**Tie saving to a near goal:** a building set he wants within two months.\n\n**Let him buy it himself** so he lives the result of his decision.',
+  },
+  {
+    id: 'demo-lib-concept-2',
+    type: 'concept',
+    tabId: 'concepts',
+    question: 'Advance warning',
+    content:
+      'Alert the child well before moving from one activity to another ("in ten minutes", then "two minutes"), so he prepares emotionally and resists less.',
+  },
+  {
+    id: 'demo-lib-concept-3',
+    type: 'concept',
+    tabId: 'concepts',
+    question: 'Warm, firm limits',
+    content:
+      'A clear rule that does not change with mood, said in a calm, loving tone: "We do not use devices after 8:30, and I am here to play with you."',
+  },
+  {
+    id: 'demo-lib-roadmap-2',
+    type: 'roadmap',
+    tabId: 'roadmap',
+    title: 'A study-time plan for Noura before exams',
+    estimated_duration: '4 weeks — 6 September to 4 October 2026',
+  },
   'House rule: no devices at the dinner table, and none in bedrooms after 8:30 pm.',
 ];
 
@@ -184,6 +294,27 @@ export const DEMO_LOYALTY_EN: typeof DEMO_LOYALTY = {
   ],
 };
 
+/** نتيجة «الرادار الاستباقي» الجاهزة: تُبنى على سجلّات الأسبوع أعلاه (الأحد ٢٠ – السبت ٢٦ سبتمبر). */
+export const DEMO_ANALYTICS_PREDICTION = {
+  pattern_found:
+    'الانفعال يتركّز في المساء عند إنهاء اللعب بلا إنذار مسبق (٢٠ و٢٤ سبتمبر)، بينما يمرّ المساء بهدوء حين يسبق الإغلاقَ تنبيهٌ بعشر دقائق وبديلٌ ممتع (٢١ و٢٣ و٢٦ سبتمبر).',
+  risk_level: 'Medium' as const,
+  prediction:
+    'إن تكرّر الإغلاق المفاجئ في عطلة نهاية الأسبوع مع الزيارات العائلية، فمن المتوقع نوبة عناد مساء الخميس أو الجمعة.',
+  proactive_warning:
+    'اتفقي مع سعود مسبقًا على «جدول الجمعة»، وأعطيه إنذارين (عشر دقائق ثم دقيقتان)، وجهّزي نشاطًا بديلًا مشتركًا مثل لعب الورق مع نورة لحظة إغلاق الجهاز.',
+};
+
+export const DEMO_ANALYTICS_PREDICTION_EN = {
+  pattern_found:
+    'Tension peaks in the evening when play ends with no advance warning (20 and 24 Sept), while evenings pass calmly when a ten-minute warning and an enjoyable alternative come first (21, 23 and 26 Sept).',
+  risk_level: 'Medium' as const,
+  prediction:
+    'If abrupt switch-offs repeat over the weekend with family visits, a stubborn outburst is likely on Thursday or Friday evening.',
+  proactive_warning:
+    'Agree on a "Friday schedule" with Saud in advance, give two warnings (ten minutes, then two), and have a shared activity ready the moment the device goes off, such as a card game with Noura.',
+};
+
 const isArabic = (language?: string) => !language || language === 'ar';
 
 /** The demo fixtures in the current UI language (Arabic is the default). */
@@ -195,6 +326,7 @@ export function getDemoFixtures(language?: string) {
     searchHistory: ar ? DEMO_SEARCH_HISTORY : DEMO_SEARCH_HISTORY_EN,
     analyticsLogs: ar ? DEMO_ANALYTICS_LOGS : DEMO_ANALYTICS_LOGS_EN,
     loyalty: ar ? DEMO_LOYALTY : DEMO_LOYALTY_EN,
+    prediction: ar ? DEMO_ANALYTICS_PREDICTION : DEMO_ANALYTICS_PREDICTION_EN,
     visitorName: ar ? 'أنت' : 'You',
   };
 }

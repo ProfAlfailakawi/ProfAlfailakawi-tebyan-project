@@ -22,13 +22,14 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
     if (!IS_DEMO_MODE) return;
     const demo = getDemoFixtures(language).analyticsLogs;
     setLogs(prev => [...demo, ...prev.slice(demo.length)]);
+    setPrediction((prev: any) => (prev ? getDemoFixtures(language).prediction : prev));
   }, [language]);
 
   const [feeling, setFeeling] = useState('');
   const [behavior, setBehavior] = useState('');
   
   const [isPredicting, setIsPredicting] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<any>(() => (IS_DEMO_MODE ? getDemoFixtures(language).prediction : null));
   const [error, setError] = useState<string | null>(null);
 
   const stats = [
@@ -50,6 +51,13 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
     if (logs.length === 0) return;
     setIsPredicting(true);
     setError(null);
+    if (IS_DEMO_MODE) {
+      // العرض: نتيجة جاهزة مبنيّة على سجلّات الأسبوع، بلا استدعاء للذكاء الاصطناعي.
+      await new Promise(r => setTimeout(r, 700));
+      setPrediction(getDemoFixtures(language).prediction);
+      setIsPredicting(false);
+      return;
+    }
     try {
       const result = await generatePredictiveRadar(logs, language);
       setPrediction(result);
@@ -144,7 +152,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                     <button 
                       type="button" 
                       onClick={() => {
-                        const demoLogs = [
+                        const demoLogs = IS_DEMO_MODE ? getDemoFixtures(language).analyticsLogs : [
                           { date: '2024-05-01', feeling: language === 'ar' ? 'منعزل وصامت' : 'Withdrawn and silent', behavior: language === 'ar' ? 'رفض المشاركة في العشاء' : 'Refused to join dinner' },
                           { date: '2024-05-02', feeling: language === 'ar' ? 'متوتر' : 'Tense', behavior: language === 'ar' ? 'صراخ عند طلب إغلاق الجهاز' : 'Screamed when asked to turn off device' },
                           { date: '2024-05-03', feeling: language === 'ar' ? 'مستفز' : 'Provocative', behavior: language === 'ar' ? 'تجاهل النداء المتكرر' : 'Ignored repeated calls' }
