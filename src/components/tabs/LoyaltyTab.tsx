@@ -96,6 +96,29 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
     } as any;
   }, [customers, user]);
 
+  const filteredCustomers = useMemo(() => {
+    return customers
+      .filter(c => {
+        const matchesSearch = c.displayName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                             (c.phone && c.phone.includes(searchTerm)) || 
+                             c.email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesFilter = activeFilter === 'All' || c.status === activeFilter;
+        return matchesSearch && matchesFilter;
+      })
+      .sort((a, b) => {
+        const aVal = a[sortConfig.key];
+        const bVal = b[sortConfig.key];
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [customers, searchTerm, activeFilter, sortConfig]);
+
+  const paginatedCustomers = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredCustomers.slice(start, start + itemsPerPage);
+  }, [filteredCustomers, currentPage]);
+
   if (!isAdmin) {
     return (
       <div className="w-full bg-white min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -207,29 +230,6 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
       </div>
     );
   }
-
-  const filteredCustomers = useMemo(() => {
-    return customers
-      .filter(c => {
-        const matchesSearch = c.displayName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             (c.phone && c.phone.includes(searchTerm)) || 
-                             c.email.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesFilter = activeFilter === 'All' || c.status === activeFilter;
-        return matchesSearch && matchesFilter;
-      })
-      .sort((a, b) => {
-        const aVal = a[sortConfig.key];
-        const bVal = b[sortConfig.key];
-        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-        return 0;
-      });
-  }, [customers, searchTerm, activeFilter, sortConfig]);
-
-  const paginatedCustomers = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return filteredCustomers.slice(start, start + itemsPerPage);
-  }, [filteredCustomers, currentPage]);
 
   const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
