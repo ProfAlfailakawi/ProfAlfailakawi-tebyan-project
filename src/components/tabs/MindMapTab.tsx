@@ -8,6 +8,7 @@ import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: string, initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { userGender } = useAuth();
@@ -101,6 +102,10 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
               {language === 'ar' ? 'جاري فك تشفير الفكرة وهندسة الخريطة...' : 'Decoding the concept and engineering the map...'}
             </p>
           </div>
+        )}
+
+        {!mindMapData && !isGenerating && (
+          <ToolEmptyHint icon={Network} text={language === 'ar' ? 'أدخل أي مفهوم أو مشكلة تربوية.' : 'Enter any educational concept or problem, and the Omni-AI will dismantle it into a deep structural mind map.'} />
         )}
 
         {mindMapData && !isGenerating && (

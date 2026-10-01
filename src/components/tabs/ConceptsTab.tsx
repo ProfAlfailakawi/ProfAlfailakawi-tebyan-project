@@ -7,6 +7,7 @@ import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 interface ConceptsTabProps {
   input: string;
@@ -128,6 +129,9 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       </div>
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
+        {!isLoading && !output && (
+          <ToolEmptyHint icon={Sparkles} text={language === 'ar' ? 'تبسيط المفاهيم المعقدة واختزالها في أفكار واضحة وممنهجة يسهل فهمها ونقلها.' : 'Simplify complex concepts and condense them into clear, structured ideas that are easy to understand and share.'} />
+        )}
         {isLoading ? (
           <motion.div 
             initial={{ opacity: 0 }}

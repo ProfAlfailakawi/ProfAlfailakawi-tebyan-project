@@ -5,6 +5,7 @@ import { generateStory } from '../../services/gemini';
 import { cn } from '../../lib/utils';
 import Markdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
+import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [topic, setTopic] = useState('');
@@ -95,10 +96,7 @@ export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange 
                 <Markdown>{story}</Markdown>
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center flex-col gap-4 text-[#465568]">
-                <BookOpen className="w-20 h-20" />
-                <span className="font-bold text-xl">{language === 'ar' ? 'الصفحة البيضاء بانتظارك' : 'The blank page awaits'}</span>
-              </div>
+              <ToolEmptyHint icon={BookOpen} text={language === 'ar' ? 'الصفحة البيضاء بانتظارك' : 'The blank page awaits'} className="h-full" />
             )}
           </div>
         </div>
