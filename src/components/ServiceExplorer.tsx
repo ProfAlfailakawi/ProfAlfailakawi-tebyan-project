@@ -173,20 +173,25 @@ export const ServiceExplorer: React.FC<Props> = ({
                 key={category.id}
                 type="button"
                 onClick={() => setSelectedCategory(category.id)}
-                className="tebyan-need-card group min-h-[142px] rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_10px_28px_rgba(24,34,49,0.045)] transition-[transform,border-color,box-shadow] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+                className="tebyan-need-card group relative min-h-[142px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_10px_28px_rgba(24,34,49,0.045)] transition-[transform,border-color,box-shadow] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
               >
-                <div className="flex items-start justify-between gap-3">
+                <Icon
+                  aria-hidden="true"
+                  strokeWidth={1}
+                  className="pointer-events-none absolute -bottom-5 -left-5 h-28 w-28 text-[#8E7AAE]/[0.07] transition-colors group-hover:text-[#8E7AAE]/[0.12]"
+                />
+                <div className="relative flex items-start justify-between gap-3">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5" strokeWidth={1.6} />
                   </span>
                   <span className="rounded-full bg-[#F4F6F8] px-2.5 py-1 text-[11px] font-black text-[#7C8796]">
                     {isArabic ? `${count} خيارات` : `${count} options`}
                   </span>
                 </div>
-                <h2 className="mt-3 text-[15px] font-black leading-6 text-[#182231] md:text-base">
+                <h2 className="relative mt-3 text-[15px] font-black leading-6 text-[#182231] md:text-base">
                   {isArabic ? category.titleAr : category.titleEn}
                 </h2>
-                <p className="mt-1 text-[13px] font-bold leading-6 text-[#64788D]">
+                <p className="relative mt-1 text-[13px] font-bold leading-6 text-[#64788D]">
                   {isArabic ? category.descriptionAr : category.descriptionEn}
                 </p>
               </button>
@@ -257,12 +262,17 @@ export const ServiceExplorer: React.FC<Props> = ({
                   type="button"
                   key={service.id}
                   onClick={() => handleTabChange(service.id)}
-                  className="tebyan-service-card group min-h-[164px] rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+                  className="tebyan-service-card group relative min-h-[148px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
                 >
-                  <div className="flex h-full flex-col">
+                  <Icon
+                    aria-hidden="true"
+                    strokeWidth={1}
+                    className="pointer-events-none absolute -bottom-5 -left-5 h-28 w-28 text-[#8E7AAE]/[0.07] transition-colors group-hover:text-[#8E7AAE]/[0.12]"
+                  />
+                  <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-3">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[15px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
-                        <Icon className="h-[18px] w-[18px]" />
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
+                        <Icon className="h-5 w-5" strokeWidth={1.6} />
                       </span>
                       {service.featured && (
                         <span className="rounded-full bg-[#EEF4F1] px-2.5 py-1 text-[10px] font-black text-[#4D766B]">
@@ -276,7 +286,10 @@ export const ServiceExplorer: React.FC<Props> = ({
                     <p className="mt-0.5 text-[11px] font-black text-[#8E7AAE]">
                       {getServiceLabel(service, language)}
                     </p>
-                    <p className="mt-2 flex-1 text-[13px] font-bold leading-6 text-[#64788D]">
+                    <p
+                      title={getServiceDescription(service, language)}
+                      className="mt-2 line-clamp-2 flex-1 text-[13px] font-bold leading-6 text-[#64788D]"
+                    >
                       {getServiceDescription(service, language)}
                     </p>
                     <span className="mt-3 inline-flex items-center gap-2 text-[13px] font-black text-[#182231]">
