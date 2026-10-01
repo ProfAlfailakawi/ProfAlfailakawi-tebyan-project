@@ -56,3 +56,22 @@ test('demo AI: council, mind map and simulation weave the topic keywords in', ()
   assert.match(sim.scenario, /رفض الواجبات/);
   assert.equal(sim.decisions.filter((d: any) => d.isCorrect).length, 1);
 });
+
+test('demo AI: quiz answers match options with varied positions; roadmap and story are shaped', () => {
+  const quiz = JSON.parse(demoAiText({
+    contents: [{ parts: [{ text: 'التعامل مع نوبات الغضب' }] }],
+    config: { responseSchema: quizSchema },
+  }));
+  assert.equal(quiz.length, 6);
+  for (const q of quiz) assert.ok(q.options.includes(q.answer));
+  assert.ok(new Set(quiz.map((q: any) => q.options.indexOf(q.answer))).size > 1);
+  const road = JSON.parse(demoAiText({
+    contents: [{ parts: [{ text: 'توليد الخريطة' }] }],
+    config: { systemInstruction: 'ولدي خارطة طريق لهدف: تنظيم الشاشات في الأسرة بلهجة بيضاء', responseSchema: { type: 'OBJECT', properties: { title: { type: 'STRING' }, estimated_duration: { type: 'STRING' }, milestones: { type: 'ARRAY', items: { type: 'OBJECT', properties: {} } } } } },
+  }));
+  assert.match(road.title, /الشاشات/);
+  assert.equal(road.milestones.length, 4);
+  const story = demoAiText({ contents: [{ parts: [{ text: 'ألفي قصة لـ: رفض المدرسة. التفاصيل: .' }] }], config: { systemInstruction: 'اكتب قصة قصيرة جداً (ميكرو-ستوري) للموضوع: رفض المدرسة. هيكل: المشهد الافتتاحي' } });
+  assert.match(story, /المشهد الافتتاحي/);
+  assert.doesNotMatch(story, /\\n/);
+});

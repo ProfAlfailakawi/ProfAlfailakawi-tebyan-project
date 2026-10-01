@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion, AnimatePresence } from 'motion/react';
 import { Gamepad2, RefreshCw, Zap, MessageCircle, Send, CheckCircle2, ShieldAlert } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -186,6 +187,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
             ) : !simulation ? (
               <div className="space-y-6">
                 <p className="text-zinc-500 font-bold">{language === 'ar' ? 'أدخل تحدياً وسأقوم بوضعك في موقف يتطلب قراراً حكيماً.' : 'Enter a challenge and I will put you in a situation that requires a wise decision.'}</p>
+<DemoStarters tab="simulation" language={language} onPick={setSimTopic} className="mb-3" />
                 <div className="flex flex-col md:flex-row gap-4 w-full">
                   <input 
                     value={simTopic} 

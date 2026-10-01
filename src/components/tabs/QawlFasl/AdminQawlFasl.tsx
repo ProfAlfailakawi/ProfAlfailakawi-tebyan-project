@@ -317,7 +317,7 @@ export default function AdminQawlFasl() {
             title="تحليل البحث"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
-            <span className="hidden md:inline">تحليل البحث</span>
+            <span className="inline">تحليل البحث</span>
           </button>
           <button 
             disabled={isProcessing}
@@ -341,7 +341,7 @@ export default function AdminQawlFasl() {
             title="توليد مسودات ذكية"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
-            <span className="hidden md:inline">توليد مسودات</span>
+            <span className="inline">توليد مسودات</span>
           </button>
           <button 
             onClick={handleMigrateCategories} 
@@ -349,33 +349,33 @@ export default function AdminQawlFasl() {
             className="bg-amber-100 text-amber-700 hover:bg-amber-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="تحديث التصنيفات"
           >
-            <Wand2 className="w-4 h-4"/> <span className="hidden md:inline">{(isMigrating || isProcessing) ? 'جاري التحديث...' : 'تحديث التصنيفات'}</span>
+            <Wand2 className="w-4 h-4"/> <span className="inline">{(isMigrating || isProcessing) ? 'جاري التحديث...' : 'تحديث التصنيفات'}</span>
           </button>
           <button 
             disabled={isProcessing}
             onClick={() => setShowBulkGen(true)} className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="التوليد الشامل"
           >
-            <Database className="w-4 h-4"/> <span className="hidden md:inline">التوليد الشامل</span>
+            <Database className="w-4 h-4"/> <span className="inline">التوليد الشامل</span>
           </button>
           <button 
             disabled={isProcessing}
             onClick={() => setShowUpload(true)} className="bg-teal-100 text-teal-700 hover:bg-teal-200 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="رفع الأسئلة"
           >
-            <UploadCloud className="w-4 h-4"/> <span className="hidden md:inline">رفع الأسئلة</span>
+            <UploadCloud className="w-4 h-4"/> <span className="inline">رفع الأسئلة</span>
           </button>
           <button 
             disabled={isProcessing}
             onClick={openNew} className="bg-black text-white hover:bg-zinc-900 disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11"
             title="سؤال جديد"
           >
-             <Plus className="w-4 h-4"/> <span className="hidden md:inline">سؤال جديد</span>
+             <Plus className="w-4 h-4"/> <span className="inline">سؤال جديد</span>
           </button>
         </div>
       </div>
 
-      <div className="bg-rose-50 border border-rose-200 rounded-[16px] p-4 md:p-6 mb-8 text-rose-900 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="bg-rose-50 border border-rose-200 rounded-[16px] p-4 md:p-6 mb-8 text-[#7A1F33] shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="min-w-0">
            <h3 className="text-lg font-bold flex items-center gap-2 mb-1"><Database className="w-5 h-5"/> إدارة النظام الآلي والتهيئة</h3>
            <p className="text-sm">هذه الإجراءات تؤثر بشكل كبير على قاعدة البيانات. استخدمها بحذر.</p>
@@ -397,7 +397,7 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-rose-600 hover:bg-rose-700 disabled:bg-rose-400 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
+            }} className="bg-rose-100 hover:bg-rose-200 disabled:opacity-60 text-[#7A1F33] border border-rose-300 font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
                 تهيئة ومسح النظام (Backup & Reset)
             </button>

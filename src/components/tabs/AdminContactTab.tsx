@@ -110,7 +110,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                   onClick={() => markAsRead(msg.id, msg.status)}
                 >
                   {msg.status === 'new' && (
-                    <div className="absolute top-6 rtl:right-4 ltr:left-4 w-2 h-2 rounded-full bg-blue-500" />
+                    <div aria-hidden className="absolute top-3 rtl:left-3 ltr:right-3 rounded-full bg-blue-500" style={{ width: 8, height: 8, minWidth: 0, minHeight: 0 }} />
                   )}
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4 pl-4 rtl:pr-4 rtl:pl-0">
                     <div className="min-w-0">

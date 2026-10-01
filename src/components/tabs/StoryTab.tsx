@@ -91,7 +91,7 @@ export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange 
                 <span className="font-bold">{language === 'ar' ? 'الخيال ينسج خيوطه...' : 'Weaving magic...'}</span>
               </div>
             ) : story ? (
-              <div className="prose prose-invert prose-lg max-w-none font-medium leading-loose custom-scrollbar max-h-[600px] overflow-y-auto pr-4">
+              <div className="prose prose-lg max-w-none prose-headings:text-[#182231] prose-strong:text-[#4B3F6B] prose-p:text-[#182231] font-medium leading-loose custom-scrollbar max-h-[600px] overflow-y-auto pr-4">
                 <Markdown>{story}</Markdown>
               </div>
             ) : (

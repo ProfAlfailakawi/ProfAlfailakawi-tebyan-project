@@ -1,4 +1,5 @@
 import React from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { Sparkles, Bookmark, BookmarkCheck, Box, Hammer } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -86,6 +87,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-4">
         <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-[#6E5B91]" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
       </div>
+<DemoStarters tab="concepts" language={language} onPick={setInput} className="mb-3" />
       <textarea 
         value={input} onChange={(e) => setInput(e.target.value)}
         className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-white border-[#6E5B91]/30 text-[#182231] placeholder:text-[#8A97A6] focus:border-[#6E5B91]/30 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-[#64788D]")}

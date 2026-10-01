@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { Users, RefreshCw, BookOpen, Search, Library, ExternalLink, Box, Swords } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -79,6 +80,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
            </div>
         </div>
 
+<DemoStarters tab="council" language={language} onPick={setCouncilTopic} className="mb-3" />
         <div className="relative group">
           <input 
             value={councilTopic} 

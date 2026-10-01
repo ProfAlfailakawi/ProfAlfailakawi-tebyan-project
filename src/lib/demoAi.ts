@@ -71,7 +71,9 @@ function freeText(topic: string, ar: boolean, hint: string): string {
     if (/أرسطو|صقل الفكرة/.test(hint)) {
       return `الفكرة الجوهرية: «${topic}» تنضج حين تُختبر في موقف حقيقي صغير، لا حين تُناقش طويلًا.`;
     }
-    return `**الإجابة الجوهرية: ابدأوا بخطوة صغيرة وواضحة بخصوص «${topic}»**\n\n**لماذا هذا مهم؟** لأن التغيير الهادئ المتكرر أثبت من القرار الكبير المفاجئ.\n\n**الخطوات الميدانية**\n- حدّدوا موقفًا واحدًا محددًا لتجربته هذا الأسبوع.\n- صوغوا الطلب بجملة قصيرة ونبرة هادئة.\n- امنحوا الطرف الآخر وقتًا قصيرًا للاستجابة قبل التدخل.\n- دوّنوا ما نجح وما لم ينجح في نهاية اليوم.\n\n**حكمة ذهبية:** الهدوء لا يعني الضعف، بل هو أقصر طريق للإصغاء.\n\n**مراجع سريعة:** ما سبق إرشاد عام ضمن العرض التجريبي، وليس بديلًا عن مختص عند الحاجة.\n\n> هذا ردّ تجريبي مُعدّ مسبقًا ضمن البيئة التجريبية.`;
+    const kw = keywordsOf(topic);
+    const k1 = kw[0] || topic, k2 = kw[1] || k1;
+    return `**الإجابة الجوهرية:** ابدأوا بخطوة صغيرة وواضحة بخصوص «${k1}»، وقيسوا أثرها قبل أن تضيفوا غيرها.\n\n**لماذا هذا مهم؟** لأن «${topic}» نمط يتكرر؛ والتغيير الهادئ المتكرر أثبت من القرار الكبير المفاجئ.\n\n**الخطوات الميدانية**\n- حدّدوا موقفًا واحدًا محددًا يظهر فيه «${k1}» لتجربته هذا الأسبوع.\n- صوغوا الطلب بجملة قصيرة ونبرة هادئة، وأعطوا إنذارًا مسبقًا قبل أي انتقال.\n- اربطوا «${k2}» بروتين ثابت في وقت ثابت كل يوم.\n- امنحوا الطرف الآخر وقتًا قصيرًا للاستجابة قبل التدخل.\n- دوّنوا في آخر اليوم ما نجح وما لم ينجح، وراجعوه يوم الجمعة.\n\n**حكمة ذهبية:** الهدوء لا يعني الضعف، بل هو أقصر طريق للإصغاء.\n\n**مراجع سريعة:** إرشاد عام ضمن العرض التجريبي، وليس بديلًا عن مختص عند الحاجة.`;
   }
   return `**Core answer: start with one small, clear step on "${topic}".**\n\n**Why it matters:** calm, repeated change lasts longer than a sudden big decision.\n\n**Action steps**\n- Pick one specific situation to try this week.\n- Phrase the request in one short, calm sentence.\n- Give the other side a moment to respond before stepping in.\n- Note what worked at the end of the day.\n\n**Golden wisdom:** calm is not weakness; it is the shortest path to being heard.\n\n> This is a pre-written demo response generated locally.`;
 }
@@ -186,7 +188,7 @@ export function keywordsOf(topic: string): string[] {
 }
 
 function quotedTopic(full: string): string | null {
-  const m = full.match(/Analyze "([^"]{2,200})"/) || full.match(/الموضوع:\s*"([^"]{2,200})"/);
+  const m = full.match(/Analyze "([^"]{2,200})"/) || full.match(/الموضوع:\s*"([^"]{2,200})"/) || full.match(/الموضوع التالي:\s*"([^"]{2,200})"/);
   return m ? m[1] : null;
 }
 
@@ -265,10 +267,65 @@ function simulationFor(topic: string, ar: boolean) {
   ] };
 }
 
+
+function quizFor(topic: string, ar: boolean) {
+  const kw = keywordsOf(topic);
+  const k1 = kw[0] || (ar ? 'الموضوع' : 'the topic');
+  type Q = { question: string; type: string; options: string[]; correct: number };
+  const qs: Q[] = ar ? [
+    { question: `ما أنسب أول خطوة عند مواجهة «${topic}»؟`, type: 'multiple', correct: 1, options: ['رفع الصوت ليفهم الطرف الآخر', 'التوقف لحظة ووصف ما يحدث دون اتهام', 'تجاهل الموقف حتى يهدأ وحده', 'المعاقبة الفورية قبل السؤال'] },
+    { question: `أي عبارة أقرب إلى الأسلوب الهادئ بخصوص «${k1}»؟`, type: 'multiple', correct: 0, options: [`«أرى أن الأمر صعب الآن، فلنجد حلًّا معًا.»`, '«كم مرة قلت لك!»', '«لا أريد سماع شيء.»', '«أنت دائمًا هكذا.»'] },
+    { question: `متى يكون وقت الحديث الأنسب عن «${k1}»؟`, type: 'multiple', correct: 2, options: ['في أوج الانفعال', 'أمام الآخرين', 'بعد أن يهدأ الجميع ويستعيدوا هدوءهم', 'قبل النوم مباشرة بنبرة حادة'] },
+    { question: 'الإنذار المسبق قبل أي انتقال يخفف المقاومة.', type: 'boolean', correct: 0, options: ['صح', 'خطأ'] },
+    { question: 'رفع الصوت أسرع طريق لتعليم الإصغاء على المدى الطويل.', type: 'boolean', correct: 1, options: ['صح', 'خطأ'] },
+    { question: `اختاروا خطوة صغيرة واحدة يمكن تجربتها هذا الأسبوع بخصوص «${k1}».`, type: 'fill', correct: 0, options: ['روتين ثابت بإنذار مسبق وبديل جاهز', 'قرار كبير مفاجئ', 'تأجيل الأمر إلى الإجازة'] },
+  ] : [
+    { question: `What is the best first step when facing "${topic}"?`, type: 'multiple', correct: 1, options: ['Raise your voice', 'Pause and describe what is happening without blame', 'Ignore it', 'Punish immediately'] },
+    { question: `Which phrase is closest to a calm style about "${k1}"?`, type: 'multiple', correct: 0, options: ['"This is hard right now; let us solve it together."', '"How many times have I told you!"', '"I do not want to hear it."', '"You are always like this."'] },
+    { question: `When is the best time to talk about "${k1}"?`, type: 'multiple', correct: 2, options: ['At the peak of emotion', 'In front of others', 'After everyone has calmed down', 'Right before bed, sharply'] },
+    { question: 'A heads-up before any transition reduces resistance.', type: 'boolean', correct: 0, options: ['True', 'False'] },
+    { question: 'Raising your voice is the fastest long-term way to teach listening.', type: 'boolean', correct: 1, options: ['True', 'False'] },
+    { question: `Pick one small step to try this week about "${k1}".`, type: 'fill', correct: 0, options: ['A steady routine with a heads-up and a ready alternative', 'A sudden big decision', 'Postpone until the holiday'] },
+  ];
+  return qs.map((q) => ({ question: q.question, type: q.type, options: q.options, answer: q.options[q.correct] }));
+}
+
+
+/** الموضوع حين يكون في تعليمات النظام لا في نص المستخدم (الخارطة، القصة). */
+function sysTopic(sys: string): string | null {
+  const m = sys.match(/لهدف:\s*(.+?)\s+بلهجة/) || sys.match(/roadmap designer for:\s*(.+?)\.\s/i) || sys.match(/للموضوع:\s*(.+?)\.\s/) || sys.match(/Write for:\s*(.+?)\.\s/);
+  return m ? m[1] : null;
+}
+
+function storyFor(topic: string, ar: boolean): string {
+  const k1 = keywordsOf(topic)[0] || topic;
+  if (!ar) return `**The Opening:** In a small house at the edge of town, Layth faced a problem every evening called "${k1}".\n\n**The Conflict:** The more orders he heard, the louder the problem grew.\n\n**The Twist:** One night his grandmother sat beside him and asked softly, "What makes this hard for you?" and the conversation finally opened.\n\n**The Lesson:** **When we ask before we command, "${k1}" stops being a battle and becomes a problem we solve together.**`;
+  return `**المشهد الافتتاحي:** في بيتٍ صغير عند أطراف المدينة، كان «ليث» يواجه كل مساء مشكلة اسمها «${k1}».\n\n**الحبكة:** كلما حاول الجميع حلّها بالأوامر علا الصوت واشتد العناد، وكبر الحجر في طريقه.\n\n**التحول:** في ليلةٍ جلست جدّته بجانبه وسألته بهدوء: «ما الذي يجعل هذا صعبًا عليك؟» فانفتح الحديث لأول مرة.\n\n**الحكمة:** **حين نسأل قبل أن نأمر، يتحوّل «${k1}» من معركة إلى مشكلة نحلّها معًا.**`;
+}
+
+function roadmapFor(topic: string, ar: boolean) {
+  const k1 = keywordsOf(topic)[0] || topic;
+  if (!ar) return { title: `A calm plan: ${topic}`, estimated_duration: '6 weeks, from 4 Oct to 15 Nov 2026', milestones: [
+    { title: 'Weeks 1-2: Observe', description: `Notice when "${k1}" appears before changing anything.`, tasks: ['Write down three situations', 'Note time, place and mood', 'Choose one situation to improve', 'Tell the family the plan in one sentence'] },
+    { title: 'Weeks 3-4: Build a routine', description: 'A small routine repeated daily beats a big rule.', tasks: ['Fix one daily time', 'Give a heads-up before transitions', 'Prepare a ready alternative', 'Praise the attempt the same day'] },
+    { title: 'Week 5: Hold steady', description: 'Consistency matters more than intensity.', tasks: ['Keep the same time even on busy days', 'Handle slips calmly', 'Share one success story'] },
+    { title: 'Week 6: Review', description: 'Look back together and decide what stays.', tasks: ['Review the notes together', 'Keep what worked', 'Adjust what did not', 'Plan the next small goal'] },
+  ] };
+  return { title: `خطة هادئة: ${topic}`, estimated_duration: '٦ أسابيع — من ٤ أكتوبر إلى ١٥ نوفمبر ٢٠٢٦', milestones: [
+    { title: 'الأسبوعان ١-٢: الملاحظة', description: `نلاحظ متى يظهر «${k1}» قبل أن نغيّر أي شيء.`, tasks: ['تدوين ثلاثة مواقف حدثت فعلًا', 'تسجيل الوقت والمكان والمزاج', 'اختيار موقف واحد للتحسين', 'إخبار الأسرة بالخطة في جملة واحدة'] },
+    { title: 'الأسبوعان ٣-٤: بناء الروتين', description: 'روتين صغير يتكرر يوميًا أنفع من قاعدة كبيرة.', tasks: ['تثبيت وقت يومي واحد', 'إنذار مسبق قبل أي انتقال', 'تجهيز بديل ممتع مسبقًا', 'تعزيز المحاولة في اليوم نفسه'] },
+    { title: 'الأسبوع ٥: الثبات', description: 'الاستمرار أهم من الشدّة.', tasks: ['الحفاظ على الوقت نفسه حتى في الأيام المزدحمة', 'التعامل مع التعثّر بهدوء', 'مشاركة قصة نجاح واحدة'] },
+    { title: 'الأسبوع ٦: المراجعة', description: 'ننظر معًا إلى ما تحقق ونقرر ما يبقى.', tasks: ['مراجعة الملاحظات معًا', 'إبقاء ما نجح', 'تعديل ما لم ينجح', 'تحديد الهدف الصغير التالي'] },
+  ] };
+}
+
 /** شكل المخطط يحدد المولّد؛ null يعني: استعمل المولّد العام. */
 function shapeBuilder(schema: any, topic: string, ar: boolean, hint: string): unknown | null {
+  const itemProps = schema?.type === 'ARRAY' ? schema.items?.properties : null;
+  if (itemProps && itemProps.question && itemProps.options && itemProps.answer) return quizFor(topic, ar);
   const props = schema?.properties;
   if (!props) return null;
+  if (props.milestones && props.estimated_duration) return roadmapFor(topic, ar);
   if (props.council_discussion && props.consultants) return councilFor(topic, ar, /مجلس الظل|ستيف جوبز/.test(hint));
   if (props.central && props.branches) return mindMapFor(topic, ar);
   if (props.scenario && props.decisions && props.decisions.items?.properties?.metrics) return simulationFor(topic, ar);
@@ -298,10 +355,10 @@ export function demoAiText(params: DemoAiParams): string {
   const user = lastUserText(params.contents);
   const full = `${sysHead} ${user}`;
   const ar = AR.test(sysHead.slice(0, 160)) || AR.test(user.slice(0, 120));
-  const topic = topicOf(quotedTopic(user) || user, ar);
+  const topic = topicOf(quotedTopic(user) || sysTopic(String(cfg.systemInstruction || '')) || user, ar);
   const wantsJson = String(cfg.responseMimeType || '').includes('json') || !!cfg.responseSchema;
 
-  if (!wantsJson) return freeText(topic, ar, full);
+  if (!wantsJson) return /ألفي قصة|المشهد الافتتاحي|Micro-story/.test(String(cfg.systemInstruction || '')) ? storyFor(topic, ar) : freeText(topic, ar, full);
   if (cfg.responseSchema) {
     const shaped = shapeBuilder(cfg.responseSchema, topic, ar, full);
     if (shaped) return JSON.stringify(shaped);
