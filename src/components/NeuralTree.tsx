@@ -37,7 +37,7 @@ export const NeuralTree = ({ language }: { language: string }) => {
          </div>
          <div className="text-white font-black text-xl md:text-2xl flex items-center gap-2">
             <span>{language === 'ar' ? `المستوى ${level}` : `Level ${level}`}</span>
-            <span className="text-xs px-2 py-1 bg-white/10 rounded-full font-bold ml-2">
+            <span className="text-xs px-2 py-1 bg-white/10 rounded-full font-bold ms-2">
               {xp} XP
             </span>
          </div>

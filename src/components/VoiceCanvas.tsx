@@ -172,7 +172,7 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
                     <motion.span 
                       initial={{ opacity: 0 }} 
                       animate={{ opacity: 1 }} 
-                      className="text-white/40 tracking-widest block"
+                      className="text-white/65 tracking-widest block"
                     >
                       ...
                     </motion.span>
@@ -182,7 +182,7 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
                     <motion.div 
                       animate={{ opacity: [0.3, 0.8, 0.3] }} 
                       transition={{ repeat: Infinity, duration: 3 }}
-                      className="text-white/30 font-light"
+                      className="text-white/55 font-light"
                     >
                       {language === 'ar' ? 'استمع إليك...' : 'Listening...'}
                     </motion.div>

@@ -246,7 +246,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
     const name = customer.displayName;
 
     if (customer.status === 'VIP') {
-      return `هلا ${name} 👑، أنت من عملائنا المميزين، عندك ${points} نقطة ونبي نكافئك بعرض خاص 🔥`;
+      return `هلا ${name}، أنت من عملائنا المميزين، عندك ${points} نقطة ونبي نكافئك بعرض خاص`;
     }
     if (customer.status === 'Inactive') {
       return `اشتقنا لك ${name} 😢، لك فترة ما طلبت، جهزنا لك عرض يرجعك لنا 💛`;
