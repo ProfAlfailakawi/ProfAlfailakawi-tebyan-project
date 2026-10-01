@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { TheOrb } from './TheOrb';
+import { IS_DEMO_MODE } from '../lib/demoMode';
+import { DEMO_AI_COST, DEMO_TOP_QUERIES, DEMO_AI_SUGGESTIONS, DEMO_GEN_STATUS } from '../data/demoAdmin';
 
 interface Suggestion {
   title: string;
@@ -21,13 +23,25 @@ interface CostStats {
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [suggestions, setSuggestions] = useState<Suggestion[]>(() => (IS_DEMO_MODE ? DEMO_AI_SUGGESTIONS : []));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [costStats, setCostStats] = useState<CostStats | null>(null);
-  const [topQueries, setTopQueries] = useState<{ query: string, count: number }[]>([]);
+  const demoTotal = DEMO_AI_COST.ai + DEMO_AI_COST.cache + DEMO_AI_COST.kb;
+  const [costStats, setCostStats] = useState<CostStats | null>(() =>
+    IS_DEMO_MODE
+      ? {
+          totalCalls: demoTotal,
+          aiCalls: DEMO_AI_COST.ai,
+          cacheHits: DEMO_AI_COST.cache,
+          kbHits: DEMO_AI_COST.kb,
+          savedPercentage: (((DEMO_AI_COST.cache + DEMO_AI_COST.kb) / demoTotal) * 100).toFixed(1),
+        }
+      : null,
+  );
+  const [topQueries, setTopQueries] = useState<{ query: string, count: number }[]>(() => (IS_DEMO_MODE ? DEMO_TOP_QUERIES : []));
   
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     const fetchCostStats = async () => {
       try {
         const q = query(collection(db, 'ai_logs'), orderBy('timestamp', 'desc'), limit(1000));
@@ -73,10 +87,11 @@ export default function AdminDashboard() {
     { title: 'القيمة التجارية المقدرة', value: 'مستقرة', trend: 'نمو مستمر', icon: DollarSign, color: 'text-sky-600' },
   ];
 
-  const [genStatus, setGenStatus] = useState<any>(null);
+  const [genStatus, setGenStatus] = useState<any>(() => (IS_DEMO_MODE ? DEMO_GEN_STATUS : null));
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     const checkAndAutoGenerate = async () => {
         try {
             const { doc, getDoc, serverTimestamp } = await import('firebase/firestore');
@@ -115,6 +130,12 @@ export default function AdminDashboard() {
     setIsLoading(true);
     setSuggestions([]);
     setError(null);
+    if (IS_DEMO_MODE) {
+      await new Promise(r => setTimeout(r, 600));
+      setSuggestions(DEMO_AI_SUGGESTIONS);
+      setIsLoading(false);
+      return;
+    }
     try {
       const mockTrafficData = {
         dailyActiveUsers: 500,
@@ -185,6 +206,12 @@ export default function AdminDashboard() {
       setIsGenerating(true);
       setError(null);
       setGenStatus(null);
+      if (IS_DEMO_MODE) {
+          await new Promise(r => setTimeout(r, 600));
+          setGenStatus(DEMO_GEN_STATUS);
+          setIsGenerating(false);
+          return;
+      }
       try {
           const { qawlFaslService } = await import('../services/qawlFaslService');
           const result = await qawlFaslService.generateDailyQawlFaslQuestions();
@@ -199,7 +226,7 @@ export default function AdminDashboard() {
   const adminActions = [
       { title: 'إدارة المستخدمين', icon: Users, link: '/?tab=adminusers' },
       { title: 'إدارة قول فصل', icon: LayoutDashboard, link: '/?tab=adminqawlfasl' },
-      { title: 'الولاء', icon: TicketPercent, link: '/?tab=loyalty' },
+      { title: 'الولاء', icon: TicketPercent, link: IS_DEMO_MODE ? '/?tab=loyalty&view=admin' : '/?tab=loyalty' },
       { title: 'صندوق الوارد', icon: Mail, link: '/?tab=adminmessages' },
   ];
 

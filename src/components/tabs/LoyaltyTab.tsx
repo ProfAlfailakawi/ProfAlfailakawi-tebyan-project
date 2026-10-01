@@ -13,6 +13,7 @@ import { db } from '../../lib/firebase';
 import { TabHeader } from '../TabHeader';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { getDemoFixtures } from '../../data/demoFixtures';
+import { DEMO_CUSTOMERS } from '../../data/demoAdmin';
 
 interface Customer {
   id: string;
@@ -30,10 +31,12 @@ import { useAuth } from '../AuthProvider';
 
 export const LoyaltyTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const { user, profile } = useAuth();
-  const isAdmin = profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
+  // العرض: قائمة العملاء (واجهة الإدارة) تُفتح من لوحة الإدارة عبر ‎?view=admin‎ ببيانات نموذجية.
+  const demoAdminView = IS_DEMO_MODE && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'admin';
+  const isAdmin = demoAdminView || profile?.role === 'admin' || user?.uid === 'VfYbpLBoYFQGoVyBVOlMfVCESdm1' || user?.email?.toLowerCase() === 'ah_f@hotmail.com' || user?.email?.toLowerCase().includes('alfailakawidrahmad') || user?.email?.toLowerCase().includes('dr.ahmad');
   
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [customers, setCustomers] = useState<Customer[]>(() => (demoAdminView ? (DEMO_CUSTOMERS as Customer[]) : []));
+  const [loading, setLoading] = useState(!IS_DEMO_MODE);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
   const [sortConfig, setSortConfig] = useState<{ key: keyof Customer; direction: 'asc' | 'desc' }>({ key: 'points', direction: 'desc' });

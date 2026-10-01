@@ -8,10 +8,13 @@ import { generateQawlFaslContent, GeminiKeyMissingError } from '../../../service
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import AdminQawlFaslBulkGen from '../../AdminQawlFaslBulkGen';
 import AdminQawlFaslUpload from './AdminQawlFaslUpload';
+import { IS_DEMO_MODE } from '../../../lib/demoMode';
+import { loadDemoLibrary } from '../../../data/demoLibrary';
+import { DEMO_MISSING_QUESTIONS, DEMO_ANSWER_REPORTS } from '../../../data/demoAdmin';
 
 export default function AdminQawlFasl() {
   const [questions, setQuestions] = useState<QawlFaslQuestion[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!IS_DEMO_MODE);
   const [isProcessing, setIsProcessing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showBulkGen, setShowBulkGen] = useState(false);
@@ -20,9 +23,10 @@ export default function AdminQawlFasl() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isMigrating, setIsMigrating] = useState(false);
   const [aiContext, setAiContext] = useState('');
-  const [missingQuestions, setMissingQuestions] = useState<any[]>([]);
-  const [answerReports, setAnswerReports] = useState<any[]>([]);
+  const [missingQuestions, setMissingQuestions] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_MISSING_QUESTIONS : []));
+  const [answerReports, setAnswerReports] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_ANSWER_REPORTS : []));
   const loadReports = () => {
+    if (IS_DEMO_MODE) return;
     qawlFaslService.getAnswerReports().then(setAnswerReports).catch((e) => console.warn('[Admin] answer reports unavailable:', e));
   };
   const [confirmDialog, setConfirmDialog] = useState<{ message: string, onConfirm: () => void } | null>(null);
@@ -32,10 +36,21 @@ export default function AdminQawlFasl() {
   const showConfirm = (msg: string, onConfirm: () => void) => setConfirmDialog({ message: msg, onConfirm });
 
   const loadMissing = () => {
+    if (IS_DEMO_MODE) return;
     qawlFaslService.getMissingQuestions().then(setMissingQuestions);
   };
 
   useEffect(() => {
+    if (IS_DEMO_MODE) {
+      let cancelled = false;
+      void loadDemoLibrary().then(lib => {
+        if (cancelled) return;
+        // بعض الأسئلة مسودات كي تظهر الحالتان في الجدول.
+        setQuestions(lib.map((q, i) => (i % 9 === 4 ? { ...q, status: 'draft' } : q)) as QawlFaslQuestion[]);
+        setLoading(false);
+      });
+      return () => { cancelled = true; };
+    }
     const unsub = onSnapshot(collection(db, 'qawl_fasl_questions'), (snap) => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as QawlFaslQuestion));
       setQuestions(data);

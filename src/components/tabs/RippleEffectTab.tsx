@@ -10,9 +10,28 @@ import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 import { refineIdea, translateWithContext } from '../../services/geminiService';
 import { seedData } from '../../data/seedData';
 import { NebulaTab } from './NebulaTab';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { InsightsPanel } from './InsightsPanel';
 
 const ripplesCollection = collection(db, 'ripples');
+
+/* العرض: شجرة أفكار نموذجية بتواريخ ثابتة موزّعة على الأشهر الأخيرة (يوليو–سبتمبر ٢٠٢٦).
+   لا اشتراك في «ripples» ولا قراءة من الإنتاج؛ والجذر (rootId) يُشتق من سلسلة الآباء. */
+const DEMO_RIPPLES: any[] = (() => {
+    const byId = new Map<string, any>(seedData.map(s => [s.id, s]));
+    const rootOf = (id: string): string => {
+        let cur = byId.get(id);
+        while (cur?.parentId && byId.has(cur.parentId)) cur = byId.get(cur.parentId);
+        return cur?.id || id;
+    };
+    const start = Date.UTC(2026, 6, 6, 8);
+    const span = Date.UTC(2026, 8, 29, 20) - start;
+    return seedData.map((s, i) => ({
+        ...s,
+        rootId: rootOf(s.id),
+        timestamp: new Date(start + Math.floor((span * ((i * 7) % seedData.length)) / seedData.length)).toISOString(),
+    }));
+})();
 
 type RippleNode = {
     id: string;
@@ -178,7 +197,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     </span>
                                 )}
                             </div>
-                            <span className="text-xs text-[#7C8796] font-medium whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{node.timestamp}</span>
+                            <span className="text-xs text-[#7C8796] font-medium whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{(() => { const d = new Date(node.timestamp); return isNaN(d.getTime()) ? node.timestamp : d.toLocaleDateString(language === 'ar' ? 'ar-KW' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); })()}</span>
                         </div>
                         <p 
                             className={cn(
@@ -377,7 +396,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
 });
 
 export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { language: 'ar' | 'en', handleTabChange: (tab: any, context?: string, exit?: boolean) => void, onFocusMode?: (idea: { text: string, author: string }) => void }) => {
-    const [ripplesFlat, setRipplesFlat] = useState<any[]>([]);
+    const [ripplesFlat, setRipplesFlat] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_RIPPLES : []));
     const [filterMyIdeas, setFilterMyIdeas] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -466,6 +485,18 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
     const displayTags = showAllCategories ? sortedTags : sortedTags.slice(0, 10);
 
     useEffect(() => {
+        // العرض: لا تنظيف ولا بذر ولا اشتراك — البيانات النموذجية محمّلة في الحالة الأولى.
+        if (IS_DEMO_MODE) {
+            const todayIndex = new Date().getDate() % 3;
+            const demoPrompts = [
+                { ar: 'كيف نصنع في بيتنا عادة مسائية هادئة تُغني الأطفال عن الشاشة؟', en: 'How can we build a calm evening habit at home that replaces screen time for children?' },
+                { ar: 'ما أصغر خطوة يومية تجعل طفلك يشعر أنك تسمعه فعلاً؟', en: 'What is the smallest daily step that makes your child feel truly heard?' },
+                { ar: 'كيف تحوّل لحظة العناد إلى فرصة لتعليم الاختيار والمسؤولية؟', en: 'How do you turn a moment of stubbornness into a chance to teach choice and responsibility?' },
+            ];
+            const picked = demoPrompts[todayIndex];
+            setDailyPrompt({ question: language === 'ar' ? picked.ar : picked.en, date: new Date().toISOString() });
+            return;
+        }
         // Seed and Cleanup once
         const initData = async () => {
             if (!auth.currentUser) return;

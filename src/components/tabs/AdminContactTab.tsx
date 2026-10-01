@@ -6,6 +6,8 @@ import { updateDoc, deleteDoc } from '../../lib/firestoreWrites';
 import { motion, AnimatePresence } from 'motion/react';
 import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
+import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { DEMO_MESSAGES } from '../../data/demoAdmin';
 
 interface ContactMessage {
   id: string;
@@ -18,10 +20,11 @@ interface ContactMessage {
 }
 
 export const AdminContactTab = ({ language }: { language: string }) => {
-  const [messages, setMessages] = useState<ContactMessage[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState<ContactMessage[]>(() => (IS_DEMO_MODE ? (DEMO_MESSAGES as ContactMessage[]) : []));
+  const [loading, setLoading] = useState(!IS_DEMO_MODE);
 
   useEffect(() => {
+    if (IS_DEMO_MODE) return;
     const q = query(collection(db, 'contact_requests'), orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {

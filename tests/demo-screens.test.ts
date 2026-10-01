@@ -25,6 +25,13 @@ test('every demo screen fixture is non-empty and coherent', async () => {
   assert.equal(earned, f.DEMO_LOYALTY.points, 'loyalty balance equals its history');
 
   assert.ok(seedData.length > 15, 'ripple / nebula seeds');
+  assert.ok(f.DEMO_SAVED_LIBRARY.length >= 12, 'library has enough variety for the counters');
+
+  for (const lang of ['ar', 'en']) {
+    const pr = f.getDemoFixtures(lang).prediction;
+    assert.ok(pr.pattern_found && pr.prediction && pr.proactive_warning, `radar prediction (${lang}) is filled`);
+    assert.ok(['Low', 'Medium', 'High'].includes(pr.risk_level));
+  }
 
   const names = f.DEMO_KIDS.map((k: any) => k.name);
   assert.deepEqual(names, ['سعود', 'نورة']);

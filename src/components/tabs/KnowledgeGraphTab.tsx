@@ -283,7 +283,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
               return (
                 <motion.line
                   key={`edge-${edge.source}-${edge.target}`}
-                  initial={{ pathLength: 0, opacity: 0 }}
+                  initial={{ pathLength: 0, opacity: 0, x1: source.x, y1: source.y, x2: target.x, y2: target.y }}
                   animate={{ 
                     x1: source.x, y1: source.y, 
                     x2: target.x, y2: target.y,

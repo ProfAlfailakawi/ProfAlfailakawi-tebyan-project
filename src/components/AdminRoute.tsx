@@ -1,9 +1,13 @@
 import React from 'react';
 import { useAuth } from './AuthProvider';
 import { Navigate } from 'react-router-dom';
+import { IS_DEMO_MODE } from '../lib/demoMode';
 
 export default function AdminRoute({ children }: { children: React.ReactNode }) {
   const { user, profile, loading } = useAuth();
+
+  // العرض: شاشات الإدارة تُفتح ببيانات نموذجية فقط، بلا حساب ولا Firestore.
+  if (IS_DEMO_MODE) return <>{children}</>;
 
   console.log("AdminRoute Check:", { user: user?.email, profile, loading });
 
