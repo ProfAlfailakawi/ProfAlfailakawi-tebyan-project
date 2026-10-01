@@ -12,7 +12,7 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
   if (loading) return <div className="p-10 text-center font-bold text-slate-500">جاري التحقق من صلاحياتك... (لحظات)</div>;
   
   if (!user) {
-    return <div className="p-10 text-center">
+    return <div className="p-10 text-center" dir="ltr">
       <h2 className="text-xl font-bold text-red-500 mb-4">You are not logged in.</h2>
       <p>Please log in.</p>
     </div>;
