@@ -4516,3 +4516,32 @@ main .overflow-x-auto > [role="tab"] {
   .tebyan-route-shell ul { max-height: none !important; overflow: visible !important; }
   a[href^="http"]::after { content: none !important; }
 }
+
+/* Visual calm r6: mobile page controls sit lighter and tucked into the corner so they
+   cover less content; header chrome is quieter. Visual only. */
+@media (max-width: 767px) {
+  .tebyan-page-controls {
+    left: 10px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px) !important;
+    gap: 6px !important;
+    opacity: 0.78;
+    transition: opacity 0.2s ease;
+  }
+  .tebyan-page-controls:hover,
+  .tebyan-page-controls:focus-within,
+  .tebyan-page-controls:active {
+    opacity: 1;
+  }
+  .tebyan-page-controls .tebyan-global-back {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    box-shadow: 0 4px 14px rgba(24, 34, 49, 0.08) !important;
+  }
+  .tebyan-page-controls .tebyan-page-help-button {
+    box-shadow: 0 4px 14px rgba(24, 34, 49, 0.08) !important;
+  }
+  .tebyan-header-actions {
+    gap: 2px !important;
+  }
+}
