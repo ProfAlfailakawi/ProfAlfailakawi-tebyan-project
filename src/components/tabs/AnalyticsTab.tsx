@@ -185,9 +185,9 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                 onClick={handlePredict} 
                 disabled={logs.length === 0 || isPredicting}
                 className={cn(
-                  "w-full rounded-[24px] py-6 font-black text-xl flex items-center justify-center gap-3 transition-all shadow-lg",
+                  "w-full rounded-[24px] py-6 font-black text-xl flex items-center justify-center gap-3 transition-all shadow-sm",
                   logs.length > 0 
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white cursor-pointer" 
+                  ? "bg-[#6E5B91] hover:bg-[#5d4f7b] text-white cursor-pointer" 
                   : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                 )}
               >
