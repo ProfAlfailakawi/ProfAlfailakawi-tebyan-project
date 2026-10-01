@@ -211,7 +211,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             onClick={onBack}
             className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center justify-center bg-white/92 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] rounded-2xl w-11 h-11 md:w-12 md:h-12 shrink-0 transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
-            <ArrowRight className="w-5 h-5 md:w-6 h-6" />
+            <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <div className="space-y-4 md:space-y-6 flex-1 min-w-0">
              <div className="flex flex-wrap gap-2 text-[10px] md:text-xs font-bold font-mono uppercase">

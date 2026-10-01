@@ -89,7 +89,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
             dir={language === 'ar' ? 'rtl' : 'ltr'}
         >
             <div className={cn(
-                "relative z-10 flex gap-4 md:gap-6 group",
+                "relative z-10 flex gap-2.5 md:gap-6 group",
                 level === 0 ? "mb-8 md:mb-10" : "mb-6 md:mb-8 mt-4"
             )}>
                 {level > 0 && (
@@ -101,7 +101,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
 
                 {/* Node Icon */}
                 <div className={cn(
-                    "relative w-12 h-12 md:w-14 md:h-14 rounded-full shrink-0 flex items-center justify-center shadow-lg border-4 z-10 transition-transform group-hover:scale-105",
+                    "relative w-10 h-10 md:w-14 md:h-14 rounded-full shrink-0 hidden md:flex items-center justify-center shadow-sm border-2 z-10 transition-transform group-hover:scale-105",
                     node.type === 'seed' ? "bg-mood-primary/10 border-mood-primary/20 text-mood-primary shadow-mood-glow" :
                     node.type === 'branch' ? "bg-mood-secondary/10 border-mood-secondary/20 text-mood-secondary shadow-indigo-500/10" :
                     "bg-mood-secondary/5 border-mood-secondary/10 text-mood-secondary shadow-indigo-500/5 transition-opacity"
@@ -117,13 +117,13 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                     initial={{ opacity: 0, x: language === 'ar' ? -20 : 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className={cn(
-                        "flex-1 bg-white/70 backdrop-blur-sm p-5 md:p-6 rounded-[24px] md:rounded-[32px] border border-white shadow-xl transition-all hover:shadow-2xl hover:-translate-y-0.5 relative overflow-hidden",
+                        "flex-1 min-w-0 bg-white/70 backdrop-blur-sm p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-[#6e5f8e]/10 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden",
                         node.type === 'seed' ? "ring-2 ring-mood-primary/10 shadow-mood-glow" : "shadow-zinc-900/5",
                         isSelectedRipple ? "ring-4 ring-mood-primary shadow-mood-glow scale-[1.02]" : ""
                     )}
                 >
                         {node.type === 'seed' && <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-mood-primary/20 to-transparent rounded-full blur-[40px] pointer-events-none" />}
-                        <div className="relative z-10 flex items-center justify-between gap-2 md:gap-4 mb-4 border-b border-[#8FA9C7]/15/80 pb-3">
+                        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 md:gap-4 mb-4 border-b border-[#8FA9C7]/15 pb-3">
                             <div className="flex items-center gap-3 flex-wrap">
                                 <div className={cn(
                                     "flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm ring-1 ring-zinc-900/5 relative",
@@ -151,7 +151,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                             )}
                                         </div>
                                         {userRank && (
-                                            <span className={cn("text-[9px] font-black uppercase tracking-tighter opacity-70", userRank.color)}>
+                                            <span className={cn("text-[11px] font-semibold opacity-80", userRank.color)}>
                                                 {userRank.rank}
                                             </span>
                                         )}
@@ -159,8 +159,8 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     {userRank && <Award className={cn("w-3 h-3 ml-1", userRank.color)} />}
                                 </div>
                                 <span className={cn(
-                                    "text-[10px] md:text-[11px] px-3 py-1 rounded-full font-black uppercase tracking-widest",
-                                    (node as any).isTimeCapsule ? "bg-zinc-800 text-zinc-100" :
+                                    "text-xs px-3 py-1 rounded-full font-semibold",
+                                    (node as any).isTimeCapsule ? "bg-[#f1eef6] text-[#6e5f8e]" :
                                     node.type === 'seed' ? "bg-mood-primary/10 text-mood-primary" :
                                     node.type === 'branch' ? "bg-[#EEF4F1] text-[#5F837A]" :
                                     "bg-[#F6F0E3] text-[#8B7B4E]"
@@ -172,13 +172,13 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     (language === 'ar' ? 'تطبيق عملي' : 'Implementation')}
                                 </span>
                                 {descendantsCount > 0 && (
-                                    <span className="text-[10px] font-black text-[#6E948A] uppercase flex items-center gap-1 bg-[#EEF4F1] px-2 py-1 rounded-lg">
+                                    <span className="text-xs font-semibold text-[#6E948A] flex items-center gap-1 bg-[#EEF4F1] px-2 py-1 rounded-lg">
                                         <GitBranch className="w-3 h-3" />
                                         {descendantsCount} {language === 'ar' ? 'تحول' : 'impact'}
                                     </span>
                                 )}
                             </div>
-                            <span className="text-[10px] md:text-xs text-[#7C8796] font-bold whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{node.timestamp}</span>
+                            <span className="text-xs text-[#7C8796] font-medium whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{node.timestamp}</span>
                         </div>
                         <p 
                             className={cn(
@@ -209,7 +209,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     setIsTranslating(false);
                                     if (res) setTranslatedText(res);
                                 }}
-                                className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-mood-primary hover:opacity-80 transition-colors"
+                                className="flex items-center gap-1.5 text-xs font-semibold text-mood-primary hover:opacity-80 transition-colors"
                             >
                                 {isTranslating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
                                 {translatedText ? (language === 'ar' ? 'العودة للأصل' : 'Show Original') : (language === 'ar' ? 'جسر اللغات' : 'Cultural Bridge')}
@@ -285,7 +285,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     } catch (err) {
                                         console.error("Share error:", err);
                                     }
-                                }} className="flex items-center gap-2 bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-xl font-bold cursor-pointer transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                                }} className="flex items-center gap-2 bg-[#6E5B91] text-white hover:bg-[#5F4E7F] px-4 py-2 rounded-xl font-bold cursor-pointer transition-all shadow-sm active:scale-95">
                                     <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                                     <span className="text-sm">{language === 'ar' ? 'شارك الفكرة' : 'Share Idea'}</span>
                                 </button>
@@ -325,7 +325,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     className="mt-4 flex gap-3 w-full bg-mood-primary/5 p-3 rounded-2xl border border-mood-primary/10"
                                     style={{ overflow: 'hidden' }}
                                 >
-                                    <input autoFocus value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-white rounded-xl p-3 md:p-4 text-sm md:text-base font-medium shadow-inner border border-[#8FA9C7]/25/60 outline-none focus:border-mood-primary focus:ring-4 focus:ring-mood-primary/20 transition-all placeholder:text-[#7C8796]" placeholder={language === 'ar' ? "كيف يمكن تطوير أو تطبيق هذه الفكرة؟" : "How can this idea be evolved?"} />
+                                    <input autoFocus value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-white rounded-xl p-3 md:p-4 text-sm md:text-base font-medium shadow-inner border border-[#8FA9C7]/40 outline-none focus:border-mood-primary focus:ring-4 focus:ring-mood-primary/20 transition-all placeholder:text-[#7C8796]" placeholder={language === 'ar' ? "كيف يمكن تطوير أو تطبيق هذه الفكرة؟" : "How can this idea be evolved?"} />
                                     <button onClick={() => {
                                         if(replyText.trim()) {
                                             handleAddReply(node.id, replyText);
@@ -343,13 +343,13 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
             {node.children && node.children.length > 0 && (
                 <div className={cn(
                     "relative",
-                    language === 'ar' ? "pr-6 md:pr-16" : "pl-6 md:pl-16"
+                    language === 'ar' ? (level < 2 ? "pr-4 md:pr-16" : "pr-0 md:pr-16") : (level < 2 ? "pl-4 md:pl-16" : "pl-0 md:pl-16")
                 )}>
                     {/* Connecting Line from Parent Icon to Children */}
                     <div className={cn(
                         "absolute top-[-24px] bottom-10 w-[3px] rounded-full opacity-30",
                         language === 'ar' ? "right-[22px] md:right-[26px]" : "left-[22px] md:left-[26px]",
-                        node.children[0]?.type === 'branch' ? "bg-gradient-to-b from-indigo-500 to-emerald-500" : "bg-gradient-to-b from-emerald-500 to-amber-500"
+                        node.children[0]?.type === 'branch' ? "bg-[#8fa9c7]" : "bg-[#6e5f8e]"
                     )} />
                     
                     <AnimatePresence>
@@ -879,17 +879,17 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             <motion.div 
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
-               className="bg-white/80 backdrop-blur-xl p-6 md:p-8 rounded-[32px] shadow-2xl border border-white/40 ring-1 ring-zinc-900/5 relative overflow-hidden z-10"
+               className="bg-white/80 backdrop-blur-xl p-6 md:p-8 rounded-[32px] shadow-sm border border-[#6e5f8e]/10 relative overflow-hidden z-10"
                dir={language === 'ar' ? 'rtl' : 'ltr'}
             >
-                <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-mood-primary/20 to-emerald-500/20 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-amber-500/20 to-rose-500/20 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-mood-primary/10 to-[#8fa9c7]/10 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-[#f7f5f2]/40 to-[#8fa9c7]/10 rounded-full blur-[100px] pointer-events-none" />
                     <div className="relative z-10 flex flex-col gap-4">
                         {dailyPrompt && (
                             <motion.div 
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                className="bg-gradient-to-r from-mood-primary to-emerald-500 p-0.5 rounded-2xl mb-2"
+                                className="bg-[#6e5f8e]/15 p-px rounded-2xl mb-2"
                             >
                                 <div className="bg-white/95 backdrop-blur-sm p-4 rounded-2xl flex flex-col items-stretch sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
@@ -941,7 +941,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         value={newIdea}
                         onChange={(e) => setNewIdea(e.target.value)}
                         placeholder={language === 'ar' ? "فكرتي هي..." : "My idea is..."}
-                        className="w-full bg-white/50 border-2 border-[#8FA9C7]/15/50 rounded-2xl p-5 text-lg md:text-xl font-bold text-[#273548] focus:bg-white focus:border-mood-primary/50 focus:ring-4 focus:ring-mood-primary/10 outline-none resize-none h-40 placeholder:text-zinc-300 transition-all shadow-inner"
+                        className="w-full bg-white/50 border-2 border-[#8FA9C7]/40 rounded-2xl p-5 text-lg md:text-xl font-bold text-[#273548] focus:bg-white focus:border-mood-primary/50 focus:ring-4 focus:ring-mood-primary/10 outline-none resize-none h-40 placeholder:text-zinc-300 transition-all shadow-inner"
                     />
                     <div className="flex flex-wrap justify-between items-center gap-4 text-xs font-bold text-[#7C8796] px-1">
                         <div className="flex gap-4">
@@ -1003,8 +1003,8 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             onClick={handleDropIdea}
                             disabled={isSubmitting || (auth.currentUser && !newIdea.trim())}
                             className={cn(
-                                "group relative overflow-hidden text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-mood-glow",
-                                !auth.currentUser ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20" : "bg-zinc-900 hover:bg-black shadow-zinc-950/20"
+                                "group relative overflow-hidden text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm",
+                                !auth.currentUser ? "bg-[#6E5B91] hover:bg-[#5F4E7F]" : "bg-[#6E5B91] hover:bg-[#5F4E7F]"
                             )}
                         >
                             <div className="absolute inset-0 bg-mood-primary opacity-0 group-hover:opacity-20 transition-opacity" />
@@ -1067,7 +1067,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 <button
                                     key={cat}
                                     onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-                                    className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", selectedCategory === cat ? "bg-emerald-600 text-white" : "bg-zinc-200 text-[#3D4A5A]")}
+                                    className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", selectedCategory === cat ? "bg-[#6E5B91] text-white" : "bg-[#f1eef6] text-[#3D4A5A]")}
                                 >
                                     {cat}
                                 </button>

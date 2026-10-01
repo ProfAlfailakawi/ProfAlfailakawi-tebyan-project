@@ -1326,7 +1326,7 @@ const AppContent: React.FC = () => {
             className="tebyan-global-back w-12 h-12 rounded-2xl bg-white/90 text-[#6e5f8e] border border-[#6e5f8e]/20 shadow-sm backdrop-blur-xl transition-all hover:bg-[#6e5f8e] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
           >
             <ArrowLeft
-              className={cn("w-5 h-5", language === "ar" ? "" : "rotate-180")}
+              className={cn("w-5 h-5", language === "ar" ? "rotate-180" : "")}
             />
           </button>
           <button

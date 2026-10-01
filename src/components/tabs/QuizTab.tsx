@@ -123,7 +123,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 <input 
                   value={quizTopic} 
                   onChange={(e) => setQuizTopic(e.target.value)} 
-                  className="w-full p-4 md:p-6 text-base md:text-xl font-bold border-2 rounded-[16px] outline-none focus:border-emerald-500" 
+                  className="w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50" 
                   placeholder={language === 'ar' ? "مثال: مهارات القرن الحادي والعشرين..." : "Example: 21st Century Skills..."} 
                 />
                 <button 

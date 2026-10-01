@@ -77,9 +77,9 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder={language === 'ar' ? 'مثال: التنمر المدرسي، تعزيز الثقة بالنفس، صعوبات التعلم...' : 'e.g. School Bullying, Self-confidence...'}
-              className="w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 px-6 text-lg font-bold text-black placeholder:text-[#64788D] outline-none focus:border-black focus:shadow-lg transition-all"
+              className={`w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 ${language === 'ar' ? 'pr-6 pl-14' : 'pl-6 pr-14'} text-lg font-medium text-[#182231] placeholder:text-[#64788D] outline-none focus:border-[#6e5f8e]/50 focus:shadow-sm transition-all`}
             />
-            <Brain className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 text-[#182231] ${language === 'ar' ? 'left-6' : 'right-6'}`} />
+            <Brain className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#6e5f8e]/70 ${language === 'ar' ? 'left-5' : 'right-5'}`} />
           </div>
           <button
             type="submit"

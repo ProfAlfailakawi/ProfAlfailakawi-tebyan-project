@@ -34,7 +34,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               onClick={() => setActiveSubTab(tab.id as any)}
               className={cn(
                 "flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap",
-                isActive ? "bg-black text-white shadow-lg" : "bg-white text-zinc-500 hover:bg-zinc-100 border border-zinc-200"
+                isActive ? "bg-[#6E5B91] text-white shadow-sm border border-[#6E5B91]" : "bg-white text-[#64788D] hover:bg-[#f7f5f2] border border-[#6e5f8e]/15"
               )}
             >
               <Icon className="w-4 h-4" />

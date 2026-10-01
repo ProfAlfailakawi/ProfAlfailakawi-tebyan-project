@@ -61,12 +61,12 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         onClose={() => handleTabChange('discover', '', true)}
       />
       
-      <div className="relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-rose-50 p-8 rounded-[40px] shadow-2xl border border-white/50 backdrop-blur-sm">
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-200/30 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-rose-200/30 rounded-full blur-3xl"></div>
+      <div className="relative overflow-hidden bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-[#6e5f8e]/10">
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#6e5f8e]/[0.06] rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#8fa9c7]/[0.08] rounded-full blur-3xl"></div>
         
         <div className="relative flex flex-col gap-6">
-          <label className={cn("block text-sm font-black text-zinc-500 uppercase tracking-widest", language === 'ar' ? 'text-right' : 'text-left')}>
+          <label className={cn("block text-sm font-bold text-[#64788D]", language === 'ar' ? 'text-right' : 'text-left')}>
             {language === 'ar' ? 'حدد وجهتك القادمة' : 'Define your next destination'}
           </label>
           <div className="relative">
@@ -76,7 +76,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
               disabled={isLoading}
               placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة، بدء مشروع تجاري، احتراف البرمجة...' : 'Example: Learn a new language, start a business, master programming...'}
               className={cn(
-                "w-full bg-white/70 border-2 border-zinc-200 rounded-[32px] p-6 text-xl font-bold outline-none focus:border-black focus:ring-4 focus:ring-black/5 transition-all text-zinc-900 shadow-sm",
+                "w-full bg-white/70 border border-[#6e5f8e]/20 rounded-[24px] p-5 md:p-6 text-lg md:text-xl font-medium outline-none focus:border-[#6e5f8e]/50 focus:ring-4 focus:ring-[#6e5f8e]/10 transition-all text-[#182231]",
                 language === 'ar' ? 'text-right' : 'text-left'
               )}
             />
@@ -84,7 +84,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <button 
             onClick={() => handleGenerate()}
             disabled={isLoading || !goal.trim()}
-            className="w-full py-6 bg-zinc-950 text-white hover:bg-zinc-800 rounded-[32px] font-black text-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl active:scale-[0.98] group"
+            className="w-full py-5 bg-[#6E5B91] text-white hover:bg-[#5F4E7F] rounded-[24px] font-bold text-lg md:text-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98] group"
           >
             {isLoading ? (
               <Loader2 className="w-6 h-6 animate-spin" />

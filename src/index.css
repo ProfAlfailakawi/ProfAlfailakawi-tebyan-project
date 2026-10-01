@@ -4454,3 +4454,19 @@ body:not(.zen-idle)::after {
     min-height: 44px !important;
   }
 }
+
+/* Visual polish r3: chips/buttons never collapse into letter columns.
+   `overflow-wrap: anywhere` shrinks min-content to one glyph, so flex/grid
+   children crushed to a vertical stack on phones. break-word keeps words whole
+   when sizing, yet still wraps an over-long word if it would overflow. */
+main button,
+main button * ,
+main [role="tab"],
+main [role="tab"] * {
+  overflow-wrap: break-word !important;
+}
+main .overflow-x-auto > button,
+main .overflow-x-auto > a,
+main .overflow-x-auto > [role="tab"] {
+  flex-shrink: 0;
+}
