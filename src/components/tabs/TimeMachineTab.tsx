@@ -72,7 +72,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
                onClick={loadTimeMachine} 
                disabled={isLoading}
                title={language === 'ar' ? 'بدء الرحلة عبر الزمن' : 'Start time journey'}
-               className="w-full md:w-auto bg-[#6E5B91] hover:bg-[#6E5B91] disabled:bg-[#F8F5EF] disabled:cursor-not-allowed px-8 py-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-3 cursor-pointer min-w-[140px]"
+               className="w-full md:w-auto bg-[#6E5B91] hover:bg-[#5F4E7F] text-white disabled:opacity-50 disabled:cursor-not-allowed px-8 py-4 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer min-w-[140px]"
              >
                {isLoading ? (
                  <>

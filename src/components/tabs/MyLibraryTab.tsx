@@ -16,11 +16,11 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
   }, {});
 
   const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
-    'qawlfasl': { color: 'bg-emerald-500', labelAr: 'قول فصل', labelEn: 'Decision' },
-    'oracle': { color: 'bg-indigo-500', labelAr: 'المستشار', labelEn: 'Oracle' },
-    'concept': { color: 'bg-amber-500', labelAr: 'الأفكار', labelEn: 'Concepts' },
-    'roadmap': { color: 'bg-rose-500', labelAr: 'المسار', labelEn: 'Roadmap' },
-    'item': { color: 'bg-zinc-500', labelAr: 'مادة', labelEn: 'Items' }
+    'qawlfasl': { color: 'bg-[#eef3ef] text-[#3f6b55]', labelAr: 'قول فصل', labelEn: 'Decision' },
+    'oracle': { color: 'bg-[#f1eef6] text-[#6e5f8e]', labelAr: 'المستشار', labelEn: 'Oracle' },
+    'concept': { color: 'bg-[#f7f1e6] text-[#8a6a3b]', labelAr: 'الأفكار', labelEn: 'Concepts' },
+    'roadmap': { color: 'bg-[#f6eeef] text-[#8e5a63]', labelAr: 'المسار', labelEn: 'Roadmap' },
+    'item': { color: 'bg-[#f2f2f4] text-[#5b6472]', labelAr: 'مادة', labelEn: 'Items' }
   };
 
   return (
@@ -32,14 +32,14 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
            animate={{ scale: 1 }}
            whileHover={{ y: -5, scale: 1.05 }}
            className={cn(
-             "px-6 py-4 rounded-[32px] flex items-center gap-4 shadow-xl border-4 border-white text-white",
-             typeData[type]?.color || 'bg-zinc-500'
+             "px-5 py-3 rounded-full flex items-center gap-3 shadow-sm border border-[#6e5f8e]/10",
+             typeData[type]?.color || 'bg-[#f2f2f4] text-[#5b6472]'
            )}
          >
-           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-black text-xl">
+           <div className="w-9 h-9 rounded-full bg-white/80 flex items-center justify-center font-bold text-lg">
              {count}
            </div>
-           <span className="font-black text-xs uppercase tracking-[0.2em]">
+           <span className="font-bold text-sm">
              {language === 'ar' ? (typeData[type]?.labelAr || type) : (typeData[type]?.labelEn || type)}
            </span>
          </motion.div>

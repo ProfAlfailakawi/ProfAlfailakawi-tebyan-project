@@ -81,22 +81,22 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
            {stats.map((stat, idx) => (
                <motion.div
                  key={idx}
                  initial={{ opacity: 0, y: 20 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="p-6 rounded-3xl bg-zinc-50 border border-zinc-100 flex flex-col relative overflow-hidden group"
+                 className="p-6 rounded-3xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-col relative overflow-hidden group"
                >
-                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center mb-12 relative z-10">
-                     <stat.icon className="w-6 h-6 text-black" />
+                  <div className="w-11 h-11 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center mb-6 relative z-10">
+                     <stat.icon className="w-5 h-5 text-[#6e5f8e]" strokeWidth={1.75} />
                   </div>
                   <div className="relative z-10 mt-auto">
                       <div className="flex items-end justify-between mb-2">
-                         <span className="text-2xl md:text-4xl font-black text-black">{stat.value}</span>
-                         <span className="text-emerald-500 font-bold flex items-center gap-1 text-sm bg-emerald-50 px-2 py-1 rounded-full">
+                         <span className="text-2xl md:text-4xl font-bold text-[#182231]">{stat.value}</span>
+                         <span className="text-[#6e5f8e] font-semibold flex items-center gap-1 text-xs bg-[#6e5f8e]/[0.07] px-2.5 py-1 rounded-full">
                            <TrendingUp className="w-3 h-3" />
                            {stat.trend}
                          </span>
