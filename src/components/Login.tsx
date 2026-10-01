@@ -106,7 +106,7 @@ export default function Login() {
           <form onSubmit={handleEmailAuth} className="space-y-3 md:space-y-4">
             {isSignUp && (
               <div className="space-y-1.5 md:space-y-2">
-                <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] mr-2 uppercase tracking-wide">الاسم</label>
+                <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] ms-2 tracking-wide">الاسم</label>
                 <div className="relative">
                   <UserPlus className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-[#7C8796] w-4 h-4 md:w-5 h-5 pointer-events-none" />
                   <input 
@@ -122,7 +122,7 @@ export default function Login() {
             )}
 
             <div className="space-y-1.5 md:space-y-2">
-              <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] mr-2 uppercase tracking-wide">البريد الإلكتروني</label>
+              <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] ms-2 tracking-wide">البريد الإلكتروني</label>
               <div className="relative">
                 <Mail className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-[#7C8796] w-4 h-4 md:w-5 h-5 pointer-events-none" />
                 <input 
@@ -138,7 +138,7 @@ export default function Login() {
             </div>
 
             <div className="space-y-1.5 md:space-y-2">
-              <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] mr-2 uppercase tracking-wide">كلمة المرور</label>
+              <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] ms-2 tracking-wide">كلمة المرور</label>
               <div className="relative">
                 <Lock className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-[#7C8796] w-4 h-4 md:w-5 h-5 pointer-events-none" />
                 <input 
