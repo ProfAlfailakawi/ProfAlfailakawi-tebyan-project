@@ -329,10 +329,11 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   className={node.type !== 'core' ? "cursor-pointer" : ""}
                   onClick={() => handleNodeClick(node)}
                 >
-                  <motion.circle animate={{ cx: node.x, cy: node.y }} transition={{ duration: 0.8 }} r="45" fill="transparent" />
+                  <motion.circle initial={{ cx: node.x, cy: node.y }} animate={{ cx: node.x, cy: node.y }} transition={{ duration: 0.8 }} r="45" fill="transparent" />
                   
                   {isSelected && (
                     <motion.circle 
+                      initial={{ cx: node.x, cy: node.y }}
                       animate={{ cx: node.x, cy: node.y, scale: [1, 2], opacity: [0.5, 0] }} 
                       r={isGolden ? 32 : 28} 
                       fill="none" stroke="#34d399" strokeWidth="2" 
@@ -347,6 +348,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   )}
 
                   <motion.circle 
+                    initial={{ cx: node.x, cy: node.y }}
                     animate={{ 
                       cx: node.x, 
                       cy: [node.y - 4, node.y + 4, node.y - 4] 
@@ -368,6 +370,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     <motion.circle 
                       r="50" 
                       fill="none" stroke="#6366f1" strokeWidth="1" 
+                      initial={{ cx: node.x, cy: node.y }}
                       animate={{ cx: node.x, cy: node.y, scale: [0.8, 1.4], opacity: [0.8, 0] }}
                       transition={{ 
                          cx: { duration: 0.8 }, 
@@ -383,6 +386,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                      <motion.circle 
                       r="30" 
                       fill="none" stroke="#fbbf24" strokeWidth="1" 
+                      initial={{ cx: node.x, cy: node.y }}
                       animate={{ cx: node.x, cy: node.y, scale: [0.8, 1.5], opacity: [0.8, 0] }}
                       transition={{ 
                          cx: { duration: 0.8 }, 

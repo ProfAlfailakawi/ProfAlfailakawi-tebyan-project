@@ -31,6 +31,7 @@ function topicOf(raw: string, ar: boolean): string {
     .replace(/^(Situation\/Question from a user:|المشكلة\/السؤال:|تاريخ[^:]*:|النص للتفريغ:)\s*/i, '')
     .replace(/Additional context:[\s\S]*$/i, '')
     .replace(/Idea A:\s*/i, '')
+    .replace(/^ابدأ المحاكاة الآن حول:\s*/, '')
     .replace(/^(أنتج|اصنع|أنشئ|اكتب)\s+\S+\s+\S+\s+(عن|حول)\s+/, '')
     .split('\n')[0]
     .replace(/^["«]|["»]$/g, '')
@@ -63,7 +64,9 @@ function freeText(topic: string, ar: boolean, hint: string): string {
       return `فكرة هجينة: تحويل «${topic}» إلى لعبة أسرية قصيرة مدتها ٥ دقائق، تُكافأ فيها المحاولة لا النتيجة.`;
     }
     if (/خريطة ذهنية/.test(hint)) {
-      return `- ${topic}\n  - الفهم\n    - ما الذي يحدث فعلًا؟\n    - ما الذي يحتاجه الطفل؟\n  - التطبيق\n    - خطوة صغيرة اليوم\n    - متابعة هادئة بعد أسبوع`;
+      const kw = keywordsOf(topic);
+      const k1 = kw[0] || topic, k2 = kw[1] || k1, k3 = kw[2] || k2;
+      return `- ${topic}\n  - الفهم\n    - ما الذي يحدث فعلًا حول «${k1}»؟\n    - ما الذي يحتاجه الطفل وراء «${k2}»؟\n  - المحفّزات\n    - متى يزداد «${k1}»: الوقت والمكان والأشخاص\n  - التطبيق\n    - خطوة صغيرة اليوم بخصوص «${k2}»\n    - عبارة هادئة للحوار عن «${k3}»\n  - المتابعة\n    - مراجعة هادئة بعد أسبوع`;
     }
     if (/أرسطو|صقل الفكرة/.test(hint)) {
       return `الفكرة الجوهرية: «${topic}» تنضج حين تُختبر في موقف حقيقي صغير، لا حين تُناقش طويلًا.`;
@@ -163,6 +166,115 @@ function fromSchema(schema: any, key: string, topic: string, ar: boolean, idx: n
   }
 }
 
+
+/* ---------------- مولّدات واعية بالموضوع (المجلس، الخريطة الذهنية، المحاكي) ---------------- */
+
+const STOP = new Set(['كيف','هل','في','من','على','لا','ما','هذا','هذه','او','أو','إلى','الى','مع','عن','أن','ان','لي','لنا','التي','الذي','دون','بدون','عند','كل','هو','هي','أريد','اريد','ابني','ابنتي','طفلي','وأنا','اللي','ليش','لماذا','متى','the','a','an','of','to','and','for','how','do','i','my','is','in','on','with','what']);
+
+/** كلمات مفتاحية من نص المستخدم (حتى ثلاث)، بلا كلمات الوصل. */
+export function keywordsOf(topic: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const w of topic.replace(/[«»"“”،,.؟?!؛:()\-–—…]/g, ' ').split(/\s+/)) {
+    const k = w.trim();
+    if (k.length < 3 || STOP.has(k.toLowerCase()) || seen.has(k)) continue;
+    seen.add(k);
+    out.push(k);
+  }
+  // الأطول أغنى دلالة في الغالب (اسم لا حرف جر): الأول هو المحور.
+  return out.sort((a, b) => b.length - a.length).slice(0, 3);
+}
+
+function quotedTopic(full: string): string | null {
+  const m = full.match(/Analyze "([^"]{2,200})"/) || full.match(/الموضوع:\s*"([^"]{2,200})"/);
+  return m ? m[1] : null;
+}
+
+function councilFor(topic: string, ar: boolean, shadow: boolean) {
+  const kw = keywordsOf(topic);
+  const k1 = kw[0] || (ar ? 'الموضوع' : 'the topic');
+  const k2 = kw[1] || k1;
+  if (!ar) {
+    const roles = shadow ? ['Steve Jobs', 'Sun Tzu', 'Ibn Khaldun'] : ['Family Counselor', 'Child Psychologist', 'Learning Coach', 'Daily-Routine Designer', 'Calm Mediator'];
+    return {
+      council_discussion: roles.slice(0, 4).map((r, i) => ({ speaker: r, message: [`"${topic}" is a pattern, not a single incident: start by watching when "${k1}" shows up.`, `Agreed, and I would add that "${k2}" usually has an unmet need behind it.`, `Then keep the first step tiny and repeatable this week.`, `And review together on Friday: what helped, what did not.`][i] })),
+      consultants: roles.map((r, i) => ({ role: r, diagnosis: `Regarding "${topic}": the visible issue is "${k1}", but the lever is the routine around it.`, advice: [`Name the situation around "${k1}" in one calm sentence.`, `Offer two acceptable choices instead of one order.`, `Praise the attempt about "${k2}" the same day.`], genius_hack: `Turn "${k1}" into a 5-minute shared game with a visible timer.` })),
+      executive_verdict: `For "${topic}": small calm steps, repeated daily, beat one big decision. Review in a week.`,
+      global_references: ['Positive reinforcement in family routines (general idea)', 'Habit stacking (general idea)', 'Active listening practices (general idea)'],
+      media_recommendations: [1, 2, 3].map((n) => ({ title: `Demo resource ${n}: ${k1}`, description: `A general starting point about ${k1} (demo placeholder).`, search_keyword: `${k1} family routine` })),
+    };
+  }
+  const roles = shadow ? ['ستيف جوبز', 'سون تزو', 'ابن خلدون'] : ['مستشار أسري', 'مختصة نفسية', 'مدرب تعلّم', 'مصمّم روتين يومي', 'وسيط هادئ'];
+  const msgs = shadow
+    ? [`«${topic}»؟ كفى تأجيلًا: ابدؤوا بتجربة صغيرة حول «${k1}» هذا الأسبوع.`, `لا تعركوا المعركة كلها؛ اختاروا موضعًا واحدًا في «${k1}» وأحسنوا فيه.`, `العادات تُبنى بالتكرار لا بالقرار: «${k2}» يحتاج مواظبة أكثر من حماس.`]
+    : [`موضوع «${topic}» نمط يتكرر وليس حادثة واحدة؛ نبدأ بملاحظة متى يظهر «${k1}».`, `وأضيف أن وراء «${k2}» حاجة لم تُلبَّ في الغالب، فنسأل قبل أن نحكم.`, `نجعل الخطوة الأولى صغيرة وقابلة للتكرار هذا الأسبوع.`, `ونراجع معًا يوم الجمعة: ما الذي ساعد وما الذي لم يساعد.`];
+  return {
+    council_discussion: msgs.map((m, i) => ({ speaker: roles[i % roles.length], message: m })),
+    consultants: roles.map((r, i) => ({
+      role: r,
+      diagnosis: shadow ? `رأيي في «${topic}»: المشكلة الظاهرة هي «${k1}»، لكن الحل في ما يحيط بها من عادات.` : `في «${topic}»: الظاهر هو «${k1}»، أما مفتاح التغيير فهو الروتين المحيط به.`,
+      advice: [`سمّوا موقف «${k1}» بجملة واحدة هادئة بدل التعليق الطويل.`, `قدّموا خيارين مقبولين بدل أمر واحد.`, `عزّزوا أي محاولة تخص «${k2}» في اليوم نفسه.`],
+      genius_hack: `حوّلوا «${k1}» إلى لعبة مشتركة من خمس دقائق بمؤقت ظاهر (فكرة ${i + 1}).`,
+    })),
+    executive_verdict: `خلاصة «${topic}»: خطوات صغيرة هادئة تتكرر يوميًا أنفع من قرار كبير واحد. المراجعة بعد أسبوع.`,
+    global_references: ['التعزيز الإيجابي في الروتين الأسري (فكرة عامة)', 'بناء العادات بربطها بعادة قائمة (فكرة عامة)', 'مهارات الإصغاء الفعّال (فكرة عامة)'],
+    media_recommendations: [1, 2, 3].map((n) => ({ title: `مصدر تجريبي ${n}: ${k1}`, description: `نقطة انطلاق عامة حول «${k1}» (محتوى نموذجي للعرض).`, search_keyword: `${k1} تربية روتين` })),
+  };
+}
+
+function mindMapFor(topic: string, ar: boolean) {
+  const kw = keywordsOf(topic);
+  const k1 = kw[0] || (ar ? 'الموضوع' : 'topic');
+  const k2 = kw[1] || k1;
+  const k3 = kw[2] || k2;
+  const central = topic;
+  if (!ar) {
+    return { central, branches: [
+      ['Understanding', `What is really happening around "${k1}" and when it appears.`],
+      ['Triggers', `Situations that make "${k1}" stronger: time, place, people.`],
+      ['Needs behind it', `The unmet need that "${k2}" may be signalling.`],
+      ['Daily routine', `One small repeatable routine that supports "${k2}".`],
+      ['Conversation', `Calm phrases to use and phrases to avoid about "${k3}".`],
+      ['Follow-up', `A weekly check: what worked, what to adjust.`],
+    ].map(([title, description]) => ({ title, description })) };
+  }
+  return { central, branches: [
+    ['الفهم', `ما الذي يحدث فعلًا حول «${k1}» ومتى يظهر.`],
+    ['المحفّزات', `مواقف تزيد من «${k1}»: الوقت والمكان والأشخاص.`],
+    ['الحاجة الخفية', `الحاجة غير الملباة التي قد يشير إليها «${k2}».`],
+    ['الروتين اليومي', `روتين صغير قابل للتكرار يدعم «${k2}».`],
+    ['لغة الحوار', `عبارات هادئة تُقال وعبارات تُتجنّب عند الحديث عن «${k3}».`],
+    ['المتابعة', `مراجعة أسبوعية: ما الذي نجح وما الذي يُعدَّل.`],
+  ].map(([title, description]) => ({ title, description })) };
+}
+
+function simulationFor(topic: string, ar: boolean) {
+  const kw = keywordsOf(topic);
+  const k1 = kw[0] || (ar ? 'الموقف' : 'the situation');
+  if (!ar) {
+    return { scenario: `A realistic moment about "${topic}": tension is rising and everyone is waiting for the next move.`, decisions: [
+      { choice: `Pause, name the feeling, then offer two options about "${k1}".`, impact: 'Tension drops and the other side feels heard.', isCorrect: true, metrics: { engagement: 85, learning: 80, usability: 90 } },
+      { choice: `Give a firm order about "${k1}" and leave.`, impact: 'Short-term compliance, long-term resistance.', isCorrect: false, metrics: { engagement: 35, learning: 30, usability: 60 } },
+      { choice: `Ignore it and hope it passes.`, impact: `The pattern around "${k1}" repeats tomorrow.`, isCorrect: false, metrics: { engagement: 20, learning: 15, usability: 40 } },
+    ] };
+  }
+  return { scenario: `موقف واقعي حول «${topic}»: التوتر يرتفع والجميع ينتظر الخطوة التالية.`, decisions: [
+    { choice: `التوقف لحظة، وتسمية الشعور، ثم عرض خيارين مقبولين بخصوص «${k1}».`, impact: 'يهدأ التوتر ويشعر الطرف الآخر أنه مسموع.', isCorrect: true, metrics: { engagement: 85, learning: 80, usability: 90 } },
+    { choice: `إصدار أمر حازم بخصوص «${k1}» ثم المغادرة.`, impact: 'استجابة قصيرة المدى ومقاومة أطول مدى.', isCorrect: false, metrics: { engagement: 35, learning: 30, usability: 60 } },
+    { choice: 'تجاهل الموقف على أمل أن يمرّ.', impact: `يتكرر النمط المرتبط بـ«${k1}» غدًا.`, isCorrect: false, metrics: { engagement: 20, learning: 15, usability: 40 } },
+  ] };
+}
+
+/** شكل المخطط يحدد المولّد؛ null يعني: استعمل المولّد العام. */
+function shapeBuilder(schema: any, topic: string, ar: boolean, hint: string): unknown | null {
+  const props = schema?.properties;
+  if (!props) return null;
+  if (props.council_discussion && props.consultants) return councilFor(topic, ar, /مجلس الظل|ستيف جوبز/.test(hint));
+  if (props.central && props.branches) return mindMapFor(topic, ar);
+  if (props.scenario && props.decisions && props.decisions.items?.properties?.metrics) return simulationFor(topic, ar);
+  return null;
+}
+
 /** JSON بلا مخطط: الأشكال المعروفة في الشيفرة. */
 function jsonNoSchema(hint: string, topic: string, ar: boolean): unknown {
   if (/"classification"/.test(hint)) return { classification: 'new_case', matchId: null, normalizedMeaning: topic, mainTopic: topic, subTopics: [], riskLevel: 'low', ageMentioned: '', emotionalTone: 'calm' };
@@ -186,10 +298,14 @@ export function demoAiText(params: DemoAiParams): string {
   const user = lastUserText(params.contents);
   const full = `${sysHead} ${user}`;
   const ar = AR.test(sysHead.slice(0, 160)) || AR.test(user.slice(0, 120));
-  const topic = topicOf(user, ar);
+  const topic = topicOf(quotedTopic(user) || user, ar);
   const wantsJson = String(cfg.responseMimeType || '').includes('json') || !!cfg.responseSchema;
 
   if (!wantsJson) return freeText(topic, ar, full);
+  if (cfg.responseSchema) {
+    const shaped = shapeBuilder(cfg.responseSchema, topic, ar, full);
+    if (shaped) return JSON.stringify(shaped);
+  }
   if (cfg.responseSchema) return JSON.stringify(fromSchema(cfg.responseSchema, '', topic, ar, 0));
   // JSON بلا مخطط: التعليمات الكاملة (لا رأسها) تحدد الشكل.
   return JSON.stringify(jsonNoSchema(`${String(cfg.systemInstruction || '')} ${user}`, topic, ar));

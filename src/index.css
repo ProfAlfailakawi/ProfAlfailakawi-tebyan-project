@@ -4470,3 +4470,16 @@ main .overflow-x-auto > a,
 main .overflow-x-auto > [role="tab"] {
   flex-shrink: 0;
 }
+
+/* الطباعة: التطبيق قشرة بارتفاع الشاشة وتمرير داخلي، فكانت الطباعة تقصّ كل شيء
+   عدا الشاشة الأولى. هنا تُفكّ القيود ويُخفى الإطار (الشريط والأزرار العائمة). */
+@media print {
+  html, body, #root { height: auto !important; overflow-y: visible !important; overflow-x: clip !important; background: #fff !important; }
+  .tebyan-living-background { height: auto !important; min-height: 0 !important; overflow-y: visible !important; overflow-x: clip !important; display: block !important; background: #fff !important; }
+  .tebyan-route-shell { overflow-y: visible !important; overflow-x: clip !important; height: auto !important; padding-top: 0 !important; }
+  header, nav, footer, .fixed, [role="dialog"], .tour-menu-button, button { display: none !important; }
+  main button { display: none !important; }
+  * { animation: none !important; transition: none !important; box-shadow: none !important; backdrop-filter: none !important; }
+  .tebyan-living-background *, .tebyan-route-shell * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  a[href^="http"]::after { content: none !important; }
+}
