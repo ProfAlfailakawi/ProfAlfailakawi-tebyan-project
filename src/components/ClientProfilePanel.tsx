@@ -9,6 +9,7 @@ import {
   LibraryBig, Network
 } from 'lucide-react';
 import { useAuth } from './AuthProvider';
+import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
 import { useUser } from '../contexts/UserContext';
 import { auth, db } from '../lib/firebase';
 import { doc } from 'firebase/firestore';
@@ -146,6 +147,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
           setMaturityLabel(res.maturityLabel);
           if (res.scores) setMaturityScores({ p1: res.scores[0], p2: res.scores[1], p3: res.scores[2] });
           if (res.themes) setContextKeywords(res.themes);
+          // العرض: الكلمة المتكررة تؤخذ من تحليل المجرّة المبذور فتكتمل «بصمة التفكير».
+          if (IS_DEMO_MODE && res.themes?.length) setFrequentKeyword(res.themes[0]);
           if (res.commitments) setCommitments(res.commitments);
           if (res.historyCount) setLastAnalysisCount(res.historyCount);
         } catch(e) {}
@@ -1045,7 +1048,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   <div className="border-t border-[#8FA9C7]/15 pt-6">
                      <button onClick={() => {
                         onClose();
-                        auth.signOut();
+                        if (IS_DEMO_MODE) { exitDemoMode(); return; }
+                  auth.signOut();
                         window.location.reload();
                      }} className="w-full py-3 bg-slate-100 hover:bg-rose-50 text-[#3D4A5A] hover:text-rose-600 rounded-xl text-sm font-bold transition-colors">
                          تسجيل الخروج من الحساب

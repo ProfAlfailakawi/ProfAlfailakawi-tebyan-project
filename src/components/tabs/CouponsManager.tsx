@@ -28,6 +28,11 @@ export const CouponsManager = ({ language }: { language: string }) => {
   const handleCreateCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!code || !discount) return;
+    if (IS_DEMO_MODE) {
+      setCoupons(prev => [{ id: `demo-coupon-${Date.now()}`, code: code.toUpperCase(), discount: Number(discount), status: 'active', createdAt: null }, ...prev]);
+      setCode(''); setDiscount('');
+      return;
+    }
     setIsAdding(true);
     try {
       await addDoc(collection(db, 'coupons'), {
@@ -48,6 +53,7 @@ export const CouponsManager = ({ language }: { language: string }) => {
 
   const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من حذف الكوبون؟')) {
+      if (IS_DEMO_MODE) { setCoupons(prev => prev.filter(c => c.id !== id)); return; }
       await deleteDoc(doc(db, 'coupons', id));
     }
   };
