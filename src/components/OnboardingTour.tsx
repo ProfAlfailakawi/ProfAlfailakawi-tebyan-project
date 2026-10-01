@@ -211,7 +211,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 24, opacity: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative w-full max-w-lg overflow-hidden rounded-[32px] border border-[#8E7AAE]/12 bg-white shadow-[0_30px_90px_rgba(103,88,132,0.16)]"
+            className="relative w-full max-w-lg max-h-full overflow-x-hidden overflow-y-auto overscroll-contain rounded-[32px] border border-[#8E7AAE]/12 bg-white shadow-[0_30px_90px_rgba(103,88,132,0.16)]"
           >
             <button
               type="button"
