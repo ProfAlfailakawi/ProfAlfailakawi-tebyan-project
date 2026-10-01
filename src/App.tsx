@@ -1787,7 +1787,7 @@ const AppContent: React.FC = () => {
             </React.Suspense>
           </motion.div>
 
-          <footer className="text-center py-6 mt-10 text-zinc-400">
+          <footer className="text-center py-6 max-sm:pb-24! mt-10 text-zinc-400">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Globe className="w-5 h-5" />
               <span className="font-bold text-zinc-500 tracking-tight">

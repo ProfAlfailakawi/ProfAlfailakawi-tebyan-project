@@ -16,18 +16,18 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
   if (loading) return <div className="p-10 text-center font-bold text-slate-500">جاري التحقق من صلاحياتك... (لحظات)</div>;
   
   if (!user) {
-    return <div className="p-10 text-center" dir="ltr">
-      <h2 className="text-xl font-bold text-red-500 mb-4">You are not logged in.</h2>
-      <p>Please log in.</p>
+    return <div className="min-h-dvh p-10 text-center font-sans" dir="rtl">
+      <h2 className="text-xl font-bold text-red-500 mb-4">لم تسجّل دخولك بعد.</h2>
+      <p>يُرجى تسجيل الدخول للمتابعة.</p>
     </div>;
   }
 
   if (!isAdmin) {
-    return <div className="p-10 text-center" dir="ltr">
-      <h2 className="text-xl font-bold text-red-500 mb-4">Access Denied</h2>
-      <p>Email: {user?.email}</p>
-      <p>Role: {profile?.role}</p>
-      <p>IsAdmin Boolean: {String(isAdmin)}</p>
+    return <div className="min-h-dvh p-10 text-center font-sans" dir="rtl">
+      <h2 className="text-xl font-bold text-red-500 mb-4">غير مصرّح لك بالدخول</h2>
+      <p>البريد الإلكتروني: <span dir="ltr">{user?.email}</span></p>
+      <p>الدور: {profile?.role}</p>
+      <p>صلاحية المشرف: {isAdmin ? 'نعم' : 'لا'}</p>
     </div>;
   }
 
