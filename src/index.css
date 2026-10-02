@@ -4648,3 +4648,17 @@ main .overflow-x-auto > [role="tab"] {
     }
   }
 }
+
+/* r42 visual: library gallery edge fade. Phones keep the original 28px fade; on wide
+   screens the fade is longer and fully transparent at the edge so a half-cut neighbouring
+   frame never shows as a grey bar against the card edge. Visual only. */
+.tebyan-gallery-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
+@media (min-width: 768px) {
+  .tebyan-gallery-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, transparent 40px, #000 clamp(88px, 9%, 128px), #000 calc(100% - clamp(88px, 9%, 128px)), transparent calc(100% - 40px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, transparent 40px, #000 clamp(88px, 9%, 128px), #000 calc(100% - clamp(88px, 9%, 128px)), transparent calc(100% - 40px), transparent 100%);
+  }
+}
