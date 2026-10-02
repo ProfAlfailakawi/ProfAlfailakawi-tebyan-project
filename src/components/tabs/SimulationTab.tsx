@@ -343,7 +343,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                        <h2 className="text-3xl font-black text-[#182231]">{language === 'ar' ? 'الرادار التحليلي للسلوك' : 'Behavioral Radar'}</h2>
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-3 md:gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                        {([
                          { v: rpRadar.emotional_intelligence, l: language === 'ar' ? 'الذكاء العاطفي' : 'EQ', tone: 'mint' },
                          { v: rpRadar.patience, l: language === 'ar' ? 'مستوى الصبر' : 'Patience', tone: 'sky' },

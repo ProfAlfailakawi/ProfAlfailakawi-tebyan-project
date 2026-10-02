@@ -776,7 +776,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       <div className="relative h-24 mb-8">
                           {/* axis captions (depth scale: 5 = deepest, 35 = simplest, as in the analysis prompt) */}
                           <span className="absolute top-0 end-0 text-[11px] font-bold text-[#7C8796]">أعمق</span>
-                          <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                          <svg className={`w-full h-full ${language === 'ar' ? '-scale-x-100' : ''}`} viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                               {[5, 20, 35].map(y => (
                                 <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="#8FA9C7" strokeOpacity="0.25" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                               ))}
@@ -790,7 +790,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           </svg>
                           {/* markers are HTML so they stay round regardless of the stretched viewBox */}
                           {[{ x: 10, y: maturityScores.p1, c: '#B8AACD', s: 10 }, { x: 45, y: maturityScores.p2, c: '#8E7AAE', s: 10 }, { x: 90, y: maturityScores.p3, c: '#6E5B91', s: 12 }].map((m, i) => (
-                            <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ insetInlineStart: `${m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
+                            <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ left: `${language === 'ar' ? 100 - m.x : m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
                           ))}
                           
                           <div className="absolute bottom-0 right-0 text-[11px] text-[#7C8796] font-bold">البداية</div>
