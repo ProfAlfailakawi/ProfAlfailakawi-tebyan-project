@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DnaRing } from './dna/DnaKit';
 import { Brain, TrendingUp, DollarSign, Lightbulb, Zap, ArrowRight, BookOpen, Home, RefreshCw, BarChart4, Users, LayoutDashboard, TicketPercent, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
@@ -313,10 +314,12 @@ export default function AdminDashboard() {
                     <p className="text-emerald-700 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">الطلبات الموفرة (ذاكرة)</p>
                     <h3 className="text-3xl md:text-4xl font-black text-emerald-700 tracking-tight">{costStats.cacheHits + costStats.kbHits}</h3>
                 </div>
-                <div className="bg-slate-900 p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-xl border border-slate-800 text-white flex flex-col justify-between relative overflow-hidden min-w-0">
-                    <div className="absolute inset-0 bg-indigo-500/10 blur-xl rounded-full scale-150 rotate-45 transform" />
-                    <p className="text-slate-200 mb-2 font-bold text-xs md:text-sm uppercase relative z-10 leading-snug">نسبة التوفير الكلية</p>
-                    <h3 className="text-3xl md:text-5xl font-black text-white tracking-tight relative z-10">{costStats.savedPercentage}٪</h3>
+                <div className="bg-[#F8F5EF] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#6E5B91]/15 text-[#182231] flex flex-col justify-between gap-3 min-w-0">
+                    <p className="text-[#5B6E82] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
+                    <div className="flex items-center justify-between gap-3">
+                        <h3 className="text-3xl md:text-4xl font-black tracking-tight">{costStats.savedPercentage}٪</h3>
+                        <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-[11px]">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" />
+                    </div>
                 </div>
             </div>
             <p className="mt-4 text-sm text-slate-500 font-medium">* يتم استخدام خوارزمية التطابق الدلالي وقاعدة المعرفة لمنع استدعاء API بشكل متكرر على نفس الأسئلة.</p>

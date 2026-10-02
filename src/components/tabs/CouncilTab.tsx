@@ -126,7 +126,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
 
       <div className="relative min-h-[300px]">
         {!isLoading && !councilData && (
-          <ToolEmptyHint icon={Users} text={language === 'ar' ? 'اجمع الخبراء والمفكرين ليتجادلوا ويقدموا خلاصة عميقة ومدروسة لحالتك أو تحديك الخاص.' : 'Gather historical and educational experts to debate and provide a deep, well-thought-out verdict for your specific challenge.'} />
+          <ToolEmptyHint icon={Users} />
         )}
         {isLoading ? (
           <motion.div 

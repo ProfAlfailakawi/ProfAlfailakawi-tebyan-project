@@ -7,6 +7,7 @@ import { useAuth } from '../AuthProvider';
 import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
+import { DnaRing } from '../dna/DnaKit';
 
 export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { userGender } = useAuth();
@@ -109,7 +110,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
               <div className="w-20 h-20 border-8 border-zinc-100 rounded-full"></div>
               <RefreshCw className="w-20 h-20 text-emerald-600 animate-spin absolute top-0 left-0" />
             </div>
-            <div className="text-2xl md:text-3xl font-bold text-black text-center">
+            <div className="text-2xl md:text-3xl font-bold text-[#182231] text-center">
               {language === 'ar' ? 'جاري تأسيس الاختبار...' : 'Generating quiz...'}
             </div>
             <div className="px-8 py-3 bg-emerald-50 text-emerald-700 rounded-full font-bold animate-pulse">
@@ -134,7 +135,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                   title={language === 'ar' ? 'بدء إنشاء الاختبار الذكي' : 'Start smart quiz generation'}
                   className={cn(
                     "w-full py-5 rounded-[16px] font-bold text-xl shadow-lg transition-all flex items-center justify-center gap-3",
-                    isLoading ? "bg-zinc-400 cursor-not-allowed" : "bg-black text-white hover:bg-zinc-900 cursor-pointer"
+                    isLoading ? "bg-zinc-400 cursor-not-allowed" : "bg-[#182231] text-white hover:bg-[#2a3a52] cursor-pointer"
                   )}
                 >
                   {isLoading ? (
@@ -154,11 +155,19 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-center py-20 space-y-8"
               >
-                <div className="w-32 h-32 bg-[#EFEAF6] text-[#6E5B91] rounded-full flex items-center justify-center mx-auto">
-                   {score === questions.length ? <Crown className="w-14 h-14" aria-hidden="true" /> : <PartyPopper className="w-14 h-14" aria-hidden="true" />}
+                <div className="flex justify-center">
+                  <DnaRing
+                    value={score}
+                    max={questions.length}
+                    size={132}
+                    stroke={9}
+                    tone="lilac"
+                    label={<span className="flex flex-col items-center gap-1 text-[#182231]">{score === questions.length ? <Crown className="w-7 h-7 text-[#6E5B91]" aria-hidden="true" /> : <PartyPopper className="w-7 h-7 text-[#6E5B91]" aria-hidden="true" />}<span className="text-xl font-black" dir="ltr">{score}/{questions.length}</span></span>}
+                    ariaLabel={language === 'ar' ? `النتيجة: ${score} من ${questions.length}` : `Score: ${score} of ${questions.length}`}
+                  />
                 </div>
                 <div className="space-y-2">
-                   <h3 className="text-3xl md:text-4xl font-bold text-black">{language === 'ar' ? 'اكتمل الاختبار!' : 'Quiz Completed!'}</h3>
+                   <h3 className="text-3xl md:text-4xl font-bold text-[#182231]">{language === 'ar' ? 'اكتمل الاختبار!' : 'Quiz Completed!'}</h3>
                    <p className="text-xl font-bold text-zinc-500">
                      {language === 'ar' ? `نتيجتك النهائية: ${score} من ${questions.length}` : `Your final score: ${score} out of ${questions.length}`}
                    </p>
@@ -166,7 +175,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 <div className="flex flex-wrap gap-4 justify-center">
                    <button 
                      onClick={reset}
-                     className="px-8 py-4 bg-black text-white rounded-[16px] font-bold shadow-lg hover:bg-zinc-900 transition-all cursor-pointer"
+                     className="px-8 py-4 bg-[#182231] text-white rounded-[16px] font-bold shadow-lg hover:bg-zinc-900 transition-all cursor-pointer"
                     >
                       {language === 'ar' ? 'اختبار جديد' : 'New Quiz'}
                     </button>
@@ -246,7 +255,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                     className={cn(
                       "flex-1 py-5 rounded-[16px] font-bold text-xl transition-all shadow-lg",
                       showFeedback 
-                        ? "bg-black text-white cursor-pointer hover:bg-zinc-900" 
+                        ? "bg-[#182231] text-white cursor-pointer hover:bg-[#2a3a52]" 
                         : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                     )}
                   >

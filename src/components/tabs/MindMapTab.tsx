@@ -105,7 +105,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
         )}
 
         {!mindMapData && !isGenerating && (
-          <ToolEmptyHint icon={Network} text={language === 'ar' ? 'أدخل أي مفهوم أو مشكلة تربوية.' : 'Enter any educational concept or problem, and the Omni-AI will dismantle it into a deep structural mind map.'} />
+          <ToolEmptyHint icon={Network} />
         )}
 
         {mindMapData && !isGenerating && (

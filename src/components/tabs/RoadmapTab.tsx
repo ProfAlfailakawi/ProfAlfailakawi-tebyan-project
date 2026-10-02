@@ -114,10 +114,10 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
             {/* Clean Header */}
             <div className="bg-white border text-zinc-900 border-zinc-200 p-8 rounded-3xl shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -z-10"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#EFEAF6] rounded-bl-[100px] -z-10"></div>
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold mb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EFEAF6] text-[#6E5B91] rounded-full text-xs font-bold mb-4">
                     <Flag className="w-3 h-3" />
                     {language === 'ar' ? 'خطة الطريق المعتمدة' : 'Verified Roadmap'}
                   </div>
@@ -188,7 +188,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                       <div className="relative z-10 hidden md:flex flex-col items-center shrink-0 w-20">
                         <div className={cn(
                           "w-10 h-10 rounded-full border-2 bg-white flex flex-col items-center justify-center font-black text-sm",
-                          i === 0 ? "border-indigo-500 text-indigo-600 shadow-sm" :
+                          i === 0 ? "border-[#6E5B91] text-[#6E5B91] shadow-sm" :
                           i === (roadmap.milestones.length - 1) ? "border-emerald-500 text-emerald-600" :
                           "border-zinc-300 text-zinc-500"
                         )}>
@@ -218,7 +218,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                             <ul className="space-y-2.5">
                               {milestone.tasks.map((task: string, j: number) => (
                                 <li key={j} className="flex items-start gap-3">
-                                  <div className="mt-[6px] w-[5px] h-[5px] rounded-full bg-indigo-400 opacity-60 shrink-0" />
+                                  <div className="mt-[6px] w-[5px] h-[5px] rounded-full bg-[#8E7AAE] opacity-60 shrink-0" />
                                   <span className={cn("text-sm font-medium text-zinc-700 leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>{task?.replace(/\*\*/g, '')}</span>
                                 </li>
                               ))}
