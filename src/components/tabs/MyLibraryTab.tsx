@@ -125,7 +125,7 @@ const GalleryDots = ({ listRef, count }: { listRef: React.RefObject<HTMLUListEle
   );
 };
 
-const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string, handleTabChange?: (id: string, context?: string) => void }) => {
+const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { language?: string, handleTabChange?: (id: string, context?: string) => void, embedded?: boolean }) => {
     const { preferences, removeFromLibrary } = useUser();
     const galleryRef = React.useRef<HTMLUListElement>(null);
     // في العرض تظهر المحفوظات النموذجية بلغة الواجهة؛ الحذف يبقى على العنصر المخزَّن.
@@ -147,8 +147,8 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
 
     return (
         <div className="p-4 md:p-6 pb-28 md:pb-32">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12">
-                <div className="space-y-1 text-right">
+            <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12', embedded && hasSaved && 'mb-0 md:mb-0')}>
+                <div className={cn('space-y-1 text-right', embedded && 'sr-only')}>
                   <h2 className="text-3xl md:text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
                   <p className="text-zinc-500 font-bold text-xs md:text-sm tracking-widest uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
                 </div>
@@ -180,7 +180,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
 
-                    <ul ref={galleryRef} className="tebyan-gallery-mask flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
+                    <ul ref={galleryRef} className={cn('tebyan-gallery-mask flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center md:[justify-content:safe_center]', (Array.isArray(preferences.savedLibrary) ? preferences.savedLibrary.length : 0) > 2 ? 'md:px-[calc(50%-175px)]' : 'md:px-8')}>
                         {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
                             let content = '';
                             let title = '';

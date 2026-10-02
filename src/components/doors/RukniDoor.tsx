@@ -52,7 +52,7 @@ export const RukniDoor = ({
     >
       <Suspense fallback={<Fallback />}>
         {mode === "library" && (
-          <MyLibraryTab language={language} handleTabChange={handleTabChange} />
+          <MyLibraryTab language={language} handleTabChange={handleTabChange} embedded />
         )}
         {mode === "points" && (
           <LoyaltyTab language={language} handleTabChange={handleTabChange} />
