@@ -146,9 +146,20 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                         <Crown className="w-5 h-5 text-[#6E5B91]" />
                         <span className="text-xs font-black">{language === 'ar' ? 'رصيد النقاط' : 'Points Balance'}</span>
                     </div>
-                    <div className="flex flex-wrap items-baseline gap-2 mb-2">
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="flex flex-wrap items-baseline gap-2">
                         <span className="text-5xl md:text-6xl font-black">{myLoyaltyData.points}</span>
                         <span className="text-xl font-bold text-[#5B6E82]">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
+                    </div>
+                    <DnaRing
+                      value={Number(myLoyaltyData.points) || 0}
+                      max={500}
+                      size={56}
+                      stroke={3}
+                      tone="lilac"
+                      className="shrink-0"
+                      ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
+                    />
                     </div>
                     <p className="text-[#5B6E82] text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
                     
