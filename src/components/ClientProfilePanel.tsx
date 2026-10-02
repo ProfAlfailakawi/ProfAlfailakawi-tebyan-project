@@ -788,8 +788,9 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                   </linearGradient>
                               </defs>
                           </svg>
+                          {/* marker y = point on the Bezier curve at that x (x is linear in t: t=x/50 on the first segment, (x-50)/50 on the second) */}
                           {/* markers are HTML so they stay round regardless of the stretched viewBox */}
-                          {[{ x: 10, y: maturityScores.p1, c: '#B8AACD', s: 10 }, { x: 45, y: maturityScores.p2, c: '#8E7AAE', s: 10 }, { x: 90, y: maturityScores.p3, c: '#6E5B91', s: 12 }].map((m, i) => (
+                          {[{ x: 10, y: 0.64 * maturityScores.p1 + 0.32 * maturityScores.p2 + 0.04 * ((maturityScores.p2 + maturityScores.p3) / 2), c: '#B8AACD', s: 10 }, { x: 45, y: 0.01 * maturityScores.p1 + 0.18 * maturityScores.p2 + 0.81 * ((maturityScores.p2 + maturityScores.p3) / 2), c: '#8E7AAE', s: 10 }, { x: 90, y: 0.04 * ((maturityScores.p2 + maturityScores.p3) / 2) + 0.96 * maturityScores.p3, c: '#6E5B91', s: 12 }].map((m, i) => (
                             <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ left: `${language === 'ar' ? 100 - m.x : m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
                           ))}
                           
