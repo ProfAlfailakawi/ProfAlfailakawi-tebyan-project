@@ -199,7 +199,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       </div>
                    </div>
                 </div>
-                <button onClick={IS_DEMO_MODE ? () => setDemoNotice(true) : undefined} className="w-full mt-8 py-4 bg-zinc-900 text-white rounded-2xl font-black shadow-lg hover:bg-black transition-all">
+                <button onClick={IS_DEMO_MODE ? () => setDemoNotice(true) : undefined} className="w-full mt-8 py-4 bg-[#6E5B91] text-white rounded-2xl font-black shadow-lg hover:bg-[#5F4E7F] transition-all">
                     {language === 'ar' ? 'استبدال النقاط' : 'Redeem Points'}
                 </button>
                 {IS_DEMO_MODE && demoNotice && (
@@ -547,7 +547,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                         {language === 'ar' ? 'إضافة نقاط يدوياً' : 'Add Points Manually'}
                      </button>
                      <button 
-                       className="w-full bg-black text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all shadow-lg active:scale-95"
+                       className="w-full bg-[#6E5B91] text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[#5F4E7F] transition-all shadow-lg active:scale-95"
                        onClick={() => window.alert('سيتم فتح نظام المكافآت المتقدم قريباً!')}
                      >
                         <Gift className="w-4 h-4" />

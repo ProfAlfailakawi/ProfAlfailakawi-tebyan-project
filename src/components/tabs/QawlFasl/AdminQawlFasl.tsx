@@ -240,7 +240,7 @@ export default function AdminQawlFasl() {
                  <button 
                    onClick={handleGenerate}
                    disabled={isGenerating}
-                   className="w-full bg-black hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                   className="w-full bg-[#6E5B91] hover:bg-[#5F4E7F] disabled:bg-blue-300 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
                  >
                    {isGenerating ? <Loader2 className="w-5 h-5 animate-spin"/> : <Sparkles className="w-5 h-5"/>} 
                    {isGenerating ? 'جاري التوليد...' : 'توليد الإجابة بالذكاء الاصطناعي'}
@@ -275,7 +275,7 @@ export default function AdminQawlFasl() {
                 <option value="published">منشور</option>
               </select>
             </div>
-            <button onClick={save} className="w-full sm:w-auto bg-black hover:bg-zinc-900 text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2">
+            <button onClick={save} className="w-full sm:w-auto bg-[#6E5B91] hover:bg-[#5F4E7F] text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2">
               <Check className="w-5 h-5"/> حفظ البيانات
             </button>
          </div>
@@ -290,7 +290,7 @@ export default function AdminQawlFasl() {
           <div className="bg-white rounded-[16px] p-6 max-w-sm w-full text-center">
             <h3 className="text-xl font-bold mb-4">تنبيه</h3>
             <p className="mb-6 text-zinc-600 whitespace-pre-wrap">{alertDialog}</p>
-            <button onClick={() => setAlertDialog(null)} className="w-full bg-black text-white py-3 rounded-xl font-bold">موافق</button>
+            <button onClick={() => setAlertDialog(null)} className="w-full bg-[#6E5B91] text-white py-3 rounded-xl font-bold">موافق</button>
           </div>
         </div>
       )}
@@ -507,7 +507,7 @@ export default function AdminQawlFasl() {
                             <span className="text-xs text-zinc-500">مطلوب {mq.frequency} مرة</span>
                         </div>
                         <div className="flex gap-2 w-full sm:w-auto">
-                            <button className="w-full sm:w-auto bg-black text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={() => {
+                            <button className="w-full sm:w-auto bg-[#6E5B91] text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={() => {
                                 if (IS_DEMO_MODE) { setMissingQuestions(prev => prev.filter(x => x.id !== mq.id)); showAlert('تم إعداد إجابة مقترحة للسؤال «' + mq.query + '» وانتقل إلى المسودات.' + DEMO_NOTE); return; }
                                 // Simple approve hook
                                 qawlFaslService.updateMissingQuestionStatus(mq.id, 'approved', mq.query, 'جاري إعداد الإجابة...');
@@ -534,7 +534,7 @@ export default function AdminQawlFasl() {
                   {r.contact && <p className="text-xs text-zinc-600 break-all">للتواصل: {r.contact}</p>}
                 </div>
                 {r.status !== 'resolved' && (
-                  <button className="w-full sm:w-auto shrink-0 bg-black text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={async () => {
+                  <button className="w-full sm:w-auto shrink-0 bg-[#6E5B91] text-white px-3 py-2 rounded-lg text-sm font-bold" onClick={async () => {
                     if (IS_DEMO_MODE) { setAnswerReports(prev => prev.map(x => (x.id === r.id ? { ...x, status: 'resolved' } : x))); return; }
                     try { await qawlFaslService.resolveAnswerReport(r.id); loadReports(); } catch (e) { console.error(e); }
                   }}>تمت المعالجة</button>

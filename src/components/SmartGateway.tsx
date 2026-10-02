@@ -3491,7 +3491,7 @@ export const SmartGateway: React.FC<
                               <button
                                 type="button"
                                 onClick={() => handlePathSelect(topDoor.id, searchValue)}
-                                className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#182231] hover:bg-[#273548] px-4 py-2.5 text-xs md:text-sm font-bold text-white shadow-md transition-all active:scale-95 cursor-pointer"
+                                className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#6E5B91] hover:bg-[#5F4E7F] px-4 py-2.5 text-xs md:text-sm font-bold text-white shadow-md transition-all active:scale-95 cursor-pointer"
                               >
                                 <span>{language === "ar" ? `دخول ${topDoor.label}` : `Open ${topDoor.label}`}</span>
                                 <ArrowLeft className={`h-4 w-4 ${language === "ar" ? "" : "rotate-180"}`} />

@@ -162,7 +162,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                     />
                   </div>
                   <div className="flex gap-2">
-                    <button type="submit" disabled={!feeling || !behavior} className="flex-1 bg-[#182231] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:bg-[#2a3a52] transition-colors disabled:opacity-50">
+                    <button type="submit" disabled={!feeling || !behavior} className="flex-1 bg-[#6E5B91] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:bg-[#5F4E7F] transition-colors disabled:opacity-50">
                       <Plus className="w-5 h-5" />
                       {language === 'ar' ? 'حفظ السجل' : 'Save Log'}
                     </button>

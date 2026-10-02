@@ -224,7 +224,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                                                 onClick={() => {
                                                   alert(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.');
                                                 }}
-                                                className="flex-1 py-2 bg-stone-900 text-white hover:bg-black rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
+                                                className="flex-1 py-2 bg-[#6E5B91] text-white hover:bg-[#5F4E7F] rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
                                             >
                                                 <Shirt className="w-3 h-3" />
                                                 {language === 'ar' ? 'ارتداء' : 'Wear'}

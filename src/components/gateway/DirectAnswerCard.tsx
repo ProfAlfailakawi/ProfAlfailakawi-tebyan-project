@@ -96,7 +96,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
           <button
             type="button"
             onClick={onContinue}
-            className="min-h-12 rounded-[16px] bg-[#182231] px-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(24,34,49,0.15)] transition-transform active:scale-[0.98]"
+            className="min-h-12 rounded-[16px] bg-[#6E5B91] px-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(24,34,49,0.15)] transition-transform active:scale-[0.98]"
           >
             {isArabic ? "أكمل معي" : "Continue with me"}
           </button>
