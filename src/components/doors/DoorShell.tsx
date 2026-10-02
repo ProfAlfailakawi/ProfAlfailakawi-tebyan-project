@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { ElementType } from "react";
 
@@ -25,6 +25,7 @@ export const DoorShell = ({
   activeMode,
   onModeChange,
   language,
+  emphasis,
   children,
 }: {
   titleAr: string;
@@ -35,10 +36,49 @@ export const DoorShell = ({
   activeMode: string;
   onModeChange: (id: string) => void;
   language: "ar" | "en";
+  /** Slightly larger step chips and hint: for doors whose chips read as a numbered journey. */
+  emphasis?: boolean;
   children: React.ReactNode;
 }) => {
   const ar = language === "ar";
   const current = modes.find((m) => m.id === activeMode) ?? modes[0];
+
+  // الصف قابل للتمرير الأفقي: يظهر تلاشٍ عند الحافة التي يوجد خلفها مزيد من الشرائح.
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [fade, setFade] = useState({ start: false, end: false });
+  const measure = useCallback(() => {
+    const el = tabsRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 2) {
+      setFade((f) => (f.start || f.end ? { start: false, end: false } : f));
+      return;
+    }
+    const rtl = getComputedStyle(el).direction === "rtl";
+    const pos = rtl ? -el.scrollLeft : el.scrollLeft; // المسافة المقطوعة من بداية الصف
+    const next = { start: pos > 2, end: pos < max - 2 };
+    setFade((f) => (f.start === next.start && f.end === next.end ? f : next));
+  }, []);
+  useEffect(() => {
+    measure();
+    const el = tabsRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      el.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure, modes.length, language]);
+  const FADE = "28px";
+  const rtlDir = ar;
+  // "start" هو الجهة التي يبدأ منها الصف (يمين في العربية)
+  const left = rtlDir ? fade.end : fade.start;
+  const right = rtlDir ? fade.start : fade.end;
+  const mask =
+    left || right
+      ? `linear-gradient(to right, ${left ? `transparent 0, #000 ${FADE}` : "#000 0"}, ${right ? `#000 calc(100% - ${FADE}), transparent 100%` : "#000 100%"})`
+      : undefined;
 
   return (
     <div className="w-full" dir={ar ? "rtl" : "ltr"}>
@@ -54,6 +94,8 @@ export const DoorShell = ({
       {modes.length > 1 && (
         <div className="max-w-3xl mx-auto px-4 mt-4">
           <div
+            ref={tabsRef}
+            style={mask ? { WebkitMaskImage: mask, maskImage: mask } : undefined}
             className="flex gap-2 overflow-x-auto pb-1 justify-start md:justify-center"
             role="tablist"
             aria-label={ar ? "اختر الأسلوب" : "Choose a style"}
@@ -68,19 +110,21 @@ export const DoorShell = ({
                   aria-selected={on}
                   onClick={() => onModeChange(m.id)}
                   className={
-                    "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-all border " +
+                    (emphasis
+                      ? "shrink-0 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-bold transition-all border "
+                      : "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-all border ") +
                     (on
                       ? "bg-[#8E7AAE] border-[#8E7AAE] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
                       : "bg-white/80 border-[#E5DFD4] text-[#64788D] hover:border-[#8E7AAE]/50 hover:text-[#5E4D7A]")
                   }
                 >
-                  {Icon && <Icon className="w-3.5 h-3.5" />}
+                  {Icon && <Icon className={emphasis ? "w-4 h-4" : "w-3.5 h-3.5"} />}
                   {ar ? m.labelAr : m.labelEn}
                 </button>
               );
             })}
           </div>
-          <p className="mt-2 text-center text-[11.5px] text-[#8E7AAE] font-medium">
+          <p className={"mt-2 text-center text-[#8E7AAE] font-medium " + (emphasis ? "text-[12.5px]" : "text-[11.5px]")}>
             {ar ? current.hintAr : current.hintEn}
           </p>
         </div>

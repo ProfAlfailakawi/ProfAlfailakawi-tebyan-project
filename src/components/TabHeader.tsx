@@ -9,7 +9,9 @@ export const TabHeader: React.FC<{
     language: string;
     onBack?: () => void;
     onClose?: () => void;
-}> = ({ title, description, icon: Icon, language, onBack, onClose }) => {
+    /** When a parent heading already names this screen: keep the title for screen readers only. */
+    hideTitleVisually?: boolean;
+}> = ({ title, description, icon: Icon, language, onBack, onClose, hideTitleVisually }) => {
     const handleBack = onBack || onClose;
 
     return (
@@ -35,7 +37,7 @@ export const TabHeader: React.FC<{
                     <Icon strokeWidth={1.75} />
                 </div>
                 <div className="min-w-0 flex-1">
-                    <h2 className="tebyan-tab-header__title font-extrabold text-[#182231] tracking-tight break-words">
+                    <h2 className={`tebyan-tab-header__title font-extrabold text-[#182231] tracking-tight break-words${hideTitleVisually ? ' sr-only' : ''}`}>
                         {language === 'ar' ? title.ar : title.en}
                     </h2>
                     <p title={language === 'ar' ? description.ar : description.en} className="tebyan-tab-header__desc text-[#64788D] font-medium break-words">

@@ -120,7 +120,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               transition={{ duration: 0.2 }}
               className="w-full h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar"
             >
-               {activeSubTab === 'council' && <CouncilTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
+               {activeSubTab === 'council' && <CouncilTab inArena language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'timemachine' && <TimeMachineTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'simulation' && <SimulationTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'spatial' && (

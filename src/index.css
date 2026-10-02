@@ -4648,3 +4648,93 @@ main .overflow-x-auto > [role="tab"] {
     }
   }
 }
+
+/* r42 visual: library gallery edge fade. Phones keep the original 28px fade; on wide
+   screens the fade is longer and fully transparent at the edge so a half-cut neighbouring
+   frame never shows as a grey bar against the card edge. Visual only. */
+.tebyan-gallery-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%);
+}
+@media (min-width: 768px) {
+  .tebyan-gallery-mask {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, transparent 40px, #000 clamp(88px, 9%, 128px), #000 calc(100% - clamp(88px, 9%, 128px)), transparent calc(100% - 40px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, transparent 40px, #000 clamp(88px, 9%, 128px), #000 calc(100% - clamp(88px, 9%, 128px)), transparent calc(100% - 40px), transparent 100%);
+  }
+}
+
+/* r42 visual: the ask page «تشغيل» button read as a pale ghost (the global soft-lilac
+   repaint of #8E7AAE fills). Colour only: a deeper lilac fill with white text (~7:1). */
+@layer base {
+  main button.tebyan-run-action:not(:disabled) {
+    background: #5f4e7f !important;
+    color: #ffffff !important;
+    border-color: #5f4e7f !important;
+  }
+  main button.tebyan-run-action:not(:disabled):hover {
+    background: #4b3d68 !important;
+  }
+}
+
+/* r42 visual: back + help pill never sits on content. Desktop: tucked into the bottom-left
+   corner (it used to hang under the header and take layout space); phones: smaller and
+   closer to the corner so it clears the left gutter cards. Visual only. */
+@layer base {
+  @media (min-width: 768px) {
+    .tebyan-page-controls {
+      top: auto !important;
+      bottom: 12px !important;
+      left: 12px !important;
+      opacity: 0.82;
+      transition: opacity 0.2s ease;
+    }
+    .tebyan-page-controls:hover,
+    .tebyan-page-controls:focus-within {
+      opacity: 1;
+    }
+    .tebyan-page-controls > button,
+    .tebyan-page-controls .tebyan-global-back,
+    .tebyan-page-controls .tebyan-page-help-button {
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      min-height: 40px !important;
+    }
+    .tebyan-page-help-popup {
+      top: auto !important;
+      bottom: 66px !important;
+      left: 12px !important;
+    }
+  }
+  @media (max-width: 767px) {
+    .tebyan-page-controls {
+      left: 4px !important;
+      gap: 8px !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 6px) !important;
+      opacity: 0.7;
+    }
+    .tebyan-page-controls > button,
+    .tebyan-page-controls .tebyan-global-back,
+    .tebyan-page-controls .tebyan-page-help-button {
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      min-height: 36px !important;
+    }
+    .tebyan-page-help-popup {
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 58px) !important;
+    }
+  }
+  /* Mobile only: 44x44 hit area around the 36px chips (8px gap, so areas never overlap).
+     Desktop keeps the plain 40px buttons: no extension, no overlap. */
+  @media (max-width: 767px) {
+    .tebyan-page-controls > button {
+      position: relative;
+    }
+    .tebyan-page-controls > button::after {
+      content: "";
+      position: absolute;
+      inset: -5px; /* padding box is 1px inside the border: 36 + 2*4 = 44 */
+    }
+  }
+}

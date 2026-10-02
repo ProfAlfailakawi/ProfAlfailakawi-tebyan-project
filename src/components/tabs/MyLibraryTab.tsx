@@ -8,7 +8,7 @@ import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { localizeDemoLibrary } from '../../data/demoFixtures';
 
-const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
+const MoodCloud = ({ items, language, action }: { items: any[], language: string, action?: React.ReactNode }) => {
   const counts = items.reduce((acc: any, item: any) => {
     const type = (item && typeof item === 'object' ? item.type : 'item') || 'item';
     acc[type] = (acc[type] || 0) + 1;
@@ -83,6 +83,7 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
          </motion.div>
        ))}
     </div>
+    {action}
     </div>
   );
 };
@@ -128,11 +129,22 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
     const { preferences, removeFromLibrary } = useUser();
     const galleryRef = React.useRef<HTMLUListElement>(null);
     // في العرض تظهر المحفوظات النموذجية بلغة الواجهة؛ الحذف يبقى على العنصر المخزَّن.
+    const hasSaved = Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length > 0;
     const displayLibrary = React.useMemo(
         () => (IS_DEMO_MODE && Array.isArray(preferences.savedLibrary) ? localizeDemoLibrary(preferences.savedLibrary, language) : preferences.savedLibrary),
         [preferences.savedLibrary, language],
     );
     
+    // مع وجود محفوظات يجاور الزرُّ الحلقةَ ووسيلةَ الإيضاح؛ وبدونها يبقى في ترويسة الصفحة.
+    const exploreBtn = handleTabChange ? (
+        <button
+            onClick={() => handleTabChange('discover')}
+            className="w-full sm:w-auto order-first md:order-none px-5 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-[20px] text-sm font-black transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
+        >
+            {language === 'ar' ? 'استكشف تبيان' : 'Explore Tebyan'}
+        </button>
+    ) : null;
+
     return (
         <div className="p-4 md:p-6 pb-28 md:pb-32">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12">
@@ -140,18 +152,11 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                   <h2 className="text-3xl md:text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
                   <p className="text-zinc-500 font-bold text-xs md:text-sm tracking-widest uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
                 </div>
-                {handleTabChange && (
-                    <button 
-                        onClick={() => handleTabChange('discover')}
-                        className="w-full sm:w-auto px-5 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-[20px] text-sm font-black transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
-                    >
-                        {language === 'ar' ? 'استكشف تبيان' : 'Explore Tebyan'}
-                    </button>
-                )}
+                {!hasSaved && exploreBtn}
             </div>
 
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length > 0 && (
-              <MoodCloud items={displayLibrary} language={language} />
+              <MoodCloud items={displayLibrary} language={language} action={exploreBtn} />
             )}
 
             {preferences.savedLibrary && Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.length === 0 ? (
@@ -175,7 +180,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
 
-                    <ul ref={galleryRef} style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%)', maskImage: 'linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%)' }} className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
+                    <ul ref={galleryRef} className="tebyan-gallery-mask flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
                         {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
                             let content = '';
                             let title = '';
@@ -248,7 +253,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                                        <div className="w-2 h-2 rounded-full bg-stone-300 mx-auto absolute top-2 left-1/2 -translate-x-1/2 shadow-inner"></div>
                                        <div>
                                            <div className="text-xs font-black text-black uppercase tracking-widest leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
-                                           <div className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
+                                           <div className="text-[11px] uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
                                        </div>
                                        <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
                                           <div className="flex gap-2">

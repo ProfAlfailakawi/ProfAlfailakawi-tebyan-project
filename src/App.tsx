@@ -1443,7 +1443,7 @@ const AppContent: React.FC = () => {
             <div
               role="status"
               aria-label={language === "ar" ? "بيئة تجريبية معزولة" : "Isolated demo environment"}
-              className="flex items-center gap-0.5 rounded-xl border border-amber-300/35 bg-amber-50/70 px-1.5 py-0.5 text-[10px] font-bold text-amber-800/80 shadow-none"
+              className="flex items-center gap-0.5 rounded-xl border border-amber-300/35 bg-amber-50/70 px-1.5 py-0.5 text-[11px] font-bold text-amber-800/80 shadow-none"
             >
               <FlaskConical className="w-3.5 h-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">{language === "ar" ? "بيئة تجريبية" : "DEMO"}</span>

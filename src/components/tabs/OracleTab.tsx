@@ -144,7 +144,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           disabled={isLoading}
           title={language === 'ar' ? 'تشغيل البحث الذكي' : 'Run smart search'}
           className={cn(
-            "absolute top-3 bottom-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
+            "tebyan-run-action absolute top-3 bottom-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
             language === 'ar' ? "left-3" : "right-3",
             isLoading ? "bg-zinc-200 text-[#64788D] cursor-not-allowed" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           )}
@@ -163,7 +163,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {!isLoading && !oracleResult && (
-          <ToolEmptyHint icon={Command} text={language === 'ar' ? 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.' : 'Total guidance and predictive analysis for your personal perspective.'} />
+          <ToolEmptyHint icon={Command} srOnlyText text={language === 'ar' ? 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.' : 'Total guidance and predictive analysis for your personal perspective.'} />
         )}
         {isLoading ? (
           <motion.div 
