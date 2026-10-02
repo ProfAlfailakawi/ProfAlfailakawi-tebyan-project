@@ -4,8 +4,10 @@ import {
   Users, Search, Filter, ArrowUpDown, MessageSquare, 
   Gift, History, TrendingUp, AlertTriangle, Crown, 
   Clock, DollarSign, Send, ChevronLeft, ChevronRight, 
-  ExternalLink, CheckCircle2, MoreHorizontal, Sparkles, X, TicketPercent
+  ExternalLink, CheckCircle2, MoreHorizontal, Sparkles, X, TicketPercent,
+  HeartHandshake, Flame, Hand
 } from 'lucide-react';
+import { DnaRing } from '../dna/DnaKit';
 import { cn } from '../../lib/utils';
 import { collection, onSnapshot, query, where, orderBy, limit, doc, Timestamp, getDocs } from 'firebase/firestore';
 import { updateDoc } from '../../lib/firestoreWrites';
@@ -137,8 +139,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
         <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
             {/* Points Card */}
-            <div className="bg-gradient-to-br from-indigo-900 to-indigo-950 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-white shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-48 h-48 bg-indigo-500/20 blur-[60px] translate-x-1/4 -translate-y-1/4" />
+            <div className="bg-gradient-to-br from-[#182231] to-[#2b2442] rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-white shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-[#8E7AAE]/25 blur-[60px] translate-x-1/4 -translate-y-1/4" />
                 <div className="relative z-10">
                     <div className="flex items-center gap-3 opacity-60 mb-6">
                         <Crown className="w-5 h-5 text-amber-400" />
@@ -148,7 +150,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                         <span className="text-5xl md:text-6xl font-black">{myLoyaltyData.points}</span>
                         <span className="text-xl font-bold opacity-60">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
                     </div>
-                    <p className="text-indigo-200 text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
+                    <p className="text-[#d9d0ec] text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
                     
                     <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
                         <div>
@@ -178,14 +180,22 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                             <p className="text-[10px] text-emerald-700 font-bold">{language === 'ar' ? 'كود: TIBYAN15' : 'Code: TIBYAN15'}</p>
                          </div>
                       </div>
-                      <div className="flex items-center gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 opacity-60 grayscale min-w-0">
-                         <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-zinc-400">
+                      <div className="flex items-center gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 min-w-0">
+                         <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-zinc-400 opacity-60">
                             <Gift className="w-6 h-6" />
                          </div>
-                         <div className="min-w-0">
+                         <div className="min-w-0 opacity-70">
                             <p className="text-sm font-black text-zinc-900">{language === 'ar' ? 'هدية "كتاب الحكمة"' : 'Book of Wisdom Gift'}</p>
                             <p className="text-[10px] text-zinc-500 font-bold">{language === 'ar' ? 'متاح عند وصولك لـ 500 نقطة' : 'Available at 500 PTS'}</p>
                          </div>
+                         <DnaRing
+                           value={Number(myLoyaltyData.points) || 0}
+                           max={500}
+                           size={52}
+                           tone="lilac"
+                           className="ms-auto shrink-0"
+                           ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
+                         />
                       </div>
                    </div>
                 </div>
@@ -203,7 +213,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
         {/* History Section */}
         <div className="mt-12">
             <h3 className="text-xl font-black mb-6 flex items-center gap-3">
-                <History className="w-5 h-5 text-indigo-500" />
+                <History className="w-5 h-5 text-[#6E5B91]" />
                 {language === 'ar' ? 'تاريخ العمليات' : 'Points History'}
             </h3>
             <div className="bg-zinc-50 rounded-2xl border border-zinc-200 overflow-hidden">
@@ -246,23 +256,24 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
     }
   };
 
-  const getDynamicMessage = (customer: Customer) => {
+  // Display-only suggestion text; the emoji that used to sit inside the sentence is now a lucide icon.
+  const getDynamicMessage = (customer: Customer): { text: string; Icon: React.ComponentType<{ className?: string }> } => {
     const points = customer.points;
     const name = customer.displayName;
 
     if (customer.status === 'VIP') {
-      return `هلا ${name}، أنت من عملائنا المميزين، عندك ${points} نقطة ونبي نكافئك بعرض خاص`;
+      return { text: `هلا ${name}، أنت من عملائنا المميزين، عندك ${points} نقطة ونبي نكافئك بعرض خاص`, Icon: Crown };
     }
     if (customer.status === 'Inactive') {
-      return `اشتقنا لك ${name} 😢، لك فترة ما طلبت، جهزنا لك عرض يرجعك لنا 💛`;
+      return { text: `اشتقنا لك ${name}، لك فترة ما طلبت، جهزنا لك عرض يرجعك لنا`, Icon: HeartHandshake };
     }
     if (points > 800) {
-      return `ما شاء الله ${name} 🔥 رصيدك ${points} نقطة! تقدر تستخدمها الآن 🎉`;
+      return { text: `ما شاء الله ${name} رصيدك ${points} نقطة! تقدر تستخدمها الآن`, Icon: Flame };
     }
     if (points > 400) {
-      return `${name} 👀 باقي لك شوي وتوصل للمكافأة! عندك ${points} نقطة 🎁`;
+      return { text: `${name} باقي لك شوي وتوصل للمكافأة! عندك ${points} نقطة`, Icon: Gift };
     }
-    return `أهلاً ${name} 👋، استمتع بجمع النقاط للحصول على مكافآت حصرية!`;
+    return { text: `أهلاً ${name}، استمتع بجمع النقاط للحصول على مكافآت حصرية!`, Icon: Hand };
   };
 
   return (
@@ -282,7 +293,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mt-8 mb-8">
         {[
           { label: 'إجمالي العملاء', val: customers.length, color: 'emerald', icon: Users },
-          { label: 'متوسط النقاط', val: Math.round(customers.reduce((acc, c) => acc + c.points, 0) / (customers.length || 1)), color: 'indigo', icon: TrendingUp },
+          { label: 'متوسط النقاط', val: Math.round(customers.reduce((acc, c) => acc + c.points, 0) / (customers.length || 1)), color: 'violet', icon: TrendingUp },
           { label: 'العملاء في خطر', val: customers.filter(c => c.status === 'At Risk').length, color: 'rose', icon: AlertTriangle },
           { label: 'عملاء VIP', val: customers.filter(c => c.status === 'VIP').length, color: 'amber', icon: Crown }
         ].map((stat, i) => (
@@ -291,7 +302,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
               <p className="text-xs font-bold text-zinc-600 uppercase mb-1 leading-snug">{stat.label}</p>
               <p className="text-2xl font-black text-black">{stat.val}</p>
             </div>
-            <div className={cn("p-3 rounded-xl", `bg-${stat.color}-50 text-${stat.color}-600`)}>
+            <div className={cn("p-3 rounded-xl", stat.color === 'violet' ? "bg-[#EFEAF6] text-[#6E5B91]" : `bg-${stat.color}-50 text-${stat.color}-600`)}>
               <stat.icon className="w-5 h-5" />
             </div>
           </div>
@@ -372,7 +383,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                    <div className="flex w-full order-last sm:order-none sm:w-auto items-center gap-8 md:gap-12 pt-3 sm:pt-0 sm:px-6 border-t sm:border-0 border-zinc-100">
                       <div className="text-right">
                          <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'النقاط' : 'Points'}</p>
-                         <p className="text-sm font-black text-indigo-600">{customer.points.toLocaleString('en-US')}</p>
+                         <p className="text-sm font-black text-[#6E5B91]">{customer.points.toLocaleString('en-US')}</p>
                       </div>
                       <div className="text-right">
                          <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'الإنفاق' : 'Spent'}</p>
@@ -446,12 +457,12 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                   <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
                      {/* KPIs */}
                      <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
-                           <div className="flex items-center gap-2 text-indigo-600 mb-1">
+                        <div className="bg-[#EFEAF6]/60 p-4 rounded-2xl border border-[#6E5B91]/15">
+                           <div className="flex items-center gap-2 text-[#6E5B91] mb-1">
                               <Gift className="w-4 h-4" />
                               <span className="text-[10px] font-black uppercase">{language === 'ar' ? 'النقاط' : 'Points'}</span>
                            </div>
-                           <p className="text-xl font-black text-indigo-900">{selectedCustomer.points}</p>
+                           <p className="text-xl font-black text-[#182231]">{selectedCustomer.points}</p>
                         </div>
                         <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
                            <div className="flex items-center gap-2 text-emerald-600 mb-1">
@@ -469,9 +480,15 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                            {language === 'ar' ? 'الرسائل الذكية المقترحة' : 'Smart Message Suggestions'}
                         </h4>
                         <div className="bg-zinc-50 p-5 rounded-2xl border border-zinc-200 relative group">
-                           <p className="text-sm font-medium text-zinc-700 leading-relaxed italic">
-                              "{getDynamicMessage(selectedCustomer)}"
-                           </p>
+                           {(() => {
+                             const m = getDynamicMessage(selectedCustomer);
+                             return (
+                               <div className="flex items-start gap-3">
+                                 <m.Icon className="w-5 h-5 shrink-0 text-[#6E5B91] mt-0.5" aria-hidden="true" />
+                                 <p className="text-sm font-medium text-zinc-700 leading-relaxed italic">"{m.text}"</p>
+                               </div>
+                             );
+                           })()}
                            <button 
                              onClick={() => alert('تم النسخ!')}
                              className="absolute top-4 left-4 p-2 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
@@ -510,7 +527,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
                   <div className="p-6 bg-zinc-50 border-t border-zinc-200 space-y-3">
                      <button 
-                       className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-indigo-700 transition-all shadow-lg active:scale-95"
+                       className="w-full bg-[#6E5B91] text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[#5d4f7b] transition-all shadow-lg active:scale-95"
                        onClick={async () => {
                          const pointsToAdd = window.prompt('كم نقطة تريد إضافتها لهذا العميل؟');
                          if (pointsToAdd && !isNaN(Number(pointsToAdd))) {
@@ -553,7 +570,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
       {/* Dynamic Rewards Configuration (Admin Only Control) */}
       <div className="mt-10 p-5 md:p-8 bg-zinc-900 rounded-[24px] md:rounded-[32px] shadow-2xl relative overflow-hidden">
-         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 blur-[100px]" />
+         <div className="absolute top-0 right-0 w-64 h-64 bg-[#8E7AAE]/25 blur-[100px]" />
          <div className="relative z-10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6 md:gap-8">
             <div className="text-right min-w-0">
                <div className="flex items-center gap-2 mb-2">
