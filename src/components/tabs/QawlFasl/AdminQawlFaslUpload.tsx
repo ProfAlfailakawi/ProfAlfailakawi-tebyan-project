@@ -362,7 +362,7 @@ export default function AdminQawlFaslUpload() {
       <div className="bg-white p-6 rounded-[16px] border shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <h2 className="text-xl font-bold text-zinc-800 mb-2 flex items-center gap-2">
           <RefreshCw className="w-6 h-6 text-indigo-600" />
-          توليد الإجابات للأسئلة المرفوعة (AI Batch)
+          توليد الإجابات للأسئلة المرفوعة (دفعة بالذكاء الاصطناعي)
         </h2>
         <p className="text-sm text-zinc-500 mb-6">
           ستقوم هذه الأداة بجلب جميع المسودات المرفوعة مؤخراً ولا تحتوي على إجابات، وتقوم بتوليدها وتنسيقها بواسطة الذكاء الاصطناعي تدريجياً لعدم تجاوز حد الاستخدام. سيتم حفظها جميعاً كـ (مسودة).

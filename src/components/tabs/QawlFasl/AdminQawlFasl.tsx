@@ -399,7 +399,7 @@ export default function AdminQawlFasl() {
                 });
             }} className="bg-white hover:bg-rose-50 disabled:opacity-60 text-[#7A1F33] border border-rose-300/70 font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
-                تهيئة ومسح النظام <bdi dir="ltr">(Backup & Reset)</bdi>
+                تهيئة ومسح النظام (مع نسخة احتياطية)
             </button>
 
             <button 
@@ -420,7 +420,7 @@ export default function AdminQawlFasl() {
                 });
             }} className="bg-[#6E5B91] hover:bg-[#5F4E7F] disabled:opacity-60 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
-                توليد 10 أسئلة <bdi dir="ltr">(Daily Batch)</bdi>
+                توليد 10 أسئلة (دفعة يومية)
             </button>
         </div>
       </div>
@@ -463,7 +463,7 @@ export default function AdminQawlFasl() {
               <tr key={q.id} className="border-t">
                 <td className="p-4 font-bold text-zinc-800">{q.title || q.question}</td>
                  <td className="p-4 text-zinc-500">{CATEGORIES.find(c => c.id === (q.categoryId || q.categorySlug))?.title || q.category || 'غير مصنف'}</td>
-                 <td className="p-4"><span className={`px-2 py-1 rounded text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status}</span></td>
+                 <td className="p-4"><span className={`px-2 py-1 rounded text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status === 'published' ? 'منشور' : q.status === 'draft' ? 'مسودة' : q.status}</span></td>
                  <td className="p-4 flex gap-2">
                    <button onClick={() => { setEditingId(q.id); setFormData(q as any); }} className="text-zinc-400 hover:text-black disabled:opacity-30" disabled={isProcessing}><Edit2 size={16} /></button>
                    <button onClick={() => remove(q.id)} className="text-zinc-400 hover:text-rose-600 disabled:opacity-30" disabled={isProcessing}><Trash2 size={16} /></button>
@@ -483,7 +483,7 @@ export default function AdminQawlFasl() {
                   <span className="px-2 py-1 rounded-lg bg-zinc-100 text-zinc-700 text-xs font-bold">
                     {CATEGORIES.find(c => c.id === (q.categoryId || q.categorySlug))?.title || q.category || 'غير مصنف'}
                   </span>
-                  <span className={`px-2 py-1 rounded-lg text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status}</span>
+                  <span className={`px-2 py-1 rounded-lg text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status === 'published' ? 'منشور' : q.status === 'draft' ? 'مسودة' : q.status}</span>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">

@@ -34,7 +34,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
 
   const stats = [
     { label: language === 'ar' ? 'السجلات' : 'Logs Entered', value: logs.length.toString(), trend: 'جديد', icon: Activity },
-    { label: language === 'ar' ? 'التنبؤات' : 'Predictions', value: prediction ? '1' : '0', trend: 'AI', icon: Radar },
+    { label: language === 'ar' ? 'التنبؤات' : 'Predictions', value: prediction ? '1' : '0', trend: language === 'ar' ? 'ذكاء اصطناعي' : 'AI', icon: Radar },
   ];
 
   const handleAddLog = (e: React.FormEvent) => {
