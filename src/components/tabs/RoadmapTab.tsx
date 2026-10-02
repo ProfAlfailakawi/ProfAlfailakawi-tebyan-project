@@ -212,7 +212,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                         
                         {milestone.tasks && milestone.tasks.length > 0 && (
                           <div className="bg-zinc-50/80 rounded-2xl p-4 border border-zinc-100">
-                            <h5 className={cn("text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3", language === 'ar' ? 'text-right' : 'text-left')}>
+                            <h5 className={cn("text-[11px] font-black text-zinc-400 uppercase tracking-widest mb-3", language === 'ar' ? 'text-right' : 'text-left')}>
                               {language === 'ar' ? 'المهام الأساسية' : 'Key Tasks'}
                             </h5>
                             <ul className="space-y-2.5">

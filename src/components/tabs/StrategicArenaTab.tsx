@@ -21,7 +21,7 @@ const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }
     >
       <div className="flex items-center gap-2 mb-4 text-[#7C8796]">
         <Icon className="w-4 h-4" />
-        <span className={language === 'ar' ? "text-xs font-black" : "text-[10px] font-black uppercase tracking-widest"}>{language === 'ar' ? 'مكوّن تفاعلي' : 'Interactive Component'}</span>
+        <span className={language === 'ar' ? "text-xs font-black" : "text-[11px] font-black uppercase tracking-widest"}>{language === 'ar' ? 'مكوّن تفاعلي' : 'Interactive Component'}</span>
       </div>
       {children}
     </motion.div>
@@ -167,7 +167,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                               <h3 className="font-black text-zinc-300 uppercase tracking-widest text-sm">
                                 {language === 'ar' ? 'مساحة المحاكاة الفراغية' : 'SPATIAL SIMULATION ARENA'}
                               </h3>
-                              <p className="text-[10px] text-[#7C8796] font-bold italic">
+                              <p className="text-[11px] text-[#7C8796] font-bold italic">
                                 {language === 'ar' ? 'قم بسحب المكونات لتركيب الاستراتيجية' : 'Drag components to assemble strategy'}
                               </p>
                            </div>

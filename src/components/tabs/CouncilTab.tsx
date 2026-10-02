@@ -175,7 +175,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
                        )}
                      >
                        <div className={cn(
-                         "text-sm font-black uppercase tracking-[0.2em] mb-3 text-right", 
+                         "text-sm font-black uppercase tracking-[0.2em] rtl:tracking-normal mb-3 text-right", 
                          i % 2 === 0 ? "text-[#6E5B91]" : "text-[#6E5B91]"
                         )}>
                          {msg.speaker}

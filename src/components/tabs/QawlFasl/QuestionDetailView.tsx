@@ -217,7 +217,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <div className="space-y-4 md:space-y-6 flex-1 min-w-0">
-             <div className="flex flex-wrap gap-2 text-[10px] md:text-xs font-bold font-mono uppercase">
+             <div className="flex flex-wrap gap-2 text-[11px] md:text-xs font-bold font-mono uppercase">
                <span className="bg-[#EAECE6] text-[#64788D] px-3 py-1.5 rounded-full">{category?.title}</span>
                {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
                <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.join(', ')}</span>

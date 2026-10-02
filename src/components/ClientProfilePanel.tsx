@@ -516,7 +516,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="bg-white/70 border border-white/70 rounded-2xl p-3">
-                          <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">نشاطي الفكري</div>
+                          <div className="text-[11px] text-[#7C8796] font-black uppercase mb-1">نشاطي الفكري</div>
                           <div className="text-sm font-black text-[#182231]">{totalQuestions} سؤال · {preferences.savedLibrary?.length || 0} محفوظ · {sessionTime} د</div>
                           <div className="text-[11px] text-[#64788D] mt-1">
                             {hasEnoughSignal
@@ -525,7 +525,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           </div>
                         </div>
                         <div className="bg-white/70 border border-white/70 rounded-2xl p-3">
-                          <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">بصمة التفكير</div>
+                          <div className="text-[11px] text-[#7C8796] font-black uppercase mb-1">بصمة التفكير</div>
                           <div className="flex items-center gap-2">
                             <div className="w-9 h-9 rounded-full bg-[#8E7AAE]/10 border border-[#8E7AAE]/15 flex items-center justify-center text-[#6E5F8E] tebyan-breathe">
                               <Compass size={16} />
@@ -539,7 +539,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <div className="bg-white/70 border border-white/70 rounded-2xl p-3 sm:col-span-2">
                           <div className="flex items-center justify-between gap-3">
                             <div>
-                              <div className="text-[10px] text-[#7C8796] font-black uppercase mb-1">التقدم</div>
+                              <div className="text-[11px] text-[#7C8796] font-black uppercase mb-1">التقدم</div>
                               <div className="text-sm font-black text-[#182231]">نقاط الاستنارة: {sageProgress.points}</div>
                               <div className="text-[11px] text-[#64788D] mt-1">كلما زادت الأسئلة النوعية، اتضحت بصمتك أكثر.</div>
                             </div>
@@ -583,13 +583,13 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                             
                                             {item.variants && item.variants.length > 0 && (
                                                 <div className="mt-3 pl-2 border-r-2 border-[#8E7AAE]/18 mr-2 pr-3">
-                                                    <p className="text-[10px] font-bold text-[#8E7AAE] mb-1">امتدادات وتفاصيل جديدة:</p>
+                                                    <p className="text-[11px] font-bold text-[#8E7AAE] mb-1">امتدادات وتفاصيل جديدة:</p>
                                                     <div className="space-y-2">
                                                         {item.variants.map(v => (
                                                             <div key={v.id} className="text-xs bg-[#F1EEF4]/50 p-2 rounded text-[#3D4A5A] flex flex-col gap-1">
                                                                 <span className="font-medium">"{v.originalText}"</span>
                                                                 {(v.ageMentioned || v.riskLevel !== 'medium') && (
-                                                                  <div className="flex gap-2 text-[9px] text-[#8E7AAE]">
+                                                                  <div className="flex gap-2 text-[11px] text-[#8E7AAE]">
                                                                     {v.ageMentioned && <span>العمر: {v.ageMentioned}</span>}
                                                                     {v.riskLevel !== 'medium' && <span>المستوى: {v.riskLevel}</span>}
                                                                   </div>
@@ -602,7 +602,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                         </div>
                                     </div>
                                     <div className="w-full flex justify-end mt-2 pt-2 border-t border-slate-50">
-                                        <p className="text-[10px] text-[#7C8796] font-medium">الاستخدامات: {item.usageCount || 1}</p>
+                                        <p className="text-[11px] text-[#7C8796] font-medium">الاستخدامات: {item.usageCount || 1}</p>
                                     </div>
                                 </div>
                             ))}
@@ -633,7 +633,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <div className="space-y-2">
                             {[...archivedSessions].reverse().slice(0, showAllArchive ? undefined : 5).map((query, idx) => (
                                 <div key={idx} className="flex items-start gap-3 p-3 bg-white border border-[#8FA9C7]/15 rounded-xl shadow-sm hover:border-[#8E7AAE]/25 transition-colors">
-                                    <span className="text-[10px] font-black text-[#8E7AAE] bg-[#F1EEF4] rounded-lg px-2 py-1 shrink-0">{idx + 1}</span>
+                                    <span className="text-[11px] font-black text-[#8E7AAE] bg-[#F1EEF4] rounded-lg px-2 py-1 shrink-0">{idx + 1}</span>
                                     <p className="text-sm font-bold text-[#3D4A5A] line-clamp-2 leading-relaxed">{query}</p>
                                 </div>
                             ))}
@@ -668,7 +668,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <button 
                            onClick={() => analyzeGalaxyAndMaturity()}
                            disabled={isAnalyzingGalaxy}
-                           className="text-[10px] bg-[#F1EEF4] text-[#6E5F8E] px-3 py-1.5 rounded-xl border border-[#8E7AAE]/18 hover:bg-[#EAE3EF] transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
+                           className="text-[11px] bg-[#F1EEF4] text-[#6E5F8E] px-3 py-1.5 rounded-xl border border-[#8E7AAE]/18 hover:bg-[#EAE3EF] transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
                         >
                            {isAnalyzingGalaxy ? (
                               <>
@@ -708,7 +708,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                           animate={{ scale: 1, opacity: 1 }}
                                           drag
                                           dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-white/85 backdrop-blur-md border border-[#8E7AAE]/30 rounded-full text-[#3D4A5A] text-[10px] md:text-xs font-black shadow-lg"
+                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-white/85 backdrop-blur-md border border-[#8E7AAE]/30 rounded-full text-[#3D4A5A] text-[11px] md:text-xs font-black shadow-lg"
                                           style={{ 
                                             top: `${15 + (i * 20) % 70}%`, 
                                             left: `${10 + (i * 25) % 80}%` 
@@ -730,7 +730,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             animate={{ opacity: isAnalyzingGalaxy ? 0 : 1 }}
                             className="absolute bottom-4 inset-x-6 text-center"
                          >
-                            <div className="bg-slate-900/85 backdrop-blur-xl text-[10px] text-slate-100 p-3 rounded-2xl border border-white/10 font-medium leading-relaxed shadow-xl">
+                            <div className="bg-slate-900/85 backdrop-blur-xl text-[11px] text-slate-100 p-3 rounded-2xl border border-white/10 font-medium leading-relaxed shadow-xl">
                                 {galaxyAnalysis ? galaxyAnalysis : `الأفكار تشكل مجرتك الشخصية بناءً على اهتماماتك وتفاعلك مع النظام.`}
                             </div>
                          </motion.div>
@@ -775,7 +775,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       
                       <div className="relative h-24 mb-8">
                           {/* axis captions (depth scale: 5 = deepest, 35 = simplest, as in the analysis prompt) */}
-                          <span className="absolute top-0 end-0 text-[10px] font-bold text-[#7C8796]">أعمق</span>
+                          <span className="absolute top-0 end-0 text-[11px] font-bold text-[#7C8796]">أعمق</span>
                           <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                               {[5, 20, 35].map(y => (
                                 <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="#8FA9C7" strokeOpacity="0.25" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
@@ -861,7 +861,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                        </div>
                                        <div>
                                            <p className="text-sm font-bold text-[#273548]">{c}</p>
-                                           <p className="text-[10px] text-[#64788D]">قرار مرصود من سياق حوارك</p>
+                                           <p className="text-[11px] text-[#64788D]">قرار مرصود من سياق حوارك</p>
                                        </div>
                                    </div>
                                ))

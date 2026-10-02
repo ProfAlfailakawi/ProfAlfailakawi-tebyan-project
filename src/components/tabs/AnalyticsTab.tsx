@@ -236,16 +236,17 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                             if (lvl == null) return null;
                             const name = language === 'ar' ? (lvl === 3 ? 'مرتفع' : lvl === 2 ? 'متوسط' : 'منخفض') : prediction.risk_level;
                             return (
-                              <DnaRing
-                                value={lvl}
-                                max={3}
-                                size={64}
-                                tone={lvl === 3 ? 'danger' : lvl === 2 ? 'amber' : 'mint'}
-                                label={name}
-                                sublabel={language === 'ar' ? 'الخطر' : 'Risk'}
-                                ariaLabel={`${language === 'ar' ? 'مستوى الخطر' : 'Risk level'}: ${name}`}
-                                className="shrink-0"
-                              />
+                              <div className="shrink-0 flex flex-col items-center gap-1">
+                                <DnaRing
+                                  value={lvl}
+                                  max={3}
+                                  size={60}
+                                  tone={lvl === 3 ? 'danger' : lvl === 2 ? 'amber' : 'mint'}
+                                  label={<span dir="ltr">{lvl}/3</span>}
+                                  ariaLabel={`${language === 'ar' ? 'مستوى الخطر' : 'Risk level'}: ${name}`}
+                                />
+                                <span className="text-xs font-bold text-[#5B6E82]">{language === 'ar' ? `الخطر ${name}` : `${name} risk`}</span>
+                              </div>
                             );
                           })()}
                        </div>

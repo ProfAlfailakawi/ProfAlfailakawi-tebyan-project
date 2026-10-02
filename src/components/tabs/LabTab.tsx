@@ -551,7 +551,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                            {labSymbol.description}
                         </p>
                         <div className="pt-8 border-t border-[#8FA9C7]/40 mt-6 w-full">
-                           <div className="inline-block px-5 py-1.5 bg-[#F1EEF4] text-[#64788D] text-[10px] font-black uppercase tracking-[0.2em] mb-4 rounded-full border border-[#8FA9C7]/25">
+                           <div className="inline-block px-5 py-1.5 bg-[#F1EEF4] text-[#64788D] text-[10px] font-black uppercase tracking-[0.2em] rtl:tracking-normal mb-4 rounded-full border border-[#8FA9C7]/25">
                               {language === 'ar' ? 'البعد الفلسفي' : 'PHILOSOPHICAL ESSENCE'}
                            </div>
                            <p className="text-lg font-bold text-[#182231] leading-relaxed max-w-lg mx-auto">{labSymbol.significance}</p>
@@ -1136,7 +1136,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        animate={{ y: 0, opacity: 1 }}
                        className="bg-[#8E7AAE] text-white p-16 rounded-[2.5rem] text-center shadow space-y-4"
                     >
-                       <h4 className="text-white/40 font-bold uppercase tracking-[0.2em] text-xs">{language === 'ar' ? 'الخلاصة المدوية' : 'The Final Impression'}</h4>
+                       <h4 className="text-white/40 font-bold uppercase tracking-[0.2em] rtl:tracking-normal text-xs">{language === 'ar' ? 'الخلاصة المدوية' : 'The Final Impression'}</h4>
                        <p className="text-2xl md:text-4xl font-bold italic leading-tight max-w-4xl mx-auto relative">
                          <span className="absolute -top-8 -left-8 text-8xl text-white/10 select-none">"</span>
                          {labWorkshop?.closing}

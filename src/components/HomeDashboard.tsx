@@ -318,7 +318,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                   </div>
                   <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
-                          <h3 className="font-black text-[#6E5F8E] tracking-[0.2em] uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
+                          <h3 className="font-black text-[#6E5F8E] tracking-[0.2em] rtl:tracking-normal uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
                           {!missionCompleted && !missionLoading && <span className="rounded-full bg-white/80 px-2 py-1 text-[10px] font-black text-[#8E7AAE] border border-[#8E7AAE]/12">+{mission?.xp_reward || 0} XP</span>}
                       </div>
                       {missionLoading ? (
@@ -429,7 +429,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                    <div className="bg-white text-[#6E5F8E] w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
                       <tab.icon className="w-7 h-7 md:w-11 md:h-11" />
                    </div>
-                   <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
+                   <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] rtl:tracking-normal px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
                       {language === 'ar' ? 'البوصلة النوعية' : 'THE CORE EDGE'}
                    </span>
                    <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-[#182231] leading-[1.1] mb-2 md:mb-4">
