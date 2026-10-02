@@ -108,7 +108,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
 
       <div id="roadmap-results">
       {!isLoading && !roadmap && (
-        <ToolEmptyHint icon={Map} srOnlyText text={language === 'ar' ? getGenderWord(userGender, 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 'رؤية واضحة لمساركِ الشخصي نحو كل هدف تطمحين إليه.', 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.') : 'A clear vision of your personal path towards every goal you aspire to.'} />
+        <ToolEmptyHint icon={Map} srOnlyText className="py-3 md:py-4" text={language === 'ar' ? getGenderWord(userGender, 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 'رؤية واضحة لمساركِ الشخصي نحو كل هدف تطمحين إليه.', 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.') : 'A clear vision of your personal path towards every goal you aspire to.'} />
       )}
       <AnimatePresence mode="wait">
         {roadmap && !isLoading && (
