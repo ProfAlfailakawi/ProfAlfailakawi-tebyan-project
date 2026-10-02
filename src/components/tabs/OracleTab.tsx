@@ -163,7 +163,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {!isLoading && !oracleResult && (
-          <ToolEmptyHint icon={Command} text={language === 'ar' ? 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.' : 'Total guidance and predictive analysis for your personal perspective.'} />
+          <ToolEmptyHint icon={Command} srOnlyText text={language === 'ar' ? 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.' : 'Total guidance and predictive analysis for your personal perspective.'} />
         )}
         {isLoading ? (
           <motion.div 

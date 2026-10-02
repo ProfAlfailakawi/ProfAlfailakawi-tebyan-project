@@ -7,7 +7,7 @@ import { TabHeader } from '../TabHeader';
 import { useUser } from '../../contexts/UserContext';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
-export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
+export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange, inArena }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any, inArena?: boolean }) => {
   const [councilTopic, setCouncilTopic] = React.useState('');
   const [councilData, setCouncilData] = React.useState<any>(null);
   const [activeConsultantIndex, setActiveConsultantIndex] = React.useState<number | null>(null);
@@ -52,18 +52,19 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
           en: 'Gather historical and educational experts to debate and provide a deep, well-thought-out verdict for your specific challenge.' 
       }}
       language={language}
+      hideTitleVisually={inArena}
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white border border-[#8FA9C7]/12 text-[#182231] p-4 md:p-10 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
+    <div className="bg-white border border-[#8FA9C7]/12 text-[#182231] p-4 md:p-8 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
       
       <div className="space-y-6 z-10 relative text-right">
-        <div className="mb-10 text-right">
-           <h2 className="text-2xl md:text-5xl font-extrabold text-[#182231] tracking-tight leading-snug">{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
-           <p className="text-[#64788D] mt-4 font-bold text-lg md:text-xl leading-relaxed max-w-2xl ml-auto">{language === 'ar' ? 'اطرح قضيتك أو تحديك على نخبة الخبراء ليتم تحليله بعمق.' : 'Present your case or challenge to the elite experts for deep analysis.'}</p>
+        <div className="mb-4 md:mb-5 text-right">
+           <h2 className="text-xl md:text-3xl font-extrabold text-[#182231] tracking-tight leading-snug">{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
+           <p className="text-[#64788D] mt-2 font-semibold text-sm md:text-base leading-relaxed max-w-2xl ml-auto">{language === 'ar' ? 'اطرح قضيتك أو تحديك على نخبة الخبراء ليتم تحليله بعمق.' : 'Present your case or challenge to the elite experts for deep analysis.'}</p>
         </div>
 
-      <div className="flex flex-col gap-5 md:gap-8 mt-4 md:mt-6 p-4 md:p-10 bg-white rounded-[28px] md:rounded-[40px] border border-[#182231]/10 shadow-inner">
+      <div className="flex flex-col gap-5 md:gap-8 mt-2 md:mt-3 p-4 md:p-6 bg-white rounded-[28px] md:rounded-[40px] border border-[#182231]/10 shadow-inner">
         <div className="flex items-center justify-between mb-2">
            <div className="flex items-center gap-3 bg-white p-2 rounded-full border border-[#182231]/10 shadow-sm">
              <button 

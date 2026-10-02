@@ -57,7 +57,7 @@ export const GrowthDoor = ({
       language={language}
     >
       <Suspense fallback={<Fallback />}>
-        {mode === "plan" && <RoadmapTab {...common} />}
+        {mode === "plan" && <RoadmapTab {...common} inDoor />}
         {mode === "track" && (
           <AnalyticsTab language={language} handleTabChange={handleTabChange} />
         )}
