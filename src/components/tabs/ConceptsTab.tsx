@@ -130,7 +130,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       {error && <div className="text-rose-500 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {!isLoading && !output && (
-          <ToolEmptyHint icon={Sparkles} text={language === 'ar' ? 'تبسيط المفاهيم المعقدة واختزالها في أفكار واضحة وممنهجة يسهل فهمها ونقلها.' : 'Simplify complex concepts and condense them into clear, structured ideas that are easy to understand and share.'} />
+          <ToolEmptyHint icon={Sparkles} />
         )}
         {isLoading ? (
           <motion.div 

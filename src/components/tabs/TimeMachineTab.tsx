@@ -90,7 +90,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
        {error && <div className="text-[#6E5B91] font-bold">{error}</div>}
        <div className="relative min-h-[300px]">
          {!isLoading && !timeMachineData && (
-           <ToolEmptyHint icon={Hourglass} text={language === 'ar' ? 'شاهد كيف تطور العلم وسيتطور مستقبلاً عبر رحلة مشوقة في العصور المختلفة.' : 'See how education evolved and will evolve in the future through an exciting journey across different eras.'} />
+           <ToolEmptyHint icon={Hourglass} />
          )}
          {isLoading ? (
            <motion.div 

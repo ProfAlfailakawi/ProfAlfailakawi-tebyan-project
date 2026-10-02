@@ -52,7 +52,7 @@ export const IntellectualKintsugi = ({ oldText, newText, language }: { oldText: 
                 </div>
             </div>
             
-            <div className="absolute top-4 right-6 text-[10px] font-black uppercase tracking-[0.2em] text-amber-500/60 font-mono flex items-center gap-2">
+            <div className="absolute top-4 right-6 text-[10px] font-black uppercase tracking-[0.2em] rtl:tracking-normal text-amber-500/60 font-mono flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                 {language === 'ar' ? 'تصدع فكري مُصلَح' : 'MENDED COGNITIVE TRACE'}
             </div>

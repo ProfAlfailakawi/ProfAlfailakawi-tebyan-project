@@ -7,7 +7,8 @@ import { cn } from '../../lib/utils';
  */
 export const ToolEmptyHint: React.FC<{
   icon: React.ElementType;
-  text: string;
+  /** Optional: omit when the tab header already carries the same sentence. */
+  text?: string;
   className?: string;
 }> = ({ icon: Icon, text, className }) => (
   <div
@@ -19,6 +20,6 @@ export const ToolEmptyHint: React.FC<{
     <div className="flex h-36 w-36 items-center justify-center rounded-full border border-dashed border-[#8E7AAE]/20 bg-[#8E7AAE]/[0.04]">
       <Icon className="h-20 w-20 text-[#8E7AAE]/30" strokeWidth={0.9} aria-hidden="true" />
     </div>
-    <p className="max-w-sm text-[13px] font-semibold leading-relaxed text-[#8A97A6]">{text}</p>
+    {text && <p className="max-w-sm text-[13px] font-semibold leading-relaxed text-[#8A97A6]">{text}</p>}
   </div>
 );

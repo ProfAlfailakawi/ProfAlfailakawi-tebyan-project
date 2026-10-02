@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp, Brain, Lock, Ghost, Award, HelpCircle, Languages, Eye, Zap, GitBranch, Loader2 } from 'lucide-react';
+import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp, Brain, Lock, Ghost, Award, HelpCircle, Languages, Eye, Zap, GitBranch, Loader2, Heart } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { SmartIconWrapper } from '../common/SmartIconGuidance';
 import { collection, onSnapshot, doc, increment, query, orderBy, getDoc, where, getDocs, limit } from 'firebase/firestore';
@@ -197,7 +197,11 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     </span>
                                 )}
                             </div>
+                            {(node as any).isVirtual ? (
+                                <span className="text-xs text-[#6E5B91] font-bold whitespace-nowrap bg-[#EFEAF6] px-2 py-1 rounded-lg">{language === 'ar' ? 'مثال توضيحي' : 'Illustrative example'}</span>
+                            ) : (
                             <span className="text-xs text-[#7C8796] font-medium whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{(() => { const d = new Date(node.timestamp); return isNaN(d.getTime()) ? node.timestamp : d.toLocaleDateString(language === 'ar' ? 'ar-KW-u-nu-latn' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); })()}</span>
+                            )}
                         </div>
                         <p 
                             className={cn(
@@ -253,7 +257,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                         ? "text-zinc-300 bg-[#F7F5F2]/50" 
                                         : "text-[#64788D] hover:text-rose-500 hover:bg-white hover:ring-zinc-200"
                                 )}>
-                                    <svg className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                                    <Heart className="w-4 h-4 md:w-5 md:h-5" fill={node.likes > 0 ? "currentColor" : "none"} strokeWidth={2} aria-hidden="true" />
                                     <span className="text-sm">{node.likes}</span>
                                 </button>
                                 <button onClick={() => {
