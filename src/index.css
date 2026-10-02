@@ -4590,3 +4590,60 @@ main .overflow-x-auto > [role="tab"] {
     .tebyan-tab-header .tebyan-tab-header__desc { font-size: 0.9rem !important; -webkit-line-clamp: 1; }
   }
 }
+
+/* r26 visual: the top-left cluster reads as two tidy pills with thin icons.
+   Header pill = install + account; page pill = back + help. Visual only. */
+@layer base {
+  .tebyan-action-pill,
+  .tebyan-page-controls {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(142, 122, 174, 0.2) !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 6px 20px rgba(24, 34, 49, 0.07) !important;
+    padding: 2px !important;
+    gap: 2px !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .tebyan-action-pill > .block > button,
+  .tebyan-action-pill > .block > .relative > button,
+  .tebyan-page-controls > button {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border-radius: 0.8rem !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    width: 40px;
+    height: 40px;
+    padding: 0 !important;
+    justify-content: center;
+  }
+  .tebyan-action-pill > .block > button:hover,
+  .tebyan-action-pill > .block > .relative > button:hover,
+  .tebyan-page-controls > button:hover {
+    background: rgba(142, 122, 174, 0.12) !important;
+    color: #6e5f8e !important;
+    transform: none !important;
+  }
+  .tebyan-action-pill > .block > button svg,
+  .tebyan-page-controls > button svg {
+    stroke-width: 1.6 !important;
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+  .tebyan-action-pill > .block > .relative > button > div {
+    transform: scale(0.88);
+  }
+  @media (max-width: 767px) {
+    .tebyan-page-controls .tebyan-global-back,
+    .tebyan-page-controls .tebyan-page-help-button {
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      border-radius: 0.8rem !important;
+      box-shadow: none !important;
+    }
+  }
+}

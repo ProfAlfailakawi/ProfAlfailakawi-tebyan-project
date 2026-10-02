@@ -1478,6 +1478,7 @@ const AppContent: React.FC = () => {
               <FlaskConical className="w-4 h-4" />
             </button>
           ) : null}
+          <div className="tebyan-action-pill flex items-center">
           <div className="block">
             <PWAHeaderButton language={language} />
           </div>
@@ -1495,6 +1496,7 @@ const AppContent: React.FC = () => {
                 </button>
               ) : null}
             </React.Suspense>
+          </div>
           </div>
         </div>
       </motion.header>
