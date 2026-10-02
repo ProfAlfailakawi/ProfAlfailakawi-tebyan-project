@@ -197,7 +197,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     </span>
                                 )}
                             </div>
-                            <span className="text-xs text-[#7C8796] font-medium whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{(() => { const d = new Date(node.timestamp); return isNaN(d.getTime()) ? node.timestamp : d.toLocaleDateString(language === 'ar' ? 'ar-KW' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); })()}</span>
+                            <span className="text-xs text-[#7C8796] font-medium whitespace-nowrap bg-[#F7F5F2] px-2 py-1 rounded-lg">{(() => { const d = new Date(node.timestamp); return isNaN(d.getTime()) ? node.timestamp : d.toLocaleDateString(language === 'ar' ? 'ar-KW-u-nu-latn' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); })()}</span>
                         </div>
                         <p 
                             className={cn(
@@ -1027,7 +1027,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             ) : (
                                 <Brain className="w-5 h-5" />
                             )}
-                            <span>{language === 'ar' ? 'تهذيب الفكرة (AI)' : 'Refine Idea (AI)'}</span>
+                            <span>{language === 'ar' ? 'تهذيب الفكرة بالذكاء الاصطناعي' : 'Refine Idea (AI)'}</span>
                         </button>
                         
                         <button 

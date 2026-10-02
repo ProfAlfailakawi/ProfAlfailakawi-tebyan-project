@@ -129,7 +129,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between gap-2">
                       <span className="text-xs text-zinc-500 font-medium flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
-                        {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleString(language === 'ar' ? 'ar-SA' : 'en-US') : 'Just now'}
+                        {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleString(language === 'ar' ? 'ar-SA-u-nu-latn' : 'en-US') : (language === 'ar' ? 'الآن' : 'Just now')}
                       </span>
                       <div className="flex gap-2">
                         {msg.status === 'new' && (

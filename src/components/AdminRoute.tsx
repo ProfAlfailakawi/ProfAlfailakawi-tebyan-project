@@ -26,7 +26,7 @@ export default function AdminRoute({ children }: { children: React.ReactNode }) 
     return <div className="min-h-dvh p-10 text-center font-sans" dir="rtl">
       <h2 className="text-xl font-bold text-red-500 mb-4">غير مصرّح لك بالدخول</h2>
       <p>البريد الإلكتروني: <span dir="ltr">{user?.email}</span></p>
-      <p>الدور: {profile?.role}</p>
+      <p>الدور: {profile?.role === 'admin' ? 'مدير' : profile?.role === 'user' ? 'مستخدم' : profile?.role}</p>
       <p>صلاحية المشرف: {isAdmin ? 'نعم' : 'لا'}</p>
     </div>;
   }

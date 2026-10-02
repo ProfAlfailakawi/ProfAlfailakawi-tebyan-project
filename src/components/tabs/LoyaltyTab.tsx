@@ -29,6 +29,8 @@ interface Customer {
 
 import { useAuth } from '../AuthProvider';
 
+const STATUS_AR: Record<string, string> = { All: 'الكل', Active: 'نشط', VIP: 'مميّز', New: 'جديد', 'At Risk': 'بحاجة لمتابعة', Inactive: 'غير نشط' };
+
 export const LoyaltyTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const { user, profile } = useAuth();
   // العرض: قائمة العملاء (واجهة الإدارة) تُفتح من لوحة الإدارة عبر ‎?view=admin‎ ببيانات نموذجية.
@@ -151,7 +153,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
                         <div>
                             <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
-                            <p className="text-lg font-black tracking-tight">KWD {myLoyaltyData.totalSpent}</p>
+                            <p className="text-lg font-black tracking-tight">{language === 'ar' ? `${myLoyaltyData.totalSpent} د.ك` : `KWD ${myLoyaltyData.totalSpent}`}</p>
                         </div>
                         <div className="bg-white/10 px-4 py-2 rounded-xl text-xs font-black">
                             {language === 'ar'
@@ -322,7 +324,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       activeFilter === f ? "bg-black text-white" : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
                     )}
                   >
-                    {language === 'ar' ? (f === 'All' ? 'الكل' : f) : f}
+                    {language === 'ar' ? (STATUS_AR[f] || f) : f}
                   </button>
                 ))}
               </div>
@@ -370,17 +372,17 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                    <div className="flex w-full order-last sm:order-none sm:w-auto items-center gap-8 md:gap-12 pt-3 sm:pt-0 sm:px-6 border-t sm:border-0 border-zinc-100">
                       <div className="text-right">
                          <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'النقاط' : 'Points'}</p>
-                         <p className="text-sm font-black text-indigo-600">{customer.points.toLocaleString()}</p>
+                         <p className="text-sm font-black text-indigo-600">{customer.points.toLocaleString('en-US')}</p>
                       </div>
                       <div className="text-right">
                          <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'الإنفاق' : 'Spent'}</p>
-                         <p className="text-sm font-black text-black">KWD {customer.totalSpent.toLocaleString()}</p>
+                         <p className="text-sm font-black text-black">{language === 'ar' ? `${customer.totalSpent.toLocaleString('en-US')} د.ك` : `KWD ${customer.totalSpent.toLocaleString('en-US')}`}</p>
                       </div>
                    </div>
 
                    <div className="flex items-center gap-3 shrink-0">
                       <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-black border", getStatusColor(customer.status))}>
-                         {language === 'ar' ? customer.status : customer.status}
+                         {language === 'ar' ? (STATUS_AR[customer.status] || customer.status) : customer.status}
                       </span>
                       <ChevronLeft className="w-4 h-4 text-zinc-300 group-hover:text-black transition-colors rtl:rotate-0 rotate-180" />
                    </div>
@@ -435,7 +437,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                      <div className="flex gap-2 mt-4">
                         <span className={cn("px-3 py-1 rounded-full text-xs font-black border flex items-center gap-1.5", getStatusColor(selectedCustomer.status))}>
                            {selectedCustomer.status === 'VIP' && <Crown className="w-3 h-3" />}
-                           {selectedCustomer.status}
+                           {language === 'ar' ? (STATUS_AR[selectedCustomer.status] || selectedCustomer.status) : selectedCustomer.status}
                         </span>
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-white border border-zinc-200 text-zinc-500">iD: {selectedCustomer.id.slice(0, 6)}</span>
                      </div>
@@ -456,7 +458,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                               <DollarSign className="w-4 h-4" />
                               <span className="text-[10px] font-black uppercase">{language === 'ar' ? 'إجمالي الصرف' : 'Total Spent'}</span>
                            </div>
-                           <p className="text-xl font-black text-emerald-900">KWD {selectedCustomer.totalSpent}</p>
+                           <p className="text-xl font-black text-emerald-900">{language === 'ar' ? `${selectedCustomer.totalSpent} د.ك` : `KWD ${selectedCustomer.totalSpent}`}</p>
                         </div>
                      </div>
 

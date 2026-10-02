@@ -186,7 +186,7 @@ export default function AdminUsersDashboard() {
                       <td className="p-4 text-left" dir="ltr">{user.email}</td>
                       <td className="p-4">
                         <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
-                          {user.role}
+                          {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                         </span>
                       </td>
                       <td className="p-4 flex gap-4 min-w-[120px]">
@@ -223,7 +223,7 @@ export default function AdminUsersDashboard() {
                       <p className="mt-1 text-xs text-slate-500 leading-relaxed" dir="ltr">{user.email}</p>
                     </div>
                     <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
-                      {user.role}
+                      {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -279,7 +279,7 @@ export default function AdminUsersDashboard() {
                 </div>
                 <h3 className="font-bold text-lg mb-1 text-center">{editingUser.displayName || 'بدون اسم'}</h3>
                 <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
-                  {editingUser.role === 'admin' ? 'مدير النظام (Admin)' : 'مستخدم (User)'}
+                  {editingUser.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
                 </span>
 
                 <a href={`mailto:${editingUser.email}`} className="text-blue-600 hover:underline text-sm font-bold flex gap-2 items-center max-w-full text-center" dir="ltr">
@@ -288,7 +288,7 @@ export default function AdminUsersDashboard() {
                 
                 {editingUser.createdAt && (
                   <p className="text-xs text-slate-400 mt-4 font-medium text-center">
-                    تاريخ الانضمام: <br/> {editingUser.createdAt?.toDate ? editingUser.createdAt.toDate().toLocaleDateString('ar-KW') : 'غير متوفر'}
+                    تاريخ الانضمام: <br/> {editingUser.createdAt?.toDate ? editingUser.createdAt.toDate().toLocaleDateString('ar-KW-u-nu-latn') : 'غير متوفر'}
                   </p>
                 )}
               </div>
@@ -340,8 +340,8 @@ export default function AdminUsersDashboard() {
                           onChange={(e) => setEditFormData({...editFormData, role: e.target.value})}
                           className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none appearance-none pr-10"
                         >
-                          <option value="user">مستخدم عادي (User)</option>
-                          <option value="admin">مدير نظام (Admin)</option>
+                          <option value="user">مستخدم عادي</option>
+                          <option value="admin">مدير نظام</option>
                         </select>
                         <Shield className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>

@@ -32,7 +32,7 @@ export default function AdminQawlFaslBulkGen() {
   const addLog = (message: string, type: 'info'|'success'|'error' = 'info') => {
     const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const now = new Date();
-    const timestamp = now.toLocaleString("ar-KW", {
+    const timestamp = now.toLocaleString("ar-KW-u-nu-latn", {
       dateStyle: "short",
       timeStyle: "medium"
     });
@@ -251,7 +251,7 @@ export default function AdminQawlFaslBulkGen() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Upload className="w-5 h-5 text-slate-500" /> ١. رفع ملف الأسئلة</h2>
+                <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Upload className="w-5 h-5 text-slate-500" /> 1. رفع ملف الأسئلة</h2>
                 <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:bg-slate-50 transition-colors">
                     <input 
                         type="file" 
@@ -294,7 +294,7 @@ export default function AdminQawlFaslBulkGen() {
             )}
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Play className="w-5 h-5 text-slate-500" /> ٢. بدء التوليد</h2>
+                <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Play className="w-5 h-5 text-slate-500" /> 2. بدء التوليد</h2>
                 <button
                     onClick={startBulkGeneration}
                     disabled={isProcessing || categorizedQuestions.length === 0}

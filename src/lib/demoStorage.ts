@@ -74,17 +74,17 @@ function buildSeeds(): Record<string, string> {
     tebyan_thought_memory: j([
       {
         id: 'tm-demo-1', originalText: 'ابني لا يترك الألعاب الإلكترونية', normalizedMeaning: 'تعلّق الطفل بالألعاب الإلكترونية',
-        mainTopic: 'الألعاب الإلكترونية', subTopics: ['حدود الوقت', 'الإنذار المسبق'], riskLevel: 'medium', ageMentioned: '٧ سنوات',
+        mainTopic: 'الألعاب الإلكترونية', subTopics: ['حدود الوقت', 'الإنذار المسبق'], riskLevel: 'medium', ageMentioned: '7 سنوات',
         emotionalTone: 'قلق', generatedText: 'ابدئي بالإنذار المسبق وثبّتي القاعدة لا المزاج.', timestamp: now - 12 * DAY, usageCount: 3, classification: 'original',
       },
       {
         id: 'tm-demo-2', originalText: 'كيف أقلل الشاشة دون صراخ', normalizedMeaning: 'تقليل الشاشة بهدوء',
-        mainTopic: 'الألعاب الإلكترونية', subTopics: ['بدائل ممتعة'], riskLevel: 'low', ageMentioned: '٧ سنوات',
+        mainTopic: 'الألعاب الإلكترونية', subTopics: ['بدائل ممتعة'], riskLevel: 'low', ageMentioned: '7 سنوات',
         emotionalTone: 'متعب', generatedText: 'جهّزي نشاطًا بديلًا يبدأ لحظة إغلاق الجهاز.', timestamp: now - 5 * DAY, usageCount: 2, relatedToId: 'tm-demo-1', classification: 'related_variant',
       },
       {
         id: 'tm-demo-3', originalText: 'ابنتي تحتاج تنظيم وقت الدراسة', normalizedMeaning: 'تنظيم وقت الدراسة',
-        mainTopic: 'وقت الدراسة', subTopics: ['جدول أسبوعي'], riskLevel: 'low', ageMentioned: '١٠ سنوات',
+        mainTopic: 'وقت الدراسة', subTopics: ['جدول أسبوعي'], riskLevel: 'low', ageMentioned: '10 سنوات',
         emotionalTone: 'مهتم', generatedText: 'أشركي نورة في وضع الجدول لتشعر بالمسؤولية.', timestamp: now - 2 * DAY, usageCount: 1, classification: 'new_case',
       },
     ]),

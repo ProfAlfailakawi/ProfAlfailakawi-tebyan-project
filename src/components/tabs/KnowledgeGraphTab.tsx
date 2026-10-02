@@ -489,7 +489,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                               </div>
                               <div className="rounded-2xl bg-[#FBFAF7] border border-[#8FA9C7]/16 p-3">
                                 <p className="text-[10px] font-black text-[#8E7AAE] mb-1">{language === 'ar' ? 'التاريخ' : 'Date'}</p>
-                                <p className="text-sm font-black text-[#182231]">{new Date().toLocaleDateString(language === 'ar' ? 'ar-KW' : 'en-US')}</p>
+                                <p className="text-sm font-black text-[#182231]">{new Date().toLocaleDateString(language === 'ar' ? 'ar-KW-u-nu-latn' : 'en-US')}</p>
                               </div>
                             </div>
 

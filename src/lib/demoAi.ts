@@ -61,7 +61,7 @@ function freeText(topic: string, ar: boolean, hint: string): string {
       return `النمط الفكري هنا يميل إلى التأمل وبناء العادات الصغيرة. ثمة من يشارك هذا التردد: من يرى في التفاصيل اليومية بابًا للمعنى.`;
     }
     if (/Serendipity|اكتشاف صدفة/.test(hint)) {
-      return `فكرة هجينة: تحويل «${topic}» إلى لعبة أسرية قصيرة مدتها ٥ دقائق، تُكافأ فيها المحاولة لا النتيجة.`;
+      return `فكرة هجينة: تحويل «${topic}» إلى لعبة أسرية قصيرة مدتها 5 دقائق، تُكافأ فيها المحاولة لا النتيجة.`;
     }
     if (/خريطة ذهنية/.test(hint)) {
       const kw = keywordsOf(topic);
@@ -95,7 +95,7 @@ const STRING_BY_KEY: Array<[RegExp, (t: string, ar: boolean, i: number) => strin
   [/slug/i, () => 'general-demo'],
   [/category/i, (_t, ar) => (ar ? 'السلوك والانفعالات' : 'Behavior')],
   [/risk/i, () => 'low'],
-  [/age/i, (_t, ar, i) => (ar ? ['٥-٧ سنوات', '٨-١٢ سنة', '١٣-١٧ سنة'][i % 3] : '8-12')],
+  [/age/i, (_t, ar, i) => (ar ? ['5-7 سنوات', '8-12 سنة', '13-17 سنة'][i % 3] : '8-12')],
   [/sayThis/i, (_t, ar) => (ar ? 'أرى أن الأمر صعب عليك الآن، وأنا هنا لنجد حلًّا معًا.' : 'I can see this is hard right now; let us find a way together.')],
   [/dontSayThis/i, (_t, ar) => (ar ? 'كم مرة قلت لك! لماذا لا تسمع الكلام أبدًا؟' : 'How many times have I told you!')],
   [/doThisNow/i, (_t, ar) => (ar ? 'توقّف لحظة، تنفّس بهدوء، ثم انزل إلى مستوى نظره وسمِّ الشعور.' : 'Pause, breathe, get to eye level and name the feeling.')],
@@ -311,11 +311,11 @@ function roadmapFor(topic: string, ar: boolean) {
     { title: 'Week 5: Hold steady', description: 'Consistency matters more than intensity.', tasks: ['Keep the same time even on busy days', 'Handle slips calmly', 'Share one success story'] },
     { title: 'Week 6: Review', description: 'Look back together and decide what stays.', tasks: ['Review the notes together', 'Keep what worked', 'Adjust what did not', 'Plan the next small goal'] },
   ] };
-  return { title: `خطة هادئة: ${topic}`, estimated_duration: '٦ أسابيع — من ٤ أكتوبر إلى ١٥ نوفمبر ٢٠٢٦', milestones: [
-    { title: 'الأسبوعان ١-٢: الملاحظة', description: `نلاحظ متى يظهر «${k1}» قبل أن نغيّر أي شيء.`, tasks: ['تدوين ثلاثة مواقف حدثت فعلًا', 'تسجيل الوقت والمكان والمزاج', 'اختيار موقف واحد للتحسين', 'إخبار الأسرة بالخطة في جملة واحدة'] },
-    { title: 'الأسبوعان ٣-٤: بناء الروتين', description: 'روتين صغير يتكرر يوميًا أنفع من قاعدة كبيرة.', tasks: ['تثبيت وقت يومي واحد', 'إنذار مسبق قبل أي انتقال', 'تجهيز بديل ممتع مسبقًا', 'تعزيز المحاولة في اليوم نفسه'] },
-    { title: 'الأسبوع ٥: الثبات', description: 'الاستمرار أهم من الشدّة.', tasks: ['الحفاظ على الوقت نفسه حتى في الأيام المزدحمة', 'التعامل مع التعثّر بهدوء', 'مشاركة قصة نجاح واحدة'] },
-    { title: 'الأسبوع ٦: المراجعة', description: 'ننظر معًا إلى ما تحقق ونقرر ما يبقى.', tasks: ['مراجعة الملاحظات معًا', 'إبقاء ما نجح', 'تعديل ما لم ينجح', 'تحديد الهدف الصغير التالي'] },
+  return { title: `خطة هادئة: ${topic}`, estimated_duration: '6 أسابيع — من 4 أكتوبر إلى 15 نوفمبر 2026', milestones: [
+    { title: 'الأسبوعان 1-2: الملاحظة', description: `نلاحظ متى يظهر «${k1}» قبل أن نغيّر أي شيء.`, tasks: ['تدوين ثلاثة مواقف حدثت فعلًا', 'تسجيل الوقت والمكان والمزاج', 'اختيار موقف واحد للتحسين', 'إخبار الأسرة بالخطة في جملة واحدة'] },
+    { title: 'الأسبوعان 3-4: بناء الروتين', description: 'روتين صغير يتكرر يوميًا أنفع من قاعدة كبيرة.', tasks: ['تثبيت وقت يومي واحد', 'إنذار مسبق قبل أي انتقال', 'تجهيز بديل ممتع مسبقًا', 'تعزيز المحاولة في اليوم نفسه'] },
+    { title: 'الأسبوع 5: الثبات', description: 'الاستمرار أهم من الشدّة.', tasks: ['الحفاظ على الوقت نفسه حتى في الأيام المزدحمة', 'التعامل مع التعثّر بهدوء', 'مشاركة قصة نجاح واحدة'] },
+    { title: 'الأسبوع 6: المراجعة', description: 'ننظر معًا إلى ما تحقق ونقرر ما يبقى.', tasks: ['مراجعة الملاحظات معًا', 'إبقاء ما نجح', 'تعديل ما لم ينجح', 'تحديد الهدف الصغير التالي'] },
   ] };
 }
 
