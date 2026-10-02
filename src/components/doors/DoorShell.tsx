@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { ElementType } from "react";
 
@@ -40,6 +40,43 @@ export const DoorShell = ({
   const ar = language === "ar";
   const current = modes.find((m) => m.id === activeMode) ?? modes[0];
 
+  // الصف قابل للتمرير الأفقي: يظهر تلاشٍ عند الحافة التي يوجد خلفها مزيد من الشرائح.
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [fade, setFade] = useState({ start: false, end: false });
+  const measure = useCallback(() => {
+    const el = tabsRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 2) {
+      setFade((f) => (f.start || f.end ? { start: false, end: false } : f));
+      return;
+    }
+    const rtl = getComputedStyle(el).direction === "rtl";
+    const pos = rtl ? -el.scrollLeft : el.scrollLeft; // المسافة المقطوعة من بداية الصف
+    const next = { start: pos > 2, end: pos < max - 2 };
+    setFade((f) => (f.start === next.start && f.end === next.end ? f : next));
+  }, []);
+  useEffect(() => {
+    measure();
+    const el = tabsRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    return () => {
+      el.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure, modes.length, language]);
+  const FADE = "28px";
+  const rtlDir = ar;
+  // "start" هو الجهة التي يبدأ منها الصف (يمين في العربية)
+  const left = rtlDir ? fade.end : fade.start;
+  const right = rtlDir ? fade.start : fade.end;
+  const mask =
+    left || right
+      ? `linear-gradient(to right, ${left ? `transparent 0, #000 ${FADE}` : "#000 0"}, ${right ? `#000 calc(100% - ${FADE}), transparent 100%` : "#000 100%"})`
+      : undefined;
+
   return (
     <div className="w-full" dir={ar ? "rtl" : "ltr"}>
       <header className="max-w-3xl mx-auto px-4 pt-2 pb-1 text-center">
@@ -54,6 +91,8 @@ export const DoorShell = ({
       {modes.length > 1 && (
         <div className="max-w-3xl mx-auto px-4 mt-4">
           <div
+            ref={tabsRef}
+            style={mask ? { WebkitMaskImage: mask, maskImage: mask } : undefined}
             className="flex gap-2 overflow-x-auto pb-1 justify-start md:justify-center"
             role="tablist"
             aria-label={ar ? "اختر الأسلوب" : "Choose a style"}
