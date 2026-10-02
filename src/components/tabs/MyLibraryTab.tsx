@@ -253,7 +253,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                                        <div className="w-2 h-2 rounded-full bg-stone-300 mx-auto absolute top-2 left-1/2 -translate-x-1/2 shadow-inner"></div>
                                        <div>
                                            <div className="text-xs font-black text-black uppercase tracking-widest leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
-                                           <div className="text-[10px] uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
+                                           <div className="text-[11px] uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
                                        </div>
                                        <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
                                           <div className="flex gap-2">
