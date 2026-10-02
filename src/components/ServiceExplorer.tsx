@@ -262,22 +262,20 @@ export const ServiceExplorer: React.FC<Props> = ({
                   type="button"
                   key={service.id}
                   onClick={() => handleTabChange(service.id)}
-                  className="tebyan-service-card group relative min-h-[148px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+                  className="tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
                 >
-                  <Icon
-                    aria-hidden="true"
-                    strokeWidth={1}
-                    className="pointer-events-none absolute -bottom-5 -left-5 h-28 w-28 text-[#8E7AAE]/[0.07] transition-colors group-hover:text-[#8E7AAE]/[0.12]"
-                  />
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-3">
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
                         <Icon className="h-5 w-5" strokeWidth={1.6} />
                       </span>
                       {service.featured && (
-                        <span className="rounded-full bg-[#EEF4F1] px-2.5 py-1 text-[10px] font-black text-[#4D766B]">
-                          {isArabic ? "مناسب للبداية" : "Good start"}
-                        </span>
+                        <span
+                          role="img"
+                          title={isArabic ? "مناسب للبداية" : "Good start"}
+                          aria-label={isArabic ? "مناسب للبداية" : "Good start"}
+                          className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#4D766B]/70"
+                        />
                       )}
                     </div>
                     <h3 className="mt-3 text-[15px] font-black leading-6 text-[#182231] md:text-base">
@@ -288,12 +286,12 @@ export const ServiceExplorer: React.FC<Props> = ({
                     </p>
                     <p
                       title={getServiceDescription(service, language)}
-                      className="mt-2 line-clamp-2 flex-1 text-[13px] font-bold leading-6 text-[#64788D]"
+                      className="mt-1.5 line-clamp-1 flex-1 text-[13px] font-medium leading-6 text-[#64788D]"
                     >
                       {getServiceDescription(service, language)}
                     </p>
-                    <span className="mt-3 inline-flex items-center gap-2 text-[13px] font-black text-[#182231]">
-                      {isArabic ? "افتح" : "Open"}
+                    <span className="mt-2 inline-flex items-center gap-2 self-end text-[13px] font-black text-[#182231]">
+                      <span className="sr-only">{isArabic ? "افتح" : "Open"}</span>
                       <ArrowLeft
                         className={cn(
                           "h-4 w-4 text-[#8E7AAE]",
