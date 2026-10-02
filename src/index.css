@@ -4545,3 +4545,48 @@ main .overflow-x-auto > [role="tab"] {
     gap: 2px !important;
   }
 }
+
+/* r26 visual: one slim header for tool tabs (icon + title on one line, one muted sentence).
+   Lives in the base layer so its !important wins over the older component-layer overrides. */
+@layer base {
+  .tebyan-tab-header {
+    padding: 0.55rem 0.2rem 0.7rem !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(142, 122, 174, 0.16) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    margin-bottom: 1rem !important;
+  }
+  .tebyan-tab-header .tebyan-tab-header__icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.8rem;
+  }
+  .tebyan-tab-header .tebyan-tab-header__icon svg {
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    stroke-width: 1.75 !important;
+  }
+  .tebyan-tab-header .tebyan-tab-header__title {
+    font-size: 1.2rem !important;
+    line-height: 1.35 !important;
+    margin: 0;
+  }
+  .tebyan-tab-header .tebyan-tab-header__desc {
+    font-size: 0.8rem !important;
+    line-height: 1.5 !important;
+    margin: 0.1rem 0 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  @media (min-width: 768px) {
+    .tebyan-tab-header { padding: 0.7rem 0.25rem 0.9rem !important; }
+    .tebyan-tab-header .tebyan-tab-header__icon { width: 2.6rem; height: 2.6rem; }
+    .tebyan-tab-header .tebyan-tab-header__title { font-size: 1.55rem !important; }
+    .tebyan-tab-header .tebyan-tab-header__desc { font-size: 0.9rem !important; -webkit-line-clamp: 1; }
+  }
+}
