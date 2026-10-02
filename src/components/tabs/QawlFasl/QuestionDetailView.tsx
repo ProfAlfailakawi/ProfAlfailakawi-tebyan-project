@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, ShieldEllipsis, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, ShieldEllipsis, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library, TriangleAlert, Circle } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -9,7 +9,7 @@ import { BreathingText } from '../../BreathingText';
 import { KnowledgeSignature } from '../../common/KnowledgeSignature';
 import { proxyGenerateAudio } from '../../../lib/aiProxy';
 import AnswerTrustPanel from './AnswerTrustPanel';
-import { DnaStatusHeader, DnaStepper, DnaHubMap } from '../../dna/DnaKit';
+import { DnaStatusHeader, DnaStepper, DnaHubMap, DnaTimeline } from '../../dna/DnaKit';
 import type { DnaStepState } from '../../dna/DnaKit';
 import { getAnswerTrust, formatArabicDate } from '../../../lib/qawlTrust';
 
@@ -38,6 +38,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const [isQuickAudioLoading, setIsQuickAudioLoading] = useState(false);
   const [quickAudioError, setQuickAudioError] = useState<string | null>(null);
   const quickAudioRef = useRef<HTMLAudioElement | null>(null);
+  // Display-only checklist for the practical steps (local UI state, never saved).
+  const [doneSteps, setDoneSteps] = useState<number[]>([]);
+  useEffect(() => { setDoneSteps([]); }, [questionId]);
   
   const currentQuestion = questions.find(q => q.id === questionId);
   const lastKnownQuestion = useRef(currentQuestion);
@@ -216,7 +219,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
           <div className="space-y-4 md:space-y-6 flex-1 min-w-0">
              <div className="flex flex-wrap gap-2 text-[10px] md:text-xs font-bold font-mono uppercase">
                <span className="bg-[#EAECE6] text-[#64788D] px-3 py-1.5 rounded-full">{category?.title}</span>
-               {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full">حساسية</span>}
+               {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
                <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.join(', ')}</span>
              </div>
              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -426,14 +429,14 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#F0F5ED] rounded-[24px] p-8 border border-[#DFEBD8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <h4 className="font-bold text-[#4B6B42] mb-4 flex items-center gap-2 text-lg">
-                  <CheckCircle2 className="w-6 h-6" /> قل للطفل:
+                  <MessageSquareQuote className="w-6 h-6" aria-hidden="true" /> قل للطفل:
                 </h4>
                 <p className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.sayThis}"</p>
               </div>
               
               <div className="bg-[#FAF0E6] rounded-[24px] p-8 border border-[#F2D7C8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <h4 className="font-bold text-[#A6603F] mb-4 flex items-center gap-2 text-lg">
-                  <ShieldAlert className="w-6 h-6" /> لا تقل:
+                  <Ban className="w-6 h-6" aria-hidden="true" /> لا تقل:
                 </h4>
                 <p className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.dontSayThis}"</p>
               </div>
@@ -442,7 +445,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                 <div className="relative z-10">
                   <h4 className="font-bold text-[#EBEAE4] mb-4 flex items-center gap-2 text-lg">
-                     افعل الآن:
+                     <Zap className="w-6 h-6" aria-hidden="true" /> افعل الآن:
                   </h4>
                   <p className="text-white font-bold leading-[1.85] text-xl">{question.quickAnswer.doThisNow}</p>
                 </div>
@@ -496,14 +499,18 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         {/* Age Tab */}
         {activeTab === 'age' && (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
-            {question.byAgeVersions.map((version, idx) => (
-              <div key={idx} className="bg-white rounded-[24px] p-8 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col md:flex-row gap-6 items-start">
-                 <div className="shrink-0 bg-[#F7F5F2] text-[#64788D] px-6 py-2 rounded-full font-bold text-sm tracking-wide">
-                   عمر: {version.age}
-                 </div>
-                 <p className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg pt-1">{version.text}</p>
-              </div>
-            ))}
+            <div className="bg-white rounded-[24px] p-5 md:p-8 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+              <DnaTimeline
+                ariaLabel="الجواب حسب العمر"
+                wrapMeta
+                items={question.byAgeVersions.map((version, idx) => ({
+                  key: String(idx),
+                  title: `عمر: ${version.age}`,
+                  tone: 'lilac' as const,
+                  meta: <span className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg block whitespace-normal">{version.text}</span>,
+                }))}
+              />
+            </div>
           </div>
         )}
 
@@ -514,13 +521,42 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               <h3 className="text-2xl font-bold text-[#182231] mb-6 flex items-center gap-3">
                 <CheckCircle2 className="text-[#4B6B42] w-8 h-8" /> خطوات عملية
               </h3>
+              {question.practicalSteps.length > 0 && (
+                <div className="mb-6">
+                  <DnaStepper
+                    size="sm"
+                    showLabels={false}
+                    ariaLabel="تقدّمك في الخطوات"
+                    steps={question.practicalSteps.map((_, idx) => {
+                      const firstOpen = question.practicalSteps.findIndex((__, j) => !doneSteps.includes(j));
+                      return {
+                        key: String(idx),
+                        label: String(idx + 1),
+                        state: doneSteps.includes(idx) ? 'done' : idx === firstOpen ? 'current' : 'pending',
+                      } as const;
+                    })}
+                  />
+                </div>
+              )}
               <ul className="space-y-4">
-                {question.practicalSteps.map((step, idx) => (
-                  <li key={idx} className="flex flex-wrap md:flex-nowrap gap-4 text-[#64788D] font-medium bg-[#FAF9F6]/70 backdrop-blur-2xl p-5 rounded-[16px] border border-[#8FA9C7]/15 text-base md:text-lg">
-                    <span className="w-8 h-8 rounded-full bg-[#EAECE6] text-[#182231] font-bold flex items-center justify-center shrink-0">{idx + 1}</span>
-                    <span className="mt-1">{step}</span>
+                {question.practicalSteps.map((step, idx) => {
+                  const isDone = doneSteps.includes(idx);
+                  return (
+                  <li key={idx}>
+                    <button
+                      type="button"
+                      aria-pressed={isDone}
+                      onClick={() => setDoneSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])}
+                      className={cn("w-full text-start flex flex-wrap md:flex-nowrap gap-4 text-[#64788D] font-medium p-5 rounded-[16px] border text-base md:text-lg transition-colors", isDone ? "bg-[#F0F5ED] border-[#DFEBD8]" : "bg-[#FAF9F6]/70 border-[#8FA9C7]/15 hover:border-[#8E7AAE]/40")}
+                    >
+                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", isDone ? "bg-[#4B6B42] text-white" : "bg-[#EAECE6] text-[#182231]")}>
+                        {isDone ? <CheckCircle2 className="w-5 h-5" aria-hidden="true" /> : idx + 1}
+                      </span>
+                      <span className={cn("mt-1 flex-1", isDone && "line-through decoration-[#4B6B42]/40")}>{step}</span>
+                    </button>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
 
@@ -531,7 +567,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               <ul className="space-y-4">
                 {question.exercises.map((ex, idx) => (
                   <li key={idx} className="flex flex-wrap md:flex-nowrap gap-4 text-[#64788D] font-medium p-4 bg-[#F7F5F2] rounded-[16px] text-base md:text-lg">
-                    <span className="shrink-0 text-[#A68F58] font-bold text-2xl leading-none pt-0.5">•</span>
+                    <Circle className="shrink-0 w-3 h-3 mt-2.5 fill-[#A68F58] text-[#A68F58]" aria-hidden="true" />
                     <span>{ex}</span>
                   </li>
                 ))}
@@ -540,10 +576,25 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             
             {question.whenToWorry && (
               <div className="bg-[#FAF0E6] rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#F2D7C8] flex flex-col sm:flex-row gap-6">
-                 <ShieldAlert className="w-10 h-10 text-[#A6603F] shrink-0" />
+                 <TriangleAlert className="w-9 h-9 text-[#A6603F] shrink-0" aria-hidden="true" />
                  <div>
-                   <h3 className="text-[#A6603F] font-bold text-2xl mb-3">متى أطلب التدخل المختص؟</h3>
-                   <p className="text-[#182231] font-medium text-base md:text-lg leading-[1.85]">{question.whenToWorry}</p>
+                   <h3 className="text-[#A6603F] font-bold text-xl md:text-2xl mb-3">متى أطلب التدخل المختص؟</h3>
+                   {(() => {
+                     // Display only: split the same text into sentences; nothing is dropped.
+                     const parts = (question.whenToWorry.match(/[^.؛!؟?\n]+[.؛!؟?]?/g) || []).map(t => t.trim()).filter(Boolean);
+                     return parts.length > 1 ? (
+                       <ul className="space-y-2">
+                         {parts.map((t, i) => (
+                           <li key={i} className="flex gap-2 text-[#182231] font-medium text-base leading-[1.8]">
+                             <Circle className="shrink-0 w-2.5 h-2.5 mt-2.5 fill-[#A6603F] text-[#A6603F]" aria-hidden="true" />
+                             <span>{t}</span>
+                           </li>
+                         ))}
+                       </ul>
+                     ) : (
+                       <p className="text-[#182231] font-medium text-base md:text-lg leading-[1.85]">{question.whenToWorry}</p>
+                     );
+                   })()}
                  </div>
               </div>
             )}
