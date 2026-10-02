@@ -34,7 +34,7 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
   let offset = 0;
 
   return (
-    <div className="mb-16 flex flex-col items-center gap-8">
+    <div className="mb-10 md:mb-12 flex flex-col md:flex-row items-center justify-center gap-5 md:gap-12">
     {total > 0 && (
       <div className="relative h-36 w-36 md:h-44 md:w-44" role="img" aria-label={entries.map(([t, c]) => `${language === 'ar' ? (typeData[t]?.labelAr || t) : (typeData[t]?.labelEn || t)} ${c}`).join(' · ')}>
         <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -61,19 +61,20 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
         <div className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-[#182231]">{total}</div>
       </div>
     )}
-    <div className="flex flex-wrap gap-4 justify-center">
+    <div className="flex flex-wrap gap-2 justify-center md:flex-col md:items-stretch" role="list">
        {Object.entries(counts).map(([type, count]: [any, any]) => (
          <motion.div
            key={type}
            initial={{ scale: 0 }}
            animate={{ scale: 1 }}
-           whileHover={{ y: -5, scale: 1.05 }}
+                      role="listitem"
            className={cn(
-             "px-5 py-3 rounded-full flex items-center gap-3 shadow-sm border border-[#6e5f8e]/10",
+             "pe-4 ps-2 py-1.5 rounded-full flex items-center gap-2.5 border border-[#6e5f8e]/10",
              typeData[type]?.color || 'bg-[#f2f2f4] text-[#5b6472]'
            )}
          >
-           <div className="w-9 h-9 rounded-full bg-white/80 flex items-center justify-center font-bold text-lg">
+           <span className="w-2.5 h-2.5 rounded-full shrink-0 ms-1" style={{ backgroundColor: ringColors[type] || ringColors.item, opacity: 0.85 }} aria-hidden="true" />
+           <div className="w-7 h-7 rounded-full bg-white/80 flex items-center justify-center font-bold text-sm">
              {count}
            </div>
            <span className="font-bold text-sm">
@@ -86,8 +87,46 @@ const MoodCloud = ({ items, language }: { items: any[], language: string }) => {
   );
 };
 
+const GalleryDots = ({ listRef, count }: { listRef: React.RefObject<HTMLUListElement>, count: number }) => {
+  const [active, setActive] = React.useState(0);
+  React.useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const box = el.getBoundingClientRect();
+      const mid = box.left + box.width / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      Array.from(el.children).forEach((child, i) => {
+        const r = (child as HTMLElement).getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - mid);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+      setActive(best);
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => { el.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, [listRef, count]);
+  if (count < 2) return null;
+  if (count > 12) {
+    return <div className="mb-5 text-[11px] font-bold text-zinc-400 tabular-nums" aria-hidden="true" dir="ltr">{active + 1} / {count}</div>;
+  }
+  return (
+    <div className="mb-5 flex items-center justify-center gap-1.5" aria-hidden="true">
+      {Array.from({ length: count }).map((_, i) => (
+        <span key={i} className={cn('h-1.5 rounded-full transition-all', i === active ? 'w-5 bg-[#6E5B91]' : 'w-1.5 bg-[#6E5B91]/25')} />
+      ))}
+    </div>
+  );
+};
+
 const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string, handleTabChange?: (id: string, context?: string) => void }) => {
     const { preferences, removeFromLibrary } = useUser();
+    const galleryRef = React.useRef<HTMLUListElement>(null);
     // في العرض تظهر المحفوظات النموذجية بلغة الواجهة؛ الحذف يبقى على العنصر المخزَّن.
     const displayLibrary = React.useMemo(
         () => (IS_DEMO_MODE && Array.isArray(preferences.savedLibrary) ? localizeDemoLibrary(preferences.savedLibrary, language) : preferences.savedLibrary),
@@ -136,7 +175,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
 
-                    <ul className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
+                    <ul ref={galleryRef} style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%)', maskImage: 'linear-gradient(to right, transparent 0, #000 28px, #000 calc(100% - 28px), transparent 100%)' }} className="flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
                         {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
                             let content = '';
                             let title = '';
@@ -247,6 +286,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                             );
                         })}
                     </ul>
+                    <GalleryDots listRef={galleryRef} count={Array.isArray(preferences.savedLibrary) ? preferences.savedLibrary.length : 0} />
                 </div>
             )}
         </div>
