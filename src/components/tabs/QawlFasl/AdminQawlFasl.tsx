@@ -310,7 +310,7 @@ export default function AdminQawlFasl() {
 
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
         <h2 className="text-xl md:text-2xl font-bold leading-snug">إدارة أسئلة قول فصل</h2>
-        <div className="flex flex-nowrap sm:flex-wrap items-center gap-2 md:gap-3 w-full lg:w-auto [&_svg]:stroke-[1.6]">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full lg:w-auto [&_svg]:stroke-[1.6]">
           <button 
             disabled={isProcessing}
             onClick={handleRunAnalysis} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
