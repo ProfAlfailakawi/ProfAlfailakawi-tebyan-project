@@ -180,7 +180,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                     <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-stone-200/50 to-transparent pointer-events-none -z-10"></div>
                     <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-stone-300 to-transparent pointer-events-none -z-10"></div>
 
-                    <ul ref={galleryRef} className="tebyan-gallery-mask flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-[20vw] pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center">
+                    <ul ref={galleryRef} className="tebyan-gallery-mask flex overflow-x-auto overflow-y-hidden snap-x snap-mandatory gap-8 md:gap-20 px-5 md:px-8 pb-10 md:pb-16 w-full flex-1 custom-scrollbar items-center md:[justify-content:safe_center]">
                         {Array.isArray(preferences.savedLibrary) && preferences.savedLibrary.map((stored, index) => {
                             let content = '';
                             let title = '';
