@@ -125,7 +125,7 @@ const GalleryDots = ({ listRef, count }: { listRef: React.RefObject<HTMLUListEle
   );
 };
 
-const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string, handleTabChange?: (id: string, context?: string) => void }) => {
+const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { language?: string, handleTabChange?: (id: string, context?: string) => void, embedded?: boolean }) => {
     const { preferences, removeFromLibrary } = useUser();
     const galleryRef = React.useRef<HTMLUListElement>(null);
     // في العرض تظهر المحفوظات النموذجية بلغة الواجهة؛ الحذف يبقى على العنصر المخزَّن.
@@ -147,8 +147,8 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
 
     return (
         <div className="p-4 md:p-6 pb-28 md:pb-32">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12">
-                <div className="space-y-1 text-right">
+            <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12', embedded && hasSaved && 'mb-0 md:mb-0')}>
+                <div className={cn('space-y-1 text-right', embedded && 'sr-only')}>
                   <h2 className="text-3xl md:text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
                   <p className="text-zinc-500 font-bold text-xs md:text-sm tracking-widest uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
                 </div>
