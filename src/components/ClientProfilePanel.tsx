@@ -790,7 +790,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           </svg>
                           {/* markers are HTML so they stay round regardless of the stretched viewBox */}
                           {[{ x: 10, y: maturityScores.p1, c: '#B8AACD', s: 10 }, { x: 45, y: maturityScores.p2, c: '#8E7AAE', s: 10 }, { x: 90, y: maturityScores.p3, c: '#6E5B91', s: 12 }].map((m, i) => (
-                            <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ insetInlineStart: `${m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
+                            <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ left: `${m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
                           ))}
                           
                           <div className="absolute bottom-0 right-0 text-[11px] text-[#7C8796] font-bold">البداية</div>
