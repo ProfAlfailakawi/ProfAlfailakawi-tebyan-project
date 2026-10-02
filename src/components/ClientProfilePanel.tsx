@@ -8,7 +8,7 @@ import {
   ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle,
   LibraryBig, Network, CircleHelp
 } from 'lucide-react';
-import { DnaIconTile, DnaRing, DnaStat, DnaSpark } from './dna/DnaKit';
+import { DnaIconTile, DnaRing } from './dna/DnaKit';
 import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
 import { useUser } from '../contexts/UserContext';
@@ -552,7 +552,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     </div>
                   </div>
 	                  <div>
-                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Medal size={16} className="text-amber-500"/> معرض الأوسمة</h4>
+                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Medal size={16} className="text-[#8E7AAE]"/> معرض الأوسمة</h4>
                      {sageProgress.badges.length > 0 ? (
                         <div className="grid grid-cols-3 gap-3">
                             {sageProgress.badges.map(b => (
@@ -740,7 +740,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   {/* Contradiction Detector */}
                   <div className="bg-amber-50 p-5 rounded-2xl border border-amber-100 relative overflow-hidden group">
                       <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><ArrowRightLeft size={64}/></div>
-                      <h4 className="font-bold text-amber-900 mb-2 flex items-center gap-2"><ArrowRightLeft size={16} className="text-amber-500" /> كاشف التناقضات المخبأة</h4>
+                      <h4 className="font-bold text-amber-900 mb-2 flex items-center gap-2"><ArrowRightLeft size={16} className="text-[#8E7AAE]" /> كاشف التناقضات المخبأة</h4>
                       <div className="bg-white/60 p-4 rounded-xl border border-amber-200/50 backdrop-blur-sm relative z-10 m-0">
                           {contradiction ? (
                              <p className="text-sm font-medium text-[#3D4A5A] leading-relaxed whitespace-pre-wrap">
@@ -765,31 +765,36 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   <div className="border border-[#8FA9C7]/15 p-6 md:p-8 rounded-[32px] bg-white shadow-sm overflow-hidden">
                       <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
-                           <ChevronUp size={20} className="text-emerald-500" />
+                           <ChevronUp size={20} className="text-[#8E7AAE]" />
                            <h4 className="font-black text-[#182231] text-lg">مؤشر نضج الأسئلة</h4>
                         </div>
-                        <div className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-lg border border-emerald-100">
+                        <div className="px-3 py-1 bg-[#EFEAF6] text-[#6E5B91] text-[11px] font-black rounded-lg border border-[#6E5B91]/15">
                            {maturityLabel}
                         </div>
                       </div>
                       
                       <div className="relative h-24 mb-8">
-                          <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
-                              <path d={`M0,${maturityScores.p1} Q25,${maturityScores.p2} 50,${(maturityScores.p2 + maturityScores.p3)/2} T100,${maturityScores.p3}`} fill="none" stroke="url(#emeraldGradient)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+                          {/* axis captions (depth scale: 5 = deepest, 35 = simplest, as in the analysis prompt) */}
+                          <span className="absolute top-0 end-0 text-[10px] font-bold text-[#7C8796]">أعمق</span>
+                          <svg className="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
+                              {[5, 20, 35].map(y => (
+                                <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="#8FA9C7" strokeOpacity="0.25" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
+                              ))}
+                              <path d={`M0,${maturityScores.p1} Q25,${maturityScores.p2} 50,${(maturityScores.p2 + maturityScores.p3)/2} T100,${maturityScores.p3}`} fill="none" stroke="url(#lilacGradient)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
                               <defs>
-                                  <linearGradient id="emeraldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                      <stop offset="0%" stopColor="#94a3b8" />
-                                      <stop offset="100%" stopColor="#10b981" />
+                                  <linearGradient id="lilacGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                      <stop offset="0%" stopColor="#B8AACD" />
+                                      <stop offset="100%" stopColor="#6E5B91" />
                                   </linearGradient>
                               </defs>
-                              
-                              <circle cx="10" cy={maturityScores.p1} r="3" fill="#94a3b8" />
-                              <circle cx="45" cy={maturityScores.p2} r="3" fill="#34d399" />
-                              <circle cx="90" cy={maturityScores.p3} r="4" fill="#059669" className="animate-pulse" />
                           </svg>
+                          {/* markers are HTML so they stay round regardless of the stretched viewBox */}
+                          {[{ x: 10, y: maturityScores.p1, c: '#B8AACD', s: 10 }, { x: 45, y: maturityScores.p2, c: '#8E7AAE', s: 10 }, { x: 90, y: maturityScores.p3, c: '#6E5B91', s: 12 }].map((m, i) => (
+                            <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ insetInlineStart: `${m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
+                          ))}
                           
-                          <div className="absolute bottom-0 right-0 text-[10px] text-[#7C8796] font-bold uppercase tracking-wider">البداية</div>
-                          <div className="absolute bottom-0 left-0 text-[10px] text-emerald-600 font-black uppercase tracking-wider">نقطة النضج الحالية</div>
+                          <div className="absolute bottom-0 right-0 text-[11px] text-[#7C8796] font-bold">البداية</div>
+                          <div className="absolute bottom-0 left-0 text-[11px] text-[#6E5B91] font-black">نقطة النضج الحالية</div>
                       </div>
 
                       {/* Commitments Display */}
@@ -798,7 +803,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           onClick={() => setActiveTab('tools')}
                           className="mt-2 w-full text-xs font-black text-[#6E5F8E] bg-[#F1EEF4] hover:bg-[#EAE3EF] rounded-xl py-3 transition-colors flex items-center justify-center gap-2"
                         >
-                          <CheckCircle className="w-4 h-4 text-emerald-600" />
+                          <CheckCircle className="w-4 h-4 text-[#8E7AAE]" />
                           {commitments.length} التزام مرصود — افتح «تتبّع»
                         </button>
                       )}
@@ -839,7 +844,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><ListTodo size={16} className="text-emerald-500"/> متتبع المهام والقرارات</h4>
+                        <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><ListTodo size={16} className="text-[#8E7AAE]"/> متتبع المهام والقرارات</h4>
                         <div className="bg-[#F7F5F2] p-4 rounded-2xl border border-emerald-100/50 mb-4">
                             <p className="text-sm font-bold text-emerald-900 mb-1">تبيان يراقب خطواتك</p>
                             <p className="text-xs text-emerald-700/80 leading-relaxed">
@@ -870,27 +875,19 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Activity size={16} className="text-blue-500"/> مقياس التوازن الذهني</h4>
+                        <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Activity size={16} className="text-[#8E7AAE]"/> مقياس التوازن الذهني</h4>
                         <div className="bg-[#F7F5F2] p-5 rounded-2xl border border-[#8FA9C7]/15 flex flex-col gap-4">
-                            <div className="flex items-center gap-3">
-                                <span className="text-xs font-bold w-12 shrink-0">الحكمة</span>
-                                <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full" style={{width: `${Math.min(100, sageProgress.stats.wisdom * 10)}%`}} />
-                                </div>
+                            <div className="flex items-start justify-around gap-2">
+                                {([
+                                  { l: 'الحكمة', v: sageProgress.stats.wisdom },
+                                  { l: 'الحوار', v: sageProgress.stats.dialogue },
+                                  { l: 'الصبر', v: sageProgress.stats.patience },
+                                ] as const).map(m => {
+                                  const pct = Math.min(100, (Number(m.v) || 0) * 10);
+                                  return <DnaRing key={m.l} value={pct} tone="lilac" size={64} sublabel={m.l} ariaLabel={`${m.l}: ${pct}%`} />;
+                                })}
                             </div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-xs font-bold w-12 shrink-0">الحوار</span>
-                                <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                                    <div className="h-full bg-emerald-500 rounded-full" style={{width: `${Math.min(100, sageProgress.stats.dialogue * 10)}%`}} />
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-xs font-bold w-12 shrink-0">الصبر</span>
-                                <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                                    <div className="h-full bg-amber-500 rounded-full" style={{width: `${Math.min(100, sageProgress.stats.patience * 10)}%`}} />
-                                </div>
-                            </div>
-                            <p className="text-[10px] text-[#7C8796] mt-2 text-center">يعتمد مؤشر التوازن على نوعية تفاعلاتك المستمرة مع المنصة.</p>
+                            <p className="text-xs text-[#7C8796] mt-2 text-center">يعتمد مؤشر التوازن على نوعية تفاعلاتك المستمرة مع المنصة.</p>
                         </div>
                     </div>
                 </motion.div>
@@ -963,7 +960,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     {/* Rage Room */}
                     <div className="bg-[#F7F5F2] border border-rose-100 p-6 rounded-2xl relative overflow-hidden">
                         <div className="absolute -left-6 -bottom-6 text-rose-500/10"><Frown size={100} /></div>
-                        <h4 className="font-bold text-[#182231] mb-2 flex items-center gap-2 relative z-10"><Frown size={18} className="text-rose-500"/> الغرفة الصامتة (التفريغ الحر)</h4>
+                        <h4 className="font-bold text-[#182231] mb-2 flex items-center gap-2 relative z-10"><Frown size={18} className="text-[#8E7AAE]"/> الغرفة الصامتة (التفريغ الحر)</h4>
                         <p className="text-xs text-[#64788D] mb-4 leading-relaxed relative z-10">مساحة آمنة لتكتب كل ما يغضبك بدون أحكام أو وعظ. تبيان سيحلل شعورك فقط ثم يمسح النص للأبد.</p>
                         
                         {!rageAnalysis ? (
@@ -1035,7 +1032,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   </div>
 
                   <div className="border-t border-[#8FA9C7]/15 pt-6">
-                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Shield size={16} className="text-rose-500"/> بياناتي وخصوصيتي</h4>
+                     <h4 className="font-bold text-[#182231] mb-3 flex items-center gap-2"><Shield size={16} className="text-[#8E7AAE]"/> بياناتي وخصوصيتي</h4>
                      <p className="text-xs text-[#64788D] mb-3 leading-relaxed">
                         أسئلتك وتحليلاتها محفوظة على هذا الجهاز. المحو يشمل السجل والكلمات المتكررة والتحليل المخزّن، ولا يمكن التراجع عنه.
                      </p>
