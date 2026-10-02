@@ -80,7 +80,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
               disabled={isLoading}
               placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة، بدء مشروع تجاري، احتراف البرمجة...' : 'Example: Learn a new language, start a business, master programming...'}
               className={cn(
-                "w-full bg-white/70 border border-[#6e5f8e]/20 rounded-[24px] p-5 md:p-6 text-lg md:text-xl font-medium outline-none focus:border-[#6e5f8e]/50 focus:ring-4 focus:ring-[#6e5f8e]/10 transition-all text-[#182231]",
+                "w-full bg-white/70 border border-[#6e5f8e]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[#6e5f8e]/50 focus:ring-4 focus:ring-[#6e5f8e]/10 transition-all text-[#182231]",
                 language === 'ar' ? 'text-right' : 'text-left'
               )}
             />

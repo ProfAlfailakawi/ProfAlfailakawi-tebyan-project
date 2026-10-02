@@ -125,7 +125,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
   if (!isAdmin) {
     return (
-      <div className="w-full bg-white min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="w-full bg-white md:min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <TabHeader 
           icon={TicketPercent}
           title={{ ar: 'محفظة الولاء والجوائز', en: 'Loyalty Wallet' }}
@@ -137,7 +137,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
           onBack={() => handleTabChange('home')}
         />
 
-        <div className="mt-8 md:mt-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
+        <div className="mt-5 md:mt-10 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
             {/* Points Card */}
             <div className="bg-[#F8F5EF] border border-[#6E5B91]/15 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-[#182231] shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-[#8E7AAE]/15 blur-[60px] translate-x-1/4 -translate-y-1/4" />
@@ -182,7 +182,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                 <div>
                    <h3 className="text-xl font-black mb-6">{language === 'ar' ? 'مكافآتك المتاحة' : 'Your Available Rewards'}</h3>
                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 p-4 bg-emerald-50 rounded-2xl border border-emerald-100 border-dashed min-w-0">
+                      <div className="flex items-center gap-3 p-3 sm:gap-4 sm:p-4 bg-emerald-50 rounded-2xl border border-emerald-100 border-dashed min-w-0">
                          <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500">
                             <TicketPercent className="w-6 h-6" />
                          </div>
@@ -191,7 +191,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                             <p className="text-[11px] text-emerald-700 font-bold">{language === 'ar' ? 'كود: TIBYAN15' : 'Code: TIBYAN15'}</p>
                          </div>
                       </div>
-                      <div className="flex items-center gap-4 p-4 bg-zinc-50 rounded-2xl border border-zinc-100 min-w-0">
+                      <div className="flex items-center gap-3 p-3 sm:gap-4 sm:p-4 bg-zinc-50 rounded-2xl border border-zinc-100 min-w-0">
                          <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-zinc-400 opacity-60">
                             <Gift className="w-6 h-6" />
                          </div>
@@ -202,7 +202,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                          <DnaRing
                            value={Number(myLoyaltyData.points) || 0}
                            max={500}
-                           size={52}
+                           size={44}
+                           stroke={3}
                            tone="lilac"
                            className="ms-auto shrink-0"
                            ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
