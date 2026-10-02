@@ -162,7 +162,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange }: { language?: string,
                   description={language === 'ar' ? 'اكتب أول فكرة أو احفظ أول نتيجة، وسنحوّلها إلى عقدة في خريطتك المعرفية.' : 'Write or save your first thought, and it will become a node in your knowledge map.'}
                   actionLabel={language === 'ar' ? 'ابدأ أول فكرة' : 'Start first idea'}
                   onAction={() => handleTabChange?.('discover')}
-                  className="min-h-[420px]"
+                  className="min-h-[220px]"
                 />
             ) : (
                 <div className="relative w-full min-h-[58vh] md:min-h-[65vh] bg-white rounded-[32px] md:rounded-[40px] shadow-2xl border border-zinc-200 overflow-hidden flex flex-col pt-8 md:pt-12 items-center">
