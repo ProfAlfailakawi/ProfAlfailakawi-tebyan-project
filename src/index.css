@@ -4662,3 +4662,16 @@ main .overflow-x-auto > [role="tab"] {
     mask-image: linear-gradient(to right, transparent 0, transparent 40px, #000 clamp(88px, 9%, 128px), #000 calc(100% - clamp(88px, 9%, 128px)), transparent calc(100% - 40px), transparent 100%);
   }
 }
+
+/* r42 visual: the ask page «تشغيل» button read as a pale ghost (the global soft-lilac
+   repaint of #8E7AAE fills). Colour only: a deeper lilac fill with white text (~7:1). */
+@layer base {
+  main button.tebyan-run-action:not(:disabled) {
+    background: #5f4e7f !important;
+    color: #ffffff !important;
+    border-color: #5f4e7f !important;
+  }
+  main button.tebyan-run-action:not(:disabled):hover {
+    background: #4b3d68 !important;
+  }
+}
