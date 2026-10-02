@@ -52,7 +52,7 @@ const EmotionalLandscape = ({ language }: { language: 'ar' | 'en' }) => {
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
   const [activeSubTab, setActiveSubTab] = useState<'council' | 'timemachine' | 'simulation' | 'spatial'>('council');
-  const [showArenaPicker, setShowArenaPicker] = useState(true);
+  const [showArenaPicker, setShowArenaPicker] = useState(false);
 
   const tabs = [
     { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
