@@ -4675,3 +4675,53 @@ main .overflow-x-auto > [role="tab"] {
     background: #4b3d68 !important;
   }
 }
+
+/* r42 visual: back + help pill never sits on content. Desktop: tucked into the bottom-left
+   corner (it used to hang under the header and take layout space); phones: smaller and
+   closer to the corner so it clears the left gutter cards. Visual only. */
+@layer base {
+  @media (min-width: 768px) {
+    .tebyan-page-controls {
+      top: auto !important;
+      bottom: 12px !important;
+      left: 12px !important;
+      opacity: 0.82;
+      transition: opacity 0.2s ease;
+    }
+    .tebyan-page-controls:hover,
+    .tebyan-page-controls:focus-within {
+      opacity: 1;
+    }
+    .tebyan-page-controls > button,
+    .tebyan-page-controls .tebyan-global-back,
+    .tebyan-page-controls .tebyan-page-help-button {
+      width: 40px !important;
+      height: 40px !important;
+      min-width: 40px !important;
+      min-height: 40px !important;
+    }
+    .tebyan-page-help-popup {
+      top: auto !important;
+      bottom: 66px !important;
+      left: 12px !important;
+    }
+  }
+  @media (max-width: 767px) {
+    .tebyan-page-controls {
+      left: 6px !important;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 6px) !important;
+      opacity: 0.7;
+    }
+    .tebyan-page-controls > button,
+    .tebyan-page-controls .tebyan-global-back,
+    .tebyan-page-controls .tebyan-page-help-button {
+      width: 36px !important;
+      height: 36px !important;
+      min-width: 36px !important;
+      min-height: 36px !important;
+    }
+    .tebyan-page-help-popup {
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 58px) !important;
+    }
+  }
+}
