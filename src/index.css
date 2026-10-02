@@ -4725,13 +4725,16 @@ main .overflow-x-auto > [role="tab"] {
       bottom: calc(env(safe-area-inset-bottom, 0px) + 58px) !important;
     }
   }
-  /* 44x44 hit area around the 36px chips (the chips' visual size is unchanged). */
-  .tebyan-page-controls > button {
-    position: relative;
-  }
-  .tebyan-page-controls > button::after {
-    content: "";
-    position: absolute;
-    inset: -5px; /* padding box is 1px inside the border: 36 + 2*4 = 44 */
+  /* Mobile only: 44x44 hit area around the 36px chips (8px gap, so areas never overlap).
+     Desktop keeps the plain 40px buttons: no extension, no overlap. */
+  @media (max-width: 767px) {
+    .tebyan-page-controls > button {
+      position: relative;
+    }
+    .tebyan-page-controls > button::after {
+      content: "";
+      position: absolute;
+      inset: -5px; /* padding box is 1px inside the border: 36 + 2*4 = 44 */
+    }
   }
 }
