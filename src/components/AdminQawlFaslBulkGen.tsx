@@ -298,7 +298,7 @@ export default function AdminQawlFaslBulkGen() {
                 <button
                     onClick={startBulkGeneration}
                     disabled={isProcessing || categorizedQuestions.length === 0}
-                    className="w-full bg-slate-900 disabled:bg-slate-300 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2 hover:bg-slate-800 transition-colors"
+                    className="w-full bg-[#6E5B91] disabled:bg-slate-300 text-white font-bold py-4 rounded-xl flex justify-center items-center gap-2 hover:bg-[#5F4E7F] transition-colors"
                 >
                     {isProcessing ? (
                         <span>جاري المعالجة ({Math.round(progress)}%)</span>

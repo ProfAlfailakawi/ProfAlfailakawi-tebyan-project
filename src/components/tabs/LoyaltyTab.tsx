@@ -146,9 +146,20 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                         <Crown className="w-5 h-5 text-[#6E5B91]" />
                         <span className="text-xs font-black">{language === 'ar' ? 'رصيد النقاط' : 'Points Balance'}</span>
                     </div>
-                    <div className="flex flex-wrap items-baseline gap-2 mb-2">
+                    <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="flex flex-wrap items-baseline gap-2">
                         <span className="text-5xl md:text-6xl font-black">{myLoyaltyData.points}</span>
                         <span className="text-xl font-bold text-[#5B6E82]">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
+                    </div>
+                    <DnaRing
+                      value={Number(myLoyaltyData.points) || 0}
+                      max={500}
+                      size={56}
+                      stroke={3}
+                      tone="lilac"
+                      className="shrink-0"
+                      ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
+                    />
                     </div>
                     <p className="text-[#5B6E82] text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
                     
@@ -199,7 +210,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       </div>
                    </div>
                 </div>
-                <button onClick={IS_DEMO_MODE ? () => setDemoNotice(true) : undefined} className="w-full mt-8 py-4 bg-zinc-900 text-white rounded-2xl font-black shadow-lg hover:bg-black transition-all">
+                <button onClick={IS_DEMO_MODE ? () => setDemoNotice(true) : undefined} className="w-full mt-8 py-4 bg-[#6E5B91] text-white rounded-2xl font-black shadow-lg hover:bg-[#5F4E7F] transition-all">
                     {language === 'ar' ? 'استبدال النقاط' : 'Redeem Points'}
                 </button>
                 {IS_DEMO_MODE && demoNotice && (
@@ -547,7 +558,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                         {language === 'ar' ? 'إضافة نقاط يدوياً' : 'Add Points Manually'}
                      </button>
                      <button 
-                       className="w-full bg-black text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-zinc-800 transition-all shadow-lg active:scale-95"
+                       className="w-full bg-[#6E5B91] text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[#5F4E7F] transition-all shadow-lg active:scale-95"
                        onClick={() => window.alert('سيتم فتح نظام المكافآت المتقدم قريباً!')}
                      >
                         <Gift className="w-4 h-4" />

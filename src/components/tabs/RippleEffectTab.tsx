@@ -9,9 +9,22 @@ import { auth, db } from '../../lib/firebase';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 import { refineIdea, translateWithContext } from '../../services/geminiService';
 import { seedData } from '../../data/seedData';
+
 import { NebulaTab } from './NebulaTab';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { InsightsPanel } from './InsightsPanel';
+
+
+/* عرض فقط: مصطلحات لاتينية معروفة تُعرض بالعربية في الواجهة العربية؛ ما ليس في القائمة يبقى كما هو. */
+const LATIN_TERM_DISPLAY: Record<string, string> = { Flow: 'التدفّق' };
+const arabicizeLatinTerms = (text: string): string =>
+  typeof text === 'string'
+    ? text.replace(/"([A-Za-z]+)"|\b([A-Za-z]+)\b/g, (m, quoted, bare) => {
+        const word = quoted || bare;
+        const ar = LATIN_TERM_DISPLAY[word];
+        return ar ? (quoted ? `«${ar}»` : ar) : m;
+      })
+    : text;
 
 const ripplesCollection = collection(db, 'ripples');
 
@@ -95,7 +108,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
     const userRank = node.authorId ? userRanks[node.authorId] : null;
 
     const isLongText = node.text.length > 200;
-    const rawText = isLocked ? (language === 'ar' ? 'هذه الفكرة مشفرة في كبسولة زمنية.. ستظهر عندما يحين الوقت أو يكتمل نضجها بكثرة المطورين.' : 'This idea is encrypted in a time capsule.. it will appear when the time comes or it matures with more branchers.') : node.text;
+    const rawText = isLocked ? (language === 'ar' ? 'هذه الفكرة مشفرة في كبسولة زمنية.. ستظهر عندما يحين الوقت أو يكتمل نضجها بكثرة المطورين.' : 'This idea is encrypted in a time capsule.. it will appear when the time comes or it matures with more branchers.') : (language === 'ar' ? arabicizeLatinTerms(node.text) : node.text);
     const displayText = !isLongText || expanded ? rawText : rawText.slice(0, 200) + '...';
 
     return (
@@ -857,7 +870,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             <div className="fixed top-20 left-6 z-50">
                 <button 
                     onClick={() => setShowInsights(true)}
-                    className="bg-mood-primary text-white p-4 rounded-full shadow-lg"
+                    className="bg-mood-primary text-white p-3 md:p-4 rounded-full shadow-lg"
                 >
                     <Sparkles />
                 </button>
@@ -868,7 +881,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
 
             <button
                 onClick={() => handleTabChange('home')}
-                className="absolute top-8 left-4 p-2 rounded-lg bg-[#F1EEF4] hover:bg-zinc-200 text-[#465568] transition-colors z-20 flex items-center gap-2"
+                className="absolute top-12 md:top-8 left-4 p-2 rounded-lg bg-[#F1EEF4] hover:bg-zinc-200 text-[#465568] transition-colors z-20 flex items-center gap-2"
             >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="text-sm font-bold hidden md:inline">{language === 'ar' ? 'رجوع' : 'Back'}</span>
@@ -892,7 +905,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             </AnimatePresence>
 
             {/* Header */}
-            <div className="text-center space-y-6 relative z-10 mb-12">
+            <div className="text-center space-y-6 relative z-10 mb-12 pt-20 md:pt-0">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} 
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-mood-primary/10 to-emerald-50 text-mood-primary rounded-full text-xs font-black tracking-widest uppercase shadow-sm border border-mood-primary/20"

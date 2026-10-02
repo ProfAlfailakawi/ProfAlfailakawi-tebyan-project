@@ -694,20 +694,29 @@
   display: grid;
   justify-items: center;
   gap: 6px;
-  padding: 26px 16px;
+  padding: 18px 16px;
   text-align: center;
 }
 .dna-voida {
   position: relative;
   display: grid;
   place-items: center;
-  inline-size: 116px;
-  block-size: 116px;
-  margin-block-end: 6px;
+  inline-size: 72px;
+  block-size: 72px;
+  margin-block-end: 2px;
 }
 .dna-voida > svg {
   position: absolute;
   inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.dna-voido2,
+.dna-voidd {
+  display: none;
+}
+.dna-voida .dna-tile[data-size='lg'] {
+  --s: 40px;
 }
 .dna-voido1 {
   fill: none;

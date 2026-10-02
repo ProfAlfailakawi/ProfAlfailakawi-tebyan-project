@@ -320,7 +320,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                  <button 
                   type="submit" 
                   disabled={isSearching || isGenerating} 
-                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-black hover:bg-zinc-800 text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50 z-10"
+                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50 z-10"
                  >
                    {isSearching ? 'جاري البحث...' : 'اكتشف'}
                  </button>
@@ -410,7 +410,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               </p>
               <button 
                 onClick={onEmergency}
-                className="bg-[#182231] text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-black hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
+                className="bg-[#6E5B91] text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-[#5F4E7F] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
               >
                 <AlertCircle className="w-5 h-5 md:w-6 md:h-6" />
                 دليل الطوارئ

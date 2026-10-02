@@ -22,7 +22,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
     const [dilemma, setDilemma] = useState(initialValue);
     const [activeDecisionPurpose, setActiveDecisionPurpose] = useState('decide');
     const [showDecisionTools, setShowDecisionTools] = useState(true);
-    const [showPurposePicker, setShowPurposePicker] = useState(true);
+    const [showPurposePicker, setShowPurposePicker] = useState(false);
     const [showFullLab, setShowFullLab] = useState(false);
     const [depthIndex, setDepthIndex] = useState(0);
     const [dilemmaHistory, setDilemmaHistory] = useState<string[]>([]);
@@ -222,12 +222,12 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
 
     return (
         <div className="tebyan-decision-room space-y-5 md:space-y-6 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-6 md:mb-12">
-             <div className="space-y-4">
-                <h1 className="text-[2rem] md:text-5xl font-extrabold text-[#182231] tracking-tight leading-tight uppercase">
+           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-6 mb-2 md:mb-4">
+             <div className="space-y-1">
+                <h1 className="text-lg md:text-xl font-extrabold text-[#182231] tracking-tight leading-tight uppercase">
                     {language === 'ar' ? 'غرفة القرار السرية' : 'SECRET DECISION ROOM'}
                 </h1>
-                <p className="text-[#64788D] font-bold text-sm md:text-lg max-w-2xl leading-relaxed">
+                <p className="text-[#64788D] font-medium text-[13px] md:text-sm max-w-2xl leading-relaxed">
                     {language === 'ar' ? 'بيئة استراتيجية معزولة لتفكيك المعضلات واتخاذ قرارات مبنية على بيانات إدراكية عميقة.' : 'A secure strategic environment to dismantle dilemmas and make decisions based on deep cognitive insights.'}
                 </p>
              </div>

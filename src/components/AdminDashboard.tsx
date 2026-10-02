@@ -271,7 +271,7 @@ export default function AdminDashboard() {
                 <button 
                 onClick={runAIAnalysis}
                 disabled={isLoading}
-                className="bg-slate-900 text-white px-4 md:px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-slate-800 transition-all disabled:bg-slate-500 cursor-pointer text-sm md:text-base leading-tight"
+                className="bg-[#6E5B91] text-white px-4 md:px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-[#5F4E7F] transition-all disabled:bg-slate-500 cursor-pointer text-sm md:text-base leading-tight"
                 >
                     <Brain className="w-5 h-5" /> {isLoading ? 'جاري التحليل...' : 'تشغيل تحليل الذكاء الاصطناعي'}
                 </button>

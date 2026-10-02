@@ -16,10 +16,8 @@ export const TabHeader: React.FC<{
         <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="tebyan-tab-header relative flex flex-col gap-3 md:gap-6 mb-5 md:mb-8 p-4 md:p-7 rounded-[24px] md:rounded-[34px] bg-white/78 backdrop-blur-xl border border-[#8E7AAE]/10 shadow-[0_12px_36px_rgba(24,34,49,0.045)] overflow-hidden"
+            className="tebyan-tab-header relative mb-4 md:mb-6 overflow-hidden"
         >
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[#8E7AAE]/20 to-transparent" />
-
             {handleBack && (
                 <button
                     type="button"
@@ -32,19 +30,17 @@ export const TabHeader: React.FC<{
                 </button>
             )}
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 pe-0 ps-0 min-w-0">
-                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4 w-full md:w-auto">
-                    <div className="w-12 h-12 md:w-16 md:h-16 bg-[#8E7AAE]/12 text-[#6E5F8E] border border-[#8E7AAE]/18 rounded-[18px] md:rounded-[24px] flex items-center justify-center shrink-0 shadow-sm">
-                        <Icon className="w-6 h-6 md:w-7 md:h-7" strokeWidth={1.75} />
-                    </div>
-                    <div className="min-w-0">
-                        <h2 className="text-[1.45rem] md:text-3xl lg:text-[2.15rem] font-extrabold text-[#182231] tracking-tight leading-snug break-words">
-                            {language === 'ar' ? title.ar : title.en}
-                        </h2>
-                        <p className="text-[13px] md:text-base text-[#64788D] font-semibold mt-1 tracking-tight leading-relaxed max-w-2xl break-words">
-                            {language === 'ar' ? description.ar : description.en}
-                        </p>
-                    </div>
+            <div className="tebyan-tab-header__row flex items-center gap-3 min-w-0">
+                <div className="tebyan-tab-header__icon shrink-0 flex items-center justify-center text-[#6E5F8E] bg-[#8E7AAE]/10 border border-[#8E7AAE]/15">
+                    <Icon strokeWidth={1.75} />
+                </div>
+                <div className="min-w-0 flex-1">
+                    <h2 className="tebyan-tab-header__title font-extrabold text-[#182231] tracking-tight break-words">
+                        {language === 'ar' ? title.ar : title.en}
+                    </h2>
+                    <p title={language === 'ar' ? description.ar : description.en} className="tebyan-tab-header__desc text-[#64788D] font-medium break-words">
+                        {language === 'ar' ? description.ar : description.en}
+                    </p>
                 </div>
             </div>
         </motion.div>

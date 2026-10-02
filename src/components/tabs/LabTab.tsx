@@ -34,7 +34,7 @@ const labTools = [
 export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [activeLabTool, setActiveLabTool] = React.useState('podcast');
   const [activeLabPurpose, setActiveLabPurpose] = React.useState('understand');
-  const [showLabPurposePicker, setShowLabPurposePicker] = React.useState(true);
+  const [showLabPurposePicker, setShowLabPurposePicker] = React.useState(false);
   const [labInput, setLabInput] = React.useState('');
   const [labInput2, setLabInput2] = React.useState(''); // For Collider
   const [labColliderResult, setLabColliderResult] = React.useState<string | null>(null);
@@ -375,7 +375,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
              <button
                type="button"
                onClick={() => { setActiveLabPurpose('all'); setShowLabPurposePicker(false); }}
-               className="px-5 py-3 rounded-full bg-[#8E7AAE] text-white font-black text-xs flex items-center gap-2 hover:bg-black active:scale-95 transition-all"
+               className="px-5 py-3 rounded-full bg-[#8E7AAE] text-white font-black text-xs flex items-center gap-2 hover:bg-[#6E5B91] active:scale-95 transition-all"
              >
                <LayoutGrid className="w-4 h-4" />
                {language === 'ar' ? 'المختبر الكامل' : 'Full lab'}
@@ -414,7 +414,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
              )}
            </div>
 
-           <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar">
+           <div className="flex gap-2 overflow-x-auto md:overflow-visible md:flex-wrap pb-4 no-scrollbar">
              {visibleLabTools.map(tool => (
                <button 
                  key={tool.id} 

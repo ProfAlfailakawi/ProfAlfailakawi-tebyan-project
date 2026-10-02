@@ -295,7 +295,7 @@ export default function AdminQawlFaslUpload() {
           <div className="mt-6 flex justify-end">
             <button
               onClick={processFile}
-              className="bg-black hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl"
+              className="bg-[#6E5B91] hover:bg-[#5F4E7F] text-white font-bold py-3 px-8 rounded-xl"
             >
               بدء الرفع والمعالجة
             </button>
