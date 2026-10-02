@@ -3287,7 +3287,7 @@ export const SmartGateway: React.FC<
                     >
                       <div className="flex w-full items-center justify-between gap-2">
                         <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-black tracking-[0.2em] rtl:tracking-normal uppercase text-[#64788D]">
+                          <p className="text-[11px] font-black tracking-[0.2em] rtl:tracking-normal uppercase text-[#64788D]">
                             {language === "ar" ? "باب باجر" : "Tomorrow"}
                           </p>
                           <p className="mt-0.5 line-clamp-2 max-w-full break-words text-[11px] sm:text-xs font-black leading-relaxed text-[#182231]">
