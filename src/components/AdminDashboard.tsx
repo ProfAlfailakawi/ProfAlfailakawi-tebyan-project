@@ -83,7 +83,7 @@ export default function AdminDashboard() {
   }, []);
   
   const valuationMetrics = [
-    { title: 'نضج البنية التحتية', value: '٩٥٪', trend: '+٤٪', icon: BookOpen, color: 'text-emerald-600' },
+    { title: 'نضج البنية التحتية', value: '95٪', trend: '+4٪', icon: BookOpen, color: 'text-emerald-600' },
     { title: 'القيمة التجارية المقدرة', value: 'مستقرة', trend: 'نمو مستمر', icon: DollarSign, color: 'text-sky-600' },
   ];
 
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
                 title="يتم التوليد تلقائياً كل يوم، يمكن الضغط للمعاودة اليدوية"
                 >
                     {isGenerating ? <RefreshCw className="w-5 h-5 animate-spin" /> : <BookOpen className="w-5 h-5" />} 
-                    {isGenerating ? 'جاري المعالجة...' : 'توليد يدوي (١٠ مسائل)'}
+                    {isGenerating ? 'جاري المعالجة...' : 'توليد يدوي (10 مسائل)'}
                 </button>
                 <button 
                 onClick={runAIAnalysis}

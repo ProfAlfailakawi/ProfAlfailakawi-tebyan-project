@@ -425,7 +425,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   <div className="bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] w-10 h-10 rounded-[14px] flex items-center justify-center text-[#5A5A40]">
                     <Library className="w-5 h-5" />
                   </div>
-                  <p className="text-[#5A5A40] font-bold text-[10px] tracking-widest uppercase">مسائل اليوم (١٠ حالات)</p>
+                  <p className="text-[#5A5A40] font-bold text-[10px] tracking-widest uppercase">مسائل اليوم (10 حالات)</p>
                </div>
                
                <div className="space-y-3 overflow-y-auto max-h-[260px] md:max-h-[300px] pr-1 flex-1 custom-scrollbar">

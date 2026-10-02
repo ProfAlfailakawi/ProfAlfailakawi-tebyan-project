@@ -386,7 +386,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
     } catch (e) {
       // تخزين محلي غير متاح — نُبقي التجربة تعمل دون ادعاء الحفظ
     }
-    setCapsuleDue(due.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' }));
+    setCapsuleDue(due.toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' }));
     setIsCapsuled(true);
   };
 
@@ -410,7 +410,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
     : {
         title: 'قيد التكوّن',
-        note: 'اطرح ٣ أسئلة على الأقل لتظهر بصمتك',
+        note: 'اطرح 3 أسئلة على الأقل لتظهر بصمتك',
       };
 
   const panelContent = (
