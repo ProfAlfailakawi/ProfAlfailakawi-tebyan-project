@@ -87,7 +87,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
   };
 
   return (
-    <div className="w-full bg-white md:max-h-[85vh] md:overflow-y-auto rounded-[24px] md:rounded-[32px] p-4 md:p-8 shadow-sm border border-zinc-200 custom-scrollbar">
+    <div className="w-full md:max-h-[85vh] md:overflow-y-auto p-1 md:p-2 custom-scrollbar">
       <div className="max-w-5xl mx-auto space-y-8 md:space-y-12 position-relative md:px-2">
         <TabHeader 
           icon={Radar}
@@ -101,32 +101,26 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
           onClose={() => handleTabChange('discover', '', true)}
         />
         
-        <header className="flex flex-col md:flex-row md:items-end justify-between border-b border-zinc-200/60 pb-8 relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-          {/* Header Content can go here if needed in the future */}
-        </header>
-
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="flex gap-2.5 md:gap-4" dir={language === 'ar' ? 'rtl' : 'ltr'}>
            {stats.map((stat, idx) => (
                <motion.div
                  key={idx}
-                 initial={{ opacity: 0, y: 20 }}
+                 initial={{ opacity: 0, y: 10 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="p-6 rounded-3xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-col relative overflow-hidden group"
+                 className="px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-1 items-center gap-2.5 min-w-0"
                >
-                  <div className="w-11 h-11 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center mb-6 relative z-10">
-                     <stat.icon className="w-5 h-5 text-[#6e5f8e]" strokeWidth={1.75} />
+                  <div className="w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center">
+                     <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[#6e5f8e]" strokeWidth={1.5} />
                   </div>
-                  <div className="relative z-10 mt-auto">
-                      <div className="flex items-end justify-between mb-2">
-                         <span className="text-2xl md:text-4xl font-bold text-[#182231]">{stat.value}</span>
-                         <span className="text-[#6e5f8e] font-semibold flex items-center gap-1 text-xs bg-[#6e5f8e]/[0.07] px-2.5 py-1 rounded-full">
-                           <TrendingUp className="w-3 h-3" />
-                           {stat.trend}
-                         </span>
+                  <div className="min-w-0 flex-1">
+                      <div className="text-2xl md:text-3xl font-bold leading-none text-[#182231]">{stat.value}</div>
+                      <div className="mt-1 text-zinc-500 font-bold text-xs md:text-sm truncate">{stat.label}</div>
+                      <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-center gap-1 text-[10px] md:text-[11px]">
+                        <TrendingUp className="w-3 h-3 shrink-0" />
+                        <span>{stat.trend}</span>
                       </div>
-                      <span className="text-zinc-500 font-bold text-sm tracking-wide">{stat.label}</span>
                   </div>
                </motion.div>
            ))}
