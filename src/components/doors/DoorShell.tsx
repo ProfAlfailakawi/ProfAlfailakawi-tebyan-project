@@ -25,6 +25,7 @@ export const DoorShell = ({
   activeMode,
   onModeChange,
   language,
+  emphasis,
   children,
 }: {
   titleAr: string;
@@ -35,6 +36,8 @@ export const DoorShell = ({
   activeMode: string;
   onModeChange: (id: string) => void;
   language: "ar" | "en";
+  /** Slightly larger step chips and hint: for doors whose chips read as a numbered journey. */
+  emphasis?: boolean;
   children: React.ReactNode;
 }) => {
   const ar = language === "ar";
@@ -107,19 +110,21 @@ export const DoorShell = ({
                   aria-selected={on}
                   onClick={() => onModeChange(m.id)}
                   className={
-                    "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-all border " +
+                    (emphasis
+                      ? "shrink-0 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-bold transition-all border "
+                      : "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-all border ") +
                     (on
                       ? "bg-[#8E7AAE] border-[#8E7AAE] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
                       : "bg-white/80 border-[#E5DFD4] text-[#64788D] hover:border-[#8E7AAE]/50 hover:text-[#5E4D7A]")
                   }
                 >
-                  {Icon && <Icon className="w-3.5 h-3.5" />}
+                  {Icon && <Icon className={emphasis ? "w-4 h-4" : "w-3.5 h-3.5"} />}
                   {ar ? m.labelAr : m.labelEn}
                 </button>
               );
             })}
           </div>
-          <p className="mt-2 text-center text-[11.5px] text-[#8E7AAE] font-medium">
+          <p className={"mt-2 text-center text-[#8E7AAE] font-medium " + (emphasis ? "text-[12.5px]" : "text-[11.5px]")}>
             {ar ? current.hintAr : current.hintEn}
           </p>
         </div>

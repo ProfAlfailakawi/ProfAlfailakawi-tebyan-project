@@ -55,6 +55,7 @@ export const GrowthDoor = ({
       activeMode={mode}
       onModeChange={setMode}
       language={language}
+      emphasis
     >
       <Suspense fallback={<Fallback />}>
         {mode === "plan" && <RoadmapTab {...common} inDoor />}
