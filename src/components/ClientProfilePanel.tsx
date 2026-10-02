@@ -6,8 +6,9 @@ import {
   Settings, Clock, Activity, Target, ShieldAlert,
   Moon, Sun, ListTodo, Bookmark, Timer, Sparkles, Frown, Compass, ArrowRightLeft,
   ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle,
-  LibraryBig, Network
+  LibraryBig, Network, CircleHelp
 } from 'lucide-react';
+import { DnaIconTile, DnaRing, DnaStat, DnaSpark } from './dna/DnaKit';
 import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
 import { useUser } from '../contexts/UserContext';
@@ -58,7 +59,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
 
   // Rage Room
   const [rageText, setRageText] = useState('');
-  const [rageAnalysis, setRageAnalysis] = useState<{rage: number, sad: number, tired: number} | null>(null);
+  const [rageAnalysis, setRageAnalysis] = useState<{rage: number | null, sad: number | null, tired: number | null, unavailable?: boolean} | null>(null);
 
   // New states for real analysis
   const [contradiction, setContradiction] = useState<string | null>(null);
@@ -261,7 +262,14 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       );
       
       if (response && response.text) {
-        setRageAnalysis(parseAIJSON(response.text));
+        const parsedRage = parseAIJSON(response.text);
+        const isPct = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+        if (parsedRage && isPct(parsedRage.rage) && isPct(parsedRage.sad) && isPct(parsedRage.tired)) {
+          setRageAnalysis(parsedRage);
+        } else {
+          // Unusable AI output: show a neutral "not enough data" state, never invented numbers.
+          setRageAnalysis({ rage: null, sad: null, tired: null, unavailable: true });
+        }
         setRageText(''); // Clear on success
         setKnowledgeTree(KnowledgeMemoryService.getMemoryTree()); // Refresh Tree
       } else {
@@ -269,12 +277,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
       }
     } catch (e) {
       console.error("Rage empty throw", e);
-      // Fallback to random if AI fails
-      setRageAnalysis({
-        rage: Math.floor(Math.random() * 40) + 40,
-        sad: Math.floor(Math.random() * 30) + 10,
-        tired: Math.floor(Math.random() * 20) + 10
-      });
+      // AI failed: show a neutral "not enough data" state instead of invented percentages.
+      setRageAnalysis({ rage: null, sad: null, tired: null, unavailable: true });
       setRageText(''); // Clear on fallback
     } finally {
       setIsAnalyzingRage(false);
@@ -985,27 +989,22 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             </div>
                         ) : (
                             <motion.div initial={{y: 10, opacity:0}} animate={{y:0, opacity:1}} className="relative z-10 bg-white border border-rose-100 p-4 rounded-xl space-y-4">
+                                {rageAnalysis.unavailable || rageAnalysis.rage == null || rageAnalysis.sad == null || rageAnalysis.tired == null ? (
+                                    <div role="status" className="flex flex-col items-center gap-2 py-2 text-center">
+                                        <DnaIconTile icon={<CircleHelp size={20} />} tone="lilac" size="md" />
+                                        <p className="text-sm font-bold text-[#182231]">لا بيانات كافية لتحليل الآن</p>
+                                        <p className="text-xs text-[#64788D]">تم مسح النص. يمكنك المحاولة لاحقًا.</p>
+                                    </div>
+                                ) : (
+                                <>
                                 <p className="text-xs text-[#64788D] text-center">تم مسح النص الأصلي. هذا ما استشعرناه من طيات كلماتك:</p>
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-xs font-bold w-12 text-rose-700">غضب</span>
-                                        <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-rose-500 rounded-full transition-all duration-1000" style={{width: `${rageAnalysis.rage}%`}} />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-xs font-bold w-12 text-indigo-700">خذلان</span>
-                                        <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000 delay-300" style={{width: `${rageAnalysis.sad}%`}} />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-xs font-bold w-12 text-[#465568]">إرهاق</span>
-                                        <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-slate-400 rounded-full transition-all duration-1000 delay-500" style={{width: `${rageAnalysis.tired}%`}} />
-                                        </div>
-                                    </div>
+                                <div className="flex items-start justify-around gap-2">
+                                    <DnaRing value={rageAnalysis.rage} tone="coral" size={64} label={`${Math.round(rageAnalysis.rage)}%`} sublabel="غضب" ariaLabel={`غضب ${Math.round(rageAnalysis.rage)}%`} />
+                                    <DnaRing value={rageAnalysis.sad} tone="indigo" size={64} label={`${Math.round(rageAnalysis.sad)}%`} sublabel="خذلان" ariaLabel={`خذلان ${Math.round(rageAnalysis.sad)}%`} />
+                                    <DnaRing value={rageAnalysis.tired} tone="slate" size={64} label={`${Math.round(rageAnalysis.tired)}%`} sublabel="إرهاق" ariaLabel={`إرهاق ${Math.round(rageAnalysis.tired)}%`} />
                                 </div>
+                                </>
+                                )}
                                 <button onClick={() => setRageAnalysis(null)} className="w-full py-2 text-xs font-bold text-[#7C8796] hover:text-[#465568]">إغلاق وتجاوز</button>
                             </motion.div>
                         )}
