@@ -213,7 +213,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </div>
         )}
 
-        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[380px] md:min-h-[500px] border border-[#E9E2F1] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
+        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[30rem] md:min-h-[36rem] border border-[#E9E2F1] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
           {history.length === 0 && (
             <div className="absolute top-6 left-6 right-6 z-20 pointer-events-auto">
               <TebyanEmptyState
@@ -232,7 +232,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             height="100%" 
             viewBox="0 0 800 600" 
             preserveAspectRatio="xMidYMid meet"
-            className="touch-none absolute inset-0"
+            className="touch-none absolute inset-x-0 top-0 bottom-40 md:bottom-32"
           >
             <defs>
               <filter id="glow">
@@ -425,7 +425,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </svg>
 
           {/* Time Traveling Slider */}
-          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[94%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
+          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[94%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:py-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
              <div className="w-full flex items-center justify-between gap-2 md:gap-4">
                  <span className={cn("text-[11px] md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
                      {getEraLabel(1)}
@@ -435,7 +435,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     min="1" max="4" 
                     value={timeEra} 
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
-                    className="flex-1 min-w-[72px] accent-[#8E7AAE] h-2 bg-[#E9E2F1] rounded-lg appearance-none cursor-pointer" 
+                    className="flex-1 min-w-[40px] accent-[#8E7AAE] h-2 bg-[#D9CFE6] rounded-lg appearance-none cursor-pointer" 
                  />
                  <span className={cn("text-[11px] md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
                     {getEraLabel(4)}
