@@ -118,7 +118,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="w-full h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar"
+              className="w-full h-[calc(100vh-250px)] overflow-y-auto custom-scrollbar tebyan-pane-flow"
             >
                {activeSubTab === 'council' && <CouncilTab inArena language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'timemachine' && <TimeMachineTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}

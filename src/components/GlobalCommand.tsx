@@ -144,7 +144,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={language === 'ar' ? 'البحث الذكي (تسونامي المعرفة)...' : 'Smart Search (Knowledge Tsunami)...'}
-                className="flex-1 bg-transparent border-none text-xl md:text-3xl font-black text-black placeholder:text-zinc-300 focus:outline-none focus:ring-0 px-4 md:px-6 relative z-10 w-full"
+                className="flex-1 bg-transparent border-none text-xl md:text-3xl font-black text-black placeholder:text-zinc-300 focus:outline-none focus:ring-0 px-4 md:px-6 relative z-10 w-full min-w-0 text-ellipsis"
               />
 
               <button 
@@ -192,12 +192,12 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                           <button
                             key={tab.id}
                             onClick={() => handleAction(() => handleTabChange(tab.id))}
-                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100 transition-colors text-right"
+                            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl hover:bg-zinc-100 transition-colors text-right"
                           >
                             <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
                                <tab.icon className="w-4 h-4 text-zinc-500" />
                             </div>
-                            <span className="font-semibold text-zinc-700">{tab.label}</span>
+                            <span className="min-w-0 font-semibold text-zinc-700 [overflow-wrap:normal] max-sm:text-[13px] max-sm:leading-snug">{tab.label}</span>
                           </button>
                         ))}
                      </div>

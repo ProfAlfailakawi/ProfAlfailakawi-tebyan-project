@@ -96,7 +96,7 @@ export const DoorShell = ({
           <div
             ref={tabsRef}
             style={mask ? { WebkitMaskImage: mask, maskImage: mask } : undefined}
-            className="flex gap-2 overflow-x-auto pb-1 justify-start md:justify-center"
+            className={"flex gap-2 overflow-x-auto pb-1 justify-start md:justify-center" + (modes.length <= 3 ? " tebyan-door-tabs max-sm:-mx-3 max-sm:!w-[calc(100%+1.5rem)] max-sm:!max-w-none" : "")}
             role="tablist"
             aria-label={ar ? "اختر الأسلوب" : "Choose a style"}
           >
@@ -113,6 +113,7 @@ export const DoorShell = ({
                     (emphasis
                       ? "shrink-0 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-bold transition-all border "
                       : "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-all border ") +
+                    (modes.length <= 3 ? "max-md:grow max-md:justify-center max-md:whitespace-nowrap " : "") +
                     (on
                       ? "bg-[#8E7AAE] border-[#8E7AAE] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
                       : "bg-white/80 border-[#E5DFD4] text-[#64788D] hover:border-[#8E7AAE]/50 hover:text-[#5E4D7A]")

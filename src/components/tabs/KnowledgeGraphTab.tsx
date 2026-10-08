@@ -426,8 +426,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
           {/* Time Traveling Slider */}
           <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[94%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
-             <div className="w-full flex items-center justify-between gap-4">
-                 <span className={cn("text-[11px] md:text-sm font-bold min-w-[54px] md:min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
+             <div className="w-full flex items-center justify-between gap-2 md:gap-4">
+                 <span className={cn("text-[11px] md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 1 ? "text-[#8E7AAE]" : "text-[#8E7AAE]")}>
                      {getEraLabel(1)}
                  </span>
                  <input 
@@ -435,9 +435,9 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     min="1" max="4" 
                     value={timeEra} 
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
-                    className="flex-1 accent-[#8E7AAE] h-2 bg-[#E9E2F1] rounded-lg appearance-none cursor-pointer" 
+                    className="flex-1 min-w-[72px] accent-[#8E7AAE] h-2 bg-[#E9E2F1] rounded-lg appearance-none cursor-pointer" 
                  />
-                 <span className={cn("text-[11px] md:text-sm font-bold min-w-[54px] md:min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
+                 <span className={cn("text-[11px] md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-[#8E7AAE]")}>
                     {getEraLabel(4)}
                  </span>
              </div>

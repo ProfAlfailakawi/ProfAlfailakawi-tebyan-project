@@ -117,9 +117,9 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                   <div className="min-w-0 flex-1">
                       <div className="text-2xl md:text-3xl font-bold leading-none text-[#182231]">{stat.value}</div>
                       <div className="mt-1 text-zinc-500 font-bold text-xs md:text-sm truncate">{stat.label}</div>
-                      <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-center gap-1 text-[10px] md:text-[11px]">
-                        <TrendingUp className="w-3 h-3 shrink-0" />
-                        <span>{stat.trend}</span>
+                      <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-start gap-1 text-[10px] md:text-[11px] leading-snug">
+                        <TrendingUp className="w-3 h-3 shrink-0 mt-0.5" />
+                        <span className="[overflow-wrap:normal] break-normal">{stat.trend}</span>
                       </div>
                   </div>
                </motion.div>
