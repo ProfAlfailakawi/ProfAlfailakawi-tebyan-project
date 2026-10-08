@@ -109,12 +109,12 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                  initial={{ opacity: 0, y: 10 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-1 items-center gap-2.5 min-w-0"
+                 className="px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-1 flex-col items-start gap-2 min-[360px]:flex-row min-[360px]:items-center min-[360px]:gap-2.5 min-w-0"
                >
                   <div className="w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center">
                      <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[#6e5f8e]" strokeWidth={1.5} />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 w-full min-[360px]:w-auto flex-1">
                       <div className="text-2xl md:text-3xl font-bold leading-none text-[#182231]">{stat.value}</div>
                       <div className="mt-1 text-zinc-500 font-bold text-xs md:text-sm truncate">{stat.label}</div>
                       <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-start gap-1 text-[10px] md:text-[11px] leading-snug">

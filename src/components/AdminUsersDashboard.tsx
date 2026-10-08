@@ -170,7 +170,7 @@ export default function AdminUsersDashboard() {
         const adminLen = (adminCount / users.length) * C;
         const userLen = C - adminLen;
         return (
-          <div className="mb-4 flex items-center gap-5 rounded-2xl border border-[#8E7AAE]/12 bg-white px-5 py-4 shadow-sm" role="img" aria-label={`مدير ${adminCount} · مستخدم ${userCount} · ${users.length}`}>
+          <div className="mb-4 flex items-center gap-3 sm:gap-5 rounded-2xl border border-[#8E7AAE]/12 bg-white px-4 sm:px-5 py-4 shadow-sm" role="img" aria-label={`مدير ${adminCount} · مستخدم ${userCount} · ${users.length}`}>
             <svg width="76" height="76" viewBox="0 0 76 76" className="shrink-0 -rotate-90" aria-hidden="true">
               <circle cx="38" cy="38" r={R} fill="none" stroke="#E9E2F1" strokeWidth="7" />
               {userCount > 0 && (
@@ -182,8 +182,8 @@ export default function AdminUsersDashboard() {
               <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[#182231]" style={{ fontSize: 18, fontWeight: 900 }}>{users.length}</text>
             </svg>
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold min-w-0">
-              <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-rose-50 px-3 py-1.5 text-rose-800"><span className="h-2 w-2 rounded-full bg-rose-600" />مدير <span className="font-black">{adminCount}</span></span>
-              <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[#6E5F8E]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
+              <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-rose-50 px-3 py-1.5 text-rose-800"><span className="h-2 w-2 rounded-full bg-rose-600" />مدير <span className="font-black">{adminCount}</span></span>
+              <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[#6E5F8E]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
             </div>
           </div>
         );
