@@ -220,7 +220,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
              <div className="flex flex-wrap gap-2 text-[11px] md:text-xs font-bold font-mono uppercase">
                <span className="bg-[#EAECE6] text-[#64788D] px-3 py-1.5 rounded-full">{category?.title}</span>
                {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
-               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.join(', ')}</span>
+               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && ', '}<span className="inline-block" dir="ltr">{a}</span></React.Fragment>)}</span>
              </div>
              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#182231] leading-snug lg:leading-tight flex-1 tracking-tight min-w-0">
