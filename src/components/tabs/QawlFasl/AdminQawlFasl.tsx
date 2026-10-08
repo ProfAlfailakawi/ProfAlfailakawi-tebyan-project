@@ -492,7 +492,7 @@ export default function AdminQawlFasl() {
                   <span className={`px-2 py-1 rounded-lg text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status === 'published' ? 'منشور' : q.status === 'draft' ? 'مسودة' : q.status}</span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2 tebyan-pair-actions">
                 <button onClick={() => { setEditingId(q.id); setFormData(q as any); }} className="bg-zinc-100 text-zinc-800 rounded-xl font-bold flex items-center justify-center gap-2 min-h-11 disabled:opacity-30" disabled={isProcessing}><Edit2 size={16} /> تعديل</button>
                 <button onClick={() => remove(q.id)} className="bg-rose-50 text-rose-700 rounded-xl font-bold flex items-center justify-center gap-2 min-h-11 disabled:opacity-30" disabled={isProcessing}><Trash2 size={16} /> حذف</button>
               </div>

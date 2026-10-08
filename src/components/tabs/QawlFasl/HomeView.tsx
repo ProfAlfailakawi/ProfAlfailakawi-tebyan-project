@@ -285,7 +285,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                     }
                   }}
                   placeholder="عن ماذا تود استشارتنا اليوم؟"
-                  className="w-full bg-transparent py-4 px-12 md:py-6 md:px-8 text-base sm:text-xl md:text-2xl font-bold text-black placeholder:text-zinc-500 outline-none sm:pr-14 md:pr-24 relative z-10"
+                  className="w-full bg-transparent py-4 px-12 md:py-6 md:px-8 text-base sm:text-xl md:text-2xl font-bold text-black placeholder:text-zinc-500 outline-none sm:pr-14 md:pr-24 relative z-10 tebyan-qf-search"
                  />
                  
                  {smartSuggestion && smartSuggestion.startsWith(searchQuery) && (
@@ -487,13 +487,16 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
           </div>
           
           <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-6 relative z-10">
-            {categoriesWithQuestions.map((category: any) => {
-              const count = questions.filter(q => 
+            {(() => {
+              const countFor = (category: any) => questions.filter(q => 
                 q.categoryId === category.id || 
                 q.categorySlug === category.id ||
                 q.category === category.title ||
                 (q.category && q.category.replace(/\s+/g, '-').toLowerCase() === category.id)
               ).length;
+              const maxCount = Math.max(1, ...categoriesWithQuestions.map((c: any) => countFor(c)));
+              return categoriesWithQuestions.map((category: any) => {
+              const count = countFor(category);
               
               if (count === 0 && !CATEGORIES.find(c => c.id === category.id)) return null;
 
@@ -509,9 +512,13 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   <span className="mt-auto">
                     <DnaCount value={count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"} icon={count > 0 ? <BookOpenCheck className="w-3.5 h-3.5" /> : <Clock3 className="w-3.5 h-3.5" />} />
                   </span>
+                  <span className="block h-1 w-full overflow-hidden rounded-full bg-[#E9E2F1]" aria-hidden="true">
+                    <span className="block h-full rounded-full" style={{ width: `${Math.round((count / maxCount) * 100)}%`, backgroundColor: '#8E7AAE' }} />
+                  </span>
                 </button>
               );
-            })}
+              });
+            })()}
           </div>
         </section>
 
