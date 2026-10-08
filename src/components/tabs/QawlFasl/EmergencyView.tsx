@@ -141,7 +141,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                          {q.riskLevel === 'high' && (
                            <span className="flex items-center gap-1.5 text-[#A6603F] bg-[#FAF0E6] px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>
                          )}
-                         <span className="bg-[#EAECE6] text-[#5A5A40] px-3 py-1.5 rounded-full">العمر: {q.ageGroups.join('، ')}</span>
+                         <span className="bg-[#EAECE6] text-[#5A5A40] px-3 py-1.5 rounded-full">العمر: {q.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && '، '}<span className="inline-block" dir="ltr">{a}</span></React.Fragment>)}</span>
                        </div>
                     </div>
                     
