@@ -162,6 +162,33 @@ export default function AdminUsersDashboard() {
         </div>
       )}
 
+      {!loading && users.length > 0 && (() => {
+        const adminCount = users.filter((u: any) => u.role === 'admin').length;
+        const userCount = users.length - adminCount;
+        const R = 30;
+        const C = 2 * Math.PI * R;
+        const adminLen = (adminCount / users.length) * C;
+        const userLen = C - adminLen;
+        return (
+          <div className="mb-4 flex items-center gap-5 rounded-2xl border border-[#8E7AAE]/12 bg-white px-5 py-4 shadow-sm" role="img" aria-label={`مدير ${adminCount} · مستخدم ${userCount} · ${users.length}`}>
+            <svg width="76" height="76" viewBox="0 0 76 76" className="shrink-0 -rotate-90" aria-hidden="true">
+              <circle cx="38" cy="38" r={R} fill="none" stroke="#E9E2F1" strokeWidth="7" />
+              {userCount > 0 && (
+                <circle cx="38" cy="38" r={R} fill="none" stroke="#8E7AAE" strokeWidth="7" strokeDasharray={`${Math.max(userLen - (adminCount > 0 ? 2 : 0), 0)} ${C}`} strokeDashoffset={-(adminLen + (adminCount > 0 ? 1 : 0))} />
+              )}
+              {adminCount > 0 && (
+                <circle cx="38" cy="38" r={R} fill="none" stroke="#E11D48" strokeWidth="7" strokeDasharray={`${Math.max(adminLen - (userCount > 0 ? 2 : 0), 0)} ${C}`} strokeDashoffset={userCount > 0 ? -1 : 0} />
+              )}
+              <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[#182231]" style={{ fontSize: 18, fontWeight: 900 }}>{users.length}</text>
+            </svg>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-bold min-w-0">
+              <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-rose-50 px-3 py-1.5 text-rose-800"><span className="h-2 w-2 rounded-full bg-rose-600" />مدير <span className="font-black">{adminCount}</span></span>
+              <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[#6E5F8E]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
+            </div>
+          </div>
+        );
+      })()}
+
       {loading ? <p>جاري تحميل البيانات...</p> : (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="hidden md:block tebyan-scroll-contained w-full max-w-full">
@@ -226,7 +253,7 @@ export default function AdminUsersDashboard() {
                       {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2 tebyan-pair-actions">
                     <button 
                       onClick={() => openEditModal(user)}
                       className="min-h-11 rounded-xl bg-[#F4F0F8] text-[#6E5F8E] font-bold flex items-center justify-center gap-2"
@@ -252,7 +279,7 @@ export default function AdminUsersDashboard() {
       )}
 
       {editingUser && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50 tebyan-modal-clear">
           <div className="bg-white rounded-3xl p-5 md:p-8 max-w-2xl w-full relative shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto overflow-x-hidden">
             <button 
               onClick={closeEditModal}

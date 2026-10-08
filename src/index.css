@@ -963,21 +963,21 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   /* Cards and panels: remove desktop heaviness on phones */
-  main [class*="p-10"],
-  main [class*="p-12"],
-  main [class*="p-14"],
-  main [class*="p-16"],
-  main [class*="p-20"],
-  main [class*="p-24"] {
+  main :is([class^="p-10"], [class*=" p-10"], [class*=":p-10"]),
+  main :is([class^="p-12"], [class*=" p-12"], [class*=":p-12"]),
+  main :is([class^="p-14"], [class*=" p-14"], [class*=":p-14"]),
+  main :is([class^="p-16"], [class*=" p-16"], [class*=":p-16"]),
+  main :is([class^="p-20"], [class*=" p-20"], [class*=":p-20"]),
+  main :is([class^="p-24"], [class*=" p-24"], [class*=":p-24"]) {
     padding: 1.15rem !important;
   }
-  main [class*="p-8"] {
+  main :is([class^="p-8"], [class*=" p-8"], [class*=":p-8"]) {
     padding: 1rem !important;
   }
-  main [class*="p-7"] {
+  main :is([class^="p-7"], [class*=" p-7"], [class*=":p-7"]) {
     padding: 0.95rem !important;
   }
-  main [class*="p-6"] {
+  main :is([class^="p-6"], [class*=" p-6"], [class*=":p-6"]) {
     padding: 0.9rem !important;
   }
   main [class*="gap-10"],
@@ -2456,12 +2456,12 @@ body.tebyan-focus-mode .tebyan-result-document {
 
   main
     :where(
-      [class*="p-5"],
-      [class*="p-6"],
-      [class*="p-7"],
-      [class*="p-8"],
-      [class*="p-10"],
-      [class*="p-12"]
+      :is([class^="p-5"], [class*=" p-5"], [class*=":p-5"]),
+      :is([class^="p-6"], [class*=" p-6"], [class*=":p-6"]),
+      :is([class^="p-7"], [class*=" p-7"], [class*=":p-7"]),
+      :is([class^="p-8"], [class*=" p-8"], [class*=":p-8"]),
+      :is([class^="p-10"], [class*=" p-10"], [class*=":p-10"]),
+      :is([class^="p-12"], [class*=" p-12"], [class*=":p-12"])
     ) {
     padding: clamp(0.85rem, 3.8vw, 1.15rem) !important;
   }
@@ -3147,6 +3147,8 @@ body {
   .tour-menu-button + div,
   [class*="absolute"][class*="top-full"][class*="end-0"] {
     width: min(84vw, 248px) !important;
+    /* القاعدة العامة للبطاقات (max-width:100%) تقصّر القائمة المنبثقة إلى عرض زرّها (44px) فتختفي النصوص. */
+    max-width: min(84vw, 248px) !important;
   }
   .tour-menu-button + div button span,
   [class*="absolute"][class*="top-full"][class*="end-0"] button span {
@@ -4736,5 +4738,61 @@ main .overflow-x-auto > [role="tab"] {
       position: absolute;
       inset: -5px; /* padding box is 1px inside the border: 36 + 2*4 = 44 */
     }
+  }
+}
+
+/* r60: أزرار تعديل/حذف في بطاقة المستخدم تبقى في صف واحد على الجوال (القاعدة العامة تفرد كل الشبكات). */
+main .tebyan-pair-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* r60: لا يُحبس محتوى الميدان/مركز المعرفة/المختبر في لوحة تمرير داخلية بارتفاع ثابت (كانت تقصّ حافة البطاقة السفلية)؛ يتدفق مع تمرير الصفحة. */
+main .tebyan-pane-flow {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* r60: نص المثال الطويل داخل حقل بسطر واحد يُختصر بنقاط بدل قصّه وسط الكلمة (حالة العنصر النائب فقط). */
+main input:placeholder-shown {
+  text-overflow: ellipsis;
+}
+
+/* r60: الحاسوب يلتزم بأرضية 11px للنصوص الصغيرة جدًا (الجوال واللوحي لهما قاعدتهما أعلاه). */
+@media (min-width: 1024px) {
+  html body :is(.text-\[9px\], .text-\[10px\]) {
+    font-size: 11px !important;
+  }
+}
+
+/* r60: على الجوال يبدأ نص حقل البحث بعد أيقونة العدسة (القاعدة العامة كانت تضغط الحشو فتغطي الأيقونة أول كلمة). */
+@media (max-width: 639px) {
+  main input.tebyan-qf-search {
+    padding-inline-start: 2.9rem !important;
+    padding-inline-end: 0.9rem !important;
+  }
+  main input.tebyan-qf-search:not(:placeholder-shown) {
+    padding-inline-start: 4.9rem !important;
+  }
+}
+
+/* r60: نافذة تعديل المستخدم على الجوال تترك مكانًا لشريط الرأس العلوي ولأزرار الصفحة السفلية فلا تغطّي عنوانها ولا آخرها. */
+@media (max-width: 767px) {
+  main .tebyan-modal-clear {
+    padding-top: 4.75rem;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+  }
+  main .tebyan-modal-clear > div {
+    max-height: 100% !important;
+  }
+}
+
+/* r60: شرائح الأبواب الثلاث تتّسع في صف واحد على الجوال (القاعدة العامة للأزرار المدوّرة تفرض حشوًا أعرض). */
+@media (max-width: 639px) {
+  main .tebyan-door-tabs {
+    gap: 0.3rem !important;
+  }
+  main .tebyan-door-tabs > button[role="tab"] {
+    padding-inline: 0.6rem !important;
+    gap: 0.3rem !important;
   }
 }

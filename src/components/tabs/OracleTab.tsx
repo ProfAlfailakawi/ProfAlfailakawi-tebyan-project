@@ -135,7 +135,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
             "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-[#7C8796] rounded-[16px] border border-[#8FA9C7]/40 focus:border-[#8E7AAE] focus:ring-4 focus:ring-[#6e5f8e]/10 outline-none transition-all",
-            language === 'ar' ? "pl-32" : "pr-32"
+            language === 'ar' ? "pl-32 max-md:!pl-[6.75rem]" : "pr-32 max-md:!pr-[6.75rem]"
           )}
           placeholder={language === 'ar' ? "اسأل تبيان بأي لهجة..." : "Ask Tebyan..."}
         />

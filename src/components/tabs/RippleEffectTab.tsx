@@ -253,7 +253,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                         </div>
                         
                         <div className="relative z-10 flex items-center justify-between bg-[#F7F5F2]/50 -mx-2 -mb-2 p-2 rounded-2xl">
-                            <div className="flex flex-wrap items-center gap-1 md:gap-2">
+                            <div className="flex flex-wrap items-center gap-1 md:gap-2 max-md:flex-1 max-md:[&>button]:grow max-md:[&>button]:whitespace-nowrap max-md:[&>button]:justify-center max-md:[&>button]:min-h-11">
                                 <button onClick={() => {
                                     if (!auth.currentUser) {
                                         setToast({ 
@@ -1033,7 +1033,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             </motion.span>
                         )}
                     </div>
-                    <div className="flex justify-end gap-2 mt-4">
+                    <div className="flex justify-end gap-2 mt-4 max-sm:flex-col max-sm:[&>button]:w-full max-sm:[&>button]:justify-center">
                         <button 
                             onClick={handleRefine}
                             disabled={isRefining || !newIdea.trim()}
