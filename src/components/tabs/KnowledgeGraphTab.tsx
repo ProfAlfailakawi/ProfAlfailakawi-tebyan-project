@@ -412,7 +412,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                       y: { repeat: Infinity, duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
                     }}
                     textAnchor="middle" 
-                    fill={isSelected ? "#2F7D67" : isGolden ? "#8A6A18" : node.type === 'core' ? "#FFFFFF" : "#465568"} 
+                    fill={isSelected ? "#2F7D67" : isGolden ? "#8A6A18" : node.type === 'core' ? "#4B3F6B" : "#465568"} 
                     fontSize={node.type === 'core' ? "20" : isGolden ? "16" : "14"} 
                     fontWeight={isSelected || node.type === 'core' || isGolden ? "900" : "bold"}
                     className="select-none pointer-events-none tebyan-svg-arabic-text"
