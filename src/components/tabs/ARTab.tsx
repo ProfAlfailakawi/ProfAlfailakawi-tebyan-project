@@ -157,7 +157,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-120px)] flex flex-col space-y-6 relative overflow-hidden rounded-[24px] bg-dot-pattern">
+    <div className="w-full min-h-[calc(100vh-120px)] flex flex-col space-y-6 relative overflow-hidden rounded-[24px] bg-dot-pattern bg-white/60 border border-zinc-200/60">
       <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/80 pointer-events-none"></div>
 
       <div className="relative z-20 w-full max-w-2xl mx-auto space-y-6">
