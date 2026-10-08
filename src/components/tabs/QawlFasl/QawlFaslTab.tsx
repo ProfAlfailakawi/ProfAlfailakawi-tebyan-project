@@ -179,7 +179,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
         onBack={currentView !== 'home' ? goToHome : () => handleTabChange('discover', '')}
         onClose={handleExit}
       />
-      <div className="rounded-[24px] md:rounded-[32px]">
+      <div className="rounded-[24px] md:rounded-[2rem]">
         <AnimatePresence mode="wait">
         {currentView === 'home' && (
           <motion.div 
