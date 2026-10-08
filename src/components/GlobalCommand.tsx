@@ -130,7 +130,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header / Input */}
-            <form onSubmit={handleSearch} className="relative flex items-center p-3 sm:p-4 md:p-6 border-b border-zinc-200/50">
+            <form onSubmit={handleSearch} className="relative flex items-center p-2.5 sm:p-4 md:p-6 border-b border-zinc-200/50">
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-rose-500/10 blur-3xl rounded-full"></div>
               
@@ -144,7 +144,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={language === 'ar' ? 'البحث الذكي (تسونامي المعرفة)...' : 'Smart Search (Knowledge Tsunami)...'}
-                className="flex-1 bg-transparent border-none text-base sm:text-xl md:text-3xl font-black text-black placeholder:text-zinc-300 focus:outline-none focus:ring-0 px-2 sm:px-4 md:px-6 relative z-10 w-full min-w-0 text-ellipsis"
+                className="flex-1 bg-transparent border-none text-base sm:text-xl md:text-3xl font-black text-black placeholder:text-zinc-300 placeholder:font-semibold sm:placeholder:font-black focus:outline-none focus:ring-0 px-1.5 sm:px-4 md:px-6 relative z-10 w-full min-w-0 text-ellipsis"
               />
 
               <button 
