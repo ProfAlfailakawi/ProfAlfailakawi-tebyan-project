@@ -623,7 +623,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                </h2>
                              </div>
                              
-                             <div className="markdown-body prose max-w-none relative z-10
+                             <div className="tbn-result__body markdown-body prose max-w-none relative z-10
                                 prose-p:!text-[#273548] prose-p:text-xl md:prose-p:text-3xl prose-p:leading-relaxed prose-p:font-bold prose-p:mb-10
                                 prose-headings:!text-navy prose-headings:font-black prose-headings:tracking-tighter prose-headings:mb-12 md:prose-headings:text-7xl
                                 prose-strong:!text-lilac prose-strong:font-black prose-strong:text-2xl md:prose-strong:text-4xl
@@ -658,7 +658,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                     </div>
                                 </div>
                             </div>
-                            <div className="markdown-body prose prose-zinc md:prose-xl max-w-none text-[#273548] prose-headings:text-navy prose-strong:text-navy prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
+                            <div className="tbn-result__body markdown-body prose prose-zinc md:prose-xl max-w-none text-[#273548] prose-headings:text-navy prose-strong:text-navy prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
                               <ReactMarkdown>{result.content}</ReactMarkdown>
                             </div>
                         </div>

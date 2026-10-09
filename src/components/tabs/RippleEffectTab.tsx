@@ -368,7 +368,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                             setReplyText('');
                                             setShowReply(false);
                                         }
-                                    }} className="bg-mood-primary text-white px-6 rounded-xl text-sm font-bold whitespace-nowrap hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-mood-glow">{language === 'ar' ? 'إضافة للشبكة' : 'Add to Network'}</button>
+                                    }} className="bg-lilac text-white px-6 rounded-xl text-sm font-bold whitespace-nowrap hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-mood-glow">{language === 'ar' ? 'إضافة للشبكة' : 'Add to Network'}</button>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -870,7 +870,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             <div className="fixed top-20 left-6 z-50">
                 <button 
                     onClick={() => setShowInsights(true)}
-                    className="bg-mood-primary text-white p-3 md:p-4 rounded-full shadow-lg"
+                    className="bg-lilac text-white p-3 md:p-4 rounded-full shadow-lg"
                 >
                     <Sparkles />
                 </button>
@@ -955,7 +955,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                     </div>
                                     <button 
                                         onClick={() => setNewIdea(dailyPrompt.question + '\n\n')}
-                                        className="bg-mood-primary text-white px-4 py-2 min-h-[44px] sm:min-h-0 shrink-0 rounded-xl text-xs font-black whitespace-nowrap hover:opacity-90 transition-all shadow-lg active:scale-95"
+                                        className="bg-lilac text-white px-4 py-2 min-h-[44px] sm:min-h-0 shrink-0 rounded-xl text-xs font-black whitespace-nowrap hover:opacity-90 transition-all shadow-lg active:scale-95"
                                     >
                                         {language === 'ar' ? 'ازرع غصن' : 'Plant Branch'}
                                     </button>
@@ -1132,7 +1132,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     </div>
                 </div>
 
-                <div className="relative z-10 w-full overflow-x-auto pb-8 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+                <div className="relative z-10 w-full overflow-x-auto pb-8 scrollbar-hide">
                     <AnimatePresence mode="wait">
                         {activeView === 'list' ? (
                             <motion.div 

@@ -18,13 +18,13 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
   const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
     'qawlfasl': { color: 'bg-[#eef3ef] text-[#3f6b55]', labelAr: 'قول فصل', labelEn: 'Decision' },
     'oracle': { color: 'bg-[#f1eef6] text-[#6e5f8e]', labelAr: 'المستشار', labelEn: 'Oracle' },
-    'concept': { color: 'bg-[#f7f1e6] text-[#8a6a3b]', labelAr: 'الأفكار', labelEn: 'Concepts' },
-    'roadmap': { color: 'bg-[#f6eeef] text-[#8e5a63]', labelAr: 'المسار', labelEn: 'Roadmap' },
+    'concept': { color: 'bg-[#f7f1e6] text-[#725326]', labelAr: 'الأفكار', labelEn: 'Concepts' },
+    'roadmap': { color: 'bg-[#f6eeef] text-[#7c4650]', labelAr: 'المسار', labelEn: 'Roadmap' },
     'item': { color: 'bg-[#f2f2f4] text-[#5b6472]', labelAr: 'مادة', labelEn: 'Items' }
   };
 
   const ringColors: Record<string, string> = {
-    qawlfasl: '#3f6b55', oracle: '#6e5f8e', concept: '#8a6a3b', roadmap: '#8e5a63', item: '#8b93a1'
+    qawlfasl: '#3f6b55', oracle: '#6e5f8e', concept: '#725326', roadmap: '#7c4650', item: '#8b93a1'
   };
   const entries = Object.entries(counts) as [string, number][];
   const total = entries.reduce((sum, [, c]) => sum + c, 0);
