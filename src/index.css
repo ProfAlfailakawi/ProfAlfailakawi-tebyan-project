@@ -4982,3 +4982,14 @@ main input:placeholder-shown {
 @media (prefers-reduced-motion: no-preference) {
   .tbn-stagger { animation: tbn-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i, 0) * 55ms); }
 }
+
+/* Gentle scroll-reveal for long answer sections (progressive enhancement). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .tbn-sections > * {
+      animation: tbn-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}

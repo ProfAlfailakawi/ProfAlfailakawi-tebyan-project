@@ -65,6 +65,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
           </div>
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
              <input 
+               aria-label={language === 'ar' ? 'موضوع الرحلة عبر الزمن' : 'Time journey topic'}
                value={timeMachineTopic} 
                onChange={(e) => setTimeMachineTopic(e.target.value)}
                className="bg-ivory border border-navy/10 p-4 rounded-xl text-navy placeholder-[#8A97A6] outline-none focus:border-lilac/30 flex-1 w-full md:w-64"

@@ -70,12 +70,13 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#8fa9c7]/[0.08] rounded-full blur-3xl"></div>
         
         <div className="relative flex flex-col gap-6">
-          <label className={cn("block text-sm font-bold text-ink-mute", language === 'ar' ? 'text-right' : 'text-left')}>
+          <label htmlFor="roadmap-goal" className={cn("block text-sm font-bold text-ink-mute", language === 'ar' ? 'text-right' : 'text-left')}>
             {language === 'ar' ? 'حدد وجهتك القادمة' : 'Define your next destination'}
           </label>
 <DemoStarters tab="roadmap" language={language} onPick={setGoal} className="mb-3" />
           <div className="relative">
             <input 
+              id="roadmap-goal"
               value={goal}
               onChange={e => setGoal(e.target.value)}
               disabled={isLoading}

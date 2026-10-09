@@ -141,6 +141,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                       "px-3 md:px-4 py-2 rounded-full font-bold text-xs md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
                       isCinematic ? "bg-white text-black border-white" : "bg-black/50 text-white border-white/10 hover:bg-white/10"
                   )}
+                  aria-pressed={isCinematic}
               >
                   <Clapperboard className="w-4 h-4" />
                   {isCinematic ? (language === 'ar' ? 'خروج من العرض' : 'Exit Cinema') : (language === 'ar' ? 'مسرح الأفكار' : 'Cinematic Mode')}
@@ -151,14 +152,14 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
             <AnimatePresence>
               {!isCinematic && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
-                    <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
+                    <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'} aria-label={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
                         <Maximize2 className="w-5 h-5" />
                         <span className="text-xs font-bold hidden group-hover:inline md:hidden">{language === 'ar' ? 'عرض كامل' : 'Fit View'}</span>
                     </button>
-                    <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
+                    <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} aria-label={language === 'ar' ? 'تكبير' : 'Zoom in'} title={language === 'ar' ? 'تكبير' : 'Zoom in'} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                         <ZoomIn className="w-5 h-5" />
                     </button>
-                    <button onClick={() => setZoom(prev => Math.max(prev - 0.2, 0.3))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
+                    <button onClick={() => setZoom(prev => Math.max(prev - 0.2, 0.3))} aria-label={language === 'ar' ? 'تصغير' : 'Zoom out'} title={language === 'ar' ? 'تصغير' : 'Zoom out'} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                         <ZoomOut className="w-5 h-5" />
                     </button>
                 </motion.div>
@@ -252,6 +253,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                     </div>
                     <input 
                         type="range" 
+                        aria-label={language === 'ar' ? 'ذاكرة النسيج: اختر الخطوة' : 'Evolution timeline step'}
                         min={1} 
                         max={nodes.length} 
                         value={timelineStep} 
@@ -276,7 +278,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                     >
                         {!isCinematic && (
-                          <button onClick={() => setSelectedNode(null)} className="absolute top-4 right-4 text-white/50 hover:text-white">
+                          <button onClick={() => setSelectedNode(null)} aria-label={language === 'ar' ? 'إغلاق التفاصيل' : 'Close details'} className="absolute top-4 right-4 text-white/50 hover:text-white">
                               <Maximize2 className="w-5 h-5" />
                           </button>
                         )}

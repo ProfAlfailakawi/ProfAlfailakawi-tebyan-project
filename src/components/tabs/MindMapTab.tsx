@@ -77,6 +77,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <div className="flex-1 relative">
             <input
               type="text"
+              aria-label={language === 'ar' ? 'موضوع الخريطة الذهنية' : 'Mind map topic'}
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder={language === 'ar' ? 'مثال: التنمر المدرسي، تعزيز الثقة بالنفس، صعوبات التعلم...' : 'e.g. School Bullying, Self-confidence...'}

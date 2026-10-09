@@ -314,7 +314,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         
         {/* Quick Tab */}
         {activeTab === 'quick' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="space-y-4">
               <DnaStatusHeader
                 icon={allApproved ? <ShieldCheck /> : <ShieldEllipsis />}
@@ -458,7 +458,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Deep Tab */}
         {activeTab === 'deep' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
                <div>
                  <h3 className="text-2xl font-bold text-navy mb-4">خطأ شائع احذره</h3>
@@ -500,7 +500,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Age Tab */}
         {activeTab === 'age' && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-6 animate-in fade-in slide-in-from-bottom-2">
             <div className="bg-white rounded-[24px] p-5 md:p-8 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <DnaTimeline
                 ariaLabel="الجواب حسب العمر"
@@ -614,7 +614,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Resources Tab */}
         {activeTab === 'resources' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {question.resources.map((res, idx) => {
               const Wrapper = res.url ? 'a' : 'div';
