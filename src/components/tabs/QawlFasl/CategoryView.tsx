@@ -52,7 +52,7 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
                      {q.riskLevel === 'high' && (
                        <span className="flex items-center gap-1.5 text-rose-700 bg-rose-50 px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>
                      )}
-                     <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">العمر: {q.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && '، '}<span className="inline-block" dir="ltr">{a}</span></React.Fragment>)}</span>
+                     <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">العمر: {q.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && '، '}<span className="inline-block [unicode-bidi:isolate]" dir="ltr">{a}</span></React.Fragment>)}</span>
                    </div>
                 </div>
                 
