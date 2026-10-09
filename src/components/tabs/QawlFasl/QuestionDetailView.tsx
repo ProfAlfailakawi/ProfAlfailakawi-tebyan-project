@@ -443,7 +443,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.dontSayThis}"</p>
               </div>
               
-              <div className="bg-lilac text-white rounded-[24px] p-8 shadow-[0_12px_35px_rgba(24,34,49,0.06)] flex flex-col justify-center relative overflow-hidden">
+              <div className="tbn-dark bg-lilac text-white rounded-[24px] p-8 shadow-[0_12px_35px_rgba(24,34,49,0.06)] flex flex-col justify-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                 <div className="relative z-10">
                   <h4 className="font-bold text-[#EBEAE4] mb-4 flex items-center gap-2 text-lg">
