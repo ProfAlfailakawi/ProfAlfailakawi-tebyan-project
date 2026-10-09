@@ -2,12 +2,12 @@ import React from 'react';
 import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { Sparkles, Bookmark, BookmarkCheck, Box, Hammer } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
+import { ResultCard } from '../common/ResultCard';
 
 interface ConceptsTabProps {
   input: string;
@@ -127,16 +127,16 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           <Hammer className="w-5 h-5" aria-hidden="true" /><span>{language === 'ar' ? 'حطّم فكرتي' : 'Destroy My Idea'}</span>
         </button>
       </div>
-      {error && <div className="text-rose-500 font-semibold">{error}</div>}
+      {error && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {!isLoading && !output && (
-          <ToolEmptyHint icon={Sparkles} />
+          <ToolEmptyHint icon={Sparkles} text={language === 'ar' ? 'اكتب مفهوماً أو فكرة، وسنشرحها لك بكلمات بسيطة.' : 'Type a concept or idea and we will explain it in simple words.'} />
         )}
         {isLoading ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="w-full bg-zinc-50 rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-zinc-200/80"
+            className="w-full bg-lilac-mist/40 rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-lilac-soft/25"
           >
             <TebyanLoader
               size={48}
@@ -146,9 +146,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           </motion.div>
         ) : output && (
           <div id="concepts-results" className="space-y-4">
-            <div className={cn("prose md:prose-lg p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-white border-[#6E5B91]/30 text-[#182231] prose-headings:text-rose-400 prose-strong:text-rose-200 prose-ol:text-[#64788D] prose-ul:text-[#64788D] prose-li:marker:text-rose-600 prose-a:text-[#6E5B91] leading-relaxed font-serif rtl:font-sans py-8" : "bg-white border-zinc-200/80 prose-zinc font-serif rtl:font-sans py-8 leading-relaxed text-zinc-800")}>
-              <ReactMarkdown>{output}</ReactMarkdown>
-            </div>
+            <ResultCard text={output} label={isBrutalMode ? (language === 'ar' ? 'النقد الصريح' : 'Honest critique') : (language === 'ar' ? 'المفهوم مبسّطاً' : 'The concept, simplified')} />
             <button 
               onClick={() => {
                 const isSaved = preferences.savedLibrary.some((s: any) => s.type === 'concept' && s.content === output);

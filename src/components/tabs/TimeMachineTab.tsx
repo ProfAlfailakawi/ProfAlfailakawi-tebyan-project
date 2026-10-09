@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Hourglass, RefreshCw } from 'lucide-react';
+import { Hourglass } from 'lucide-react';
+import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
@@ -60,7 +61,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
     <div className="bg-white text-[#182231] p-8 rounded-[32px] shadow space-y-10">
        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-2">
-             <h2 className="text-2xl md:text-4xl font-bold">{language === 'ar' ? 'استكشاف التطور' : 'Evolution Explorer'}</h2>
+             <h2 className="font-serif text-2xl md:text-3xl font-bold">{language === 'ar' ? 'استكشاف التطور' : 'Evolution Explorer'}</h2>
           </div>
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
              <input 
@@ -77,7 +78,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
              >
                {isLoading ? (
                  <>
-                   <RefreshCw className="w-5 h-5 animate-spin" />
+                   <TebyanButtonLoader className="text-current" />
                    <span>{language === 'ar' ? 'جاري السفر...' : 'Traveling...'}</span>
                  </>
                ) : (
@@ -87,55 +88,53 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
           </div>
        </div>
 
-       {error && <div className="text-[#6E5B91] font-bold">{error}</div>}
+       {error && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700 font-semibold">{error}</div>}
        <div className="relative min-h-[300px]">
          {!isLoading && !timeMachineData && (
-           <ToolEmptyHint icon={Hourglass} />
+           <ToolEmptyHint icon={Hourglass} text={language === 'ar' ? 'اكتب موضوعاً، ثم اضغط «انطلاق» لنرى كيف تغيّر عبر العصور.' : 'Type a topic, then press Launch to see how it changed across the ages.'} />
          )}
          {isLoading ? (
            <motion.div 
              initial={{ opacity: 0 }}
              animate={{ opacity: 1 }}
-             className="w-full bg-[#F8F5EF] backdrop-blur-md rounded-[24px] md:rounded-[32px] flex flex-col items-center justify-center space-y-8 py-32 border-2 border-dashed border-[#182231]/10"
+             className="w-full bg-lilac-mist/40 rounded-[24px] md:rounded-[32px] flex flex-col items-center justify-center space-y-6 py-20 border border-lilac-soft/25 px-4"
            >
-             <div className="relative">
-               <div className="w-24 h-24 border-8 border-[#182231]/10 rounded-full"></div>
-               <RefreshCw className="w-24 h-24 text-[#6E5B91] animate-spin absolute top-0 left-0" />
-             </div>
-             <div className="text-2xl md:text-4xl font-bold text-[#182231] text-center">
+             <TebyanLoader size={48} label={language === 'ar' ? 'جاري السفر عبر الزمن' : 'Traveling through time'} />
+             <div className="font-serif text-2xl md:text-3xl font-bold text-[#182231] text-center">
                {language === 'ar' ? 'جاري السفر عبر الزمن...' : 'Traveling through time...'}
              </div>
-             <div className="px-10 py-4 bg-[#EFEAF6] text-[#182231] rounded-full font-bold animate-pulse text-lg">
+             <div className="px-6 py-3 bg-white text-[#465568] rounded-full font-semibold text-base text-center">
                {language === 'ar' ? 'نحن ننتقل بين العصور لجمع لك أدق المعلومات والتحليلات' : 'Navigating through eras to gather precise intelligence'}
              </div>
            </motion.div>
          ) : timeMachineData && (
-           <div id="time-machine-results" className="space-y-12 animate-in fade-in duration-700">
+           <div id="time-machine-results" role="region" aria-label={language === 'ar' ? 'رحلة عبر العصور' : 'Journey through the ages'} className="space-y-12 animate-in fade-in duration-700">
            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
-             <div className="absolute top-1/2 left-0 right-0 h-1 bg-[#EFEAF6] -translate-y-1/2 hidden md:block"></div>
+             <div aria-hidden="true" className="tbn-timeline-rail absolute top-1/2 inset-x-0 h-0.5 bg-lilac-soft/40 -translate-y-1/2 hidden md:block"></div>
+             <div aria-hidden="true" className="tbn-timeline-rail-v absolute inset-y-0 start-1/2 w-0.5 bg-lilac-soft/40 md:hidden"></div>
              {timeMachineData.eras?.map((e: any, i: number) => (
                <motion.div 
                  key={i} 
-                 initial={{ opacity: 0, scale: 0.9 }}
-                 animate={{ opacity: 1, scale: 1 }}
-                 transition={{ delay: i * 0.1 }}
+                 initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                 animate={{ opacity: 1, y: 0, scale: 1 }}
+                 transition={{ delay: 0.3 + i * 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                  className="relative bg-[#F8F5EF] p-6 rounded-[16px] border border-[#182231]/10 hover:bg-[#F8F5EF] transition-all group z-10"
                >
-                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#6E5B91] px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-lilac text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
                    {e.year}
                  </div>
                  <div className="pt-4 space-y-4">
-                    <h4 className="text-xl font-bold text-[#6E5B91]">{e.era}</h4>
+                    <h4 className="font-serif text-xl font-bold text-lilac">{e.era}</h4>
                     <div className="space-y-3">
                        <div>
-                         <div className="text-[10px] text-[#6E5B91] font-bold uppercase mb-1">{language === 'ar' ? 'طريقة التدريس' : 'Teaching Method'}</div>
+                         <div className="text-xs text-lilac font-bold mb-1">{language === 'ar' ? 'طريقة التدريس' : 'Teaching Method'}</div>
                          <div className="text-sm font-bold text-[#465568] leading-relaxed prose prose-sm max-w-none">
                             <ReactMarkdown>{e.teaching_method}</ReactMarkdown>
                          </div>
                        </div>
                        <div className="pt-2 border-t border-[#182231]/10">
-                         <div className="text-[10px] text-[#6E5B91] font-bold uppercase mb-1">{language === 'ar' ? 'الأدوات' : 'Tools'}</div>
-                         <div className="text-xs font-bold text-[#182231] prose prose-sm max-w-none">
+                         <div className="text-xs text-lilac font-bold mb-1">{language === 'ar' ? 'الأدوات' : 'Tools'}</div>
+                         <div className="text-sm font-semibold text-[#182231] prose prose-sm max-w-none">
                             <ReactMarkdown>{e.tools}</ReactMarkdown>
                          </div>
                        </div>
@@ -145,7 +144,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
              ))}
            </div>
            
-           <div className="bg-[#F8F5EF] p-8 rounded-[24px] border border-[#182231]/10 italic text-[#182231] text-lg text-center leading-relaxed font-bold">
+           <div className="bg-[#F8F5EF] p-8 rounded-[24px] border border-[#182231]/10 text-[#182231] font-serif text-xl md:text-2xl text-center leading-loose font-bold">
              "{timeMachineData.summary}"
            </div>
          </div>

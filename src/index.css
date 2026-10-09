@@ -68,6 +68,16 @@
   --color-brand-accent: #8fa9c7;
   --color-brand-bg: #f7f5f2;
 
+  /* Tebyan brand palette (single source for lilac / ivory / navy) */
+  --color-lilac: #6e5b91;
+  --color-lilac-deep: #5f4e7f;
+  --color-lilac-soft: #8e7aae;
+  --color-lilac-mist: #efeaf6;
+  --color-ivory: #f8f5ef;
+  --color-navy: #182231;
+  --color-ink-soft: #465568;
+  --color-ink-mute: #64788d;
+
   --color-mood-primary: var(--mood-primary, #6366f1);
   --color-mood-secondary: var(--mood-secondary, #10b981);
   --color-mood-glow: var(--mood-glow, rgba(99, 102, 241, 0.15));
@@ -1450,7 +1460,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   main
-    [class*="text-white"]:not([class*="bg-[#8E7AAE]"]):not([class*="bg-[#6E5B91]"]):not(
+    [class*="text-white"]:not([class*="bg-[#8E7AAE]"]):not([class*="bg-[#6E5B91]"]):not([class*="bg-lilac"]):not([class*="bg-navy"]):not(
       [class*="bg-rose"]
     ):not([class*="bg-emerald"]):not([class*="bg-amber"]):not(
       [class*="bg-blue"]
@@ -1937,7 +1947,7 @@ body.tebyan-focus-mode .tebyan-result-document {
 
   /* Lighten legacy dark sections, but never repaint text that sits on a
      deliberately dark surface — that turned dark buttons into blank slabs. */
-  main .text-white:not([class*="bg-["]):not([class*="bg-zinc-9"]):not(
+  main .text-white:not([class*="bg-["]):not([class*="bg-lilac"]):not([class*="bg-navy"]):not([class*="bg-zinc-9"]):not(
       [class*="bg-black"]
     ):not([class*="bg-slate-9"]):not([class*="bg-neutral-9"]):not(
       [class*="bg-mood-primary"]
@@ -4795,4 +4805,169 @@ main input:placeholder-shown {
     padding-inline: 0.6rem !important;
     gap: 0.3rem !important;
   }
+}
+
+
+@layer base {
+/* ==========================================================================
+   Tebyan final polish — shared result card, reveal and tool hints.
+   Presentational only. Motion is wrapped in no-preference.
+   ========================================================================== */
+.tbn-result {
+  position: relative;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(142, 122, 174, 0.28);
+  background: #fff;
+  box-shadow: 0 10px 30px -22px rgba(24, 34, 49, 0.25);
+  padding: 1.5rem 1.25rem 1.25rem;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .tbn-result { padding: 2rem 2.25rem 1.75rem; }
+}
+.tbn-result::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-lilac-soft), transparent);
+  opacity: 0.7;
+}
+.tbn-result__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-lilac);
+}
+.tbn-result__label::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-lilac-soft);
+}
+.tbn-result__body {
+  color: var(--color-navy);
+  font-size: 1.0625rem;
+  line-height: 1.95;
+}
+.tbn-result__body :where(h1, h2, h3, h4) {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--color-navy);
+  line-height: 1.5;
+  margin: 1.5rem 0 0.5rem;
+  padding-inline-start: 0.75rem;
+  border-inline-start: 3px solid var(--color-lilac-soft);
+}
+.tbn-result__body :is(h1) { font-size: 1.6rem !important; }
+.tbn-result__body :is(h2) { font-size: 1.4rem !important; }
+.tbn-result__body :is(h3, h4) { font-size: 1.25rem !important; }
+.tbn-result__body :is(p, li) {
+  color: #273548 !important;
+  font-size: 1.0625rem !important;
+  line-height: 1.95 !important;
+}
+.tbn-result__body :is(h1, h2, h3, h4) { line-height: 1.5 !important; }
+.tbn-result__body :where(p) { margin: 0 0 1rem; }
+.tbn-result__body :is(strong) { color: var(--color-navy) !important; font-weight: 800; }
+.tbn-result__body :where(ul, ol) { margin: 0.5rem 0 1rem; padding-inline-start: 1.4rem; }
+.tbn-result__body :where(li) { margin-bottom: 0.4rem; }
+.tbn-result__body :where(li)::marker { color: var(--color-lilac-soft); }
+.tbn-result__body > :first-child { margin-top: 0; }
+.tbn-result__body > :last-child { margin-bottom: 0; }
+.tbn-result__body :where(blockquote) {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: var(--color-lilac-mist);
+  border: 0;
+  color: var(--color-navy);
+}
+@keyframes tbn-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes tbn-draw-line {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes tbn-draw-line-x {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes tbn-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tbn-result__body > * {
+    animation: tbn-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .tbn-result__body > *:nth-child(2) { animation-delay: 70ms; }
+  .tbn-result__body > *:nth-child(3) { animation-delay: 140ms; }
+  .tbn-result__body > *:nth-child(4) { animation-delay: 210ms; }
+  .tbn-result__body > *:nth-child(5) { animation-delay: 280ms; }
+  .tbn-result__body > *:nth-child(6) { animation-delay: 350ms; }
+  .tbn-result__body > *:nth-child(7) { animation-delay: 420ms; }
+  .tbn-result__body > *:nth-child(8) { animation-delay: 490ms; }
+  .tbn-result__body > *:nth-child(n + 9) { animation-delay: 560ms; }
+  .tbn-reveal { animation: tbn-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .tbn-pop { animation: tbn-pop 0.45s ease-out both; }
+}
+
+/* Mind map: nested markdown list drawn as a tree with connector lines. */
+.tbn-tree ul { list-style: none; margin: 0.25rem 0; padding: 0; }
+.tbn-tree > ul { padding: 0; }
+.tbn-tree ul ul {
+  position: relative;
+  margin-inline-start: 0.75rem;
+  padding-inline-start: 1.5rem;
+  border-inline-start: 2px solid rgba(142, 122, 174, 0.35);
+}
+.tbn-tree li {
+  position: relative;
+  margin: 0.4rem 0;
+  padding: 0.15rem 0;
+}
+.tbn-tree li::marker { content: ""; }
+.tbn-tree ul ul > li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: -1.5rem;
+  top: 1.05rem;
+  width: 1.25rem;
+  height: 2px;
+  background: rgba(142, 122, 174, 0.35);
+}
+.tbn-tree ul ul > li:last-child { }
+.tbn-tree li > p { margin: 0; display: inline; font-size: inherit !important; color: inherit !important; }
+.tbn-tree li { font-size: inherit; }
+.tbn-tree > ul > li > p, .tbn-tree > ul > li > strong {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #fff;
+  background: var(--color-lilac);
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+}
+.tbn-tree > ul > li { font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem !important; line-height: 1.6 !important; color: var(--color-navy) !important; }
+.tbn-tree > ul > li > ul > li { font-weight: 700; font-size: 1.2rem !important; line-height: 1.6 !important; color: var(--color-lilac) !important; }
+.tbn-tree > ul > li > ul > li > ul > li { font-weight: 500; font-size: 1.05rem !important; line-height: 1.7 !important; color: var(--color-navy) !important; }
+.tbn-tree > ul > li > ul > li > ul > li::before { background: rgba(142, 122, 174, 0.25); }
+@media (prefers-reduced-motion: no-preference) {
+  .tbn-tree ul ul { animation: tbn-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.15s; }
+  .tbn-tree ul ul ul { animation-delay: 0.35s; }
+  .tbn-timeline-rail { transform-origin: right; animation: tbn-draw-line-x 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .tbn-timeline-rail-v { transform-origin: top; animation: tbn-draw-line 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
 }
