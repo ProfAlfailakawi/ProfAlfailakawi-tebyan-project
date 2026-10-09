@@ -222,7 +222,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
              <div className="flex flex-wrap gap-2 text-xs md:text-xs font-bold">
                <span className="bg-[#EAECE6] text-ink-mute px-3 py-1.5 rounded-full">{category?.title}</span>
                {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
-               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && ', '}<span className="inline-block" dir="ltr">{a}</span></React.Fragment>)}</span>
+               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && '، '}<span className="inline-block [unicode-bidi:isolate]" dir="ltr">{a}</span></React.Fragment>)}</span>
              </div>
              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-navy leading-snug lg:leading-tight flex-1 tracking-tight min-w-0">
@@ -437,13 +437,13 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               </div>
               
               <div className="bg-[#FAF0E6] rounded-[24px] p-8 border border-[#F2D7C8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                <h4 className="font-bold text-[#A6603F] mb-4 flex items-center gap-2 text-lg">
+                <h4 className="font-bold text-[#8A4D2E] mb-4 flex items-center gap-2 text-lg">
                   <Ban className="w-6 h-6" aria-hidden="true" /> لا تقل:
                 </h4>
                 <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.dontSayThis}"</p>
               </div>
               
-              <div className="bg-[#8E7AAE] text-white rounded-[24px] p-8 shadow-[0_12px_35px_rgba(24,34,49,0.06)] flex flex-col justify-center relative overflow-hidden">
+              <div className="bg-lilac text-white rounded-[24px] p-8 shadow-[0_12px_35px_rgba(24,34,49,0.06)] flex flex-col justify-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                 <div className="relative z-10">
                   <h4 className="font-bold text-[#EBEAE4] mb-4 flex items-center gap-2 text-lg">
