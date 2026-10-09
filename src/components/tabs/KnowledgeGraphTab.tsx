@@ -204,7 +204,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         {viewMode === 'list' && (
           <div className="tebyan-fabric-list mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             {nodes.filter(n => n.type !== 'core').map(node => (
-              <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className="tebyan-fabric-node-card text-right rounded-[24px] border border-[#8FA9C7]/16 bg-white/82 p-4 hover:border-[#8E7AAE]/30 transition-all">
+              <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className={cn("tebyan-fabric-node-card text-right rounded-[24px] border bg-white/82 p-4 transition-all", selectedNodes.find(n => n.id === node.id) ? "border-lilac ring-2 ring-lilac/40 bg-lilac-mist" : "border-[#8FA9C7]/16 hover:border-[#8E7AAE]/30")} aria-pressed={Boolean(selectedNodes.find(n => n.id === node.id))}>
                 <p className="text-xs font-black tracking-widest text-lilac mb-1">{language === 'ar' ? (({ concept: 'مفهوم', scientific: 'علمي', philosophical: 'فلسفي', practical: 'عملي', historical: 'تاريخي', golden: 'عقدة ذهبية', idea: 'فكرة' } as Record<string, string>)[node.category || node.type] || node.category || node.type) : (node.category || node.type)}</p>
                 <h4 className="font-black text-navy">{node.label}</h4>
                 <p className="text-xs font-bold text-ink-mute mt-2">{language === 'ar' ? 'اضغط لفتح البطاقة الجانبية والروابط.' : 'Tap to open the side card and links.'}</p>
@@ -534,14 +534,14 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                         </div>
 
                         <div className="relative flex flex-col items-center gap-4 my-8">
-                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform -rotate-2", selectedNodes[0].type === 'golden' ? "bg-amber-500/10 border-amber-500/20" : "bg-emerald-500/10 border-emerald-500/20")}>
-                                <span className={cn("font-bold", selectedNodes[0].type === 'golden' ? "text-amber-300" : "text-emerald-300")}>{selectedNodes[0].label}</span>
+                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform -rotate-2", selectedNodes[0].type === 'golden' ? "bg-[#A68F58]/15 border-[#A68F58]/40" : "bg-lilac-mist border-lilac-soft/50")}>
+                                <span className={cn("font-bold", selectedNodes[0].type === 'golden' ? "text-[#6F6238]" : "text-lilac")}>{selectedNodes[0].label}</span>
                             </div>
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-[#F7F5F2] z-10 text-lilac font-bold text-sm">
                                 +
                             </div>
-                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform rotate-2", selectedNodes[1].type === 'golden' ? "bg-amber-500/10 border-amber-500/20" : "bg-cyan-500/10 border-cyan-500/20")}>
-                                <span className={cn("font-bold", selectedNodes[1].type === 'golden' ? "text-amber-300" : "text-cyan-300")}>{selectedNodes[1].label}</span>
+                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform rotate-2", selectedNodes[1].type === 'golden' ? "bg-[#A68F58]/15 border-[#A68F58]/40" : "bg-lilac-mist border-lilac-soft/50")}>
+                                <span className={cn("font-bold", selectedNodes[1].type === 'golden' ? "text-[#6F6238]" : "text-lilac")}>{selectedNodes[1].label}</span>
                             </div>
                         </div>
 
@@ -553,7 +553,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
                         <button 
                             onClick={executeMerge}
-                            className="w-full flex items-center justify-center gap-3 py-5 bg-[#8E7AAE] hover:bg-[#806D9F] text-white rounded-2xl font-black transition-all active:scale-[0.98] shadow-xl shadow-emerald-500/20 text-lg"
+                            className="w-full flex items-center justify-center gap-3 py-5 bg-lilac hover:bg-lilac-deep text-white rounded-2xl font-black transition-all active:scale-[0.98] shadow-xl shadow-emerald-500/20 text-lg"
                         >
                             <Sparkles className="w-6 h-6" />
                             {language === 'ar' ? 'توليد الابتكار الآن' : 'Generate Innovation Now'}
