@@ -125,14 +125,14 @@ export const ServiceExplorer: React.FC<Props> = ({
       dir={isArabic ? "rtl" : "ltr"}
     >
       <header className="tebyan-service-hero mx-auto max-w-3xl pt-2 text-center md:pt-6">
-        <div className="tebyan-service-kicker mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/78 px-3.5 py-2 text-xs font-black text-[#6E5F8E] shadow-sm">
+        <div className="tebyan-service-kicker mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/78 px-3.5 py-2 text-sm font-bold text-[#6E5F8E] shadow-sm">
           <Sparkles className="h-4 w-4" />
           {isArabic ? "ابدأ من حاجتك" : "Start from your need"}
         </div>
-        <h1 className="tebyan-service-title text-[1.75rem] font-black tracking-tight text-[#182231] md:text-5xl">
+        <h1 className="tebyan-service-title font-serif text-[1.9rem] font-bold text-navy md:text-5xl">
           {isArabic ? "ما الذي تريد إنجازه؟" : "What do you need to do?"}
         </h1>
-        <p className="tebyan-service-intro mx-auto mt-2 max-w-2xl text-sm font-bold leading-7 text-[#64788D] md:mt-4 md:text-lg md:leading-8">
+        <p className="tebyan-service-intro mx-auto mt-2 max-w-2xl text-sm font-bold leading-7 text-ink-mute md:mt-4 md:text-lg md:leading-8">
           {isArabic
             ? "اختر ما يقربك من هدفك، أو اكتب حاجتك بكلماتك."
             : "Pick what fits your goal, or type your need in your own words."}
@@ -148,7 +148,7 @@ export const ServiceExplorer: React.FC<Props> = ({
               setQuery(event.target.value);
               if (event.target.value.trim()) setShowAll(false);
             }}
-            className="tebyan-service-search-input min-w-0 flex-1 border-0 bg-transparent py-3 text-[15px] font-bold text-[#182231] outline-none placeholder:text-[#7C8796]/60"
+            className="tebyan-service-search-input min-w-0 flex-1 border-0 bg-transparent py-3 text-[15px] font-bold text-navy outline-none placeholder:text-ink-mute/80"
             placeholder={
               isArabic
                 ? "اكتب حاجتك: قرار، شرح، خطة، فكرة…"
@@ -163,7 +163,7 @@ export const ServiceExplorer: React.FC<Props> = ({
 
       {!isDirectoryView && (
         <div className="tebyan-needs-grid mx-auto mt-7 grid max-w-4xl grid-cols-2 gap-3 md:mt-9 md:grid-cols-3">
-          {SERVICE_CATEGORIES.map((category) => {
+          {SERVICE_CATEGORIES.map((category, idx) => {
             const Icon = CATEGORY_ICONS[category.id];
             const count = TEBYAN_SERVICES.filter(
               (service) => service.category === category.id,
@@ -173,7 +173,8 @@ export const ServiceExplorer: React.FC<Props> = ({
                 key={category.id}
                 type="button"
                 onClick={() => setSelectedCategory(category.id)}
-                className="tebyan-need-card group relative min-h-[142px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_10px_28px_rgba(24,34,49,0.045)] transition-[transform,border-color,box-shadow] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+                style={{ ["--i" as any]: idx }}
+                className="tbn-stagger tebyan-need-card group relative min-h-[142px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_10px_28px_rgba(24,34,49,0.045)] transition-[transform,border-color,box-shadow] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
               >
                 <Icon
                   aria-hidden="true"
@@ -184,14 +185,14 @@ export const ServiceExplorer: React.FC<Props> = ({
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
                     <Icon className="h-5 w-5" strokeWidth={1.6} />
                   </span>
-                  <span className="rounded-full bg-[#F4F6F8] px-2.5 py-1 text-[11px] font-black text-[#7C8796]">
+                  <span className="rounded-full bg-[#F4F6F8] px-2.5 py-1 text-xs font-bold text-ink-mute">
                     {isArabic ? `${count} خيارات` : `${count} options`}
                   </span>
                 </div>
-                <h2 className="relative mt-3 text-[15px] font-black leading-6 text-[#182231] md:text-base">
+                <h2 className="relative mt-3 text-[15px] font-black leading-6 text-navy md:text-base">
                   {isArabic ? category.titleAr : category.titleEn}
                 </h2>
-                <p className="relative mt-1 text-[13px] font-bold leading-6 text-[#64788D]">
+                <p className="relative mt-1 text-sm font-semibold leading-6 text-ink-mute">
                   {isArabic ? category.descriptionAr : category.descriptionEn}
                 </p>
               </button>
@@ -205,7 +206,7 @@ export const ServiceExplorer: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => setShowAll(true)}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-[#64788D] shadow-sm transition-colors hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E]"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-ink-mute shadow-sm transition-colors hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E]"
           >
             <Grid3X3 className="h-4 w-4" />
             {isArabic ? "عرض جميع الخدمات" : "Show all services"}
@@ -217,7 +218,7 @@ export const ServiceExplorer: React.FC<Props> = ({
         <div className="tebyan-service-directory mx-auto mt-7 max-w-5xl md:mt-9">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div className="text-right">
-              <p className="text-[11px] font-black text-[#8E7AAE]">
+              <p className="text-xs font-bold text-lilac">
                 {selectedCategoryMeta
                   ? isArabic
                     ? selectedCategoryMeta.titleAr
@@ -226,7 +227,7 @@ export const ServiceExplorer: React.FC<Props> = ({
                     ? "المناسب لك"
                     : "Suggested for you"}
               </p>
-              <h2 className="mt-0.5 text-lg font-black text-[#182231] md:text-2xl">
+              <h2 className="mt-0.5 text-lg font-black text-navy md:text-2xl">
                 {query.trim()
                   ? isArabic
                     ? `نتائج “${query.trim()}”`
@@ -243,7 +244,7 @@ export const ServiceExplorer: React.FC<Props> = ({
             <button
               type="button"
               onClick={resetDirectory}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-[#64788D] shadow-sm"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-ink-mute shadow-sm"
             >
               {isArabic ? (
                 <ArrowRight className="h-4 w-4" />
@@ -255,14 +256,15 @@ export const ServiceExplorer: React.FC<Props> = ({
           </div>
 
           <div className="tebyan-service-grid grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {filteredServices.map((service) => {
+            {filteredServices.map((service, idx) => {
               const Icon = service.icon;
               return (
                 <button
                   type="button"
                   key={service.id}
                   onClick={() => handleTabChange(service.id)}
-                  className="tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+                  style={{ ["--i" as any]: Math.min(idx, 12) }}
+                  className={cn("tbn-stagger tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5", service.featured && "border-lilac/35 bg-lilac-mist/40")}
                 >
                   <div className="relative flex h-full flex-col">
                     <div className="flex items-start justify-between gap-3">
@@ -274,27 +276,27 @@ export const ServiceExplorer: React.FC<Props> = ({
                           role="img"
                           title={isArabic ? "مناسب للبداية" : "Good start"}
                           aria-label={isArabic ? "مناسب للبداية" : "Good start"}
-                          className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#4D766B]/70"
+                          className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-lilac shadow-[0_0_0_4px_rgba(110,91,145,0.14)]"
                         />
                       )}
                     </div>
-                    <h3 className="mt-3 text-[15px] font-black leading-6 text-[#182231] md:text-base">
+                    <h3 className="mt-3 text-[15px] font-black leading-6 text-navy md:text-base">
                       {getServiceBrand(service, language)}
                     </h3>
-                    <p className="mt-0.5 text-[11px] font-black text-[#8E7AAE]">
+                    <p className="mt-0.5 text-xs font-bold text-lilac">
                       {getServiceLabel(service, language)}
                     </p>
                     <p
                       title={getServiceDescription(service, language)}
-                      className="mt-1.5 line-clamp-1 flex-1 text-[13px] font-medium leading-6 text-[#64788D]"
+                      className="mt-1.5 line-clamp-2 flex-1 text-sm font-medium leading-6 text-ink-mute"
                     >
                       {getServiceDescription(service, language)}
                     </p>
-                    <span className="mt-2 inline-flex items-center gap-2 self-end text-[13px] font-black text-[#182231]">
+                    <span className="mt-2 inline-flex items-center gap-2 self-end text-[13px] font-black text-navy">
                       <span className="sr-only">{isArabic ? "افتح" : "Open"}</span>
                       <ArrowLeft
                         className={cn(
-                          "h-4 w-4 text-[#8E7AAE]",
+                          "h-4 w-4 text-lilac transition-transform group-hover:-translate-x-1 rtl:group-hover:-translate-x-1",
                           isArabic ? "" : "rotate-180",
                         )}
                       />
@@ -309,10 +311,10 @@ export const ServiceExplorer: React.FC<Props> = ({
 
       {isDirectoryView && !filteredServices.length && (
         <div className="mx-auto mt-8 max-w-3xl rounded-[24px] border border-[#8FA9C7]/14 bg-white/82 p-6 text-center">
-          <h2 className="text-lg font-black text-[#182231]">
+          <h2 className="text-lg font-black text-navy">
             {isArabic ? "ما لقينا نتيجة بهذه العبارة" : "No matching result"}
           </h2>
-          <p className="mt-2 text-sm font-bold leading-7 text-[#64788D]">
+          <p className="mt-2 text-sm font-bold leading-7 text-ink-mute">
             {isArabic
               ? "جرّب كلمة أبسط مثل: قرار، شرح، خطة أو فكرة."
               : "Try a simpler word such as decision, explain, plan, or idea."}

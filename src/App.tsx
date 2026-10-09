@@ -351,7 +351,7 @@ const SplashScreen = ({
         opacity: 0,
         transition: { duration: 0.5, ease: "easeInOut" },
       }}
-      className="fixed inset-0 z-[99999] bg-[#F8F5EF] flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[99999] bg-ivory flex flex-col items-center justify-center"
       // خلفية وz-index مثبّتان inline أيضًا: غطاء الافتتاحية يجب ألا يعتمد على توليد
       // كلاسات Tailwind الاعتباطية — أي فشل فيها يجعل الغطاء شفافًا فتظهر العلامة فوق نص الصفحة.
       style={{ backgroundColor: "#F8F5EF", zIndex: 99999 }}
@@ -363,7 +363,7 @@ const SplashScreen = ({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
-            className="font-serif text-5xl font-bold text-[#182231] tracking-tight"
+            className="font-serif text-5xl font-bold text-navy tracking-tight"
           >
             تبيان
           </motion.h1>
@@ -371,7 +371,7 @@ const SplashScreen = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.25, duration: 0.5 }}
-            className="text-[#7C8796] font-medium text-sm"
+            className="text-ink-mute font-medium text-sm"
           >
             {language === "ar" ? "نورٌ لما تريد فهمه" : "Light for what you seek"}
           </motion.p>
@@ -420,7 +420,7 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => (
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.35, ease: "easeOut" }}
-    className="fixed inset-0 z-[9999] flex items-end justify-center p-4 md:items-center bg-[#F8F5EF]/62 backdrop-blur-[6px]"
+    className="fixed inset-0 z-[9999] flex items-end justify-center p-4 md:items-center bg-ivory/62 backdrop-blur-[6px]"
     dir={language === "ar" ? "rtl" : "ltr"}
   >
     <motion.div
@@ -441,15 +441,15 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => (
           <WifiOff className="h-6 w-6" />
         </div>
         <div className="min-w-0 text-right">
-          <p className="text-[11px] font-black tracking-[0.22em] uppercase text-[#A6603F]/75">
+          <p className="text-xs font-black tracking-[0.22em] uppercase text-[#A6603F]/75">
             {language === "ar" ? "وضع الحفاظ على المسار" : "Path-preserve mode"}
           </p>
-          <h3 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">
+          <h3 className="mt-1 text-xl md:text-2xl font-black text-navy">
             {language === "ar"
               ? "الاتصال انقطع… لكن الفكرة لم تضِع"
               : "Connection paused… the idea is safe"}
           </h3>
-          <p className="mt-2 text-sm font-bold leading-relaxed text-[#7C8796]">
+          <p className="mt-2 text-sm font-bold leading-relaxed text-ink-mute">
             {language === "ar"
               ? "لا نعيد السبلاش الافتتاحي هنا. تبيان يحفظ حالتك الحالية، وعند عودة الشبكة نكمل من نفس الباب."
               : "We do not replay the opening splash here. Tebyan keeps your state and resumes from the same doorway when the network returns."}
@@ -1239,7 +1239,7 @@ const AppContent: React.FC = () => {
   return (
     <div
       className={cn(
-        "h-[100dvh] tebyan-living-background font-sans flex flex-col overflow-hidden text-[#182231] selection:bg-zinc-200 selection:text-black",
+        "h-[100dvh] tebyan-living-background font-sans flex flex-col overflow-hidden text-navy selection:bg-zinc-200 selection:text-black",
         language === "ar" ? "rtl" : "ltr",
       )}
       dir={language === "ar" ? "rtl" : "ltr"}
@@ -1351,12 +1351,12 @@ const AppContent: React.FC = () => {
               >
                 <div className="flex items-center gap-2 mb-2 text-[#6E5F8E] border-b border-[#8E7AAE]/10 pb-2">
                   <HelpCircle className="w-5 h-5 shrink-0" />
-                  <span className="text-sm font-black text-[#182231]">
+                  <span className="text-sm font-black text-navy">
                     {helpData.title}
                   </span>
                 </div>
 
-                <p className="text-xs font-bold leading-relaxed text-[#64788D] mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[#8E7AAE]/5">
+                <p className="text-xs font-bold leading-relaxed text-ink-mute mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[#8E7AAE]/5">
                   {helpData.intro}
                 </p>
 
@@ -1364,9 +1364,9 @@ const AppContent: React.FC = () => {
                   {helpData.steps.map((step, idx) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-2 text-xs font-semibold leading-relaxed text-[#465568]"
+                      className="flex items-start gap-2 text-xs font-semibold leading-relaxed text-ink-soft"
                     >
-                      <span aria-hidden="true" className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#EFEAF6] text-[10px] font-black text-[#6E5B91]">
+                      <span aria-hidden="true" className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-lilac-mist text-xs font-black text-lilac">
                         {idx + 1}
                       </span>
                       <span>{step}</span>
@@ -1374,7 +1374,7 @@ const AppContent: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-[11px] font-bold text-[#6E5F8E] leading-relaxed flex items-start gap-1.5">
+                <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-xs font-bold text-[#6E5F8E] leading-relaxed flex items-start gap-1.5">
                   <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{helpData.tip}</span>
                 </div>
@@ -1428,7 +1428,7 @@ const AppContent: React.FC = () => {
             <div className="w-10 h-10 bg-white/90 border border-[#8E7AAE]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
               <TebyanMark size={26} />
             </div>
-            <span className="font-serif text-2xl font-bold text-[#182231] tracking-tight transition-colors group-hover:text-mood-primary">
+            <span className="font-serif text-2xl font-bold text-navy tracking-tight transition-colors group-hover:text-mood-primary">
               تبيان
             </span>
           </button>
@@ -1443,7 +1443,7 @@ const AppContent: React.FC = () => {
             <div
               role="status"
               aria-label={language === "ar" ? "بيئة تجريبية معزولة" : "Isolated demo environment"}
-              className="flex items-center gap-0.5 rounded-xl border border-amber-300/35 bg-amber-50/70 px-1.5 py-0.5 text-[11px] font-bold text-amber-800/80 shadow-none"
+              className="flex items-center gap-0.5 rounded-xl border border-amber-300/35 bg-amber-50/70 px-1.5 py-0.5 text-xs font-bold text-amber-800/80 shadow-none"
             >
               <FlaskConical className="w-3.5 h-3.5" aria-hidden="true" />
               <span className="hidden sm:inline">{language === "ar" ? "بيئة تجريبية" : "DEMO"}</span>

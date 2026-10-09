@@ -122,7 +122,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
               "px-5 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer border",
               oraclePersona === p.id 
                 ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
-                : "bg-white text-[#465568] border-[#8FA9C7]/40 hover:border-zinc-300 hover:text-[#182231]"
+                : "bg-white text-ink-soft border-[#8FA9C7]/40 hover:border-zinc-300 hover:text-navy"
             )}
           >
             {language === 'ar' ? p.ar : p.en}
@@ -134,7 +134,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
-            "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-[#7C8796] rounded-[16px] border border-[#8FA9C7]/40 focus:border-[#8E7AAE] focus:ring-4 focus:ring-[#6e5f8e]/10 outline-none transition-all",
+            "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-ink-mute rounded-[16px] border border-[#8FA9C7]/40 focus:border-[#8E7AAE] focus:ring-4 focus:ring-[#6e5f8e]/10 outline-none transition-all",
             language === 'ar' ? "pl-32 max-md:!pl-[6.75rem]" : "pr-32 max-md:!pr-[6.75rem]"
           )}
           placeholder={language === 'ar' ? "اسأل تبيان بأي لهجة..." : "Ask Tebyan..."}
@@ -146,7 +146,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           className={cn(
             "tebyan-run-action absolute top-3 bottom-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2",
             language === 'ar' ? "left-3" : "right-3",
-            isLoading ? "bg-zinc-200 text-[#64788D] cursor-not-allowed" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
+            isLoading ? "bg-zinc-200 text-ink-mute cursor-not-allowed" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer"
           )}
         >
           {isLoading ? (
@@ -183,15 +183,15 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             {/* Fluid Bridges */}
             <div className="flex flex-wrap gap-2 mt-4">
                  <button onClick={() => handleTabChange('timemachine', input)} className="dna-btn text-sm font-bold">
-                     <History className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
+                     <History className="w-4 h-4 text-lilac" aria-hidden="true" />
                      {language === 'ar' ? getGenderWord(userGender, 'خذ هذه الفكرة لآلة الزمن', 'خذي هذه الفكرة لآلة الزمن', 'خذ هذه الفكرة لآلة الزمن') : 'Take to Time Machine'}
                  </button>
                  <button onClick={() => handleTabChange('simulation', input)} className="dna-btn text-sm font-bold">
-                     <FlaskConical className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
+                     <FlaskConical className="w-4 h-4 text-lilac" aria-hidden="true" />
                      {language === 'ar' ? getGenderWord(userGender, 'اختبرها في المحاكي', 'اختبريها في المحاكي', 'اختبرها في المحاكي') : 'Test in Simulator'}
                  </button>
                  <button onClick={() => handleTabChange('mindmap', input)} className="dna-btn text-sm font-bold">
-                     <Network className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
+                     <Network className="w-4 h-4 text-lilac" aria-hidden="true" />
                      {language === 'ar' ? getGenderWord(userGender, 'فككها في الخريطة الذهنية', 'فككيها في الخريطة الذهنية', 'فككها في الخريطة الذهنية') : 'Breakdown in Mindmap'}
                  </button>
             </div>
@@ -217,7 +217,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
                   "flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all",
                   preferences.savedLibrary.some(s => s.content === oracleResult)
                     ? "bg-[#8E7AAE] text-white"
-                    : "bg-[#F1EEF4] text-[#465568] hover:bg-zinc-200"
+                    : "bg-[#F1EEF4] text-ink-soft hover:bg-zinc-200"
                 )}
               >
                 {preferences.savedLibrary.some(s => s.content === oracleResult) ? (

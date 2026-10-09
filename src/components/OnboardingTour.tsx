@@ -230,7 +230,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
               <div className="mb-2 flex justify-center">
                 <ProgressiveMark stage={step} />
               </div>
-              <p className="mb-6 text-[11px] font-bold tracking-wide text-[#A68F58]">
+              <p className="mb-6 text-xs font-bold tracking-wide text-[#A68F58]">
                 {current.hint}
               </p>
 

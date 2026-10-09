@@ -108,10 +108,10 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
             className="flex flex-col items-center justify-center space-y-6 py-20"
           >
             <TebyanLoader size={48} label={language === 'ar' ? 'جاري إعداد الاختبار' : 'Preparing the quiz'} />
-            <div className="font-serif text-2xl md:text-3xl font-bold text-[#182231] text-center">
+            <div className="font-serif text-2xl md:text-3xl font-bold text-navy text-center">
               {language === 'ar' ? 'جاري تأسيس الاختبار...' : 'Generating quiz...'}
             </div>
-            <div className="px-6 py-3 bg-lilac-mist text-[#465568] rounded-full font-semibold text-center">
+            <div className="px-6 py-3 bg-lilac-mist text-ink-soft rounded-full font-semibold text-center">
               {language === 'ar' ? getGenderWord(userGender, 'نحن نعد لك أسئلة مخصصة لتقييم فهمك', 'نحن نعد لكِ أسئلة مخصصة لتقييم فهمكِ', 'نحن نعد أسئلة مخصصة لتقييم فهمك') : 'We are preparing custom questions to assess your understanding'}
             </div>
           </motion.div>
@@ -119,7 +119,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
           <>
             {!questions.length ? (
               <div className="space-y-4">
-                <p className="text-[#465568] font-bold">{language === 'ar' ? 'أدخل الموضوع الذي جئت من أجله لإنشاء الاختبار المخصص لك:' : 'Enter the topic you came for to create your custom quiz:'}</p>
+                <p className="text-ink-soft font-bold">{language === 'ar' ? 'أدخل الموضوع الذي جئت من أجله لإنشاء الاختبار المخصص لك:' : 'Enter the topic you came for to create your custom quiz:'}</p>
 <DemoStarters tab="quiz" language={language} onPick={setQuizTopic} className="mb-3" />
                 <input 
                   value={quizTopic} 
@@ -133,7 +133,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                   title={language === 'ar' ? 'بدء إنشاء الاختبار الذكي' : 'Start smart quiz generation'}
                   className={cn(
                     "w-full py-5 rounded-[16px] font-bold text-xl shadow-lg transition-all flex items-center justify-center gap-3",
-                    isLoading ? "bg-zinc-400 cursor-not-allowed" : "bg-[#6E5B91] text-white hover:bg-[#5F4E7F] cursor-pointer"
+                    isLoading ? "bg-zinc-400 cursor-not-allowed" : "bg-lilac text-white hover:bg-lilac-deep cursor-pointer"
                   )}
                 >
                   {isLoading ? (
@@ -160,20 +160,20 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                     size={132}
                     stroke={9}
                     tone="lilac"
-                    label={<span className="flex flex-col items-center gap-1 text-[#182231]">{score === questions.length ? <Crown className="w-7 h-7 text-[#6E5B91]" aria-hidden="true" /> : <PartyPopper className="w-7 h-7 text-[#6E5B91]" aria-hidden="true" />}<span className="text-xl font-black" dir="ltr">{score}/{questions.length}</span></span>}
+                    label={<span className="flex flex-col items-center gap-1 text-navy">{score === questions.length ? <Crown className="w-7 h-7 text-lilac" aria-hidden="true" /> : <PartyPopper className="w-7 h-7 text-lilac" aria-hidden="true" />}<span className="text-xl font-black" dir="ltr">{score}/{questions.length}</span></span>}
                     ariaLabel={language === 'ar' ? `النتيجة: ${score} من ${questions.length}` : `Score: ${score} of ${questions.length}`}
                   />
                 </div>
                 <div className="space-y-2">
-                   <h3 className="text-3xl md:text-4xl font-bold text-[#182231]">{language === 'ar' ? 'اكتمل الاختبار!' : 'Quiz Completed!'}</h3>
-                   <p className="text-xl font-bold text-[#465568]">
+                   <h3 className="text-3xl md:text-4xl font-bold text-navy">{language === 'ar' ? 'اكتمل الاختبار!' : 'Quiz Completed!'}</h3>
+                   <p className="text-xl font-bold text-ink-soft">
                      {language === 'ar' ? `نتيجتك النهائية: ${score} من ${questions.length}` : `Your final score: ${score} out of ${questions.length}`}
                    </p>
                 </div>
                 <div className="flex flex-wrap gap-4 justify-center">
                    <button 
                      onClick={reset}
-                     className="px-8 py-4 bg-[#6E5B91] text-white rounded-[16px] font-bold shadow-lg hover:bg-[#5F4E7F] transition-all cursor-pointer"
+                     className="px-8 py-4 bg-lilac text-white rounded-[16px] font-bold shadow-lg hover:bg-lilac-deep transition-all cursor-pointer"
                     >
                       {language === 'ar' ? 'اختبار جديد' : 'New Quiz'}
                     </button>
@@ -185,8 +185,8 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 <div className="flex justify-between items-center">
                   <div className="space-x-4">
                     <span className="font-bold text-lilac">{language === 'ar' ? `السؤال ${currentQuestionIndex + 1} من ${questions.length}` : `Question ${currentQuestionIndex + 1} of ${questions.length}`}</span>
-                    <span className="text-[#8A97A6] font-bold ml-4">|</span>
-                    <span className="text-[#465568] font-bold ml-4">{language === 'ar' ? `النتيجة: ${score}` : `Score: ${score}`}</span>
+                    <span className="text-ink-mute font-bold ml-4">|</span>
+                    <span className="text-ink-soft font-bold ml-4">{language === 'ar' ? `النتيجة: ${score}` : `Score: ${score}`}</span>
                   </div>
                   <button 
                     onClick={reset} 
@@ -202,7 +202,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 </div>
                 
                 <div className="p-8 border-2 border-lilac-soft/25 rounded-[24px] md:rounded-[32px] space-y-6">
-                  <h3 className="font-serif text-2xl md:text-3xl font-bold text-[#182231] leading-snug">{questions[currentQuestionIndex].question}</h3>
+                  <h3 className="font-serif text-2xl md:text-3xl font-bold text-navy leading-snug">{questions[currentQuestionIndex].question}</h3>
                   
                   <div className="grid gap-3">
                     {questions[currentQuestionIndex].options?.map((opt: string, i: number) => {
@@ -258,8 +258,8 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                     className={cn(
                       "flex-1 py-5 rounded-[16px] font-bold text-xl transition-all shadow-lg",
                       showFeedback 
-                        ? "bg-[#6E5B91] text-white cursor-pointer hover:bg-[#5F4E7F]" 
-                        : "bg-lilac-mist text-[#64788D] cursor-not-allowed"
+                        ? "bg-lilac text-white cursor-pointer hover:bg-lilac-deep" 
+                        : "bg-lilac-mist text-ink-mute cursor-not-allowed"
                     )}
                   >
                     {currentQuestionIndex === questions.length - 1 ? (language === 'ar' ? 'عرض النتيجة النهائية' : 'Show Final Results') : (language === 'ar' ? 'السؤال التالي' : 'Next Question')}

@@ -137,7 +137,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                 >
                     <div className="flex items-center gap-10">
                         <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-mood-primary/40 to-transparent" />
-                        <p className="text-white/60 font-black text-[10px] md:text-xs uppercase tracking-[0.8em] flex items-center gap-2">
+                        <p className="text-white/60 font-black text-xs md:text-xs uppercase tracking-[0.8em] flex items-center gap-2">
                             {idea.author}
                         </p>
                         <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-mood-primary/40 to-transparent" />
@@ -153,7 +153,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                                 {language === 'ar' ? 'منارة التبيان' : 'TABYAN LIGHTHOUSE'}
                             </span>
                         </motion.div>
-                        <p className="text-[10px] text-white/20 font-bold uppercase tracking-[0.3em] opacity-60 group-hover:opacity-100 transition-opacity">
+                        <p className="text-xs text-white/20 font-bold uppercase tracking-[0.3em] opacity-60 group-hover:opacity-100 transition-opacity">
                             {language === 'ar' ? 'تأمل في لجة الفكر • التركيز العميق' : 'DEEP CONTEMPLATION • FOCUS MODE'}
                         </p>
                     </div>

@@ -212,7 +212,7 @@ export const TebyanHeroEntrance = ({
             ? { delay: 1.85, duration: 0.55, ease: EASE }
             : { duration: 0.55, ease: EASE }
         }
-        className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-[#182231]"
+        className="font-serif text-4xl md:text-5xl font-bold tracking-tight text-navy"
         dir="rtl"
       >
         تبيان

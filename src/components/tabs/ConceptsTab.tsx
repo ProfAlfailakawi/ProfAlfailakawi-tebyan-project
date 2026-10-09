@@ -84,14 +84,14 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className={cn("rounded-[32px] p-8 border shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 transition-all duration-700", isBrutalMode ? "bg-white border-[#6E5B91]/30" : "bg-white border-zinc-200/80")}>
+    <div className={cn("rounded-[32px] p-8 border shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 transition-all duration-700", isBrutalMode ? "bg-white border-lilac/30" : "bg-white border-zinc-200/80")}>
       <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-4">
-        <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-[#6E5B91]" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
+        <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-lilac" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
       </div>
 <DemoStarters tab="concepts" language={language} onPick={setInput} className="mb-3" />
       <textarea 
         value={input} onChange={(e) => setInput(e.target.value)}
-        className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-white border-[#6E5B91]/30 text-[#182231] placeholder:text-[#8A97A6] focus:border-[#6E5B91]/30 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-[#64788D]")}
+        className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-white border-lilac/30 text-navy placeholder:text-ink-mute focus:border-lilac/30 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-ink-mute")}
         placeholder={language === 'ar' ? "أدخل المفهوم المعقد هنا..." : "Enter complex concept here..."}
       />
       
@@ -101,7 +101,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           disabled={isLoading}
           className={cn(
             "flex-1 py-4 rounded-xl font-semibold text-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
-            isLoading ? "bg-zinc-200 text-[#64788D] cursor-not-allowed" : "bg-[#6E5B91] text-white hover:bg-[#5F4E7F] cursor-pointer"
+            isLoading ? "bg-zinc-200 text-ink-mute cursor-not-allowed" : "bg-lilac text-white hover:bg-lilac-deep cursor-pointer"
           )}
         >
           {isLoading ? (
@@ -118,7 +118,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           disabled={isLoading}
           className={cn(
             "flex-1 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3",
-            isLoading ? "bg-white text-[#8A97A6] border border-[#182231]/10 cursor-not-allowed" : "bg-white text-[#6E5B91] border border-[#6E5B91]/30 hover:bg-[#EFEAF6] cursor-pointer"
+            isLoading ? "bg-white text-ink-mute border border-navy/10 cursor-not-allowed" : "bg-white text-lilac border border-lilac/30 hover:bg-lilac-mist cursor-pointer"
           )}
         >
           {isLoading && isBrutalMode ? (
@@ -166,8 +166,8 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
               className={cn(
                 "w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all",
                 preferences.savedLibrary.some((s: any) => s.type === 'concept' && s.content === output)
-                  ? "bg-[#6E5B91] text-white"
-                  : "bg-zinc-100 text-[#64788D] hover:bg-zinc-200"
+                  ? "bg-lilac text-white"
+                  : "bg-zinc-100 text-ink-mute hover:bg-zinc-200"
               )}
             >
               {preferences.savedLibrary.some((s: any) => s.type === 'concept' && s.content === output) ? (

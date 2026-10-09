@@ -4978,3 +4978,7 @@ main input:placeholder-shown {
 @media (prefers-reduced-motion: no-preference) {
   .tbn-roadmap-line { transform-origin: top; animation: tbn-draw-line 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tbn-stagger { animation: tbn-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i, 0) * 55ms); }
+}

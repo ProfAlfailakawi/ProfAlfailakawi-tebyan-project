@@ -312,7 +312,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                  <button 
                   type="submit" 
                   disabled={isSearching || isGenerating} 
-                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-bold text-base md:text-lg transition-all disabled:opacity-50 z-10"
+                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-lilac hover:bg-lilac-deep text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-bold text-base md:text-lg transition-all disabled:opacity-50 z-10"
                  >
                    {isSearching ? 'جاري البحث...' : 'اكتشف'}
                  </button>
@@ -382,7 +382,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Bento Grid Features */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
-          <div className="lg:col-span-8 relative overflow-hidden bg-[#F8F5EF] rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-[#182231] flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[#E7DED2] group text-right">
+          <div className="lg:col-span-8 relative overflow-hidden bg-ivory rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-navy flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[#E7DED2] group text-right">
             <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-105 opacity-70">
               <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-[#C68B6A]" />
             </div>
@@ -397,12 +397,12 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 تواجه موقفاً <br className="hidden md:block"/> 
                 <span className="text-[#9A6042]">حرجاً وصعباً؟</span>
               </h2>
-              <p className="text-[#64788D] text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
+              <p className="text-ink-mute text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
                 في لحظات الانفعال، نحتاج للهدوء والحكمة. قسم الطوارئ يوفر لك حلولاً سريعة ومجربة للمواقف والطوارئ الضاغطة.
               </p>
               <button 
                 onClick={onEmergency}
-                className="bg-[#6E5B91] text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-[#5F4E7F] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
+                className="bg-lilac text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-lilac-deep hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
               >
                 <AlertCircle className="w-5 h-5 md:w-6 md:h-6" />
                 دليل الطوارئ
@@ -500,7 +500,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   className="dna-surface group text-right p-3 md:p-5 flex flex-col items-start gap-3 min-h-[118px] md:min-h-[160px] transition-transform hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer z-50 pointer-events-auto"
                 >
                   {(() => { const meta = QAWL_CATEGORY_TILES[category.id] || { icon: Library, tone: 'lilac' as const }; const Icon = meta.icon; return <DnaIconTile icon={<Icon />} tone={meta.tone} size="md" />; })()}
-                  <h4 className="font-bold text-[0.82rem] sm:text-[0.95rem] md:text-lg text-[#182231] leading-snug line-clamp-2">{category.title}</h4>
+                  <h4 className="font-bold text-[0.82rem] sm:text-[0.95rem] md:text-lg text-navy leading-snug line-clamp-2">{category.title}</h4>
                   <span className="mt-auto">
                     <DnaCount value={count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"} icon={count > 0 ? <BookOpenCheck className="w-3.5 h-3.5" /> : <Clock3 className="w-3.5 h-3.5" />} />
                   </span>

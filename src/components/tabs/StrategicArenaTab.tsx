@@ -19,9 +19,9 @@ const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }
         className
       )}
     >
-      <div className="flex items-center gap-2 mb-4 text-[#7C8796]">
+      <div className="flex items-center gap-2 mb-4 text-ink-mute">
         <Icon className="w-4 h-4" />
-        <span className={language === 'ar' ? "text-xs font-black" : "text-[11px] font-black uppercase tracking-widest"}>{language === 'ar' ? 'مكوّن تفاعلي' : 'Interactive Component'}</span>
+        <span className={language === 'ar' ? "text-xs font-black" : "text-xs font-black uppercase tracking-widest"}>{language === 'ar' ? 'مكوّن تفاعلي' : 'Interactive Component'}</span>
       </div>
       {children}
     </motion.div>
@@ -36,7 +36,7 @@ const EmotionalLandscape = ({ language }: { language: 'ar' | 'en' }) => {
         <div className="absolute inset-0 bg-gradient-to-br from-mood-primary/5 to-transparent pointer-events-none" />
         <div className="flex items-center gap-2 mb-6 relative">
           <Activity className="w-5 h-5 text-mood-primary" />
-          <h3 className={language === 'ar' ? "text-sm font-black text-[#182231]" : "text-sm font-black text-[#182231] uppercase tracking-widest"}>
+          <h3 className={language === 'ar' ? "text-sm font-black text-navy" : "text-sm font-black text-navy uppercase tracking-widest"}>
             {language === 'ar' ? 'الموجات العاطفية للقرار' : 'DECISION EMOTIONAL LANDSCAPE'}
           </h3>
         </div>
@@ -68,8 +68,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
       <div className="bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 rounded-[32px] p-5 md:p-6 shadow-sm space-y-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="text-right">
-            <h2 className="text-lg md:text-xl font-black text-[#182231]">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
-            <p className="text-xs md:text-sm text-[#64788D] font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات مرتبة بوضوح، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four clear gates, each leading to a different depth without hiding any feature.'}</p>
+            <h2 className="text-lg md:text-xl font-black text-navy">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
+            <p className="text-xs md:text-sm text-ink-mute font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات مرتبة بوضوح، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four clear gates, each leading to a different depth without hiding any feature.'}</p>
           </div>
         </div>
       <div className="space-y-3">
@@ -78,7 +78,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
           onClick={() => setShowArenaPicker(v => !v)}
           className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
         >
-          <div className="flex items-center gap-3 font-black text-[#182231]">
+          <div className="flex items-center gap-3 font-black text-navy">
             {React.createElement(activeArenaTab.icon, { className: 'w-5 h-5 text-[#8E7AAE]' })}
             <span>{activeArenaTab.label}</span>
           </div>
@@ -94,8 +94,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                   key={tab.id}
                   onClick={() => { setActiveSubTab(tab.id as any); setShowArenaPicker(false); }}
                   className={cn(
-                    "flex items-center justify-between gap-3 px-3 md:px-5 py-3.5 md:py-4 rounded-[18px] md:rounded-[22px] font-bold text-[11px] md:text-sm transition-all text-right border min-h-[82px] md:min-h-[88px]",
-                    isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-[#465568] hover:bg-[#FAF9F6]/88 border-[#8FA9C7]/15 hover:border-zinc-300"
+                    "flex items-center justify-between gap-3 px-3 md:px-5 py-3.5 md:py-4 rounded-[18px] md:rounded-[22px] font-bold text-xs md:text-sm transition-all text-right border min-h-[82px] md:min-h-[88px]",
+                    isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-ink-soft hover:bg-[#FAF9F6]/88 border-[#8FA9C7]/15 hover:border-zinc-300"
                   )}
                 >
                   <span className={cn("w-10 h-10 md:w-11 md:h-11 rounded-[14px] flex items-center justify-center shrink-0 border transition-all", isActive ? "bg-white/14 border-white/16" : "bg-white border-[#8FA9C7]/18 text-[#6E5F8E]")}>
@@ -129,7 +129,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                      
                      <button 
                         onClick={() => setActiveSubTab('council')}
-                        className="absolute top-6 left-6 px-4 py-2 bg-white text-[#64788D] font-bold text-xs rounded-full border border-[#8FA9C7]/25 hover:border-[#8E7AAE] hover:text-[#182231] z-50 flex items-center gap-2"
+                        className="absolute top-6 left-6 px-4 py-2 bg-white text-ink-mute font-bold text-xs rounded-full border border-[#8FA9C7]/25 hover:border-[#8E7AAE] hover:text-navy z-50 flex items-center gap-2"
                      >
                         ← {language === 'ar' ? 'رجوع' : 'Back'}
                      </button>
@@ -142,22 +142,22 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                         <div className="col-span-12 md:col-span-8 relative h-full flex items-center justify-center">
                            <PhysicsCard language={language} icon={BrainCircuit} className="top-10 left-10 border-blue-200">
                               <h4 className="font-black text-lg mb-2 text-blue-600">{language === 'ar' ? 'البنية المنطقية' : 'Logical Structure'}</h4>
-                              <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? 'تنظيم الأفكار المعقدة' : 'Organizing complex ideas'}</p>
+                              <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'تنظيم الأفكار المعقدة' : 'Organizing complex ideas'}</p>
                            </PhysicsCard>
 
                            <PhysicsCard language={language} icon={Hourglass} className="bottom-20 right-10 border-amber-200">
                               <h4 className="font-black text-lg mb-2 text-[#8B7B4E]">{language === 'ar' ? 'الجدول الزمني' : 'Timeline'}</h4>
-                              <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? 'توقع النتائج المستقبلية' : 'Forecasting future results'}</p>
+                              <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'توقع النتائج المستقبلية' : 'Forecasting future results'}</p>
                            </PhysicsCard>
 
                            <PhysicsCard language={language} icon={Move} className="top-1/3 left-1/3 border-emerald-200">
                               <h4 className="font-black text-lg mb-2 text-[#5F837A]">{language === 'ar' ? 'ديناميكيات الحركة' : 'Motion Dynamics'}</h4>
-                              <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? 'الاستجابة للمتغيرات' : 'Responding to variables'}</p>
+                              <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'الاستجابة للمتغيرات' : 'Responding to variables'}</p>
                            </PhysicsCard>
                            
                            <PhysicsCard language={language} icon={Gamepad2} className="bottom-1/4 left-10 border-purple-200">
                               <h4 className="font-black text-lg mb-2 text-purple-600">{language === 'ar' ? 'قواعد اللعبة' : 'Game Rules'}</h4>
-                              <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? 'تعديل سياسات العمل' : 'Adjusting work policies'}</p>
+                              <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'تعديل سياسات العمل' : 'Adjusting work policies'}</p>
                            </PhysicsCard>
 
                            <div className="text-center space-y-4">
@@ -167,7 +167,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                               <h3 className="font-black text-zinc-300 uppercase tracking-widest text-sm">
                                 {language === 'ar' ? 'مساحة المحاكاة الفراغية' : 'SPATIAL SIMULATION ARENA'}
                               </h3>
-                              <p className="text-[11px] text-[#7C8796] font-bold italic">
+                              <p className="text-xs text-ink-mute font-bold italic">
                                 {language === 'ar' ? 'قم بسحب المكونات لتركيب الاستراتيجية' : 'Drag components to assemble strategy'}
                               </p>
                            </div>

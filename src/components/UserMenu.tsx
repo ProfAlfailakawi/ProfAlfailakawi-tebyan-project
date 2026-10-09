@@ -99,7 +99,7 @@ export default function UserMenu() {
                             }
                         }}
                     />
-                    <p className="text-[10px] text-amber-600 font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
+                    <p className="text-xs text-amber-600 font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
                 </div>
               )}
             </div>

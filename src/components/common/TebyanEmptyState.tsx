@@ -36,13 +36,13 @@ export const TebyanEmptyState: React.FC<TebyanEmptyStateProps> = ({
       <div className="relative z-10 mx-auto mb-3 w-12 h-12 rounded-full bg-transparent border border-[#8E7AAE]/18 flex items-center justify-center text-[#8E7AAE]/70">
         <Icon className="w-5 h-5" strokeWidth={1.4} />
       </div>
-      <h3 className="relative z-10 text-base md:text-lg font-black text-[#182231] tracking-tight mb-1.5">{title}</h3>
-      <p className="relative z-10 text-[13px] font-semibold text-[#7C8796] leading-relaxed max-w-md mx-auto">{description}</p>
+      <h3 className="relative z-10 text-base md:text-lg font-black text-navy tracking-tight mb-1.5">{title}</h3>
+      <p className="relative z-10 text-[13px] font-semibold text-ink-mute leading-relaxed max-w-md mx-auto">{description}</p>
       {actionLabel && onAction && (
         <button
           type="button"
           onClick={onAction}
-          className="relative z-10 mt-4 px-5 py-2.5 rounded-xl bg-[#6E5B91] hover:bg-[#5F4E7F] text-white font-black text-sm transition-all active:scale-95 inline-flex items-center gap-2"
+          className="relative z-10 mt-4 px-5 py-2.5 rounded-xl bg-lilac hover:bg-lilac-deep text-white font-black text-sm transition-all active:scale-95 inline-flex items-center gap-2"
         >
           {actionLabel}
           <ArrowLeft className={cn('w-4 h-4', !isAr && 'rotate-180')} />

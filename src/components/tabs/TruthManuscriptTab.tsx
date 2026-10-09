@@ -293,9 +293,9 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="عن ماذا تبحث الحكمة؟"
-            className="flex-1 min-w-0 bg-white/50 border border-[#182231]/10 rounded-xl px-4 py-3 placeholder-[#8A97A6] text-[#182231] font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="flex-1 min-w-0 bg-white/50 border border-navy/10 rounded-xl px-4 py-3 placeholder-[#8A97A6] text-navy font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
          />
-         <button type="submit" disabled={isLoading} className="shrink-0 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95 disabled:opacity-50">
+         <button type="submit" disabled={isLoading} className="shrink-0 bg-lilac hover:bg-lilac-deep text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95 disabled:opacity-50">
            {isLoading ? <RefreshCw className="w-5 h-5 animate-spin"/> : <Sparkles className="w-5 h-5" />}
            <span>استنبط</span>
          </button>
@@ -304,9 +304,9 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
       {/* Manuscript Container */}
       <div className="flex-1 w-full relative group">
           {isLoading ? (
-             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-white rounded-[28px] border border-[#182231]/10">
-                <RefreshCw className="w-12 h-12 text-[#6E5B91] animate-spin mb-4" />
-                <p className="text-[#182231] font-bold animate-pulse text-lg" style={{ fontFamily: 'Amiri, serif' }}>يتم استحضار الأرواح المعرفية...</p>
+             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-white rounded-[28px] border border-navy/10">
+                <RefreshCw className="w-12 h-12 text-lilac animate-spin mb-4" />
+                <p className="text-navy font-bold animate-pulse text-lg" style={{ fontFamily: 'Amiri, serif' }}>يتم استحضار الأرواح المعرفية...</p>
              </div>
           ) : (
              <div 
@@ -320,7 +320,7 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
                 {/* The Revealed Content */}
                 <div className="relative z-0 max-w-2xl mx-auto py-12 text-center pointer-events-auto">
                     <ReactMarkdown 
-                       className="markdown-body text-xl md:text-3xl leading-relaxed font-bold text-[#182231]"
+                       className="markdown-body text-xl md:text-3xl leading-relaxed font-bold text-navy"
                        components={{
                            p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, Aref Ruqaa, serif', }} className="mb-6" {...props} />
                        }}
@@ -330,18 +330,18 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
                     
                     {isRevealed && (
                       <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="mt-12 flex flex-col items-center gap-6">
-                          <Wand2 className="w-8 h-8 text-[#6E5B91] opacity-50" />
+                          <Wand2 className="w-8 h-8 text-lilac opacity-50" />
                           <div className="flex flex-wrap gap-4 justify-center">
                             <button
                                onClick={() => setIsZenMode(true)}
-                               className="flex items-center gap-2 bg-[#6E5B91] text-white px-6 py-3 rounded-full hover:bg-[#5F4E7F] transition-all font-bold group"
+                               className="flex items-center gap-2 bg-lilac text-white px-6 py-3 rounded-full hover:bg-lilac-deep transition-all font-bold group"
                             >
                                <Eye className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                {language === 'ar' ? 'وضع التأمل العميق' : 'Zen Reading Mode'}
                             </button>
                             <a 
                                href={`mailto:?subject=حكمة بليغة من مخطوطة الحقيقة الضائعة&body=${encodeURIComponent(manuscriptContent || '')}`}
-                               className="flex items-center gap-2 bg-white text-[#6E5B91] border border-[#6E5B91]/30 px-6 py-3 rounded-full hover:bg-[#EFEAF6] transition-all font-bold group"
+                               className="flex items-center gap-2 bg-white text-lilac border border-lilac/30 px-6 py-3 rounded-full hover:bg-lilac-mist transition-all font-bold group"
                             >
                                <Mail className="w-5 h-5 group-hover:-translate-y-1 transition-transform" aria-hidden="true" />
                                إرسال إلى بريدي
@@ -378,17 +378,17 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-[#F8F5EF] overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-8 bg-ivory overflow-y-auto"
           >
             <button
               onClick={() => setIsZenMode(false)}
-              className="fixed top-8 right-8 z-50 p-4 text-[#64788D] hover:text-[#182231] transition-colors rounded-full hover:bg-white"
+              className="fixed top-8 right-8 z-50 p-4 text-ink-mute hover:text-navy transition-colors rounded-full hover:bg-white"
             >
               <X className="w-8 h-8" />
             </button>
             <div className="max-w-4xl mx-auto py-20 text-center">
               <ReactMarkdown 
-                 className="markdown-body text-2xl md:text-5xl leading-loose font-bold text-[#182231]"
+                 className="markdown-body text-2xl md:text-5xl leading-loose font-bold text-navy"
                  components={{
                      p: ({node, ...props}) => <p style={{ fontFamily: 'Amiri, auto', lineHeight: '2.5' }} className="mb-12" {...props} />
                  }}

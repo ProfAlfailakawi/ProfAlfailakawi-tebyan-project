@@ -152,10 +152,10 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
        onClose={() => handleTabChange('discover', '', true)}
      />
      <div className="flex bg-white/50 backdrop-blur-md rounded-full shadow-sm p-1 max-w-[400px] mx-auto border border-zinc-200 text-sm md:text-base">
-        <button onClick={() => setSimMode('decision')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'decision' ? "bg-[#6E5B91] text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
+        <button onClick={() => setSimMode('decision')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'decision' ? "bg-lilac text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
            {language === 'ar' ? 'نموذج القرار' : 'Decision Model'}
         </button>
-        <button onClick={() => setSimMode('roleplay')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'roleplay' ? "bg-[#6E5B91] text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
+        <button onClick={() => setSimMode('roleplay')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'roleplay' ? "bg-lilac text-white shadow-md block" : "text-zinc-500 hover:bg-zinc-100 block")}>
            {language === 'ar' ? 'تقمص الأدوار المباشر' : 'Live Roleplay'}
         </button>
      </div>
@@ -179,9 +179,9 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center space-y-6 py-20">
                 <div className="relative">
                   <div className="w-20 h-20 border-8 border-zinc-100 rounded-full"></div>
-                  <RefreshCw className="w-20 h-20 text-[#182231] animate-spin absolute top-0 left-0" />
+                  <RefreshCw className="w-20 h-20 text-navy animate-spin absolute top-0 left-0" />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-[#182231] text-center">
+                <div className="text-2xl md:text-3xl font-bold text-navy text-center">
                   {language === 'ar' ? 'جاري بناء المحاكاة...' : 'Building simulation...'}
                 </div>
               </motion.div>
@@ -196,7 +196,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50" 
                     placeholder={language === 'ar' ? "مثال: دمج الأجهزة المحمولة..." : "Example: Integrating mobile devices..."} 
                   />
-                  <button onClick={() => startDecisionSimulation()} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-[#6E5B91] text-white hover:bg-[#5F4E7F] font-bold shadow-lg transition-all cursor-pointer">
+                  <button onClick={() => startDecisionSimulation()} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-lilac-deep font-bold shadow-lg transition-all cursor-pointer">
                     {language === 'ar' ? 'بدء' : 'Start'}
                   </button>
                 </div>
@@ -244,7 +244,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                         <h4 className="text-lg md:text-xl font-bold mb-3">{simFeedback.isCorrect ? (language === 'ar' ? 'أحسنتم!' : 'Well Done!') : (language === 'ar' ? 'تحليل النتيجة' : 'Result Analysis')}</h4>
                         <p className="text-sm md:text-base font-bold text-zinc-700 leading-relaxed">{simFeedback.impact}</p>
                      </div>
-                     <button onClick={() => setSimFeedback(null)} className="w-full py-4 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white rounded-[16px] font-bold">
+                     <button onClick={() => setSimFeedback(null)} className="w-full py-4 bg-lilac hover:bg-lilac-deep text-white rounded-[16px] font-bold">
                        {language === 'ar' ? 'تجربة قرار آخر' : 'Try another decision'}
                      </button>
                   </motion.div>
@@ -274,7 +274,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                         className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50 disabled:opacity-50" 
                         placeholder={language === 'ar' ? "مثال: مراهق يرفض المذاكرة بحجة أن المؤثرين أثرياء بدون تعليم..." : "e.g. Teen refusing to study because influencers are rich..."} 
                       />
-                      <button onClick={() => startRoleplay()} disabled={isLoading || !rpTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-[#6E5B91] text-white hover:bg-[#5d4f7b] font-bold shadow-lg shadow-rose-500/20 disabled:opacity-50 transition-all cursor-pointer">
+                      <button onClick={() => startRoleplay()} disabled={isLoading || !rpTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-[#5d4f7b] font-bold shadow-lg shadow-rose-500/20 disabled:opacity-50 transition-all cursor-pointer">
                         {isLoading ? (language === 'ar' ? 'جاري التحضير...' : 'Preparing...') : (language === 'ar' ? 'دخول المواجهة' : 'Enter Confrontation')}
                       </button>
                     </div>
@@ -282,12 +282,12 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                  </div>
               ) : isRoleplaying ? (
                  <div className="flex flex-col h-[500px]">
-                    <div className="flex justify-between items-center bg-[#EFEAF6] p-4 rounded-t-[24px] border border-[#6E5B91]/15">
+                    <div className="flex justify-between items-center bg-lilac-mist p-4 rounded-t-[24px] border border-lilac/15">
                        <div className="font-bold text-[#4a3c68] flex items-center gap-2">
-                         <div className="w-2 h-2 rounded-full bg-[#6E5B91] animate-pulse"></div>
+                         <div className="w-2 h-2 rounded-full bg-lilac animate-pulse"></div>
                          {language === 'ar' ? 'المحاكاة جارية...' : 'Simulation Active...'}
                        </div>
-                       <button onClick={endRoleplayAndAnalyze} className="text-sm bg-[#6E5B91] text-white px-4 py-2 rounded-xl font-bold hover:bg-[#5F4E7F]">
+                       <button onClick={endRoleplayAndAnalyze} className="text-sm bg-lilac text-white px-4 py-2 rounded-xl font-bold hover:bg-lilac-deep">
                           {language === 'ar' ? 'إنهاء وتحليل' : 'End & Analyze'}
                        </button>
                     </div>
@@ -329,9 +329,9 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                          onChange={e => setCurrentMessage(e.target.value)}
                          disabled={isLoading}
                          placeholder={language === 'ar' ? "تحدث بحكمة..." : "Speak wisely..."}
-                         className="flex-1 bg-zinc-100 rounded-xl px-4 font-bold outline-none focus:ring-2 focus:ring-[#6E5B91]/50 focus:bg-white transition-all"
+                         className="flex-1 bg-zinc-100 rounded-xl px-4 font-bold outline-none focus:ring-2 focus:ring-lilac/50 focus:bg-white transition-all"
                        />
-                       <button type="submit" disabled={isLoading || !currentMessage.trim()} className="bg-[#6E5B91] text-white p-4 rounded-xl hover:bg-[#5d4f7b] disabled:opacity-50">
+                       <button type="submit" disabled={isLoading || !currentMessage.trim()} className="bg-lilac text-white p-4 rounded-xl hover:bg-[#5d4f7b] disabled:opacity-50">
                           <Send className="w-5 h-5" />
                        </button>
                     </form>
@@ -339,8 +339,8 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
               ) : rpRadar ? (
                  <div id="rp-radar-results" className="space-y-8 animate-in fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <div className="text-center space-y-2">
-                       <ShieldAlert className="w-12 h-12 text-[#6E5B91] mx-auto" />
-                       <h2 className="text-3xl font-black text-[#182231]">{language === 'ar' ? 'الرادار التحليلي للسلوك' : 'Behavioral Radar'}</h2>
+                       <ShieldAlert className="w-12 h-12 text-lilac mx-auto" />
+                       <h2 className="text-3xl font-black text-navy">{language === 'ar' ? 'الرادار التحليلي للسلوك' : 'Behavioral Radar'}</h2>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
@@ -349,9 +349,9 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                          { v: rpRadar.patience, l: language === 'ar' ? 'مستوى الصبر' : 'Patience', tone: 'sky' },
                          { v: rpRadar.containment, l: language === 'ar' ? 'القدرة على الاحتواء' : 'Containment', tone: 'lilac' },
                        ] as const).map((m) => (
-                         <div key={m.l} className="bg-[#F8F5EF] p-4 md:p-6 rounded-[24px] border border-[#6E5B91]/10 flex flex-col items-center gap-3 text-center">
+                         <div key={m.l} className="bg-ivory p-4 md:p-6 rounded-[24px] border border-lilac/10 flex flex-col items-center gap-3 text-center">
                            <DnaRing value={typeof m.v === 'number' ? m.v : null} tone={m.tone} size={72} stroke={5} ariaLabel={`${m.l}: ${typeof m.v === 'number' ? m.v + '%' : '—'}`} />
-                           <div className="font-bold text-[#182231] text-sm leading-snug">{m.l}</div>
+                           <div className="font-bold text-navy text-sm leading-snug">{m.l}</div>
                          </div>
                        ))}
                     </div>
@@ -373,13 +373,13 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                        </div>
                     </div>
 
-                    <div className="bg-[#F8F5EF] text-[#182231] border border-[#6E5B91]/15 p-5 md:p-6 rounded-[24px]">
+                    <div className="bg-ivory text-navy border border-lilac/15 p-5 md:p-6 rounded-[24px]">
                        <h4 className={cn("font-bold text-[#5B6E82] mb-3 text-sm", language !== 'ar' && "uppercase tracking-widest")}>{language === 'ar' ? 'الخلاصة التقييمية' : 'Executive Summary'}</h4>
                        <p className="text-base font-bold leading-relaxed">{rpRadar.summary}</p>
                     </div>
 
                     <div className="flex justify-center">
-                       <button onClick={() => {setRpRadar(null); setRpTopic('');}} className="font-bold text-[#182231] hover:underline cursor-pointer">
+                       <button onClick={() => {setRpRadar(null); setRpTopic('');}} className="font-bold text-navy hover:underline cursor-pointer">
                           {language === 'ar' ? 'محاكاة جديدة' : 'New Simulation'}
                        </button>
                     </div>

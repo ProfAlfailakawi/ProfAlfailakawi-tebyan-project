@@ -55,20 +55,20 @@ export const DirectAnswerCard: React.FC<Props> = ({
             <span className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-[#F4F0F8] text-[#6E5F8E]">
               <Sparkles className="h-4 w-4" />
             </span>
-            <h2 className="text-[17px] font-black leading-6 text-[#182231] md:text-xl">
+            <h2 className="text-[17px] font-black leading-6 text-navy md:text-xl">
               {isArabic ? "الخلاصة أولاً" : "The answer first"}
             </h2>
           </div>
         </div>
 
         <details className="group mt-3 rounded-[16px] border border-[#8FA9C7]/10 bg-[#FAF9F6]/82 px-3.5 py-2.5">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[12px] font-black text-[#7C8796]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[12px] font-black text-ink-mute">
             <span>
               {isArabic ? "السؤال الذي فهمته" : "The question I understood"}
             </span>
             <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
           </summary>
-          <p className="mt-2 border-t border-[#8FA9C7]/10 pt-2 text-[13px] font-bold leading-6 text-[#465568] md:text-sm">
+          <p className="mt-2 border-t border-[#8FA9C7]/10 pt-2 text-[13px] font-bold leading-6 text-ink-soft md:text-sm">
             {query}
           </p>
         </details>
@@ -96,7 +96,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
           <button
             type="button"
             onClick={onContinue}
-            className="min-h-12 rounded-[16px] bg-[#6E5B91] px-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(24,34,49,0.15)] transition-transform active:scale-[0.98]"
+            className="min-h-12 rounded-[16px] bg-lilac px-4 text-sm font-black text-white shadow-[0_8px_20px_rgba(24,34,49,0.15)] transition-transform active:scale-[0.98]"
           >
             {isArabic ? "أكمل معي" : "Continue with me"}
           </button>
@@ -104,7 +104,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
             type="button"
             onClick={onShowOptions}
             aria-expanded={showOptions}
-            className="min-h-12 rounded-[16px] border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-[#64788D] transition-colors hover:bg-[#F7F5FA] active:scale-[0.98]"
+            className="min-h-12 rounded-[16px] border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-ink-mute transition-colors hover:bg-[#F7F5FA] active:scale-[0.98]"
           >
             {showOptions
               ? isArabic
@@ -118,7 +118,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
 
         {showOptions && (
           <div className="mt-3 border-t border-[#8FA9C7]/10 pt-3">
-            <p className="mb-2 text-[12px] font-black text-[#64788D]">
+            <p className="mb-2 text-[12px] font-black text-ink-mute">
               {isArabic ? "تحب الجواب أبسط أو أعمق؟" : "Want it simpler or deeper?"}
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -140,8 +140,8 @@ export const DirectAnswerCard: React.FC<Props> = ({
                 className={cn(
                   "inline-flex min-h-11 items-center justify-center gap-2 rounded-[15px] border px-3 text-[13px] font-black active:scale-[0.98]",
                   responseMode === "deep"
-                    ? "border-[#182231] bg-[#182231] text-white"
-                    : "border-[#182231]/14 bg-white text-[#182231] hover:bg-[#F2F4F6]",
+                    ? "border-navy bg-[#182231] text-white"
+                    : "border-navy/14 bg-white text-navy hover:bg-[#F2F4F6]",
                 )}
               >
                 {isArabic ? "حلّل بعمق" : "Analyse deeply"}

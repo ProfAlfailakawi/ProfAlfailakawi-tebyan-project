@@ -35,13 +35,13 @@ export function DemoStarters({ tab, language, onPick, className = '' }: { tab: D
   const items = (ar ? AR : EN)[tab];
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`} data-demo-starters>
-      <span className="text-xs font-bold text-[#8A97A6] shrink-0">{ar ? 'جرّب مثالًا:' : 'Try an example:'}</span>
+      <span className="text-xs font-bold text-ink-mute shrink-0">{ar ? 'جرّب مثالًا:' : 'Try an example:'}</span>
       {items.map((text) => (
         <button
           key={text}
           type="button"
           onClick={() => onPick(text)}
-          className="max-w-full rounded-full border border-[#6E5B91]/20 bg-[#F8F5EF] px-3.5 py-1.5 text-start text-[13px] font-semibold leading-snug text-[#4B3F6B] transition-colors hover:border-[#6E5B91]/45 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6E5B91]/40"
+          className="max-w-full rounded-full border border-lilac/20 bg-ivory px-3.5 py-1.5 text-start text-[13px] font-semibold leading-snug text-[#4B3F6B] transition-colors hover:border-lilac/45 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-lilac/40"
         >
           {text}
         </button>

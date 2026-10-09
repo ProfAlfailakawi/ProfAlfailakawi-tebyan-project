@@ -194,7 +194,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
              <button
                 onClick={analyzeIdea}
                 disabled={isAnalyzing || !idea.trim()}
-                className="w-full py-4 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white rounded-2xl font-bold text-lg transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl active:scale-[0.98]"
+                className="w-full py-4 bg-lilac hover:bg-lilac-deep text-white rounded-2xl font-bold text-lg transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl active:scale-[0.98]"
              >
                 {isAnalyzing ? (
                   <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

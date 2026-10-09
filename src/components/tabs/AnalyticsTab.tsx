@@ -17,7 +17,7 @@ const ClampText = ({ text, className, language }: { text: string; className?: st
     <div>
       <p className={cn(className, long && !open && 'line-clamp-3')}>{text}</p>
       {long && (
-        <button type="button" onClick={() => setOpen(o => !o)} aria-expanded={open} className="mt-1 text-xs font-bold text-[#6E5B91] hover:underline">
+        <button type="button" onClick={() => setOpen(o => !o)} aria-expanded={open} className="mt-1 text-xs font-bold text-lilac hover:underline">
           {open ? (language === 'ar' ? 'إخفاء' : 'Show less') : (language === 'ar' ? 'عرض المزيد' : 'Show more')}
         </button>
       )}
@@ -115,9 +115,9 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                      <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[#6e5f8e]" strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 w-full min-[360px]:w-auto flex-1">
-                      <div className="text-2xl md:text-3xl font-bold leading-none text-[#182231]">{stat.value}</div>
+                      <div className="text-2xl md:text-3xl font-bold leading-none text-navy">{stat.value}</div>
                       <div className="mt-1 text-zinc-500 font-bold text-xs md:text-sm truncate">{stat.label}</div>
-                      <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-start gap-1 text-[10px] md:text-[11px] leading-snug">
+                      <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-start gap-1 text-xs md:text-xs leading-snug">
                         <TrendingUp className="w-3 h-3 shrink-0 mt-0.5" />
                         <span className="[overflow-wrap:normal] break-normal">{stat.trend}</span>
                       </div>
@@ -131,7 +131,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
            <div className="space-y-6">
               <div className="bg-white border rounded-[24px] p-6 shadow-sm">
                 <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-[#6E5B91]" />
+                  <Activity className="w-5 h-5 text-lilac" />
                   {language === 'ar' ? 'تسجيل حالة اليوم' : 'Log Daily State'}
                 </h3>
                 <form onSubmit={handleAddLog} className="space-y-4">
@@ -142,7 +142,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                       value={feeling} 
                       onChange={e => setFeeling(e.target.value)} 
                       placeholder={language === 'ar' ? 'مثال: منعزل، قلق، غاضب' : 'e.g., Withdrawn, Anxious, Angry'} 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium outline-none focus:border-[#6E5B91] transition-colors"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium outline-none focus:border-lilac transition-colors"
                     />
                   </div>
                   <div>
@@ -152,11 +152,11 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                       value={behavior} 
                       onChange={e => setBehavior(e.target.value)} 
                       placeholder={language === 'ar' ? 'مثال: رفض حل الواجب، صراخ' : 'e.g., Refused homework, Yelling'} 
-                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium outline-none focus:border-[#6E5B91] transition-colors"
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 font-medium outline-none focus:border-lilac transition-colors"
                     />
                   </div>
                   <div className="flex gap-2">
-                    <button type="submit" disabled={!feeling || !behavior} className="flex-1 bg-[#6E5B91] text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:bg-[#5F4E7F] transition-colors disabled:opacity-50">
+                    <button type="submit" disabled={!feeling || !behavior} className="flex-1 bg-lilac text-white rounded-xl py-3 font-bold flex items-center justify-center gap-2 hover:bg-lilac-deep transition-colors disabled:opacity-50">
                       <Plus className="w-5 h-5" />
                       {language === 'ar' ? 'حفظ السجل' : 'Save Log'}
                     </button>
@@ -189,8 +189,8 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                      {logs.map((log, i) => (
                        <li key={i} className="bg-white p-4 rounded-xl border border-zinc-100 shadow-sm text-sm">
                          <div className="text-xs text-zinc-400 mb-1">{log.date}</div>
-                         <div className="font-bold text-[#182231]"><span className="text-zinc-500">{language === 'ar' ? 'شعور:' : 'Feeling:'}</span> {log.feeling}</div>
-                         <div className="font-bold text-[#182231] mt-1"><span className="text-zinc-500">{language === 'ar' ? 'سلوك:' : 'Behavior:'}</span> {log.behavior}</div>
+                         <div className="font-bold text-navy"><span className="text-zinc-500">{language === 'ar' ? 'شعور:' : 'Feeling:'}</span> {log.feeling}</div>
+                         <div className="font-bold text-navy mt-1"><span className="text-zinc-500">{language === 'ar' ? 'سلوك:' : 'Behavior:'}</span> {log.behavior}</div>
                        </li>
                      ))}
                    </ul>
@@ -206,7 +206,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                 className={cn(
                   "w-full rounded-[24px] py-6 font-black text-xl flex items-center justify-center gap-3 transition-all shadow-sm",
                   logs.length > 0 
-                  ? "bg-[#6E5B91] hover:bg-[#5d4f7b] text-white cursor-pointer" 
+                  ? "bg-lilac hover:bg-[#5d4f7b] text-white cursor-pointer" 
                   : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                 )}
               >
@@ -218,12 +218,12 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
 
               <AnimatePresence>
                 {prediction && !isPredicting && (
-                  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#F8F5EF] text-[#182231] p-6 md:p-8 rounded-[24px] border border-[#6E5B91]/15 shadow-sm relative overflow-hidden">
+                  <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-ivory text-navy p-6 md:p-8 rounded-[24px] border border-lilac/15 shadow-sm relative overflow-hidden">
                      <div className="relative z-10 space-y-6">
-                       <div className="flex items-start justify-between gap-4 border-b border-[#182231]/10 pb-4">
+                       <div className="flex items-start justify-between gap-4 border-b border-navy/10 pb-4">
                           <div className="min-w-0">
                             <div className="text-xs font-bold text-[#5B6E82] mb-1">{language === 'ar' ? 'النمط المكتشف' : 'Discovered Pattern'}</div>
-                            <ClampText text={prediction.pattern_found} language={language} className="text-base font-bold text-[#182231] leading-relaxed" />
+                            <ClampText text={prediction.pattern_found} language={language} className="text-base font-bold text-navy leading-relaxed" />
                           </div>
                           {(() => {
                             const lvl = prediction.risk_level === 'High' ? 3 : prediction.risk_level === 'Medium' ? 2 : prediction.risk_level === 'Low' ? 1 : null;
@@ -260,7 +260,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
 
                        <div>
                           <div className="text-xs font-bold text-[#5B6E82] mb-2">{language === 'ar' ? 'نصيحة استباقية وتدخل' : 'Proactive Intervention'}</div>
-                          <div className="bg-white p-4 rounded-xl border border-[#6E5B91]/15">
+                          <div className="bg-white p-4 rounded-xl border border-lilac/15">
                              <ClampText text={prediction.proactive_warning} language={language} className="text-sm font-bold text-[#273548] leading-relaxed" />
                           </div>
                        </div>

@@ -58,7 +58,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white text-[#182231] p-8 rounded-[32px] shadow space-y-10">
+    <div className="bg-white text-navy p-8 rounded-[32px] shadow space-y-10">
        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="space-y-2">
              <h2 className="font-serif text-2xl md:text-3xl font-bold">{language === 'ar' ? 'استكشاف التطور' : 'Evolution Explorer'}</h2>
@@ -67,14 +67,14 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
              <input 
                value={timeMachineTopic} 
                onChange={(e) => setTimeMachineTopic(e.target.value)}
-               className="bg-[#F8F5EF] border border-[#182231]/10 p-4 rounded-xl text-[#182231] placeholder-[#8A97A6] outline-none focus:border-[#6E5B91]/30 flex-1 w-full md:w-64"
+               className="bg-ivory border border-navy/10 p-4 rounded-xl text-navy placeholder-[#8A97A6] outline-none focus:border-lilac/30 flex-1 w-full md:w-64"
                placeholder={language === 'ar' ? "مفهوم الرحلة..." : "Journey concept..."}
              />
              <button 
                onClick={loadTimeMachine} 
                disabled={isLoading}
                title={language === 'ar' ? 'بدء الرحلة عبر الزمن' : 'Start time journey'}
-               className="w-full md:w-auto bg-[#6E5B91] hover:bg-[#5F4E7F] text-white disabled:opacity-50 disabled:cursor-not-allowed px-8 py-4 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer min-w-[140px]"
+               className="w-full md:w-auto bg-lilac hover:bg-lilac-deep text-white disabled:opacity-50 disabled:cursor-not-allowed px-8 py-4 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-3 cursor-pointer min-w-[140px]"
              >
                {isLoading ? (
                  <>
@@ -100,10 +100,10 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
              className="w-full bg-lilac-mist/40 rounded-[24px] md:rounded-[32px] flex flex-col items-center justify-center space-y-6 py-20 border border-lilac-soft/25 px-4"
            >
              <TebyanLoader size={48} label={language === 'ar' ? 'جاري السفر عبر الزمن' : 'Traveling through time'} />
-             <div className="font-serif text-2xl md:text-3xl font-bold text-[#182231] text-center">
+             <div className="font-serif text-2xl md:text-3xl font-bold text-navy text-center">
                {language === 'ar' ? 'جاري السفر عبر الزمن...' : 'Traveling through time...'}
              </div>
-             <div className="px-6 py-3 bg-white text-[#465568] rounded-full font-semibold text-base text-center">
+             <div className="px-6 py-3 bg-white text-ink-soft rounded-full font-semibold text-base text-center">
                {language === 'ar' ? 'نحن ننتقل بين العصور لجمع لك أدق المعلومات والتحليلات' : 'Navigating through eras to gather precise intelligence'}
              </div>
            </motion.div>
@@ -118,7 +118,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
                  initial={{ opacity: 0, y: 18, scale: 0.96 }}
                  animate={{ opacity: 1, y: 0, scale: 1 }}
                  transition={{ delay: 0.3 + i * 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                 className="relative bg-[#F8F5EF] p-6 rounded-[16px] border border-[#182231]/10 hover:bg-[#F8F5EF] transition-all group z-10"
+                 className="relative bg-ivory p-6 rounded-[16px] border border-navy/10 hover:bg-ivory transition-all group z-10"
                >
                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-lilac text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
                    {e.year}
@@ -128,13 +128,13 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
                     <div className="space-y-3">
                        <div>
                          <div className="text-xs text-lilac font-bold mb-1">{language === 'ar' ? 'طريقة التدريس' : 'Teaching Method'}</div>
-                         <div className="text-sm font-bold text-[#465568] leading-relaxed prose prose-sm max-w-none">
+                         <div className="text-sm font-bold text-ink-soft leading-relaxed prose prose-sm max-w-none">
                             <ReactMarkdown>{e.teaching_method}</ReactMarkdown>
                          </div>
                        </div>
-                       <div className="pt-2 border-t border-[#182231]/10">
+                       <div className="pt-2 border-t border-navy/10">
                          <div className="text-xs text-lilac font-bold mb-1">{language === 'ar' ? 'الأدوات' : 'Tools'}</div>
-                         <div className="text-sm font-semibold text-[#182231] prose prose-sm max-w-none">
+                         <div className="text-sm font-semibold text-navy prose prose-sm max-w-none">
                             <ReactMarkdown>{e.tools}</ReactMarkdown>
                          </div>
                        </div>
@@ -144,7 +144,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
              ))}
            </div>
            
-           <div className="bg-[#F8F5EF] p-8 rounded-[24px] border border-[#182231]/10 text-[#182231] font-serif text-xl md:text-2xl text-center leading-loose font-bold">
+           <div className="bg-ivory p-8 rounded-[24px] border border-navy/10 text-navy font-serif text-xl md:text-2xl text-center leading-loose font-bold">
              "{timeMachineData.summary}"
            </div>
          </div>

@@ -57,7 +57,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
           <Sparkles className="w-4 h-4" />
         </div>
         <div className="min-w-0">
-          <p className="text-[11px] font-black tracking-widest uppercase text-[#8E7AAE]">
+          <p className="text-xs font-black tracking-widest uppercase text-[#8E7AAE]">
             {isAr ? 'احفظ المسار' : 'Save this path'}
           </p>
           <p className="text-xs md:text-sm font-bold text-[#6F7785] leading-relaxed">
@@ -71,7 +71,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
           onClick={handleSave}
           className={cn(
             'px-5 py-2.5 rounded-full text-xs font-black border transition-all active:scale-95 flex items-center gap-2 shadow-sm',
-            saved ? 'bg-[#EAF6F1] border-[#CDEBDE] text-[#3F7E66]' : 'bg-[#182231] border-[#182231] text-white hover:bg-black'
+            saved ? 'bg-[#EAF6F1] border-[#CDEBDE] text-[#3F7E66]' : 'bg-[#182231] border-navy text-white hover:bg-black'
           )}
         >
           {saved ? <CheckCircle2 className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}

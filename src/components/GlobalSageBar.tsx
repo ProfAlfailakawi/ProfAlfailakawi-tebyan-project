@@ -26,12 +26,12 @@ export const GlobalSageBar: React.FC<{ language: string }> = ({ language }) => {
                         <b.icon className="w-3 h-3" />
                     </div>
                 ))}
-                <div className="ml-3 rtl:mr-3 px-2 py-0.5 bg-zinc-800 text-white rounded-full text-[9px] font-black tracking-widest hidden md:block">
+                <div className="ml-3 rtl:mr-3 px-2 py-0.5 bg-zinc-800 text-white rounded-full text-xs font-black tracking-widest hidden md:block">
                     {language === 'ar' ? (levels.find(l => l.id === sageProgress.level)?.ar) : (levels.find(l => l.id === sageProgress.level)?.en)}
                     <span className="opacity-50 mx-1">|</span>
                     {sageProgress.points} PT
                 </div>
-                <div className="ml-3 rtl:mr-3 px-2 py-0.5 bg-zinc-800 text-white rounded-full text-[9px] font-black tracking-widest md:hidden">
+                <div className="ml-3 rtl:mr-3 px-2 py-0.5 bg-zinc-800 text-white rounded-full text-xs font-black tracking-widest md:hidden">
                     {sageProgress.points} PT
                 </div>
             </div>

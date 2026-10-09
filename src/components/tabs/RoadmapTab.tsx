@@ -70,7 +70,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#8fa9c7]/[0.08] rounded-full blur-3xl"></div>
         
         <div className="relative flex flex-col gap-6">
-          <label className={cn("block text-sm font-bold text-[#64788D]", language === 'ar' ? 'text-right' : 'text-left')}>
+          <label className={cn("block text-sm font-bold text-ink-mute", language === 'ar' ? 'text-right' : 'text-left')}>
             {language === 'ar' ? 'حدد وجهتك القادمة' : 'Define your next destination'}
           </label>
 <DemoStarters tab="roadmap" language={language} onPick={setGoal} className="mb-3" />
@@ -81,7 +81,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
               disabled={isLoading}
               placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة، بدء مشروع تجاري، احتراف البرمجة...' : 'Example: Learn a new language, start a business, master programming...'}
               className={cn(
-                "w-full bg-white/70 border border-[#6e5f8e]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[#6e5f8e]/50 focus:ring-4 focus:ring-[#6e5f8e]/10 transition-all text-[#182231]",
+                "w-full bg-white/70 border border-[#6e5f8e]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[#6e5f8e]/50 focus:ring-4 focus:ring-[#6e5f8e]/10 transition-all text-navy",
                 language === 'ar' ? 'text-right' : 'text-left'
               )}
             />
@@ -89,7 +89,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <button 
             onClick={() => handleGenerate()}
             disabled={isLoading || !goal.trim()}
-            className="w-full py-5 bg-[#6E5B91] text-white hover:bg-[#5F4E7F] rounded-[24px] font-bold text-lg md:text-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98] group"
+            className="w-full py-5 bg-lilac text-white hover:bg-lilac-deep rounded-[24px] font-bold text-lg md:text-xl transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm hover:shadow-md active:scale-[0.98] group"
           >
             {isLoading ? (
               <TebyanButtonLoader className="text-current" />
@@ -115,18 +115,18 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         {roadmap && !isLoading && (
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
             {/* Clean Header */}
-            <div className="bg-white border text-[#182231] border-lilac-soft/25 p-6 md:p-8 rounded-3xl shadow-sm relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#EFEAF6] rounded-bl-[100px] -z-10"></div>
+            <div className="bg-white border text-navy border-lilac-soft/25 p-6 md:p-8 rounded-3xl shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-lilac-mist rounded-bl-[100px] -z-10"></div>
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#EFEAF6] text-[#6E5B91] rounded-full text-sm font-bold mb-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-lilac-mist text-lilac rounded-full text-sm font-bold mb-4">
                     <Flag className="w-3 h-3" />
                     {language === 'ar' ? 'خطة الطريق المعتمدة' : 'Verified Roadmap'}
                   </div>
                   <h3 className={cn("font-serif text-2xl md:text-3xl font-bold mb-4 leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>
                     {roadmap.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-[#64788D] font-bold text-sm">
+                  <div className="flex items-center gap-2 text-ink-mute font-bold text-sm">
                     <Clock className="w-4 h-4" aria-hidden="true" />
                     <span>{roadmap.estimated_duration}</span>
                   </div>
@@ -152,7 +152,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                     "flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all border shrink-0",
                     preferences.savedLibrary.some((s: any) => s.type === 'roadmap' && s.title === roadmap.title)
                       ? "bg-lilac text-white border-lilac"
-                      : "bg-white text-[#465568] border-lilac-soft/30 hover:bg-lilac-mist/50"
+                      : "bg-white text-ink-soft border-lilac-soft/30 hover:bg-lilac-mist/50"
                   )}
                 >
                   {preferences.savedLibrary.some((s: any) => s.type === 'roadmap' && s.title === roadmap.title) ? (
@@ -190,7 +190,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                       <div className="relative z-10 hidden md:flex flex-col items-center shrink-0 w-20">
                         <div className={cn(
                           "w-10 h-10 rounded-full border-2 bg-white flex flex-col items-center justify-center font-bold text-base",
-                          i === 0 ? "border-[#6E5B91] text-[#6E5B91] shadow-sm" :
+                          i === 0 ? "border-lilac text-lilac shadow-sm" :
                           i === (roadmap.milestones.length - 1) ? "border-emerald-500 text-emerald-600" :
                           "border-lilac-soft/60 text-lilac"
                         )}>
@@ -204,11 +204,11 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                           {i + 1}
                         </div>
                         
-                        <h4 className={cn("font-serif text-lg md:text-xl font-bold text-[#182231] mb-2 leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>
+                        <h4 className={cn("font-serif text-lg md:text-xl font-bold text-navy mb-2 leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>
                           {milestone.title?.replace(/\*\*/g, '')}
                         </h4>
                         
-                        <p className={cn("text-[#465568] text-base leading-relaxed mb-5", language === 'ar' ? 'text-right' : 'text-left')}>
+                        <p className={cn("text-ink-soft text-base leading-relaxed mb-5", language === 'ar' ? 'text-right' : 'text-left')}>
                           {milestone.description?.replace(/\*\*/g, '')}
                         </p>
                         

@@ -32,7 +32,7 @@ export const NeuralTree = ({ language }: { language: string }) => {
   return (
     <div className="w-full relative h-[300px] md:h-[400px] rounded-[32px] overflow-hidden bg-black flex items-center justify-center p-4 border border-zinc-800 shadow-2xl group">
        <div className="absolute top-6 left-6 z-20">
-         <div className="text-zinc-500 text-[10px] font-bold tracking-[0.2em] rtl:tracking-normal uppercase mb-1">
+         <div className="text-zinc-500 text-xs font-bold tracking-[0.2em] rtl:tracking-normal uppercase mb-1">
            {language === 'ar' ? 'الشجرة العصبية الحية' : 'Living Neural Tree'}
          </div>
          <div className="text-white font-black text-xl md:text-2xl flex items-center gap-2">

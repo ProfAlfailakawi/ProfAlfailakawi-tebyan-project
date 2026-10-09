@@ -62,18 +62,18 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
     };
 
     const tools: AnalysisTool[] = [
-        { id: 'decision', title: { ar: 'القرار التنفيذي', en: 'Executive Decision' }, icon: Lock, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['decide'], hint: { ar: 'يحسم الموقف في قرار واضح ومسؤول', en: 'Turns the situation into a clear responsible decision' }, prompt: 'حول هذه الموقف لقرار تنفيذي حاسم ومسؤول: ' },
-        { id: 'consequences', title: { ar: 'موجات العواقب', en: 'Consequence Waves' }, icon: GitBranch, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['future','risk'], hint: { ar: 'يرى أثر القرار طبقة بعد طبقة', en: 'Shows effects layer by layer' }, prompt: 'حلل العواقب من الدرجة الأولى والثانية والثالثة لهذا القرار: ' },
-        { id: 'doubt', title: { ar: 'ميزان اليقين', en: 'Gravity of Doubt' }, icon: Scale, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]' , purpose: ['decide','risk'], hint: { ar: 'يقيس اليقين والشك قبل الحسم', en: 'Measures certainty and doubt before deciding' }, prompt: 'قم بتحليل درجة اليقين والشك في هذا القرار. أرجع JSON فقط بالشكل التالي: { "certainty": 70, "doubt": 30, "certaintyArguments": ["حجة 1", "حجة 2"], "doubtArguments": ["حجة 1", "حجة 2"], "verdict": "الحكم النهائي" }. لا ترجع أي نص خارج JSON. القرار هو: ' },
-        { id: 'capsule', title: { ar: 'كبسولة الزمن للقرارات', en: 'Time Capsule' }, icon: Hourglass, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]' , purpose: ['future'], hint: { ar: 'رسالة مستقبلية تكشف أثر قرارك', en: 'A future message about your decision' }, prompt: 'قم بإعداد كبسولة زمنية لهذا القرار تفتح بعد سنة. أرجع JSON فقط بالشكل التالي: { "targetDate": "2027", "projectedOutcome": "النتيجة المتوقعة العظمى", "messageToFutureSelf": "رسالة قاسية أو محفزة لنفسك في المستقبل", "sealedConfidence": 85 }. لا ترجع نصاً خارج JSON. القرار هو: ' },
-        { id: 'council', title: { ar: 'مجلس العقول', en: 'Council of Minds' }, icon: Users, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['voices'], hint: { ar: 'يسمع القرار من عقول مختلفة', en: 'Reviews the decision through different minds' }, prompt: 'حلل هذا القرار كفيلسوف، اقتصادي، قانوني، استراتيجي، وخصم: ' },
-        { id: 'collapse', title: { ar: 'اختبار الاختراق فكرياً', en: 'Red Team Test' }, icon: ShieldAlert, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['risk'], hint: { ar: 'يحاول إسقاط القرار قبل الواقع', en: 'Stress-tests the decision before reality does' }, prompt: 'قم بدور "الفريق الأحمر" وحاول تدمير هذا القرار فكرياً واكشف نقاط ضعفه القاتلة: ' },
-        { id: 'hidden', title: { ar: 'الخيوط الخفية', en: 'Hidden Threads' }, icon: Eye, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['risk','voices'], hint: { ar: 'يكشف النفوذ والمخاطر الصامتة', en: 'Reveals silent influence and risks' }, prompt: 'اكشف أصحاب المصلحة والنفوذ والمخاطر الصامتة لهذا القرار: ' },
-        { id: 'memory', title: { ar: 'البصمة الفكرية', en: 'Cognitive Trace' }, icon: History, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]' , purpose: ['voices'], hint: { ar: 'يربط القرار بسياق التفكير', en: 'Links the decision to thinking patterns' }, prompt: 'حلل هذا القرار بناءً على سياق التفكير الاستراتيجي العميق ومبادئه: ' },
-        { id: 'questions', title: { ar: 'محرك الأسئلة', en: 'Question Engine' }, icon: MessageSquareQuote, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['risk','decide'], hint: { ar: 'يولد الأسئلة التي غابت عنك', en: 'Generates questions you missed' }, prompt: 'ولد الأسئلة الليزرية الدقيقة التي كان يجب أن تُسأل ولم تُسأل حول هذا القرار: ' },
-        { id: 'debate', title: { ar: 'الميزان الاستراتيجي', en: 'Strategic Scale' }, icon: Brain, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['decide','voices'], hint: { ar: 'يقارن أقوى حجة مع وضد', en: 'Compares strongest case for and against' }, prompt: 'ابنِ أقوى حجة مع، وأقوى حجة ضد، ثم احكم بينهما لهذا القرار بإنصاف: ' },
-        { id: 'butterfly', title: { ar: 'رؤية 360 درجة', en: '360 Horizon' }, icon: Sparkles, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['future'], hint: { ar: 'يحاكي المشهد البعيد بوضوح', en: 'Simulates the long horizon clearly' }, prompt: 'تخيل أنني اتخذت هذا القرار. محاكاة العواقب بعد 5 سنوات. أرجع الرد بصيغة JSON فقط JSON ONLY يحتوي على: { "magazineName": "FORBES 2030", "headline": "العنوان الرئيسي القوي", "subheadline": "عنوان فرعي يشرح الصدمة", "bulletPoints": ["نقطة 1", "نقطة 2", "نقطة 3"], "quote": "اقتباس مقولة ملهمة عن أثر القرار" }. لا ترجع أي نص خارج الJSON. القرار هو: ' },
-        { id: 'vault', title: { ar: 'مرآة التحيزات', en: 'Bias Mirror' }, icon: Lock, bgColor: 'bg-[#EFEAF6] text-[#6E5B91]', purpose: ['risk'], hint: { ar: 'يكشف أين قد تخدع نفسك', en: 'Shows where you may fool yourself' }, prompt: 'أنا سأتخذ هذا القرار. اصنع "مرآة قاسية" تكشف أين أقع بمصيدة الانحياز التأكيدي. حلل كيف سأندم وكيف سأفرح. أسلوبك قاسي جداً وواقعي: ' },
+        { id: 'decision', title: { ar: 'القرار التنفيذي', en: 'Executive Decision' }, icon: Lock, bgColor: 'bg-lilac-mist text-lilac', purpose: ['decide'], hint: { ar: 'يحسم الموقف في قرار واضح ومسؤول', en: 'Turns the situation into a clear responsible decision' }, prompt: 'حول هذه الموقف لقرار تنفيذي حاسم ومسؤول: ' },
+        { id: 'consequences', title: { ar: 'موجات العواقب', en: 'Consequence Waves' }, icon: GitBranch, bgColor: 'bg-lilac-mist text-lilac', purpose: ['future','risk'], hint: { ar: 'يرى أثر القرار طبقة بعد طبقة', en: 'Shows effects layer by layer' }, prompt: 'حلل العواقب من الدرجة الأولى والثانية والثالثة لهذا القرار: ' },
+        { id: 'doubt', title: { ar: 'ميزان اليقين', en: 'Gravity of Doubt' }, icon: Scale, bgColor: 'bg-lilac-mist text-lilac' , purpose: ['decide','risk'], hint: { ar: 'يقيس اليقين والشك قبل الحسم', en: 'Measures certainty and doubt before deciding' }, prompt: 'قم بتحليل درجة اليقين والشك في هذا القرار. أرجع JSON فقط بالشكل التالي: { "certainty": 70, "doubt": 30, "certaintyArguments": ["حجة 1", "حجة 2"], "doubtArguments": ["حجة 1", "حجة 2"], "verdict": "الحكم النهائي" }. لا ترجع أي نص خارج JSON. القرار هو: ' },
+        { id: 'capsule', title: { ar: 'كبسولة الزمن للقرارات', en: 'Time Capsule' }, icon: Hourglass, bgColor: 'bg-lilac-mist text-lilac' , purpose: ['future'], hint: { ar: 'رسالة مستقبلية تكشف أثر قرارك', en: 'A future message about your decision' }, prompt: 'قم بإعداد كبسولة زمنية لهذا القرار تفتح بعد سنة. أرجع JSON فقط بالشكل التالي: { "targetDate": "2027", "projectedOutcome": "النتيجة المتوقعة العظمى", "messageToFutureSelf": "رسالة قاسية أو محفزة لنفسك في المستقبل", "sealedConfidence": 85 }. لا ترجع نصاً خارج JSON. القرار هو: ' },
+        { id: 'council', title: { ar: 'مجلس العقول', en: 'Council of Minds' }, icon: Users, bgColor: 'bg-lilac-mist text-lilac', purpose: ['voices'], hint: { ar: 'يسمع القرار من عقول مختلفة', en: 'Reviews the decision through different minds' }, prompt: 'حلل هذا القرار كفيلسوف، اقتصادي، قانوني، استراتيجي، وخصم: ' },
+        { id: 'collapse', title: { ar: 'اختبار الاختراق فكرياً', en: 'Red Team Test' }, icon: ShieldAlert, bgColor: 'bg-lilac-mist text-lilac', purpose: ['risk'], hint: { ar: 'يحاول إسقاط القرار قبل الواقع', en: 'Stress-tests the decision before reality does' }, prompt: 'قم بدور "الفريق الأحمر" وحاول تدمير هذا القرار فكرياً واكشف نقاط ضعفه القاتلة: ' },
+        { id: 'hidden', title: { ar: 'الخيوط الخفية', en: 'Hidden Threads' }, icon: Eye, bgColor: 'bg-lilac-mist text-lilac', purpose: ['risk','voices'], hint: { ar: 'يكشف النفوذ والمخاطر الصامتة', en: 'Reveals silent influence and risks' }, prompt: 'اكشف أصحاب المصلحة والنفوذ والمخاطر الصامتة لهذا القرار: ' },
+        { id: 'memory', title: { ar: 'البصمة الفكرية', en: 'Cognitive Trace' }, icon: History, bgColor: 'bg-lilac-mist text-lilac' , purpose: ['voices'], hint: { ar: 'يربط القرار بسياق التفكير', en: 'Links the decision to thinking patterns' }, prompt: 'حلل هذا القرار بناءً على سياق التفكير الاستراتيجي العميق ومبادئه: ' },
+        { id: 'questions', title: { ar: 'محرك الأسئلة', en: 'Question Engine' }, icon: MessageSquareQuote, bgColor: 'bg-lilac-mist text-lilac', purpose: ['risk','decide'], hint: { ar: 'يولد الأسئلة التي غابت عنك', en: 'Generates questions you missed' }, prompt: 'ولد الأسئلة الليزرية الدقيقة التي كان يجب أن تُسأل ولم تُسأل حول هذا القرار: ' },
+        { id: 'debate', title: { ar: 'الميزان الاستراتيجي', en: 'Strategic Scale' }, icon: Brain, bgColor: 'bg-lilac-mist text-lilac', purpose: ['decide','voices'], hint: { ar: 'يقارن أقوى حجة مع وضد', en: 'Compares strongest case for and against' }, prompt: 'ابنِ أقوى حجة مع، وأقوى حجة ضد، ثم احكم بينهما لهذا القرار بإنصاف: ' },
+        { id: 'butterfly', title: { ar: 'رؤية 360 درجة', en: '360 Horizon' }, icon: Sparkles, bgColor: 'bg-lilac-mist text-lilac', purpose: ['future'], hint: { ar: 'يحاكي المشهد البعيد بوضوح', en: 'Simulates the long horizon clearly' }, prompt: 'تخيل أنني اتخذت هذا القرار. محاكاة العواقب بعد 5 سنوات. أرجع الرد بصيغة JSON فقط JSON ONLY يحتوي على: { "magazineName": "FORBES 2030", "headline": "العنوان الرئيسي القوي", "subheadline": "عنوان فرعي يشرح الصدمة", "bulletPoints": ["نقطة 1", "نقطة 2", "نقطة 3"], "quote": "اقتباس مقولة ملهمة عن أثر القرار" }. لا ترجع أي نص خارج الJSON. القرار هو: ' },
+        { id: 'vault', title: { ar: 'مرآة التحيزات', en: 'Bias Mirror' }, icon: Lock, bgColor: 'bg-lilac-mist text-lilac', purpose: ['risk'], hint: { ar: 'يكشف أين قد تخدع نفسك', en: 'Shows where you may fool yourself' }, prompt: 'أنا سأتخذ هذا القرار. اصنع "مرآة قاسية" تكشف أين أقع بمصيدة الانحياز التأكيدي. حلل كيف سأندم وكيف سأفرح. أسلوبك قاسي جداً وواقعي: ' },
     ];
 
 
@@ -100,7 +100,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
 
     const activePurpose = decisionPurposes.find(p => p.id === activeDecisionPurpose) || decisionPurposes[0];
     const toolById = (id: string) => tools.find(tool => tool.id === id) || tools[0];
-    const iconTone = (bgColor: string) => bgColor.includes('text-') ? '' : 'text-[#182231]';
+    const iconTone = (bgColor: string) => bgColor.includes('text-') ? '' : 'text-navy';
     const firstSceneByPurpose: Record<string, string> = {
         decide: 'decision',
         risk: 'collapse',
@@ -224,16 +224,16 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         <div className="tebyan-decision-room space-y-5 md:space-y-6 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-6 mb-2 md:mb-4">
              <div className="space-y-1">
-                <h1 className="text-lg md:text-xl font-extrabold text-[#182231] tracking-tight leading-tight uppercase">
+                <h1 className="text-lg md:text-xl font-extrabold text-navy tracking-tight leading-tight uppercase">
                     {language === 'ar' ? 'غرفة القرار السرية' : 'SECRET DECISION ROOM'}
                 </h1>
-                <p className="text-[#64788D] font-medium text-[13px] md:text-sm max-w-2xl leading-relaxed">
+                <p className="text-ink-mute font-medium text-[13px] md:text-sm max-w-2xl leading-relaxed">
                     {language === 'ar' ? 'بيئة استراتيجية معزولة لتفكيك المعضلات واتخاذ قرارات مبنية على بيانات إدراكية عميقة.' : 'A secure strategic environment to dismantle dilemmas and make decisions based on deep cognitive insights.'}
                 </p>
              </div>
              <button 
                onClick={() => handleTabChange('discover')}
-               className="px-6 py-2 bg-[#FAF9F6]/88 border border-[#8FA9C7]/25 rounded-full font-bold text-sm text-[#64788D] hover:text-[#182231] hover:border-[#8E7AAE] transition-all flex items-center gap-2 w-fit active:scale-95"
+               className="px-6 py-2 bg-[#FAF9F6]/88 border border-[#8FA9C7]/25 rounded-full font-bold text-sm text-ink-mute hover:text-navy hover:border-[#8E7AAE] transition-all flex items-center gap-2 w-fit active:scale-95"
              >
                 <History className="w-4 h-4" />
                 {language === 'ar' ? 'العودة للاستكشاف' : 'Back to Discover'}
@@ -258,7 +258,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
            </AnimatePresence>
 
            <div className="relative group/input">
-             <div className="absolute -top-3 right-6 z-20 px-4 py-1 bg-[#8E7AAE] text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg group-focus-within/input:bg-rose-600 transition-colors">
+             <div className="absolute -top-3 right-6 z-20 px-4 py-1 bg-[#8E7AAE] text-white text-xs font-black uppercase tracking-widest rounded-full shadow-lg group-focus-within/input:bg-rose-600 transition-colors">
                 {language === 'ar' ? 'مدخلات المعضلة' : 'DILEMMA INPUT'}
              </div>
              <textarea 
@@ -271,7 +271,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                onKeyDown={handleKeyDown}
                className={cn(
                  "w-full min-h-[92px] md:min-h-[150px] h-28 md:h-36 p-4 md:p-6 pt-8 rounded-[22px] md:rounded-[34px] border text-[15px] md:text-lg font-medium focus:ring-4 md:focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
-                 showRadarWarning ? "border-rose-900/50 bg-white text-[#182231] placeholder:text-[#8A97A6] focus:ring-rose-900/10" : "border-[#8FA9C7]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[#8E7AAE] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
+                 showRadarWarning ? "border-rose-900/50 bg-white text-navy placeholder:text-ink-mute focus:ring-rose-900/10" : "border-[#8FA9C7]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[#8E7AAE] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
                )}
                placeholder={language === 'ar' ? 'صِف الموقف أو القرار أو المعضلة التي تواجهك هنا بصراحة تامة...' : 'Describe the situation, decision, or dilemma you are facing here with total honesty...'}
              />
@@ -304,16 +304,16 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
               <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_10%,rgba(142,122,174,0.14),transparent_28%),radial-gradient(circle_at_88%_28%,rgba(143,169,199,0.18),transparent_30%)]" />
               <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
                 <div>
-                  <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#8E7AAE]">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
-                  <h2 className="mt-1 text-xl md:text-2xl font-black text-[#182231]">{language === 'ar' ? 'تبيان يفتح لك الزاوية المناسبة فقط' : 'Tebyan opens only the right angle'}</h2>
-                  <p className="text-sm text-[#64788D] font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، افتح زاوية إضافية بهدوء. الأدوات موجودة بالخلفية بدون زحمة.' : 'Need more depth? Open one extra angle calmly. The tools stay in the background.'}</p>
+                  <p className="text-xs font-black tracking-[0.28em] uppercase text-[#8E7AAE]">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
+                  <h2 className="mt-1 text-xl md:text-2xl font-black text-navy">{language === 'ar' ? 'تبيان يفتح لك الزاوية المناسبة فقط' : 'Tebyan opens only the right angle'}</h2>
+                  <p className="text-sm text-ink-mute font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، افتح زاوية إضافية بهدوء. الأدوات موجودة بالخلفية بدون زحمة.' : 'Need more depth? Open one extra angle calmly. The tools stay in the background.'}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowFullLab(v => !v)}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-black transition-all active:scale-95",
-                    showFullLab ? "bg-[#6E5B91] text-white border-[#182231] shadow-lg" : "bg-white/88 text-[#6E5F8E] border-[#8E7AAE]/18 hover:border-[#8E7AAE]/35"
+                    showFullLab ? "bg-lilac text-white border-navy shadow-lg" : "bg-white/88 text-[#6E5F8E] border-[#8E7AAE]/18 hover:border-[#8E7AAE]/35"
                   )}
                 >
                   <LayoutGrid className="w-4 h-4" />
@@ -328,8 +328,8 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                   className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
                 >
                   <div>
-                    <div className="font-black text-sm md:text-base text-[#182231]">{language === 'ar' ? activePurpose.title.ar : activePurpose.title.en}</div>
-                    <div className="text-[11px] md:text-xs font-bold text-[#64788D] mt-0.5">{language === 'ar' ? activePurpose.hint.ar : activePurpose.hint.en}</div>
+                    <div className="font-black text-sm md:text-base text-navy">{language === 'ar' ? activePurpose.title.ar : activePurpose.title.en}</div>
+                    <div className="text-xs md:text-xs font-bold text-ink-mute mt-0.5">{language === 'ar' ? activePurpose.hint.ar : activePurpose.hint.en}</div>
                   </div>
                   <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showPurposePicker && "rotate-180")} />
                 </button>
@@ -340,7 +340,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                         {decisionPurposes.map(purpose => (
                           <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-white/78 text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300")}>
                             <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
-                            <div className={cn("text-[11px] leading-relaxed font-bold", activeDecisionPurpose === purpose.id ? "text-[#465568]" : "text-[#7C8796]")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
+                            <div className={cn("text-xs leading-relaxed font-bold", activeDecisionPurpose === purpose.id ? "text-ink-soft" : "text-ink-mute")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
                           </button>
                         ))}
                       </div>
@@ -364,9 +364,9 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                           <activeSceneTool.icon className={cn("w-7 h-7 md:w-8 md:h-8", iconTone(activeSceneTool.bgColor))} />
                         </div>
                         <div>
-                          <p className="text-[10px] font-black tracking-[0.24em] uppercase text-[#8E7AAE]">{language === 'ar' ? activeScene.eyebrow.ar : activeScene.eyebrow.en}</p>
-                          <h3 className="mt-1 text-2xl md:text-4xl font-black leading-tight text-[#182231]">{language === 'ar' ? activeScene.title.ar : activeScene.title.en}</h3>
-                          <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-[#64788D]">{language === 'ar' ? activeScene.body.ar : activeScene.body.en}</p>
+                          <p className="text-xs font-black tracking-[0.24em] uppercase text-[#8E7AAE]">{language === 'ar' ? activeScene.eyebrow.ar : activeScene.eyebrow.en}</p>
+                          <h3 className="mt-1 text-2xl md:text-4xl font-black leading-tight text-navy">{language === 'ar' ? activeScene.title.ar : activeScene.title.en}</h3>
+                          <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-ink-mute">{language === 'ar' ? activeScene.body.ar : activeScene.body.en}</p>
                         </div>
                       </div>
                       <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -374,7 +374,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                           type="button"
                           onClick={() => runAnalysis(activeSceneTool)}
                           disabled={isLoading}
-                          className="flex-1 rounded-2xl bg-[#6E5B91] px-6 py-4 text-sm font-black text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] transition-all hover:bg-[#5F4E7F] active:scale-[0.98] disabled:opacity-60"
+                          className="flex-1 rounded-2xl bg-lilac px-6 py-4 text-sm font-black text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] transition-all hover:bg-lilac-deep active:scale-[0.98] disabled:opacity-60"
                         >
                           {language === 'ar' ? activeScene.cta.ar : activeScene.cta.en}
                         </button>
@@ -393,8 +393,8 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                   <div className="rounded-[28px] border border-[#8FA9C7]/14 bg-[#F7F5F2]/82 p-4 md:p-5">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <div>
-                        <p className="text-[10px] font-black tracking-[0.24em] uppercase text-[#7C8796]">{language === 'ar' ? 'تسلسل الجلسة' : 'Session sequence'}</p>
-                        <h4 className="text-lg font-black text-[#182231]">{language === 'ar' ? 'كل مرة باب واحد فقط' : 'One doorway at a time'}</h4>
+                        <p className="text-xs font-black tracking-[0.24em] uppercase text-ink-mute">{language === 'ar' ? 'تسلسل الجلسة' : 'Session sequence'}</p>
+                        <h4 className="text-lg font-black text-navy">{language === 'ar' ? 'كل مرة باب واحد فقط' : 'One doorway at a time'}</h4>
                       </div>
                       <Sparkles className="w-5 h-5 text-[#8E7AAE]" />
                     </div>
@@ -413,12 +413,12 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                               isActive ? "bg-white border-[#8E7AAE]/32 shadow-sm" : "bg-white/54 border-[#8FA9C7]/12 hover:bg-white"
                             )}
                           >
-                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isDone ? "bg-[#EEF4F1] text-[#5F837A]" : isActive ? "bg-[#8E7AAE] text-white" : "bg-[#EEF2F6] text-[#7C8796]")}>
+                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isDone ? "bg-[#EEF4F1] text-[#5F837A]" : isActive ? "bg-[#8E7AAE] text-white" : "bg-[#EEF2F6] text-ink-mute")}>
                               <sceneTool.icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-[10px] font-black text-[#8E7AAE]">{language === 'ar' ? scene.eyebrow.ar : scene.eyebrow.en}</p>
-                              <p className="text-sm font-black text-[#182231] leading-snug md:truncate">{language === 'ar' ? scene.title.ar : scene.title.en}</p>
+                              <p className="text-xs font-black text-[#8E7AAE]">{language === 'ar' ? scene.eyebrow.ar : scene.eyebrow.en}</p>
+                              <p className="text-sm font-black text-navy leading-snug md:truncate">{language === 'ar' ? scene.title.ar : scene.title.en}</p>
                             </div>
                           </button>
                         );
@@ -444,8 +444,8 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                         <div className={cn("tebyan-tool-icon w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[20px] flex items-center justify-center shadow-sm group-hover:scale-[1.03] transition-transform duration-500", tool.bgColor)}>
                           <tool.icon className={cn("w-5 h-5 md:w-7 md:h-7", iconTone(tool.bgColor))} />
                         </div>
-                        <span className="font-extrabold text-center text-[10px] md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
-                        <p className="hidden md:block text-[10px] md:text-[11px] text-[#7C8796] font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
+                        <span className="font-extrabold text-center text-xs md:text-sm px-0.5 leading-tight line-clamp-2">{language === 'ar' ? tool.title.ar : tool.title.en}</span>
+                        <p className="hidden md:block text-xs md:text-xs text-ink-mute font-bold text-center leading-relaxed line-clamp-2">{language === 'ar' ? tool.hint?.ar : tool.hint?.en}</p>
                     </button>
                 ))}
               </div>
@@ -455,7 +455,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
            <div id="decision-results" className="scroll-mt-24">
              <AnimatePresence>
               {isLoading && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4 py-20 text-[#6E5B91]">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center gap-4 py-20 text-lilac">
                     <TebyanLoader size={48} label={language === 'ar' ? 'جاري تحليل القرار' : 'Analyzing the decision'} />
                     <p className="font-black text-xs tracking-widest">{language === 'ar' ? 'تبيان تقوم بالمعالجة الاستراتيجية والتحليل العميق...' : 'TIBYAN PROCESSING STRATEGIC ANALYSIS...'}</p>
                 </motion.div>
@@ -464,9 +464,9 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full">
                     
                     {result.tool === 'butterfly' && result.isJson ? (
-                        <div className="bg-white text-[#182231] border border-[#182231]/10 rounded-[32px] md:rounded-[40px] overflow-hidden shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative min-h-[500px] md:min-h-[700px] flex flex-col justify-end p-8 md:p-16 border-[8px] md:border-[16px] border-[#182231]/10 ring-1 ring-white/10">
+                        <div className="bg-white text-navy border border-navy/10 rounded-[32px] md:rounded-[40px] overflow-hidden shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative min-h-[500px] md:min-h-[700px] flex flex-col justify-end p-8 md:p-16 border-[8px] md:border-[16px] border-navy/10 ring-1 ring-white/10">
                             
-                            <div className="absolute top-8 left-8 md:top-12 md:left-12 text-[10px] md:text-sm font-black tracking-[0.3em] text-[#6E5B91] border-b md:border-b-2 border-[#6E5B91]/30 pb-1 md:pb-2 uppercase z-20">
+                            <div className="absolute top-8 left-8 md:top-12 md:left-12 text-xs md:text-sm font-black tracking-[0.3em] text-lilac border-b md:border-b-2 border-lilac/30 pb-1 md:pb-2 uppercase z-20">
                                 {result.content.magazineName}
                             </div>
                             
@@ -474,7 +474,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                 <motion.h1 
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-3xl md:text-5xl lg:text-7xl font-black leading-[1.1] md:leading-[1.0] tracking-tighter italic uppercase text-[#182231] break-words"
+                                    className="text-3xl md:text-5xl lg:text-7xl font-black leading-[1.1] md:leading-[1.0] tracking-tighter italic uppercase text-navy break-words"
                                 >
                                     {result.content.headline}
                                 </motion.h1>
@@ -483,7 +483,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.1 }}
-                                    className="text-base md:text-xl lg:text-2xl font-bold text-[#6E5B91] max-w-2xl leading-normal"
+                                    className="text-base md:text-xl lg:text-2xl font-bold text-lilac max-w-2xl leading-normal"
                                 >
                                     {result.content.subheadline}
                                 </motion.p>
@@ -492,11 +492,11 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.2 }}
-                                    className="space-y-2 md:space-y-3 bg-[#F8F5EF] backdrop-blur-md p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#182231]/10 max-w-xl mt-4"
+                                    className="space-y-2 md:space-y-3 bg-ivory backdrop-blur-md p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-navy/10 max-w-xl mt-4"
                                 >
                                     {result.content.bulletPoints?.map((pt: string, i: number) => (
-                                        <div key={i} className="text-sm md:text-base lg:text-lg font-bold text-[#182231] flex items-start gap-4">
-                                            <span className="text-[#6E5B91] mt-1.5 shrink-0 w-2 h-2 rounded-full bg-[#6E5B91] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"></span>
+                                        <div key={i} className="text-sm md:text-base lg:text-lg font-bold text-navy flex items-start gap-4">
+                                            <span className="text-lilac mt-1.5 shrink-0 w-2 h-2 rounded-full bg-lilac shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"></span>
                                             {pt}
                                         </div>
                                     ))}
@@ -506,14 +506,14 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 0.3 }}
-                                    className="mt-8 md:mt-12 text-center pt-8 border-t border-[#182231]/10 text-base md:text-lg font-medium tracking-tight text-[#182231] italic leading-relaxed px-4 opacity-90"
+                                    className="mt-8 md:mt-12 text-center pt-8 border-t border-navy/10 text-base md:text-lg font-medium tracking-tight text-navy italic leading-relaxed px-4 opacity-90"
                                 >
                                     "{result.content.quote}"
                                 </motion.div>
                             </div>
                         </div>
                      ) : result.tool === 'doubt' && result.isJson ? (
-                         <div className="bg-white border border-[#182231]/10 p-8 md:p-16 rounded-[40px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden">
+                         <div className="bg-white border border-navy/10 p-8 md:p-16 rounded-[40px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden">
                              <div className="flex flex-col md:flex-row items-center gap-12 max-w-4xl mx-auto">
                                  {/* Scale Visual */}
                                  <div className="flex-1 w-full flex flex-col items-center justify-center relative px-[2.25rem] md:px-0">
@@ -522,20 +522,20 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                         initial={{ rotate: 0 }}
                                         animate={{ rotate: (result.content.certainty - 50) * 0.4 }}
                                         transition={{ type: 'spring', damping: 10, stiffness: 50 }}
-                                        className="w-full max-w-xs h-2 bg-[#6E5B91] rounded-full relative Origin-center"
+                                        className="w-full max-w-xs h-2 bg-lilac rounded-full relative Origin-center"
                                     >
-                                        <div className="absolute -top-[4rem] -left-8 w-16 h-16 rounded-full border-2 border-[#6E5B91] bg-white flex items-center justify-center">
-                                            <span className="text-[#6E5B91] font-black">{result.content.certainty}%</span>
+                                        <div className="absolute -top-[4rem] -left-8 w-16 h-16 rounded-full border-2 border-lilac bg-white flex items-center justify-center">
+                                            <span className="text-lilac font-black">{result.content.certainty}%</span>
                                         </div>
-                                        <div className="absolute -top-[4rem] -right-8 w-16 h-16 rounded-full border-2 border-dashed border-[#6E5B91] bg-[#EFEAF6] flex items-center justify-center">
-                                            <span className="text-[#6E5B91] font-black">{result.content.doubt}%</span>
+                                        <div className="absolute -top-[4rem] -right-8 w-16 h-16 rounded-full border-2 border-dashed border-lilac bg-lilac-mist flex items-center justify-center">
+                                            <span className="text-lilac font-black">{result.content.doubt}%</span>
                                         </div>
                                     </motion.div>
                                     <div className="mt-12 text-center">
-                                        <div className="text-xs font-black uppercase tracking-widest text-[#64788D] mb-2">
+                                        <div className="text-xs font-black uppercase tracking-widest text-ink-mute mb-2">
                                             {language === 'ar' ? 'ميزان اليقين' : 'GRAVITY OF DOUBT'}
                                         </div>
-                                        <h3 className="text-3xl font-black text-[#182231]">
+                                        <h3 className="text-3xl font-black text-navy">
                                             {result.content.verdict}
                                         </h3>
                                     </div>
@@ -544,27 +544,27 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                  {/* Arguments */}
                                  <div className="flex-1 w-full space-y-8">
                                      <div>
-                                        <h4 className="text-[#6E5B91] font-black tracking-widest text-sm uppercase mb-4 mb-4 flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full bg-[#6E5B91]"></div>
+                                        <h4 className="text-lilac font-black tracking-widest text-sm uppercase mb-4 mb-4 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-lilac"></div>
                                             {language === 'ar' ? 'ركائز اليقين' : 'Pillars of Certainty'}
                                         </h4>
                                         <ul className="space-y-3">
                                             {result.content.certaintyArguments?.map((arg: string, i: number) => (
-                                                <li key={i} className="text-[#182231] text-sm font-medium leading-relaxed">
+                                                <li key={i} className="text-navy text-sm font-medium leading-relaxed">
                                                     {arg}
                                                 </li>
                                             ))}
                                         </ul>
                                      </div>
-                                     <div className="w-full border-t border-dashed border-[#182231]/20"></div>
+                                     <div className="w-full border-t border-dashed border-navy/20"></div>
                                      <div>
-                                        <h4 className="text-[#6E5B91] font-black tracking-widest text-sm uppercase mb-4 flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full border-2 border-[#6E5B91]"></div>
+                                        <h4 className="text-lilac font-black tracking-widest text-sm uppercase mb-4 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full border-2 border-lilac"></div>
                                             {language === 'ar' ? 'أثقال الشك' : 'Weights of Doubt'}
                                         </h4>
                                         <ul className="space-y-3">
                                             {result.content.doubtArguments?.map((arg: string, i: number) => (
-                                                <li key={i} className="text-[#182231] text-sm font-medium leading-relaxed">
+                                                <li key={i} className="text-navy text-sm font-medium leading-relaxed">
                                                     {arg}
                                                 </li>
                                             ))}
@@ -574,18 +574,18 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                              </div>
                          </div>
                      ) : result.tool === 'capsule' && result.isJson ? (
-                         <div className="bg-white p-8 md:p-16 rounded-[40px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden text-center text-[#182231]">
+                         <div className="bg-white p-8 md:p-16 rounded-[40px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden text-center text-navy">
                              
                              <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
                                  <motion.div 
                                     initial={{ y: -20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 1 }}
-                                    className="w-24 h-24 mb-8 text-[#6E5B91] bg-[#F8F5EF] rounded-full flex items-center justify-center border border-[#6E5B91]/30 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
+                                    className="w-24 h-24 mb-8 text-lilac bg-ivory rounded-full flex items-center justify-center border border-lilac/30 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
                                  >
                                      <Hourglass className="w-12 h-12" />
                                  </motion.div>
-                                 <h2 className="text-sm font-black uppercase tracking-[0.4em] text-[#6E5B91] mb-4">
+                                 <h2 className="text-sm font-black uppercase tracking-[0.4em] text-lilac mb-4">
                                      {language === 'ar' ? 'كبسولة الزمن مختومة' : 'TIME CAPSULE SEALED'}
                                  </h2>
                                  <p className="text-2xl md:text-4xl font-bold mb-12 italic leading-relaxed">
@@ -593,42 +593,42 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                  </p>
                                  
                                  <div className="grid grid-cols-2 gap-4 w-full">
-                                     <div className="bg-[#F8F5EF] border border-[#6E5B91]/30 p-6 rounded-3xl">
-                                         <div className="text-[10px] text-[#6E5B91] uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'تاريخ الفتح' : 'UNLOCK DATE'}</div>
+                                     <div className="bg-ivory border border-lilac/30 p-6 rounded-3xl">
+                                         <div className="text-xs text-lilac uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'تاريخ الفتح' : 'UNLOCK DATE'}</div>
                                          <div className="text-xl font-bold">{result.content.targetDate}</div>
                                      </div>
-                                     <div className="bg-[#F8F5EF] border border-[#6E5B91]/30 p-6 rounded-3xl">
-                                         <div className="text-[10px] text-[#6E5B91] uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'مستوى الثقة وقت الختم' : 'SEALED CONFIDENCE'}</div>
+                                     <div className="bg-ivory border border-lilac/30 p-6 rounded-3xl">
+                                         <div className="text-xs text-lilac uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'مستوى الثقة وقت الختم' : 'SEALED CONFIDENCE'}</div>
                                          <div className="text-xl font-bold">{result.content.sealedConfidence}%</div>
                                      </div>
                                  </div>
                                  
-                                 <div className="mt-8 bg-[#F8F5EF] border border-[#6E5B91]/30 p-6 rounded-3xl w-full text-left" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-                                     <div className="text-[10px] text-[#6E5B91] uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'النتيجة المتوقعة' : 'PROJECTED OUTCOME'}</div>
+                                 <div className="mt-8 bg-ivory border border-lilac/30 p-6 rounded-3xl w-full text-left" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+                                     <div className="text-xs text-lilac uppercase font-black tracking-widest mb-2">{language === 'ar' ? 'النتيجة المتوقعة' : 'PROJECTED OUTCOME'}</div>
                                      <div className="text-lg font-medium leading-relaxed">{result.content.projectedOutcome}</div>
                                  </div>
                              </div>
                          </div>
                      ) : result.tool === 'vault' ? (
-                        <div className="bg-white border-[6px] md:border-[12px] border-[#182231]/10 p-8 md:p-24 rounded-[32px] md:rounded-[60px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden text-[#182231]">
+                        <div className="bg-white border-[6px] md:border-[12px] border-navy/10 p-8 md:p-24 rounded-[32px] md:rounded-[60px] shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden text-navy">
                              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(225,29,72,0.05),transparent)] pointer-events-none"></div>
-                             <div className="absolute top-0 left-0 w-full h-1.5 bg-[#6E5B91] opacity-60"></div>
+                             <div className="absolute top-0 left-0 w-full h-1.5 bg-lilac opacity-60"></div>
                              
                              <div className="flex flex-col items-center justify-center gap-6 mb-16 md:mb-24 relative z-10">
-                               <div className="p-6 bg-[#EFEAF6] rounded-3xl border-2 border-[#6E5B91]/30 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]">
-                                 <Lock className="w-10 h-10 md:w-16 md:h-16 text-[#6E5B91]" />
+                               <div className="p-6 bg-lilac-mist rounded-3xl border-2 border-lilac/30 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]">
+                                 <Lock className="w-10 h-10 md:w-16 md:h-16 text-lilac" />
                                </div>
-                               <h2 className="text-3xl md:text-6xl font-black tracking-tighter text-[#182231] uppercase text-center">
+                               <h2 className="text-3xl md:text-6xl font-black tracking-tighter text-navy uppercase text-center">
                                   {language === 'ar' ? 'تقرير الانحيازات الاستبدادي' : 'DESPOTIC BIAS REPORT'}
                                </h2>
                              </div>
                              
                              <div className="markdown-body prose max-w-none relative z-10
                                 prose-p:!text-[#273548] prose-p:text-xl md:prose-p:text-3xl prose-p:leading-relaxed prose-p:font-bold prose-p:mb-10
-                                prose-headings:!text-[#182231] prose-headings:font-black prose-headings:tracking-tighter prose-headings:mb-12 md:prose-headings:text-7xl
-                                prose-strong:!text-[#6E5B91] prose-strong:font-black prose-strong:text-2xl md:prose-strong:text-4xl
+                                prose-headings:!text-navy prose-headings:font-black prose-headings:tracking-tighter prose-headings:mb-12 md:prose-headings:text-7xl
+                                prose-strong:!text-lilac prose-strong:font-black prose-strong:text-2xl md:prose-strong:text-4xl
                                 prose-li:!text-[#273548] prose-li:text-xl md:prose-li:text-2xl prose-li:mb-4
-                                prose-blockquote:border-[#6E5B91] prose-blockquote:bg-[#EFEAF6] prose-blockquote:p-10 md:prose-blockquote:p-16 prose-blockquote:rounded-[40px] prose-blockquote:!text-[#273548] prose-blockquote:not-italic prose-blockquote:font-bold prose-blockquote:text-2xl md:prose-blockquote:text-4xl">
+                                prose-blockquote:border-lilac prose-blockquote:bg-lilac-mist prose-blockquote:p-10 md:prose-blockquote:p-16 prose-blockquote:rounded-[40px] prose-blockquote:!text-[#273548] prose-blockquote:not-italic prose-blockquote:font-bold prose-blockquote:text-2xl md:prose-blockquote:text-4xl">
                                <ReactMarkdown>{result.content}</ReactMarkdown>
                              </div>
                         </div>
@@ -649,16 +649,16 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                         </div>
                                     )}
                                     <div>
-                                        <h3 className="text-3xl md:text-5xl font-black tracking-tighter text-[#182231] uppercase">
+                                        <h3 className="text-3xl md:text-5xl font-black tracking-tighter text-navy uppercase">
                                             {tools.find(t => t.id === result.tool)?.title[language] || (result.tool === 'Error' ? (language === 'ar' ? 'خطأ في التحليل' : 'Analysis Error') : result.tool)}
                                         </h3>
-                                        <p className="text-[#64788D] font-bold mt-1 tracking-widest text-xs uppercase">
+                                        <p className="text-ink-mute font-bold mt-1 tracking-widest text-xs uppercase">
                                             {language === 'ar' ? 'مخرج التحليل الاستراتيجي النهائي' : 'FINAL STRATEGIC ANALYSIS OUTPUT'}
                                         </p>
                                     </div>
                                 </div>
                             </div>
-                            <div className="markdown-body prose prose-zinc md:prose-xl max-w-none text-[#273548] prose-headings:text-[#182231] prose-strong:text-[#182231] prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
+                            <div className="markdown-body prose prose-zinc md:prose-xl max-w-none text-[#273548] prose-headings:text-navy prose-strong:text-navy prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
                               <ReactMarkdown>{result.content}</ReactMarkdown>
                             </div>
                         </div>
