@@ -119,7 +119,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
             {/* Instruction Overlay */}
             {!isCinematic && (
               <div className={cn(
-                  "absolute top-4 md:top-6 z-20 flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 md:px-4 py-2 rounded-full border border-white/10 text-white/80 text-[10px] md:text-xs font-bold max-w-[52vw] md:max-w-none leading-relaxed",
+                  "absolute top-4 md:top-6 z-20 flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 md:px-4 py-2 rounded-full border border-white/10 text-white/80 text-xs md:text-xs font-bold max-w-[52vw] md:max-w-none leading-relaxed",
                   language === 'ar' ? 'right-3 md:right-6' : 'left-3 md:left-6'
               )}>
                   <Info className="w-4 h-4" />
@@ -138,9 +138,10 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                       else setIsCinematic(true);
                   }} 
                   className={cn(
-                      "px-3 md:px-4 py-2 rounded-full font-bold text-[10px] md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
+                      "px-3 md:px-4 py-2 rounded-full font-bold text-xs md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
                       isCinematic ? "bg-white text-black border-white" : "bg-black/50 text-white border-white/10 hover:bg-white/10"
                   )}
+                  aria-pressed={isCinematic}
               >
                   <Clapperboard className="w-4 h-4" />
                   {isCinematic ? (language === 'ar' ? 'خروج من العرض' : 'Exit Cinema') : (language === 'ar' ? 'مسرح الأفكار' : 'Cinematic Mode')}
@@ -151,14 +152,14 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
             <AnimatePresence>
               {!isCinematic && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
-                    <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
+                    <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'} aria-label={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
                         <Maximize2 className="w-5 h-5" />
-                        <span className="text-[10px] font-bold hidden group-hover:inline md:hidden">{language === 'ar' ? 'عرض كامل' : 'Fit View'}</span>
+                        <span className="text-xs font-bold hidden group-hover:inline md:hidden">{language === 'ar' ? 'عرض كامل' : 'Fit View'}</span>
                     </button>
-                    <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
+                    <button onClick={() => setZoom(prev => Math.min(prev + 0.2, 2))} aria-label={language === 'ar' ? 'تكبير' : 'Zoom in'} title={language === 'ar' ? 'تكبير' : 'Zoom in'} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                         <ZoomIn className="w-5 h-5" />
                     </button>
-                    <button onClick={() => setZoom(prev => Math.max(prev - 0.2, 0.3))} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
+                    <button onClick={() => setZoom(prev => Math.max(prev - 0.2, 0.3))} aria-label={language === 'ar' ? 'تصغير' : 'Zoom out'} title={language === 'ar' ? 'تصغير' : 'Zoom out'} className="p-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10 text-white hover:bg-white/20 transition-all">
                         <ZoomOut className="w-5 h-5" />
                     </button>
                 </motion.div>
@@ -229,7 +230,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                 
                                 {/* Label */}
                                 <div className={cn(
-                                    "absolute top-full mt-2 whitespace-nowrap text-[10px] sm:text-xs font-bold text-white/40 px-2 py-1 rounded-full transition-all",
+                                    "absolute top-full mt-2 whitespace-nowrap text-xs sm:text-xs font-bold text-white/40 px-2 py-1 rounded-full transition-all",
                                     (!isCinematic || (isCinematic && selectedNode?.id === node.id)) ? "opacity-100" : "opacity-0",
                                     !isCinematic && "group-hover:text-white group-hover:bg-black/50",
                                     language === 'ar' ? "right-1/2 translate-x-1/2" : "left-1/2 -translate-x-1/2"
@@ -252,6 +253,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                     </div>
                     <input 
                         type="range" 
+                        aria-label={language === 'ar' ? 'ذاكرة النسيج: اختر الخطوة' : 'Evolution timeline step'}
                         min={1} 
                         max={nodes.length} 
                         value={timelineStep} 
@@ -276,7 +278,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                     >
                         {!isCinematic && (
-                          <button onClick={() => setSelectedNode(null)} className="absolute top-4 right-4 text-white/50 hover:text-white">
+                          <button onClick={() => setSelectedNode(null)} aria-label={language === 'ar' ? 'إغلاق التفاصيل' : 'Close details'} className="absolute top-4 right-4 text-white/50 hover:text-white">
                               <Maximize2 className="w-5 h-5" />
                           </button>
                         )}
@@ -290,7 +292,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                             </div>
                             <div>
                                 <h4 className={cn("text-white font-bold transition-all", isCinematic && "text-2xl")}>{selectedNode.author}</h4>
-                                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">
+                                <p className="text-white/40 text-xs font-black uppercase tracking-widest">
                                     {selectedNode.type === 'seed' ? (language === 'ar' ? 'البذرة الأولى' : 'Origin Seed') : (language === 'ar' ? 'تطوير' : 'Evolution')}
                                 </p>
                             </div>

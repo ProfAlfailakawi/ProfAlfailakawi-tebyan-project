@@ -117,7 +117,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
           initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
           animate={{ opacity: 1, backdropFilter: 'blur(20px)' }}
           exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-zinc-900/60 transition-all font-sans"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-navy/50 transition-all font-sans"
           dir={language === 'ar' ? 'rtl' : 'ltr'}
           onClick={onClose}
         >
@@ -130,11 +130,11 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header / Input */}
-            <form onSubmit={handleSearch} className="relative flex items-center p-2.5 sm:p-4 md:p-6 border-b border-zinc-200/50">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
+            <form onSubmit={handleSearch} className="relative flex items-center p-2.5 sm:p-4 md:p-6 border-b border-lilac-soft/25">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-lilac/10 blur-3xl rounded-full"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-rose-500/10 blur-3xl rounded-full"></div>
               
-              <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-white shrink-0 shadow-lg relative z-10">
+              <div className="w-12 h-12 rounded-full bg-lilac flex items-center justify-center text-white shrink-0 shadow-lg relative z-10">
                 {isSearching ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5 text-white" />}
               </div>
               
@@ -143,15 +143,15 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={language === 'ar' ? 'البحث الذكي (تسونامي المعرفة)...' : 'Smart Search (Knowledge Tsunami)...'}
-                className="flex-1 bg-transparent border-none text-base sm:text-xl md:text-3xl font-black text-black placeholder:text-zinc-300 placeholder:font-semibold sm:placeholder:font-black focus:outline-none focus:ring-0 px-1.5 sm:px-4 md:px-6 relative z-10 w-full min-w-0 text-ellipsis"
+                placeholder={language === 'ar' ? 'اسأل أو ابحث في تبيان...' : 'Ask or search Tebyan...'}
+                className="flex-1 bg-transparent border-none text-base sm:text-xl md:text-3xl font-black text-navy placeholder:text-ink-mute/70 placeholder:font-semibold sm:placeholder:font-black focus:outline-none focus:ring-0 px-1.5 sm:px-4 md:px-6 relative z-10 w-full min-w-0 text-ellipsis"
               />
 
               <button 
                 type="button"
                 onClick={onClose}
                 title={language === 'ar' ? 'إغلاق' : 'Close'}
-                className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-black transition-colors shrink-0 relative z-10"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-lilac-mist hover:bg-lilac-soft/25 text-ink-mute hover:text-navy transition-colors shrink-0 relative z-10"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -163,20 +163,20 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                 <div className="space-y-8">
                   {/* Cognitive Modes */}
                   <div>
-                     <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                     <h3 className="text-xs font-bold text-ink-mute rtl:tracking-normal mb-3">
                        {language === 'ar' ? 'أنماط الإدراك' : 'Cognitive Modes'}
                      </h3>
                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <button onClick={() => handleAction(() => setMode('default'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'default' ? 'border-black bg-black text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
-                          <Sparkles className={cn("w-5 h-5 mb-2", mode === 'default' ? 'text-white' : 'text-zinc-500')} />
+                        <button onClick={() => handleAction(() => setMode('default'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'default' ? 'border-lilac bg-lilac text-white' : 'border-lilac-soft/25 bg-white hover:bg-lilac-mist/50')}>
+                          <Sparkles className={cn("w-5 h-5 mb-2", mode === 'default' ? 'text-white' : 'text-ink-mute')} />
                           <div className="font-bold">{language === 'ar' ? 'الافتراضي' : 'Default'}</div>
                         </button>
-                        <button onClick={() => handleAction(() => setMode('executive'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'executive' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
-                          <Zap className={cn("w-5 h-5 mb-2", mode === 'executive' ? 'text-white' : 'text-zinc-500')} />
+                        <button onClick={() => handleAction(() => setMode('executive'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'executive' ? 'border-lilac-deep bg-lilac-deep text-white' : 'border-lilac-soft/25 bg-white hover:bg-lilac-mist/50')}>
+                          <Zap className={cn("w-5 h-5 mb-2", mode === 'executive' ? 'text-white' : 'text-ink-mute')} />
                           <div className="font-bold">{language === 'ar' ? 'التنفيذي' : 'Executive'}</div>
                         </button>
-                        <button onClick={() => handleAction(() => setMode('genesis'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'genesis' ? 'border-amber-500 bg-amber-500 text-white' : 'border-zinc-200 bg-white hover:bg-zinc-50')}>
-                          <Wind className={cn("w-5 h-5 mb-2", mode === 'genesis' ? 'text-white' : 'text-zinc-500')} />
+                        <button onClick={() => handleAction(() => setMode('genesis'))} className={cn("p-4 rounded-2xl border text-right focus:outline-none transition-all", mode === 'genesis' ? 'border-lilac-soft bg-lilac-soft text-white' : 'border-lilac-soft/25 bg-white hover:bg-lilac-mist/50')}>
+                          <Wind className={cn("w-5 h-5 mb-2", mode === 'genesis' ? 'text-white' : 'text-ink-mute')} />
                           <div className="font-bold">{language === 'ar' ? 'الاستكشاف' : 'Genesis'}</div>
                         </button>
                      </div>
@@ -184,7 +184,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
 
                   {/* Quick Navigation */}
                   <div>
-                    <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                    <h3 className="text-xs font-bold text-ink-mute rtl:tracking-normal mb-3">
                        {language === 'ar' ? 'التنقل السريع' : 'Quick Navigation'}
                      </h3>
                      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
@@ -192,12 +192,12 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                           <button
                             key={tab.id}
                             onClick={() => handleAction(() => handleTabChange(tab.id))}
-                            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl hover:bg-zinc-100 transition-colors text-right"
+                            className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-xl hover:bg-lilac-mist transition-colors text-right"
                           >
-                            <div className="w-8 h-8 rounded-lg bg-white border border-zinc-200 flex items-center justify-center shrink-0">
-                               <tab.icon className="w-4 h-4 text-zinc-500" />
+                            <div className="w-8 h-8 rounded-lg bg-white border border-lilac-soft/25 flex items-center justify-center shrink-0">
+                               <tab.icon className="w-4 h-4 text-ink-mute" />
                             </div>
-                            <span className="min-w-0 font-semibold text-zinc-700 [overflow-wrap:normal] max-sm:text-[13px] max-sm:leading-snug">{tab.label}</span>
+                            <span className="min-w-0 font-semibold text-navy [overflow-wrap:normal] max-sm:text-sm max-sm:leading-snug">{tab.label}</span>
                           </button>
                         ))}
                      </div>
@@ -209,7 +209,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                 <div className="space-y-6">
                   {filteredTabs.length > 0 && (
                     <div>
-                      <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3">
+                      <h3 className="text-xs font-bold text-ink-mute rtl:tracking-normal mb-3">
                          {language === 'ar' ? 'التنقل' : 'Navigation'}
                        </h3>
                        <div className="space-y-1">
@@ -217,9 +217,9 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                             <button
                               key={tab.id}
                               onClick={() => handleAction(() => handleTabChange(tab.id))}
-                              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-100 transition-colors text-right"
+                              className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-lilac-mist transition-colors text-right"
                             >
-                               <Navigation className="w-4 h-4 text-zinc-400" />
+                               <Navigation className="w-4 h-4 text-ink-mute" />
                                <span className="font-bold">{tab.label}</span>
                             </button>
                           ))}
@@ -229,14 +229,14 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
 
                   <button 
                     onClick={handleSearch}
-                    className="w-full flex items-center gap-4 p-4 rounded-2xl bg-black text-white hover:bg-zinc-800 transition-colors text-right"
+                    className="w-full flex items-center gap-4 p-4 rounded-2xl bg-lilac text-white hover:bg-lilac-deep transition-colors text-right"
                   >
-                     <Sparkles className="w-5 h-5 text-indigo-400" />
+                     <Sparkles className="w-5 h-5 text-lilac-soft" />
                      <div className="flex-1">
                         <div className="font-bold text-lg">{language === 'ar' ? 'البحث عن' : 'Search for'} "{query}"</div>
-                        <div className="text-sm text-zinc-400 opacity-80">{language === 'ar' ? 'البحث باستخدام الذكاء الكلي للتفاصيل...' : 'Use Omni-AI for deep insights...'}</div>
+                        <div className="text-sm text-ink-mute opacity-80">{language === 'ar' ? 'البحث باستخدام الذكاء الكلي للتفاصيل...' : 'Use Omni-AI for deep insights...'}</div>
                      </div>
-                     <kbd className="px-2 py-1 rounded bg-zinc-800 font-sans text-xs">Enter</kbd>
+                     <kbd className="px-2 py-1 rounded bg-lilac-deep font-sans text-xs">Enter</kbd>
                   </button>
                 </div>
               )}
@@ -244,13 +244,13 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
               {isSearching && (
                  <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <div className="relative">
-                      <div className="w-24 h-24 border-4 border-zinc-100 rounded-full"></div>
-                      <div className="w-24 h-24 border-4 border-black rounded-full border-t-transparent animate-spin absolute inset-0"></div>
+                      <div className="w-24 h-24 border-4 border-lilac-soft/20 rounded-full"></div>
+                      <div className="w-24 h-24 border-4 border-lilac rounded-full border-t-transparent animate-spin absolute inset-0"></div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                         <Sparkles className="w-8 h-8 text-black animate-pulse" />
+                         <Sparkles className="w-8 h-8 text-navy animate-pulse" />
                       </div>
                     </div>
-                    <p className="mt-6 text-zinc-500 font-bold animate-pulse">
+                    <p className="mt-6 text-ink-mute font-bold animate-pulse">
                       {language === 'ar' ? 'جاري تجميع المعرفة...' : 'Synthesizing knowledge...'}
                     </p>
                  </div>
@@ -268,9 +268,9 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
             </div>
             
             {/* Footer */}
-            <div className="p-4 border-t border-zinc-200/50 bg-zinc-50/50 flex items-center justify-between text-xs font-medium text-zinc-400">
+            <div className="p-4 border-t border-lilac-soft/25 bg-ivory flex items-center justify-between text-xs font-medium text-ink-mute">
                <div className="flex items-center gap-2">
-                 <kbd className="px-2 py-1 rounded bg-zinc-200/50 font-sans">Esc</kbd>
+                 <kbd className="px-2 py-1 rounded bg-lilac-mist font-sans">Esc</kbd>
                  <span>{language === 'ar' ? 'للخروج' : 'to close'}</span>
                </div>
                <div className="flex items-center gap-2">

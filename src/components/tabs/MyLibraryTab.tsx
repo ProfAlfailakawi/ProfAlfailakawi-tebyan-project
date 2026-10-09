@@ -58,7 +58,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
             return seg;
           })}
         </svg>
-        <div className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-[#182231]">{total}</div>
+        <div className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-navy">{total}</div>
       </div>
     )}
     <div className="flex flex-wrap gap-2 justify-center md:flex-col md:items-stretch" role="list">
@@ -114,12 +114,12 @@ const GalleryDots = ({ listRef, count }: { listRef: React.RefObject<HTMLUListEle
   }, [listRef, count]);
   if (count < 2) return null;
   if (count > 12) {
-    return <div className="mb-5 text-[11px] font-bold text-zinc-400 tabular-nums" aria-hidden="true" dir="ltr">{active + 1} / {count}</div>;
+    return <div className="mb-5 text-xs font-bold text-zinc-400 tabular-nums" aria-hidden="true" dir="ltr">{active + 1} / {count}</div>;
   }
   return (
     <div className="mb-5 flex items-center justify-center gap-1.5" aria-hidden="true">
       {Array.from({ length: count }).map((_, i) => (
-        <span key={i} className={cn('h-1.5 rounded-full transition-all', i === active ? 'w-5 bg-[#6E5B91]' : 'w-1.5 bg-[#6E5B91]/25')} />
+        <span key={i} className={cn('h-1.5 rounded-full transition-all', i === active ? 'w-5 bg-lilac' : 'w-1.5 bg-lilac/25')} />
       ))}
     </div>
   );
@@ -213,7 +213,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
 
                             const typeLabels: Record<string, { ar: string, color: string }> = {
                                 'qawlfasl': { ar: 'قول فصل', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                                'oracle': { ar: 'المستشار الكلي', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+                                'oracle': { ar: 'المستشار الكلي', color: 'bg-lilac-mist text-lilac border-lilac-mist' },
                                 'concept': { ar: 'هندسة الأفكار', color: 'bg-amber-50 text-amber-600 border-amber-100' },
                                 'roadmap': { ar: 'طريق النجاح', color: 'bg-rose-50 text-rose-600 border-rose-100' },
                                 'text': { ar: 'نص', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' },
@@ -253,7 +253,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                        <div className="w-2 h-2 rounded-full bg-stone-300 mx-auto absolute top-2 left-1/2 -translate-x-1/2 shadow-inner"></div>
                                        <div>
                                            <div className="text-xs font-black text-black uppercase tracking-widest leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
-                                           <div className="text-[11px] uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
+                                           <div className="text-xs uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
                                        </div>
                                        <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
                                           <div className="flex gap-2">
@@ -268,7 +268,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                                 onClick={() => {
                                                   alert(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.');
                                                 }}
-                                                className="flex-1 py-2 bg-[#6E5B91] text-white hover:bg-[#5F4E7F] rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
+                                                className="flex-1 py-2 bg-lilac text-white hover:bg-lilac-deep rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
                                             >
                                                 <Shirt className="w-3 h-3" />
                                                 {language === 'ar' ? 'ارتداء' : 'Wear'}

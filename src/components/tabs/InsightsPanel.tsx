@@ -27,7 +27,7 @@ export const InsightsPanel = ({ ideas, onClose, language, handleTabChange }: { i
             <h2 className="text-xl font-bold mb-6">{language === 'ar' ? 'لوحة الأفكار' : 'Insights Panel'}</h2>
             
             <div className="space-y-4">
-               <button onClick={() => runAction('trends', null)} className="w-full bg-[#6E5B91] text-white p-3 rounded-lg flex items-center gap-2 text-sm"><TrendingUp size={16}/> {language === 'ar' ? 'تحليل الاتجاهات' : 'Analyze Trends'}</button>
+               <button onClick={() => runAction('trends', null)} className="w-full bg-lilac text-white p-3 rounded-lg flex items-center gap-2 text-sm"><TrendingUp size={16}/> {language === 'ar' ? 'تحليل الاتجاهات' : 'Analyze Trends'}</button>
                <button onClick={() => handleTabChange('knowledgegraph')} className="w-full bg-zinc-100 text-black p-3 rounded-lg flex items-center gap-2 text-sm"><Network size={16}/> {language === 'ar' ? 'الخريطة الحية' : 'Live Knowledge Graph'}</button>
                <button onClick={() => handleTabChange('mindmap', ideas[0]?.text)} className="w-full bg-zinc-100 text-black p-3 rounded-lg flex items-center gap-2 text-sm"><BrainCircuit size={16}/> {language === 'ar' ? 'التكثيف المعرفي' : 'AI Mind-Mapping'}</button>
             </div>

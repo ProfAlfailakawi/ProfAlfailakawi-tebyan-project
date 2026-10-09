@@ -101,7 +101,7 @@ export const ContactTab = ({ language }: { language: string }) => {
             <button
               type="submit"
               disabled={status === 'submitting'}
-              className="w-full bg-[#6E5B91] text-white hover:bg-[#5F4E7F] disabled:bg-zinc-300 disabled:text-zinc-500 rounded-2xl py-4 font-bold transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-lilac text-white hover:bg-lilac-deep disabled:bg-zinc-300 disabled:text-zinc-500 rounded-2xl py-4 font-bold transition-colors flex items-center justify-center gap-2"
             >
               {status === 'submitting' ? (
                 language === 'ar' ? 'جاري الإرسال...' : 'Sending...'

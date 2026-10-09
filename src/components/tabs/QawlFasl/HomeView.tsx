@@ -5,6 +5,7 @@ import { CATEGORIES, MAIN_CATEGORIES, QawlFaslQuestion } from './types';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { useSmartSearch } from '../../../hooks/useSmartSearch';
+import { TebyanLoader } from '../../ui/TebyanLoader';
 import { DnaIconTile, DnaCount } from '../../dna/DnaKit';
 import type { DnaTone } from '../../dna/DnaKit';
 import { Sparkles, Compass, HeartHandshake, GraduationCap, Smartphone, ShieldCheck, Rocket, UserRound, Wallet, BookOpenCheck, Clock3 } from 'lucide-react';
@@ -232,25 +233,16 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
   return (
     <div className="min-h-screen bg-[#FDFCFB] font-sans pb-20 md:pb-24 overflow-x-clip">
-      {/* Refined Navigation/Header Area space */}
-      <div className="pt-4 md:pt-6 pb-4 px-4 md:px-8 max-w-6xl mx-auto flex items-center justify-between">
-        <div className="flex flex-col">
-          <span className="text-zinc-600 font-bold text-xs uppercase mb-1">القول الفصل</span>
-          <h1 className="text-xl md:text-2xl font-black text-black tracking-tight">البوصلة التحليلية</h1>
-        </div>
-      </div>
-
-      {/* Editorial Header */}
-      <header className="pt-2 md:pt-4 pb-6 md:pb-8 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-zinc-200/60 pb-6 md:pb-8 text-right">
+      {/* Header */}
+      <header className="pt-6 md:pt-10 pb-6 md:pb-8 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 text-right">
           <div className="max-w-2xl">
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-zinc-950 leading-[1.12] md:leading-[1.05] tracking-tighter">
-              نصحبك في <br className="hidden md:block"/>
-              <span className="text-zinc-500">رحلة البناء</span>
+            <h1 className="font-serif text-3xl md:text-5xl font-bold text-navy leading-[1.3]">
+              جواب واضح <span className="text-lilac">لكل سؤال في تربية أبنائك</span>
             </h1>
           </div>
-          <p className="text-sm md:text-lg text-zinc-600 font-bold leading-[1.6] max-w-sm">
-            خلاصات استراتيجية وتحليلية رصينة، تساعدك في فهم الموقف واتخاذ القرار السليم.
+          <p className="text-base md:text-lg text-ink-soft font-medium leading-[1.8] max-w-sm">
+            اكتب ما يشغلك، وسنقدّم لك جواباً هادئاً وخطوات بسيطة تبدأ بها اليوم.
           </p>
         </div>
       </header>
@@ -261,7 +253,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         <section id="search-section" className="relative scroll-mt-24">
           <div className="max-w-5xl mx-auto">
             <form onSubmit={handleSearch} className="group relative">
-               <div className="relative flex flex-col sm:flex-row sm:items-center gap-2 shadow-xl rounded-[24px] md:rounded-[32px] bg-white border-2 border-zinc-100 focus-within:border-black transition-all p-2 md:p-3">
+               <div className="relative flex flex-col sm:flex-row sm:items-center gap-2 shadow-xl rounded-[24px] md:rounded-[32px] bg-white border-2 border-lilac-soft/20 focus-within:border-lilac transition-all p-2 md:p-3">
                  <input 
                   ref={inputRef}
                   type="text"
@@ -285,7 +277,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                     }
                   }}
                   placeholder="عن ماذا تود استشارتنا اليوم؟"
-                  className="w-full bg-transparent py-4 px-12 md:py-6 md:px-8 text-base sm:text-xl md:text-2xl font-bold text-black placeholder:text-zinc-500 outline-none sm:pr-14 md:pr-24 relative z-10 tebyan-qf-search"
+                  className="w-full bg-transparent py-4 px-12 md:py-6 md:px-8 text-base sm:text-xl md:text-2xl font-bold text-navy placeholder:text-ink-mute outline-none sm:pr-14 md:pr-24 relative z-10 tebyan-qf-search"
                  />
                  
                  {smartSuggestion && smartSuggestion.startsWith(searchQuery) && (
@@ -294,11 +286,11 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                      dir="rtl"
                    >
                      <span className="invisible whitespace-pre">{searchQuery}</span>
-                     <span className="whitespace-pre text-zinc-300">{smartSuggestion.slice(searchQuery.length)}</span>
+                     <span className="whitespace-pre text-lilac-soft/60">{smartSuggestion.slice(searchQuery.length)}</span>
                    </div>
                  )}
 
-                 <Search className="absolute right-5 top-7 sm:top-1/2 sm:-translate-y-1/2 text-zinc-500 w-5 h-5 md:w-8 md:h-8 group-focus-within:text-black transition-colors pointer-events-none z-10" />
+                 <Search className="absolute right-5 top-7 sm:top-1/2 sm:-translate-y-1/2 text-ink-mute w-5 h-5 md:w-8 md:h-8 group-focus-within:text-lilac transition-colors pointer-events-none z-10" />
                  
                  {searchQuery && (
                    <button
@@ -309,7 +301,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                        setIsGenerating(false);
                        setError(null);
                      }}
-                     className="absolute right-11 top-5 sm:top-1/2 sm:-translate-y-1/2 text-zinc-500 hover:text-rose-500 w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors z-10"
+                     className="absolute right-11 top-5 sm:top-1/2 sm:-translate-y-1/2 text-ink-mute hover:text-rose-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors z-10"
                    >
                      <title>إلغاء البحث</title>
                      <span className="sr-only">إلغاء البحث</span>
@@ -320,7 +312,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                  <button 
                   type="submit" 
                   disabled={isSearching || isGenerating} 
-                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-black text-sm md:text-lg transition-all disabled:opacity-50 z-10"
+                  className="w-full sm:w-auto sm:absolute sm:left-3 sm:top-1/2 sm:-translate-y-1/2 bg-lilac hover:bg-lilac-deep text-white px-6 md:px-10 py-3 md:py-4 rounded-[18px] md:rounded-[24px] font-bold text-base md:text-lg transition-all disabled:opacity-50 z-10"
                  >
                    {isSearching ? 'جاري البحث...' : 'اكتشف'}
                  </button>
@@ -336,11 +328,11 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                          setSearchQuery(smartSuggestion);
                          setSmartSuggestion('');
                        }}
-                       className="flex items-center gap-2 bg-[#5A5A40] text-white text-xs md:text-sm px-4 py-2 rounded-full shadow-lg transition-all border border-black/10"
+                       className="flex items-center gap-2 bg-lilac text-white text-sm px-4 py-2 rounded-full shadow-lg transition-all border border-black/10"
                      >
                         <span className="opacity-80 flex-shrink-0">هل تقصد:</span> 
                         <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
-                        <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
+                        <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-xs font-mono">Tab</kbd>
                      </button>
                  </div>
                )}
@@ -352,9 +344,9 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
             {isGenerating && (
               <div className="mt-8 flex justify-center">
-                <div className="bg-[#F5F5F0] border border-zinc-200/80 px-8 py-4 rounded-full flex items-center gap-4 animate-pulse shadow-sm">
-                  <div className="w-2 h-2 rounded-full bg-[#5A5A40] animate-bounce"></div>
-                  <p className="text-[#5A5A40] font-bold md:text-lg">نقوم بتحليل السياق ونرتب لك الإجابة الدقيقة...</p>
+                <div className="bg-lilac-mist/60 border border-lilac-soft/25 px-6 py-4 rounded-3xl flex items-center gap-4 shadow-sm">
+                  <TebyanLoader size={32} appearDelay={0} label="جاري تحضير الجواب" />
+                  <p className="text-lilac font-bold md:text-lg">نقرأ سؤالك ونرتّب لك الجواب المناسب...</p>
                 </div>
               </div>
             )}
@@ -369,7 +361,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
             {trendingSearches.length > 0 && !isGenerating && (
               <div className="mt-6 md:mt-8 flex flex-wrap gap-2 md:gap-3 justify-center items-center">
-                <span className="text-zinc-600 text-xs md:text-sm font-bold pl-2 py-2">رائج الآن:</span>
+                <span className="text-ink-soft text-sm font-bold pl-2 py-2">رائج الآن:</span>
                 {trendingSearches.map((term, i) => (
                   <button 
                     key={i} 
@@ -377,7 +369,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                       setSearchQuery(term.query);
                       handleSearchRecursive(term.query);
                     }}
-                    className="text-zinc-500 hover:text-black font-bold text-xs md:text-sm underline underline-offset-4 decoration-zinc-200 hover:decoration-[#5A5A40] transition-all px-2 py-1 cursor-pointer"
+                    className="text-ink-soft hover:text-navy font-semibold text-sm underline underline-offset-4 decoration-lilac-soft/40 hover:decoration-lilac transition-all px-2 py-1 cursor-pointer"
                   >
                     {term.query}
                   </button>
@@ -390,7 +382,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Bento Grid Features */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
-          <div className="lg:col-span-8 relative overflow-hidden bg-[#F8F5EF] rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-[#182231] flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[#E7DED2] group text-right">
+          <div className="lg:col-span-8 relative overflow-hidden bg-ivory rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-navy flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[#E7DED2] group text-right">
             <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-105 opacity-70">
               <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-[#C68B6A]" />
             </div>
@@ -398,19 +390,19 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(198,139,106,0.22),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(248,245,239,0.72))] pointer-events-none"></div>
 
             <div className="relative z-10 space-y-6 md:space-y-8">
-              <div className="inline-flex bg-white/74 backdrop-blur-md px-4 py-2 rounded-full border border-[#E2D6C8] text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#9A6042] shadow-sm">
+              <div className="inline-flex bg-white/74 backdrop-blur-md px-4 py-2 rounded-full border border-[#E2D6C8] text-xs md:text-sm font-bold text-[#9A6042] shadow-sm">
                 خدمة التدخل السريع
               </div>
-              <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-serif leading-[1.15] tracking-tight">
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-serif font-bold leading-[1.3]">
                 تواجه موقفاً <br className="hidden md:block"/> 
-                <span className="italic text-[#9A6042]">حرجاً وصعباً؟</span>
+                <span className="text-[#9A6042]">حرجاً وصعباً؟</span>
               </h2>
-              <p className="text-[#64788D] text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
+              <p className="text-ink-mute text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
                 في لحظات الانفعال، نحتاج للهدوء والحكمة. قسم الطوارئ يوفر لك حلولاً سريعة ومجربة للمواقف والطوارئ الضاغطة.
               </p>
               <button 
                 onClick={onEmergency}
-                className="bg-[#6E5B91] text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-[#5F4E7F] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
+                className="bg-lilac text-white px-6 py-3.5 md:px-10 md:py-5 rounded-2xl md:rounded-full font-bold text-sm md:text-lg hover:bg-lilac-deep hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center md:justify-start gap-3 w-full md:w-max shadow-[0_14px_35px_rgba(24,34,49,0.18)] relative z-50 cursor-pointer pointer-events-auto"
               >
                 <AlertCircle className="w-5 h-5 md:w-6 md:h-6" />
                 دليل الطوارئ
@@ -420,12 +412,12 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
           <div className="lg:col-span-4 flex flex-col gap-6 lg:gap-8 h-full">
             {/* Daily Picks - Bento 2 */}
-            <div className="bg-[#F5F5F0] rounded-[24px] md:rounded-[40px] p-5 md:p-8 flex flex-col flex-1 min-h-[300px] md:min-h-[360px] border border-transparent hover:border-zinc-200 transition-all shadow-sm text-right overflow-hidden">
+            <div className="bg-ivory rounded-[24px] md:rounded-[40px] p-5 md:p-8 flex flex-col flex-1 min-h-[300px] md:min-h-[360px] border border-transparent hover:border-lilac-soft/30 transition-all shadow-sm text-right overflow-hidden">
                <div className="flex items-center justify-between mb-4">
-                  <div className="bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] w-10 h-10 rounded-[14px] flex items-center justify-center text-[#5A5A40]">
+                  <div className="bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] w-10 h-10 rounded-[14px] flex items-center justify-center text-lilac">
                     <Library className="w-5 h-5" />
                   </div>
-                  <p className="text-[#5A5A40] font-bold text-[10px] tracking-widest uppercase">مسائل اليوم (10 حالات)</p>
+                  <p className="text-lilac font-bold text-sm">مسائل اليوم (10 حالات)</p>
                </div>
                
                <div className="space-y-3 overflow-y-auto max-h-[260px] md:max-h-[300px] pr-1 flex-1 custom-scrollbar">
@@ -433,22 +425,22 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                     <button 
                       key={q.id || i} 
                       onClick={() => onQuestion(q)}
-                      className="w-full text-right p-3 rounded-xl hover:bg-white transition-all border border-transparent hover:border-zinc-100 group flex gap-3 items-start"
+                      className="w-full text-right p-3 rounded-xl hover:bg-white transition-all border border-transparent hover:border-lilac-soft/20 group flex gap-3 items-start"
                     >
-                      <span className="text-zinc-300 font-black text-xs pt-1">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="text-lilac-soft font-bold text-sm pt-1">{String(i + 1).padStart(2, '0')}</span>
                       <div className="flex-1">
-                        <h4 className="text-sm font-bold text-black line-clamp-1 group-hover:text-[#5A5A40]">{q.question || q.title}</h4>
-                        <p className="text-[10px] text-zinc-400 mt-0.5">{q.mainCategory || 'عام'}</p>
+                        <h4 className="text-base font-bold text-navy line-clamp-1 group-hover:text-lilac">{q.question || q.title}</h4>
+                        <p className="text-xs text-ink-mute mt-0.5">{q.mainCategory || 'عام'}</p>
                       </div>
-                      <ArrowRight className="w-3 h-3 text-zinc-300 -scale-x-100 group-hover:text-[#5A5A40] self-center" />
+                      <ArrowRight className="w-3 h-3 text-lilac-soft -scale-x-100 group-hover:text-lilac self-center" />
                     </button>
                   )) : (
-                    <p className="text-zinc-400 text-xs text-center py-10 italic">جاري تحضير المسائل اليومية...</p>
+                    <p className="text-ink-mute text-sm text-center py-10">جاري تحضير المسائل اليومية...</p>
                   )}
                </div>
                
-               <div className="pt-4 border-t border-zinc-200/50 mt-auto">
-                 <p className="text-[10px] text-zinc-400 font-medium">مختارات اليوم لرحلة اتخاذ القرار</p>
+               <div className="pt-4 border-t border-lilac-soft/20 mt-auto">
+                 <p className="text-xs text-ink-mute font-medium">مختارات اليوم تساعدك على فهم أبنائك</p>
                </div>
             </div>
 
@@ -458,21 +450,21 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                disabled={!lastViewedQuestion}
                className={cn(
                 "rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex flex-col justify-between transition-all group text-right flex-shrink-0",
-                lastViewedQuestion ? "bg-white border border-zinc-200/80 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]" : "bg-zinc-50 border border-zinc-100 opacity-60"
+                lastViewedQuestion ? "bg-white border border-lilac-soft/25 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]" : "bg-ivory border border-lilac-soft/15 opacity-70"
                )}
             >
               <div className="space-y-4">
                 <div className="bg-rose-50 w-8 h-8 md:w-12 md:h-12 rounded-[14px] md:rounded-2xl flex items-center justify-center text-rose-500">
                   <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
-                <p className="text-zinc-400 font-bold text-[10px] md:text-xs tracking-widest uppercase">آخر ما تصفحت</p>
-                <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-black line-clamp-2 md:line-clamp-3 leading-snug">
+                <p className="text-ink-mute font-bold text-sm">آخر ما تصفحت</p>
+                <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-navy line-clamp-2 md:line-clamp-3 leading-snug">
                   {lastViewedQuestion?.question || lastViewedQuestion?.title || 'ابدأ استكشاف المكتبة'}
                 </h3>
               </div>
               {lastViewedQuestion && (
-                <div className="flex items-center gap-2 font-bold text-black mt-6 text-sm md:text-base group-hover:gap-4 transition-all w-full">
-                  استكمال القراءة <ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5 -scale-x-100 text-zinc-400 group-hover:text-black transition-colors" />
+                <div className="flex items-center gap-2 font-bold text-navy mt-6 text-sm md:text-base group-hover:gap-4 transition-all w-full">
+                  استكمال القراءة <ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5 -scale-x-100 text-lilac-soft group-hover:text-lilac transition-colors" />
                 </div>
               )}
             </button>
@@ -482,8 +474,8 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Library Navigation */}
         <section className="space-y-8 md:space-y-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between text-right gap-4">
-            <h3 className="text-xl md:text-3xl font-serif text-black font-medium">أقسام المكتبة</h3>
-            <div className="h-px flex-1 bg-zinc-200/60 mx-0 md:mx-8 w-full md:w-auto"></div>
+            <h3 className="text-xl md:text-3xl font-serif text-navy font-bold">أقسام المكتبة</h3>
+            <div className="h-px flex-1 bg-lilac-soft/25 mx-0 md:mx-8 w-full md:w-auto"></div>
           </div>
           
           <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-6 relative z-10">
@@ -508,7 +500,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   className="dna-surface group text-right p-3 md:p-5 flex flex-col items-start gap-3 min-h-[118px] md:min-h-[160px] transition-transform hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer z-50 pointer-events-auto"
                 >
                   {(() => { const meta = QAWL_CATEGORY_TILES[category.id] || { icon: Library, tone: 'lilac' as const }; const Icon = meta.icon; return <DnaIconTile icon={<Icon />} tone={meta.tone} size="md" />; })()}
-                  <h4 className="font-bold text-[0.82rem] sm:text-[0.95rem] md:text-lg text-[#182231] leading-snug line-clamp-2">{category.title}</h4>
+                  <h4 className="font-bold text-[0.82rem] sm:text-[0.95rem] md:text-lg text-navy leading-snug line-clamp-2">{category.title}</h4>
                   <span className="mt-auto">
                     <DnaCount value={count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"} icon={count > 0 ? <BookOpenCheck className="w-3.5 h-3.5" /> : <Clock3 className="w-3.5 h-3.5" />} />
                   </span>
@@ -523,11 +515,11 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         </section>
 
         {/* Global Footer / Disclaimer */}
-        <footer className="pt-16 md:pt-24 border-t border-zinc-200/60 text-center space-y-6">
-          <p className="text-zinc-400 text-xs md:text-sm font-medium max-w-xl mx-auto leading-relaxed px-4">
-            تبيان: نظام متكامل للذكاء وتحليل المواقف. نؤمن أن الحل السليم يبدأ بفهم السياق بوضوح والتعامل معه بحكمة.
+        <footer className="pt-16 md:pt-24 border-t border-lilac-soft/25 text-center space-y-6">
+          <p className="text-ink-mute text-sm font-medium max-w-xl mx-auto leading-relaxed px-4">
+            تبيان رفيقك في تربية الأبناء. نؤمن أن الحل الجيد يبدأ بفهم الموقف بهدوء ثم التصرف بحكمة.
             <br/>
-            <span className="text-[10px] md:text-xs mt-4 block opacity-70 italic">إخلاء مسؤولية: الإرشادات عامة ولا تغني عن نصيحة المختصين في الحالات الطبية أو النفسية الخاصة.</span>
+            <span className="text-xs mt-4 block">إخلاء مسؤولية: الإرشادات عامة ولا تغني عن نصيحة المختصين في الحالات الطبية أو النفسية الخاصة.</span>
           </p>
         </footer>
 

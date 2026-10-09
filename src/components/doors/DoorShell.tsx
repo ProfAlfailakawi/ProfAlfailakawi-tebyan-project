@@ -83,10 +83,10 @@ export const DoorShell = ({
   return (
     <div className="w-full" dir={ar ? "rtl" : "ltr"}>
       <header className="max-w-3xl mx-auto px-4 pt-2 pb-1 text-center">
-        <h1 className="font-serif text-[1.6rem] md:text-3xl font-bold text-[#182231] tracking-tight">
+        <h1 className="font-serif text-[1.6rem] md:text-3xl font-bold text-navy tracking-tight">
           {ar ? titleAr : titleEn}
         </h1>
-        <p className="mt-1 text-[13px] md:text-sm text-[#64788D] font-medium">
+        <p className="mt-1 text-sm md:text-base text-ink-soft font-medium">
           {ar ? subtitleAr : subtitleEn}
         </p>
       </header>
@@ -112,11 +112,11 @@ export const DoorShell = ({
                   className={
                     (emphasis
                       ? "shrink-0 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[14px] font-bold transition-all border "
-                      : "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[12.5px] font-semibold transition-all border ") +
+                      : "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13.5px] font-semibold transition-all border ") +
                     (modes.length <= 3 ? "max-md:grow max-md:justify-center max-md:whitespace-nowrap " : "") +
                     (on
                       ? "bg-[#8E7AAE] border-[#8E7AAE] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
-                      : "bg-white/80 border-[#E5DFD4] text-[#64788D] hover:border-[#8E7AAE]/50 hover:text-[#5E4D7A]")
+                      : "bg-white/80 border-[#E5DFD4] text-ink-soft hover:border-[#8E7AAE]/50 hover:text-[#5E4D7A]")
                   }
                 >
                   {Icon && <Icon className={emphasis ? "w-4 h-4" : "w-3.5 h-3.5"} />}
@@ -125,7 +125,7 @@ export const DoorShell = ({
               );
             })}
           </div>
-          <p className={"mt-2 text-center text-[#8E7AAE] font-medium " + (emphasis ? "text-[12.5px]" : "text-[11.5px]")}>
+          <p className={"mt-3 text-center text-lilac font-semibold " + (emphasis ? "text-[14px]" : "text-[13px]")}>
             {ar ? current.hintAr : current.hintEn}
           </p>
         </div>

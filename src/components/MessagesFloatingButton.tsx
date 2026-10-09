@@ -103,7 +103,7 @@ export function MessagesFloatingButton() {
                       <input 
                           type="text" 
                           placeholder="اسمك الكريم" 
-                          className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium cursor-text pointer-events-auto"
+                          className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-lilac-soft focus:ring-4 focus:ring-lilac/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium cursor-text pointer-events-auto"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           required
@@ -113,7 +113,7 @@ export function MessagesFloatingButton() {
                       <input 
                           type="email" 
                           placeholder="البريد الإلكتروني للتواصل" 
-                          className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium cursor-text pointer-events-auto text-right"
+                          className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-lilac-soft focus:ring-4 focus:ring-lilac/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium cursor-text pointer-events-auto text-right"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
@@ -123,7 +123,7 @@ export function MessagesFloatingButton() {
                     <div className="relative pointer-events-auto">
                       <textarea
                           placeholder="اكتب رسالتك أو استفسارك هنا..."
-                          className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium h-32 resize-none leading-relaxed cursor-text pointer-events-auto"
+                          className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-lilac-soft focus:ring-4 focus:ring-lilac/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium h-32 resize-none leading-relaxed cursor-text pointer-events-auto"
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           required

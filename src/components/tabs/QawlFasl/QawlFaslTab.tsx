@@ -172,7 +172,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
         icon={MessageCircleQuestion}
         title={{ ar: 'قول فصل', en: 'Qawl Fasl' }}
         description={{ 
-            ar: 'منصة قرارات وتحليل وحلول للمواقف والصعوبات، مدعمة بالبحث والمراجع الذكية.', 
+            ar: 'مكتبة أجوبة تربوية واضحة لأسئلتك عن الأبناء، مع خطوات تبدأ بها اليوم.', 
             en: 'A comprehensive educational library that answers your questions and shows you the right approach in dealing with children.' 
         }}
         language={language}

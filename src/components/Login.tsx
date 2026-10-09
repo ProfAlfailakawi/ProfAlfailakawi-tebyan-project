@@ -92,13 +92,13 @@ export default function Login() {
       >
         <div className="p-6 md:p-10 space-y-6 md:space-y-8">
           <div className="text-center space-y-1 md:space-y-2">
-            <h1 className="text-xl md:text-3xl font-black text-[#182231] tracking-tight">
+            <h1 className="text-xl md:text-3xl font-black text-navy tracking-tight">
               {isSignUp ? 'إنشاء حساب جديد' : 'ادخل إلى مساحة الفهم والقرار'}
             </h1>
             <div className="mx-auto w-12 h-12 rounded-2xl bg-[#8E7AAE]/10 text-[#6E5F8E] flex items-center justify-center mb-3 border border-[#8E7AAE]/15 tebyan-breathe">
               <Sparkles className="w-5 h-5" />
             </div>
-            <p className="text-[#64788D] font-medium tracking-wide text-xs md:text-sm">
+            <p className="text-ink-mute font-medium tracking-wide text-xs md:text-sm">
               مختبر فكر راقٍ للفهم، التحليل، والحسم
             </p>
           </div>
@@ -106,9 +106,9 @@ export default function Login() {
           <form onSubmit={handleEmailAuth} className="space-y-3 md:space-y-4">
             {isSignUp && (
               <div className="space-y-1.5 md:space-y-2">
-                <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] ms-2 tracking-wide">الاسم</label>
+                <label className="text-xs md:text-[13px] font-bold text-ink-mute ms-2 tracking-wide">الاسم</label>
                 <div className="relative">
-                  <UserPlus className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-[#7C8796] w-4 h-4 md:w-5 h-5 pointer-events-none" />
+                  <UserPlus className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-ink-mute w-4 h-4 md:w-5 h-5 pointer-events-none" />
                   <input 
                     type="text"
                     required={isSignUp}
@@ -122,25 +122,25 @@ export default function Login() {
             )}
 
             <div className="space-y-1.5 md:space-y-2">
-              <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] ms-2 tracking-wide">البريد الإلكتروني</label>
+              <label className="text-xs md:text-[13px] font-bold text-ink-mute ms-2 tracking-wide">البريد الإلكتروني</label>
               <div className="relative">
-                <Mail className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-[#7C8796] w-4 h-4 md:w-5 h-5 pointer-events-none" />
+                <Mail className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-ink-mute w-4 h-4 md:w-5 h-5 pointer-events-none" />
                 <input 
                   type="email"
                   required
                   dir="ltr"
                   value={email}
                   onChange={(e) => setEmail(e.target.value.replace(/[^a-zA-Z0-9@._+-\s]/g, '').replace(/\s/g, ''))}
-                  className="w-full pr-11 md:pr-14 pl-4 py-3 md:py-4 bg-white/70 border border-[#8FA9C7]/20 rounded-2xl focus:border-[#8E7AAE]/55 focus:ring-2 focus:ring-[#8E7AAE]/10 outline-none transition-all font-medium text-sm md:text-base text-left placeholder:text-[#7C8796]"
+                  className="w-full pr-11 md:pr-14 pl-4 py-3 md:py-4 bg-white/70 border border-[#8FA9C7]/20 rounded-2xl focus:border-[#8E7AAE]/55 focus:ring-2 focus:ring-[#8E7AAE]/10 outline-none transition-all font-medium text-sm md:text-base text-left placeholder:text-ink-mute"
                   placeholder="name@example.com"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5 md:space-y-2">
-              <label className="text-[11px] md:text-[13px] font-bold text-[#64788D] ms-2 tracking-wide">كلمة المرور</label>
+              <label className="text-xs md:text-[13px] font-bold text-ink-mute ms-2 tracking-wide">كلمة المرور</label>
               <div className="relative">
-                <Lock className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-[#7C8796] w-4 h-4 md:w-5 h-5 pointer-events-none" />
+                <Lock className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-ink-mute w-4 h-4 md:w-5 h-5 pointer-events-none" />
                 <input 
                   type="password"
                   required
@@ -185,14 +185,14 @@ export default function Login() {
 
           <div className="relative flex items-center gap-4 py-1">
             <div className="h-px bg-zinc-100 flex-1"></div>
-            <span className="text-[#7C8796] font-bold text-[10px] md:text-xs uppercase tracking-widest">أو</span>
+            <span className="text-ink-mute font-bold text-xs md:text-xs uppercase tracking-widest">أو</span>
             <div className="h-px bg-zinc-100 flex-1"></div>
           </div>
 
           <div className="flex flex-col gap-3 mb-2 md:mb-6">
             <button 
               onClick={handleGoogleLogin}
-              className="w-full py-3.5 md:py-4 bg-white/85 border border-[#8FA9C7]/20 hover:bg-white text-[#182231] rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all flex items-center justify-center gap-2 md:gap-3 text-sm md:text-base"
+              className="w-full py-3.5 md:py-4 bg-white/85 border border-[#8FA9C7]/20 hover:bg-white text-navy rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all flex items-center justify-center gap-2 md:gap-3 text-sm md:text-base"
             >
               <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 md:w-6 md:h-6 shrink-0">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -211,7 +211,7 @@ export default function Login() {
                 setIsSignUp(!isSignUp);
                 setError(null);
               }}
-              className="text-[#182231] font-semibold text-sm md:text-base hover:underline transition-all"
+              className="text-navy font-semibold text-sm md:text-base hover:underline transition-all"
             >
               {isSignUp ? 'لديك حساب بالفعل؟ سجل دخولك' : 'لا تملك حساباً؟ أنشئ حساباً جديداً'}
             </button>

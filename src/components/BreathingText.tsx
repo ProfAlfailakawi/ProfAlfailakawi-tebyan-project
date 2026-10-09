@@ -76,7 +76,7 @@ export const BreathingText = ({
           <div className="absolute top-2 right-4 flex items-center md:-right-6 md:top-1/2 md:-translate-y-1/2 opacity-70">
               <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></div>
               <div className="absolute w-1.5 h-1.5 rounded-full bg-amber-500"></div>
-              <span className="hidden md:inline-block mr-2 text-[10px] text-amber-500/60 font-bold whitespace-nowrap">عقل آخر يتأمل..</span>
+              <span className="hidden md:inline-block mr-2 text-xs text-amber-500/60 font-bold whitespace-nowrap">عقل آخر يتأمل..</span>
           </div>
       )}
 
@@ -99,7 +99,7 @@ export const BreathingText = ({
                   ) : roots ? (
                       <div className="flex gap-4 items-start">
                           <div className="w-8 h-8 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
-                              <Sparkles className="w-4 h-4 text-[#6E5B91]" aria-hidden="true" />
+                              <Sparkles className="w-4 h-4 text-lilac" aria-hidden="true" />
                           </div>
                           <p className="text-zinc-600 italic font-medium leading-relaxed font-serif rtl:font-sans">
                               {roots.replace(/[*#]/g, '')}

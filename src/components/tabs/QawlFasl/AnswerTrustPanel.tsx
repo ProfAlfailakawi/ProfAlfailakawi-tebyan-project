@@ -23,19 +23,19 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
   return (
     <section
       aria-label="التحقق من الجواب"
-      className="dna-surface px-5 py-5 md:px-8 md:py-6"
+      className="dna-surface tbn-reveal px-5 py-5 md:px-8 md:py-6"
     >
       <dl className="grid gap-4 sm:grid-cols-2 text-sm">
         {trust.sources.length > 0 && (
-          <div className="sm:col-span-2">
-            <dt className="flex items-center gap-1.5 text-xs font-black text-[#6E5B91] mb-1.5">
+          <div className="tbn-stagger sm:col-span-2" style={{ ["--i" as any]: 0 }}>
+            <dt className="flex items-center gap-1.5 text-sm font-bold text-lilac mb-1.5">
               <BookMarked className="w-3.5 h-3.5" aria-hidden="true" />
               {trust.sources.length > 1 ? 'المصادر' : 'المصدر'}
             </dt>
             <dd>
               <ul className="space-y-1">
                 {trust.sources.map((s, i) => (
-                  <li key={i} className="font-bold leading-relaxed text-[#465568]">
+                  <li key={i} className="font-bold leading-relaxed text-ink-soft">
                     {s.url ? (
                       <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline decoration-[#A68F58]/40 underline-offset-4 hover:text-[#A68F58]">
                         {s.title}
@@ -49,32 +49,32 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
             </dd>
           </div>
         )}
-        <div>
-          <dt className="flex items-center gap-1.5 text-xs font-black text-[#6E5B91] mb-1">
+        <div className="tbn-stagger" style={{ ["--i" as any]: 1 }}>
+          <dt className="flex items-center gap-1.5 text-sm font-bold text-lilac mb-1">
             <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
             راجعه
           </dt>
-          <dd className="font-bold text-[#182231]">{trust.reviewers.join('، ')}</dd>
+          <dd className="font-bold text-navy">{trust.reviewers.join('، ')}</dd>
         </div>
         {trust.reviewedAt && (
-          <div>
-            <dt className="flex items-center gap-1.5 text-xs font-black text-[#6E5B91] mb-1">
+          <div className="tbn-stagger" style={{ ["--i" as any]: 2 }}>
+            <dt className="flex items-center gap-1.5 text-sm font-bold text-lilac mb-1">
               <CalendarCheck2 className="w-3.5 h-3.5" aria-hidden="true" />
               آخر مراجعة
             </dt>
-            <dd className="font-bold text-[#182231]">
+            <dd className="font-bold text-navy">
               <time dateTime={trust.reviewedAt.toISOString()}>{formatArabicDate(trust.reviewedAt)}</time>
             </dd>
           </div>
         )}
       </dl>
 
-      <div className="mt-4 pt-4 border-t border-dashed border-[#182231]/12 flex items-center justify-between gap-3 flex-wrap">
-        <p className="text-xs font-bold text-[#64788D]">لاحظت معلومة غير دقيقة؟ نراجع كل بلاغ.</p>
+      <div className="mt-4 pt-4 border-t border-dashed border-navy/12 flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-sm font-semibold text-ink-mute">لاحظت معلومة غير دقيقة؟ نراجع كل بلاغ.</p>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="dna-btn text-xs font-black"
+          className="dna-btn text-sm font-bold"
         >
           <Flag className="w-3.5 h-3.5" aria-hidden="true" />
           بلّغ عن خطأ
@@ -129,10 +129,10 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
       >
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="min-w-0">
-            <h2 id="answer-report-title" className="text-lg font-black text-[#182231]">بلّغ عن خطأ</h2>
-            <p className="mt-1 text-xs font-bold text-[#64788D] line-clamp-2">{question.question || question.title}</p>
+            <h2 id="answer-report-title" className="text-lg font-black text-navy">بلّغ عن خطأ</h2>
+            <p className="mt-1 text-xs font-bold text-ink-mute line-clamp-2">{question.question || question.title}</p>
           </div>
-          <button type="button" onClick={onClose} aria-label="إغلاق" className="shrink-0 w-9 h-9 rounded-full bg-white/80 text-[#64788D] hover:text-[#182231] flex items-center justify-center">
+          <button type="button" onClick={onClose} aria-label="إغلاق" className="shrink-0 w-9 h-9 rounded-full bg-white/80 text-ink-mute hover:text-navy flex items-center justify-center">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -145,18 +145,18 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
         ) : (
           <form onSubmit={submit} className="space-y-3">
             <label className="block">
-              <span className="block text-xs font-black text-[#6E5B91] mb-1.5">ما الذي تراه غير دقيق؟ (اختياري)</span>
+              <span className="block text-sm font-bold text-lilac mb-1.5">ما الذي تراه غير دقيق؟ (اختياري)</span>
               <textarea
                 ref={noteRef}
                 value={note}
                 onChange={(e) => setNote(e.target.value.slice(0, 1000))}
                 rows={4}
                 maxLength={1000}
-                className="w-full rounded-2xl border border-[#8FA9C7]/25 bg-white px-4 py-3 text-sm text-[#182231] leading-relaxed outline-none focus:border-[#8E7AAE]/60 resize-none"
+                className="w-full rounded-2xl border border-[#8FA9C7]/25 bg-white px-4 py-3 text-sm text-navy leading-relaxed outline-none focus:border-[#8E7AAE]/60 resize-none"
               />
             </label>
             <label className="block">
-              <span className="block text-xs font-black text-[#6E5B91] mb-1.5">وسيلة تواصل إن أحببت الرد (اختياري)</span>
+              <span className="block text-sm font-bold text-lilac mb-1.5">وسيلة تواصل إن أحببت الرد (اختياري)</span>
               <input
                 value={contact}
                 onChange={(e) => setContact(e.target.value.slice(0, 200))}
@@ -164,14 +164,14 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
                 inputMode="email"
                 autoComplete="email"
                 placeholder="بريد أو رقم"
-                className="w-full rounded-2xl border border-[#8FA9C7]/25 bg-white px-4 py-2.5 text-sm text-[#182231] outline-none focus:border-[#8E7AAE]/60"
+                className="w-full rounded-2xl border border-[#8FA9C7]/25 bg-white px-4 py-2.5 text-sm text-navy outline-none focus:border-[#8E7AAE]/60"
               />
             </label>
             {state === 'error' && (
               <p role="alert" className="text-xs font-bold text-[#A6603F]">تعذّر الإرسال الآن، يرجى المحاولة بعد قليل.</p>
             )}
             <div className="flex items-center justify-end gap-2 pt-1">
-              <button type="button" onClick={onClose} className="rounded-full px-4 py-2 text-sm font-bold text-[#64788D] hover:bg-white/70">إلغاء</button>
+              <button type="button" onClick={onClose} className="rounded-full px-4 py-2 text-sm font-bold text-ink-mute hover:bg-white/70">إلغاء</button>
               <button
                 type="submit"
                 disabled={state === 'sending'}

@@ -6,7 +6,7 @@ export const AIHeartbeat = ({ className = "" }: { className?: string }) => {
     <div className={`relative flex items-center justify-center w-8 h-8 ${className}`}>
       {/* Outer Glow */}
       <motion.div
-        className="absolute inset-0 rounded-full bg-indigo-500/30 blur-md"
+        className="absolute inset-0 rounded-full bg-lilac/30 blur-md"
         animate={{
           scale: [1, 1.5, 1],
           opacity: [0.3, 0.7, 0.3],

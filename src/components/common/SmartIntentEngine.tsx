@@ -123,13 +123,13 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         </div>
         <div className="flex-1 min-w-0 text-right">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <span className="text-[10px] font-black tracking-widest uppercase text-zinc-400">
+            <span className="text-xs font-black tracking-widest uppercase text-zinc-400">
               {language === 'ar' ? 'محرك النوايا' : 'Intent engine'}
             </span>
-            {isSuggestionLoading && <span className="text-[10px] font-bold text-zinc-300">{language === 'ar' ? 'يصيغ...' : 'refining...'}</span>}
+            {isSuggestionLoading && <span className="text-xs font-bold text-zinc-300">{language === 'ar' ? 'يصيغ...' : 'refining...'}</span>}
           </div>
-          <h4 className="text-sm md:text-base font-black text-[#182231]">{profile.title}</h4>
-          <p className="text-xs md:text-sm text-[#7C8796] font-bold leading-relaxed mt-1">{profile.hint}</p>
+          <h4 className="text-sm md:text-base font-black text-navy">{profile.title}</h4>
+          <p className="text-xs md:text-sm text-ink-mute font-bold leading-relaxed mt-1">{profile.hint}</p>
         </div>
       </div>
 
@@ -139,8 +139,8 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
           onClick={() => onApply(refined)}
           className="w-full text-right p-3 rounded-2xl bg-[#F7F5F2] hover:bg-[#F1EEF4] border border-[#8E7AAE]/12 transition-colors"
         >
-          <div className="text-[10px] font-black text-zinc-400 mb-1">{language === 'ar' ? 'صياغة أفضل' : 'Better wording'}</div>
-          <div className="text-sm font-black text-[#182231] leading-relaxed">{refined}</div>
+          <div className="text-xs font-black text-zinc-400 mb-1">{language === 'ar' ? 'صياغة أفضل' : 'Better wording'}</div>
+          <div className="text-sm font-black text-navy leading-relaxed">{refined}</div>
         </button>
       )}
 
@@ -148,7 +148,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         <button
           type="button"
           onClick={() => onApply(language === 'ar' ? `اشرح لي ببساطة: ${trimmed}` : `Explain simply: ${trimmed}`)}
-          className="px-4 py-2 rounded-full bg-white/90 border border-[#8FA9C7]/25 text-[#465568] text-xs font-black active:scale-95 transition-all"
+          className="px-4 py-2 rounded-full bg-white/90 border border-[#8FA9C7]/25 text-ink-soft text-xs font-black active:scale-95 transition-all"
         >
           {language === 'ar' ? 'بسّطها' : 'Simplify'}
         </button>

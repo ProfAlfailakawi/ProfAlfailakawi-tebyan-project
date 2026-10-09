@@ -2,12 +2,12 @@ import React from 'react';
 import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion } from 'motion/react';
 import { Sparkles, Bookmark, BookmarkCheck, Box, Hammer } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 import { useUser } from '../../contexts/UserContext';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
+import { ResultCard } from '../common/ResultCard';
 
 interface ConceptsTabProps {
   input: string;
@@ -84,14 +84,14 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className={cn("rounded-[32px] p-8 border shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 transition-all duration-700", isBrutalMode ? "bg-white border-[#6E5B91]/30" : "bg-white border-zinc-200/80")}>
+    <div className={cn("rounded-[32px] p-8 border shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 transition-all duration-700", isBrutalMode ? "bg-white border-lilac/30" : "bg-white border-zinc-200/80")}>
       <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-4">
-        <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-[#6E5B91]" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
+        <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-lilac" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
       </div>
 <DemoStarters tab="concepts" language={language} onPick={setInput} className="mb-3" />
       <textarea 
         value={input} onChange={(e) => setInput(e.target.value)}
-        className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-white border-[#6E5B91]/30 text-[#182231] placeholder:text-[#8A97A6] focus:border-[#6E5B91]/30 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-[#64788D]")}
+        className={cn("w-full p-6 h-40 rounded-[16px] border focus:ring-4 outline-none font-medium transition-all resize-none", isBrutalMode ? "bg-white border-lilac/30 text-navy placeholder:text-ink-mute focus:border-lilac/30 focus:ring-red-900/50" : "bg-zinc-50 border-zinc-200/80 text-black focus:border-black focus:ring-zinc-100 placeholder:text-ink-mute")}
         placeholder={language === 'ar' ? "أدخل المفهوم المعقد هنا..." : "Enter complex concept here..."}
       />
       
@@ -101,7 +101,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           disabled={isLoading}
           className={cn(
             "flex-1 py-4 rounded-xl font-semibold text-lg shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
-            isLoading ? "bg-zinc-200 text-[#64788D] cursor-not-allowed" : "bg-[#6E5B91] text-white hover:bg-[#5F4E7F] cursor-pointer"
+            isLoading ? "bg-zinc-200 text-ink-mute cursor-not-allowed" : "bg-lilac text-white hover:bg-lilac-deep cursor-pointer"
           )}
         >
           {isLoading ? (
@@ -118,7 +118,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           disabled={isLoading}
           className={cn(
             "flex-1 py-4 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-3",
-            isLoading ? "bg-white text-[#8A97A6] border border-[#182231]/10 cursor-not-allowed" : "bg-white text-[#6E5B91] border border-[#6E5B91]/30 hover:bg-[#EFEAF6] cursor-pointer"
+            isLoading ? "bg-white text-ink-mute border border-navy/10 cursor-not-allowed" : "bg-white text-lilac border border-lilac/30 hover:bg-lilac-mist cursor-pointer"
           )}
         >
           {isLoading && isBrutalMode ? (
@@ -127,16 +127,16 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           <Hammer className="w-5 h-5" aria-hidden="true" /><span>{language === 'ar' ? 'حطّم فكرتي' : 'Destroy My Idea'}</span>
         </button>
       </div>
-      {error && <div className="text-rose-500 font-semibold">{error}</div>}
+      {error && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700 font-semibold">{error}</div>}
       <div className="relative min-h-[100px]">
         {!isLoading && !output && (
-          <ToolEmptyHint icon={Sparkles} />
+          <ToolEmptyHint icon={Sparkles} text={language === 'ar' ? 'اكتب مفهوماً أو فكرة، وسنشرحها لك بكلمات بسيطة.' : 'Type a concept or idea and we will explain it in simple words.'} />
         )}
         {isLoading ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="w-full bg-zinc-50 rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-zinc-200/80"
+            className="w-full bg-lilac-mist/40 rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-lilac-soft/25"
           >
             <TebyanLoader
               size={48}
@@ -146,9 +146,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
           </motion.div>
         ) : output && (
           <div id="concepts-results" className="space-y-4">
-            <div className={cn("prose md:prose-lg p-8 rounded-[16px] overflow-hidden border shadow-[0_2px_8px_rgba(0,0,0,0.04)]", isBrutalMode ? "bg-white border-[#6E5B91]/30 text-[#182231] prose-headings:text-rose-400 prose-strong:text-rose-200 prose-ol:text-[#64788D] prose-ul:text-[#64788D] prose-li:marker:text-rose-600 prose-a:text-[#6E5B91] leading-relaxed font-serif rtl:font-sans py-8" : "bg-white border-zinc-200/80 prose-zinc font-serif rtl:font-sans py-8 leading-relaxed text-zinc-800")}>
-              <ReactMarkdown>{output}</ReactMarkdown>
-            </div>
+            <ResultCard text={output} label={isBrutalMode ? (language === 'ar' ? 'النقد الصريح' : 'Honest critique') : (language === 'ar' ? 'المفهوم مبسّطاً' : 'The concept, simplified')} />
             <button 
               onClick={() => {
                 const isSaved = preferences.savedLibrary.some((s: any) => s.type === 'concept' && s.content === output);
@@ -168,8 +166,8 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
               className={cn(
                 "w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all",
                 preferences.savedLibrary.some((s: any) => s.type === 'concept' && s.content === output)
-                  ? "bg-[#6E5B91] text-white"
-                  : "bg-zinc-100 text-[#64788D] hover:bg-zinc-200"
+                  ? "bg-lilac text-white"
+                  : "bg-zinc-100 text-ink-mute hover:bg-zinc-200"
               )}
             >
               {preferences.savedLibrary.some((s: any) => s.type === 'concept' && s.content === output) ? (

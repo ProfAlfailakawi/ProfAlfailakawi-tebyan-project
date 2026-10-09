@@ -69,7 +69,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
         onClose={() => handleTabChange('discover', '', true)}
       />
       
-      <div className="bg-white/60 backdrop-blur-2xl min-h-[60vh] rounded-[32px] overflow-hidden relative border border-[#182231]/10 shadow-sm p-8 md:p-12">
+      <div className="bg-white/60 backdrop-blur-2xl min-h-[60vh] rounded-[32px] overflow-hidden relative border border-navy/10 shadow-sm p-8 md:p-12">
         <div className="max-w-4xl mx-auto space-y-12">
 
 <DemoStarters tab="mindmap" language={language} onPick={setTopic} className="mb-3" />
@@ -77,17 +77,18 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
           <div className="flex-1 relative">
             <input
               type="text"
+              aria-label={language === 'ar' ? 'موضوع الخريطة الذهنية' : 'Mind map topic'}
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder={language === 'ar' ? 'مثال: التنمر المدرسي، تعزيز الثقة بالنفس، صعوبات التعلم...' : 'e.g. School Bullying, Self-confidence...'}
-              className={`w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 ${language === 'ar' ? 'pr-6 pl-14' : 'pl-6 pr-14'} text-lg font-medium text-[#182231] placeholder:text-[#64788D] outline-none focus:border-[#6e5f8e]/50 focus:shadow-sm transition-all`}
+              className={`w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 ${language === 'ar' ? 'pr-6 pl-14' : 'pl-6 pr-14'} text-lg font-medium text-navy placeholder:text-ink-mute outline-none focus:border-[#6e5f8e]/50 focus:shadow-sm transition-all`}
             />
             <Brain className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#6e5f8e]/70 ${language === 'ar' ? 'left-5' : 'right-5'}`} />
           </div>
           <button
             type="submit"
             disabled={isGenerating || !topic.trim()}
-            className="bg-[#6E5B91] hover:bg-[#5F4E7F] text-white rounded-[20px] px-8 py-4 font-bold text-lg flex items-center justify-center gap-3 transition-colors disabled:opacity-50 shrink-0"
+            className="bg-lilac hover:bg-lilac-deep text-white rounded-[20px] px-8 py-4 font-bold text-lg flex items-center justify-center gap-3 transition-colors disabled:opacity-50 shrink-0"
           >
             {isGenerating ? <TebyanButtonLoader className="text-current" /> : <Sparkles className="w-6 h-6" />}
             {language === 'ar' ? 'توليد الخريطة' : 'Generate Map'}
@@ -98,37 +99,37 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
         {isGenerating && (
           <div className="py-20 flex flex-col items-center justify-center">
             <TebyanLoader size={48} label={language === 'ar' ? 'جاري بناء الخريطة' : 'Building the map'} />
-            <p className="mt-6 text-[#64788D] font-bold animate-pulse text-lg">
+            <p className="mt-6 text-ink-mute font-semibold text-base">
               {language === 'ar' ? 'جاري فك تشفير الفكرة وهندسة الخريطة...' : 'Decoding the concept and engineering the map...'}
             </p>
           </div>
         )}
 
         {!mindMapData && !isGenerating && (
-          <ToolEmptyHint icon={Network} />
+          <ToolEmptyHint icon={Network} text={language === 'ar' ? 'اكتب موضوعك، وسنرتّبه لك فروعاً واضحة تبدأ من الفكرة الأم.' : 'Type your topic and we will lay it out as clear branches from the main idea.'} />
         )}
 
         {mindMapData && !isGenerating && (
           <motion.div 
-            id="mindmap-results"
+            id="mindmap-results" role="region" aria-label={language === 'ar' ? 'الخريطة الذهنية' : 'Mind map'}
             initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            className="bg-white border border-[#182231]/10 rounded-[40px] p-8 md:p-14 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden"
+            className="bg-white border border-navy/10 rounded-[28px] md:rounded-[40px] p-5 md:p-14 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] relative overflow-hidden"
             dir={language === 'ar' ? 'rtl' : 'ltr'}
           >
             {/* Subtle glow effect */}
 
             <div className="relative z-10">
-              <div className="flex items-center justify-between mb-10 pb-8 border-b border-[#182231]/10">
+              <div className="flex items-center justify-between mb-10 pb-8 border-b border-navy/10">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#F8F5EF] flex items-center justify-center">
-                    <Brain className="w-7 h-7 text-[#182231]" />
+                  <div className="w-12 h-12 rounded-2xl bg-ivory flex items-center justify-center">
+                    <Brain className="w-7 h-7 text-navy" />
                   </div>
                   <div>
-                    <h3 className="text-3xl font-black text-[#182231] m-0 tracking-tight">
+                    <h3 className="font-serif text-2xl md:text-3xl font-bold text-navy m-0">
                       {language === 'ar' ? 'التحليل الهيكلي' : 'Structural Analysis'}
                     </h3>
-                    <p className="text-[#64788D] text-sm font-bold mt-1">
+                    <p className="text-ink-mute text-sm font-bold mt-1">
                       {language === 'ar' ? 'رؤية عميقة مسبارة' : 'In-depth probing vision'}
                     </p>
                   </div>
@@ -142,13 +143,13 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
                     a.download = `mindmap-${topic.slice(0, 20)}.md`;
                     a.click();
                   }}
-                  className="p-3 bg-[#F8F5EF] hover:bg-[#F8F5EF] text-[#182231] rounded-full transition-colors group"
+                  aria-label={language === 'ar' ? 'حفظ الخريطة كملف' : 'Save the map as a file'} title={language === 'ar' ? 'حفظ الخريطة كملف' : 'Save the map as a file'} className="p-3 bg-ivory hover:bg-lilac-mist text-navy rounded-full transition-colors group"
                 >
                   <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
               </div>
 
-              <div className="prose max-w-none prose-p:text-[#182231] prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-[#182231] prose-headings:font-black prose-li:text-[#182231] prose-li:marker:text-[#6E5B91] prose-strong:text-[#4B3F6B]">
+              <div className="tbn-tree prose max-w-none prose-p:text-navy prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-navy prose-headings:font-serif prose-headings:font-bold prose-li:text-navy prose-strong:text-[#4B3F6B]">
                 <ReactMarkdown>{mindMapData}</ReactMarkdown>
               </div>
             </div>

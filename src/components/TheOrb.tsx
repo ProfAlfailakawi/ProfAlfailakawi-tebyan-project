@@ -37,7 +37,7 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
         onMouseLeave={() => setIsHovered(false)}
     >
       <div className={cn(
-        "absolute -top-16 left-0 transition-opacity duration-500 bg-black/90 backdrop-blur-xl text-white px-5 py-2.5 rounded-full shadow-2xl font-black text-[10px] uppercase tracking-[0.2em] rtl:tracking-normal border border-white/20 whitespace-nowrap pointer-events-none z-[100] flex items-center justify-center min-w-[120px]",
+        "absolute -top-16 left-0 transition-opacity duration-500 bg-black/90 backdrop-blur-xl text-white px-5 py-2.5 rounded-full shadow-2xl font-black text-xs uppercase tracking-[0.2em] rtl:tracking-normal border border-white/20 whitespace-nowrap pointer-events-none z-[100] flex items-center justify-center min-w-[120px]",
         (isHovered || showHint) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       )}>
           <div className="flex items-center gap-2">

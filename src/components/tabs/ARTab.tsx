@@ -1,3 +1,4 @@
+import { TebyanButtonLoader } from '../ui/TebyanLoader';
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'motion/react';
 import { Box, Sparkles, AlertTriangle, ArrowRight, ShieldCheck, Zap, X, Type, Layers } from 'lucide-react';
@@ -180,24 +181,25 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
              className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-zinc-200/60 shadow-xl shadow-zinc-200/30 space-y-6"
            >
              <div className="space-y-4">
-               <label className="block text-sm font-bold text-zinc-700">
+               <label htmlFor="ar-idea-input" className="block text-sm font-bold text-[#465568]">
                  {language === 'ar' ? 'ما هي الفكرة التي تود تجسيدها؟' : 'What idea would you like to visualize?'}
                </label>
                <textarea
+                  id="ar-idea-input"
                   value={idea}
                   onChange={(e) => setIdea(e.target.value)}
                   placeholder={language === 'ar' ? 'اكتب فكرتك هنا...' : 'Type your idea here...'}
-                  className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-black/5 text-lg font-medium resize-none shadow-inner"
+                  className="w-full bg-ivory border border-lilac-soft/30 rounded-2xl p-4 min-h-[120px] focus:outline-none focus:border-lilac focus:ring-2 focus:ring-lilac/15 text-lg font-medium resize-none shadow-inner"
                />
              </div>
              
              <button
                 onClick={analyzeIdea}
                 disabled={isAnalyzing || !idea.trim()}
-                className="w-full py-4 bg-[#6E5B91] hover:bg-[#5F4E7F] text-white rounded-2xl font-bold text-lg transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl active:scale-[0.98]"
+                className="w-full py-4 bg-lilac hover:bg-lilac-deep text-white rounded-2xl font-bold text-lg transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl active:scale-[0.98]"
              >
                 {isAnalyzing ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <TebyanButtonLoader className="text-current" />
                 ) : (
                   <>
                     <Layers className="w-5 h-5" />
@@ -246,6 +248,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
 
            <button 
              onClick={stopCamera}
+             aria-label={language === 'ar' ? 'إغلاق الكاميرا' : 'Close camera'}
              className="absolute top-4 sm:top-6 right-4 sm:right-6 p-3 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full shadow-lg text-white z-50 border border-white/10 transition-colors"
            >
              <X className="w-5 h-5" />

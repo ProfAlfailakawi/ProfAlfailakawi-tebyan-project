@@ -12,7 +12,7 @@ export const GamificationBadge = ({ language }: { language: 'ar' | 'en' }) => {
             <Trophy className="w-4 h-4" />
         </div>
         <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-zinc-500 uppercase">{state.rank}</span>
+            <span className="text-xs font-bold text-zinc-500 uppercase">{state.rank}</span>
             <span className="text-xs font-black text-black">{language === 'ar' ? 'المستوى' : 'LVL'} {state.level}</span>
         </div>
     </div>

@@ -78,7 +78,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   
   if (!question) {
     return (
-        <div className="p-8 text-center font-medium text-[#64788D]">
+        <div className="p-8 text-center font-medium text-ink-mute">
             <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
             جاري تحميل المسألة...
         </div>
@@ -214,18 +214,18 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 md:py-10 flex items-start gap-3 md:gap-6">
           <button 
             onClick={onBack}
-            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center justify-center bg-white/92 hover:bg-white text-[#64788D] hover:text-[#6E5F8E] rounded-2xl w-11 h-11 md:w-12 md:h-12 shrink-0 transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
+            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center justify-center bg-white/92 hover:bg-white text-ink-mute hover:text-[#6E5F8E] rounded-2xl w-11 h-11 md:w-12 md:h-12 shrink-0 transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <div className="space-y-4 md:space-y-6 flex-1 min-w-0">
-             <div className="flex flex-wrap gap-2 text-[11px] md:text-xs font-bold font-mono uppercase">
-               <span className="bg-[#EAECE6] text-[#64788D] px-3 py-1.5 rounded-full">{category?.title}</span>
+             <div className="flex flex-wrap gap-2 text-xs md:text-xs font-bold font-mono uppercase">
+               <span className="bg-[#EAECE6] text-ink-mute px-3 py-1.5 rounded-full">{category?.title}</span>
                {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
                <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && ', '}<span className="inline-block" dir="ltr">{a}</span></React.Fragment>)}</span>
              </div>
              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#182231] leading-snug lg:leading-tight flex-1 tracking-tight min-w-0">
+               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-navy leading-snug lg:leading-tight flex-1 tracking-tight min-w-0">
                  {question.question || question.title}
                </h1>
                <div className="flex items-center gap-2 shrink-0">
@@ -244,7 +244,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                      "p-3 md:p-4 rounded-full transition-all shrink-0",
                      isSaved
                        ? "bg-[#8E7AAE] text-white"
-                       : "bg-[#F6F5F0] text-[#6B6A65] hover:bg-[#EBEAE4] hover:text-[#182231]"
+                       : "bg-[#F6F5F0] text-[#6B6A65] hover:bg-[#EBEAE4] hover:text-navy"
                    )}
                    title={language === 'ar' ? "حفظ في المكتبة" : "Save to Library"}
                  >
@@ -270,7 +270,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                        }
                      }
                    }}
-                   className="p-3 md:p-4 bg-[#F6F5F0] text-[#6B6A65] rounded-full hover:bg-[#EBEAE4] hover:text-[#182231] transition-colors shrink-0"
+                   className="p-3 md:p-4 bg-[#F6F5F0] text-[#6B6A65] rounded-full hover:bg-[#EBEAE4] hover:text-navy transition-colors shrink-0"
                    title="مشاركة"
                  >
                    <Share2 className="w-4 h-4 md:w-5 md:h-5" />
@@ -281,7 +281,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         </div>
 
         {/* Reassurance Message */}
-        <div className="bg-[#F7F5F2] border-y border-[#8FA9C7]/15 py-2 md:py-3 text-center text-[#64788D] font-bold text-xs md:text-sm tracking-wide px-4">
+        <div className="bg-[#F7F5F2] border-y border-[#8FA9C7]/15 py-2 md:py-3 text-center text-ink-mute font-bold text-xs md:text-sm tracking-wide px-4">
           هذا السؤال طبيعي جدًا… ويحدث مع كثير من الأطفال.
         </div>
 
@@ -314,7 +314,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         
         {/* Quick Tab */}
         {activeTab === 'quick' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="space-y-4">
               <DnaStatusHeader
                 icon={allApproved ? <ShieldCheck /> : <ShieldEllipsis />}
@@ -356,11 +356,11 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
-                  <h3 className="text-xl font-black text-[#182231] flex items-center gap-2">
-                     <Lightbulb className="text-[#64788D] w-6 h-6" /> الملخص السريع
+                  <h3 className="text-xl font-black text-navy flex items-center gap-2">
+                     <Lightbulb className="text-ink-mute w-6 h-6" /> الملخص السريع
                   </h3>
                 </div>
-                <p className="text-[#465568] font-medium leading-[1.85] text-base md:text-xl">{question.quickSummary}</p>
+                <p className="text-ink-soft font-medium leading-[1.85] text-base md:text-xl">{question.quickSummary}</p>
                 {quickAudioUrl && (
                   <audio ref={quickAudioRef} controls className="w-full mt-5" src={quickAudioUrl}>
                     المتصفح لا يدعم تشغيل الصوت.
@@ -420,7 +420,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                         </div>
                         <div className="flex-1">
                             <h4 className="text-xl font-black text-rose-600 mb-4 tracking-wider">ظلّك الفلسفي يتحدث:</h4>
-                            <div className="font-serif rtl:font-sans text-[#465568] leading-relaxed text-lg [&_p]:text-[#465568] [&_strong]:text-rose-700 [&_h1]:text-rose-700 [&_h2]:text-rose-700 [&_h3]:text-rose-700 [&_li]:text-[#465568] [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
+                            <div className="font-serif rtl:font-sans text-ink-soft leading-relaxed text-lg [&_p]:text-ink-soft [&_strong]:text-rose-700 [&_h1]:text-rose-700 [&_h2]:text-rose-700 [&_h3]:text-rose-700 [&_li]:text-ink-soft [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
                                 <ReactMarkdown>{shadowResponse}</ReactMarkdown>
                             </div>
                         </div>
@@ -433,14 +433,14 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 <h4 className="font-bold text-[#4B6B42] mb-4 flex items-center gap-2 text-lg">
                   <MessageSquareQuote className="w-6 h-6" aria-hidden="true" /> قل للطفل:
                 </h4>
-                <p className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.sayThis}"</p>
+                <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.sayThis}"</p>
               </div>
               
               <div className="bg-[#FAF0E6] rounded-[24px] p-8 border border-[#F2D7C8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <h4 className="font-bold text-[#A6603F] mb-4 flex items-center gap-2 text-lg">
                   <Ban className="w-6 h-6" aria-hidden="true" /> لا تقل:
                 </h4>
-                <p className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.dontSayThis}"</p>
+                <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.dontSayThis}"</p>
               </div>
               
               <div className="bg-[#8E7AAE] text-white rounded-[24px] p-8 shadow-[0_12px_35px_rgba(24,34,49,0.06)] flex flex-col justify-center relative overflow-hidden">
@@ -458,10 +458,10 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Deep Tab */}
         {activeTab === 'deep' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
                <div>
-                 <h3 className="text-2xl font-bold text-[#182231] mb-4">خطأ شائع احذره</h3>
+                 <h3 className="text-2xl font-bold text-navy mb-4">خطأ شائع احذره</h3>
                  <p className="text-[#A6603F] font-medium bg-[#FAF0E6] p-5 md:p-6 rounded-[16px] border border-[#F2D7C8] leading-[1.85] text-base md:text-lg">
                    {question.commonMistake}
                  </p>
@@ -470,7 +470,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                <div className="pt-8 border-t border-[#8FA9C7]/15">
                  <h3 className="text-2xl font-bold text-[#4A6B8C] mb-4">التحليل الاستراتيجي والنفسي</h3>
                  <BreathingText 
-                    className="text-[#64788D] font-medium leading-[2] text-base md:text-lg" 
+                    className="text-ink-mute font-medium leading-[2] text-base md:text-lg" 
                     text={question.educationalView} 
                     language={language}
                  />
@@ -479,7 +479,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                <div className="pt-8 border-t border-[#8FA9C7]/15">
                  <h3 className="text-2xl font-bold text-[#A68F58] mb-4">جواب استرشادي</h3>
                  <BreathingText 
-                   className="text-[#64788D] font-medium leading-[1.85] bg-[#FAF9F6]/70 backdrop-blur-2xl border border-[#EACD9B] p-5 md:p-6 rounded-[16px] italic text-lg md:text-xl"
+                   className="text-ink-mute font-medium leading-[1.85] bg-[#FAF9F6]/70 backdrop-blur-2xl border border-[#EACD9B] p-5 md:p-6 rounded-[16px] italic text-lg md:text-xl"
                    text={`"${question.suggestedAnswer}"`}
                    language={language}
                  />
@@ -488,7 +488,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                {question.religiousReference && (
                  <div className="pt-8 border-t border-[#8FA9C7]/15">
                    <h3 className="text-xl font-bold text-[#4B6B42] mb-4">إضاءة شرعية وتوجيه محكم</h3>
-                   <p className="text-[#182231] font-bold bg-[#F0F5ED] p-5 md:p-6 rounded-[16px] text-base md:text-lg leading-[1.85]">{question.religiousReference}</p>
+                   <p className="text-navy font-bold bg-[#F0F5ED] p-5 md:p-6 rounded-[16px] text-base md:text-lg leading-[1.85]">{question.religiousReference}</p>
                  </div>
                )}
             </div>
@@ -500,7 +500,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Age Tab */}
         {activeTab === 'age' && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-6 animate-in fade-in slide-in-from-bottom-2">
             <div className="bg-white rounded-[24px] p-5 md:p-8 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <DnaTimeline
                 ariaLabel="الجواب حسب العمر"
@@ -509,7 +509,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   key: String(idx),
                   title: `عمر: ${version.age}`,
                   tone: 'lilac' as const,
-                  meta: <span className="text-[#182231] font-medium leading-[1.85] text-base md:text-lg block whitespace-normal">{version.text}</span>,
+                  meta: <span className="text-navy font-medium leading-[1.85] text-base md:text-lg block whitespace-normal">{version.text}</span>,
                 }))}
               />
             </div>
@@ -520,7 +520,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         {activeTab === 'steps' && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-              <h3 className="text-2xl font-bold text-[#182231] mb-6 flex items-center gap-3">
+              <h3 className="text-2xl font-bold text-navy mb-6 flex items-center gap-3">
                 <CheckCircle2 className="text-[#4B6B42] w-8 h-8" /> خطوات عملية
               </h3>
               {question.practicalSteps.length > 0 && (
@@ -558,9 +558,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                       type="button"
                       aria-pressed={isDone}
                       onClick={() => setDoneSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])}
-                      className={cn("w-full text-start flex flex-wrap md:flex-nowrap gap-4 text-[#64788D] font-medium p-5 rounded-[16px] border text-base md:text-lg transition-colors", isDone ? "bg-[#F0F5ED] border-[#DFEBD8]" : "bg-[#FAF9F6]/70 border-[#8FA9C7]/15 hover:border-[#8E7AAE]/40")}
+                      className={cn("w-full text-start flex flex-wrap md:flex-nowrap gap-4 text-ink-mute font-medium p-5 rounded-[16px] border text-base md:text-lg transition-colors", isDone ? "bg-[#F0F5ED] border-[#DFEBD8]" : "bg-[#FAF9F6]/70 border-[#8FA9C7]/15 hover:border-[#8E7AAE]/40")}
                     >
-                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", "transition-colors duration-300", isDone ? "bg-[#4B6B42] text-white" : "bg-[#EAECE6] text-[#182231]")}>
+                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", "transition-colors duration-300", isDone ? "bg-[#4B6B42] text-white" : "bg-[#EAECE6] text-navy")}>
                         {isDone ? <CheckCircle2 className="w-5 h-5" aria-hidden="true" /> : idx + 1}
                       </span>
                       <span className={cn("mt-1 flex-1", isDone && "line-through decoration-[#4B6B42]/40")}>{step}</span>
@@ -572,12 +572,12 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             </div>
 
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#8FA9C7]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-              <h3 className="text-2xl font-bold text-[#182231] mb-6 flex items-center gap-3">
+              <h3 className="text-2xl font-bold text-navy mb-6 flex items-center gap-3">
                 <Lightbulb className="text-[#A68F58] w-8 h-8" /> تمارين تطبيقية
               </h3>
               <ul className="space-y-4">
                 {question.exercises.map((ex, idx) => (
-                  <li key={idx} className="flex flex-wrap md:flex-nowrap gap-4 text-[#64788D] font-medium p-4 bg-[#F7F5F2] rounded-[16px] text-base md:text-lg">
+                  <li key={idx} className="flex flex-wrap md:flex-nowrap gap-4 text-ink-mute font-medium p-4 bg-[#F7F5F2] rounded-[16px] text-base md:text-lg">
                     <Circle className="shrink-0 w-3 h-3 mt-2.5 fill-[#A68F58] text-[#A68F58]" aria-hidden="true" />
                     <span>{ex}</span>
                   </li>
@@ -596,14 +596,14 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                      return parts.length > 1 ? (
                        <ul className="space-y-2">
                          {parts.map((t, i) => (
-                           <li key={i} className="flex gap-2 text-[#182231] font-medium text-base leading-[1.8]">
+                           <li key={i} className="flex gap-2 text-navy font-medium text-base leading-[1.8]">
                              <Circle className="shrink-0 w-2.5 h-2.5 mt-2.5 fill-[#A6603F] text-[#A6603F]" aria-hidden="true" />
                              <span>{t}</span>
                            </li>
                          ))}
                        </ul>
                      ) : (
-                       <p className="text-[#182231] font-medium text-base md:text-lg leading-[1.85]">{question.whenToWorry}</p>
+                       <p className="text-navy font-medium text-base md:text-lg leading-[1.85]">{question.whenToWorry}</p>
                      );
                    })()}
                  </div>
@@ -614,7 +614,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Resources Tab */}
         {activeTab === 'resources' && (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
+          <div className="tbn-sections space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {question.resources.map((res, idx) => {
               const Wrapper = res.url ? 'a' : 'div';
@@ -623,11 +623,11 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               return (
                 <Wrapper key={idx} {...props} className={cn("block bg-white rounded-[24px] p-6 border border-[#8FA9C7]/15 shadow-[0_2px_8_rgba(0,0,0,0.04)] transition-all group", res.url ? "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#A68F58] cursor-pointer" : "")}>
                   <div className="flex flex-col gap-4">
-                     <div className={cn("w-14 h-14 rounded-full bg-[#F7F5F2] flex items-center justify-center text-[#64788D] transition-colors", res.url ? "group-hover:text-white group-hover:bg-[#A68F58]" : "")}>
+                     <div className={cn("w-14 h-14 rounded-full bg-[#F7F5F2] flex items-center justify-center text-ink-mute transition-colors", res.url ? "group-hover:text-white group-hover:bg-[#A68F58]" : "")}>
                        {res.type === 'video' ? <Video className="w-7 h-7" /> : res.type === 'book' ? <BookOpen className="w-7 h-7" /> : res.type === 'study' ? <FileText className="w-7 h-7" /> : <Link className="w-7 h-7" />}
                      </div>
                      <div>
-                       <h4 className={cn("font-bold text-[#182231] text-xl transition-colors", res.url ? "group-hover:text-[#A68F58]" : "")}>{res.title}</h4>
+                       <h4 className={cn("font-bold text-navy text-xl transition-colors", res.url ? "group-hover:text-[#A68F58]" : "")}>{res.title}</h4>
                        <p className="text-[#6B6A65] font-medium mt-2 leading-[1.85]">{res.description}</p>
                        {!res.url && <p className="text-sm font-bold text-[#A3A19C] mt-3 uppercase tracking-widest">متوفر في المكتبات</p>}
                      </div>
@@ -645,15 +645,15 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
             {/* Trust Layer */}
             <div className="bg-white border border-[#8FA9C7]/15 rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 text-center space-y-6">
-               <p className="text-[#182231] font-bold text-xl">تم إعداد هذه الإجابة عبر مصادر موثوقة</p>
+               <p className="text-navy font-bold text-xl">تم إعداد هذه الإجابة عبر مصادر موثوقة</p>
                <div className="flex justify-center gap-3 flex-wrap">
-                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-[#64788D] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />تدقيق واعتماد الحالة</span>}
+                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-ink-mute px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />تدقيق واعتماد الحالة</span>}
                  {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />التدقيق الشرعي</span>}
-                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-[#182231] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
+                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-navy px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
                </div>
 
                <div className="pt-8 border-t border-[#8FA9C7]/15 mt-8">
-                 <p className="font-bold text-[#64788D] mb-6 text-lg">هل وجدت هذه الإجابة مفيدة لموقفك؟</p>
+                 <p className="font-bold text-ink-mute mb-6 text-lg">هل وجدت هذه الإجابة مفيدة لموقفك؟</p>
                  {feedbackSubmitted ? (
                    <div className="bg-[#F0F5ED] text-[#4B6B42] px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2">
                      <CheckCircle2 className="w-5 h-5" />
@@ -662,7 +662,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                  ) : (
                    <div className="flex flex-wrap gap-4 justify-center">
                      <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'positive'); setFeedbackSubmitted(true); }} className="bg-[#F0F5ED] text-[#4B6B42] hover:bg-[#E3EEDB] px-6 py-3 rounded-full font-bold transition-colors">نعم، جداً</button>
-                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'partial'); setFeedbackSubmitted(true); }} className="bg-[#F6F5F0] text-[#64788D] hover:bg-[#EAECE6] px-6 py-3 rounded-full font-bold transition-colors">جزئياً</button>
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'partial'); setFeedbackSubmitted(true); }} className="bg-[#F6F5F0] text-ink-mute hover:bg-[#EAECE6] px-6 py-3 rounded-full font-bold transition-colors">جزئياً</button>
                      <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'negative'); setFeedbackSubmitted(true); }} className="bg-[#FAF0E6] text-[#A6603F] hover:bg-[#F2D7C8] px-6 py-3 rounded-full font-bold transition-colors">لا</button>
                    </div>
                  )}
@@ -672,7 +672,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             {/* Related Questions */}
             {related.length > 0 && (
               <div className="mt-16 space-y-6">
-                <h3 className="text-2xl md:text-3xl font-bold text-[#182231] text-center">أهالي آخرون سألوا أيضاً</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-navy text-center">أهالي آخرون سألوا أيضاً</h3>
                 <div className="grid gap-4 max-w-3xl mx-auto">
                   {related.map(rel => (
                      <button 
@@ -680,7 +680,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                        onClick={() => onQuestion(rel)}
                        className="bg-white rounded-[24px] p-6 border border-[#8FA9C7]/15 text-right shadow-[0_4px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] hover:border-[#A68F58] transition-all flex items-center justify-between group"
                      >
-                        <span className="font-bold text-[#182231] text-lg group-hover:text-[#A68F58] transition-colors">{rel.question || rel.title}</span>
+                        <span className="font-bold text-navy text-lg group-hover:text-[#A68F58] transition-colors">{rel.question || rel.title}</span>
                         <div className="w-10 h-10 rounded-full bg-[#F6F5F0] group-hover:bg-[#A68F58] flex items-center justify-center shrink-0 transition-colors">
                           <ArrowRight className="w-5 h-5 text-[#6B6A65] group-hover:text-white" />
                         </div>

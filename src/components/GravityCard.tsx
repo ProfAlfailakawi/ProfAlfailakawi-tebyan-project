@@ -48,7 +48,7 @@ export const GravityCard = ({ content, weight, className }: GravityCardProps) =>
       whileTap={{ scale: 0.98, cursor: 'grabbing' }}
       className={cn(
         "relative cursor-grab bg-white border border-zinc-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow",
-        saved && "ring-2 ring-indigo-500 bg-indigo-50/50",
+        saved && "ring-2 ring-lilac bg-lilac-mist/50",
         className
       )}
     >
@@ -58,7 +58,7 @@ export const GravityCard = ({ content, weight, className }: GravityCardProps) =>
         </div>
         <div className={cn(
           "shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-          saved ? "bg-indigo-500 text-white" : "bg-zinc-100 text-zinc-400"
+          saved ? "bg-lilac text-white" : "bg-zinc-100 text-zinc-400"
         )}>
            {saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
         </div>
@@ -69,7 +69,7 @@ export const GravityCard = ({ content, weight, className }: GravityCardProps) =>
         <motion.div 
           initial={{ opacity: 0.8, scale: 0.8 }}
           animate={{ opacity: 0, scale: 1.5 }}
-          className="absolute inset-0 bg-indigo-400 rounded-2xl z-[-1]"
+          className="absolute inset-0 bg-lilac-soft rounded-2xl z-[-1]"
         />
       )}
     </motion.div>
