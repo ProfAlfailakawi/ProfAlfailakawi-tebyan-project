@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useUser } from '../../../contexts/UserContext';
 import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, ShieldEllipsis, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library, TriangleAlert, Circle } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
@@ -40,6 +41,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const quickAudioRef = useRef<HTMLAudioElement | null>(null);
   // Display-only checklist for the practical steps (local UI state, never saved).
   const [doneSteps, setDoneSteps] = useState<number[]>([]);
+  const reduceMotion = useReducedMotion();
   useEffect(() => { setDoneSteps([]); }, [questionId]);
   
   const currentQuestion = questions.find(q => q.id === questionId);
@@ -542,19 +544,28 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 {question.practicalSteps.map((step, idx) => {
                   const isDone = doneSteps.includes(idx);
                   return (
-                  <li key={idx}>
+                  <motion.li
+                    key={idx}
+                    className="relative"
+                    initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: reduceMotion ? 0 : Math.min(idx, 8) * 0.07, ease: 'easeOut' }}
+                  >
+                    {idx < question.practicalSteps.length - 1 && (
+                      <span aria-hidden="true" className={cn("absolute start-[35px] top-full h-4 w-0.5 rounded-full transition-colors duration-500", isDone ? "bg-[#4B6B42]/60" : "bg-[#8FA9C7]/30")} />
+                    )}
                     <button
                       type="button"
                       aria-pressed={isDone}
                       onClick={() => setDoneSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])}
                       className={cn("w-full text-start flex flex-wrap md:flex-nowrap gap-4 text-[#64788D] font-medium p-5 rounded-[16px] border text-base md:text-lg transition-colors", isDone ? "bg-[#F0F5ED] border-[#DFEBD8]" : "bg-[#FAF9F6]/70 border-[#8FA9C7]/15 hover:border-[#8E7AAE]/40")}
                     >
-                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", isDone ? "bg-[#4B6B42] text-white" : "bg-[#EAECE6] text-[#182231]")}>
+                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", "transition-colors duration-300", isDone ? "bg-[#4B6B42] text-white" : "bg-[#EAECE6] text-[#182231]")}>
                         {isDone ? <CheckCircle2 className="w-5 h-5" aria-hidden="true" /> : idx + 1}
                       </span>
                       <span className={cn("mt-1 flex-1", isDone && "line-through decoration-[#4B6B42]/40")}>{step}</span>
                     </button>
-                  </li>
+                  </motion.li>
                   );
                 })}
               </ul>
