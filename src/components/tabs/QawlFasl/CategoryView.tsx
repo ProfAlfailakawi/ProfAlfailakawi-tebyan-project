@@ -25,7 +25,7 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
 
   return (
     <div className="flex flex-col h-full bg-white/60 backdrop-blur-2xl min-h-[80vh] pb-24 font-sans">
-      <div className="bg-white border-b border-[#EBEAE4] relative z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <div className="bg-white border-b border-lilac-soft/25 relative z-10 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col md:flex-row items-center md:justify-between gap-4">
           <button 
             onClick={onBack}
@@ -34,8 +34,8 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
             <ArrowRight className="w-5 h-5" /><span className="hidden md:inline">رجوع</span>
           </button>
           <div className="text-center w-full md:flex-1">
-             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-zinc-950 tracking-tighter">{displayTitle}</h2>
-             {displayDesc && <p className="text-zinc-600 font-bold text-sm mt-3">{displayDesc}</p>}
+             <h2 className="text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-navy">{displayTitle}</h2>
+             {displayDesc && <p className="text-ink-soft font-semibold text-base mt-3">{displayDesc}</p>}
           </div>
           <div className="hidden md:block w-24 opacity-0 pointer-events-none" /> {/* Spacer for centering */}
         </div>
@@ -45,9 +45,9 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
         {finalQuestions.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 lg:gap-10">
             {finalQuestions.map(q => (
-              <div key={q.id} className="bg-white flex flex-col justify-between border border-zinc-100 rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all group cursor-pointer h-full luxury-ceramic-sheen" onClick={() => onQuestion(q)}>
+              <div key={q.id} className="bg-white flex flex-col justify-between border border-lilac-soft/20 rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all group cursor-pointer h-full luxury-ceramic-sheen" onClick={() => onQuestion(q)}>
                 <div className="space-y-4 md:space-y-6 w-full mb-6">
-                   <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-black text-zinc-950 leading-snug lg:leading-tight group-hover:text-[#5A5A40] transition-colors" lineClamp={3} />
+                   <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-bold text-navy leading-snug lg:leading-tight group-hover:text-lilac transition-colors" lineClamp={3} />
                    <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase tracking-widest">
                      {q.riskLevel === 'high' && (
                        <span className="flex items-center gap-1.5 text-rose-700 bg-rose-50 px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>
@@ -59,7 +59,7 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
                 <div className="flex items-center w-full mt-auto mt-4 md:mt-0">
                   <button 
                     onClick={(e) => { e.stopPropagation(); onQuestion(q); }}
-                    className="bg-[#F6F5F0] text-[#5A5A40] group-hover:bg-[#5A5A40] group-hover:text-white px-5 py-3 md:px-6 md:py-4 rounded-[20px] font-bold flex items-center justify-between transition-all w-full shadow-sm text-sm cursor-pointer"
+                    className="bg-lilac-mist text-lilac group-hover:bg-lilac group-hover:text-white px-5 py-3 md:px-6 md:py-4 rounded-[20px] font-bold flex items-center justify-between transition-all w-full shadow-sm text-sm cursor-pointer"
                   >
                      <span>عرض الإجابة</span>
                      <ArrowRight className="w-5 h-5 -scale-x-100" />
@@ -69,8 +69,8 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 text-[#6B6A65] font-bold bg-white rounded-[24px] md:rounded-[32px] border border-dashed border-[#EBEAE4]">
-             <List className="w-16 h-16 text-[#D5D4CD] mx-auto mb-4" />
+          <div className="text-center py-20 text-ink-soft font-bold bg-white rounded-[24px] md:rounded-[32px] border border-dashed border-lilac-soft/25">
+             <List className="w-16 h-16 text-lilac-soft/50 mx-auto mb-4" />
              <p className="text-xl">لا توجد حالات مسجلة في هذا القسم حالياً.</p>
           </div>
         )}

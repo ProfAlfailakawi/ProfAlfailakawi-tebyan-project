@@ -195,9 +195,9 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                          <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-zinc-400 opacity-60">
                             <Gift className="w-6 h-6" />
                          </div>
-                         <div className="min-w-0 opacity-70">
-                            <p className="text-sm font-black text-zinc-900">{language === 'ar' ? 'هدية "كتاب الحكمة"' : 'Book of Wisdom Gift'}</p>
-                            <p className="text-xs text-zinc-500 font-bold">{language === 'ar' ? 'متاح عند وصولك لـ 500 نقطة' : 'Available at 500 PTS'}</p>
+                         <div className="min-w-0">
+                            <p className="text-sm font-black text-navy">{language === 'ar' ? 'هدية "كتاب الحكمة"' : 'Book of Wisdom Gift'}</p>
+                            <p className="text-xs text-ink-soft font-bold">{language === 'ar' ? 'متاح عند وصولك لـ 500 نقطة' : 'Available at 500 PTS'}</p>
                          </div>
                          <DnaRing
                            value={Number(myLoyaltyData.points) || 0}
@@ -215,7 +215,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     {language === 'ar' ? 'استبدال النقاط' : 'Redeem Points'}
                 </button>
                 {IS_DEMO_MODE && demoNotice && (
-                    <p className="mt-3 text-xs font-bold text-zinc-500 text-center" role="status">
+                    <p className="mt-3 text-xs font-bold text-ink-soft text-center" role="status">
                         {language === 'ar' ? 'الاستبدال غير متاح في البيئة التجريبية — لا يكتب العرض أي بيانات.' : 'Redeeming is disabled in the demo — it writes no data.'}
                     </p>
                 )}
@@ -234,8 +234,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     {getDemoFixtures(language).loyalty.history.map(h => (
                       <li key={h.id} className="p-4 md:px-6 flex items-center justify-between gap-4 text-sm">
                         <div className="min-w-0">
-                          <p className="font-black text-zinc-900">{h.label}</p>
-                          <p className="text-xs text-zinc-500 font-bold">{h.date}</p>
+                          <p className="font-black text-navy">{h.label}</p>
+                          <p className="text-xs text-ink-mute font-bold">{h.date}</p>
                         </div>
                         <span className={cn('font-black shrink-0', h.points >= 0 ? 'text-emerald-600' : 'text-rose-600')} dir="ltr">
                           {h.points >= 0 ? `+${h.points}` : h.points}
@@ -344,7 +344,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     onClick={() => { setActiveFilter(f); setCurrentPage(1); }}
                     className={cn(
                       "px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all",
-                      activeFilter === f ? "bg-black text-white" : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
+                      activeFilter === f ? "bg-navy text-white" : "bg-lilac-mist text-ink-soft hover:bg-lilac-soft/25"
                     )}
                   >
                     {language === 'ar' ? (STATUS_AR[f] || f) : f}

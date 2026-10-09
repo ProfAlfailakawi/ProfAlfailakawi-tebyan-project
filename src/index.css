@@ -4898,7 +4898,7 @@ main input:placeholder-shown {
 .tbn-dark [class*="text-white/"] { color: rgba(255, 255, 255, 0.78) !important; }
 .tbn-dark .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1) !important; border-color: rgba(255, 255, 255, 0.16) !important; }
 .tbn-dark input[type="range"] { background-color: rgba(255, 255, 255, 0.25) !important; padding: 0 !important; }
-main .text-mood-primary:not([class*="bg-"]) { color: color-mix(in srgb, var(--mood-primary) 62%, #182231) !important; }
+main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-primary) 62%, #182231) !important; }
 .tbn-frame-text :is(p, li) { color: #4a3b2c !important; }
 @keyframes tbn-rise {
   from { opacity: 0; transform: translateY(10px); }

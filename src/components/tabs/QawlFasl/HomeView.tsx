@@ -450,7 +450,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                disabled={!lastViewedQuestion}
                className={cn(
                 "rounded-[24px] md:rounded-[40px] p-6 md:p-8 flex flex-col justify-between transition-all group text-right flex-shrink-0",
-                lastViewedQuestion ? "bg-white border border-lilac-soft/25 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]" : "bg-ivory border border-lilac-soft/15 opacity-70"
+                lastViewedQuestion ? "bg-white border border-lilac-soft/25 cursor-pointer hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]" : "bg-ivory border border-lilac-soft/15"
                )}
             >
               <div className="space-y-4">

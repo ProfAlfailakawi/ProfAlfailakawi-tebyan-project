@@ -93,20 +93,20 @@ export default function Login() {
         <div className="p-6 md:p-10 space-y-6 md:space-y-8">
           <div className="text-center space-y-1 md:space-y-2">
             <h1 className="text-xl md:text-3xl font-black text-navy tracking-tight">
-              {isSignUp ? 'إنشاء حساب جديد' : 'ادخل إلى مساحة الفهم والقرار'}
+              {isSignUp ? 'إنشاء حساب جديد' : 'أهلاً بك في تبيان'}
             </h1>
             <div className="mx-auto w-12 h-12 rounded-2xl bg-[#8E7AAE]/10 text-[#6E5F8E] flex items-center justify-center mb-3 border border-[#8E7AAE]/15 tebyan-breathe">
               <Sparkles className="w-5 h-5" />
             </div>
-            <p className="text-ink-mute font-medium tracking-wide text-xs md:text-sm">
-              مختبر فكر راقٍ للفهم، التحليل، والحسم
+            <p className="text-ink-mute font-medium text-sm">
+              رفيقك في تربية الأبناء: جواب واضح وخطوات بسيطة
             </p>
           </div>
 
           <form onSubmit={handleEmailAuth} className="space-y-3 md:space-y-4">
             {isSignUp && (
               <div className="space-y-1.5 md:space-y-2">
-                <label className="text-xs md:text-[13px] font-bold text-ink-mute ms-2 tracking-wide">الاسم</label>
+                <label className="text-sm font-bold text-ink-soft ms-2">الاسم</label>
                 <div className="relative">
                   <UserPlus className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-ink-mute w-4 h-4 md:w-5 h-5 pointer-events-none" />
                   <input 
@@ -122,7 +122,7 @@ export default function Login() {
             )}
 
             <div className="space-y-1.5 md:space-y-2">
-              <label className="text-xs md:text-[13px] font-bold text-ink-mute ms-2 tracking-wide">البريد الإلكتروني</label>
+              <label className="text-sm font-bold text-ink-soft ms-2">البريد الإلكتروني</label>
               <div className="relative">
                 <Mail className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-ink-mute w-4 h-4 md:w-5 h-5 pointer-events-none" />
                 <input 
@@ -138,7 +138,7 @@ export default function Login() {
             </div>
 
             <div className="space-y-1.5 md:space-y-2">
-              <label className="text-xs md:text-[13px] font-bold text-ink-mute ms-2 tracking-wide">كلمة المرور</label>
+              <label className="text-sm font-bold text-ink-soft ms-2">كلمة المرور</label>
               <div className="relative">
                 <Lock className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-ink-mute w-4 h-4 md:w-5 h-5 pointer-events-none" />
                 <input 
@@ -170,7 +170,7 @@ export default function Login() {
             <button 
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 md:py-4 bg-[#8E7AAE] hover:bg-[#7F6AA4] text-white rounded-[16px] font-bold shadow-[0_16px_40px_rgba(142,122,174,0.18)] transition-all flex items-center justify-center gap-2 md:gap-3 disabled:bg-zinc-300 text-sm md:text-base"
+              className="w-full py-3.5 md:py-4 bg-lilac hover:bg-lilac-deep text-white rounded-[16px] font-bold shadow-[0_16px_40px_rgba(142,122,174,0.18)] transition-all flex items-center justify-center gap-2 md:gap-3 disabled:bg-zinc-300 text-sm md:text-base"
             >
               {loading ? (
                 <div className="w-5 h-5 md:w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -185,7 +185,7 @@ export default function Login() {
 
           <div className="relative flex items-center gap-4 py-1">
             <div className="h-px bg-zinc-100 flex-1"></div>
-            <span className="text-ink-mute font-bold text-xs md:text-xs uppercase tracking-widest">أو</span>
+            <span className="text-ink-mute font-bold text-sm">أو</span>
             <div className="h-px bg-zinc-100 flex-1"></div>
           </div>
 
