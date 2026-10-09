@@ -79,10 +79,10 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
           className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
         >
           <div className="flex items-center gap-3 font-black text-navy">
-            {React.createElement(activeArenaTab.icon, { className: 'w-5 h-5 text-[#8E7AAE]' })}
+            {React.createElement(activeArenaTab.icon, { className: 'w-5 h-5 text-lilac' })}
             <span>{activeArenaTab.label}</span>
           </div>
-          <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showArenaPicker && "rotate-180")} />
+          <ChevronDown className={cn("w-5 h-5 text-lilac transition-transform", showArenaPicker && "rotate-180")} />
         </button>
         {showArenaPicker && (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-3">

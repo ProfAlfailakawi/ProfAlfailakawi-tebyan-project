@@ -109,17 +109,17 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
     }, [isCinematic, visibleNodes, x, y]);
 
     return (
-        <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "fixed inset-0 z-50 h-screen bg-black rounded-none" : "h-[68vh] md:h-[70vh] bg-black rounded-[24px] md:rounded-[40px] border border-zinc-800")}>
+        <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "tbn-dark fixed inset-0 z-50 h-screen bg-[#182231] rounded-none" : "tbn-dark h-[68vh] md:h-[70vh] bg-[#182231] rounded-[24px] md:rounded-[40px] border border-[#2b3a52]")}>
             {/* Nebula Background */}
             <div className={cn("absolute inset-0 pointer-events-none transition-opacity duration-1000", isCinematic ? "opacity-20" : "opacity-40")}>
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-[150px]" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500 rounded-full blur-[150px]" />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-lilac-soft rounded-full blur-[150px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#A68F58] rounded-full blur-[150px]" />
             </div>
 
             {/* Instruction Overlay */}
             {!isCinematic && (
               <div className={cn(
-                  "absolute top-4 md:top-6 z-20 flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 md:px-4 py-2 rounded-full border border-white/10 text-white/80 text-xs md:text-xs font-bold max-w-[52vw] md:max-w-none leading-relaxed",
+                  "absolute top-4 md:top-6 z-20 flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 md:px-4 py-2 rounded-full border border-white/10 text-white/85 text-xs md:text-sm font-bold max-w-[52vw] md:max-w-none leading-relaxed",
                   language === 'ar' ? 'right-3 md:right-6' : 'left-3 md:left-6'
               )}>
                   <Info className="w-4 h-4" />
@@ -139,7 +139,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                   }} 
                   className={cn(
                       "px-3 md:px-4 py-2 rounded-full font-bold text-xs md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
-                      isCinematic ? "bg-white text-black border-white" : "bg-black/50 text-white border-white/10 hover:bg-white/10"
+                      isCinematic ? "bg-[#F8F5EF] text-[#182231] border-white" : "bg-[#182231]/70 text-white border-white/20 hover:bg-white/10"
                   )}
                   aria-pressed={isCinematic}
               >
@@ -152,7 +152,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
             <AnimatePresence>
               {!isCinematic && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute bottom-6 right-6 z-20 flex flex-col gap-2">
-                    <button onClick={resetView} className="p-3 bg-indigo-500/80 backdrop-blur-md rounded-xl border border-indigo-400 text-white hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'} aria-label={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
+                    <button onClick={resetView} className="p-3 bg-lilac backdrop-blur-md rounded-xl border border-lilac-soft text-white hover:bg-lilac-deep transition-all shadow-lg flex items-center justify-center gap-2 group" title={language === 'ar' ? 'عرض كامل' : 'Fit to screen'} aria-label={language === 'ar' ? 'عرض كامل' : 'Fit to screen'}>
                         <Maximize2 className="w-5 h-5" />
                         <span className="text-xs font-bold hidden group-hover:inline md:hidden">{language === 'ar' ? 'عرض كامل' : 'Fit View'}</span>
                     </button>
@@ -199,8 +199,8 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         })}
                         <defs>
                             <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#6366f1" />
-                                <stop offset="100%" stopColor="#10b981" />
+                                <stop offset="0%" stopColor="#8E7AAE" />
+                                <stop offset="100%" stopColor="#A68F58" />
                             </linearGradient>
                         </defs>
                     </svg>
@@ -222,7 +222,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                 onClick={() => !isCinematic && setSelectedNode(node)}
                                 className={cn(
                                     "absolute rounded-full flex items-center justify-center transition-shadow",
-                                    node.type === 'seed' ? "bg-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.5)]" : "bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.4)]"
+                                    node.type === 'seed' ? "bg-[#A68F58] shadow-[0_0_20px_rgba(166,143,88,0.55)]" : "bg-lilac-soft shadow-[0_0_15px_rgba(142,122,174,0.5)]"
                                 )}
                                 style={{ width: node.size, height: node.size }}
                             >
@@ -230,9 +230,9 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                 
                                 {/* Label */}
                                 <div className={cn(
-                                    "absolute top-full mt-2 whitespace-nowrap text-xs sm:text-xs font-bold text-white/40 px-2 py-1 rounded-full transition-all",
+                                    "absolute top-full mt-2 whitespace-nowrap text-xs sm:text-xs font-bold text-white/75 px-2 py-1 rounded-full transition-all",
                                     (!isCinematic || (isCinematic && selectedNode?.id === node.id)) ? "opacity-100" : "opacity-0",
-                                    !isCinematic && "group-hover:text-white group-hover:bg-black/50",
+                                    !isCinematic && "group-hover:text-white group-hover:bg-[#182231]/70",
                                     language === 'ar' ? "right-1/2 translate-x-1/2" : "left-1/2 -translate-x-1/2"
                                 )}>
                                     {node.text.slice(0, 15)}...
@@ -245,8 +245,8 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
 
             {/* Evolution Timeline Slider */}
             {!isCinematic && nodes.length > 0 && (
-                <div className="absolute top-20 right-1/2 translate-x-1/2 z-20 w-11/12 max-w-xl bg-black/80 border border-white/10 backdrop-blur-md p-4 rounded-3xl shadow-xl flex flex-col gap-2">
-                    <div className="flex justify-between items-center text-xs text-zinc-400 font-bold uppercase tracking-widest px-2">
+                <div className="absolute top-20 right-1/2 translate-x-1/2 z-20 w-11/12 max-w-xl bg-[#182231]/90 border border-white/15 backdrop-blur-md p-4 rounded-3xl shadow-xl flex flex-col gap-2">
+                    <div className="flex justify-between items-center text-xs text-white/70 font-bold px-2">
                         <span>{language === 'ar' ? 'البداية' : 'Genesis'}</span>
                         <span className="text-white">{language === 'ar' ? 'ذاكرة النسيج' : 'Evolution Timeline'} ({timelineStep}/{nodes.length})</span>
                         <span>{language === 'ar' ? 'الآن' : 'Now'}</span>
@@ -258,7 +258,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         max={nodes.length} 
                         value={timelineStep} 
                         onChange={(e) => setTimelineStep(Number(e.target.value))}
-                        className="w-full h-2 bg-zinc-800 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full cursor-pointer"
+                        className="w-full h-2 bg-white/25 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full cursor-pointer"
                     />
                 </div>
             )}
@@ -271,14 +271,14 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 50 }}
                         className={cn(
-                            "absolute z-30 max-w-lg p-6 bg-black/60 backdrop-blur-2xl border border-white/10 rounded-[32px] shadow-2xl transition-all duration-1000",
-                            isCinematic ? "top-1/2 -translate-y-1/2 mt-32 w-11/12 max-w-2xl bg-black/40" : "bottom-8 w-full",
+                            "absolute z-30 max-w-lg p-6 bg-[#182231]/90 backdrop-blur-2xl border border-white/15 rounded-[32px] shadow-2xl transition-all duration-1000",
+                            isCinematic ? "top-1/2 -translate-y-1/2 mt-32 w-11/12 max-w-2xl bg-[#182231]/80" : "bottom-8 w-full",
                             language === 'ar' ? 'right-1/2 translate-x-1/2' : 'left-1/2 -translate-x-1/2'
                         )}
                         dir={language === 'ar' ? 'rtl' : 'ltr'}
                     >
                         {!isCinematic && (
-                          <button onClick={() => setSelectedNode(null)} aria-label={language === 'ar' ? 'إغلاق التفاصيل' : 'Close details'} className="absolute top-4 right-4 text-white/50 hover:text-white">
+                          <button onClick={() => setSelectedNode(null)} aria-label={language === 'ar' ? 'إغلاق التفاصيل' : 'Close details'} className="absolute top-4 right-4 text-white/70 hover:text-white">
                               <Maximize2 className="w-5 h-5" />
                           </button>
                         )}
@@ -286,26 +286,26 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         <div className="flex items-center gap-3 mb-4">
                             <div className={cn(
                                 "w-10 h-10 rounded-full flex items-center justify-center",
-                                selectedNode.type === 'seed' ? "bg-indigo-500 text-white" : "bg-emerald-500 text-white"
+                                selectedNode.type === 'seed' ? "bg-[#A68F58] text-white" : "bg-lilac-soft text-white"
                             )}>
                                 {selectedNode.type === 'seed' ? <Globe className="w-5 h-5" /> : <Network className="w-5 h-5" />}
                             </div>
                             <div>
                                 <h4 className={cn("text-white font-bold transition-all", isCinematic && "text-2xl")}>{selectedNode.author}</h4>
-                                <p className="text-white/40 text-xs font-black uppercase tracking-widest">
+                                <p className="text-white/70 text-xs font-bold">
                                     {selectedNode.type === 'seed' ? (language === 'ar' ? 'البذرة الأولى' : 'Origin Seed') : (language === 'ar' ? 'تطوير' : 'Evolution')}
                                 </p>
                             </div>
                         </div>
                         <p className={cn("text-white/90 font-medium mb-4 transition-all", isCinematic ? "text-3xl leading-relaxed italic" : "line-clamp-3")}>{selectedNode.text}</p>
                         <div className="flex items-center justify-between">
-                             <div className="flex items-center gap-4 text-white/60 text-sm font-bold">
+                             <div className="flex items-center gap-4 text-white/80 text-sm font-bold">
                                 <span className="flex items-center gap-1"><Sparkles className="w-4 h-4 text-amber-400" /> {selectedNode.likes}</span>
                              </div>
                              {!isCinematic && (
                                <button 
                                   onClick={() => onViewDetails(selectedNode.id)}
-                                  className="bg-white text-black px-4 py-2 rounded-xl text-xs font-black shadow-lg shadow-white/10"
+                                  className="bg-[#F8F5EF] text-[#182231] px-4 py-2 rounded-xl text-sm font-bold shadow-lg"
                                >
                                   {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
                                </button>

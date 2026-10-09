@@ -61,7 +61,7 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
         title={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
         aria-label={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
       >
-        <Download className="w-5 h-5 text-[#8E7AAE] shrink-0" />
+        <Download className="w-5 h-5 text-lilac shrink-0" />
         {variant === 'menu' && <span>{language === 'ar' ? 'ثبّت تبيان على جهازك' : 'Install Tebyan on your device'}</span>}
       </button>
 

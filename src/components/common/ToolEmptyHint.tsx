@@ -20,7 +20,7 @@ export const ToolEmptyHint: React.FC<{
     )}
   >
     <div className="flex h-14 w-14 items-center justify-center rounded-full border border-lilac-soft/30 bg-lilac-mist/60">
-      <Icon className="h-6 w-6 text-lilac-soft" strokeWidth={1.4} aria-hidden="true" />
+      <Icon className="h-6 w-6 text-lilac" strokeWidth={1.4} aria-hidden="true" />
     </div>
     {text && <p className={cn("max-w-sm text-sm font-semibold leading-relaxed text-ink-mute")}>{text}</p>}
   </div>
