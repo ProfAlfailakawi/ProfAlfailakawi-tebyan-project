@@ -18,23 +18,26 @@
      page gets type from our origin and, once installed, offline. -->
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
-  :root{--paper:#FBF8F1;--surface:#fff;--ink:#29241C;--muted:#7C7361;--line:#E9E1CF;
-  --accent:#8A6B2B;--accent-soft:#F4EDDD;--lilac:#8E7AAE;
-  --say:#3E7C5B;--say-bg:#E9F2EC;--dont:#A8433B;--dont-bg:#F8EAE7;--now:#4A6C8C;--now-bg:#E9EFF5;--quote:#F6F1E4}
+  :root{--paper:#F8F5EF;--surface:#fff;--ink:#182231;--muted:#64788D;--line:#E4DDEE;
+  --accent:#6E5B91;--accent-soft:#EFEAF6;--lilac:#6E5B91;
+  --say:#3E7C5B;--say-bg:#E9F2EC;--dont:#A8433B;--dont-bg:#F8EAE7;--now:#4A6C8C;--now-bg:#E9EFF5;--quote:#F1ECF6}
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:"Alexandria","Segoe UI",Tahoma,sans-serif;font-weight:300;line-height:1.95}
   h1,h2,h3{font-family:"Amiri",serif;font-weight:700;line-height:1.55;margin:0;text-wrap:balance}
   a{color:var(--accent);text-decoration:none}
-  .top{position:sticky;top:0;background:rgba(251,248,241,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:9}
-  .top-in{max-width:860px;margin:0 auto;padding:13px 22px;display:flex;align-items:baseline;gap:10px}
+  .top{position:sticky;top:0;background:rgba(248,245,239,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:9}
+  .top-in{max-width:860px;margin:0 auto;padding:11px 22px;display:flex;align-items:center;gap:10px}
+  .logo{width:30px;height:30px;flex:none;align-self:center}
   .top-in b{font-family:"Amiri",serif;font-size:1.35rem;color:var(--ink)}
-  .top-in small{font-size:.72rem;color:var(--muted)}
-  .top-in .app{margin-inline-start:auto;font-size:.78rem;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px}
+  .top-in small{font-size:.8rem;color:var(--muted)}
+  .top-in b,.top-in .app{white-space:nowrap}
+  @media(max-width:480px){.top-in small{display:none}.top-in{padding:10px 16px}}
+  .top-in .app{margin-inline-start:auto;font-size:.85rem;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px}
   .wrap{max-width:760px;margin:0 auto;padding:34px 22px 90px}
   .crumb{font-size:.8rem;color:var(--muted);margin-bottom:20px}
   h1{font-size:clamp(1.5rem,4.5vw,2.15rem);margin-bottom:12px}
   .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
-  .chip{font-size:.72rem;font-weight:500;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 12px;color:var(--muted)}
+  .chip{font-size:.8rem;font-weight:500;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:2px 12px;color:var(--muted)}
   .chip.ok{color:var(--say);background:var(--say-bg);border-color:transparent;font-weight:600}
   .summary{background:var(--quote);border-inline-start:3px solid var(--accent);border-radius:10px;padding:16px 20px;margin-bottom:28px;font-size:1.02rem}
   .triad{display:grid;gap:12px;margin-bottom:34px}
@@ -68,11 +71,12 @@
   .trust{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-top:40px;font-size:.9rem}
   .trust dl{display:grid;gap:12px;margin:0}
   @media(min-width:640px){.trust dl{grid-template-columns:1fr 1fr}.trust .src{grid-column:1/-1}}
-  .trust dt{font-size:.75rem;font-weight:600;color:var(--lilac);margin-bottom:2px}
+  .trust dt{font-size:.82rem;font-weight:600;color:var(--lilac);margin-bottom:2px}
   .trust dd{margin:0;font-weight:500}
   .trust ul{padding-inline-start:18px;margin:0}
   .trust .rep{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:14px;padding-top:12px;font-size:.78rem;color:var(--muted)}
   .trust .rep a{border:1px solid var(--line);border-radius:999px;padding:3px 14px;color:var(--dont);background:var(--dont-bg)}
+  @media (prefers-reduced-motion:no-preference){.wrap>*{animation:rise .6s cubic-bezier(.22,1,.36,1) both}.wrap>*:nth-child(2){animation-delay:.06s}.wrap>*:nth-child(3){animation-delay:.12s}.wrap>*:nth-child(4){animation-delay:.18s}.wrap>*:nth-child(n+5){animation-delay:.24s}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
   :focus-visible{outline:2px solid var(--lilac);outline-offset:2px}
   .grid{display:grid;gap:12px;margin-top:26px}
   @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
@@ -84,7 +88,7 @@
 </head>
 <body>
 <div class="top"><div class="top-in">
-  <b>قَوْل فَصْل</b><small>مرجع الوالدين الموثوق</small>
+  <svg class="logo" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path d="M148 408 V244 C148 164 200 112 256 84 C312 112 364 164 364 244 V408" fill="none" stroke="#8E7AAE" stroke-width="30" stroke-linecap="round"/><path d="M118 408 H394" fill="none" stroke="#8E7AAE" stroke-width="30" stroke-linecap="round"/><path d="M256 344 V212" fill="none" stroke="#A68F58" stroke-width="28" stroke-linecap="round"/><circle cx="256" cy="164" r="32" fill="#A68F58"/></svg><b>قَوْل فَصْل</b><small>مرجع الوالدين الموثوق</small>
   <a class="app" href="/">افتح تبيان ←</a>
 </div></div>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","url":"https://tebyan.dr-alfailakawi.com/qawl/q-24","inLanguage":"ar","author":{"@type":"Person","name":"د. أحمد الفيلكاوي","url":"https://tebyan.dr-alfailakawi.com"},"reviewedBy":[{"@type":"Person","name":"د. أحمد الفيلكاوي"}],"datePublished":"2026-04-25T02:57:09.855Z","dateModified":"2026-04-25T02:57:09.855Z","lastReviewed":"2026-04-25T02:57:09.855Z","citation":["الحديث الشريف — رواه مسلم"],"mainEntity":[{"@type":"Question","name":"ابني لديه تشتت انتباه وضعف في التركيز، كيف أساعده دراسياً؟","acceptedAnswer":{"@type":"Answer","text":"يا بطل، سنستخدم المؤقت اليوم. سنعمل لمدة 15 دقيقة فقط، وبعدها سنلعب معاً لمدة 5 دقائق. ما هو أول جزء صغير جداً تريد إنجازه الآن؟ أنا بجانبك إذا احتجت مساعدة."}}]}</script><div class="wrap">
