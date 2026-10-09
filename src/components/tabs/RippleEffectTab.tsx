@@ -194,8 +194,8 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     "text-xs px-3 py-1 rounded-full font-semibold",
                                     (node as any).isTimeCapsule ? "bg-[#f1eef6] text-[#6e5f8e]" :
                                     node.type === 'seed' ? "bg-mood-primary/10 text-mood-primary" :
-                                    node.type === 'branch' ? "bg-[#EEF4F1] text-[#5F837A]" :
-                                    "bg-[#F6F0E3] text-[#8B7B4E]"
+                                    node.type === 'branch' ? "bg-[#EEF4F1] text-[#4A6B62]" :
+                                    "bg-[#F6F0E3] text-[#6F6238]"
                                 )}>
                                     {(node as any).isTimeCapsule && <Lock className="w-3 h-3 inline mr-1 mb-0.5" />}
                                     {(node as any).isTimeCapsule ? (language === 'ar' ? 'كبسولة زمنية' : 'Time Capsule') :
@@ -204,7 +204,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     (language === 'ar' ? 'تطبيق عملي' : 'Implementation')}
                                 </span>
                                 {descendantsCount > 0 && (
-                                    <span className="text-xs font-semibold text-[#6E948A] flex items-center gap-1 bg-[#EEF4F1] px-2 py-1 rounded-lg">
+                                    <span className="text-xs font-semibold text-[#4F7268] flex items-center gap-1 bg-[#EEF4F1] px-2 py-1 rounded-lg">
                                         <GitBranch className="w-3 h-3" />
                                         {descendantsCount} {language === 'ar' ? 'تحول' : 'impact'}
                                     </span>
@@ -463,13 +463,13 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 ranks[uid] = { 
                     rank: language === 'ar' ? 'حكيم تبيان' : 'Sage of Tabyan', 
                     aura: "ring-2 ring-amber-400 ring-offset-2 animate-pulse",
-                    color: "text-[#8B7B4E]"
+                    color: "text-[#6F6238]"
                 };
             } else if (points > 100) {
                 ranks[uid] = { 
                     rank: language === 'ar' ? 'مهندس أفكار' : 'Idea Engineer', 
                     aura: "ring-2 ring-emerald-400 ring-offset-1",
-                    color: "text-[#5F837A]"
+                    color: "text-[#4A6B62]"
                 };
             } else {
                 ranks[uid] = { 
@@ -910,7 +910,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} 
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-mood-primary/10 to-emerald-50 text-mood-primary rounded-full text-xs font-black tracking-widest uppercase shadow-sm border border-mood-primary/20"
                 >
-                    <Network className="w-4 h-4 text-[#6E948A]" />
+                    <Network className="w-4 h-4 text-[#4F7268]" />
                     <span>{language === 'ar' ? 'الشبكة الاجتماعية للأفكار' : 'Social Network of Ideas'}</span>
                 </motion.div>
                 <h2 className="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
@@ -1010,7 +1010,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                         <motion.span 
                                             initial={{ opacity: 0, x: -5 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            className="text-xs mt-1 text-lilac-soft"
+                                            className="text-xs mt-1 text-lilac"
                                         >
                                             {language === 'ar' ? 'ستبقى "مُشفرة" حتى يكتمل نضجها بالمطورين' : 'Will stay "Encrypted" until it matures'}
                                         </motion.span>
@@ -1024,7 +1024,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 animate={{ opacity: 1 }}
                                 className={cn(
                                     "px-2 py-1 rounded-full",
-                                    newIdea.length > 250 ? "text-rose-600 bg-rose-50" : "text-[#8B7B4E] bg-[#F6F0E3]"
+                                    newIdea.length > 250 ? "text-rose-600 bg-rose-50" : "text-[#6F6238] bg-[#F6F0E3]"
                                 )}
                             >
                                 {newIdea.length > 250 

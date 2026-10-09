@@ -230,7 +230,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
               <div className="mb-2 flex justify-center">
                 <ProgressiveMark stage={step} />
               </div>
-              <p className="mb-6 text-xs font-bold tracking-wide text-[#A68F58]">
+              <p className="mb-6 text-sm font-bold text-[#7A6330]">
                 {current.hint}
               </p>
 
@@ -256,7 +256,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
               <div className="mt-7 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-center gap-3">
                 <button
                   onClick={closeTour}
-                  className="rounded-2xl px-5 py-3 text-sm font-bold text-slate-400 transition hover:bg-slate-50 hover:text-slate-700"
+                  className="rounded-2xl px-5 py-3 text-sm font-bold text-ink-soft transition hover:bg-lilac-mist hover:text-navy"
                 >
                   {language === "ar" ? "تخطي" : "Skip"}
                 </button>
@@ -264,7 +264,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
                   onClick={() =>
                     step < steps.length - 1 ? setStep(step + 1) : closeTour()
                   }
-                  className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#8E7AAE] px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(142,122,174,0.25)] transition hover:bg-[#806D9F] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-3 rounded-2xl bg-lilac px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(142,122,174,0.25)] transition hover:bg-[#806D9F] active:scale-[0.98]"
                 >
                   {current.action}
                   <ArrowLeft

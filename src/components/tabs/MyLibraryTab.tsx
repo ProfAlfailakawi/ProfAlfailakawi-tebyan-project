@@ -241,7 +241,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                           
                                           <div className="relative z-10 h-full overflow-y-auto custom-scrollbar pr-2 flex flex-col justify-center">
                                             {title && <h3 className="text-[#2a1e12] font-black text-xl md:text-3xl leading-snug mb-6" style={{ fontFamily: 'Amiri, serif' }}>{title}</h3>}
-                                            <div className="text-[#4a3b2c] font-medium leading-loose text-sm md:text-lg italic" style={{ fontFamily: 'Aref Ruqaa, auto' }}>
+                                            <div className="tbn-frame-text text-[#4a3b2c] font-medium leading-loose text-sm md:text-lg italic" style={{ fontFamily: 'Aref Ruqaa, auto' }}>
                                                 {type === 'oracle' ? <ReactMarkdown>{content.substring(0, 300) + (content.length > 300 ? '...' : '')}</ReactMarkdown> : content}
                                             </div>
                                           </div>

@@ -136,7 +136,7 @@ export default function UserMenu() {
                 }}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#7D689E] hover:bg-[#F3EEF8] transition-colors w-full text-start"
               >
-                <Sparkles size={16} className="text-[#8E7AAE] shrink-0" />
+                <Sparkles size={16} className="text-lilac shrink-0" />
                 <span className="text-sm font-bold flex-1">دليل البداية</span>
               </button>
               

@@ -141,7 +141,7 @@ export const ServiceExplorer: React.FC<Props> = ({
 
       <div className="tebyan-service-search-wrap mx-auto mt-6 max-w-3xl md:mt-8">
         <label className="tebyan-service-search flex min-h-12 items-center gap-3 rounded-[18px] border border-[#8FA9C7]/18 bg-white px-4 shadow-[0_8px_24px_rgba(24,34,49,0.045)]">
-          <Search className="h-5 w-5 shrink-0 text-[#8E7AAE]" />
+          <Search className="h-5 w-5 shrink-0 text-lilac" />
           <input
             value={query}
             onChange={(event) => {

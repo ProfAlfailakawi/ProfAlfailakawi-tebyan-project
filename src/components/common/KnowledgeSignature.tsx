@@ -53,11 +53,11 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
       dir={isAr ? 'rtl' : 'ltr'}
     >
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-9 h-9 rounded-2xl bg-[#F4F1F8] text-[#8E7AAE] flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-2xl bg-[#F4F1F8] text-lilac flex items-center justify-center shrink-0">
           <Sparkles className="w-4 h-4" />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-black tracking-widest uppercase text-[#8E7AAE]">
+          <p className="text-xs font-black tracking-widest uppercase text-lilac">
             {isAr ? 'احفظ المسار' : 'Save this path'}
           </p>
           <p className="text-xs md:text-sm font-bold text-[#6F7785] leading-relaxed">
@@ -81,7 +81,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
           <button
             type="button"
             onClick={onLink}
-            className="px-4 py-2.5 rounded-full bg-[#F4F1F8] border border-[#E6E1EA] text-[#8E7AAE] text-xs font-black transition-all active:scale-95 flex items-center gap-2 hover:bg-[#EEE8F7]"
+            className="px-4 py-2.5 rounded-full bg-[#F4F1F8] border border-[#E6E1EA] text-lilac text-xs font-black transition-all active:scale-95 flex items-center gap-2 hover:bg-[#EEE8F7]"
           >
             <Link2 className="w-4 h-4" />
             {isAr ? 'اربطها' : 'Link it'}

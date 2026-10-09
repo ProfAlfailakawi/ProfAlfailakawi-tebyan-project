@@ -427,12 +427,12 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                       onClick={() => onQuestion(q)}
                       className="w-full text-right p-3 rounded-xl hover:bg-white transition-all border border-transparent hover:border-lilac-soft/20 group flex gap-3 items-start"
                     >
-                      <span className="text-lilac-soft font-bold text-sm pt-1">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="text-lilac font-bold text-sm pt-1">{String(i + 1).padStart(2, '0')}</span>
                       <div className="flex-1">
                         <h4 className="text-base font-bold text-navy line-clamp-1 group-hover:text-lilac">{q.question || q.title}</h4>
                         <p className="text-xs text-ink-mute mt-0.5">{q.mainCategory || 'عام'}</p>
                       </div>
-                      <ArrowRight className="w-3 h-3 text-lilac-soft -scale-x-100 group-hover:text-lilac self-center" />
+                      <ArrowRight className="w-3 h-3 text-lilac -scale-x-100 group-hover:text-lilac self-center" />
                     </button>
                   )) : (
                     <p className="text-ink-mute text-sm text-center py-10">جاري تحضير المسائل اليومية...</p>
@@ -464,7 +464,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               </div>
               {lastViewedQuestion && (
                 <div className="flex items-center gap-2 font-bold text-navy mt-6 text-sm md:text-base group-hover:gap-4 transition-all w-full">
-                  استكمال القراءة <ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5 -scale-x-100 text-lilac-soft group-hover:text-lilac transition-colors" />
+                  استكمال القراءة <ArrowRight className="w-3.5 h-3.5 md:w-5 md:h-5 -scale-x-100 text-lilac group-hover:text-lilac transition-colors" />
                 </div>
               )}
             </button>

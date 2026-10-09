@@ -304,7 +304,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
               <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_10%,rgba(142,122,174,0.14),transparent_28%),radial-gradient(circle_at_88%_28%,rgba(143,169,199,0.18),transparent_30%)]" />
               <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
                 <div>
-                  <p className="text-xs font-black tracking-[0.28em] uppercase text-[#8E7AAE]">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
+                  <p className="text-xs font-black tracking-[0.28em] uppercase text-lilac">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
                   <h2 className="mt-1 text-xl md:text-2xl font-black text-navy">{language === 'ar' ? 'تبيان يفتح لك الزاوية المناسبة فقط' : 'Tebyan opens only the right angle'}</h2>
                   <p className="text-sm text-ink-mute font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، افتح زاوية إضافية بهدوء. الأدوات موجودة بالخلفية بدون زحمة.' : 'Need more depth? Open one extra angle calmly. The tools stay in the background.'}</p>
                 </div>
@@ -331,7 +331,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     <div className="font-black text-sm md:text-base text-navy">{language === 'ar' ? activePurpose.title.ar : activePurpose.title.en}</div>
                     <div className="text-xs md:text-xs font-bold text-ink-mute mt-0.5">{language === 'ar' ? activePurpose.hint.ar : activePurpose.hint.en}</div>
                   </div>
-                  <ChevronDown className={cn("w-5 h-5 text-[#8E7AAE] transition-transform", showPurposePicker && "rotate-180")} />
+                  <ChevronDown className={cn("w-5 h-5 text-lilac transition-transform", showPurposePicker && "rotate-180")} />
                 </button>
                 <AnimatePresence initial={false}>
                   {showPurposePicker && (
@@ -364,7 +364,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                           <activeSceneTool.icon className={cn("w-7 h-7 md:w-8 md:h-8", iconTone(activeSceneTool.bgColor))} />
                         </div>
                         <div>
-                          <p className="text-xs font-black tracking-[0.24em] uppercase text-[#8E7AAE]">{language === 'ar' ? activeScene.eyebrow.ar : activeScene.eyebrow.en}</p>
+                          <p className="text-xs font-black tracking-[0.24em] uppercase text-lilac">{language === 'ar' ? activeScene.eyebrow.ar : activeScene.eyebrow.en}</p>
                           <h3 className="mt-1 text-2xl md:text-4xl font-black leading-tight text-navy">{language === 'ar' ? activeScene.title.ar : activeScene.title.en}</h3>
                           <p className="mt-3 text-sm md:text-base font-bold leading-relaxed text-ink-mute">{language === 'ar' ? activeScene.body.ar : activeScene.body.en}</p>
                         </div>
@@ -396,7 +396,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                         <p className="text-xs font-black tracking-[0.24em] uppercase text-ink-mute">{language === 'ar' ? 'تسلسل الجلسة' : 'Session sequence'}</p>
                         <h4 className="text-lg font-black text-navy">{language === 'ar' ? 'كل مرة باب واحد فقط' : 'One doorway at a time'}</h4>
                       </div>
-                      <Sparkles className="w-5 h-5 text-[#8E7AAE]" />
+                      <Sparkles className="w-5 h-5 text-lilac" />
                     </div>
                     <div className="space-y-2">
                       {decisionScenes.map((scene, index) => {
@@ -417,7 +417,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                               <sceneTool.icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-black text-[#8E7AAE]">{language === 'ar' ? scene.eyebrow.ar : scene.eyebrow.en}</p>
+                              <p className="text-xs font-black text-lilac">{language === 'ar' ? scene.eyebrow.ar : scene.eyebrow.en}</p>
                               <p className="text-sm font-black text-navy leading-snug md:truncate">{language === 'ar' ? scene.title.ar : scene.title.en}</p>
                             </div>
                           </button>

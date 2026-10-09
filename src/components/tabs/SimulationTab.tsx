@@ -233,7 +233,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                       }} className="group p-4 md:p-5 text-right bg-white border border-lilac-soft/25/80 rounded-[16px] hover:border-lilac hover:bg-lilac-mist transition-all cursor-pointer">
                         <div className="flex items-center justify-between font-bold">
                            <span className="text-sm md:text-lg text-ink-soft group-hover:text-lilac leading-relaxed">{decision.choice}</span>
-                           <Zap className="w-5 h-5 text-ink-mute group-hover:text-lilac-soft" />
+                           <Zap className="w-5 h-5 text-ink-mute group-hover:text-lilac" />
                         </div>
                       </button>
                     ))}

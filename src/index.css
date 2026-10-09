@@ -76,7 +76,7 @@
   --color-ivory: #f8f5ef;
   --color-navy: #182231;
   --color-ink-soft: #465568;
-  --color-ink-mute: #64788d;
+  --color-ink-mute: #586b80;
 
   --color-mood-primary: var(--mood-primary, #6366f1);
   --color-mood-secondary: var(--mood-secondary, #10b981);
@@ -1460,7 +1460,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   main
-    [class*="text-white"]:not([class*="bg-[#8E7AAE]"]):not([class*="bg-[#6E5B91]"]):not([class*="bg-lilac"]):not([class*="bg-navy"]):not(
+    [class*="text-white"]:not([class*="bg-[#8E7AAE]"]):not([class*="bg-[#6E5B91]"]):not([class*="bg-lilac"]):not([class*="bg-navy"]):not([class*="bg-[#6e5" i]):not(
       [class*="bg-rose"]
     ):not([class*="bg-emerald"]):not([class*="bg-amber"]):not(
       [class*="bg-blue"]
@@ -1947,7 +1947,7 @@ body.tebyan-focus-mode .tebyan-result-document {
 
   /* Lighten legacy dark sections, but never repaint text that sits on a
      deliberately dark surface — that turned dark buttons into blank slabs. */
-  main .text-white:not([class*="bg-["]):not([class*="bg-lilac"]):not([class*="bg-navy"]):not([class*="bg-zinc-9"]):not(
+  main .text-white:not([class*="bg-["]):not([class*="bg-lilac"]):not([class*="bg-navy"]):not([class*="bg-[#6e5" i]):not([class*="bg-zinc-9"]):not(
       [class*="bg-black"]
     ):not([class*="bg-slate-9"]):not([class*="bg-neutral-9"]):not(
       [class*="bg-mood-primary"]
@@ -2829,7 +2829,7 @@ body.tebyan-focus-mode .tebyan-result-document {
 /* Tebyan comprehensive visual pass: spacing, RTL clarity, icon contrast, and safer fixed chrome. */
 :root {
   --tebyan-ink: #182231;
-  --tebyan-muted: #64788d;
+  --tebyan-muted: #586b80;
   --tebyan-line: rgba(143, 169, 199, 0.18);
   --tebyan-soft: rgba(250, 249, 246, 0.92);
   --tebyan-lilac: #8e7aae;
@@ -4892,6 +4892,14 @@ main input:placeholder-shown {
 @media (min-width: 0px) {
   .tbn-result__body.tbn-story :is(p, li) { font-size: 1.25rem !important; line-height: 2.15 !important; }
 }
+/* Deliberately dark panels (Nebula): keep light text and translucent glass,
+   which the global "lighten dark sections" rules would otherwise repaint. */
+.tbn-dark .text-white { color: #fff !important; }
+.tbn-dark [class*="text-white/"] { color: rgba(255, 255, 255, 0.78) !important; }
+.tbn-dark .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1) !important; border-color: rgba(255, 255, 255, 0.16) !important; }
+.tbn-dark input[type="range"] { background-color: rgba(255, 255, 255, 0.25) !important; padding: 0 !important; }
+main .text-mood-primary:not([class*="bg-"]) { color: color-mix(in srgb, var(--mood-primary) 62%, #182231) !important; }
+.tbn-frame-text :is(p, li) { color: #4a3b2c !important; }
 @keyframes tbn-rise {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }

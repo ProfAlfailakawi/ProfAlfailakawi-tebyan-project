@@ -790,7 +790,7 @@ const ThoughtJourney = ({
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 border border-[#8E7AAE]/14 shadow-sm">
-            <Sparkles className="h-4 w-4 text-[#8E7AAE]" />
+            <Sparkles className="h-4 w-4 text-lilac" />
           </span>
           <div>
             <p className="text-xs font-black text-navy">
@@ -799,7 +799,7 @@ const ThoughtJourney = ({
             <p className="text-xs font-bold text-ink-mute">{moodLabel}</p>
           </div>
         </div>
-        <span className="text-xs font-black text-[#8E7AAE] bg-white/70 px-3 py-1 rounded-full border border-[#8E7AAE]/10">
+        <span className="text-xs font-black text-lilac bg-white/70 px-3 py-1 rounded-full border border-[#8E7AAE]/10">
           {language === "ar" ? "مسار معرفي" : "Cognitive path"}
         </span>
       </div>
@@ -3188,7 +3188,7 @@ export const SmartGateway: React.FC<
             dir={language === "ar" ? "rtl" : "ltr"}
           >
             {userName && userName !== "ضيف" && userName !== "New User" && (
-              <div className="tebyan-home-greeting mb-2 text-xs font-black text-[#8E7AAE] md:text-sm">
+              <div className="tebyan-home-greeting mb-2 text-xs font-black text-lilac md:text-sm">
                 {language === "ar"
                   ? `أهلاً بك يا ${userName}`
                   : `Welcome, ${userName}`}
@@ -3313,7 +3313,7 @@ export const SmartGateway: React.FC<
                   searchValue.trim().length > 0 && "tebyan-understanding-pulse",
                   showGateEcho && "tebyan-gate-arrival",
                   isFocused
-                    ? "ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95"
+                    ? "-translate-y-0.5 ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95"
                     : "bg-[#FAF9F6]/80",
                   getFluidStyles(),
                   getFluidAmbient(),
@@ -3529,7 +3529,7 @@ export const SmartGateway: React.FC<
                                         </span>
                                       </div>
                                     </div>
-                                    <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[#8E7AAE]/50 group-hover:text-[#8E7AAE] group-hover:-translate-x-0.5 transition-transform ${language === "ar" ? "" : "rotate-180"}`} />
+                                    <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[#8E7AAE]/50 group-hover:text-lilac group-hover:-translate-x-0.5 transition-transform ${language === "ar" ? "" : "rotate-180"}`} />
                                   </button>
                                 );
                               })}
@@ -3706,7 +3706,7 @@ export const SmartGateway: React.FC<
 
                       {showDirectTools && (
                         <div className="mt-3 space-y-2">
-                          <p className="px-1 text-xs font-black uppercase tracking-widest text-[#8E7AAE]">
+                          <p className="px-1 text-xs font-black uppercase tracking-widest text-lilac">
                             {language === "ar" ? "مسارات أخرى" : "Other paths"}
                           </p>
                           {[...secondarySuggestions, ...alternativeSuggestions]
@@ -3728,7 +3728,7 @@ export const SmartGateway: React.FC<
                                     </span>
                                   )}
                                 </span>
-                                <ArrowLeft className={cn("w-4 h-4 shrink-0 text-[#8E7AAE]", language !== "ar" && "rotate-180")} />
+                                <ArrowLeft className={cn("w-4 h-4 shrink-0 text-lilac", language !== "ar" && "rotate-180")} />
                               </button>
                             ))}
                         </div>
@@ -3845,7 +3845,7 @@ export const SmartGateway: React.FC<
 
                       {showDirectTools && (
                         <div className="mt-3 space-y-2">
-                          <p className="px-1 text-xs font-black uppercase tracking-widest text-[#8E7AAE]">
+                          <p className="px-1 text-xs font-black uppercase tracking-widest text-lilac">
                             {language === "ar" ? "مسارات أخرى" : "Other paths"}
                           </p>
                           {[...secondarySuggestions, ...alternativeSuggestions]
@@ -3867,7 +3867,7 @@ export const SmartGateway: React.FC<
                                     </span>
                                   )}
                                 </span>
-                                <ArrowLeft className={cn("w-4 h-4 shrink-0 text-[#8E7AAE]", language !== "ar" && "rotate-180")} />
+                                <ArrowLeft className={cn("w-4 h-4 shrink-0 text-lilac", language !== "ar" && "rotate-180")} />
                               </button>
                             ))}
                         </div>
@@ -3889,7 +3889,7 @@ export const SmartGateway: React.FC<
                         ? "لاحقاً إذا احتجت"
                         : "Later if needed"}
                     </span>
-                    <span className="text-xs font-bold text-[#8E7AAE]">
+                    <span className="text-xs font-bold text-lilac">
                       {language === "ar" ? "غرفة الغد" : "Tomorrow room"}
                     </span>
                   </summary>
@@ -3968,7 +3968,7 @@ export const SmartGateway: React.FC<
                         }}
                         className="min-h-11 max-w-full rounded-full border border-[#8FA9C7]/16 bg-white/80 px-4 py-2 text-[13px] font-black leading-6 text-ink-soft shadow-sm transition-colors hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E] active:scale-[0.98]"
                       >
-                        <span className="text-[#8E7AAE]">
+                        <span className="text-lilac">
                           {language === "ar" ? "مثال: " : "Example: "}
                         </span>
                         {example}

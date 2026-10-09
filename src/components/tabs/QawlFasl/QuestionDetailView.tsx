@@ -367,7 +367,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   </audio>
                 )}
                 {quickAudioError && (
-                  <button onClick={handleQuickAudio} className="mt-4 text-sm font-black text-[#8E7AAE] underline underline-offset-4">
+                  <button onClick={handleQuickAudio} className="mt-4 text-sm font-black text-lilac underline underline-offset-4">
                     إعادة المحاولة
                   </button>
                 )}

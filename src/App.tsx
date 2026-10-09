@@ -1435,7 +1435,7 @@ const AppContent: React.FC = () => {
 
         </div>
 
-        <div className="tebyan-header-actions flex items-center gap-1 pointer-events-auto">
+        <div className="tebyan-header-actions flex items-center gap-2 pointer-events-auto">
           {/* وسم البيئة التجريبية: صريح ودائم طوال الجلسة. من يُعرض عليه المنتج،
               أو من ينظر إلى الشاشة من بعيد، يجب أن يعرف بنظرة أن هذه ليست بيانات
               جهة حقيقية — ومعه زرّا إعادة التعيين والخروج. */}
@@ -1835,7 +1835,7 @@ const AppContent: React.FC = () => {
                 <React.Suspense
                   fallback={
                     <div className="min-h-[420px] bg-white flex items-center justify-center">
-                      <Loader2 className="h-6 w-6 animate-spin text-[#8E7AAE]" />
+                      <Loader2 className="h-6 w-6 animate-spin text-lilac" />
                     </div>
                   }
                 >
