@@ -27,7 +27,7 @@ interface ClientProfilePanelProps {
 
 const AVATARS = [
   { id: 'default', icon: UserIcon, label: 'الافتراضي', color: 'bg-slate-100 text-ink-mute' },
-  { id: 'owl', icon: Lightbulb, label: 'البومة (حكمة)', color: 'bg-indigo-100 text-[#6E5F8E]' },
+  { id: 'owl', icon: Lightbulb, label: 'البومة (حكمة)', color: 'bg-lilac-mist text-[#6E5F8E]' },
   { id: 'eagle', icon: Target, label: 'النسر (رؤية)', color: 'bg-amber-100 text-amber-600' },
   { id: 'lion', icon: Flame, label: 'الأسد (شجاعة)', color: 'bg-rose-100 text-rose-600' },
   { id: 'shield', icon: ShieldAlert, label: 'الدرع (حماية)', color: 'bg-emerald-100 text-emerald-600' },
@@ -574,7 +574,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                      {knowledgeTree && knowledgeTree.length > 0 ? (
                         <div className="space-y-4">
                             {knowledgeTree.slice(0, showAllLibrary ? undefined : 3).map((item, idx) => (
-                                <div key={item.id || idx} className="p-4 bg-white border border-[#8FA9C7]/15 rounded-xl shadow-sm hover:border-indigo-200 transition-colors">
+                                <div key={item.id || idx} className="p-4 bg-white border border-[#8FA9C7]/15 rounded-xl shadow-sm hover:border-lilac-soft transition-colors">
                                     <div className="flex items-start gap-3 w-full">
                                         <div className="p-2 bg-[#F1EEF4] rounded-lg text-[#8E7AAE] shrink-0 mt-1"><Bookmark size={14}/></div>
                                         <div className="flex-1 min-w-0">
@@ -607,7 +607,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                 </div>
                             ))}
                             {!showAllLibrary && knowledgeTree.length > 3 && (
-                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-[#6E5F8E] hover:text-indigo-800 font-bold py-3 bg-[#F1EEF4] rounded-xl transition-colors">
+                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-[#6E5F8E] hover:text-lilac-deep font-bold py-3 bg-[#F1EEF4] rounded-xl transition-colors">
                                     +{knowledgeTree.length - 3} أفكار وحالات أخرى - فتح الذاكرة كاملة
                                 </button>
                             )}
@@ -656,8 +656,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
                   
                   <div className="bg-[#F1EEF4] p-4 rounded-2xl border border-[#8E7AAE]/18">
-                    <p className="font-bold text-indigo-900 mb-2 flex items-center gap-2"><Fingerprint size={16}/> ماذا يعرف تبيان عني؟</p>
-                    <p className="text-sm text-indigo-700/80 leading-relaxed">
+                    <p className="font-bold text-lilac-deep mb-2 flex items-center gap-2"><Fingerprint size={16}/> ماذا يعرف تبيان عني؟</p>
+                    <p className="text-sm text-lilac/80 leading-relaxed">
                         ما تراه هنا مبني على أسئلتك المحفوظة على جهازك فقط. للتحكم بهذه البيانات أو محوها، افتح تبويب «إعدادات».
                     </p>
                   </div>
@@ -928,7 +928,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                     </div>
 
                     {/* Time Capsule */}
-                    <div className="bg-gradient-to-br from-indigo-900 to-slate-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-lg">
+                    <div className="bg-gradient-to-br from-lilac-deep to-slate-900 p-6 rounded-2xl text-white relative overflow-hidden shadow-lg">
                         <div className="absolute -right-10 -top-10 text-[#8E7AAE]/20"><Timer size={120} /></div>
                         <h4 className="font-bold text-lg mb-2 flex items-center gap-2 relative z-10"><Timer size={18} className="text-[#8E7AAE]"/> كبسولة الزمن للقرارات</h4>
                         <p className="text-xs text-ink-mute mb-4 leading-relaxed relative z-10">اكتب قراراً صعباً أو مشكلة تؤرقك اليوم، وسنقوم بتجميدها وإعادتها لك بعد أشهر لترى كيف عبرتها بنضج.</p>
@@ -939,21 +939,21 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     value={capsuleItem}
                                     onChange={(e) => setCapsuleItem(e.target.value)}
                                     placeholder="مثال: خائف جداً من ترك وظيفتي والبدء في مشروعي..."
-                                    className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-indigo-300/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none h-24"
+                                    className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-lilac-soft/50 focus:outline-none focus:ring-2 focus:ring-lilac resize-none h-24"
                                 />
                                 <div className="flex gap-2">
-                                    <button onClick={() => sealCapsule(3)} className="flex-1 py-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-sm font-bold transition-colors">تجميد لمدة 3 أشهر</button>
+                                    <button onClick={() => sealCapsule(3)} className="flex-1 py-2.5 bg-lilac hover:bg-lilac rounded-xl text-sm font-bold transition-colors">تجميد لمدة 3 أشهر</button>
                                     <button onClick={() => sealCapsule(12)} className="flex-1 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm font-bold transition-colors">تجميد لسنة</button>
                                 </div>
                             </div>
                         ) : (
                             <motion.div initial={{scale: 0.9, opacity:0}} animate={{scale:1, opacity:1}} className="relative z-10 bg-white/10 border border-white/20 p-4 rounded-xl text-center space-y-2">
-                                <div className="w-12 h-12 bg-indigo-500/30 rounded-full flex items-center justify-center mx-auto mb-2"><Moon size={24} className="text-indigo-300" /></div>
+                                <div className="w-12 h-12 bg-lilac/30 rounded-full flex items-center justify-center mx-auto mb-2"><Moon size={24} className="text-lilac-soft" /></div>
                                 <p className="font-bold text-sm">تم إغلاق الكبسولة بنجاح</p>
-                                <p className="text-xs text-indigo-200/80">
+                                <p className="text-xs text-lilac-soft/80">
                                   {capsuleDue ? `ستفتح في ${capsuleDue}. محفوظة على هذا الجهاز فقط.` : 'محفوظة على هذا الجهاز فقط.'}
                                 </p>
-                                <button onClick={() => { setIsCapsuled(false); setCapsuleItem(''); }} className="text-xs font-bold text-indigo-200/70 hover:text-white pt-1">كبسولة أخرى</button>
+                                <button onClick={() => { setIsCapsuled(false); setCapsuleItem(''); }} className="text-xs font-bold text-lilac-soft/70 hover:text-white pt-1">كبسولة أخرى</button>
                             </motion.div>
                         )}
                     </div>
@@ -1023,7 +1023,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     key={avatar.id}
                                     onClick={() => handleAvatarChange(avatar.id)}
                                     title={avatar.label}
-                                    className={`aspect-square rounded-xl flex items-center justify-center transition-all border-2 ${isSelected ? 'border-indigo-500 shadow-md scale-105' : 'border-transparent hover:bg-slate-100'} ${avatar.color}`}
+                                    className={`aspect-square rounded-xl flex items-center justify-center transition-all border-2 ${isSelected ? 'border-lilac shadow-md scale-105' : 'border-transparent hover:bg-slate-100'} ${avatar.color}`}
                                  >
                                      <avatar.icon size={20} />
                                  </button>

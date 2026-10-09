@@ -525,7 +525,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                 <>
                     <div className="mt-8 flex-1 flex flex-col justify-center">
                         <div className="text-center mb-6">
-                            <div className="inline-flex p-4 bg-indigo-500/20 rounded-full border border-indigo-500/20 mb-4 animate-pulse">
+                            <div className="inline-flex p-4 bg-lilac/20 rounded-full border border-lilac/20 mb-4 animate-pulse">
                                 <Beaker className="w-10 h-10 text-[#8E7AAE]" />
                             </div>
                             <h3 className="text-2xl font-black text-navy">

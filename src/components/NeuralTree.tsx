@@ -21,7 +21,7 @@ export const NeuralTree = ({ language }: { language: string }) => {
           y: Math.sin(angle) * distance,
           size: Math.random() * 8 + 4,
           delay: Math.random() * 2,
-          color: i % 3 === 0 ? 'bg-fuchsia-500' : (i % 2 === 0 ? 'bg-indigo-500' : 'bg-cyan-400')
+          color: i % 3 === 0 ? 'bg-lilac' : (i % 2 === 0 ? 'bg-lilac' : 'bg-cyan-400')
        });
     }
     return items;
@@ -60,7 +60,7 @@ export const NeuralTree = ({ language }: { language: string }) => {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="w-16 h-16 rounded-full bg-white blur-[20px] absolute z-10"
           />
-          <div className="w-12 h-12 rounded-full bg-indigo-500 z-20 border-[4px] border-white/20 shadow-[0_0_50px_rgba(99,102,241,0.8)]" />
+          <div className="w-12 h-12 rounded-full bg-lilac z-20 border-[4px] border-white/20 shadow-[0_0_50px_rgba(99,102,241,0.8)]" />
 
           {/* Branches */}
           {branches.map((branch) => (
@@ -105,7 +105,7 @@ export const NeuralTree = ({ language }: { language: string }) => {
        </div>
 
        {/* Ambient glow */}
-       <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/20 to-black pointer-events-none z-0" />
+       <div className="absolute inset-0 bg-gradient-to-t from-lilac-deep/20 to-black pointer-events-none z-0" />
     </div>
   );
 };

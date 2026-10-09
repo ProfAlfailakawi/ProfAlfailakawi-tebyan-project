@@ -441,7 +441,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     <input 
                       value={labInput} 
                       onChange={(e) => setLabInput(e.target.value)} 
-                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-indigo-200 outline-none transition-all placeholder:text-zinc-300" 
+                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-lilac-soft outline-none transition-all placeholder:text-zinc-300" 
                       placeholder={language === 'ar' ? "الفكرة الأولى (مثال: العدمية)..." : "Concept A..."} 
                     />
                     <div className="flex items-center justify-center -mx-2 z-10 hidden md:flex">
@@ -469,7 +469,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
                 className={cn(
                   "md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
-                  (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-indigo-600 to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 cursor-pointer"
+                  (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-lilac to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 cursor-pointer"
                 )}
               >
                 {isLoading ? (
@@ -809,13 +809,13 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      animate={{ scale: 1, opacity: 1 }}
                      className="bg-zinc-900 text-zinc-100 rounded-[32px] p-8 md:p-12 relative overflow-hidden shadow-2xl"
                   >
-                     <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-[100px]"></div>
+                     <div className="absolute top-0 right-0 w-64 h-64 bg-lilac/10 rounded-full blur-[100px]"></div>
                      <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/10 rounded-full blur-[100px]"></div>
                      <div className="relative z-10 flex flex-col items-center">
-                         <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.3)] flex items-center justify-center mb-10">
+                         <div className="w-20 h-20 bg-gradient-to-br from-lilac to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.3)] flex items-center justify-center mb-10">
                             <Zap className="w-10 h-10 text-white animate-pulse" />
                          </div>
-                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white [&_p]:!text-white [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_strong]:!text-indigo-300 [&_li]:!text-white/90">
+                         <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white [&_p]:!text-white [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_strong]:!text-lilac-soft [&_li]:!text-white/90">
                             <ReactMarkdown>{labColliderResult}</ReactMarkdown>
                          </div>
                      </div>
@@ -829,8 +829,8 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                         const val = labDesign[key];
                         const stepNames: Record<string, {ar: string, en: string, color: string}> = {
                           analysis: { ar: 'التحليل', en: 'Analysis', color: 'bg-blue-500' },
-                          design: { ar: 'التصميم', en: 'Design', color: 'bg-indigo-500' },
-                          development: { ar: 'التطوير', en: 'Development', color: 'bg-violet-500' },
+                          design: { ar: 'التصميم', en: 'Design', color: 'bg-lilac' },
+                          development: { ar: 'التطوير', en: 'Development', color: 'bg-lilac' },
                           implementation: { ar: 'التنفيذ', en: 'Implementation', color: 'bg-[#EEF4F1]0' },
                           evaluation: { ar: 'التقويم', en: 'Evaluation', color: 'bg-rose-500' }
                         };
@@ -896,14 +896,14 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          transition={{ delay: i * 0.1 }}
                          className="bg-white p-8 rounded-[24px] md:rounded-[32px] border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden"
                        >
-                          <div className="absolute top-0 left-0 w-full h-2 bg-indigo-500/10"></div>
+                          <div className="absolute top-0 left-0 w-full h-2 bg-lilac/10"></div>
                           <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-6">
-                             <div className="w-14 h-14 bg-indigo-100 rounded-[16px] flex items-center justify-center text-indigo-600 text-2xl font-bold">
+                             <div className="w-14 h-14 bg-lilac-mist rounded-[16px] flex items-center justify-center text-lilac text-2xl font-bold">
                                {p?.name?.[0] || 'S'}
                              </div>
                              <div>
                                <h4 className="text-xl font-bold text-navy">{p.name}</h4>
-                               <div className="text-xs font-bold text-indigo-400 uppercase tracking-widest">{p.learning_style}</div>
+                               <div className="text-xs font-bold text-lilac-soft uppercase tracking-widest">{p.learning_style}</div>
                              </div>
                           </div>
                           <div className="space-y-6">
@@ -911,9 +911,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                                 <div className="text-xs font-bold text-ink-mute uppercase mb-2">{language === 'ar' ? 'التحديات الرئيسية' : 'Key Challenges'}</div>
                                 <div className="text-sm font-bold text-[#3D4A5A]">{p.challenges}</div>
                              </div>
-                             <div className="bg-indigo-50/30 p-4 rounded-[16px] border border-indigo-100/30">
-                                <div className="text-xs font-bold text-indigo-400 uppercase mb-2">{language === 'ar' ? 'الاحتياجات الأساسية' : 'Core Needs'}</div>
-                                <div className="text-sm font-bold text-indigo-700 font-bold"><Target className="inline w-4 h-4 align-[-3px]" aria-hidden="true" /> {p.needs}</div>
+                             <div className="bg-lilac-mist/30 p-4 rounded-[16px] border border-lilac-mist/30">
+                                <div className="text-xs font-bold text-lilac-soft uppercase mb-2">{language === 'ar' ? 'الاحتياجات الأساسية' : 'Core Needs'}</div>
+                                <div className="text-sm font-bold text-lilac font-bold"><Target className="inline w-4 h-4 align-[-3px]" aria-hidden="true" /> {p.needs}</div>
                              </div>
                           </div>
                        </motion.div>
@@ -1059,7 +1059,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                           <h4 className="text-xl font-bold text-ink-mute uppercase tracking-widest mb-6"><Wrench className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /> {language === 'ar' ? 'الأدوات والمواد' : 'Materials & Tools'}</h4>
                           <div className="flex flex-wrap gap-3">
                              {labWorkshop?.materials?.map((mat: string, i: number) => (
-                               <span key={i} className="bg-indigo-50 text-indigo-700 px-6 py-3 rounded-[16px] font-bold text-sm border border-indigo-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                               <span key={i} className="bg-lilac-mist text-lilac px-6 py-3 rounded-[16px] font-bold text-sm border border-lilac-mist shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                                  {mat}
                                </span>
                              ))}

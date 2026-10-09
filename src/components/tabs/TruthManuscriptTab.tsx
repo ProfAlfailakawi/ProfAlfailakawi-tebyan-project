@@ -4,6 +4,7 @@ import { ScrollText, Sparkles, Wand2, RefreshCw, Eye, X, Mail } from 'lucide-rea
 import { cn } from '../../lib/utils';
 import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
 import ReactMarkdown from 'react-markdown';
+import { TebyanLoader } from '../ui/TebyanLoader';
 import { TabHeader } from '../TabHeader';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
@@ -293,7 +294,7 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="عن ماذا تبحث الحكمة؟"
-            className="flex-1 min-w-0 bg-white/50 border border-navy/10 rounded-xl px-4 py-3 placeholder-[#8A97A6] text-navy font-medium focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="flex-1 min-w-0 bg-white/50 border border-navy/10 rounded-xl px-4 py-3 placeholder-ink-mute text-navy font-medium focus:outline-none focus:ring-2 focus:ring-lilac/40"
          />
          <button type="submit" disabled={isLoading} className="shrink-0 bg-lilac hover:bg-lilac-deep text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all shadow-sm active:scale-95 disabled:opacity-50">
            {isLoading ? <RefreshCw className="w-5 h-5 animate-spin"/> : <Sparkles className="w-5 h-5" />}
@@ -301,12 +302,16 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
          </button>
       </form>
 
+      {!isLoading && !isRevealed && manuscriptContent && (
+        <p className="mb-3 text-center text-sm font-semibold text-ink-soft">امسح الغبار بإصبعك أو بالفأرة لتظهر الحكمة.</p>
+      )}
+
       {/* Manuscript Container */}
       <div className="flex-1 w-full relative group">
           {isLoading ? (
              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 bg-white rounded-[28px] border border-navy/10">
-                <RefreshCw className="w-12 h-12 text-lilac animate-spin mb-4" />
-                <p className="text-navy font-bold animate-pulse text-lg" style={{ fontFamily: 'Amiri, serif' }}>يتم استحضار الأرواح المعرفية...</p>
+                <TebyanLoader size={48} label="جاري التحميل" />
+                <p className="text-navy font-bold text-lg mt-4" style={{ fontFamily: 'Amiri, serif' }}>يتم استحضار الأرواح المعرفية...</p>
              </div>
           ) : (
              <div 

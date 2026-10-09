@@ -75,15 +75,15 @@ try {
 } catch (e) {}
 
 const TabFallback = () => (
-  <div className="w-full space-y-8 p-6 md:p-12 bg-white rounded-[24px] md:rounded-[32px] border border-zinc-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02)] animate-pulse">
+  <div role="status" aria-label="جارٍ التحميل" className="w-full space-y-8 p-6 md:p-12 bg-white rounded-[24px] md:rounded-[32px] border border-lilac-soft/20 shadow-[0_4px_24px_rgba(0,0,0,0.02)] motion-safe:animate-pulse">
     <div className="flex items-center gap-5">
-      <div className="w-14 h-14 bg-zinc-100 rounded-[16px]"></div>
-      <div className="w-64 h-8 bg-zinc-100 rounded-lg"></div>
+      <div className="w-14 h-14 bg-lilac-mist rounded-[16px]"></div>
+      <div className="w-64 h-8 bg-lilac-mist rounded-lg"></div>
     </div>
     <div className="space-y-4">
-      <div className="w-full h-16 bg-zinc-50 rounded-2xl"></div>
-      <div className="w-4/5 h-16 bg-zinc-50 rounded-2xl"></div>
-      <div className="w-full h-40 bg-zinc-50 rounded-2xl mt-12"></div>
+      <div className="w-full h-16 bg-lilac-mist/50 rounded-2xl"></div>
+      <div className="w-4/5 h-16 bg-lilac-mist/50 rounded-2xl"></div>
+      <div className="w-full h-40 bg-lilac-mist/50 rounded-2xl mt-12"></div>
     </div>
   </div>
 );

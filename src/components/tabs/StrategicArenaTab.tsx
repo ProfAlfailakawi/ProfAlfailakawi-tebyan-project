@@ -155,8 +155,8 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                               <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'الاستجابة للمتغيرات' : 'Responding to variables'}</p>
                            </PhysicsCard>
                            
-                           <PhysicsCard language={language} icon={Gamepad2} className="bottom-1/4 left-10 border-purple-200">
-                              <h4 className="font-black text-lg mb-2 text-purple-600">{language === 'ar' ? 'قواعد اللعبة' : 'Game Rules'}</h4>
+                           <PhysicsCard language={language} icon={Gamepad2} className="bottom-1/4 left-10 border-lilac-soft">
+                              <h4 className="font-black text-lg mb-2 text-lilac">{language === 'ar' ? 'قواعد اللعبة' : 'Game Rules'}</h4>
                               <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'تعديل سياسات العمل' : 'Adjusting work policies'}</p>
                            </PhysicsCard>
 

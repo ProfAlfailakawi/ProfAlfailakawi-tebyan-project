@@ -50,13 +50,13 @@ export default function UserMenu() {
         onClick={() => setIsOpen(!isOpen)}
         whileTap={{ scale: 0.95 }}
         title="القائمة الشخصية"
-        className="tour-menu-button flex items-center p-1.5 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all hover:bg-white"
+        className="tour-menu-button flex items-center p-1.5 bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200 focus:outline-none focus:ring-2 focus:ring-lilac/50 transition-all hover:bg-white"
       >
         <div className="relative">
           {profile.photoURL && savedAvatar === 'default' ? (
             <img src={profile.photoURL} alt={profile.displayName} className="w-9 h-9 rounded-xl object-cover border border-slate-100 shadow-sm" />
           ) : (
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-sm ${savedAvatar !== 'default' ? 'bg-indigo-50 border-indigo-100 text-indigo-500' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
+            <div className={`w-9 h-9 rounded-xl flex items-center justify-center border shadow-sm ${savedAvatar !== 'default' ? 'bg-lilac-mist border-lilac-mist text-lilac' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
               <UserIcon size={18} />
             </div>
           )}
@@ -76,16 +76,16 @@ export default function UserMenu() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full end-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-zinc-100 overflow-hidden z-50 flex flex-col"
+            className="absolute top-full end-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-lilac-soft/20 overflow-hidden z-50 flex flex-col"
           >
             {/* Header */}
-            <div className="px-4 py-2 border-b border-zinc-50 bg-zinc-50/50">
+            <div className="px-4 py-2 border-b border-lilac-soft/15 bg-ivory">
               {!profile.email && (
                 <div className="mt-3 flex flex-col gap-2">
                     <input 
                         type="email"
                         placeholder="أدخل بريدك الإلكتروني"
-                        className="text-xs p-2 rounded-lg border border-zinc-200 outline-none focus:ring-1 focus:ring-indigo-500"
+                        className="text-xs p-2 rounded-lg border border-lilac-soft/30 outline-none focus:ring-1 focus:ring-lilac"
                         onBlur={async (e) => {
                             if(e.target.value.includes('@')) {
                                 try {
@@ -99,7 +99,7 @@ export default function UserMenu() {
                             }
                         }}
                     />
-                    <p className="text-xs text-amber-600 font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
+                    <p className="text-xs text-[#9A6042] font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
                 </div>
               )}
             </div>
@@ -110,9 +110,9 @@ export default function UserMenu() {
                   setIsOpen(false);
                   setIsProfileOpen(true);
                 }}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-indigo-700 hover:bg-indigo-50 transition-colors w-full text-start group"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-lilac hover:bg-lilac-mist transition-colors w-full text-start group"
               >
-                <UserCircle size={16} className="text-indigo-500 shrink-0" />
+                <UserCircle size={16} className="text-lilac shrink-0" />
                 <span className="text-sm font-bold flex-1">حسابي</span>
               </button>
 
@@ -122,9 +122,9 @@ export default function UserMenu() {
                     setIsOpen(false);
                     navigate('/admin');
                   }}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-zinc-700 hover:bg-zinc-100 hover:text-zinc-900 transition-colors w-full text-start"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-ink-soft hover:bg-lilac-mist hover:text-navy transition-colors w-full text-start"
                 >
-                  <LayoutDashboard size={16} className="text-indigo-500 shrink-0" />
+                  <LayoutDashboard size={16} className="text-lilac shrink-0" />
                   <span className="text-sm font-bold flex-1">لوحة التحكم</span>
                 </button>
               )}
@@ -155,9 +155,9 @@ export default function UserMenu() {
                   if (IS_DEMO_MODE) { exitDemoMode(); return; }
                   auth.signOut();
                 }}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-zinc-600 hover:bg-rose-50 hover:text-rose-600 transition-colors w-full text-start group"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-ink-soft hover:bg-rose-50 hover:text-rose-600 transition-colors w-full text-start group"
               >
-                <LogOut size={16} className="group-hover:text-rose-600 text-zinc-400 transition-colors shrink-0" />
+                <LogOut size={16} className="group-hover:text-rose-600 text-ink-mute transition-colors shrink-0" />
                 <span className="text-sm font-bold flex-1">تسجيل الخروج</span>
               </button>
             </div>

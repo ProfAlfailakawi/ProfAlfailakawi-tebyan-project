@@ -135,8 +135,8 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                 <div className={cn(
                     "relative w-10 h-10 md:w-14 md:h-14 rounded-full shrink-0 hidden md:flex items-center justify-center shadow-sm border-2 z-10 transition-transform group-hover:scale-105",
                     node.type === 'seed' ? "bg-mood-primary/10 border-mood-primary/20 text-mood-primary shadow-mood-glow" :
-                    node.type === 'branch' ? "bg-mood-secondary/10 border-mood-secondary/20 text-mood-secondary shadow-indigo-500/10" :
-                    "bg-mood-secondary/5 border-mood-secondary/10 text-mood-secondary shadow-indigo-500/5 transition-opacity"
+                    node.type === 'branch' ? "bg-mood-secondary/10 border-mood-secondary/20 text-mood-secondary shadow-lilac/10" :
+                    "bg-mood-secondary/5 border-mood-secondary/10 text-mood-secondary shadow-lilac/5 transition-opacity"
                 )}>
                     {node.type === 'seed' && <div className="absolute inset-0 rounded-full animate-ping bg-mood-primary opacity-20" />}
                     {node.type === 'seed' ? <Globe className="w-5 h-5 md:w-6 md:h-6" /> : 
@@ -474,8 +474,8 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             } else {
                 ranks[uid] = { 
                     rank: language === 'ar' ? 'زارع بذور' : 'Seed Sower', 
-                    aura: "ring-1 ring-indigo-200",
-                    color: "text-indigo-500"
+                    aura: "ring-1 ring-lilac-soft",
+                    color: "text-lilac"
                 };
             }
         });
@@ -852,7 +852,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             {/* Soft ambient background */}
             <div className="fixed inset-0 bg-[#F7F5F2] z-[-2]" />
             <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wMikiLz48L3N2Zz4=')] opacity-50 z-[-1] pointer-events-none" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-b from-indigo-100/50 to-transparent blur-[120px] pointer-events-none z-[-1]" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-gradient-to-b from-lilac-mist/50 to-transparent blur-[120px] pointer-events-none z-[-1]" />
             
             {/* Back to top tool (visible on scroll) */}
             {showBackToTop && (
@@ -1003,14 +1003,14 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             >
                                 <Lock className={cn("w-3.5 h-3.5", isTimeCapsule ? "fill-current" : "")} />
                                 <div className="flex flex-col items-start leading-none">
-                                    <span className="font-black underline decoration-indigo-200 decoration-2 underline-offset-2">
+                                    <span className="font-black underline decoration-lilac-soft decoration-2 underline-offset-2">
                                         {language === 'ar' ? 'كبسولة زمنية' : 'Time Capsule'}
                                     </span>
                                     {isTimeCapsule && (
                                         <motion.span 
                                             initial={{ opacity: 0, x: -5 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            className="text-xs mt-1 text-indigo-400"
+                                            className="text-xs mt-1 text-lilac-soft"
                                         >
                                             {language === 'ar' ? 'ستبقى "مُشفرة" حتى يكتمل نضجها بالمطورين' : 'Will stay "Encrypted" until it matures'}
                                         </motion.span>
@@ -1101,13 +1101,13 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             <input 
                                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                                 placeholder={language === 'ar' ? 'ابحث في العقول...' : 'Search in minds...'} 
-                                className={cn("w-full bg-[#FAF9F6]/88 border border-[#8FA9C7]/25 px-4 py-3 rounded-full text-sm font-medium shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all", language === 'ar' ? "pr-10" : "pl-10")} 
+                                className={cn("w-full bg-[#FAF9F6]/88 border border-[#8FA9C7]/25 px-4 py-3 rounded-full text-sm font-medium shadow-sm focus:ring-2 focus:ring-lilac outline-none transition-all", language === 'ar' ? "pr-10" : "pl-10")} 
                             />
                         </div>
                         <div className="flex gap-2 items-center flex-wrap">
                             <button 
                                 onClick={() => setFilterMyIdeas(!filterMyIdeas)}
-                                className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", filterMyIdeas ? "bg-indigo-600 text-white" : "bg-zinc-200 text-[#3D4A5A]")}
+                                className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", filterMyIdeas ? "bg-lilac text-white" : "bg-zinc-200 text-[#3D4A5A]")}
                             >
                                 {language === 'ar' ? 'أفكاري فقط' : 'My ideas only'}
                             </button>

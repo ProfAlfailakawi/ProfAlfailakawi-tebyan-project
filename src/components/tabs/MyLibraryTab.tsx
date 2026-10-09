@@ -213,7 +213,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
 
                             const typeLabels: Record<string, { ar: string, color: string }> = {
                                 'qawlfasl': { ar: 'قول فصل', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                                'oracle': { ar: 'المستشار الكلي', color: 'bg-indigo-50 text-indigo-600 border-indigo-100' },
+                                'oracle': { ar: 'المستشار الكلي', color: 'bg-lilac-mist text-lilac border-lilac-mist' },
                                 'concept': { ar: 'هندسة الأفكار', color: 'bg-amber-50 text-amber-600 border-amber-100' },
                                 'roadmap': { ar: 'طريق النجاح', color: 'bg-rose-50 text-rose-600 border-rose-100' },
                                 'text': { ar: 'نص', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' },
