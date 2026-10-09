@@ -5001,3 +5001,7 @@ main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-
     }
   }
 }
+
+/* The gateway container already shows a ring while focused; the textarea's own
+   outline was clipped by the container's overflow and read as stray corners. */
+.tour-search-input textarea:focus-visible { outline: none; }
