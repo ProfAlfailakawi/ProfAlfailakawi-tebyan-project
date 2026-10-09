@@ -4889,6 +4889,9 @@ main input:placeholder-shown {
   border: 0;
   color: var(--color-navy);
 }
+@media (min-width: 0px) {
+  .tbn-result__body.tbn-story :is(p, li) { font-size: 1.25rem !important; line-height: 2.15 !important; }
+}
 @keyframes tbn-rise {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
@@ -4970,4 +4973,8 @@ main input:placeholder-shown {
   .tbn-timeline-rail-v { transform-origin: top; animation: tbn-draw-line 1.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tbn-roadmap-line { transform-origin: top; animation: tbn-draw-line 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
 }

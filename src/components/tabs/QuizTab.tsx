@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { getGenderWord } from '../../utils/genderHelper';
 import ReactMarkdown from 'react-markdown';
+import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { TabHeader } from '../TabHeader';
 import { DnaRing } from '../dna/DnaKit';
 
@@ -92,7 +93,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
        onClose={() => handleTabChange('discover', '', true)}
      />
      <div 
-        className="bg-white rounded-[32px] p-8 border border-zinc-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 relative overflow-hidden"
+        className="bg-white rounded-[32px] p-5 md:p-8 border border-lilac-soft/25 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 relative overflow-hidden"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             if (isFinished) reset();
@@ -106,14 +107,11 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
             animate={{ opacity: 1 }}
             className="flex flex-col items-center justify-center space-y-6 py-20"
           >
-            <div className="relative">
-              <div className="w-20 h-20 border-8 border-zinc-100 rounded-full"></div>
-              <RefreshCw className="w-20 h-20 text-emerald-600 animate-spin absolute top-0 left-0" />
-            </div>
-            <div className="text-2xl md:text-3xl font-bold text-[#182231] text-center">
+            <TebyanLoader size={48} label={language === 'ar' ? 'جاري إعداد الاختبار' : 'Preparing the quiz'} />
+            <div className="font-serif text-2xl md:text-3xl font-bold text-[#182231] text-center">
               {language === 'ar' ? 'جاري تأسيس الاختبار...' : 'Generating quiz...'}
             </div>
-            <div className="px-8 py-3 bg-emerald-50 text-emerald-700 rounded-full font-bold animate-pulse">
+            <div className="px-6 py-3 bg-lilac-mist text-[#465568] rounded-full font-semibold text-center">
               {language === 'ar' ? getGenderWord(userGender, 'نحن نعد لك أسئلة مخصصة لتقييم فهمك', 'نحن نعد لكِ أسئلة مخصصة لتقييم فهمكِ', 'نحن نعد أسئلة مخصصة لتقييم فهمك') : 'We are preparing custom questions to assess your understanding'}
             </div>
           </motion.div>
@@ -121,7 +119,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
           <>
             {!questions.length ? (
               <div className="space-y-4">
-                <p className="text-zinc-500 font-bold">{language === 'ar' ? 'أدخل الموضوع الذي جئت من أجله لإنشاء الاختبار المخصص لك:' : 'Enter the topic you came for to create your custom quiz:'}</p>
+                <p className="text-[#465568] font-bold">{language === 'ar' ? 'أدخل الموضوع الذي جئت من أجله لإنشاء الاختبار المخصص لك:' : 'Enter the topic you came for to create your custom quiz:'}</p>
 <DemoStarters tab="quiz" language={language} onPick={setQuizTopic} className="mb-3" />
                 <input 
                   value={quizTopic} 
@@ -140,14 +138,14 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 >
                   {isLoading ? (
                     <>
-                      <RefreshCw className="w-6 h-6 animate-spin" />
+                      <TebyanButtonLoader className="text-current" />
                       <span>{language === 'ar' ? 'جاري التأسيس...' : 'Generating...'}</span>
                     </>
                   ) : (
                     <span>{language === 'ar' ? 'ابدأ تأسيس الاختبار الآن' : 'Start Quiz Generation'}</span>
                   )}
                 </button>
-                {error && <div className="text-rose-500 font-bold">{error}</div>}
+                {error && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-rose-700 font-bold">{error}</div>}
               </div>
             ) : isFinished ? (
               <motion.div 
@@ -168,7 +166,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                 </div>
                 <div className="space-y-2">
                    <h3 className="text-3xl md:text-4xl font-bold text-[#182231]">{language === 'ar' ? 'اكتمل الاختبار!' : 'Quiz Completed!'}</h3>
-                   <p className="text-xl font-bold text-zinc-500">
+                   <p className="text-xl font-bold text-[#465568]">
                      {language === 'ar' ? `نتيجتك النهائية: ${score} من ${questions.length}` : `Your final score: ${score} out of ${questions.length}`}
                    </p>
                 </div>
@@ -183,11 +181,12 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
               </motion.div>
             ) : (
               <div className="space-y-8">
-                <div className="flex justify-between items-center bg-zinc-50 p-4 rounded-[16px]">
+                <div className="bg-ivory p-4 rounded-[16px] space-y-3">
+                <div className="flex justify-between items-center">
                   <div className="space-x-4">
-                    <span className="font-bold text-emerald-700">{language === 'ar' ? `السؤال ${currentQuestionIndex + 1} من ${questions.length}` : `Question ${currentQuestionIndex + 1} of ${questions.length}`}</span>
-                    <span className="text-zinc-400 font-bold ml-4">|</span>
-                    <span className="text-zinc-500 font-bold ml-4">{language === 'ar' ? `النتيجة: ${score}` : `Score: ${score}`}</span>
+                    <span className="font-bold text-lilac">{language === 'ar' ? `السؤال ${currentQuestionIndex + 1} من ${questions.length}` : `Question ${currentQuestionIndex + 1} of ${questions.length}`}</span>
+                    <span className="text-[#8A97A6] font-bold ml-4">|</span>
+                    <span className="text-[#465568] font-bold ml-4">{language === 'ar' ? `النتيجة: ${score}` : `Score: ${score}`}</span>
                   </div>
                   <button 
                     onClick={reset} 
@@ -197,9 +196,13 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                     {language === 'ar' ? 'خروج' : 'Exit'}
                   </button>
                 </div>
+                <div role="progressbar" aria-valuemin={0} aria-valuemax={questions.length} aria-valuenow={currentQuestionIndex + (showFeedback ? 1 : 0)} aria-label={language === 'ar' ? 'تقدّم الاختبار' : 'Quiz progress'} className="h-2 w-full overflow-hidden rounded-full bg-lilac-soft/20">
+                  <div className="h-full rounded-full bg-lilac transition-[width] duration-500 ease-out" style={{ width: `${((currentQuestionIndex + (showFeedback ? 1 : 0)) / questions.length) * 100}%` }} />
+                </div>
+                </div>
                 
-                <div className="p-8 border-2 border-zinc-200/80 rounded-[24px] md:rounded-[32px] space-y-6">
-                  <h3 className="text-2xl font-bold text-zinc-800 leading-tight">{questions[currentQuestionIndex].question}</h3>
+                <div className="p-8 border-2 border-lilac-soft/25 rounded-[24px] md:rounded-[32px] space-y-6">
+                  <h3 className="font-serif text-2xl md:text-3xl font-bold text-[#182231] leading-snug">{questions[currentQuestionIndex].question}</h3>
                   
                   <div className="grid gap-3">
                     {questions[currentQuestionIndex].options?.map((opt: string, i: number) => {
@@ -214,8 +217,8 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                           title={language === 'ar' ? 'اختيار هذه الإجابة' : 'Select this answer'}
                           className={cn(
                             "p-5 text-right rounded-[16px] border-2 font-bold transition-all flex justify-between items-center",
-                            !showFeedback && "bg-white border-zinc-100 hover:border-emerald-500 hover:bg-emerald-50 cursor-pointer",
-                            showFeedback && isCorrect && "bg-emerald-50 border-emerald-500 text-emerald-700",
+                            !showFeedback && "bg-white border-lilac-soft/20 hover:border-lilac hover:bg-lilac-mist/60 cursor-pointer",
+                            showFeedback && isCorrect && "tbn-pop bg-emerald-50 border-emerald-500 text-emerald-800",
                             showFeedback && isSelected && !isCorrect && "bg-red-50 border-red-500 text-red-700",
                             showFeedback && !isSelected && !isCorrect && "opacity-50 border-zinc-100 bg-zinc-50 cursor-default"
                           )}
@@ -256,7 +259,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
                       "flex-1 py-5 rounded-[16px] font-bold text-xl transition-all shadow-lg",
                       showFeedback 
                         ? "bg-[#6E5B91] text-white cursor-pointer hover:bg-[#5F4E7F]" 
-                        : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
+                        : "bg-lilac-mist text-[#64788D] cursor-not-allowed"
                     )}
                   >
                     {currentQuestionIndex === questions.length - 1 ? (language === 'ar' ? 'عرض النتيجة النهائية' : 'Show Final Results') : (language === 'ar' ? 'السؤال التالي' : 'Next Question')}
