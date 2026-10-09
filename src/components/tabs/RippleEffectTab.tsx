@@ -183,7 +183,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                             )}
                                         </div>
                                         {userRank && (
-                                            <span className={cn("text-xs font-semibold opacity-80", userRank.color)}>
+                                            <span className={cn("text-xs font-semibold", userRank.color)}>
                                                 {userRank.rank}
                                             </span>
                                         )}
