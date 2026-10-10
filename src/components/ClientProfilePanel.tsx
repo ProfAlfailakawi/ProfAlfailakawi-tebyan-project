@@ -8,7 +8,8 @@ import {
   ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle,
   LibraryBig, Network, CircleHelp
 } from 'lucide-react';
-import { DnaIconTile, DnaRing } from './dna/DnaKit';
+import { DnaIconTile, DnaRing, DnaStepper } from './dna/DnaKit';
+import { levels } from '../constants/gamification';
 import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
 import { useUser } from '../contexts/UserContext';
@@ -546,6 +547,27 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             <div className="w-12 h-12 rounded-full border-4 border-[#8E7AAE]/18 flex items-center justify-center text-[#6E5F8E] font-black bg-white">
                               {sageProgress.level.charAt(0).toUpperCase()}
                             </div>
+                          </div>
+                          {/* Level ladder: stations below the current level are done, the level reached by
+                              the real points is current, the rest stay pending. Points live on this device. */}
+                          <div className="mt-4">
+                            <DnaStepper
+                              size="sm"
+                              reveal
+                              playKey="profile-level-ladder"
+                              ariaLabel={language === 'ar' ? 'سُلّم المستويات' : 'Level ladder'}
+                              steps={levels.map((l, i) => {
+                                const reached = levels.reduce((n, lv, j) => (sageProgress.points >= lv.min ? j : n), 0);
+                                return {
+                                  key: l.id,
+                                  label: language === 'ar' ? l.ar : l.en,
+                                  state: i < reached ? 'done' : i === reached ? 'current' : 'pending',
+                                } as const;
+                              })}
+                            />
+                            <p className="mt-2 text-center text-[11px] font-bold text-ink-mute">
+                              {language === 'ar' ? 'نقاط محفوظة على هذا الجهاز فقط' : 'Points are stored on this device only'}
+                            </p>
                           </div>
                         </div>
                       </div>
