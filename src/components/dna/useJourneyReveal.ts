@@ -53,6 +53,9 @@ const markPlayed = (key: string) => {
   }
 };
 
+/** Identity of the entity a reveal belongs to; keyless steppers share one per-mount slot. */
+export const journeySlot = (key: string | null) => (key == null ? '\u0000none' : `k:${key}`);
+
 export const journeyStepMs = (count: number) =>
   Math.min(750, Math.max(350, Math.round(4000 / Math.max(1, count))));
 
@@ -89,17 +92,19 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
   const targetRef = React.useRef(target);
   targetRef.current = target;
   // Once per mount: later re-renders (live / polled data) must never replay the intro.
-  const doneRef = React.useRef(false);
+  // Which entity (playKey) already settled on this mount; a different key arms a fresh intro.
+  const doneRef = React.useRef<string | null>(null);
   const step = stepMs ?? journeyStepMs(count);
   const key = playKey == null || playKey === '' ? null : String(playKey);
   const hasTarget = target > 0;
+  const slot = journeySlot(key);
 
   useIsoLayoutEffect(() => {
-    // `doneRef` is per mount: later re-renders (live / polled data) never replay the intro.
-    if (!enabled || hold || doneRef.current || !hasTarget) return;
+    // Later re-renders (live / polled data) never replay the intro for the same key.
+    if (!enabled || hold || doneRef.current === slot || !hasTarget) return;
     if (typeof IntersectionObserver === 'undefined' || prefersReducedMotion()) return;
     if (key && hasPlayed(key)) {
-      doneRef.current = true;
+      doneRef.current = slot;
       return;
     }
     const el = ref.current;
@@ -112,7 +117,7 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
       window.clearInterval(interval);
       timers.push(
         window.setTimeout(() => {
-          doneRef.current = true;
+          doneRef.current = slot;
           setLit(null);
         }, SETTLE_MS),
       );
@@ -167,10 +172,10 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
       window.clearTimeout(fallback);
       window.clearInterval(interval);
       // Interrupted before settling (unmount, strict-mode double effect): never leave lit stuck.
-      if (!doneRef.current) setLit(null);
+      if (doneRef.current !== slot) setLit(null);
     };
     // `target` itself is read through a ref so live data never restarts the intro.
-  }, [enabled, hold, key, step, threshold, hasTarget]);
+  }, [enabled, hold, key, slot, step, threshold, hasTarget]);
 
   return { ref, lit };
 }

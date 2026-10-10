@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { journeyStepMs, effectiveThreshold } from '../src/components/dna/useJourneyReveal';
+import { journeyStepMs, effectiveThreshold, journeySlot } from '../src/components/dna/useJourneyReveal';
 
 test('journeyStepMs clamps to 350..750 and caps the total near 4s', () => {
   assert.equal(journeyStepMs(2), 750);
@@ -21,6 +21,13 @@ test('journey mode never loops the halo: its current-node rule replaces the base
   const css = readFileSync(new URL('../src/components/dna/dna.css', import.meta.url), 'utf8');
   const rule = css.match(/\.dna-steps\[data-journey\] \.dna-stepi\[data-state='current'\] \.dna-node \{[^}]*\}/);
   assert.ok(rule, 'journey current rule exists');
-  assert.match(rule![0], /animation: dna-journey-pulse [^;]* 1;/);
-  assert.doesNotMatch(rule![0], /infinite/);
+  assert.match(rule![0], /animation: none;/);
+  assert.doesNotMatch(css, /dna-journey-pulse[^;]*infinite/);
+  assert.match(css, /\[data-journey\]\[data-reveal\] \.dna-stepi\[data-just\]\[data-state='current'\] \.dna-node/);
+});
+
+test('journeySlot distinguishes entities so a reused stepper re-arms for a new playKey', () => {
+  assert.notEqual(journeySlot('review:1'), journeySlot('review:2'));
+  assert.notEqual(journeySlot(null), journeySlot('review:1'));
+  assert.equal(journeySlot('a'), journeySlot('a'));
 });
