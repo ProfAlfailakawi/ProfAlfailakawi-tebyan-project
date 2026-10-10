@@ -1,0 +1,23 @@
+name: TEMP deploy test (preview channel)
+on:
+  push:
+    branches: [claude/actions-deploy]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions: { contents: read, id-token: write }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/604777946510/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: github-deploy@tebyan-clean-2026.iam.gserviceaccount.com
+      - run: npx -y firebase-tools@15 hosting:channel:deploy actions-test --expires 1h --project=tebyan-clean-2026 --non-interactive --json > out.json; cat out.json | head -c 600
+      - run: |
+          url=$(jq -r '.result[].url' out.json | head -1); want=$(jq -r .build dist/build-id.json)
+          got=$(curl -fsS "$url/build-id.json?t=$(date +%s)" | jq -r .build)
+          echo "channel=$url want=$want got=$got"; [ "$got" = "$want" ]

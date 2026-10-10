@@ -1,7 +1,10 @@
 name: فحص تبيان — قبل النشر
 
-# النشر يتم عبر Cloud Build، وكان يمضي دون فحصٍ للأنواع. هذا الفحص
-# يمسك الكسر في GitHub قبل أن يصل الموقع الحيّ.
+# الفحص ثم النشر في مكان واحد: لا يُنشر إلى الموقع الحيّ إلا ما اجتاز الفحص.
+# كان النشر في Cloud Build عبر تطبيق Google Cloud Build على GitHub، والتطبيق
+# نفسه يغذّي مشغّلاً قديماً في مشروع معلَّق (gen-lang-client-0579828362) لا
+# يمكن إطفاؤه، فيترك على كل التزام فحصاً «Queued» إلى الأبد. النشر من هنا
+# يسمح بإخراج المستودع من ذلك التطبيق نهائياً.
 on:
   push:
     branches: [main]
@@ -37,5 +40,61 @@ jobs:
       - name: فحص الأنواع
         run: npm run lint
 
+      # GITHUB_SHA يُكتب في dist/build-id.json (scripts/build-stamp.mjs)،
+      # فيُعرف أي التزام على الموقع الحيّ.
       - name: البناء
         run: npm run build
+
+      - name: حفظ البناء للنشر
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          include-hidden-files: true
+          retention-days: 1
+
+  deploy:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # الدخول بلا مفتاح (Workload Identity): GitHub يثبت هوية المستودع والفرع
+    # لـ Google، ولا يُخزَّن أي سرّ في المستودع.
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: tebyan-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/604777946510/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: github-deploy@tebyan-clean-2026.iam.gserviceaccount.com
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: النشر إلى Firebase Hosting
+        run: npx -y firebase-tools@15 deploy --project=tebyan-clean-2026 --only hosting --non-interactive
+
+      # نشرٌ «ناجح» لا يراه الزوار يجب أن يفشل.
+      - name: الموقع الحيّ يقدّم هذا البناء
+        run: |
+          want=$(jq -r .build dist/build-id.json)
+          for i in $(seq 1 10); do
+            got=$(curl -fsS "https://tebyan-clean-2026.web.app/build-id.json?t=$(date +%s)" | jq -r .build || true)
+            if [ "$got" = "$want" ]; then echo "Live: $got"; exit 0; fi
+            echo "Waiting for live build ($got != $want)"; sleep 6
+          done
+          echo "::error::Deploy finished but the live site is not serving build $want"
+          exit 1
