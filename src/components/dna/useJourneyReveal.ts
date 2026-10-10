@@ -145,7 +145,9 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
       );
     };
     let fallback: number | undefined;
-    const need = effectiveThreshold(threshold, el.getBoundingClientRect().height, window.innerHeight);
+    // Measured lazily (in the observer callback): reading layout here would force a style pass on
+    // the not-yet-armed final state and play a shrink transition before the first paint.
+    const getNeed = () => effectiveThreshold(threshold, el.getBoundingClientRect().height, window.innerHeight);
     const start = () => {
       window.clearTimeout(fallback);
       io.disconnect();
@@ -181,7 +183,7 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
         if (!e.isIntersecting) {
           window.clearTimeout(fallback);
           fallback = undefined;
-        } else if (e.intersectionRatio >= need - 0.01) {
+        } else if (e.intersectionRatio >= getNeed() - 0.01) {
           start();
         } else if (fallback === undefined) {
           // visible but clipped below the threshold (overflow, split screen): never stay hidden
@@ -194,7 +196,7 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
           }, VISIBLE_FALLBACK_MS);
         }
       },
-      { threshold: [0, need] },
+      { threshold: Array.from({ length: 21 }, (_, i) => i / 20) },
     );
     io.observe(el);
 
