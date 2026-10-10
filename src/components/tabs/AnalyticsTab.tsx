@@ -109,13 +109,13 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                  initial={{ opacity: 0, y: 10 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-1 flex-col items-start gap-2 min-[360px]:flex-row min-[360px]:items-center min-[360px]:gap-2.5 min-w-0"
+                 className="tebyan-stat-card px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-1 flex-col items-start gap-2 min-[430px]:flex-row min-[430px]:items-center min-[430px]:gap-2.5 min-w-0"
                >
-                  <div className="w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center">
+                  <div className="tebyan-icon-tile w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center">
                      <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[#6e5f8e]" strokeWidth={1.5} />
                   </div>
-                  <div className="min-w-0 w-full min-[360px]:w-auto flex-1">
-                      <div className="text-2xl md:text-3xl font-bold leading-none text-navy">{stat.value}</div>
+                  <div className="min-w-0 w-full min-[430px]:w-auto flex-1">
+                      <div className="tebyan-numeral text-3xl md:text-4xl font-extrabold leading-none text-navy">{stat.value}</div>
                       <div className="mt-1 text-zinc-500 font-bold text-xs md:text-sm truncate">{stat.label}</div>
                       <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-start gap-1 text-xs md:text-xs leading-snug">
                         <TrendingUp className="w-3 h-3 shrink-0 mt-0.5" />

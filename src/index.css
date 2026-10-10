@@ -5028,3 +5028,15 @@ main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-
   outline: 2px solid rgba(110, 91, 145, 0.55);
   outline-offset: 3px;
 }
+
+/* --- Depth pass: gradient tiles, display numerals, short entrance ---------- */
+.tebyan-stat-card {
+  background-image: linear-gradient(155deg, rgba(142, 122, 174, 0.12) 0%, rgba(143, 169, 199, 0.07) 45%, rgba(255, 255, 255, 0.6) 100%);
+  box-shadow: 0 10px 26px rgba(110, 95, 142, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+.tebyan-icon-tile,
+.tebyan-tab-header .tebyan-tab-header__icon {
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(142, 122, 174, 0.18));
+  box-shadow: 0 6px 16px rgba(110, 95, 142, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.tebyan-numeral { font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.01em; }
