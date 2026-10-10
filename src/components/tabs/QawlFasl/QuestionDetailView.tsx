@@ -341,6 +341,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   size="sm"
                   ariaLabel="مراحل مراجعة الجواب"
                   steps={reviewSteps}
+                  reveal
+                  playKey={`review:${question.id}`}
                 />
               </DnaStatusHeader>
               <DnaHubMap
@@ -526,7 +528,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               {question.practicalSteps.length > 0 && (
                 <div className="mb-6">
                   <DnaStepper
-                    size="sm"
+                    size={question.practicalSteps.length > 7 ? 'xs' : 'sm'}
+                    journey
                     showLabels={false}
                     ariaLabel="تقدّمك في الخطوات"
                     steps={question.practicalSteps.map((_, idx) => {

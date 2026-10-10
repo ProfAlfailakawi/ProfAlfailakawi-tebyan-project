@@ -5,6 +5,7 @@ import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { DnaStepper } from '../dna/DnaKit';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 
 export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
@@ -110,6 +111,22 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
            </motion.div>
          ) : timeMachineData && (
            <div id="time-machine-results" role="region" aria-label={language === 'ar' ? 'رحلة عبر العصور' : 'Journey through the ages'} className="space-y-12 animate-in fade-in duration-700">
+           {(timeMachineData.eras?.length ?? 0) > 1 && (
+             // era count is model-defined: compact rail of years, dots only when there are many
+             <div className="bg-white rounded-[24px] px-4 pt-5 pb-4 border border-navy/10">
+               <DnaStepper
+                 size={timeMachineData.eras.length > 6 ? 'xs' : 'sm'}
+                 reveal
+                 ariaLabel={language === 'ar' ? 'العصور المعروضة' : 'Eras shown'}
+                 stateText={{ done: language === 'ar' ? 'عصر' : 'era' }}
+                 steps={timeMachineData.eras.map((e: any, i: number) => ({
+                   key: String(i),
+                   label: String(e.year ?? e.era ?? i + 1),
+                   state: 'done' as const,
+                 }))}
+               />
+             </div>
+           )}
            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
              <div aria-hidden="true" className="tbn-timeline-rail absolute top-1/2 inset-x-0 h-0.5 bg-lilac-soft/40 -translate-y-1/2 hidden md:block"></div>
              <div aria-hidden="true" className="tbn-timeline-rail-v absolute inset-y-0 start-1/2 w-0.5 bg-lilac-soft/40 md:hidden"></div>

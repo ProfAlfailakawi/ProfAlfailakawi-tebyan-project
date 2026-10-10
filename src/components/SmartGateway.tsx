@@ -65,6 +65,7 @@ const colorMap: Record<string, string> = {
 };
 
 import { useFluidTyping } from "../hooks/useFluidTyping";
+import { levels } from "../constants/gamification";
 
 interface SmartGatewayProps {
   language: "ar" | "en";
@@ -1565,14 +1566,6 @@ export const SmartGateway: React.FC<
     badges: [] as string[],
     stats: { wisdom: 0, dialogue: 0, patience: 0 },
   });
-
-  const levels = [
-    { id: "seeker", ar: "باحث", en: "Seeker", min: 0 },
-    { id: "awakened", ar: "متيقظ", en: "Awakened", min: 100 },
-    { id: "enlightened", ar: "مستنير", en: "Enlightened", min: 300 },
-    { id: "sage", ar: "حكيم", en: "Sage", min: 600 },
-    { id: "transcendent", ar: "متسامي", en: "Transcendent", min: 1000 },
-  ];
 
   const badges = [
     {

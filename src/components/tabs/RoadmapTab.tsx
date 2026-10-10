@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DemoStarters } from '../../components/ui/DemoStarters';
 import { motion, AnimatePresence } from 'motion/react';
 import { Map, Flag, CheckCircle, Clock, ArrowRight, Bookmark, BookmarkCheck } from 'lucide-react';
@@ -18,6 +18,19 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
   const [roadmap, setRoadmap] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Share (0..1) of the connector line already drawn: it grows as the milestone cards
+  // scroll into view. It is a reveal of the generated plan, not a completion state.
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [lineFill, setLineFill] = useState(0);
+  useEffect(() => setLineFill(0), [roadmap]);
+  const revealLineTo = (row: Element) => {
+    const box = timelineRef.current?.getBoundingClientRect();
+    if (!box) return;
+    const span = box.height - 64; // line runs from top-8 to bottom-8
+    if (span <= 0) return;
+    const center = row.getBoundingClientRect().top + 20 - (box.top + 32); // 20px = half of the 40px node
+    setLineFill((prev) => Math.max(prev, Math.min(1, Math.max(0, center / span))));
+  };
 
   const handleGenerate = async (currentGoal?: string) => {
     const targetGoal = currentGoal || goal;
@@ -172,9 +185,14 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
             </div>
 
             {/* Clean Timeline */}
-            <div className="relative">
-              {/* Connector line */}
-              <div aria-hidden="true" className="tbn-roadmap-line absolute top-8 bottom-8 w-0.5 bg-lilac-soft/40 hidden md:block rtl:right-[2.5rem] ltr:left-[2.5rem]"></div>
+            <div className="relative" ref={timelineRef}>
+              {/* Connector line: neutral track + fill that follows the cards as they reveal */}
+              <div aria-hidden="true" className="absolute top-8 bottom-8 w-0.5 bg-lilac-soft/40 hidden md:block rtl:right-[2.5rem] ltr:left-[2.5rem]">
+                <div
+                  className="tbn-roadmap-fill w-full origin-top rounded-full bg-[var(--journey-fill,var(--color-lilac))]"
+                  style={{ height: `${lineFill * 100}%` }}
+                />
+              </div>
 
               <div className="space-y-6">
                 {roadmap.milestones?.map((milestone: any, i: number) => (
@@ -182,6 +200,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                     initial={{ opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
+                    onViewportEnter={(entry) => entry && revealLineTo(entry.target)}
                     transition={{ delay: i * 0.05 }}
                     key={i} 
                     className="relative"

@@ -4,6 +4,7 @@ import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid, 
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { DnaStepper } from '../dna/DnaKit';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent, proxyGenerateAudio } from '../../lib/aiProxy';
 
@@ -824,6 +825,26 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
 
                 {activeLabTool === 'design' && labDesign && (
                   <div className="space-y-6">
+                    {/* ADDIE strip: a station is lit when that phase came back with content. */}
+                    <div className="bg-white rounded-[24px] px-4 pt-5 pb-4 border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                      <DnaStepper
+                        key={['analysis', 'design', 'development', 'implementation', 'evaluation'].map((k) => String(labDesign[k] || '').length).join('-')}
+                        size="sm"
+                        reveal
+                        ariaLabel={language === 'ar' ? 'مراحل التصميم التعليمي ADDIE' : 'ADDIE instructional design phases'}
+                        steps={[
+                          ['analysis', 'التحليل', 'Analysis'],
+                          ['design', 'التصميم', 'Design'],
+                          ['development', 'التطوير', 'Development'],
+                          ['implementation', 'التنفيذ', 'Implementation'],
+                          ['evaluation', 'التقويم', 'Evaluation'],
+                        ].map(([key, ar, en]) => ({
+                          key,
+                          label: language === 'ar' ? ar : en,
+                          state: labDesign[key] ? 'done' : 'pending',
+                        }))}
+                      />
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                       {['analysis', 'design', 'development', 'implementation', 'evaluation'].map((key, i) => {
                         const val = labDesign[key];
