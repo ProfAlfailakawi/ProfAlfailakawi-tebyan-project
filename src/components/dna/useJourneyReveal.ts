@@ -56,6 +56,17 @@ const markPlayed = (key: string) => {
 export const journeyStepMs = (count: number) =>
   Math.min(750, Math.max(350, Math.round(4000 / Math.max(1, count))));
 
+/**
+ * A threshold the element can actually reach: an element taller than ~90% of the viewport
+ * can never be 50% visible in a short viewport, which would leave the intro waiting forever.
+ */
+export const effectiveThreshold = (threshold: number, elementHeight: number, viewportHeight: number) => {
+  if (!(elementHeight > 0) || !(viewportHeight > 0)) return threshold;
+  return Math.max(0.1, Math.min(threshold, (0.9 * viewportHeight) / elementHeight));
+};
+/** If the element is on screen but below the threshold, start anyway after this long. */
+const VISIBLE_FALLBACK_MS = 1200;
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   typeof window.matchMedia === 'function' &&
@@ -106,32 +117,54 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
         }, SETTLE_MS),
       );
     };
+    let fallback: number | undefined;
+    const need = effectiveThreshold(threshold, el.getBoundingClientRect().height, window.innerHeight);
+    const start = () => {
+      window.clearTimeout(fallback);
+      io.disconnect();
+      if (key) markPlayed(key);
+      let n = 0;
+      const tick = () => {
+        n += 1;
+        const goal = Math.max(0, targetRef.current);
+        setLit(Math.min(n, goal));
+        if (n >= goal) finish();
+      };
+      timers.push(
+        window.setTimeout(() => {
+          tick();
+          if (n < Math.max(0, targetRef.current)) interval = window.setInterval(tick, step);
+        }, START_DELAY_MS),
+      );
+    };
     const io = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((e) => e.isIntersecting)) return;
-        io.disconnect();
-        if (key) markPlayed(key);
-        let n = 0;
-        const tick = () => {
-          n += 1;
-          const goal = Math.max(0, targetRef.current);
-          setLit(Math.min(n, goal));
-          if (n >= goal) finish();
-        };
-        timers.push(
-          window.setTimeout(() => {
-            tick();
-            if (n < Math.max(0, targetRef.current)) interval = window.setInterval(tick, step);
-          }, START_DELAY_MS),
-        );
+        const e = entries[entries.length - 1];
+        if (!e) return;
+        if (!e.isIntersecting) {
+          window.clearTimeout(fallback);
+          fallback = undefined;
+        } else if (e.intersectionRatio >= need - 0.01) {
+          start();
+        } else if (fallback === undefined) {
+          // visible but clipped below the threshold (overflow, split screen): never stay hidden
+          fallback = window.setTimeout(() => {
+            // still really on screen (not a 1px sliver)? then stop waiting for an unreachable ratio
+            const r = el.getBoundingClientRect();
+            const shown = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+            if (r.height > 0 && shown / Math.min(r.height, window.innerHeight) >= 0.5) start();
+            else fallback = undefined;
+          }, VISIBLE_FALLBACK_MS);
+        }
       },
-      { threshold },
+      { threshold: [0, need] },
     );
     io.observe(el);
 
     return () => {
       io.disconnect();
       timers.forEach((t) => window.clearTimeout(t));
+      window.clearTimeout(fallback);
       window.clearInterval(interval);
       // Interrupted before settling (unmount, strict-mode double effect): never leave lit stuck.
       if (!doneRef.current) setLit(null);
