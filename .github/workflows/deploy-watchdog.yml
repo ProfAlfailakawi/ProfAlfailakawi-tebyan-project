@@ -1,15 +1,13 @@
 name: Deploy watchdog
 
-# Every push to main must reach the live site. Deploys run in Cloud Build
-# (trigger: Tebyan), outside GitHub, so a disabled trigger or a broken deploy
-# leaves every check here green while the site freezes. This compares the
+# Every push to main must reach the live site. Deploys run in the deploy job
+# of ci.yml; this is the outside check that the site actually moved. This compares the
 # commit the live site serves (build-id.json) with main and fails loudly —
 # GitHub then emails the failure.
 #
-# Hourly, not on push: a push-triggered run had to sleep 15 minutes for the
-# deploy and sat "in progress" on every commit. Broken deploys already fail
-# inside Cloud Build (last step of cloudbuild.yaml); this only has to catch a
-# trigger that never ran, and an hour is soon enough for that.
+# Hourly, not on push: broken deploys already fail inside ci.yml (its last
+# step checks the live site); this only has to catch a deploy that never ran,
+# and an hour is soon enough for that.
 on:
   schedule:
     - cron: '23 * * * *'
@@ -44,5 +42,5 @@ jobs:
             echo "Live site is on main (${sha:0:8})."
             exit 0
           fi
-          echo "::error::The live site is not on the latest main. Live build: $live, main: ${sha:0:8} ($when). Check that Cloud Build trigger 'Tebyan' is enabled and its last build passed: https://console.cloud.google.com/cloud-build/builds?project=tebyan-clean-2026"
+          echo "::error::The live site is not on the latest main. Live build: $live, main: ${sha:0:8} ($when). Check the latest CI run's deploy job: https://github.com/$GITHUB_REPOSITORY/actions/workflows/ci.yml"
           exit 1
