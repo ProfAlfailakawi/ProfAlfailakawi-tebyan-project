@@ -78,7 +78,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         onClose={() => handleTabChange('discover', '', true)}
       />
       
-      <div className="relative overflow-hidden bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-[#6e5f8e]/10">
+      <div className="tebyan-tab-surface relative overflow-hidden bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-[#6e5f8e]/10">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#6e5f8e]/[0.06] rounded-full blur-3xl"></div>
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#8fa9c7]/[0.08] rounded-full blur-3xl"></div>
         

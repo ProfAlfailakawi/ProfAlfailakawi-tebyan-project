@@ -5043,3 +5043,22 @@ main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-
   box-shadow: 0 6px 16px rgba(110, 95, 142, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 .tebyan-numeral { font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.01em; }
+
+/* --- Tab pages: tighter top, accent rule under the header, surface depth ---- */
+@layer base {
+  /* The old 42px offset reserved room for a back button that now lives in the global controls. */
+  .tebyan-tab-header { margin-top: 0 !important; position: relative; }
+}
+.tebyan-tab-header::after {
+  content: ""; position: absolute; inset-block-end: -1px; inset-inline-start: 0.2rem;
+  inline-size: 3.5rem; block-size: 2px; border-radius: 2px;
+  background-image: linear-gradient(90deg, #8e7aae, #8fa9c7);
+}
+.tebyan-tab-surface {
+  background-image: linear-gradient(180deg, rgba(142, 122, 174, 0.07) 0%, rgba(142, 122, 174, 0) 9rem);
+  box-shadow: 0 14px 36px rgba(110, 95, 142, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+@keyframes tebyan-surface-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  .tebyan-tab-surface { animation: tebyan-surface-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 80ms backwards; }
+}

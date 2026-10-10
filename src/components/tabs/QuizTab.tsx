@@ -93,7 +93,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
        onClose={() => handleTabChange('discover', '', true)}
      />
      <div 
-        className="bg-white rounded-[32px] p-5 md:p-8 border border-lilac-soft/25 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 relative overflow-hidden"
+        className="tebyan-tab-surface bg-white rounded-[32px] p-5 md:p-8 border border-lilac-soft/25 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 relative overflow-hidden"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             if (isFinished) reset();

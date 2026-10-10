@@ -112,7 +112,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white rounded-[32px] p-8 border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
+    <div className="tebyan-tab-surface bg-white rounded-[32px] p-8 border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
       <div className="flex flex-wrap gap-3 items-center justify-center">
         {personas.map(p => (
           <button
