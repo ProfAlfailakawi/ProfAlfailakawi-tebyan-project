@@ -422,6 +422,9 @@
   transition: transform 0.5s var(--dna-ease) 0.12s;
 }
 .dna-steps[data-journey] .dna-stepi + .dna-stepi:dir(rtl)::after { transform-origin: right center; }
+/* browsers without :dir() (older WebViews): fall back to the document direction */
+[dir='rtl'] .dna-steps[data-journey] .dna-stepi + .dna-stepi::after { transform-origin: right center; }
+[dir='ltr'] .dna-steps[data-journey] .dna-stepi + .dna-stepi::after { transform-origin: left center; }
 .dna-steps[data-journey] .dna-stepi[data-link='done']::after { transform: scaleX(1); }
 .dna-steps[data-journey] .dna-stepi[data-state='done'] .dna-node { background: var(--journey-fill); }
 .dna-steps[data-journey] .dna-lbl { transition: color 0.35s var(--dna-ease), opacity 0.35s var(--dna-ease); }
@@ -430,8 +433,7 @@
 .dna-steps[data-journey] .dna-stepi[data-state='current'] .dna-node { animation: none; }
 /* user-paced steppers pulse when a station becomes current; reveal steppers only for the
    station that just lit, so a remembered (already played) key renders settled, no halo */
-.dna-steps[data-journey]:not([data-reveal]) .dna-stepi[data-state='current'] .dna-node,
-.dna-steps[data-journey][data-reveal] .dna-stepi[data-just][data-state='current'] .dna-node {
+.dna-steps[data-journey] .dna-stepi[data-just][data-state='current'] .dna-node {
   animation: dna-journey-pulse 1.5s var(--dna-ease) 1;
 }
 .dna-steps[data-journey] .dna-stepi[data-just][data-state='done'] .dna-node {
