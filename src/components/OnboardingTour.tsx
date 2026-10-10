@@ -4,6 +4,7 @@ import { ArrowLeft, X } from "lucide-react";
 import { useAuth } from "./AuthProvider";
 import { cn } from "../lib/utils";
 import { IS_DEMO_MODE } from "../lib/demoMode";
+import { DnaStepper } from "./dna/DnaKit";
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
@@ -241,16 +242,17 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
                 {current.body}
               </p>
 
-              <div className="mt-8 flex items-center justify-center gap-2">
-                {steps.map((_, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-500",
-                      i === step ? "w-7 bg-[#8E7AAE]" : "w-2 bg-slate-200",
-                    )}
-                  />
-                ))}
+              <div className="mt-8 flex items-center justify-center">
+                <DnaStepper
+                  size="xs"
+                  journey
+                  ariaLabel={language === "ar" ? "خطوات الجولة" : "Tour steps"}
+                  steps={steps.map((_, i) => ({
+                    key: String(i),
+                    label: String(i + 1),
+                    state: i < step ? "done" : i === step ? "current" : "pending",
+                  }))}
+                />
               </div>
 
               <div className="mt-7 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-center gap-3">

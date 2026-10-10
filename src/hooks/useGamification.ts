@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { levels } from '../constants/gamification';
 
 export interface GamificationState {
   xp: number;
@@ -6,13 +7,8 @@ export interface GamificationState {
   rank: string;
 }
 
-const LEVEL_THRESHOLDS = [
-  { xp: 0, rankAr: 'باحث', rankEn: 'Seeker' },
-  { xp: 100, rankAr: 'متيقظ', rankEn: 'Awakened' },
-  { xp: 300, rankAr: 'مستنير', rankEn: 'Enlightened' },
-  { xp: 600, rankAr: 'حكيم', rankEn: 'Sage' },
-  { xp: 1200, rankAr: 'متسامي', rankEn: 'Transcendent' },
-];
+// One source of truth for the ladder: src/constants/gamification.ts
+const LEVEL_THRESHOLDS = levels.map((l) => ({ xp: l.min, rankAr: l.ar, rankEn: l.en }));
 
 export function useGamification() {
   const [state, setState] = useState<GamificationState>(() => {

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import type { ElementType } from "react";
+import { DnaStepper } from "../dna/DnaKit";
 
 /**
  * غلاف الأبواب — إطار موحد لأبواب تبيان المدمجة.
@@ -26,6 +27,7 @@ export const DoorShell = ({
   onModeChange,
   language,
   emphasis,
+  stations,
   children,
 }: {
   titleAr: string;
@@ -38,6 +40,11 @@ export const DoorShell = ({
   language: "ar" | "en";
   /** Slightly larger step chips and hint: for doors whose chips read as a numbered journey. */
   emphasis?: boolean;
+  /**
+   * Draw the numbered modes as stations above the hint. The modes are tabs, not progress:
+   * the selected one is "current", the others stay neutral (never "done").
+   */
+  stations?: boolean;
   children: React.ReactNode;
 }) => {
   const ar = language === "ar";
@@ -125,6 +132,20 @@ export const DoorShell = ({
               );
             })}
           </div>
+          {stations && modes.length > 1 && modes.length <= 6 && (
+            // decorative echo of the tabs above (they stay the accessible control)
+            <div aria-hidden="true" className="mx-auto mt-3 max-w-sm">
+              <DnaStepper
+                size="sm"
+                journey
+                steps={modes.map((m) => ({
+                  key: m.id,
+                  label: (ar ? m.labelAr : m.labelEn).replace(/^\s*\d+\s*[·.\-]\s*/, ""),
+                  state: m.id === current.id ? "current" : "pending",
+                }))}
+              />
+            </div>
+          )}
           <p className={"mt-3 text-center text-lilac font-semibold " + (emphasis ? "text-[14px]" : "text-[13px]")}>
             {ar ? current.hintAr : current.hintEn}
           </p>

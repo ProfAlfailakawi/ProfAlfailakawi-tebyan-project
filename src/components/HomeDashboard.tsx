@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Sparkles, Command, ClipboardCheck, Gamepad2, Hourglass, BrainCircuit, Zap, MessageCircleQuestion, Trophy, Star, Target, CheckCircle, LibraryBig, BarChart3, Route, Gift, TicketPercent, Bookmark, Box, Lock, CircleDashed as CircleDashedIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useGamification } from '../hooks/useGamification';
+import { levels } from '../constants/gamification';
+import { DnaStepper } from './dna/DnaKit';
 import { generateDailyMission } from '../services/gemini';
 import { Network } from 'lucide-react';
 
@@ -210,6 +212,23 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
               <p className="text-[10px] font-black tracking-widest uppercase text-[#8E7AAE]">XP</p>
               <p className="mt-1 text-2xl font-black text-[#182231]">{state.xp}</p>
+            </div>
+            {/* Level ladder: stations up to the current level are lit. XP is stored on this device only. */}
+            <div className="col-span-2 rounded-2xl border border-[#8FA9C7]/16 bg-white/72 px-3 pt-4 pb-3 shadow-sm backdrop-blur-xl">
+              <DnaStepper
+                size="sm"
+                reveal
+                playKey="home-level-ladder"
+                ariaLabel={language === 'ar' ? 'سُلّم المستويات' : 'Level ladder'}
+                steps={levels.map((l, i) => ({
+                  key: l.id,
+                  label: language === 'ar' ? l.ar : l.en,
+                  state: i < state.level - 1 ? 'done' : i === state.level - 1 ? 'current' : 'pending',
+                }))}
+              />
+              <p className="mt-2 text-center text-[11px] font-bold text-[#7C8796]">
+                {language === 'ar' ? 'نقاط محفوظة على هذا الجهاز فقط' : 'Points are stored on this device only'}
+              </p>
             </div>
           </div>
         </div>

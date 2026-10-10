@@ -5003,7 +5003,10 @@ main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .tbn-roadmap-line { transform-origin: top; animation: tbn-draw-line 1.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .tbn-roadmap-fill { transition: height 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tbn-roadmap-fill { height: 100% !important; }
 }
 
 @media (prefers-reduced-motion: no-preference) {

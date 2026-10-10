@@ -6,6 +6,7 @@
  */
 import * as React from 'react';
 import './dna.css';
+import { useJourneyReveal } from './useJourneyReveal';
 
 export type DnaTone =
   | 'accent'
@@ -121,13 +122,65 @@ export interface DnaStepperProps {
   ariaLabel?: string;
   stateText?: Partial<Record<DnaStepState, string>>;
   className?: string;
+  /**
+   * Journey look without an intro: solid filled stations, a connector that fills when
+   * the previous station completes, and a one-shot (not looping) halo. Use it for
+   * user-paced steppers whose states change on interaction.
+   */
+  journey?: boolean;
+  /**
+   * Intro: when the stepper scrolls into view the already-true stations light up one
+   * after another, once. The `state` of each step stays the truth; the intro never
+   * lights a pending / returned / blocked station nor goes past the real current one.
+   */
+  reveal?: boolean;
+  /** Entity id so the intro plays once per entity, even if the component remounts. */
+  playKey?: string | number | null;
+  /** Wait (do not start the intro) while true, e.g. while data is loading. */
+  hold?: boolean;
+  /** Delay between stations in ms. Default clamp(4000 / N, 350, 750). */
+  stepMs?: number;
 }
 
-export function DnaStepper({ steps, size = 'md', showLabels = true, ariaLabel, stateText, className }: DnaStepperProps) {
+export function DnaStepper({
+  steps: realSteps,
+  size = 'md',
+  showLabels = true,
+  ariaLabel,
+  stateText,
+  className,
+  journey = false,
+  reveal = false,
+  playKey,
+  hold,
+  stepMs,
+}: DnaStepperProps) {
   const text = { ...DEFAULT_STATE_TEXT, ...stateText };
   const labels = showLabels && size !== 'xs';
+  let target = 0;
+  realSteps.forEach((s, i) => {
+    if (s.state === 'done' || s.state === 'current') target = i + 1;
+  });
+  const { ref, lit } = useJourneyReveal<HTMLOListElement>({
+    target,
+    count: realSteps.length,
+    stepMs,
+    enabled: reveal,
+    hold,
+    playKey,
+  });
+  // During the intro a station shows its real state only once it has been revealed.
+  const steps: DnaStep[] =
+    lit == null ? realSteps : realSteps.map((s, i) => (i < lit ? s : { ...s, state: 'pending' as const }));
   return (
-    <ol className={cx('dna', 'dna-steps', className)} data-size={size} aria-label={ariaLabel}>
+    <ol
+      ref={ref}
+      className={cx('dna', 'dna-steps', className)}
+      data-size={size}
+      data-journey={journey || reveal ? '' : undefined}
+      data-reveal={reveal ? (lit ?? 'done') : undefined}
+      aria-label={ariaLabel}
+    >
       {steps.map((step, i) => {
         const prev = i > 0 ? steps[i - 1] : null;
         const link = !prev ? 'none' : step.state === 'returned' ? 'returned' : prev.state === 'done' ? 'done' : 'pending';
@@ -137,9 +190,11 @@ export function DnaStepper({ steps, size = 'md', showLabels = true, ariaLabel, s
             key={step.key}
             className="dna-stepi"
             data-state={step.state}
+            data-lit={lit != null && i < lit ? '' : undefined}
+            data-just={lit != null && lit > 0 && i === lit - 1 ? '' : undefined}
             data-link={link}
             data-stamp={stamped ? 'true' : undefined}
-            aria-current={step.state === 'current' ? 'step' : undefined}
+            aria-current={realSteps[i].state === 'current' ? 'step' : undefined}
             title={step.title ?? (size === 'xs' && typeof step.label === 'string' ? step.label : undefined)}
           >
             <span className="dna-node" aria-hidden="true">
@@ -160,7 +215,7 @@ export function DnaStepper({ steps, size = 'md', showLabels = true, ariaLabel, s
               {step.badge != null && step.badge !== false && <span className="dna-bdg">{step.badge}</span>}
             </span>
             <span className={labels ? 'dna-lbl' : 'dna-sr'}>{step.label}</span>
-            <span className="dna-sr">{text[step.state]}</span>
+            <span className="dna-sr">{text[realSteps[i].state]}</span>
           </li>
         );
       })}
