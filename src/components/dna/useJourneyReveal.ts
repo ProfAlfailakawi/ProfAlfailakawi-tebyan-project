@@ -70,6 +70,28 @@ export const effectiveThreshold = (threshold: number, elementHeight: number, vie
 /** If the element is on screen but below the threshold, start anyway after this long. */
 const VISIBLE_FALLBACK_MS = 1200;
 
+/** Longest we wait for a page transition (fade / blur / slide) to finish before starting anyway. */
+const SETTLE_WAIT_MAX_MS = 2600;
+const SETTLE_POLL_MS = 90;
+
+/**
+ * True while the element sits inside a page transition: a faded or blurred ancestor, or
+ * one that is still sliding. The intro must not play behind that, or the first stations
+ * would already be lit by the time the page becomes readable.
+ */
+export const isInTransition = (el: Element, prevTop: number | null) => {
+  for (let n: Element | null = el; n && n !== document.documentElement; n = n.parentElement) {
+    const cs = getComputedStyle(n);
+    // scroll-driven entrances (view/scroll timelines) follow the scroll, not time: never wait for them
+    const scrollDriven = n.getAnimations?.().some((a) => a.timeline && a.timeline !== document.timeline);
+    if (scrollDriven) continue;
+    if (parseFloat(cs.opacity) < 0.98) return true;
+    if (cs.filter && cs.filter !== 'none' && !/^blur\(0(px)?\)$/.test(cs.filter)) return true;
+  }
+  const top = el.getBoundingClientRect().top;
+  return prevTop != null && Math.abs(top - prevTop) > 0.5;
+};
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   typeof window.matchMedia === 'function' &&
@@ -135,12 +157,22 @@ export function useJourneyReveal<T extends Element = HTMLElement>({
         setLit(Math.min(n, goal));
         if (n >= goal) finish();
       };
-      timers.push(
-        window.setTimeout(() => {
-          tick();
-          if (n < Math.max(0, targetRef.current)) interval = window.setInterval(tick, step);
-        }, START_DELAY_MS),
-      );
+      const begin = () =>
+        timers.push(
+          window.setTimeout(() => {
+            tick();
+            if (n < Math.max(0, targetRef.current)) interval = window.setInterval(tick, step);
+          }, START_DELAY_MS),
+        );
+      // Wait for any page transition (opacity / blur / slide) to finish, bounded.
+      const t0 = Date.now();
+      let lastTop: number | null = null;
+      const waitSettled = () => {
+        if (!el.isConnected || Date.now() - t0 >= SETTLE_WAIT_MAX_MS || !isInTransition(el, lastTop)) return begin();
+        lastTop = el.getBoundingClientRect().top;
+        timers.push(window.setTimeout(waitSettled, SETTLE_POLL_MS));
+      };
+      waitSettled();
     };
     const io = new IntersectionObserver(
       (entries) => {

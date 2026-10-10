@@ -23,11 +23,17 @@ test('journey mode never loops the halo: its current-node rule replaces the base
   assert.ok(rule, 'journey current rule exists');
   assert.match(rule![0], /animation: none;/);
   assert.doesNotMatch(css, /dna-journey-pulse[^;]*infinite/);
-  assert.match(css, /\[data-journey\]\[data-reveal\] \.dna-stepi\[data-just\]\[data-state='current'\] \.dna-node/);
+  assert.match(css, /\[data-journey\] \.dna-stepi\[data-just\]\[data-state='current'\] \.dna-node/);
 });
 
 test('journeySlot distinguishes entities so a reused stepper re-arms for a new playKey', () => {
   assert.notEqual(journeySlot('review:1'), journeySlot('review:2'));
   assert.notEqual(journeySlot(null), journeySlot('review:1'));
   assert.equal(journeySlot('a'), journeySlot('a'));
+});
+
+test('connector fill has a [dir] fallback for browsers without :dir()', async () => {
+  const { readFileSync } = await import('node:fs');
+  const css = readFileSync(new URL('../src/components/dna/dna.css', import.meta.url), 'utf8');
+  assert.match(css, /\[dir='rtl'\] \.dna-steps\[data-journey\] \.dna-stepi \+ \.dna-stepi::after \{ transform-origin: right center; \}/);
 });

@@ -140,6 +140,11 @@ export interface DnaStepperProps {
   hold?: boolean;
   /** Delay between stations in ms. Default clamp(4000 / N, 350, 750). */
   stepMs?: number;
+  /**
+   * Neutral markers: a filled station shows its number instead of a check mark. For rails
+   * whose stations are not completed steps (e.g. model-generated eras).
+   */
+  plain?: boolean;
 }
 
 export function DnaStepper({
@@ -154,6 +159,7 @@ export function DnaStepper({
   playKey,
   hold,
   stepMs,
+  plain = false,
 }: DnaStepperProps) {
   const text = { ...DEFAULT_STATE_TEXT, ...stateText };
   const labels = showLabels && size !== 'xs';
@@ -161,6 +167,25 @@ export function DnaStepper({
   realSteps.forEach((s, i) => {
     if (s.state === 'done' || s.state === 'current') target = i + 1;
   });
+  // Halo for a real change after mount: the station that just became current / done
+  // (never on mount, never on a re-render with the same states).
+  const prevStates = React.useRef<string | null>(null);
+  const [changed, setChanged] = React.useState<number | null>(null);
+  const sig = realSteps.map((s) => `${s.key}:${s.state}`).join('|');
+  React.useEffect(() => {
+    const prev = prevStates.current;
+    prevStates.current = sig;
+    const before = prev == null ? [] : prev.split('|');
+    if (prev == null || prev === sig || !(journey || reveal) || before.length !== realSteps.length) return;
+    const moved = (want: DnaStepState) => realSteps.findIndex((s, i) => s.state === want && before[i] !== `${s.key}:${s.state}`);
+    // the station that became current gets the halo; otherwise the one that just completed
+    const idx = moved('current') >= 0 ? moved('current') : moved('done');
+    if (idx < 0) return;
+    setChanged(idx);
+    const t = window.setTimeout(() => setChanged(null), 1600);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sig, journey, reveal]);
   const { ref, lit } = useJourneyReveal<HTMLOListElement>({
     target,
     count: realSteps.length,
@@ -191,7 +216,7 @@ export function DnaStepper({
             className="dna-stepi"
             data-state={step.state}
             data-lit={lit != null && i < lit ? '' : undefined}
-            data-just={lit != null && lit > 0 && i === lit - 1 ? '' : undefined}
+            data-just={(lit != null && lit > 0 && i === lit - 1) || (lit == null && changed === i) ? '' : undefined}
             data-link={link}
             data-stamp={stamped ? 'true' : undefined}
             aria-current={realSteps[i].state === 'current' ? 'step' : undefined}
@@ -202,7 +227,7 @@ export function DnaStepper({
                 <span className="dna-stamp">{step.stamp}</span>
               ) : step.icon ? (
                 step.icon
-              ) : step.state === 'done' ? (
+              ) : step.state === 'done' && !plain ? (
                 <CheckGlyph />
               ) : (
                 <span className="dna-num">{i + 1}</span>

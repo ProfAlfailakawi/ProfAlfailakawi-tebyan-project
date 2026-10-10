@@ -117,6 +117,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
                <DnaStepper
                  size={timeMachineData.eras.length > 6 ? 'xs' : 'sm'}
                  reveal
+                 plain
                  ariaLabel={language === 'ar' ? 'العصور المعروضة' : 'Eras shown'}
                  stateText={{ done: language === 'ar' ? 'عصر' : 'era' }}
                  steps={timeMachineData.eras.map((e: any, i: number) => ({
