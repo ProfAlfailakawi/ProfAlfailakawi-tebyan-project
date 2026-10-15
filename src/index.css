@@ -2110,7 +2110,6 @@ body.tebyan-focus-mode .tebyan-result-document {
 .tebyan-fabric-node-card::before {
   content: "";
   position: absolute;
-  inset-inline-start: 0;
   top: 18%;
   width: 4px;
   height: 64%;
@@ -5168,7 +5167,6 @@ main :is(h3, h4, h5, h6):not(.tbn-result__body *) {
   content: "";
   position: absolute;
   inset-block: 14px;
-  inset-inline-start: 0;
   inline-size: 3px;
   border-radius: 3px;
   background: var(--beat, #8e7aae);
@@ -5224,5 +5222,62 @@ main :is(h3, h4, h5, h6):not(.tbn-result__body *) {
   100% {
     transform: scale(2);
     opacity: 0;
+  }
+}
+
+/* Bottom-left dock (page back/help pill and the admin orb): a soft ivory fade sits behind
+   the control so scrolling content eases out beneath it instead of being cut by its edge.
+   Static, no motion, no blur; the colour is the same ivory as the header canopy. */
+html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: min(260px, 70vw);
+  height: calc(env(safe-area-inset-bottom, 0px) + 5.25rem);
+  z-index: 45;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 100% 100% at 0% 100%,
+    rgba(250, 249, 246, 0.96) 0%,
+    rgba(250, 249, 246, 0.9) 48%,
+    rgba(250, 249, 246, 0) 100%
+  );
+}
+/* Wide screens: the floating header gets the same quiet ivory canopy phones already have,
+   so content scrolling up eases out beneath the pills instead of showing through them. */
+@media (min-width: 768px) {
+  .tebyan-app-header {
+    padding-bottom: 1.5rem !important;
+    background: linear-gradient(
+      180deg,
+      rgba(250, 249, 246, 0.9) 0%,
+      rgba(250, 249, 246, 0.82) 78%,
+      rgba(250, 249, 246, 0) 100%
+    ) !important;
+  }
+}
+@media print {
+  html::after { display: none !important; }
+}
+
+/* Narrow phones: the demo chip + account pill + brand cluster share one row, so tighten
+   the row's own gaps and the wordmark a little instead of letting the brand slide under
+   the Services button. Sizes of tap targets are unchanged. */
+@media (max-width: 400px) {
+  header.fixed.tebyan-app-header {
+    padding-inline: 0.5rem !important;
+  }
+  .tebyan-floating-nav {
+    gap: 0.25rem !important;
+  }
+  .tebyan-floating-nav > button {
+    gap: 0.3rem !important;
+  }
+  .tebyan-floating-nav > button .tebyan-brand-name {
+    font-size: 1.1rem !important;
+  }
+  .tebyan-header-actions {
+    gap: 0 !important;
   }
 }

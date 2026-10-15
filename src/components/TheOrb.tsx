@@ -32,7 +32,7 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
 
   return (
     <motion.div
-        className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-[90] touch-none"
+        className="tebyan-orb-dock fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-[90] touch-none"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
     >
