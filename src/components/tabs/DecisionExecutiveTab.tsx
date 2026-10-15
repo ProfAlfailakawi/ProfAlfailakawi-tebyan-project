@@ -234,7 +234,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
              </div>
              <button 
                onClick={() => handleTabChange('discover')}
-               className="px-6 py-2 bg-[#FAF9F6]/88 border border-[#8FA9C7]/25 rounded-full font-bold text-sm text-ink-mute hover:text-navy hover:border-[#8E7AAE] transition-all flex items-center gap-2 w-fit active:scale-95"
+               className="px-6 py-2 bg-[#FAF9F6]/88 border border-[color:var(--tb-sky)]/25 rounded-full font-bold text-sm text-ink-mute hover:text-navy hover:border-[color:var(--tb-lilac-soft)] transition-all flex items-center gap-2 w-fit active:scale-95"
              >
                 <History className="w-4 h-4" />
                 {language === 'ar' ? 'العودة للاستكشاف' : 'Back to Discover'}
@@ -272,7 +272,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                onKeyDown={handleKeyDown}
                className={cn(
                  "w-full min-h-[92px] md:min-h-[150px] h-28 md:h-36 p-4 md:p-6 pt-8 rounded-[22px] md:rounded-[34px] border text-[15px] md:text-lg font-medium focus:ring-4 md:focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
-                 showRadarWarning ? "border-rose-900/50 bg-white text-navy placeholder:text-ink-mute focus:ring-rose-900/10" : "border-[#8FA9C7]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[#8E7AAE] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
+                 showRadarWarning ? "border-rose-900/50 bg-white text-navy placeholder:text-ink-mute focus:ring-rose-900/10" : "border-[color:var(--tb-sky)]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[color:var(--tb-lilac-soft)] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
                )}
                placeholder={language === 'ar' ? 'صِف الموقف أو القرار أو المعضلة التي تواجهك هنا بصراحة تامة...' : 'Describe the situation, decision, or dilemma you are facing here with total honesty...'}
              />
@@ -301,7 +301,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
 
            
 
-           <div className="relative overflow-hidden bg-[#FAF9F6]/94 border border-[#8FA9C7]/15 rounded-[28px] md:rounded-[36px] p-4 md:p-7 space-y-5 shadow-[0_24px_70px_rgba(24,34,49,0.06)]">
+           <div className="relative overflow-hidden bg-[#FAF9F6]/94 border border-[color:var(--tb-sky)]/15 rounded-[28px] md:rounded-[36px] p-4 md:p-7 space-y-5 shadow-[0_24px_70px_rgba(24,34,49,0.06)]">
               <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_18%_10%,rgba(142,122,174,0.14),transparent_28%),radial-gradient(circle_at_88%_28%,rgba(143,169,199,0.18),transparent_30%)]" />
               <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
                 <div>
@@ -314,7 +314,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                   onClick={() => setShowFullLab(v => !v)}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-black transition-all active:scale-95",
-                    showFullLab ? "bg-lilac text-white border-navy shadow-lg" : "bg-white/88 text-[#6E5F8E] border-[#8E7AAE]/18 hover:border-[#8E7AAE]/35"
+                    showFullLab ? "bg-lilac text-white border-navy shadow-lg" : "bg-white/88 text-[color:var(--tb-lilac-deep)] border-[color:var(--tb-lilac-soft)]/18 hover:border-[color:var(--tb-lilac-soft)]/35"
                   )}
                 >
                   <LayoutGrid className="w-4 h-4" />
@@ -326,7 +326,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <button
                   type="button"
                   onClick={() => setShowPurposePicker(v => !v)}
-                  className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
+                  className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[color:var(--tb-sky)]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
                 >
                   <div>
                     <div className="font-black text-sm md:text-base text-navy">{language === 'ar' ? activePurpose.title.ar : activePurpose.title.en}</div>
@@ -339,7 +339,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 pt-1">
                         {decisionPurposes.map(purpose => (
-                          <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-lg" : "bg-white/78 text-[#3D4A5A] border-[#8FA9C7]/15 hover:bg-white hover:border-zinc-300")}>
+                          <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-lg" : "bg-white/78 text-[#3D4A5A] border-[color:var(--tb-sky)]/15 hover:bg-white hover:border-zinc-300")}>
                             <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
                             <div className={cn("text-xs leading-relaxed font-bold", activeDecisionPurpose === purpose.id ? "text-ink-soft" : "text-ink-mute")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
                           </button>
@@ -356,7 +356,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     key={`${activeScene.id}-${depthIndex}-${activeDecisionPurpose}`}
                     initial={{ opacity: 0, y: 12, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    className="relative overflow-hidden rounded-[28px] md:rounded-[34px] border border-[#8E7AAE]/16 bg-white/92 p-5 md:p-7 shadow-[0_18px_55px_rgba(24,34,49,0.07)]"
+                    className="relative overflow-hidden rounded-[28px] md:rounded-[34px] border border-[color:var(--tb-lilac-soft)]/16 bg-white/92 p-5 md:p-7 shadow-[0_18px_55px_rgba(24,34,49,0.07)]"
                   >
                     <div className="absolute -top-20 -left-16 h-52 w-52 rounded-full bg-[#D8CEEA]/35 blur-3xl" />
                     <div className="relative z-10 flex flex-col h-full">
@@ -383,7 +383,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                           type="button"
                           onClick={() => setDepthIndex(i => Math.min(i + 1, decisionScenes.length - 1))}
                           disabled={depthIndex >= decisionScenes.length - 1}
-                          className="rounded-2xl border border-[#8FA9C7]/22 bg-[#F7F5F2] px-5 py-4 text-sm font-black text-[#6E5F8E] transition-all hover:bg-white active:scale-[0.98] disabled:opacity-40"
+                          className="rounded-2xl border border-[color:var(--tb-sky)]/22 bg-[#F7F5F2] px-5 py-4 text-sm font-black text-[color:var(--tb-lilac-deep)] transition-all hover:bg-white active:scale-[0.98] disabled:opacity-40"
                         >
                           {language === 'ar' ? 'زد العمق' : 'Go deeper'}
                         </button>
@@ -391,7 +391,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     </div>
                   </motion.div>
 
-                  <div className="rounded-[28px] border border-[#8FA9C7]/14 bg-[#F7F5F2]/82 p-4 md:p-5">
+                  <div className="rounded-[28px] border border-[color:var(--tb-sky)]/14 bg-[#F7F5F2]/82 p-4 md:p-5">
                     <div className="flex items-center justify-between gap-3 mb-4">
                       <div>
                         <p className="text-xs font-black tracking-[0.24em] uppercase text-ink-mute">{language === 'ar' ? 'تسلسل الجلسة' : 'Session sequence'}</p>
@@ -411,7 +411,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                             onClick={() => setDepthIndex(index)}
                             className={cn(
                               "w-full flex items-center gap-3 rounded-2xl border p-3 text-right transition-all active:scale-[0.99]",
-                              isActive ? "bg-white border-[#8E7AAE]/32 shadow-sm" : "bg-white/54 border-[#8FA9C7]/12 hover:bg-white"
+                              isActive ? "bg-white border-[color:var(--tb-lilac-soft)]/32 shadow-sm" : "bg-white/54 border-[color:var(--tb-sky)]/12 hover:bg-white"
                             )}
                           >
                             <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isDone ? "bg-[#EEF4F1] text-[#5F837A]" : isActive ? "bg-[#8E7AAE] text-white" : "bg-[#EEF2F6] text-ink-mute")}>
@@ -438,7 +438,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                       disabled={isLoading}
                       title={language === 'ar' ? tool.hint?.ar : tool.hint?.en}
                       className={cn(
-                          "group relative flex flex-col items-center justify-center gap-2 md:gap-4 p-3 md:p-5 rounded-[18px] md:rounded-[28px] tebyan-tool-card bg-white/88 border border-[#8FA9C7]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[#8E7AAE] active:scale-[0.96] overflow-hidden min-h-[116px]",
+                          "group relative flex flex-col items-center justify-center gap-2 md:gap-4 p-3 md:p-5 rounded-[18px] md:rounded-[28px] tebyan-tool-card bg-white/88 border border-[color:var(--tb-sky)]/15 shadow-sm transition-all hover:shadow-[0_15px_40px_rgba(0,0,0,0.05)] hover:border-[color:var(--tb-lilac-soft)] active:scale-[0.96] overflow-hidden min-h-[116px]",
                           !dilemma && "opacity-60 grayscale-[0.5]"
                       )}
                     >
@@ -636,7 +636,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     ) : (
                         <div className={cn(
                             "p-8 md:p-12 rounded-[40px] border-4 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] space-y-8 bg-white transition-all",
-                            tools.find(t => t.id === result.tool)?.bgColor?.replace('bg-', 'border-') || 'border-[#8FA9C7]/25'
+                            tools.find(t => t.id === result.tool)?.bgColor?.replace('bg-', 'border-') || 'border-[color:var(--tb-sky)]/25'
                         )}>
                             <div className="flex items-center justify-between border-b pb-8">
                                 <div className="flex items-center gap-4">

@@ -175,7 +175,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   <Network className="w-7 h-7 md:w-16 md:h-16 text-lilac" />
                 </div>
                 <div className="flex-1 min-w-0 pb-1 pt-1">
-                  <div className="bg-gradient-to-r from-navy to-[#8E7AAE] bg-clip-text text-transparent leading-tight">
+                  <div className="bg-gradient-to-r from-navy to-[color:var(--tb-lilac-soft)] bg-clip-text text-transparent leading-tight">
                     {language === 'ar' ? 'البصمة المعرفية' : 'Cognitive Blueprint'}
                   </div>
                   <div className="text-sm md:text-lg text-lilac font-bold not-italic tracking-normal mt-1">
@@ -197,14 +197,14 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         </div>
 
         <div className="mb-4 flex items-center gap-2 rounded-full bg-white/72 border border-[#E9E2F1] p-1 w-full sm:w-fit shadow-sm overflow-x-auto">
-          <button type="button" onClick={() => setViewMode('map')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[#6E5F8E] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
-          <button type="button" onClick={() => setViewMode('list')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[#6E5F8E] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
+          <button type="button" onClick={() => setViewMode('map')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
+          <button type="button" onClick={() => setViewMode('list')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
         </div>
 
         {viewMode === 'list' && (
           <div className="tebyan-fabric-list mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             {nodes.filter(n => n.type !== 'core').map(node => (
-              <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className={cn("tebyan-fabric-node-card text-right rounded-[24px] border bg-white/82 p-4 transition-all", selectedNodes.find(n => n.id === node.id) ? "border-lilac ring-2 ring-lilac/40 bg-lilac-mist" : "border-[#8FA9C7]/16 hover:border-[#8E7AAE]/30")} aria-pressed={Boolean(selectedNodes.find(n => n.id === node.id))}>
+              <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className={cn("tebyan-fabric-node-card text-right rounded-[24px] border bg-white/82 p-4 transition-all", selectedNodes.find(n => n.id === node.id) ? "border-lilac ring-2 ring-lilac/40 bg-lilac-mist" : "border-[color:var(--tb-sky)]/16 hover:border-[color:var(--tb-lilac-soft)]/30")} aria-pressed={Boolean(selectedNodes.find(n => n.id === node.id))}>
                 <p className="text-xs font-black text-lilac mb-1">{language === 'ar' ? (({ concept: 'مفهوم', scientific: 'علمي', philosophical: 'فلسفي', practical: 'عملي', historical: 'تاريخي', golden: 'عقدة ذهبية', idea: 'فكرة' } as Record<string, string>)[node.category || node.type] || node.category || node.type) : (node.category || node.type)}</p>
                 <h4 className="font-black text-navy">{node.label}</h4>
                 <p className="text-xs font-bold text-ink-mute mt-2">{language === 'ar' ? 'اضغط لفتح البطاقة الجانبية والروابط.' : 'Tap to open the side card and links.'}</p>
@@ -425,7 +425,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </svg>
 
           {/* Time Traveling Slider */}
-          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[94%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[#8FA9C7]/18 rounded-2xl md:rounded-full p-3 md:py-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
+          <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 w-[94%] md:w-[60%] z-40 bg-white/92 backdrop-blur-xl border border-[color:var(--tb-sky)]/18 rounded-2xl md:rounded-full p-3 md:py-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4 shadow-2xl">
              <div className="w-full flex items-center justify-between gap-2 md:gap-4">
                  <span className={cn("text-xs md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 1 ? "text-lilac" : "text-lilac")}>
                      {getEraLabel(1)}
@@ -435,7 +435,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     min="1" max="4" 
                     value={timeEra} 
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
-                    className="flex-1 min-w-[40px] accent-[#8E7AAE] h-2 bg-[#D9CFE6] rounded-lg appearance-none cursor-pointer" 
+                    className="flex-1 min-w-[40px] accent-[color:var(--tb-lilac-soft)] h-2 bg-[#D9CFE6] rounded-lg appearance-none cursor-pointer" 
                  />
                  <span className={cn("text-xs md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-lilac")}>
                     {getEraLabel(4)}
@@ -456,7 +456,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.95 }}
             transition={{ type: "spring", bounce: 0 }}
-            className="w-full md:w-[350px] lg:w-[400px] bg-white/92 border border-[#8FA9C7]/18 rounded-[24px] md:rounded-[32px] p-4 md:p-6 flex flex-col relative z-20 shadow-[0_24px_80px_rgba(24,34,49,0.10)] backdrop-blur-xl"
+            className="w-full md:w-[350px] lg:w-[400px] bg-white/92 border border-[color:var(--tb-sky)]/18 rounded-[24px] md:rounded-[32px] p-4 md:p-6 flex flex-col relative z-20 shadow-[0_24px_80px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <button 
               onClick={() => setSelectedNodes([])}
@@ -483,17 +483,17 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             </p>
 
                             <div className="grid grid-cols-2 gap-3">
-                              <div className="rounded-2xl bg-[#FBFAF7] border border-[#8FA9C7]/16 p-3">
+                              <div className="rounded-2xl bg-[#FBFAF7] border border-[color:var(--tb-sky)]/16 p-3">
                                 <p className="text-xs font-black text-lilac mb-1">{language === 'ar' ? 'نوع العقدة' : 'Node type'}</p>
                                 <p className="text-sm font-black text-navy">{selectedNodes[0].category || selectedNodes[0].type || (language === 'ar' ? 'فكرة' : 'Idea')}</p>
                               </div>
-                              <div className="rounded-2xl bg-[#FBFAF7] border border-[#8FA9C7]/16 p-3">
+                              <div className="rounded-2xl bg-[#FBFAF7] border border-[color:var(--tb-sky)]/16 p-3">
                                 <p className="text-xs font-black text-lilac mb-1">{language === 'ar' ? 'التاريخ' : 'Date'}</p>
                                 <p className="text-sm font-black text-navy">{new Date().toLocaleDateString(language === 'ar' ? 'ar-KW-u-nu-latn' : 'en-US')}</p>
                               </div>
                             </div>
 
-                            <div className="p-5 bg-[#F7F5F2] rounded-2xl border border-[#8FA9C7]/18 shadow-inner">
+                            <div className="p-5 bg-[#F7F5F2] rounded-2xl border border-[color:var(--tb-sky)]/18 shadow-inner">
                                 <div className={cn("text-xs font-black uppercase mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-[#3F6B55]")}>
                                     <Sparkles className="w-4 h-4" />
                                     {language === 'ar' ? 'دعوة للابتكار' : 'Call for Innovation'}
@@ -511,10 +511,10 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             {language === 'ar' ? 'استكشاف هذا المفهوم منفرداً' : 'Explore Singly'}
                             </button>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              <button onClick={() => saveNode(selectedNodes[0])} className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-[#8FA9C7]/18 text-ink-soft rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
+                              <button onClick={() => saveNode(selectedNodes[0])} className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-[color:var(--tb-sky)]/18 text-ink-soft rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
                                 <Bookmark className="w-4 h-4" /> {language === 'ar' ? 'احفظ العقدة' : 'Save node'}
                               </button>
-                              <button onClick={() => setSelectedNodes(prev => prev.slice(0,1))} className="w-full flex items-center justify-center gap-2 py-3 bg-[#F1EEF4] border border-[#8E7AAE]/16 text-[#6E5F8E] rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
+                              <button onClick={() => setSelectedNodes(prev => prev.slice(0,1))} className="w-full flex items-center justify-center gap-2 py-3 bg-[#F1EEF4] border border-[color:var(--tb-lilac-soft)]/16 text-[color:var(--tb-lilac-deep)] rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
                                 <Link2 className="w-4 h-4" /> {language === 'ar' ? 'اربط بفكرة أخرى' : 'Link another idea'}
                               </button>
                             </div>
@@ -537,7 +537,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform -rotate-2", selectedNodes[0].type === 'golden' ? "bg-[#A68F58]/15 border-[#A68F58]/40" : "bg-lilac-mist border-lilac-soft/50")}>
                                 <span className={cn("font-bold", selectedNodes[0].type === 'golden' ? "text-[#6F6238]" : "text-lilac")}>{selectedNodes[0].label}</span>
                             </div>
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-[#F7F5F2] z-10 text-lilac font-bold text-sm">
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-[color:var(--tb-ivory)] z-10 text-lilac font-bold text-sm">
                                 +
                             </div>
                             <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform rotate-2", selectedNodes[1].type === 'golden' ? "bg-[#A68F58]/15 border-[#A68F58]/40" : "bg-lilac-mist border-lilac-soft/50")}>

@@ -194,7 +194,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                   <input 
                     value={simTopic} 
                     onChange={(e) => setSimTopic(e.target.value)} 
-                    className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50" 
+                    className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[color:var(--tb-lilac-deep)]/20 bg-white rounded-[16px] outline-none focus:border-[color:var(--tb-lilac-deep)]/50" 
                     placeholder={language === 'ar' ? "مثال: أقنع ابني بتقليل وقت الشاشة" : "Example: Convince my son to reduce screen time"} 
                   />
                   <button onClick={() => startDecisionSimulation()} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-lilac-deep font-bold shadow-lg transition-all cursor-pointer">
@@ -272,7 +272,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                         value={rpTopic} 
                         onChange={(e) => setRpTopic(e.target.value)} 
                         disabled={isLoading}
-                        className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50 disabled:opacity-50" 
+                        className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[color:var(--tb-lilac-deep)]/20 bg-white rounded-[16px] outline-none focus:border-[color:var(--tb-lilac-deep)]/50 disabled:opacity-50" 
                         placeholder={language === 'ar' ? "مثال: مراهق يرفض المذاكرة بحجة أن المؤثرين أثرياء بدون تعليم..." : "e.g. Teen refusing to study because influencers are rich..."} 
                       />
                       <button onClick={() => startRoleplay()} disabled={isLoading || !rpTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-[#5d4f7b] font-bold shadow-lg shadow-rose-500/20 disabled:opacity-50 transition-all cursor-pointer">

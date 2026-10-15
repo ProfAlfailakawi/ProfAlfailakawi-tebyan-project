@@ -171,7 +171,7 @@ export default function AdminUsersDashboard() {
         const adminLen = (adminCount / users.length) * C;
         const userLen = C - adminLen;
         return (
-          <div className="mb-4 flex items-center gap-3 sm:gap-5 rounded-2xl border border-[#8E7AAE]/12 bg-white px-4 sm:px-5 py-4 shadow-sm" role="img" aria-label={`مدير ${adminCount} · مستخدم ${userCount} · ${users.length}`}>
+          <div className="mb-4 flex items-center gap-3 sm:gap-5 rounded-2xl border border-[color:var(--tb-lilac-soft)]/12 bg-white px-4 sm:px-5 py-4 shadow-sm" role="img" aria-label={`مدير ${adminCount} · مستخدم ${userCount} · ${users.length}`}>
             <svg width="76" height="76" viewBox="0 0 76 76" className="shrink-0 -rotate-90" aria-hidden="true">
               <circle cx="38" cy="38" r={R} fill="none" stroke="#E9E2F1" strokeWidth="7" />
               {userCount > 0 && (
@@ -180,11 +180,11 @@ export default function AdminUsersDashboard() {
               {adminCount > 0 && (
                 <circle cx="38" cy="38" r={R} fill="none" stroke="#E11D48" strokeWidth="7" strokeDasharray={`${Math.max(adminLen - (userCount > 0 ? 2 : 0), 0)} ${C}`} strokeDashoffset={userCount > 0 ? -1 : 0} />
               )}
-              <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[#182231]" style={{ fontSize: 18, fontWeight: 900 }}>{users.length}</text>
+              <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[color:var(--tb-navy)]" style={{ fontSize: 18, fontWeight: 900 }}>{users.length}</text>
             </svg>
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold min-w-0">
               <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-rose-50 px-3 py-1.5 text-rose-800"><span className="h-2 w-2 rounded-full bg-rose-600" />مدير <span className="font-black">{adminCount}</span></span>
-              <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[#6E5F8E]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
+              <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[color:var(--tb-lilac-deep)]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
             </div>
           </div>
         );
@@ -213,7 +213,7 @@ export default function AdminUsersDashboard() {
                       <td className="p-4">{user.displayName || 'لا يوجد اسم'}</td>
                       <td className="p-4 text-left" dir="ltr">{user.email}</td>
                       <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]'}`}>
                           {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                         </span>
                       </td>
@@ -250,14 +250,14 @@ export default function AdminUsersDashboard() {
                       <p className="font-black text-slate-900 leading-snug">{user.displayName || 'لا يوجد اسم'}</p>
                       <p className="mt-1 text-xs text-slate-500 leading-relaxed" dir="ltr">{user.email}</p>
                     </div>
-                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
+                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]'}`}>
                       {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 tebyan-pair-actions">
                     <button 
                       onClick={() => openEditModal(user)}
-                      className="min-h-11 rounded-xl bg-[#F4F0F8] text-[#6E5F8E] font-bold flex items-center justify-center gap-2"
+                      className="min-h-11 rounded-xl bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] font-bold flex items-center justify-center gap-2"
                       title="تعديل المستخدم"
                     >
                       <Edit2 size={16} />
@@ -306,7 +306,7 @@ export default function AdminUsersDashboard() {
                   )}
                 </div>
                 <h3 className="font-bold text-lg mb-1 text-center">{editingUser.displayName || 'بدون اسم'}</h3>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[#6E5F8E]'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]'}`}>
                   {editingUser.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
                 </span>
 

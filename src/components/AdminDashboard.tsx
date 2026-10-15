@@ -314,7 +314,7 @@ export default function AdminDashboard() {
                     <p className="text-emerald-700 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">الطلبات الموفرة (ذاكرة)</p>
                     <h3 className="text-3xl md:text-4xl font-black text-emerald-700">{costStats.cacheHits + costStats.kbHits}</h3>
                 </div>
-                <div className="bg-[#F8F5EF] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#6E5B91]/15 text-[#182231] flex flex-col justify-between gap-3 min-w-0">
+                <div className="bg-[#F8F5EF] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#6E5B91]/15 text-[color:var(--tb-navy)] flex flex-col justify-between gap-3 min-w-0">
                     <p className="text-[#5B6E82] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
                     <div className="flex items-center justify-between gap-3">
                         <h3 className="text-3xl md:text-4xl font-black">{costStats.savedPercentage}٪</h3>

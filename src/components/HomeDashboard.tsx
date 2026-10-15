@@ -29,24 +29,24 @@ const HubCard: React.FC<{
       viewport={{ once: true }}
       className={cn(
         "tebyan-glass-card tebyan-tool-tile group rounded-[32px] md:rounded-[40px] p-6 md:p-8 border transition-all duration-500 flex flex-col justify-between relative overflow-hidden",
-        inverted ? "bg-gradient-to-br from-[#FFFCF7] via-[#F8F5EF] to-[#EEF2F6] border-[#8FA9C7]/18 hover:shadow-[0_22px_70px_rgba(142,122,174,0.10)] hover:border-[#8E7AAE]/24" : "bg-white/88 border-[#E7E1D8] hover:shadow-[0_22px_70px_rgba(24,34,49,0.07)] hover:border-[#D8CEDF]"
+        inverted ? "bg-gradient-to-br from-[#FFFCF7] via-[#F8F5EF] to-[#EEF2F6] border-[color:var(--tb-sky)]/18 hover:shadow-[0_22px_70px_rgba(142,122,174,0.10)] hover:border-[color:var(--tb-lilac-soft)]/24" : "bg-white/88 border-[#E7E1D8] hover:shadow-[0_22px_70px_rgba(24,34,49,0.07)] hover:border-[#D8CEDF]"
       )}
       style={{ textAlign: language === 'ar' ? 'right' : 'left' }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-[#F8F5EF]/20 to-[#8FA9C7]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-[#F8F5EF]/20 to-[color:var(--tb-sky)]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none" />
       <div className="relative z-10 w-full flex flex-col h-full">
         {/* Header section */}
         <div className="flex items-start gap-4 md:gap-5 mb-8">
            <div className={cn(
              "w-12 h-12 md:w-14 md:h-14 rounded-[20px] flex items-center justify-center transition-transform duration-500 shadow-sm shrink-0 border transform group-hover:scale-105",
-             inverted ? "bg-white/78 border-[#8E7AAE]/16 text-[#6E5F8E]" : "bg-[#FBFAF7] border-[#E7E1D8] text-[#182231]"
+             inverted ? "bg-white/78 border-[color:var(--tb-lilac-soft)]/16 text-[color:var(--tb-lilac-deep)]" : "bg-[#FBFAF7] border-[#E7E1D8] text-[color:var(--tb-navy)]"
            )}>
              <Icon className={cn("w-6 h-6 md:w-7 md:h-7 opacity-80")} />
            </div>
            <div className="pt-1">
              <h3 className={cn(
                "text-xl md:text-2xl font-black leading-tight mb-2",
-               inverted ? "text-[#182231]" : "text-[#182231]"
+               inverted ? "text-[color:var(--tb-navy)]" : "text-[color:var(--tb-navy)]"
              )}>{title}</h3>
              <p className={cn(
                "text-xs md:text-sm font-medium leading-relaxed max-w-[280px]",
@@ -65,29 +65,29 @@ const HubCard: React.FC<{
                 className={cn(
                   "tebyan-micro-tile flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group/item text-right hover:-translate-y-0.5",
                   inverted 
-                    ? "bg-white/74 border border-[#8FA9C7]/16 hover:bg-white hover:border-[#8E7AAE]/25 shadow-[0_8px_26px_rgba(24,34,49,0.04)]" 
+                    ? "bg-white/74 border border-[color:var(--tb-sky)]/16 hover:bg-white hover:border-[color:var(--tb-lilac-soft)]/25 shadow-[0_8px_26px_rgba(24,34,49,0.04)]" 
                     : "bg-[#FBFAF7] border border-[#E7E1D8] hover:bg-white hover:border-[#D8CEDF] hover:shadow-[0_10px_34px_rgba(24,34,49,0.05)] shadow-sm"
                 )}
               >
                 <div className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border transition-colors",
                   inverted 
-                    ? "bg-[#F1EEF4] border-[#8E7AAE]/15 group-hover/item:bg-white" 
+                    ? "bg-[#F1EEF4] border-[color:var(--tb-lilac-soft)]/15 group-hover/item:bg-white" 
                     : "bg-white border-[#E7E1D8] group-hover/item:border-[#D8CEDF]"
                 )}>
                   <item.icon className={cn(
                     "w-5 h-5 transition-colors",
-                    inverted ? "text-[#7C8796] group-hover/item:text-[#6E5F8E]" : "text-[#7C8796] group-hover/item:text-[#182231]"
+                    inverted ? "text-[#7C8796] group-hover/item:text-[color:var(--tb-lilac-deep)]" : "text-[#7C8796] group-hover/item:text-[color:var(--tb-navy)]"
                   )} />
                 </div>
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className={cn(
                     "text-sm font-black truncate", 
-                    inverted ? "text-[#182231] group-hover/item:text-[#6E5F8E]" : "text-zinc-700 group-hover/item:text-[#182231]"
+                    inverted ? "text-[color:var(--tb-navy)] group-hover/item:text-[color:var(--tb-lilac-deep)]" : "text-zinc-700 group-hover/item:text-[color:var(--tb-navy)]"
                   )}>{item.label}</span>
                   <div className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-all",
-                    inverted ? "bg-[#F1EEF4] text-[#8E7AAE] group-hover/item:bg-white" : "bg-[#F1EEF4] text-[#7C8796] group-hover/item:text-[#182231]"
+                    inverted ? "bg-[#F1EEF4] text-[color:var(--tb-lilac-soft)] group-hover/item:bg-white" : "bg-[#F1EEF4] text-[#7C8796] group-hover/item:text-[color:var(--tb-navy)]"
                   )}>
                     <ArrowLeft className={cn("w-3 h-3 text-current", language === 'ar' ? "" : "rotate-180")} />
                   </div>
@@ -186,19 +186,19 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         </div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-gr-3">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/70 px-3 py-1.5 shadow-sm backdrop-blur-xl mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[color:var(--tb-lilac-soft)]/14 bg-white/70 px-3 py-1.5 shadow-sm backdrop-blur-xl mb-4">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#8E7AAE] opacity-30"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[#8E7AAE]"></span>
               </span>
-              <span className="text-[#6E5F8E] font-black text-[10px] tracking-[0.24em] uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
+              <span className="text-[color:var(--tb-lilac-deep)] font-black text-[10px] tracking-[0.24em] uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
               {state.level > 1 && (
                 <span className="text-[10px] font-black text-emerald-600 border-l border-slate-200 pl-2 ml-2 bg-emerald-50/50 px-2 py-0.5 rounded-full">
                   {language === 'ar' ? 'وضع النقاء الفراغي نشط' : 'Invisible UI mode active'}
                 </span>
               )}
             </div>
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-[#182231] leading-[1.1]">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-[color:var(--tb-navy)] leading-[1.1]">
               {language === 'ar' ? (user ? getGenderWord(userGender, 'نظامك الحي جاهز يا بطل', 'نظامكِ الحي جاهز يا بطلة', 'نظامك الحي جاهز') : 'نظامك الحي جاهز') : 'Your living system is ready'}
             </h1>
             <p className="text-sm md:text-lg text-[#64788D] font-bold leading-relaxed max-w-2xl mt-4" style={{ opacity: helpOpacity, transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
@@ -206,16 +206,16 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2 w-full md:w-auto md:min-w-[260px]">
-            <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
-              <p className="text-[10px] font-black uppercase text-[#8E7AAE]">{language === 'ar' ? 'المستوى' : 'Level'}</p>
-              <p className="mt-1 text-2xl font-black text-[#182231]">{state.level}</p>
+            <div className="rounded-2xl border border-[color:var(--tb-sky)]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
+              <p className="text-[10px] font-black uppercase text-[color:var(--tb-lilac-soft)]">{language === 'ar' ? 'المستوى' : 'Level'}</p>
+              <p className="mt-1 text-2xl font-black text-[color:var(--tb-navy)]">{state.level}</p>
             </div>
-            <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
-              <p className="text-[10px] font-black tracking-widest uppercase text-[#8E7AAE]">XP</p>
-              <p className="mt-1 text-2xl font-black text-[#182231]">{state.xp}</p>
+            <div className="rounded-2xl border border-[color:var(--tb-sky)]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
+              <p className="text-[10px] font-black tracking-widest uppercase text-[color:var(--tb-lilac-soft)]">XP</p>
+              <p className="mt-1 text-2xl font-black text-[color:var(--tb-navy)]">{state.xp}</p>
             </div>
             {/* Level ladder: stations up to the current level are lit. XP is stored on this device only. */}
-            <div className="col-span-2 rounded-2xl border border-[#8FA9C7]/16 bg-white/72 px-3 pt-4 pb-3 shadow-sm backdrop-blur-xl">
+            <div className="col-span-2 rounded-2xl border border-[color:var(--tb-sky)]/16 bg-white/72 px-3 pt-4 pb-3 shadow-sm backdrop-blur-xl">
               <DnaStepper
                 size="sm"
                 reveal
@@ -236,7 +236,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </header>
 
       {/* Calm entry: simple for everyone, full depth on demand */}
-      <section className="tebyan-living-awareness tebyan-gateway-stage relative overflow-hidden border border-[#8FA9C7]/15 rounded-[34px] md:rounded-[55px] p-gr-3 md:p-gr-5 shadow-[0_20px_80px_rgba(24,34,49,0.07)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="tebyan-living-awareness tebyan-gateway-stage relative overflow-hidden border border-[color:var(--tb-sky)]/15 rounded-[34px] md:rounded-[55px] p-gr-3 md:p-gr-5 shadow-[0_20px_80px_rgba(24,34,49,0.07)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(248,245,239,0.86),rgba(238,242,246,0.72))]" />
           <div className="absolute -top-32 left-10 h-72 w-72 rounded-full bg-[#CBBF9B]/18 blur-[80px]" />
@@ -245,7 +245,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-gr-3">
           <div className="space-y-gr-1">
             <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
-            <h2 className="text-2xl md:text-5xl font-black text-[#182231] leading-tight">
+            <h2 className="text-2xl md:text-5xl font-black text-[color:var(--tb-navy)] leading-tight">
               {language === 'ar' ? getGenderWord(userGender, 'ما القرار الذي نوضّحه اليوم؟', 'ما الفكرة التي نوضّحها اليوم؟', 'ما القرار الذي نوضّحه اليوم؟') : 'What should we clarify today?'}
             </h2>
             <p className="text-sm md:text-base text-[#64788D] font-bold leading-relaxed max-w-2xl" style={{ opacity: helpOpacity, transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)', height: helpOpacity === 0 ? 0 : 'auto', overflow: 'hidden' }}>
@@ -269,21 +269,21 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className="tebyan-entry-tile group relative overflow-hidden p-gr-3 md:p-gr-3 rounded-[34px] bg-white/76 border border-white/75 text-right hover:bg-white hover:border-[#8E7AAE]/25 hover:shadow-[0_18px_55px_rgba(24,34,49,0.09)] active:scale-[0.98] transition-all duration-500"
+              className="tebyan-entry-tile group relative overflow-hidden p-gr-3 md:p-gr-3 rounded-[34px] bg-white/76 border border-white/75 text-right hover:bg-white hover:border-[color:var(--tb-lilac-soft)]/25 hover:shadow-[0_18px_55px_rgba(24,34,49,0.09)] active:scale-[0.98] transition-all duration-500"
             >
-              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8E7AAE]/0 via-[#8E7AAE]/45 to-[#8FA9C7]/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[color:var(--tb-lilac-soft)]/0 via-[color:var(--tb-lilac-soft)]/45 to-[color:var(--tb-sky)]/0 opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-[52px] h-[52px] md:w-14 md:h-14 rounded-[20px] bg-[#FBFAF7] border border-[#E7E1D8] flex items-center justify-center text-[#182231] group-hover:bg-[#8E7AAE] group-hover:text-white group-hover:scale-105 transition-all shadow-sm">
+                  <div className="w-[52px] h-[52px] md:w-14 md:h-14 rounded-[20px] bg-[#FBFAF7] border border-[#E7E1D8] flex items-center justify-center text-[color:var(--tb-navy)] group-hover:bg-[#8E7AAE] group-hover:text-white group-hover:scale-105 transition-all shadow-sm">
                     <item.icon className="w-6 h-6" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-[10px] font-black tracking-[0.22em] text-[#8E7AAE]/70">{item.mark}</span>
-                    <h3 className="font-black text-xl text-[#182231] leading-tight mt-1">{language === 'ar' ? item.ar : item.en}</h3>
+                    <span className="text-[10px] font-black tracking-[0.22em] text-[color:var(--tb-lilac-soft)]/70">{item.mark}</span>
+                    <h3 className="font-black text-xl text-[color:var(--tb-navy)] leading-tight mt-1">{language === 'ar' ? item.ar : item.en}</h3>
                     <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? item.descAr : item.descEn}</p>
                   </div>
                 </div>
-                <ArrowLeft className="h-4 w-4 text-[#8E7AAE]" />
+                <ArrowLeft className="h-4 w-4 text-[color:var(--tb-lilac-soft)]" />
               </div>
             </button>
           ))}
@@ -291,18 +291,18 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </section>
 
       {/* Session Memory */}
-      <section className="tebyan-memory-card tebyan-glass-card relative overflow-hidden rounded-[34px] border border-[#8FA9C7]/15 bg-white/82 p-gr-2 md:p-gr-3 shadow-[0_16px_55px_rgba(24,34,49,0.06)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <div className="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-[#8E7AAE] via-[#8FA9C7] to-transparent opacity-70" />
+      <section className="tebyan-memory-card tebyan-glass-card relative overflow-hidden rounded-[34px] border border-[color:var(--tb-sky)]/15 bg-white/82 p-gr-2 md:p-gr-3 shadow-[0_16px_55px_rgba(24,34,49,0.06)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <div className="absolute inset-y-0 right-0 w-1 bg-gradient-to-b from-[color:var(--tb-lilac-soft)] via-[color:var(--tb-sky)] to-transparent opacity-70" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-gr-3">
           <div className="flex items-start gap-3 min-w-0">
-            <div className="w-12 h-12 rounded-2xl bg-[#F1ECF7] text-[#6E5F8E] flex items-center justify-center shrink-0 border border-[#8E7AAE]/15 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-[#F1ECF7] text-[color:var(--tb-lilac-deep)] flex items-center justify-center shrink-0 border border-[color:var(--tb-lilac-soft)]/15 shadow-sm">
               <CircleDashedIcon className="w-5 h-5 animate-spin-slow" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-black text-[#8E7AAE] uppercase">
+              <p className="text-[11px] font-black text-[color:var(--tb-lilac-soft)] uppercase">
                 {language === 'ar' ? getGenderWord(userGender, 'آخر ما كنت تفكر فيه', 'آخر ما كنتِ تفكرين فيه', 'آخر ما كنت تفكر فيه') : 'Where you left off'}
               </p>
-              <h3 className="mt-1 text-base md:text-xl font-black text-[#182231] break-words md:truncate max-w-3xl">
+              <h3 className="mt-1 text-base md:text-xl font-black text-[color:var(--tb-navy)] break-words md:truncate max-w-3xl">
                 {lastSession?.query || (language === 'ar' ? 'لم تبدأ جلسة محفوظة بعد' : 'No saved session yet')}
               </h3>
               <p className="mt-1 text-xs md:text-sm font-bold text-[#7C8796]" style={!lastSession ? { opacity: helpOpacity, transition: 'opacity 0.8s' } : undefined}>
@@ -319,7 +319,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               {lastSession ? (language === 'ar' ? 'أكمل' : 'Continue') : (language === 'ar' ? 'ابدأ فكرة' : 'Start')}
             </button>
             {lastSession?.tool && lastSession.tool !== 'discover' && (
-              <button onClick={() => handleTabChange(lastSession.tool)} className="px-5 py-3 rounded-full bg-white border border-[#8FA9C7]/20 text-[#465568] text-xs font-black hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E] active:scale-95 transition-all">
+              <button onClick={() => handleTabChange(lastSession.tool)} className="px-5 py-3 rounded-full bg-white border border-[color:var(--tb-sky)]/20 text-[#465568] text-xs font-black hover:border-[color:var(--tb-lilac-soft)]/30 hover:text-[color:var(--tb-lilac-deep)] active:scale-95 transition-all">
                 {language === 'ar' ? 'افتح المسار' : 'Open path'}
               </button>
             )}
@@ -328,21 +328,21 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </section>
 
       {/* Daily Mission */}
-      <div className="tebyan-daily-mission relative overflow-hidden rounded-[34px] p-gr-3 md:p-gr-3 text-[#182231] border border-[#8FA9C7]/18 bg-gradient-to-br from-[#EEF2F6] via-[#FBFAF7] to-[#F7F3FB] shadow-[0_22px_70px_rgba(24,34,49,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <div className="tebyan-daily-mission relative overflow-hidden rounded-[34px] p-gr-3 md:p-gr-3 text-[color:var(--tb-navy)] border border-[color:var(--tb-sky)]/18 bg-gradient-to-br from-[#EEF2F6] via-[#FBFAF7] to-[#F7F3FB] shadow-[0_22px_70px_rgba(24,34,49,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
           <div className="absolute top-0 right-0 w-56 h-56 bg-white rounded-full blur-[80px] opacity-35 -translate-y-1/2 translate-x-1/3"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#8E7AAE]/12 rounded-full blur-[70px] translate-y-1/2 -translate-x-1/4"></div>
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
               <div className="flex items-start gap-4 flex-1 w-full">
-                  <div className="w-[52px] h-[52px] md:w-14 md:h-14 rounded-[22px] bg-white/80 border border-white/80 text-[#8E7AAE] flex items-center justify-center shadow-sm shrink-0">
+                  <div className="w-[52px] h-[52px] md:w-14 md:h-14 rounded-[22px] bg-white/80 border border-white/80 text-[color:var(--tb-lilac-soft)] flex items-center justify-center shadow-sm shrink-0">
                     <Target className="w-6 h-6" />
                   </div>
                   <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
-                          <h3 className="font-black text-[#6E5F8E] tracking-[0.2em] rtl:tracking-normal uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
-                          {!missionCompleted && !missionLoading && <span className="rounded-full bg-white/80 px-2 py-1 text-[10px] font-black text-[#8E7AAE] border border-[#8E7AAE]/12">+{mission?.xp_reward || 0} XP</span>}
+                          <h3 className="font-black text-[color:var(--tb-lilac-deep)] tracking-[0.2em] rtl:tracking-normal uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
+                          {!missionCompleted && !missionLoading && <span className="rounded-full bg-white/80 px-2 py-1 text-[10px] font-black text-[color:var(--tb-lilac-soft)] border border-[color:var(--tb-lilac-soft)]/12">+{mission?.xp_reward || 0} XP</span>}
                       </div>
                       {missionLoading ? (
-                          <div className="h-10 md:h-12 flex items-center text-[#8E7AAE] font-bold text-xs md:text-sm">{language === 'ar' ? 'نرتّب التحدي بهدوء…' : 'Preparing the challenge calmly…'}</div>
+                          <div className="h-10 md:h-12 flex items-center text-[color:var(--tb-lilac-soft)] font-bold text-xs md:text-sm">{language === 'ar' ? 'نرتّب التحدي بهدوء…' : 'Preparing the challenge calmly…'}</div>
                       ) : (
                           <>
                             <h4 className="text-xl md:text-2xl font-black mb-1 leading-tight">{mission?.title}</h4>
@@ -370,7 +370,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
       </div>
 
       {/* Living Idea Fabric Shadow — a soft dashboard signature without replacing the real feature */}
-      <section className="tebyan-wow-section tebyan-fabric-shadow relative overflow-hidden rounded-[34px] md:rounded-[55px] border border-[#8E7AAE]/14 bg-[#FBFAF7]/86 p-gr-3 md:p-gr-3 shadow-[0_18px_60px_rgba(142,122,174,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <section className="tebyan-wow-section tebyan-fabric-shadow relative overflow-hidden rounded-[34px] md:rounded-[55px] border border-[color:var(--tb-lilac-soft)]/14 bg-[#FBFAF7]/86 p-gr-3 md:p-gr-3 shadow-[0_18px_60px_rgba(142,122,174,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="absolute inset-0 pointer-events-none opacity-80">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(142,122,174,0.16),transparent_18%),radial-gradient(circle_at_72%_22%,rgba(143,169,199,0.18),transparent_20%),radial-gradient(circle_at_62%_76%,rgba(142,122,174,0.12),transparent_18%)]" />
           {[...Array(12)].map((_, i) => (
@@ -389,12 +389,12 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         </div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-gr-3">
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[22px] border border-[#8E7AAE]/16 bg-white/70 text-[#8E7AAE] shadow-sm">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[22px] border border-[color:var(--tb-lilac-soft)]/16 bg-white/70 text-[color:var(--tb-lilac-soft)] shadow-sm">
               <Network className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-[11px] font-black tracking-[0.24em] uppercase text-[#8E7AAE]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
-              <h3 className="mt-1 text-xl md:text-3xl font-black text-[#182231] leading-tight">
+              <p className="text-[11px] font-black tracking-[0.24em] uppercase text-[color:var(--tb-lilac-soft)]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
+              <h3 className="mt-1 text-xl md:text-3xl font-black text-[color:var(--tb-navy)] leading-tight">
                 {language === 'ar' ? getGenderWord(userGender, 'أفكارك ترسم خريطة هادئة خلف المشهد', 'أفكاركِ ترسم خريطة هادئة خلف المشهد', 'أفكارك ترسم خريطة هادئة خلف المشهد') : 'Your ideas are drawing a quiet map backstage'}
               </h3>
               <p className="mt-2 max-w-2xl text-sm font-bold leading-relaxed text-[#7C8796]">
@@ -402,7 +402,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               </p>
             </div>
           </div>
-          <button onClick={() => handleTabChange('knowledgegraph')} className="shrink-0 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-5 py-3 text-xs font-black text-[#6E5F8E] shadow-sm transition-all hover:border-[#8E7AAE]/40 hover:bg-[#F4F1F8] active:scale-95">
+          <button onClick={() => handleTabChange('knowledgegraph')} className="shrink-0 rounded-full border border-[color:var(--tb-lilac-soft)]/18 bg-white/80 px-5 py-3 text-xs font-black text-[color:var(--tb-lilac-deep)] shadow-sm transition-all hover:border-[color:var(--tb-lilac-soft)]/40 hover:bg-[#F4F1F8] active:scale-95">
             {language === 'ar' ? 'افتح النسيج الكامل' : 'Open full fabric'}
           </button>
         </div>
@@ -420,13 +420,13 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           onClick={() => closeFullDashboardAndGo('ar')}
-          className="tebyan-glass-card tebyan-tool-tile group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[#8E7AAE]/18 active:scale-[0.98] transition-all"
+          className="tebyan-glass-card tebyan-tool-tile group relative h-[200px] md:h-[240px] bg-gradient-to-br from-[#F7F3FB] via-[#EEF2F6] to-[#FBFAF7] rounded-[24px] md:rounded-[40px] p-6 text-right overflow-hidden shadow-[0_20px_50px_rgba(142,122,174,0.12)] border border-[color:var(--tb-lilac-soft)]/18 active:scale-[0.98] transition-all"
         >
            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
-             <div className="w-16 h-16 bg-white/80 backdrop-blur-xl text-[#6E5F8E] rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-[#F1EEF4] group-hover:text-[#6E5F8E] transition-all duration-500 border border-white/20">
+             <div className="w-16 h-16 bg-white/80 backdrop-blur-xl text-[color:var(--tb-lilac-deep)] rounded-[20px] flex items-center justify-center shadow-2xl mb-4 group-hover:scale-110 group-hover:bg-[#F1EEF4] group-hover:text-[color:var(--tb-lilac-deep)] transition-all duration-500 border border-white/20">
                <Box className="w-8 h-8" />
              </div>
-             <h3 className="text-xl md:text-2xl font-black text-[#182231] drop-shadow-sm">
+             <h3 className="text-xl md:text-2xl font-black text-[color:var(--tb-navy)] drop-shadow-sm">
                {language === 'ar' ? 'فضاء تبيان الممتد (AR)' : 'Tibyan Extended Space (AR)'}
              </h3>
              <p className="text-[#64788D] text-sm font-bold mt-2 opacity-80 group-hover:opacity-100 transition-opacity">
@@ -442,24 +442,24 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             onClick={() => closeFullDashboardAndGo(tab.id)}
-            className="tebyan-glass-card tebyan-tool-tile group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[#F7F5F2] via-[#EEF2F6] to-[#F1EEF4] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[#8FA9C7]/18 active:scale-[0.98] transition-all"
+            className="tebyan-glass-card tebyan-tool-tile group relative h-[300px] md:h-[360px] md:row-span-2 bg-gradient-to-br from-[color:var(--tb-ivory)] via-[#EEF2F6] to-[color:var(--tb-lilac-bg)] rounded-[24px] md:rounded-[40px] p-6 md:p-8 text-right overflow-hidden shadow-[0_25px_60px_rgba(24,34,49,0.08)] border border-[color:var(--tb-sky)]/18 active:scale-[0.98] transition-all"
           >
              <div className="relative z-10 h-full flex flex-col justify-between">
                 <div>
-                   <div className="bg-white text-[#6E5F8E] w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
+                   <div className="bg-white text-[color:var(--tb-lilac-deep)] w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
                       <tab.icon className="w-7 h-7 md:w-11 md:h-11" />
                    </div>
                    <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] rtl:tracking-normal px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
                       {language === 'ar' ? 'البوصلة النوعية' : 'THE CORE EDGE'}
                    </span>
-                   <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-[#182231] leading-[1.1] mb-2 md:mb-4">
+                   <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-[color:var(--tb-navy)] leading-[1.1] mb-2 md:mb-4">
                       {tab.label}
                    </h3>
                    <p className="text-[#64788D] text-sm md:text-base font-medium max-w-[220px] leading-relaxed">
                       {language === 'ar' ? 'الميزة الجوهرية في كل مشروع' : 'The essential difference in every project'}
                    </p>
                 </div>
-                <div className="flex items-center gap-2 md:gap-3 text-[#6E5F8E] font-black text-sm md:text-lg">
+                <div className="flex items-center gap-2 md:gap-3 text-[color:var(--tb-lilac-deep)] font-black text-sm md:text-lg">
                    <ArrowLeft className={cn("w-5 h-5 md:w-6 md:h-6 group-hover:-translate-x-2 md:group-hover:-translate-x-3 transition-transform", language === 'ar' ? '' : 'rotate-180 group-hover:translate-x-2 md:group-hover:translate-x-3')} />
                    <span>{language === 'ar' ? 'اكتشف العمق' : 'Discover Depth'}</span>
                 </div>

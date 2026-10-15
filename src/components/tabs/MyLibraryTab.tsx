@@ -19,7 +19,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
 
   const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
     'qawlfasl': { color: 'bg-[#eef3ef] text-[#3f6b55]', labelAr: 'قول فصل', labelEn: 'Decision' },
-    'oracle': { color: 'bg-[#f1eef6] text-[#6e5f8e]', labelAr: 'المستشار', labelEn: 'Oracle' },
+    'oracle': { color: 'bg-[#f1eef6] text-[color:var(--tb-lilac-deep)]', labelAr: 'المستشار', labelEn: 'Oracle' },
     'concept': { color: 'bg-[#f7f1e6] text-[#725326]', labelAr: 'الأفكار', labelEn: 'Concepts' },
     'roadmap': { color: 'bg-[#f6eeef] text-[#7c4650]', labelAr: 'المسار', labelEn: 'Roadmap' },
     'item': { color: 'bg-[#f2f2f4] text-[#5b6472]', labelAr: 'مادة', labelEn: 'Items' }
@@ -71,7 +71,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
            animate={{ scale: 1 }}
                       role="listitem"
            className={cn(
-             "pe-4 ps-2 py-1.5 rounded-full flex items-center gap-2.5 border border-[#6e5f8e]/10",
+             "pe-4 ps-2 py-1.5 rounded-full flex items-center gap-2.5 border border-[color:var(--tb-lilac-deep)]/10",
              typeData[type]?.color || 'bg-[#f2f2f4] text-[#5b6472]'
            )}
          >

@@ -155,7 +155,7 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
                 onChange={(e) => setNote(e.target.value.slice(0, 1000))}
                 rows={4}
                 maxLength={1000}
-                className="w-full rounded-2xl border border-[#8FA9C7]/25 bg-white px-4 py-3 text-sm text-navy leading-relaxed outline-none focus:border-[#8E7AAE]/60 resize-none"
+                className="w-full rounded-2xl border border-[color:var(--tb-sky)]/25 bg-white px-4 py-3 text-sm text-navy leading-relaxed outline-none focus:border-[color:var(--tb-lilac-soft)]/60 resize-none"
               />
             </label>
             <label className="block">
@@ -167,7 +167,7 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
                 inputMode="email"
                 autoComplete="email"
                 placeholder="بريد أو رقم"
-                className="w-full rounded-2xl border border-[#8FA9C7]/25 bg-white px-4 py-2.5 text-sm text-navy outline-none focus:border-[#8E7AAE]/60"
+                className="w-full rounded-2xl border border-[color:var(--tb-sky)]/25 bg-white px-4 py-2.5 text-sm text-navy outline-none focus:border-[color:var(--tb-lilac-soft)]/60"
               />
             </label>
             {state === 'error' && (

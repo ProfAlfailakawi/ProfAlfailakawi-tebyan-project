@@ -33,7 +33,7 @@ export const TebyanEmptyState: React.FC<TebyanEmptyStateProps> = ({
       )}
       dir={isAr ? 'rtl' : 'ltr'}
     >
-      <div className="relative z-10 mx-auto mb-3 w-12 h-12 rounded-full bg-transparent border border-[#8E7AAE]/18 flex items-center justify-center text-[#8E7AAE]/70">
+      <div className="relative z-10 mx-auto mb-3 w-12 h-12 rounded-full bg-transparent border border-[color:var(--tb-lilac-soft)]/18 flex items-center justify-center text-[color:var(--tb-lilac-soft)]/70">
         <Icon className="w-5 h-5" strokeWidth={1.4} />
       </div>
       <h3 className="relative z-10 text-base md:text-lg font-black text-navy mb-1.5">{title}</h3>

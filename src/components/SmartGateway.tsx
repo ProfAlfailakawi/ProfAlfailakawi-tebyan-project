@@ -790,7 +790,7 @@ const ThoughtJourney = ({
     >
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 border border-[#8E7AAE]/14 shadow-sm">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 border border-[color:var(--tb-lilac-soft)]/14 shadow-sm">
             <Sparkles className="h-4 w-4 text-lilac" />
           </span>
           <div>
@@ -800,7 +800,7 @@ const ThoughtJourney = ({
             <p className="text-xs font-bold text-ink-mute">{moodLabel}</p>
           </div>
         </div>
-        <span className="text-xs font-black text-lilac bg-white/70 px-3 py-1 rounded-full border border-[#8E7AAE]/10">
+        <span className="text-xs font-black text-lilac bg-white/70 px-3 py-1 rounded-full border border-[color:var(--tb-lilac-soft)]/10">
           {language === "ar" ? "مسار معرفي" : "Cognitive path"}
         </span>
       </div>
@@ -810,12 +810,12 @@ const ThoughtJourney = ({
           return (
             <div
               key={step.label}
-              className="relative rounded-2xl bg-white/72 border border-[#8FA9C7]/14 px-2 py-3 text-center shadow-sm overflow-hidden"
+              className="relative rounded-2xl bg-white/72 border border-[color:var(--tb-sky)]/14 px-2 py-3 text-center shadow-sm overflow-hidden"
             >
               {index < steps.length - 1 && (
                 <span className="hidden md:block absolute top-1/2 -left-2 h-px w-4 bg-[#8FA9C7]/28" />
               )}
-              <Icon className="h-4 w-4 mx-auto mb-2 text-[#6E5F8E]" />
+              <Icon className="h-4 w-4 mx-auto mb-2 text-[color:var(--tb-lilac-deep)]" />
               <span className="block text-xs md:text-xs font-black text-ink-soft">
                 {step.label}
               </span>
@@ -1220,7 +1220,7 @@ export const SmartGateway: React.FC<
           >
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
             <span
-              className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
+              className={`text-content text-[color:var(--tb-lilac-deep)] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
@@ -1234,7 +1234,7 @@ export const SmartGateway: React.FC<
           >
             <span>Welcome back.. last time we stopped at</span>
             <span
-              className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
+              className={`text-content text-[color:var(--tb-lilac-deep)] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
@@ -1328,7 +1328,7 @@ export const SmartGateway: React.FC<
           >
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
             <span
-              className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
+              className={`text-content text-[color:var(--tb-lilac-deep)] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
@@ -1342,7 +1342,7 @@ export const SmartGateway: React.FC<
           >
             <span>Welcome back.. last time we stopped at</span>
             <span
-              className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
+              className={`text-content text-[color:var(--tb-lilac-deep)] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
@@ -1434,7 +1434,7 @@ export const SmartGateway: React.FC<
           >
             <span>أهلاً بك مجدداً.. توقفنا في المرة السابقة عند</span>
             <span
-              className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
+              className={`text-content text-[color:var(--tb-lilac-deep)] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
@@ -1448,7 +1448,7 @@ export const SmartGateway: React.FC<
           >
             <span>Welcome back.. last time we stopped at</span>
             <span
-              className={`text-content text-[#6E5F8E] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
+              className={`text-content text-[color:var(--tb-lilac-deep)] font-bold transition-all ${isQueryExpanded ? "whitespace-normal w-full text-center mt-2 break-words" : "truncate max-w-[200px] md:max-w-[400px] inline-block align-bottom"}`}
             >
               "{normalizeFollowUpQuery(lastInteraction.query)}"
             </span>
@@ -3276,7 +3276,7 @@ export const SmartGateway: React.FC<
                         setQuery(nextValue);
                         setSmartSuggestion("");
                       }}
-                      className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[#8FA9C7]/18 bg-white/72 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[#8E7AAE]/30 active:scale-[0.99] overflow-hidden"
+                      className="mx-auto block w-full max-w-xl rounded-[26px] sm:rounded-full border border-[color:var(--tb-sky)]/18 bg-white/72 px-3 py-2 text-right shadow-sm backdrop-blur-xl transition-all hover:border-[color:var(--tb-lilac-soft)]/30 active:scale-[0.99] overflow-hidden"
                     >
                       <div className="flex w-full items-center justify-between gap-2">
                         <div className="min-w-0 flex-1">
@@ -3306,7 +3306,7 @@ export const SmartGateway: React.FC<
                   searchValue.trim().length > 0 && "tebyan-understanding-pulse",
                   showGateEcho && "tebyan-gate-arrival",
                   isFocused
-                    ? "-translate-y-0.5 ring-4 ring-[#8E7AAE]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95"
+                    ? "-translate-y-0.5 ring-4 ring-[color:var(--tb-lilac-soft)]/10 shadow-[0_18px_60px_rgba(142,122,174,0.14)] bg-[#FAF9F6]/95"
                     : "bg-[#FAF9F6]/80",
                   getFluidStyles(),
                   getFluidAmbient(),
@@ -3322,7 +3322,7 @@ export const SmartGateway: React.FC<
                         opacity: [0, 0.58, 0],
                       }}
                       transition={{ duration: 2.65, ease: "easeInOut" }}
-                      className="h-40 w-40 rounded-full border border-[#8E7AAE]/22 bg-[#F4F0FA]/30 blur-[1px]"
+                      className="h-40 w-40 rounded-full border border-[color:var(--tb-lilac-soft)]/22 bg-[#F4F0FA]/30 blur-[1px]"
                     />
                   </div>
                 )}
@@ -3382,7 +3382,7 @@ export const SmartGateway: React.FC<
                         dir={language === "ar" ? "rtl" : "ltr"}
                       >
                         <span className="invisible">{searchValue}</span>
-                        <span className="text-[#8E7AAE]/28">
+                        <span className="text-[color:var(--tb-lilac-soft)]/28">
                           {smartSuggestion.slice(searchValue.length)}
                         </span>
                       </div>
@@ -3422,7 +3422,7 @@ export const SmartGateway: React.FC<
                     aria-label={
                       language === "ar" ? "مسح السؤال" : "Clear question"
                     }
-                    className="bg-white/90 text-ink-mute border border-[#8FA9C7]/20 w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[18px] transition-all hover:scale-[1.03] hover:border-[#8E7AAE]/35 hover:text-[#6E5F8E] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
+                    className="bg-white/90 text-ink-mute border border-[color:var(--tb-sky)]/20 w-11 h-11 md:w-14 md:h-14 rounded-[16px] md:rounded-[18px] transition-all hover:scale-[1.03] hover:border-[color:var(--tb-lilac-soft)]/35 hover:text-[color:var(--tb-lilac-deep)] active:scale-[0.98] flex items-center justify-center shrink-0 shadow-sm"
                   >
                     <X className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
@@ -3440,10 +3440,10 @@ export const SmartGateway: React.FC<
                   >
                     {/* 1. الأبواب المقترحة حسب السؤال (Suggested Doors: Top Recommended Door like 'قول فصل' + Companion Doors) */}
                     {liveTypingDoors.length > 0 && (
-                      <div className="overflow-hidden rounded-3xl border border-[#8E7AAE]/20 bg-gradient-to-br from-white/96 via-[#FAF9F6]/95 to-[#F6F1FA]/92 p-4 md:p-6 shadow-[0_16px_44px_rgba(142,122,174,0.12)] backdrop-blur-xl transition-all">
-                        <div className="flex items-center justify-between pb-3.5 border-b border-[#8E7AAE]/12">
+                      <div className="overflow-hidden rounded-3xl border border-[color:var(--tb-lilac-soft)]/20 bg-gradient-to-br from-white/96 via-[#FAF9F6]/95 to-[#F6F1FA]/92 p-4 md:p-6 shadow-[0_16px_44px_rgba(142,122,174,0.12)] backdrop-blur-xl transition-all">
+                        <div className="flex items-center justify-between pb-3.5 border-b border-[color:var(--tb-lilac-soft)]/12">
                           <div className="flex items-center gap-2">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#8E7AAE]/15 text-[#6E5F8E]">
+                            <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#8E7AAE]/15 text-[color:var(--tb-lilac-deep)]">
                               <Sparkles className="h-4 w-4" />
                             </span>
                             <span className="text-xs md:text-sm font-black text-navy">
@@ -3452,7 +3452,7 @@ export const SmartGateway: React.FC<
                                 : "Best door for your question"}
                             </span>
                           </div>
-                          <span className="rounded-full bg-[#8E7AAE]/12 px-2.5 py-0.5 text-xs md:text-xs font-bold text-[#6E5F8E]">
+                          <span className="rounded-full bg-[#8E7AAE]/12 px-2.5 py-0.5 text-xs md:text-xs font-bold text-[color:var(--tb-lilac-deep)]">
                             {language === "ar" ? "اقتراح ذكي فوري" : "Instant Smart Route"}
                           </span>
                         </div>
@@ -3462,9 +3462,9 @@ export const SmartGateway: React.FC<
                           const topDoor = liveTypingDoors[0];
                           const TopIcon = topDoor.icon || Zap;
                           return (
-                            <div className="mt-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 rounded-2xl border border-[#8E7AAE]/25 bg-white/92 p-4 shadow-sm hover:border-[#8E7AAE]/50 transition-all">
+                            <div className="mt-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 rounded-2xl border border-[color:var(--tb-lilac-soft)]/25 bg-white/92 p-4 shadow-sm hover:border-[color:var(--tb-lilac-soft)]/50 transition-all">
                               <div className="flex items-start gap-3.5 min-w-0 flex-1">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8E7AAE] to-[#5E4D7A] text-white shadow-md">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[color:var(--tb-lilac-soft)] to-[#5E4D7A] text-white shadow-md">
                                   <TopIcon className="h-5 w-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -3472,7 +3472,7 @@ export const SmartGateway: React.FC<
                                     <h3 className="font-serif text-base md:text-lg font-bold text-navy">
                                       {topDoor.label}
                                     </h3>
-                                    <span className="rounded-md bg-[#8E7AAE]/12 px-2 py-0.5 text-xs font-bold text-[#6E5F8E]">
+                                    <span className="rounded-md bg-[#8E7AAE]/12 px-2 py-0.5 text-xs font-bold text-[color:var(--tb-lilac-deep)]">
                                       {topDoor.badge || (language === "ar" ? "توجيه وحلول مباشرة" : "Direct certified solution")}
                                     </span>
                                   </div>
@@ -3495,7 +3495,7 @@ export const SmartGateway: React.FC<
 
                         {/* Companion Doors */}
                         {liveTypingDoors.length > 1 && (
-                          <div className="mt-3.5 pt-3.5 border-t border-[#8E7AAE]/10">
+                          <div className="mt-3.5 pt-3.5 border-t border-[color:var(--tb-lilac-soft)]/10">
                             <p className="mb-2 text-xs font-bold text-ink-mute">
                               {language === "ar" ? "أو يمكنك استكشاف هذه الأبواب البديلة:" : "Or explore these alternative doors:"}
                             </p>
@@ -3507,10 +3507,10 @@ export const SmartGateway: React.FC<
                                     key={companion.id}
                                     type="button"
                                     onClick={() => handlePathSelect(companion.id, searchValue)}
-                                    className="group flex items-center justify-between gap-2.5 rounded-xl border border-[#8FA9C7]/18 bg-white/75 px-3.5 py-2.5 text-right transition-all hover:bg-white hover:border-[#8E7AAE]/40 hover:shadow-sm cursor-pointer"
+                                    className="group flex items-center justify-between gap-2.5 rounded-xl border border-[color:var(--tb-sky)]/18 bg-white/75 px-3.5 py-2.5 text-right transition-all hover:bg-white hover:border-[color:var(--tb-lilac-soft)]/40 hover:shadow-sm cursor-pointer"
                                   >
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FAF7FD] text-[#6E5F8E] group-hover:bg-[#8E7AAE] group-hover:text-white transition-colors">
+                                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FAF7FD] text-[color:var(--tb-lilac-deep)] group-hover:bg-[#8E7AAE] group-hover:text-white transition-colors">
                                         <CompIcon className="h-4 w-4" />
                                       </div>
                                       <div className="min-w-0 text-right">
@@ -3522,7 +3522,7 @@ export const SmartGateway: React.FC<
                                         </span>
                                       </div>
                                     </div>
-                                    <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[#8E7AAE]/50 group-hover:text-lilac group-hover:-translate-x-0.5 transition-transform ${language === "ar" ? "" : "rotate-180"}`} />
+                                    <ArrowLeft className={`h-3.5 w-3.5 shrink-0 text-[color:var(--tb-lilac-soft)]/50 group-hover:text-lilac group-hover:-translate-x-0.5 transition-transform ${language === "ar" ? "" : "rotate-180"}`} />
                                   </button>
                                 );
                               })}
@@ -3538,7 +3538,7 @@ export const SmartGateway: React.FC<
                         <button
                           type="button"
                           onClick={() => setShowQuestionHelper(true)}
-                          className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#8E7AAE]/18 bg-white/80 px-4 py-1.5 text-xs font-bold text-[#6E5F8E] transition-all hover:bg-[#F7F3FA] hover:border-[#8E7AAE]/40 active:scale-[0.98] shadow-xs cursor-pointer"
+                          className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[color:var(--tb-lilac-soft)]/18 bg-white/80 px-4 py-1.5 text-xs font-bold text-[color:var(--tb-lilac-deep)] transition-all hover:bg-[#F7F3FA] hover:border-[color:var(--tb-lilac-soft)]/40 active:scale-[0.98] shadow-xs cursor-pointer"
                         >
                           <Sparkles className="h-3.5 w-3.5" />
                           <span>{language === "ar" ? "ساعدني أصيغ السؤال بدقة أكبر" : "Help me phrase this more accurately"}</span>
@@ -3612,7 +3612,7 @@ export const SmartGateway: React.FC<
                     <button
                       type="button"
                       onClick={clearSearch}
-                      className="px-6 py-2 bg-[#8E7AAE]/12 hover:bg-mood-primary/20 text-[#6E5F8E] rounded-full font-bold text-sm transition-all duration-500"
+                      className="px-6 py-2 bg-[#8E7AAE]/12 hover:bg-mood-primary/20 text-[color:var(--tb-lilac-deep)] rounded-full font-bold text-sm transition-all duration-500"
                     >
                       {language === "ar" ? "سؤال جديد" : "New question"}
                     </button>
@@ -3643,14 +3643,14 @@ export const SmartGateway: React.FC<
                               className="p-4 bg-mood-secondary/5 border border-mood-secondary/10 rounded-2xl mb-4"
                             >
                               <div className="flex items-center gap-2 mb-2 justify-center">
-                                <Sparkles className="w-4 h-4 text-[#6E5F8E]" />
-                                <span className="text-xs leading-[1.6] font-black text-[#6E5F8E] uppercase">
+                                <Sparkles className="w-4 h-4 text-[color:var(--tb-lilac-deep)]" />
+                                <span className="text-xs leading-[1.6] font-black text-[color:var(--tb-lilac-deep)] uppercase">
                                   {language === "ar"
                                     ? "استنتاج أولي"
                                     : "Initial Insight"}
                                 </span>
                               </div>
-                              <p className="text-[#6E5F8E] font-bold text-sm leading-relaxed">
+                              <p className="text-[color:var(--tb-lilac-deep)] font-bold text-sm leading-relaxed">
                                 {smartResponse}
                               </p>
                             </motion.div>
@@ -3709,7 +3709,7 @@ export const SmartGateway: React.FC<
                                 key={door.id}
                                 type="button"
                                 onClick={() => handlePathSelect(door.id, query)}
-                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[#8E7AAE]/50 hover:-translate-y-0.5 active:scale-[0.99]"
+                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[color:var(--tb-lilac-soft)]/50 hover:-translate-y-0.5 active:scale-[0.99]"
                               >
                                 <span className="min-w-0">
                                   <span className="block text-sm font-black text-navy leading-6 break-words md:truncate">
@@ -3745,7 +3745,7 @@ export const SmartGateway: React.FC<
                 <motion.div
                   id="mobile-results"
                   key="mobile-suggestions"
-                  className="md:hidden border-t border-[#8FA9C7]/10 px-1 sm:px-4 py-6 space-y-6 bg-transparent"
+                  className="md:hidden border-t border-[color:var(--tb-sky)]/10 px-1 sm:px-4 py-6 space-y-6 bg-transparent"
                 >
                   <div className="flex justify-center mb-2">
                     {/* Mobile: provide a simple restart option instead of returning to home */}
@@ -3848,7 +3848,7 @@ export const SmartGateway: React.FC<
                                 key={door.id}
                                 type="button"
                                 onClick={() => handlePathSelect(door.id, query)}
-                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[#8E7AAE]/50 hover:-translate-y-0.5 active:scale-[0.99]"
+                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[color:var(--tb-lilac-soft)]/50 hover:-translate-y-0.5 active:scale-[0.99]"
                               >
                                 <span className="min-w-0">
                                   <span className="block text-sm font-black text-navy leading-6 break-words md:truncate">
@@ -3873,7 +3873,7 @@ export const SmartGateway: React.FC<
                 <motion.details
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="w-full max-w-3xl group rounded-2xl border border-[#8FA9C7]/10 bg-white/70 px-4 py-3 text-right shadow-[0_10px_28px_rgba(24,34,49,0.035)]"
+                  className="w-full max-w-3xl group rounded-2xl border border-[color:var(--tb-sky)]/10 bg-white/70 px-4 py-3 text-right shadow-[0_10px_28px_rgba(24,34,49,0.035)]"
                   dir={language === "ar" ? "rtl" : "ltr"}
                 >
                   <summary className="cursor-pointer list-none flex items-center justify-between gap-3 text-xs md:text-sm font-black text-ink-mute">
@@ -3886,7 +3886,7 @@ export const SmartGateway: React.FC<
                       {language === "ar" ? "غرفة الغد" : "Tomorrow room"}
                     </span>
                   </summary>
-                  <div className="mt-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-[#8FA9C7]/10 pt-3">
+                  <div className="mt-3 flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-[color:var(--tb-sky)]/10 pt-3">
                     <p className="text-sm md:text-base font-black text-navy leading-relaxed">
                       {livingWorld.tomorrow}
                     </p>
@@ -3915,7 +3915,7 @@ export const SmartGateway: React.FC<
                         );
                         setTimeout(() => setSelectionFeedback(""), 2200);
                       }}
-                      className="shrink-0 rounded-full bg-[#F4F1F8] px-4 py-2 text-xs font-black text-[#6E5F8E] border border-[#DED6EA] transition-all hover:bg-[#EEE8F7] active:scale-95"
+                      className="shrink-0 rounded-full bg-[#F4F1F8] px-4 py-2 text-xs font-black text-[color:var(--tb-lilac-deep)] border border-[#DED6EA] transition-all hover:bg-[#EEE8F7] active:scale-95"
                     >
                       {language === "ar" ? "ذكرني باجر" : "Remind me tomorrow"}
                     </button>
@@ -3959,7 +3959,7 @@ export const SmartGateway: React.FC<
                           setSmartSuggestion("");
                           inputRef.current?.focus();
                         }}
-                        className="min-h-11 max-w-full rounded-full border border-[#8FA9C7]/16 bg-white/80 px-4 py-2 text-[13px] font-black leading-6 text-ink-soft shadow-sm transition-colors hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E] active:scale-[0.98]"
+                        className="min-h-11 max-w-full rounded-full border border-[color:var(--tb-sky)]/16 bg-white/80 px-4 py-2 text-[13px] font-black leading-6 text-ink-soft shadow-sm transition-colors hover:border-[color:var(--tb-lilac-soft)]/30 hover:text-[color:var(--tb-lilac-deep)] active:scale-[0.98]"
                       >
                         <span className="text-lilac">
                           {language === "ar" ? "مثال: " : "Example: "}
@@ -3977,7 +3977,7 @@ export const SmartGateway: React.FC<
                         aria-label={
                           language === "ar" ? "مثال آخر" : "Another example"
                         }
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-[#8FA9C7]/16 bg-white/70 text-ink-mute transition-colors hover:text-[#6E5F8E] active:scale-95"
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--tb-sky)]/16 bg-white/70 text-ink-mute transition-colors hover:text-[color:var(--tb-lilac-deep)] active:scale-95"
                       >
                         <RefreshCw className="h-3.5 w-3.5" />
                       </button>
@@ -3989,7 +3989,7 @@ export const SmartGateway: React.FC<
                     type="button"
                     onClick={() => handleTabChange("discover")}
                     data-testid="all-services-link"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black text-[#6E5F8E] underline decoration-[#8E7AAE]/40 underline-offset-4 transition-colors hover:text-[#4F4270] active:scale-[0.98]"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black text-[color:var(--tb-lilac-deep)] underline decoration-[color:var(--tb-lilac-soft)]/40 underline-offset-4 transition-colors hover:text-[#4F4270] active:scale-[0.98]"
                   >
                     <LayoutGrid className="h-4 w-4" aria-hidden="true" />
                     {language === "ar" ? "كل الخدمات" : "All services"}

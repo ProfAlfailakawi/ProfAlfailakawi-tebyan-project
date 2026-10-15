@@ -45,7 +45,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
   return (
     <div
       className={cn(
-        'mt-4 rounded-[20px] border border-[#8FA9C7]/12 bg-white/82 px-4 py-3 shadow-[0_12px_32px_rgba(24,34,49,0.04)]',
+        'mt-4 rounded-[20px] border border-[color:var(--tb-sky)]/12 bg-white/82 px-4 py-3 shadow-[0_12px_32px_rgba(24,34,49,0.04)]',
         'flex flex-col md:flex-row md:items-center justify-between gap-3 text-right',
         compact && 'px-3 py-2 rounded-2xl',
         className

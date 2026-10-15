@@ -16,7 +16,7 @@ const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }
       whileDrag={{ scale: 1.05, zIndex: 50, cursor: 'grabbing' }}
       whileHover={{ y: -5 }}
       className={cn(
-        "absolute cursor-grab bg-white p-6 rounded-3xl border-2 border-[#8FA9C7]/25 shadow-xl w-64 select-none",
+        "absolute cursor-grab bg-white p-6 rounded-3xl border-2 border-[color:var(--tb-sky)]/25 shadow-xl w-64 select-none",
         className
       )}
     >
@@ -33,7 +33,7 @@ const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }
    they were an analysis. No real data feeds them, so no numbers are drawn: a neutral empty state is shown. */
 const EmotionalLandscape = ({ language }: { language: 'ar' | 'en' }) => {
   return (
-    <div className="w-full bg-[#F1EEF4] p-8 rounded-[40px] border border-[#8FA9C7]/25 relative overflow-hidden">
+    <div className="w-full bg-[#F1EEF4] p-8 rounded-[40px] border border-[color:var(--tb-sky)]/25 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-mood-primary/5 to-transparent pointer-events-none" />
         <div className="flex items-center gap-2 mb-6 relative">
           <Activity className="w-5 h-5 text-mood-primary" />
@@ -66,7 +66,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
 
   return (
     <div className="w-full h-full flex flex-col space-y-6">
-      <div className="bg-[#FAF9F6]/88 border border-[#8FA9C7]/15 rounded-[32px] p-5 md:p-6 shadow-sm space-y-4">
+      <div className="bg-[#FAF9F6]/88 border border-[color:var(--tb-sky)]/15 rounded-[32px] p-5 md:p-6 shadow-sm space-y-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="text-right">
             <h2 className="text-lg md:text-xl font-black text-navy">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
@@ -77,7 +77,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
         <button
           type="button"
           onClick={() => setShowArenaPicker(v => !v)}
-          className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[#8FA9C7]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
+          className="w-full flex items-center justify-between gap-3 rounded-[20px] border border-[color:var(--tb-sky)]/18 bg-white/88 px-4 py-3 text-right shadow-sm active:scale-[0.99] transition-all"
         >
           <div className="flex items-center gap-3 font-black text-navy">
             {React.createElement(activeArenaTab.icon, { className: 'w-5 h-5 text-lilac' })}
@@ -96,10 +96,10 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                   onClick={() => { setActiveSubTab(tab.id as any); setShowArenaPicker(false); }}
                   className={cn(
                     "flex items-center justify-between gap-3 px-3 md:px-5 py-3.5 md:py-4 rounded-[18px] md:rounded-[22px] font-bold text-xs md:text-sm transition-all text-right border min-h-[82px] md:min-h-[88px]",
-                    isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-ink-soft hover:bg-[#FAF9F6]/88 border-[#8FA9C7]/15 hover:border-zinc-300"
+                    isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow border-mood-primary" : "bg-[#F7F5F2] text-ink-soft hover:bg-[#FAF9F6]/88 border-[color:var(--tb-sky)]/15 hover:border-zinc-300"
                   )}
                 >
-                  <span className={cn("w-10 h-10 md:w-11 md:h-11 rounded-[14px] flex items-center justify-center shrink-0 border transition-all", isActive ? "bg-white/14 border-white/16" : "bg-white border-[#8FA9C7]/18 text-[#6E5F8E]")}>
+                  <span className={cn("w-10 h-10 md:w-11 md:h-11 rounded-[14px] flex items-center justify-center shrink-0 border transition-all", isActive ? "bg-white/14 border-white/16" : "bg-white border-[color:var(--tb-sky)]/18 text-[color:var(--tb-lilac-deep)]")}>
                     <Icon className="w-4 h-4 md:w-5 md:h-5" />
                   </span>
                   <span className="leading-tight line-clamp-2 flex-1">{tab.label}</span>
@@ -125,12 +125,12 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                {activeSubTab === 'timemachine' && <TimeMachineTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'simulation' && <SimulationTab language={language} handleTabChange={handleTabChange} initialValue={initialValue} onValueUsed={onValueUsed} />}
                {activeSubTab === 'spatial' && (
-                 <div className="relative w-full h-[600px] bg-[#F7F5F2] rounded-[48px] border border-[#8FA9C7]/25 overflow-hidden p-12">
+                 <div className="relative w-full h-[600px] bg-[#F7F5F2] rounded-[48px] border border-[color:var(--tb-sky)]/25 overflow-hidden p-12">
                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[length:40px_40px]" />
                      
                      <button 
                         onClick={() => setActiveSubTab('council')}
-                        className="absolute top-6 left-6 px-4 py-2 bg-white text-ink-mute font-bold text-xs rounded-full border border-[#8FA9C7]/25 hover:border-[#8E7AAE] hover:text-navy z-50 flex items-center gap-2"
+                        className="absolute top-6 left-6 px-4 py-2 bg-white text-ink-mute font-bold text-xs rounded-full border border-[color:var(--tb-sky)]/25 hover:border-[color:var(--tb-lilac-soft)] hover:text-navy z-50 flex items-center gap-2"
                      >
                         ← {language === 'ar' ? 'رجوع' : 'Back'}
                      </button>
@@ -162,7 +162,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                            </PhysicsCard>
 
                            <div className="text-center space-y-4">
-                              <div className="w-32 h-32 bg-white rounded-full border-4 border-dashed border-[#8FA9C7]/25 flex items-center justify-center mb-4">
+                              <div className="w-32 h-32 bg-white rounded-full border-4 border-dashed border-[color:var(--tb-sky)]/25 flex items-center justify-center mb-4">
                                  <Move className="w-8 h-8 text-zinc-300 animate-pulse" />
                               </div>
                               <h3 className="font-black text-zinc-300 uppercase text-sm">

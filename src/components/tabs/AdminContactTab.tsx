@@ -75,7 +75,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
           language={language}
         />
         {newMessagesCount > 0 && (
-          <div className="bg-[#F4F0F8] text-[#6E5F8E] px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 w-fit">
+          <div className="bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 w-fit">
             <CircleDot className="w-4 h-4 animate-pulse" />
             <span>{newMessagesCount} {language === 'ar' ? 'رسائل جديدة' : 'New messages'}</span>
           </div>
@@ -117,7 +117,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                       <h3 className="font-bold text-lg text-black flex flex-wrap items-center gap-2 leading-snug">
                         {msg.name}
                         {msg.status === 'new' && (
-                          <span className="text-[10px] uppercase font-bold bg-[#F4F0F8] text-[#6E5F8E] px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] uppercase font-bold bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] px-2 py-0.5 rounded-full">
                             {language === 'ar' ? 'جديد' : 'New'}
                           </span>
                         )}
@@ -135,7 +135,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                         {msg.status === 'new' && (
                           <button
                             onClick={(e) => { e.stopPropagation(); markAsRead(msg.id, msg.status); }}
-                            className="p-2 rounded-full text-zinc-500 hover:text-[#6E5F8E] hover:bg-[#F4F0F8] transition-colors"
+                            className="p-2 rounded-full text-zinc-500 hover:text-[color:var(--tb-lilac-deep)] hover:bg-[#F4F0F8] transition-colors"
                             title={language === 'ar' ? 'تحديد كمقروء' : 'Mark as read'}
                           >
                             <CheckCircle2 className="w-4 h-4" />

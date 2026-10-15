@@ -33,7 +33,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
         <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col md:flex-row items-center md:justify-between gap-4">
           <button 
             onClick={onBack}
-            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center gap-2 text-[#64788D] hover:text-[#6E5F8E] bg-white/92 hover:bg-white px-3 py-2 rounded-2xl font-bold transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
+            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center gap-2 text-[#64788D] hover:text-[color:var(--tb-lilac-deep)] bg-white/92 hover:bg-white px-3 py-2 rounded-2xl font-bold transition-colors border border-[color:var(--tb-sky)]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <ArrowRight className="w-5 h-5" /><span className="hidden md:inline">رجوع</span>
           </button>

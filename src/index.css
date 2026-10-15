@@ -11,6 +11,13 @@
 }
 
 :root {
+  /* رموز لونية ثابتة (لا تتبدل مع المزاج): الأكثر تكراراً في المكوّنات. */
+  --tb-lilac-soft: #8e7aae;
+  --tb-sky: #8fa9c7;
+  --tb-lilac-deep: #6e5f8e;
+  --tb-navy: #182231;
+  --tb-ivory: #f7f5f2;
+  --tb-lilac-bg: #f1eef4;
   --color-brand-primary: #6e5f8e;
   --color-brand-accent: #8fa9c7;
   --color-brand-bg: #f7f5f2;

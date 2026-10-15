@@ -58,7 +58,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white border border-[#8FA9C7]/12 text-navy p-4 md:p-8 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
+    <div className="bg-white border border-[color:var(--tb-sky)]/12 text-navy p-4 md:p-8 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
       
       <div className="space-y-6 z-10 relative text-right">
         <div className="mb-4 md:mb-5 text-right">

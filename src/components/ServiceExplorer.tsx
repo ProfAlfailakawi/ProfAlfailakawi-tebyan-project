@@ -119,11 +119,11 @@ export const ServiceExplorer: React.FC<Props> = ({
         key={service.id}
         onClick={() => handleTabChange(service.id)}
         style={{ ["--i" as any]: Math.min(idx, 12) }}
-        className="tbn-stagger tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+        className="tbn-stagger tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[color:var(--tb-sky)]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[color:var(--tb-lilac-soft)]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
       >
         <div className="relative flex h-full flex-col">
           <div className="flex items-start justify-between gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[color:var(--tb-lilac-soft)]/12 bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
               <Icon className="h-5 w-5" strokeWidth={1.6} />
             </span>
           </div>
@@ -167,7 +167,7 @@ export const ServiceExplorer: React.FC<Props> = ({
       </header>
 
       <div className="tebyan-service-search-wrap mx-auto mt-6 max-w-3xl md:mt-8">
-        <label className="tebyan-service-search flex min-h-12 items-center gap-3 rounded-[18px] border border-[#8FA9C7]/18 bg-white px-4 shadow-[0_8px_24px_rgba(24,34,49,0.045)]">
+        <label className="tebyan-service-search flex min-h-12 items-center gap-3 rounded-[18px] border border-[color:var(--tb-sky)]/18 bg-white px-4 shadow-[0_8px_24px_rgba(24,34,49,0.045)]">
           <Search className="h-5 w-5 shrink-0 text-lilac" />
           <input
             value={query}
@@ -204,8 +204,8 @@ export const ServiceExplorer: React.FC<Props> = ({
                 className={cn(
                   "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-black transition-colors",
                   active
-                    ? "border-[#8E7AAE] bg-[#8E7AAE] text-white"
-                    : "border-[#8FA9C7]/18 bg-white text-ink-mute hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E]",
+                    ? "border-[color:var(--tb-lilac-soft)] bg-[#8E7AAE] text-white"
+                    : "border-[color:var(--tb-sky)]/18 bg-white text-ink-mute hover:border-[color:var(--tb-lilac-soft)]/30 hover:text-[color:var(--tb-lilac-deep)]",
                 )}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
@@ -233,7 +233,7 @@ export const ServiceExplorer: React.FC<Props> = ({
             return (
               <section key={category.id} className="mb-9" aria-labelledby={`cat-${category.id}`}>
                 <div className="mb-3 flex items-start gap-3 text-right">
-                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F4F0F8] text-[#6E5F8E]">
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]">
                     <CategoryIcon className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div>
@@ -255,7 +255,7 @@ export const ServiceExplorer: React.FC<Props> = ({
       </div>
 
       {isSearching && !filteredServices.length && (
-        <div className="mx-auto mt-8 max-w-3xl rounded-[24px] border border-[#8FA9C7]/14 bg-white/82 p-6 text-center">
+        <div className="mx-auto mt-8 max-w-3xl rounded-[24px] border border-[color:var(--tb-sky)]/14 bg-white/82 p-6 text-center">
           <h2 className="text-lg font-black text-navy">
             {isArabic ? "لا توجد نتيجة بهذه العبارة" : "No matching result"}
           </h2>

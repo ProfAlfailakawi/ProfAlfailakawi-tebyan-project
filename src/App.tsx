@@ -1326,7 +1326,7 @@ const AppContent: React.FC = () => {
             aria-label={language === "ar" ? "رجوع" : "Back"}
             title={language === "ar" ? "رجوع" : "Back"}
             data-no-auto-scroll="true"
-            className="tebyan-global-back w-12 h-12 rounded-2xl bg-white/90 text-[#6e5f8e] border border-[#6e5f8e]/20 shadow-sm backdrop-blur-xl transition-all hover:bg-[#6e5f8e] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+            className="tebyan-global-back w-12 h-12 rounded-2xl bg-white/90 text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-deep)]/20 shadow-sm backdrop-blur-xl transition-all hover:bg-[#6e5f8e] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
           >
             <ArrowLeft
               className={cn("w-5 h-5", language === "ar" ? "rotate-180" : "")}
@@ -1343,7 +1343,7 @@ const AppContent: React.FC = () => {
             aria-label={language === "ar" ? "شرح الصفحة" : "Page help"}
             title={language === "ar" ? "شرح الصفحة" : "Page help"}
             data-no-auto-scroll="true"
-            className="tebyan-page-help-button w-10 h-10 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+            className="tebyan-page-help-button w-10 h-10 rounded-full bg-white/92 text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
           >
             <HelpCircle className="w-4 h-4" />
             <span className="tebyan-ctl-label">{language === "ar" ? "شرح" : "Help"}</span>
@@ -1361,17 +1361,17 @@ const AppContent: React.FC = () => {
                 initial={{ opacity: 0, y: -8, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                className="tebyan-page-help-popup fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
+                className="tebyan-page-help-popup fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[color:var(--tb-lilac-soft)]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
                 dir={language === "ar" ? "rtl" : "ltr"}
               >
-                <div className="flex items-center gap-2 mb-2 text-[#6E5F8E] border-b border-[#8E7AAE]/10 pb-2">
+                <div className="flex items-center gap-2 mb-2 text-[color:var(--tb-lilac-deep)] border-b border-[color:var(--tb-lilac-soft)]/10 pb-2">
                   <HelpCircle className="w-5 h-5 shrink-0" />
                   <span className="text-sm font-black text-navy">
                     {helpData.title}
                   </span>
                 </div>
 
-                <p className="text-xs font-bold leading-relaxed text-ink-mute mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[#8E7AAE]/5">
+                <p className="text-xs font-bold leading-relaxed text-ink-mute mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[color:var(--tb-lilac-soft)]/5">
                   {helpData.intro}
                 </p>
 
@@ -1389,7 +1389,7 @@ const AppContent: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-xs font-bold text-[#6E5F8E] leading-relaxed flex items-start gap-1.5">
+                <div className="bg-[#FAF9F6] border border-[color:var(--tb-sky)]/15 rounded-xl p-2.5 text-xs font-bold text-[color:var(--tb-lilac-deep)] leading-relaxed flex items-start gap-1.5">
                   <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{helpData.tip}</span>
                 </div>
@@ -1440,7 +1440,7 @@ const AppContent: React.FC = () => {
             className="flex items-center gap-3 transition-transform active:scale-95"
             aria-label={language === "ar" ? "الصفحة الرئيسية" : "Home"}
           >
-            <div className="w-10 h-10 bg-white/90 border border-[#8E7AAE]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
+            <div className="w-10 h-10 bg-white/90 border border-[color:var(--tb-lilac-soft)]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
               <TebyanMark size={26} />
             </div>
             <span className="tebyan-brand-name shrink-0 font-serif text-2xl font-bold text-navy transition-colors group-hover:text-mood-primary">
@@ -1452,7 +1452,7 @@ const AppContent: React.FC = () => {
             onClick={() => handleTabChange("discover")}
             aria-label={language === "ar" ? "كل الخدمات" : "All services"}
             title={language === "ar" ? "كل الخدمات" : "All services"}
-            className="tebyan-services-button shrink-0 inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#8E7AAE]/20 bg-white/90 px-3 text-sm font-black text-[#6E5F8E] shadow-sm transition-transform active:scale-95"
+            className="tebyan-services-button shrink-0 inline-flex h-10 items-center gap-1.5 rounded-xl border border-[color:var(--tb-lilac-soft)]/20 bg-white/90 px-3 text-sm font-black text-[color:var(--tb-lilac-deep)] shadow-sm transition-transform active:scale-95"
           >
             <Grid3X3 className="w-4 h-4" aria-hidden="true" />
             <span className={cn(IS_DEMO_MODE && "max-[430px]:hidden")}>{language === "ar" ? "الخدمات" : "Services"}</span>
@@ -1514,7 +1514,7 @@ const AppContent: React.FC = () => {
               ) : authReady ? (
                 <button
                   onClick={() => setShowLogin(true)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#8FA9C7]/18 bg-white/88 p-0 text-zinc-900 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-[color:var(--tb-sky)]/18 bg-white/88 p-0 text-zinc-900 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
                   title={language === "ar" ? "تسجيل الدخول" : "Login"}
                 >
                   <User className="w-4 h-4" />
