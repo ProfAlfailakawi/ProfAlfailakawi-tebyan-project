@@ -41,7 +41,7 @@ export function DemoStarters({ tab, language, onPick, className = '' }: { tab: D
           key={text}
           type="button"
           onClick={() => onPick(text)}
-          className="max-w-full rounded-full border border-lilac/20 bg-ivory px-3.5 py-1.5 text-start text-[13px] font-semibold leading-snug text-[#4B3F6B] transition-colors hover:border-lilac/45 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-lilac/40"
+          className="max-w-full rounded-full border border-lilac/20 bg-ivory px-3.5 py-1.5 text-start text-[13px] font-semibold leading-snug text-[color:var(--tb-c-4b3f6b)] transition-colors hover:border-lilac/45 hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-lilac/40"
         >
           {text}
         </button>

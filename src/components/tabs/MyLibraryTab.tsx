@@ -18,11 +18,11 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
   }, {});
 
   const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
-    'qawlfasl': { color: 'bg-[#eef3ef] text-[#3f6b55]', labelAr: 'قول فصل', labelEn: 'Decision' },
-    'oracle': { color: 'bg-[#f1eef6] text-[color:var(--tb-lilac-deep)]', labelAr: 'المستشار', labelEn: 'Oracle' },
-    'concept': { color: 'bg-[#f7f1e6] text-[#725326]', labelAr: 'الأفكار', labelEn: 'Concepts' },
-    'roadmap': { color: 'bg-[#f6eeef] text-[#7c4650]', labelAr: 'المسار', labelEn: 'Roadmap' },
-    'item': { color: 'bg-[#f2f2f4] text-[#5b6472]', labelAr: 'مادة', labelEn: 'Items' }
+    'qawlfasl': { color: 'bg-[color:var(--tb-c-eef3ef)] text-[color:var(--tb-c-3f6b55)]', labelAr: 'قول فصل', labelEn: 'Decision' },
+    'oracle': { color: 'bg-[color:var(--tb-c-f1eef6)] text-[color:var(--tb-lilac-deep)]', labelAr: 'المستشار', labelEn: 'Oracle' },
+    'concept': { color: 'bg-[color:var(--tb-c-f7f1e6)] text-[color:var(--tb-c-725326)]', labelAr: 'الأفكار', labelEn: 'Concepts' },
+    'roadmap': { color: 'bg-[color:var(--tb-c-f6eeef)] text-[color:var(--tb-c-7c4650)]', labelAr: 'المسار', labelEn: 'Roadmap' },
+    'item': { color: 'bg-[color:var(--tb-c-f2f2f4)] text-[color:var(--tb-c-5b6472)]', labelAr: 'مادة', labelEn: 'Items' }
   };
 
   const ringColors: Record<string, string> = {
@@ -72,7 +72,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
                       role="listitem"
            className={cn(
              "pe-4 ps-2 py-1.5 rounded-full flex items-center gap-2.5 border border-[color:var(--tb-lilac-deep)]/10",
-             typeData[type]?.color || 'bg-[#f2f2f4] text-[#5b6472]'
+             typeData[type]?.color || 'bg-[color:var(--tb-c-f2f2f4)] text-[color:var(--tb-c-5b6472)]'
            )}
          >
            <span className="w-2.5 h-2.5 rounded-full shrink-0 ms-1" style={{ backgroundColor: ringColors[type] || ringColors.item, opacity: 0.85 }} aria-hidden="true" />
@@ -238,12 +238,12 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                     
                                     {/* Physical Frame and Matting */}
                                     <div className="bg-stone-900 p-3 md:p-4 rounded-sm shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)] border-t border-zinc-700 border-l border-r border-zinc-800 border-b-8 border-b-black transition-transform duration-700 hover:-translate-y-2 hover:rotate-1">
-                                      <div className="bg-[#f0ece1] p-6 md:p-10 border border-[#e0d6c8] shadow-inner relative overflow-hidden h-[400px] md:h-[500px] flex flex-col justify-center text-center">
-                                          <div className="absolute inset-0 bg-[#e9dbce] mix-blend-multiply opacity-20 pointer-events-none"></div>
+                                      <div className="bg-[color:var(--tb-c-f0ece1)] p-6 md:p-10 border border-[color:var(--tb-c-e0d6c8)] shadow-inner relative overflow-hidden h-[400px] md:h-[500px] flex flex-col justify-center text-center">
+                                          <div className="absolute inset-0 bg-[color:var(--tb-c-e9dbce)] mix-blend-multiply opacity-20 pointer-events-none"></div>
                                           
                                           <div className="relative z-10 h-full overflow-y-auto custom-scrollbar pr-2 flex flex-col justify-center">
-                                            {title && <h3 className="text-[#2a1e12] font-black text-xl md:text-3xl leading-snug mb-6" style={{ fontFamily: 'Amiri, serif' }}>{title}</h3>}
-                                            <div className="tbn-frame-text text-[#4a3b2c] font-medium leading-loose text-sm md:text-lg italic" style={{ fontFamily: 'Aref Ruqaa, auto' }}>
+                                            {title && <h3 className="text-[color:var(--tb-c-2a1e12)] font-black text-xl md:text-3xl leading-snug mb-6" style={{ fontFamily: 'Amiri, serif' }}>{title}</h3>}
+                                            <div className="tbn-frame-text text-[color:var(--tb-c-4a3b2c)] font-medium leading-loose text-sm md:text-lg italic" style={{ fontFamily: 'Aref Ruqaa, auto' }}>
                                                 {type === 'oracle' ? <ReactMarkdown>{content.substring(0, 300) + (content.length > 300 ? '...' : '')}</ReactMarkdown> : content}
                                             </div>
                                           </div>

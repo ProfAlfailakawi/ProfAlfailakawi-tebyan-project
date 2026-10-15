@@ -77,7 +77,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
              </button>
              <button 
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(true); }}
-               className={cn("px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-extrabold transition-all cursor-pointer", isShadowCouncil ? "bg-[#B85D63] text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]" : "text-ink-mute hover:text-navy")}
+               className={cn("px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-extrabold transition-all cursor-pointer", isShadowCouncil ? "bg-[color:var(--tb-c-b85d63)] text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]" : "text-ink-mute hover:text-navy")}
              >
                <span className="inline-flex items-center gap-1.5"><Swords className="w-4 h-4" aria-hidden="true" />{language === 'ar' ? 'المجلس المعارض' : 'Opposing Council'}</span>
              </button>
@@ -92,8 +92,8 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
             className={cn(
                "w-full p-4 md:p-10 rounded-2xl md:rounded-[32px] text-[15px] md:text-2xl outline-none transition-all font-semibold md:font-black text-right leading-relaxed",
                isShadowCouncil 
-                 ? "bg-white border-2 border-lilac/30 text-navy placeholder-[#8A97A6] focus:border-lilac/30 focus:shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
-                 : "bg-white border-2 border-navy/10 text-navy placeholder-[#8A97A6] focus:border-lilac/30 focus:bg-ivory"
+                 ? "bg-white border-2 border-lilac/30 text-navy placeholder-[color:var(--tb-c-8a97a6)] focus:border-lilac/30 focus:shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
+                 : "bg-white border-2 border-navy/10 text-navy placeholder-[color:var(--tb-c-8a97a6)] focus:border-lilac/30 focus:bg-ivory"
             )}
             placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف" : "Type your question or describe the situation here..."} 
           />

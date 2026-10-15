@@ -137,7 +137,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         <button
           type="button"
           onClick={() => onApply(refined)}
-          className="w-full text-right p-3 rounded-2xl bg-[#F7F5F2] hover:bg-[#F1EEF4] border border-[color:var(--tb-lilac-soft)]/12 transition-colors"
+          className="w-full text-right p-3 rounded-2xl bg-[#F7F5F2] hover:bg-[color:var(--tb-lilac-bg)] border border-[color:var(--tb-lilac-soft)]/12 transition-colors"
         >
           <div className="text-xs font-black text-zinc-400 mb-1">{language === 'ar' ? 'صياغة أفضل' : 'Better wording'}</div>
           <div className="text-sm font-black text-navy leading-relaxed">{refined}</div>

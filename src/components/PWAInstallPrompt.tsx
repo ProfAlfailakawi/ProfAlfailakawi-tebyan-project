@@ -58,7 +58,7 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
         onClick={handleInstallClick}
         className={variant === 'menu'
           ? 'w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-bold text-right text-zinc-600 hover:bg-zinc-100 active:bg-zinc-100 transition-colors'
-          : 'flex items-center justify-center w-10 h-10 md:w-11 md:h-11 mx-1 md:mx-2 rounded-xl bg-white/85 text-[#7D689E] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[#C9BEDF]/40 backdrop-blur-xl'}
+          : 'flex items-center justify-center w-10 h-10 md:w-11 md:h-11 mx-1 md:mx-2 rounded-xl bg-white/85 text-[color:var(--tb-c-7d689e)] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[color:var(--tb-c-c9bedf)]/40 backdrop-blur-xl'}
         title={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
         aria-label={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
       >
@@ -74,7 +74,7 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
             animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999 }}
-            className="flex flex-col items-center justify-end md:justify-center p-4 bg-[#F7F3EE]/70"
+            className="flex flex-col items-center justify-end md:justify-center p-4 bg-[color:var(--tb-c-f7f3ee)]/70"
             onClick={() => setShowIOSInstructions(false)}
             dir="rtl"
           >
@@ -105,7 +105,7 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
                </ol>
                <button 
                   onClick={() => setShowIOSInstructions(false)}
-                  className="w-full mt-8 p-4 rounded-2xl bg-[#8E7AAE] text-white font-bold text-sm hover:bg-[#806D9F] transition-colors shadow-lg shadow-[#8E7AAE]/20"
+                  className="w-full mt-8 p-4 rounded-2xl bg-[#8E7AAE] text-white font-bold text-sm hover:bg-[color:var(--tb-c-806d9f)] transition-colors shadow-lg shadow-[#8E7AAE]/20"
                 >
                   حسناً، فهمت
                 </button>

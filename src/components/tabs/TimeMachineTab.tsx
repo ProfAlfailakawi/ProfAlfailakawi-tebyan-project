@@ -70,7 +70,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
                aria-label={language === 'ar' ? 'موضوع الرحلة عبر الزمن' : 'Time journey topic'}
                value={timeMachineTopic} 
                onChange={(e) => setTimeMachineTopic(e.target.value)}
-               className="bg-ivory border border-navy/10 p-4 rounded-xl text-navy placeholder-[#8A97A6] outline-none focus:border-lilac/30 flex-1 w-full md:w-64"
+               className="bg-ivory border border-navy/10 p-4 rounded-xl text-navy placeholder-[color:var(--tb-c-8a97a6)] outline-none focus:border-lilac/30 flex-1 w-full md:w-64"
                placeholder={language === 'ar' ? "مفهوم الرحلة..." : "Journey concept..."}
              />
              <button 

@@ -81,7 +81,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
       
       <div className="tebyan-tab-surface relative overflow-hidden bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-[color:var(--tb-lilac-deep)]/10">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#6e5f8e]/[0.06] rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#8fa9c7]/[0.08] rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[color:var(--tb-sky)]/[0.08] rounded-full blur-3xl"></div>
         
         <div className="relative flex flex-col gap-6">
           <label htmlFor="roadmap-goal" className={cn("block text-sm font-bold text-ink-mute", language === 'ar' ? 'text-right' : 'text-left')}>
@@ -94,7 +94,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
               value={goal}
               onChange={e => setGoal(e.target.value)}
               disabled={isLoading}
-              placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة، بدء مشروع تجاري، احتراف البرمجة...' : 'Example: Learn a new language, start a business, master programming...'}
+              placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة' : 'Example: Learn a new language, start a business, master programming...'}
               className={cn(
                 "w-full bg-white/70 border border-[color:var(--tb-lilac-deep)]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[color:var(--tb-lilac-deep)]/50 focus:ring-4 focus:ring-[color:var(--tb-lilac-deep)]/10 transition-all text-navy",
                 language === 'ar' ? 'text-right' : 'text-left'
@@ -242,7 +242,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
                               {milestone.tasks.map((task: string, j: number) => (
                                 <li key={j} className="flex items-start gap-3">
                                   <div className="mt-[6px] w-[5px] h-[5px] rounded-full bg-[#8E7AAE] shrink-0" />
-                                  <span className={cn("text-base font-medium text-[#273548] leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>{task?.replace(/\*\*/g, '')}</span>
+                                  <span className={cn("text-base font-medium text-[color:var(--tb-c-273548)] leading-snug", language === 'ar' ? 'text-right' : 'text-left')}>{task?.replace(/\*\*/g, '')}</span>
                                 </li>
                               ))}
                             </ul>

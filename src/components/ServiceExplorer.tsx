@@ -123,7 +123,7 @@ export const ServiceExplorer: React.FC<Props> = ({
       >
         <div className="relative flex h-full flex-col">
           <div className="flex items-start justify-between gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[color:var(--tb-lilac-soft)]/12 bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[color:var(--tb-lilac-soft)]/12 bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
               <Icon className="h-5 w-5" strokeWidth={1.6} />
             </span>
           </div>
@@ -233,7 +233,7 @@ export const ServiceExplorer: React.FC<Props> = ({
             return (
               <section key={category.id} className="mb-9" aria-labelledby={`cat-${category.id}`}>
                 <div className="mb-3 flex items-start gap-3 text-right">
-                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]">
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)]">
                     <CategoryIcon className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <div>

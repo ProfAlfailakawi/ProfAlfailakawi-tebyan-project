@@ -158,14 +158,14 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
   };
 
   return (
-    <div className="tebyan-knowledge-fabric w-full bg-[#FBFAF7] text-navy min-h-[82vh] rounded-[24px] md:rounded-[32px] p-3 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.10)] relative overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 border border-[#E9E2F1]">
+    <div className="tebyan-knowledge-fabric w-full bg-[#FBFAF7] text-navy min-h-[82vh] rounded-[24px] md:rounded-[32px] p-3 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.10)] relative overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 border border-[color:var(--tb-c-e9e2f1)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(216,206,233,0.34)_0%,transparent_58%),radial-gradient(circle_at_15%_75%,rgba(220,234,244,0.42)_0%,transparent_38%)] pointer-events-none"></div>
       
 
       <div className="flex-1 flex flex-col relative z-10 pt-24 md:pt-0">
         <div className="mb-6 md:mb-10 pl-2">
             <h2 className="text-2xl md:text-5xl font-black text-navy flex items-center gap-4">
-                <div className="p-3 bg-[#F1ECF7] rounded-2xl border border-[#E8E2F1] flex items-center justify-center shrink-0">
+                <div className="p-3 bg-[color:var(--tb-c-f1ecf7)] rounded-2xl border border-[color:var(--tb-c-e8e2f1)] flex items-center justify-center shrink-0">
                   <Network className="w-7 h-7 md:w-16 md:h-16 text-lilac" />
                 </div>
                 <div className="flex-1 min-w-0 pb-1 pt-1">
@@ -177,20 +177,20 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                   </div>
                 </div>
             </h2>
-            <div className="mt-4 md:mt-6 p-4 md:p-5 rounded-2xl bg-white/70 border border-[#E9E2F1] backdrop-blur-sm max-w-3xl">
-                <p className="text-[#6F7785] font-medium leading-relaxed text-sm md:text-lg text-justify">
+            <div className="mt-4 md:mt-6 p-4 md:p-5 rounded-2xl bg-white/70 border border-[color:var(--tb-c-e9e2f1)] backdrop-blur-sm max-w-3xl">
+                <p className="text-[color:var(--tb-c-6f7785)] font-medium leading-relaxed text-sm md:text-lg text-justify">
                     {language === 'ar' 
                       ? 'هنا لا نعطيك مجرد إجابات مُعلبة، بل نُريك المجرة المعرفية المحيطة بها. الأفكار لا تعيش في عزلة.. اكتشف الروابط الخفية بين قراراتك، وكيف يمكن لفكرة واحدة أن تفتح لك مسارات لم تكن تتوقعها.' 
                       : 'Here we don’t just give you canned answers; we show you the cognitive galaxy surrounding them. Ideas don’t live in isolation. Discover the hidden connections between your decisions.'}
                 </p>
-                <div className="mt-4 flex items-center gap-3 text-[#3F6B55] font-bold text-sm">
+                <div className="mt-4 flex items-center gap-3 text-[color:var(--tb-c-3f6b55)] font-bold text-sm">
                     <Sparkles className="w-5 h-5" />
                     <span>{language === 'ar' ? 'تحليل شبكتك: تتركز اهتماماتك بقوة حول مفاهيمك الحالية، استكشف لربطها وتوسيع مداركك.' : 'Network Analysis: Your focus is strong on current concepts, merge them to expand your mindset.'}</span>
                 </div>
             </div>
         </div>
 
-        <div className="mb-4 flex items-center gap-2 rounded-full bg-white/72 border border-[#E9E2F1] p-1 w-full sm:w-fit shadow-sm overflow-x-auto">
+        <div className="mb-4 flex items-center gap-2 rounded-full bg-white/72 border border-[color:var(--tb-c-e9e2f1)] p-1 w-full sm:w-fit shadow-sm overflow-x-auto">
           <button type="button" onClick={() => setViewMode('map')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
           <button type="button" onClick={() => setViewMode('list')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
         </div>
@@ -207,7 +207,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           </div>
         )}
 
-        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[30rem] md:min-h-[36rem] border border-[#E9E2F1] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
+        {viewMode === 'map' && <div className="flex-1 relative w-full h-full min-h-[30rem] md:min-h-[36rem] border border-[color:var(--tb-c-e9e2f1)] rounded-[32px] bg-white/70 shadow-inner overflow-hidden flex items-center justify-center group z-0">
           {history.length === 0 && (
             <div className="absolute top-6 left-6 right-6 z-20 pointer-events-auto">
               <TebyanEmptyState
@@ -429,7 +429,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     min="1" max="4" 
                     value={timeEra} 
                     onChange={e => setTimeEra(parseInt(e.target.value))} 
-                    className="flex-1 min-w-[40px] accent-[color:var(--tb-lilac-soft)] h-2 bg-[#D9CFE6] rounded-lg appearance-none cursor-pointer" 
+                    className="flex-1 min-w-[40px] accent-[color:var(--tb-lilac-soft)] h-2 bg-[color:var(--tb-c-d9cfe6)] rounded-lg appearance-none cursor-pointer" 
                  />
                  <span className={cn("text-xs md:text-sm font-bold whitespace-nowrap shrink-0 min-w-[54px] md:min-w-[60px] text-center", timeEra === 4 ? "text-amber-400" : "text-lilac")}>
                     {getEraLabel(4)}
@@ -454,7 +454,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           >
             <button 
               onClick={() => setSelectedNodes([])}
-              className="absolute top-4 right-4 p-2 bg-[#F7F5F2] rounded-full hover:bg-[#F1EEF4] text-ink-mute transition-colors"
+              className="absolute top-4 right-4 p-2 bg-[#F7F5F2] rounded-full hover:bg-[color:var(--tb-lilac-bg)] text-ink-mute transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -464,7 +464,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     <div className="mt-8 flex-1">
                         <div className="flex items-center gap-3 mb-6">
                             <div className={cn("p-3 rounded-2xl border", selectedNodes[0].type === 'golden' ? "bg-amber-500/20 border-amber-500/20" : "bg-emerald-500/20 border-emerald-500/20")}>
-                                {selectedNodes[0].type === 'golden' ? <Sparkles className="w-6 h-6 text-amber-400" /> : <Lightbulb className="w-6 h-6 text-[#3F6B55]" />}
+                                {selectedNodes[0].type === 'golden' ? <Sparkles className="w-6 h-6 text-amber-400" /> : <Lightbulb className="w-6 h-6 text-[color:var(--tb-c-3f6b55)]" />}
                             </div>
                             <h3 className="text-lg md:text-2xl font-black">{selectedNodes[0].label}</h3>
                         </div>
@@ -488,7 +488,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             </div>
 
                             <div className="p-5 bg-[#F7F5F2] rounded-2xl border border-[color:var(--tb-sky)]/18 shadow-inner">
-                                <div className={cn("text-xs font-black uppercase mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-[#3F6B55]")}>
+                                <div className={cn("text-xs font-black uppercase mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-[color:var(--tb-c-3f6b55)]")}>
                                     <Sparkles className="w-4 h-4" />
                                     {language === 'ar' ? 'دعوة للابتكار' : 'Call for Innovation'}
                                 </div>
@@ -499,7 +499,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
                             <button 
                             onClick={() => executeSearch(selectedNodes[0].label)}
-                            className="w-full flex items-center justify-center gap-3 py-4 bg-[#6E5F8E] hover:bg-[#806D9F] text-white rounded-2xl font-black transition-all active:scale-[0.98] border border-white/5"
+                            className="w-full flex items-center justify-center gap-3 py-4 bg-[#6E5F8E] hover:bg-[color:var(--tb-c-806d9f)] text-white rounded-2xl font-black transition-all active:scale-[0.98] border border-white/5"
                             >
                             <Search className="w-5 h-5" />
                             {language === 'ar' ? 'استكشاف هذا المفهوم منفرداً' : 'Explore Singly'}
@@ -508,7 +508,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                               <button onClick={() => saveNode(selectedNodes[0])} className="w-full flex items-center justify-center gap-2 py-3 bg-white border border-[color:var(--tb-sky)]/18 text-ink-soft rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
                                 <Bookmark className="w-4 h-4" /> {language === 'ar' ? 'احفظ العقدة' : 'Save node'}
                               </button>
-                              <button onClick={() => setSelectedNodes(prev => prev.slice(0,1))} className="w-full flex items-center justify-center gap-2 py-3 bg-[#F1EEF4] border border-[color:var(--tb-lilac-soft)]/16 text-[color:var(--tb-lilac-deep)] rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
+                              <button onClick={() => setSelectedNodes(prev => prev.slice(0,1))} className="w-full flex items-center justify-center gap-2 py-3 bg-[color:var(--tb-lilac-bg)] border border-[color:var(--tb-lilac-soft)]/16 text-[color:var(--tb-lilac-deep)] rounded-2xl font-black text-sm transition-all active:scale-[0.98]">
                                 <Link2 className="w-4 h-4" /> {language === 'ar' ? 'اربط بفكرة أخرى' : 'Link another idea'}
                               </button>
                             </div>
@@ -528,14 +528,14 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                         </div>
 
                         <div className="relative flex flex-col items-center gap-4 my-8">
-                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform -rotate-2", selectedNodes[0].type === 'golden' ? "bg-[#A68F58]/15 border-[#A68F58]/40" : "bg-lilac-mist border-lilac-soft/50")}>
-                                <span className={cn("font-bold", selectedNodes[0].type === 'golden' ? "text-[#6F6238]" : "text-lilac")}>{selectedNodes[0].label}</span>
+                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform -rotate-2", selectedNodes[0].type === 'golden' ? "bg-[color:var(--tb-c-a68f58)]/15 border-[color:var(--tb-c-a68f58)]/40" : "bg-lilac-mist border-lilac-soft/50")}>
+                                <span className={cn("font-bold", selectedNodes[0].type === 'golden' ? "text-[color:var(--tb-c-6f6238)]" : "text-lilac")}>{selectedNodes[0].label}</span>
                             </div>
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center border-4 border-[color:var(--tb-ivory)] z-10 text-lilac font-bold text-sm">
                                 +
                             </div>
-                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform rotate-2", selectedNodes[1].type === 'golden' ? "bg-[#A68F58]/15 border-[#A68F58]/40" : "bg-lilac-mist border-lilac-soft/50")}>
-                                <span className={cn("font-bold", selectedNodes[1].type === 'golden' ? "text-[#6F6238]" : "text-lilac")}>{selectedNodes[1].label}</span>
+                            <div className={cn("w-full p-4 border rounded-2xl text-center shadow-lg transform rotate-2", selectedNodes[1].type === 'golden' ? "bg-[color:var(--tb-c-a68f58)]/15 border-[color:var(--tb-c-a68f58)]/40" : "bg-lilac-mist border-lilac-soft/50")}>
+                                <span className={cn("font-bold", selectedNodes[1].type === 'golden' ? "text-[color:var(--tb-c-6f6238)]" : "text-lilac")}>{selectedNodes[1].label}</span>
                             </div>
                         </div>
 

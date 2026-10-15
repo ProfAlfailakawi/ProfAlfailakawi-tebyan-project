@@ -285,7 +285,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                    exit={{ opacity: 0, scale: 0.9 }}
                    className="absolute -bottom-6 left-1/2 -translate-x-1/2 z-20 w-fit"
                  >
-                   <div className="bg-[#F7E5E3] text-[#A2433D] px-8 py-3 rounded-full flex items-center justify-between gap-6 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] whitespace-nowrap border-4 border-white">
+                   <div className="bg-[color:var(--tb-c-f7e5e3)] text-[color:var(--tb-c-a2433d)] px-8 py-3 rounded-full flex items-center justify-between gap-6 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] whitespace-nowrap border-4 border-white">
                      <div className="flex items-center gap-3">
                         <VolumeX className="w-5 h-5" />
                         <span className="font-black text-xs md:text-sm">{language === 'ar' ? 'تحذير: القرار يبدو انفعالياً. تبيان تنصح بالتريث.' : 'ALERT: Decision appears emotional. Tibyan suggests waiting.'}</span>
@@ -339,7 +339,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 pt-1">
                         {decisionPurposes.map(purpose => (
-                          <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-lg" : "bg-white/78 text-[#3D4A5A] border-[color:var(--tb-sky)]/15 hover:bg-white hover:border-zinc-300")}>
+                          <button key={purpose.id} type="button" onClick={() => selectDecisionPurpose(purpose.id)} className={cn("text-right p-3 md:p-4 rounded-[18px] md:rounded-[22px] border transition-all active:scale-[0.98]", activeDecisionPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-lg" : "bg-white/78 text-[color:var(--tb-c-3d4a5a)] border-[color:var(--tb-sky)]/15 hover:bg-white hover:border-zinc-300")}>
                             <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
                             <div className={cn("text-xs leading-relaxed font-bold", activeDecisionPurpose === purpose.id ? "text-ink-soft" : "text-ink-mute")}>{language === 'ar' ? purpose.hint.ar : purpose.hint.en}</div>
                           </button>
@@ -358,7 +358,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     className="relative overflow-hidden rounded-[28px] md:rounded-[34px] border border-[color:var(--tb-lilac-soft)]/16 bg-white/92 p-5 md:p-7 shadow-[0_18px_55px_rgba(24,34,49,0.07)]"
                   >
-                    <div className="absolute -top-20 -left-16 h-52 w-52 rounded-full bg-[#D8CEEA]/35 blur-3xl" />
+                    <div className="absolute -top-20 -left-16 h-52 w-52 rounded-full bg-[color:var(--tb-c-d8ceea)]/35 blur-3xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <div className="flex items-start gap-4">
                         <div className={cn("w-14 h-14 md:w-16 md:h-16 rounded-[22px] flex items-center justify-center shrink-0 shadow-sm", activeSceneTool.bgColor)}>
@@ -414,7 +414,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                               isActive ? "bg-white border-[color:var(--tb-lilac-soft)]/32 shadow-sm" : "bg-white/54 border-[color:var(--tb-sky)]/12 hover:bg-white"
                             )}
                           >
-                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isDone ? "bg-[#EEF4F1] text-[#5F837A]" : isActive ? "bg-[#8E7AAE] text-white" : "bg-[#EEF2F6] text-ink-mute")}>
+                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", isDone ? "bg-[color:var(--tb-c-eef4f1)] text-[color:var(--tb-c-5f837a)]" : isActive ? "bg-[#8E7AAE] text-white" : "bg-[color:var(--tb-c-eef2f6)] text-ink-mute")}>
                               <sceneTool.icon className="w-4 h-4" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -518,7 +518,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                              <div className="flex flex-col md:flex-row items-center gap-12 max-w-4xl mx-auto">
                                  {/* Scale Visual */}
                                  <div className="flex-1 w-full flex flex-col items-center justify-center relative px-[2.25rem] md:px-0">
-                                    <div className="w-1 h-32 bg-[#64788D] rounded-full mx-auto"></div>
+                                    <div className="w-1 h-32 bg-[color:var(--tb-c-64788d)] rounded-full mx-auto"></div>
                                     <motion.div 
                                         initial={{ rotate: 0 }}
                                         animate={{ rotate: (result.content.certainty - 50) * 0.4 }}
@@ -625,11 +625,11 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                              </div>
                              
                              <div className="tbn-result__body markdown-body prose max-w-none relative z-10
-                                prose-p:!text-[#273548] prose-p:text-xl md:prose-p:text-3xl prose-p:leading-relaxed prose-p:font-bold prose-p:mb-10
+                                prose-p:!text-[color:var(--tb-c-273548)] prose-p:text-xl md:prose-p:text-3xl prose-p:leading-relaxed prose-p:font-bold prose-p:mb-10
                                 prose-headings:!text-navy prose-headings:font-black prose-headings:mb-12 md:prose-headings:text-7xl
                                 prose-strong:!text-lilac prose-strong:font-black prose-strong:text-2xl md:prose-strong:text-4xl
-                                prose-li:!text-[#273548] prose-li:text-xl md:prose-li:text-2xl prose-li:mb-4
-                                prose-blockquote:border-lilac prose-blockquote:bg-lilac-mist prose-blockquote:p-10 md:prose-blockquote:p-16 prose-blockquote:rounded-[40px] prose-blockquote:!text-[#273548] prose-blockquote:not-italic prose-blockquote:font-bold prose-blockquote:text-2xl md:prose-blockquote:text-4xl">
+                                prose-li:!text-[color:var(--tb-c-273548)] prose-li:text-xl md:prose-li:text-2xl prose-li:mb-4
+                                prose-blockquote:border-lilac prose-blockquote:bg-lilac-mist prose-blockquote:p-10 md:prose-blockquote:p-16 prose-blockquote:rounded-[40px] prose-blockquote:!text-[color:var(--tb-c-273548)] prose-blockquote:not-italic prose-blockquote:font-bold prose-blockquote:text-2xl md:prose-blockquote:text-4xl">
                                <ReactMarkdown>{result.content}</ReactMarkdown>
                              </div>
                         </div>
@@ -645,7 +645,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                             {React.createElement(tools.find(t => t.id === result.tool)!.icon as any, {className: "w-8 h-8"})}
                                         </div>
                                     ) : (
-                                        <div className="p-4 rounded-3xl bg-[#F7E5E3] text-[#A2433D]">
+                                        <div className="p-4 rounded-3xl bg-[color:var(--tb-c-f7e5e3)] text-[color:var(--tb-c-a2433d)]">
                                             <ShieldAlert className="w-8 h-8" />
                                         </div>
                                     )}
@@ -659,7 +659,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                                     </div>
                                 </div>
                             </div>
-                            <div className="tbn-result__body markdown-body prose prose-zinc md:prose-xl max-w-none text-[#273548] prose-headings:text-navy prose-strong:text-navy prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
+                            <div className="tbn-result__body markdown-body prose prose-zinc md:prose-xl max-w-none text-[color:var(--tb-c-273548)] prose-headings:text-navy prose-strong:text-navy prose-strong:font-black leading-relaxed font-serif rtl:font-sans">
                               <ReactMarkdown>{result.content}</ReactMarkdown>
                             </div>
                         </div>

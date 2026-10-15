@@ -123,7 +123,7 @@ export const DoorShell = ({
                     (modes.length <= 3 ? "max-md:grow max-md:justify-center max-md:whitespace-nowrap " : "") +
                     (on
                       ? "bg-[#8E7AAE] border-[color:var(--tb-lilac-soft)] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
-                      : "bg-white/80 border-[#E5DFD4] text-ink-soft hover:border-[color:var(--tb-lilac-soft)]/50 hover:text-[#5E4D7A]")
+                      : "bg-white/80 border-[color:var(--tb-c-e5dfd4)] text-ink-soft hover:border-[color:var(--tb-lilac-soft)]/50 hover:text-[color:var(--tb-c-5e4d7a)]")
                   }
                 >
                   {Icon && <Icon className={emphasis ? "w-4 h-4" : "w-3.5 h-3.5"} />}

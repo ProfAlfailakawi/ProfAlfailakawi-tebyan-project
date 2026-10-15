@@ -408,7 +408,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      onClick={() => { setActiveLabPurpose(purpose.id); setShowLabPurposePicker(false); }}
                      className={cn(
                        "text-right p-4 rounded-[22px] border transition-all active:scale-[0.98]",
-                       activeLabPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-lg" : "bg-[#F7F5F2] text-[#3D4A5A] border-[color:var(--tb-sky)]/15 hover:bg-white hover:border-zinc-300"
+                       activeLabPurpose === purpose.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-lg" : "bg-[#F7F5F2] text-[color:var(--tb-c-3d4a5a)] border-[color:var(--tb-sky)]/15 hover:bg-white hover:border-zinc-300"
                      )}
                    >
                      <div className="font-black text-sm mb-1">{language === 'ar' ? purpose.title.ar : purpose.title.en}</div>
@@ -556,7 +556,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                            {labSymbol.description}
                         </p>
                         <div className="pt-8 border-t border-[color:var(--tb-sky)]/40 mt-6 w-full">
-                           <div className="inline-block px-5 py-1.5 bg-[#F1EEF4] text-ink-mute text-xs font-black uppercase tracking-[0.2em] rtl:tracking-normal mb-4 rounded-full border border-[color:var(--tb-sky)]/25">
+                           <div className="inline-block px-5 py-1.5 bg-[color:var(--tb-lilac-bg)] text-ink-mute text-xs font-black uppercase tracking-[0.2em] rtl:tracking-normal mb-4 rounded-full border border-[color:var(--tb-sky)]/25">
                               {language === 'ar' ? 'البعد الفلسفي' : 'PHILOSOPHICAL ESSENCE'}
                            </div>
                            <p className="text-lg font-bold text-navy leading-relaxed max-w-lg mx-auto">{labSymbol.significance}</p>
@@ -569,7 +569,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    <motion.div 
                      initial={{ opacity: 0, y: 20 }}
                      animate={{ opacity: 1, y: 0 }}
-                     className="bg-[#F1EEF4] text-navy p-8 md:p-12 rounded-[40px] flex flex-col items-center gap-10 overflow-hidden relative shadow-2xl border border-white/5"
+                     className="bg-[color:var(--tb-lilac-bg)] text-navy p-8 md:p-12 rounded-[40px] flex flex-col items-center gap-10 overflow-hidden relative shadow-2xl border border-white/5"
                    >
                      {/* ... sound UI ... */}
                      
@@ -665,7 +665,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                              transition={{ delay: i * 0.2 }}
                              className={cn(
                                "flex flex-col gap-2 p-6 rounded-[24px] max-w-2xl",
-                               i % 2 === 0 ? "bg-[#FAF9F6]/88 border border-[color:var(--tb-sky)]/15 shadow-sm self-start ml-auto" : "bg-[#F1EEF4] text-navy border border-[color:var(--tb-lilac-soft)] self-end mr-auto"
+                               i % 2 === 0 ? "bg-[#FAF9F6]/88 border border-[color:var(--tb-sky)]/15 shadow-sm self-start ml-auto" : "bg-[color:var(--tb-lilac-bg)] text-navy border border-[color:var(--tb-lilac-soft)] self-end mr-auto"
                              )}
                            >
                              <div className="flex items-center gap-3 mb-2">
@@ -699,14 +699,14 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    <motion.div
                      initial={{ opacity: 0, y: 20 }}
                      animate={{ opacity: 1, y: 0 }}
-                     className="tbn-dark bg-[#182231] text-white rounded-[36px] p-5 md:p-8 border border-[#C9A961]/20 shadow-[0_24px_80px_rgba(24,34,49,0.22)] overflow-hidden relative"
+                     className="tbn-dark bg-[#182231] text-white rounded-[36px] p-5 md:p-8 border border-[color:var(--tb-c-c9a961)]/20 shadow-[0_24px_80px_rgba(24,34,49,0.22)] overflow-hidden relative"
                    >
-                     <div className="absolute inset-x-0 top-0 h-1 bg-[#C9A961]" />
+                     <div className="absolute inset-x-0 top-0 h-1 bg-[color:var(--tb-c-c9a961)]" />
                      <div className="absolute inset-0 opacity-[0.06] pointer-events-none [background-image:linear-gradient(90deg,#fff_1px,transparent_1px),linear-gradient(0deg,#fff_1px,transparent_1px)] [background-size:34px_34px]" />
                      <div className="relative z-10 space-y-7">
                        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
                          <div className="space-y-3">
-                           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#C9A961]/12 border border-[#C9A961]/25 text-xs font-black uppercase text-[#F3D99A]">
+                           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[color:var(--tb-c-c9a961)]/12 border border-[color:var(--tb-c-c9a961)]/25 text-xs font-black uppercase text-[color:var(--tb-c-f3d99a)]">
                              <Radio className="w-4 h-4" />
                              {language === 'ar' ? 'استوديو تبيان' : 'TEBYAN STUDIO'}
                            </div>
@@ -725,7 +725,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          )}
                        </div>
 
-                       <div className="rounded-[28px] bg-[#F7F1E3] text-[#171411] border border-[#C9A961]/20 p-5 md:p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+                       <div className="rounded-[28px] bg-[color:var(--tb-c-f7f1e3)] text-[color:var(--tb-c-171411)] border border-[color:var(--tb-c-c9a961)]/20 p-5 md:p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
                          <div className="h-28 md:h-36 flex items-center justify-center gap-1.5 md:gap-2 overflow-hidden" aria-hidden="true">
                            {Array.from({ length: 42 }).map((_, i) => {
                              const height = 20 + ((i * 17) % 74);
@@ -856,7 +856,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                           analysis: { ar: 'التحليل', en: 'Analysis', color: 'bg-blue-500' },
                           design: { ar: 'التصميم', en: 'Design', color: 'bg-lilac' },
                           development: { ar: 'التطوير', en: 'Development', color: 'bg-lilac' },
-                          implementation: { ar: 'التنفيذ', en: 'Implementation', color: 'bg-[#EEF4F1]0' },
+                          implementation: { ar: 'التنفيذ', en: 'Implementation', color: 'bg-[color:var(--tb-c-eef4f1)]0' },
                           evaluation: { ar: 'التقويم', en: 'Evaluation', color: 'bg-rose-500' }
                         };
                         const step = stepNames[key] || { ar: key, en: key, color: 'bg-[#F7F5F2]0' };
@@ -877,7 +877,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                               <h4 className="text-sm font-bold uppercase text-ink-mute mb-3 tracking-widest">
                                 {language === 'ar' ? step.ar : step.en}
                               </h4>
-                              <div className="text-sm font-bold text-[#3D4A5A] leading-relaxed flex-grow markdown-body">
+                              <div className="text-sm font-bold text-[color:var(--tb-c-3d4a5a)] leading-relaxed flex-grow markdown-body">
                                  <ReactMarkdown>{val || ''}</ReactMarkdown>
                               </div>
                             </div>
@@ -934,7 +934,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                           <div className="space-y-6">
                              <div className="bg-[#F7F5F2] p-4 rounded-[16px] border border-[color:var(--tb-sky)]/15">
                                 <div className="text-xs font-bold text-ink-mute uppercase mb-2">{language === 'ar' ? 'التحديات الرئيسية' : 'Key Challenges'}</div>
-                                <div className="text-sm font-bold text-[#3D4A5A]">{p.challenges}</div>
+                                <div className="text-sm font-bold text-[color:var(--tb-c-3d4a5a)]">{p.challenges}</div>
                              </div>
                              <div className="bg-lilac-mist/30 p-4 rounded-[16px] border border-lilac-mist/30">
                                 <div className="text-xs font-bold text-lilac uppercase mb-2">{language === 'ar' ? 'الاحتياجات الأساسية' : 'Core Needs'}</div>
@@ -954,7 +954,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          initial={{ opacity: 0, x: -20 }}
                          animate={{ opacity: 1, x: 0 }}
                          transition={{ delay: i * 0.1 }}
-                         className="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white p-6 rounded-[24px] md:rounded-[32px] border border-[color:var(--tb-sky)]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#A8C3BD]/25 transition-colors"
+                         className="flex flex-col md:flex-row gap-6 items-start md:items-center bg-white p-6 rounded-[24px] md:rounded-[32px] border border-[color:var(--tb-sky)]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[color:var(--tb-c-a8c3bd)]/25 transition-colors"
                        >
                          <div className="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold break-words text-wrap md:whitespace-nowrap shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                            {item.category}
@@ -962,7 +962,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          <div className="flex-1">
                            <div className="font-bold text-navy text-lg mb-1">{item.recommendation}</div>
                            <div className="text-sm font-bold text-ink-mute">
-                             <span className="text-[#6E948A] font-bold">{language === 'ar' ? 'الأثر:' : 'Impact:'}</span> {item.impact}
+                             <span className="text-[color:var(--tb-c-6e948a)] font-bold">{language === 'ar' ? 'الأثر:' : 'Impact:'}</span> {item.impact}
                            </div>
                          </div>
                        </motion.div>
@@ -982,7 +982,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                        </motion.div>
                      </div>
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                        <div className="absolute top-1/2 bottom-0 left-1/2 w-1 bg-[#F1EEF4] -translate-x-1/2 z-0 hidden lg:block"></div>
+                        <div className="absolute top-1/2 bottom-0 left-1/2 w-1 bg-[color:var(--tb-lilac-bg)] -translate-x-1/2 z-0 hidden lg:block"></div>
                         {labMindMap.branches?.map((b: any, i: number) => (
                           <motion.div 
                             key={i} 
@@ -993,7 +993,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                           >
                              <h4 className="text-xl font-bold text-navy mb-3">{b.title}</h4>
                              <p className="text-sm font-bold text-ink-mute leading-relaxed">{b.description}</p>
-                             <div className="absolute -top-3 -right-3 w-8 h-8 bg-[#F1EEF4] rounded-full flex items-center justify-center text-xs font-bold text-ink-mute">
+                             <div className="absolute -top-3 -right-3 w-8 h-8 bg-[color:var(--tb-lilac-bg)] rounded-full flex items-center justify-center text-xs font-bold text-ink-mute">
                                {i + 1}
                              </div>
                           </motion.div>
@@ -1009,7 +1009,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      className="markdown-body p-12 bg-[#FAF9F6]/88 border-2 border-yellow-100 rounded-[24px] shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden"
                    >
                      <div className="absolute top-0 right-0 w-24 h-24 bg-yellow-400/10 rounded-full -mr-12 -mt-12"></div>
-                     <div className="relative z-10 text-[#273548] leading-relaxed">
+                     <div className="relative z-10 text-[color:var(--tb-c-273548)] leading-relaxed">
                        <ReactMarkdown>{labFamilyExplanation}</ReactMarkdown>
                      </div>
                    </motion.div>
@@ -1067,7 +1067,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                           <h4 className="text-xl font-bold text-ink-mute uppercase mb-6"><Target className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /> {language === 'ar' ? 'الأهداف الرئيسية' : 'Core Objectives'}</h4>
                           <ul className="space-y-4">
                              {labWorkshop?.objectives?.map((obj: string, i: number) => (
-                               <li key={i} className="flex flex-wrap gap-4 items-center bg-[#F7F5F2] p-4 rounded-[16px] border border-[color:var(--tb-sky)]/15 font-bold text-[#3D4A5A] transform transition-transform hover:translate-x-2">
+                               <li key={i} className="flex flex-wrap gap-4 items-center bg-[#F7F5F2] p-4 rounded-[16px] border border-[color:var(--tb-sky)]/15 font-bold text-[color:var(--tb-c-3d4a5a)] transform transition-transform hover:translate-x-2">
                                   <div className="w-8 h-8 bg-[#8E7AAE] text-white rounded-lg flex items-center justify-center shrink-0 text-xs">{i+1}</div>
                                   {obj}
                                </li>
@@ -1112,11 +1112,11 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                          className="bg-white p-5 md:p-8 lg:p-12 rounded-[24px] border border-[color:var(--tb-sky)]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] relative overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-shadow"
                        >
                           <h4 className="text-2xl font-bold text-navy mb-6 flex items-center gap-3">
-                             <span className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-[#5F837A] text-xl"><Handshake className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /></span>
+                             <span className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-[color:var(--tb-c-5f837a)] text-xl"><Handshake className="inline w-5 h-5 align-[-3px]" aria-hidden="true" /></span>
                              {language === 'ar' ? 'النشاط التفاعلي' : 'Interactive Activity'}
                           </h4>
                           <h5 className="text-2xl font-bold text-navy mb-3">{labWorkshop?.interactive_activity?.title}</h5>
-                          <p className="text-ink-mute font-bold leading-relaxed bg-[#EEF4F1]/50 p-6 rounded-[16px] border border-[#A8C3BD]/40 italic">
+                          <p className="text-ink-mute font-bold leading-relaxed bg-[color:var(--tb-c-eef4f1)]/50 p-6 rounded-[16px] border border-[color:var(--tb-c-a8c3bd)]/40 italic">
                              {labWorkshop?.interactive_activity?.instructions}
                           </p>
                        </motion.div>

@@ -28,7 +28,7 @@ export const TebyanEmptyState: React.FC<TebyanEmptyStateProps> = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        'relative overflow-hidden rounded-[24px] border border-[#E9E2F1] bg-[#FBFAF7] p-6 md:p-8 text-center',
+        'relative overflow-hidden rounded-[24px] border border-[color:var(--tb-c-e9e2f1)] bg-[#FBFAF7] p-6 md:p-8 text-center',
         className
       )}
       dir={isAr ? 'rtl' : 'ltr'}

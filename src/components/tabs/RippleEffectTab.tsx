@@ -13,6 +13,7 @@ import { seedData } from '../../data/seedData';
 import { NebulaTab } from './NebulaTab';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { InsightsPanel } from './InsightsPanel';
+import { getServiceName } from '../../constants/serviceRegistry';
 
 
 /* عرض فقط: مصطلحات لاتينية معروفة تُعرض بالعربية في الواجهة العربية؛ ما ليس في القائمة يبقى كما هو. */
@@ -164,7 +165,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     <UserCircle className="w-4 h-4 md:w-5 md:h-5 text-ink-mute" />
                                     <div className="flex flex-col -space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-bold text-xs md:text-sm text-[#3D4A5A]">{node.author}</span>
+                                            <span className="font-bold text-xs md:text-sm text-[color:var(--tb-c-3d4a5a)]">{node.author}</span>
                                             {onFocusMode && (
                                                 <SmartIconWrapper
                                                     id="lighthouse_mode"
@@ -192,10 +193,10 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                 </div>
                                 <span className={cn(
                                     "text-xs px-3 py-1 rounded-full font-semibold",
-                                    (node as any).isTimeCapsule ? "bg-[#f1eef6] text-[color:var(--tb-lilac-deep)]" :
+                                    (node as any).isTimeCapsule ? "bg-[color:var(--tb-c-f1eef6)] text-[color:var(--tb-lilac-deep)]" :
                                     node.type === 'seed' ? "bg-mood-primary/10 text-mood-primary" :
-                                    node.type === 'branch' ? "bg-[#EEF4F1] text-[#4A6B62]" :
-                                    "bg-[#F6F0E3] text-[#6F6238]"
+                                    node.type === 'branch' ? "bg-[color:var(--tb-c-eef4f1)] text-[color:var(--tb-c-4a6b62)]" :
+                                    "bg-[color:var(--tb-c-f6f0e3)] text-[color:var(--tb-c-6f6238)]"
                                 )}>
                                     {(node as any).isTimeCapsule && <Lock className="w-3 h-3 inline mr-1 mb-0.5" />}
                                     {(node as any).isTimeCapsule ? (language === 'ar' ? 'كبسولة زمنية' : 'Time Capsule') :
@@ -204,7 +205,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     (language === 'ar' ? 'تطبيق عملي' : 'Implementation')}
                                 </span>
                                 {descendantsCount > 0 && (
-                                    <span className="text-xs font-semibold text-[#4F7268] flex items-center gap-1 bg-[#EEF4F1] px-2 py-1 rounded-lg">
+                                    <span className="text-xs font-semibold text-[color:var(--tb-c-4f7268)] flex items-center gap-1 bg-[color:var(--tb-c-eef4f1)] px-2 py-1 rounded-lg">
                                         <GitBranch className="w-3 h-3" />
                                         {descendantsCount} {language === 'ar' ? 'تحول' : 'impact'}
                                     </span>
@@ -218,7 +219,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                         </div>
                         <p 
                             className={cn(
-                                "text-base md:text-lg text-[#273548] leading-relaxed font-semibold mb-2 whitespace-pre-wrap relative z-10 transition-all", 
+                                "text-base md:text-lg text-[color:var(--tb-c-273548)] leading-relaxed font-semibold mb-2 whitespace-pre-wrap relative z-10 transition-all", 
                                 isLongText && "cursor-pointer",
                                 isLocked && "blur-sm opacity-50 select-none grayscale"
                             )} 
@@ -385,7 +386,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                     <div className={cn(
                         "absolute top-[-24px] bottom-10 w-[3px] rounded-full opacity-30",
                         language === 'ar' ? "right-[22px] md:right-[26px]" : "left-[22px] md:left-[26px]",
-                        node.children[0]?.type === 'branch' ? "bg-[#8fa9c7]" : "bg-[#6e5f8e]"
+                        node.children[0]?.type === 'branch' ? "bg-[color:var(--tb-sky)]" : "bg-[#6e5f8e]"
                     )} />
                     
                     <AnimatePresence>
@@ -463,13 +464,13 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 ranks[uid] = { 
                     rank: language === 'ar' ? 'حكيم تبيان' : 'Sage of Tabyan', 
                     aura: "ring-2 ring-amber-400 ring-offset-2 tbn-pulse-few",
-                    color: "text-[#6F6238]"
+                    color: "text-[color:var(--tb-c-6f6238)]"
                 };
             } else if (points > 100) {
                 ranks[uid] = { 
                     rank: language === 'ar' ? 'مهندس أفكار' : 'Idea Engineer', 
                     aura: "ring-2 ring-emerald-400 ring-offset-1",
-                    color: "text-[#4A6B62]"
+                    color: "text-[color:var(--tb-c-4a6b62)]"
                 };
             } else {
                 ranks[uid] = { 
@@ -879,13 +880,6 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 {showInsights && <InsightsPanel ideas={combinedRipples} onClose={() => setShowInsights(false)} language={language} handleTabChange={handleTabChange} />}
             </AnimatePresence>
 
-            <button
-                onClick={() => handleTabChange('home')}
-                className="absolute top-12 md:top-8 left-4 p-2 rounded-lg bg-[#F1EEF4] hover:bg-zinc-200 text-ink-soft transition-colors z-20 flex items-center gap-2"
-            >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="text-sm font-bold hidden md:inline">{language === 'ar' ? 'رجوع' : 'Back'}</span>
-            </button>
             {/* Local Toast */}
             <AnimatePresence>
                 {toast && (
@@ -910,11 +904,11 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} 
                     className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-mood-primary/10 to-emerald-50 text-mood-primary rounded-full text-xs font-black tracking-widest uppercase shadow-sm border border-mood-primary/20"
                 >
-                    <Network className="w-4 h-4 text-[#4F7268]" />
+                    <Network className="w-4 h-4 text-[color:var(--tb-c-4f7268)]" />
                     <span>{language === 'ar' ? 'الشبكة الاجتماعية للأفكار' : 'Social Network of Ideas'}</span>
                 </motion.div>
                 <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
-                    {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
+                    {getServiceName('ripple', language)}
                 </h2>
                 <p className="text-ink-mute text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
                     {language === 'ar' 
@@ -948,7 +942,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                             <p className="text-xs font-black text-mood-primary uppercase mb-1">
                                                 {language === 'ar' ? 'بذرة اليوم' : 'DAILY PROMPT'}
                                             </p>
-                                            <p className="text-[#273548] font-bold text-sm md:text-base leading-snug">
+                                            <p className="text-[color:var(--tb-c-273548)] font-bold text-sm md:text-base leading-snug">
                                                 {dailyPrompt.question}
                                             </p>
                                         </div>
@@ -972,9 +966,9 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         <motion.div 
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
-                            className="bg-[#EEF4F1] border border-[#A8C3BD]/25 p-4 rounded-2xl flex items-center gap-3 text-emerald-800"
+                            className="bg-[color:var(--tb-c-eef4f1)] border border-[color:var(--tb-c-a8c3bd)]/25 p-4 rounded-2xl flex items-center gap-3 text-emerald-800"
                         >
-                            <div className="bg-[#EEF4F1]0 p-2 rounded-full text-white shrink-0">
+                            <div className="bg-[color:var(--tb-c-eef4f1)]0 p-2 rounded-full text-white shrink-0">
                                 <Plus className="w-4 h-4" />
                             </div>
                             <p className="text-sm font-bold flex-1">
@@ -989,7 +983,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         value={newIdea}
                         onChange={(e) => setNewIdea(e.target.value)}
                         placeholder={language === 'ar' ? "فكرتي هي..." : "My idea is..."}
-                        className="w-full bg-white/50 border-2 border-[color:var(--tb-sky)]/40 rounded-2xl p-5 text-lg md:text-xl font-bold text-[#273548] focus:bg-white focus:border-mood-primary/50 focus:ring-4 focus:ring-mood-primary/10 outline-none resize-none h-40 placeholder:text-zinc-300 transition-all shadow-inner"
+                        className="w-full bg-white/50 border-2 border-[color:var(--tb-sky)]/40 rounded-2xl p-5 text-lg md:text-xl font-bold text-[color:var(--tb-c-273548)] focus:bg-white focus:border-mood-primary/50 focus:ring-4 focus:ring-mood-primary/10 outline-none resize-none h-40 placeholder:text-zinc-300 transition-all shadow-inner"
                     />
                     <div className="flex flex-wrap justify-between items-center gap-4 text-xs font-bold text-ink-mute px-1">
                         <div className="flex gap-4">
@@ -1024,7 +1018,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 animate={{ opacity: 1 }}
                                 className={cn(
                                     "px-2 py-1 rounded-full",
-                                    newIdea.length > 250 ? "text-rose-600 bg-rose-50" : "text-[#6F6238] bg-[#F6F0E3]"
+                                    newIdea.length > 250 ? "text-rose-600 bg-rose-50" : "text-[color:var(--tb-c-6f6238)] bg-[color:var(--tb-c-f6f0e3)]"
                                 )}
                             >
                                 {newIdea.length > 250 
@@ -1072,7 +1066,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             {/* Ripples Tree */}
             <div className="mt-20 space-y-8 relative">
                 <div className="flex flex-col sm:flex-row items-center justify-between mb-12 relative z-10 gap-6">
-                    <div className="flex items-center gap-4 bg-[#F1EEF4]/50 p-1.5 rounded-2xl border border-[color:var(--tb-sky)]/25">
+                    <div className="flex items-center gap-4 bg-[color:var(--tb-lilac-bg)]/50 p-1.5 rounded-2xl border border-[color:var(--tb-sky)]/25">
                         <button 
                             onClick={() => setActiveView('list')}
                             className={cn(
@@ -1107,7 +1101,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         <div className="flex gap-2 items-center flex-wrap">
                             <button 
                                 onClick={() => setFilterMyIdeas(!filterMyIdeas)}
-                                className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", filterMyIdeas ? "bg-lilac text-white" : "bg-zinc-200 text-[#3D4A5A]")}
+                                className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", filterMyIdeas ? "bg-lilac text-white" : "bg-zinc-200 text-[color:var(--tb-c-3d4a5a)]")}
                             >
                                 {language === 'ar' ? 'أفكاري فقط' : 'My ideas only'}
                             </button>
@@ -1115,7 +1109,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 <button
                                     key={cat}
                                     onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
-                                    className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", selectedCategory === cat ? "bg-lilac text-white" : "bg-[#f1eef6] text-[#3D4A5A]")}
+                                    className={cn("px-3 py-1 rounded-full text-xs font-bold transition-all", selectedCategory === cat ? "bg-lilac text-white" : "bg-[color:var(--tb-c-f1eef6)] text-[color:var(--tb-c-3d4a5a)]")}
                                 >
                                     {cat}
                                 </button>
@@ -1123,7 +1117,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             {sortedTags.length > 10 && (
                                 <button
                                     onClick={() => setShowAllCategories(!showAllCategories)}
-                                    className="px-3 py-1 rounded-full text-xs font-bold transition-all bg-[#F1EEF4] text-ink-mute hover:bg-zinc-200 flex items-center gap-1"
+                                    className="px-3 py-1 rounded-full text-xs font-bold transition-all bg-[color:var(--tb-lilac-bg)] text-ink-mute hover:bg-zinc-200 flex items-center gap-1"
                                 >
                                     {showAllCategories ? <><ChevronUp className="w-3 h-3" /> ...</> : <><ChevronDown className="w-3 h-3" /> +</>}
                                 </button>

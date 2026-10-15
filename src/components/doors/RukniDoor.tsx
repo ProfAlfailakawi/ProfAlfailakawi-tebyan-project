@@ -16,9 +16,9 @@ const ContactTab = React.lazy(() =>
 );
 
 const MODES: DoorMode[] = [
-  { id: "library", labelAr: "مكتبتي", labelEn: "My library", hintAr: "كل ما حفظته من أبواب تبيان", hintEn: "Everything you saved across Tebyan", icon: LibraryBig },
-  { id: "points", labelAr: "نقاطي", labelEn: "My points", hintAr: "تقدمك ومكافآتك", hintEn: "Your progress and rewards", icon: TicketPercent },
-  { id: "contact", labelAr: "تواصل معنا", labelEn: "Contact us", hintAr: "نقرأ كل رسالة بعناية", hintEn: "We read every message with care", icon: Mail },
+  { id: "library", labelAr: getServiceName("mylibrary", "ar"), labelEn: getServiceName("mylibrary", "en"), hintAr: "كل ما حفظته من أبواب تبيان", hintEn: "Everything you saved across Tebyan", icon: LibraryBig },
+  { id: "points", labelAr: getServiceName("loyalty", "ar"), labelEn: getServiceName("loyalty", "en"), hintAr: "تقدمك ومكافآتك", hintEn: "Your progress and rewards", icon: TicketPercent },
+  { id: "contact", labelAr: getServiceName("contact", "ar"), labelEn: getServiceName("contact", "en"), hintAr: "نقرأ كل رسالة بعناية", hintEn: "We read every message with care", icon: Mail },
 ];
 
 const Fallback = () => (

@@ -110,7 +110,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                  initial={{ opacity: 0, y: 10 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="tebyan-stat-card px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[color:var(--tb-lilac-deep)]/10 flex flex-1 flex-col items-start gap-2 min-[430px]:flex-row min-[430px]:items-center min-[430px]:gap-2.5 min-w-0"
+                 className="tebyan-stat-card px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[color:var(--tb-c-faf9f7)] border border-[color:var(--tb-lilac-deep)]/10 flex flex-1 flex-col items-start gap-2 min-[430px]:flex-row min-[430px]:items-center min-[430px]:gap-2.5 min-w-0"
                >
                   <div className="tebyan-icon-tile w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[color:var(--tb-lilac-deep)]/10 flex items-center justify-center">
                      <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[color:var(--tb-lilac-deep)]" strokeWidth={1.5} />
@@ -207,7 +207,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                 className={cn(
                   "w-full rounded-[24px] py-6 font-black text-xl flex items-center justify-center gap-3 transition-all shadow-sm",
                   logs.length > 0 
-                  ? "bg-lilac hover:bg-[#5d4f7b] text-white cursor-pointer" 
+                  ? "bg-lilac hover:bg-[color:var(--tb-c-5d4f7b)] text-white cursor-pointer" 
                   : "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                 )}
               >
@@ -223,7 +223,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                      <div className="relative z-10 space-y-6">
                        <div className="flex items-start justify-between gap-4 border-b border-navy/10 pb-4">
                           <div className="min-w-0">
-                            <div className="text-xs font-bold text-[#5B6E82] mb-1">{language === 'ar' ? 'النمط المكتشف' : 'Discovered Pattern'}</div>
+                            <div className="text-xs font-bold text-[color:var(--tb-c-5b6e82)] mb-1">{language === 'ar' ? 'النمط المكتشف' : 'Discovered Pattern'}</div>
                             <ClampText text={prediction.pattern_found} language={language} className="text-base font-bold text-navy leading-relaxed" />
                           </div>
                           {(() => {
@@ -240,14 +240,14 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                                   label={<span dir="ltr">{lvl}/3</span>}
                                   ariaLabel={`${language === 'ar' ? 'مستوى الخطر' : 'Risk level'}: ${name}`}
                                 />
-                                <span className="text-xs font-bold text-[#5B6E82]">{language === 'ar' ? `الخطر ${name}` : `${name} risk`}</span>
+                                <span className="text-xs font-bold text-[color:var(--tb-c-5b6e82)]">{language === 'ar' ? `الخطر ${name}` : `${name} risk`}</span>
                               </div>
                             );
                           })()}
                        </div>
 
                        <div>
-                          <div className="text-xs font-bold text-[#5B6E82] mb-2">{language === 'ar' ? 'التنبؤ المستقبلي (الخطر القادم)' : 'Future Prediction'}</div>
+                          <div className="text-xs font-bold text-[color:var(--tb-c-5b6e82)] mb-2">{language === 'ar' ? 'التنبؤ المستقبلي (الخطر القادم)' : 'Future Prediction'}</div>
                           <div className={cn(
                             "p-4 rounded-xl font-bold flex gap-3 text-sm leading-relaxed",
                             prediction.risk_level === 'High' ? 'bg-rose-50 text-rose-900 border border-rose-200' : 
@@ -260,9 +260,9 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                        </div>
 
                        <div>
-                          <div className="text-xs font-bold text-[#5B6E82] mb-2">{language === 'ar' ? 'نصيحة استباقية وتدخل' : 'Proactive Intervention'}</div>
+                          <div className="text-xs font-bold text-[color:var(--tb-c-5b6e82)] mb-2">{language === 'ar' ? 'نصيحة استباقية وتدخل' : 'Proactive Intervention'}</div>
                           <div className="bg-white p-4 rounded-xl border border-lilac/15">
-                             <ClampText text={prediction.proactive_warning} language={language} className="text-sm font-bold text-[#273548] leading-relaxed" />
+                             <ClampText text={prediction.proactive_warning} language={language} className="text-sm font-bold text-[color:var(--tb-c-273548)] leading-relaxed" />
                           </div>
                        </div>
                      </div>

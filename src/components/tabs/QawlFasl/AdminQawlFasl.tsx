@@ -240,7 +240,7 @@ export default function AdminQawlFasl() {
                  <button 
                    onClick={handleGenerate}
                    disabled={isGenerating}
-                   className="w-full bg-[#6E5B91] hover:bg-[#5F4E7F] disabled:bg-blue-300 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                   className="w-full bg-[#6E5B91] hover:bg-[color:var(--tb-c-5f4e7f)] disabled:bg-blue-300 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition-colors"
                  >
                    {isGenerating ? <Loader2 className="w-5 h-5 animate-spin"/> : <Sparkles className="w-5 h-5"/>} 
                    {isGenerating ? 'جاري التوليد...' : 'توليد الإجابة بالذكاء الاصطناعي'}
@@ -275,7 +275,7 @@ export default function AdminQawlFasl() {
                 <option value="published">منشور</option>
               </select>
             </div>
-            <button onClick={save} className="w-full sm:w-auto bg-[#6E5B91] hover:bg-[#5F4E7F] text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2">
+            <button onClick={save} className="w-full sm:w-auto bg-[#6E5B91] hover:bg-[color:var(--tb-c-5f4e7f)] text-white font-bold py-3 px-8 rounded-xl flex items-center justify-center gap-2">
               <Check className="w-5 h-5"/> حفظ البيانات
             </button>
          </div>
@@ -313,7 +313,7 @@ export default function AdminQawlFasl() {
         <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full lg:w-auto [&_svg]:stroke-[1.6]">
           <button 
             disabled={isProcessing}
-            onClick={handleRunAnalysis} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={handleRunAnalysis} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[color:var(--tb-c-f4f0f8)] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="تحليل البحث"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -337,7 +337,7 @@ export default function AdminQawlFasl() {
               } finally {
                 setIsProcessing(false);
               }
-            }} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            }} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[color:var(--tb-c-f4f0f8)] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="توليد مسودات ذكية"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -346,28 +346,28 @@ export default function AdminQawlFasl() {
           <button 
             onClick={handleMigrateCategories} 
             disabled={isMigrating || isProcessing} 
-            className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[color:var(--tb-c-f4f0f8)] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="تحديث التصنيفات"
           >
             <Wand2 className="w-4 h-4"/> <span className="sr-only sm:not-sr-only">{(isMigrating || isProcessing) ? 'جاري التحديث...' : 'تحديث التصنيفات'}</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowBulkGen(true)} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={() => setShowBulkGen(true)} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[color:var(--tb-c-f4f0f8)] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="التوليد الشامل"
           >
             <Database className="w-4 h-4"/> <span className="sr-only sm:not-sr-only">التوليد الشامل</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowUpload(true)} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={() => setShowUpload(true)} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[color:var(--tb-c-f4f0f8)] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="رفع الأسئلة"
           >
             <UploadCloud className="w-4 h-4"/> <span className="sr-only sm:not-sr-only">رفع الأسئلة</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={openNew} className="shrink-0 bg-[#6E5B91] text-white hover:bg-[#5F4E7F] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={openNew} className="shrink-0 bg-[#6E5B91] text-white hover:bg-[color:var(--tb-c-5f4e7f)] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="سؤال جديد"
           >
              <Plus className="w-4 h-4"/> <span className="sr-only sm:not-sr-only whitespace-nowrap">سؤال جديد</span>
@@ -375,7 +375,7 @@ export default function AdminQawlFasl() {
         </div>
       </div>
 
-      <details className="group bg-[#FBF8F8] border border-rose-200/60 rounded-[16px] mb-8 text-[#7A1F33] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+      <details className="group bg-[color:var(--tb-c-fbf8f8)] border border-rose-200/60 rounded-[16px] mb-8 text-[color:var(--tb-c-7a1f33)] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 md:px-6 [&::-webkit-details-marker]:hidden">
            <h3 className="text-base md:text-lg font-bold flex items-center gap-2"><Database className="w-5 h-5"/> إدارة النظام الآلي والتهيئة</h3>
            <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" aria-hidden="true" />
@@ -401,7 +401,7 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-white hover:bg-rose-50 disabled:opacity-60 text-[#7A1F33] border border-rose-300/70 font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
+            }} className="bg-white hover:bg-rose-50 disabled:opacity-60 text-[color:var(--tb-c-7a1f33)] border border-rose-300/70 font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
                 تهيئة ومسح النظام (مع نسخة احتياطية)
             </button>
@@ -422,7 +422,7 @@ export default function AdminQawlFasl() {
                     setIsProcessing(false);
                   }
                 });
-            }} className="bg-[#6E5B91] hover:bg-[#5F4E7F] disabled:opacity-60 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
+            }} className="bg-[#6E5B91] hover:bg-[color:var(--tb-c-5f4e7f)] disabled:opacity-60 text-white font-bold px-4 md:px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center justify-center gap-2 leading-snug">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : null}
                 توليد 10 أسئلة (دفعة يومية)
             </button>
@@ -445,8 +445,8 @@ export default function AdminQawlFasl() {
               <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[color:var(--tb-navy)]" style={{ fontSize: 18, fontWeight: 900 }}>{questions.length}</text>
             </svg>
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[color:var(--tb-lilac-deep)]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />منشور <span className="font-black">{publishedCount}</span></span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F6F8] px-3 py-1.5 text-[#64788D]"><span className="h-2 w-2 rounded-full bg-[#B9AFCB]" />مسودة <span className="font-black">{draftCount}</span></span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-[color:var(--tb-c-f4f0f8)] px-3 py-1.5 text-[color:var(--tb-lilac-deep)]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />منشور <span className="font-black">{publishedCount}</span></span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-[color:var(--tb-c-f4f6f8)] px-3 py-1.5 text-[color:var(--tb-c-64788d)]"><span className="h-2 w-2 rounded-full bg-[color:var(--tb-c-b9afcb)]" />مسودة <span className="font-black">{draftCount}</span></span>
             </div>
           </div>
         );
