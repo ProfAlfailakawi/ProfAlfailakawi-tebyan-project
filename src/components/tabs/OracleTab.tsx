@@ -218,7 +218,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
                   "flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold transition-all",
                   preferences.savedLibrary.some(s => s.content === oracleResult)
                     ? "bg-[#8E7AAE] text-white"
-                    : "bg-[#F1EEF4] text-ink-soft hover:bg-zinc-200"
+                    : "bg-[color:var(--tb-lilac-bg)] text-ink-soft hover:bg-zinc-200"
                 )}
               >
                 {preferences.savedLibrary.some(s => s.content === oracleResult) ? (

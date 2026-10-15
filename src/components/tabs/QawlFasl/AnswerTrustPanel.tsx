@@ -38,7 +38,7 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
                 {trust.sources.map((s, i) => (
                   <li key={i} className="font-bold leading-relaxed text-ink-soft">
                     {s.url ? (
-                      <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline decoration-[#A68F58]/40 underline-offset-4 hover:text-[#A68F58]">
+                      <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline decoration-[color:var(--tb-c-a68f58)]/40 underline-offset-4 hover:text-[color:var(--tb-c-a68f58)]">
                         {s.title}
                       </a>
                     ) : (
@@ -128,7 +128,7 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
         aria-labelledby="answer-report-title"
         dir="rtl"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-[28px] bg-[#F7F3EE] border border-[#D8C28A]/30 shadow-[0_24px_60px_rgba(24,34,49,0.18)] p-6"
+        className="w-full max-w-md rounded-[28px] bg-[color:var(--tb-c-f7f3ee)] border border-[color:var(--tb-c-d8c28a)]/30 shadow-[0_24px_60px_rgba(24,34,49,0.18)] p-6"
       >
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="min-w-0">
@@ -141,7 +141,7 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
         </div>
 
         {state === 'done' ? (
-          <div className="rounded-2xl bg-[#F0F5ED] text-[#4B6B42] px-5 py-4 font-bold text-sm flex items-center gap-2">
+          <div className="rounded-2xl bg-[color:var(--tb-c-f0f5ed)] text-[color:var(--tb-c-4b6b42)] px-5 py-4 font-bold text-sm flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 shrink-0" />
             شكراً لك، وصل بلاغك وسيراجعه الفريق.
           </div>
@@ -171,14 +171,14 @@ function ReportDialog({ question, onClose }: { question: QawlFaslQuestion; onClo
               />
             </label>
             {state === 'error' && (
-              <p role="alert" className="text-xs font-bold text-[#A6603F]">تعذّر الإرسال الآن، يرجى المحاولة بعد قليل.</p>
+              <p role="alert" className="text-xs font-bold text-[color:var(--tb-c-a6603f)]">تعذّر الإرسال الآن، يرجى المحاولة بعد قليل.</p>
             )}
             <div className="flex items-center justify-end gap-2 pt-1">
               <button type="button" onClick={onClose} className="rounded-full px-4 py-2 text-sm font-bold text-ink-mute hover:bg-white/70">إلغاء</button>
               <button
                 type="submit"
                 disabled={state === 'sending'}
-                className="inline-flex items-center gap-2 rounded-full bg-[#6E5F8E] hover:bg-[#5d4f7a] text-white px-5 py-2 text-sm font-black disabled:opacity-60 transition-colors"
+                className="inline-flex items-center gap-2 rounded-full bg-[#6E5F8E] hover:bg-[color:var(--tb-c-5d4f7a)] text-white px-5 py-2 text-sm font-black disabled:opacity-60 transition-colors"
               >
                 {state === 'sending' && <Loader2 className="w-4 h-4 animate-spin" />}
                 إرسال البلاغ

@@ -189,6 +189,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
     isApproved(question.reviewStatus?.sources),
   ];
   const allApproved = reviewFlags.every(Boolean);
+  // لا حالة مراجعة مسجّلة أصلاً: حالة محايدة، لا ندّعي اعتماداً ولا نوحي بنقصٍ.
+  const hasReviewData = !!question.reviewStatus && typeof question.reviewStatus === 'object';
   const firstPending = reviewFlags.findIndex(f => !f);
   const reviewSteps: { key: string; label: string; state: DnaStepState }[] = [
     ...['التربوية', 'الشرعية', 'المصادر'].map((label, i) => ({
@@ -221,9 +223,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
           </button>
           <div className="space-y-4 md:space-y-6 flex-1 min-w-0">
              <div className="flex flex-wrap gap-2 text-xs md:text-xs font-bold">
-               <span className="bg-[#EAECE6] text-ink-mute px-3 py-1.5 rounded-full">{category?.title}</span>
-               {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
-               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">الأعمار: {question.ageGroups.map((a) => /^\d+\s*-\s*\d+$/.test(a.trim()) ? a.trim().replace(/\s*-\s*/, ' إلى ') : a).join('، ')}{question.ageGroups.every((a) => /^\d+\s*-\s*\d+$/.test(a.trim())) ? ' سنوات' : ''}</span>
+               <span className="bg-[color:var(--tb-c-eaece6)] text-ink-mute px-3 py-1.5 rounded-full">{category?.title}</span>
+               {question.riskLevel === 'high' && <span className="bg-[color:var(--tb-c-faf0e6)] text-[color:var(--tb-c-a6603f)] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
+               <span className="bg-[color:var(--tb-c-f0f4fa)] text-[color:var(--tb-c-4a6b8c)] px-3 py-1.5 rounded-full">الأعمار: {question.ageGroups.map((a) => /^\d+\s*-\s*\d+$/.test(a.trim()) ? a.trim().replace(/\s*-\s*/, ' إلى ') : a).join('، ')}{question.ageGroups.every((a) => /^\d+\s*-\s*\d+$/.test(a.trim())) ? ' سنوات' : ''}</span>
              </div>
              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                <h1 className="tebyan-question-title text-xl md:text-2xl lg:text-3xl font-bold text-navy flex-1 min-w-0">
@@ -245,7 +247,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                      "p-3 md:p-4 rounded-full transition-all shrink-0",
                      isSaved
                        ? "bg-[#8E7AAE] text-white"
-                       : "bg-[#F6F5F0] text-[#6B6A65] hover:bg-[#EBEAE4] hover:text-navy"
+                       : "bg-[color:var(--tb-c-f6f5f0)] text-[color:var(--tb-c-6b6a65)] hover:bg-[color:var(--tb-c-ebeae4)] hover:text-navy"
                    )}
                    title={language === 'ar' ? "حفظ في المكتبة" : "Save to Library"}
                  >
@@ -271,7 +273,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                        }
                      }
                    }}
-                   className="p-3 md:p-4 bg-[#F6F5F0] text-[#6B6A65] rounded-full hover:bg-[#EBEAE4] hover:text-navy transition-colors shrink-0"
+                   className="p-3 md:p-4 bg-[color:var(--tb-c-f6f5f0)] text-[color:var(--tb-c-6b6a65)] rounded-full hover:bg-[color:var(--tb-c-ebeae4)] hover:text-navy transition-colors shrink-0"
                    title="مشاركة"
                  >
                    <Share2 className="w-4 h-4 md:w-5 md:h-5" />
@@ -302,7 +304,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                  "px-4 py-2.5 md:px-7 md:py-3.5 text-xs md:text-base font-bold flex items-center gap-1.5 md:gap-2 rounded-full shrink-0 whitespace-nowrap transition-all border shadow-sm",
                  activeTab === t.id 
                    ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-[0_12px_35px_rgba(142,122,174,0.14)]" 
-                   : "bg-white text-[#6B6A65] border-[color:var(--tb-sky)]/15 hover:bg-[#F6F5F0]"
+                   : "bg-white text-[color:var(--tb-c-6b6a65)] border-[color:var(--tb-sky)]/15 hover:bg-[color:var(--tb-c-f6f5f0)]"
                )}
              >
                <t.icon className="w-4 h-4 md:w-5 md:h-5" /> {t.label}
@@ -319,10 +321,10 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="space-y-4">
               <DnaStatusHeader
                 icon={allApproved ? <ShieldCheck /> : <ShieldEllipsis />}
-                tone={allApproved ? 'accent' : 'warn'}
-                title={allApproved ? 'جواب مُراجَع ومعتمد' : 'قيد المراجعة'}
+                tone={allApproved ? 'accent' : hasReviewData ? 'warn' : 'neutral'}
+                title={allApproved ? 'جواب مُراجَع ومعتمد' : hasReviewData ? 'قيد المراجعة' : 'جواب منشور'}
                 subtitle={<>
-                  {allApproved ? trust.reviewers.join('، ') : 'بانتظار اعتماد المراجعة'}
+                  {allApproved ? trust.reviewers.join('، ') : hasReviewData ? 'بانتظار اعتماد المراجعة' : 'لم تُسجَّل مراحل المراجعة لهذا الجواب بعد'}
                   {allApproved && trust.reviewedAt && <> · <time dateTime={trust.reviewedAt.toISOString()}>{formatArabicDate(trust.reviewedAt)}</time></>}
                 </>}
                 actions={
@@ -338,13 +340,13 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 }
                 divider="dashed"
               >
-                <DnaStepper
+                {hasReviewData && <DnaStepper
                   size="sm"
                   ariaLabel="مراحل مراجعة الجواب"
                   steps={reviewSteps}
                   reveal
                   playKey={`review:${question.id}`}
-                />
+                />}
               </DnaStatusHeader>
               <DnaHubMap
                 ariaLabel="خريطة الجواب"
@@ -400,7 +402,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                                 setIsSummoningShadow(false);
                             }
                         }}
-                        className="text-[#A6603F] text-sm font-bold flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#F2D7C8] hover:bg-[#FAF0E6] bg-white transition-colors"
+                        className="text-[color:var(--tb-c-a6603f)] text-sm font-bold flex items-center gap-2 px-6 py-2.5 rounded-full border border-[color:var(--tb-c-f2d7c8)] hover:bg-[color:var(--tb-c-faf0e6)] bg-white transition-colors"
                     >
                         <Scale className="w-4 h-4" aria-hidden="true" /> اسمع الرأي المخالف
                     </button>
@@ -408,14 +410,14 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             )}
 
             {isSummoningShadow && (
-                <div className="bg-[#F1EEF4] border border-[color:var(--tb-lilac-soft)]/20 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center">
+                <div className="bg-[color:var(--tb-lilac-bg)] border border-[color:var(--tb-lilac-soft)]/20 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center">
                     <Scale className="w-8 h-8 text-rose-600 mb-4" aria-hidden="true" />
                     <p className="text-rose-700 font-bold text-sm">جاري تجهيز الرأي المخالف...</p>
                 </div>
             )}
 
             {shadowResponse && (
-                <div className="bg-[#F1EEF4] border-l-4 border-rose-600 rounded-[24px] p-6 md:p-10 shadow-[0_10px_40px_rgba(225,29,72,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
+                <div className="bg-[color:var(--tb-lilac-bg)] border-l-4 border-rose-600 rounded-[24px] p-6 md:p-10 shadow-[0_10px_40px_rgba(225,29,72,0.15)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-1000">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-rose-600/10 rounded-full blur-3xl"></div>
                     <div className="flex items-start gap-4 md:gap-6 relative z-10">
                         <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center shrink-0 border border-rose-200">
@@ -432,15 +434,15 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-[#F0F5ED] rounded-[24px] p-8 border border-[#DFEBD8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                <h4 className="font-bold text-[#4B6B42] mb-4 flex items-center gap-2 text-lg">
+              <div className="bg-[color:var(--tb-c-f0f5ed)] rounded-[24px] p-8 border border-[color:var(--tb-c-dfebd8)] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                <h4 className="font-bold text-[color:var(--tb-c-4b6b42)] mb-4 flex items-center gap-2 text-lg">
                   <MessageSquareQuote className="w-6 h-6" aria-hidden="true" /> {qawlSayLabel(audience)}
                 </h4>
                 <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.sayThis}"</p>
               </div>
               
-              <div className="bg-[#FAF0E6] rounded-[24px] p-8 border border-[#F2D7C8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-                <h4 className="font-bold text-[#8A4D2E] mb-4 flex items-center gap-2 text-lg">
+              <div className="bg-[color:var(--tb-c-faf0e6)] rounded-[24px] p-8 border border-[color:var(--tb-c-f2d7c8)] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+                <h4 className="font-bold text-[color:var(--tb-c-8a4d2e)] mb-4 flex items-center gap-2 text-lg">
                   <Ban className="w-6 h-6" aria-hidden="true" /> لا تقل:
                 </h4>
                 <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.dontSayThis}"</p>
@@ -449,7 +451,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               <div className="tbn-dark bg-lilac text-white rounded-[24px] p-8 shadow-[0_12px_35px_rgba(24,34,49,0.06)] flex flex-col justify-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                 <div className="relative z-10">
-                  <h4 className="font-bold text-[#EBEAE4] mb-4 flex items-center gap-2 text-lg">
+                  <h4 className="font-bold text-[color:var(--tb-c-ebeae4)] mb-4 flex items-center gap-2 text-lg">
                      <Zap className="w-6 h-6" aria-hidden="true" /> افعل الآن:
                   </h4>
                   <p className="text-white font-bold leading-[1.85] text-xl">{question.quickAnswer.doThisNow}</p>
@@ -465,13 +467,13 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[color:var(--tb-sky)]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
                <div>
                  <h3 className="text-2xl font-bold text-navy mb-4">خطأ شائع احذره</h3>
-                 <p className="text-[#A6603F] font-medium bg-[#FAF0E6] p-5 md:p-6 rounded-[16px] border border-[#F2D7C8] leading-[1.85] text-base md:text-lg">
+                 <p className="text-[color:var(--tb-c-a6603f)] font-medium bg-[color:var(--tb-c-faf0e6)] p-5 md:p-6 rounded-[16px] border border-[color:var(--tb-c-f2d7c8)] leading-[1.85] text-base md:text-lg">
                    {question.commonMistake}
                  </p>
                </div>
                
                <div className="pt-8 border-t border-[color:var(--tb-sky)]/15">
-                 <h3 className="text-2xl font-bold text-[#4A6B8C] mb-4">التحليل الاستراتيجي والنفسي</h3>
+                 <h3 className="text-2xl font-bold text-[color:var(--tb-c-4a6b8c)] mb-4">التحليل الاستراتيجي والنفسي</h3>
                  <BreathingText 
                     className="text-ink-mute font-medium leading-[2] text-base md:text-lg" 
                     text={question.educationalView} 
@@ -480,9 +482,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                </div>
                
                <div className="pt-8 border-t border-[color:var(--tb-sky)]/15">
-                 <h3 className="text-2xl font-bold text-[#A68F58] mb-4">جواب استرشادي</h3>
+                 <h3 className="text-2xl font-bold text-[color:var(--tb-c-a68f58)] mb-4">جواب استرشادي</h3>
                  <BreathingText 
-                   className="text-ink-mute font-medium leading-[1.85] bg-[#FAF9F6]/70 backdrop-blur-2xl border border-[#EACD9B] p-5 md:p-6 rounded-[16px] italic text-lg md:text-xl"
+                   className="text-ink-mute font-medium leading-[1.85] bg-[#FAF9F6]/70 backdrop-blur-2xl border border-[color:var(--tb-c-eacd9b)] p-5 md:p-6 rounded-[16px] italic text-lg md:text-xl"
                    text={`"${question.suggestedAnswer}"`}
                    language={language}
                  />
@@ -490,8 +492,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                
                {question.religiousReference && (
                  <div className="pt-8 border-t border-[color:var(--tb-sky)]/15">
-                   <h3 className="text-xl font-bold text-[#4B6B42] mb-4">إضاءة شرعية وتوجيه محكم</h3>
-                   <p className="text-navy font-bold bg-[#F0F5ED] p-5 md:p-6 rounded-[16px] text-base md:text-lg leading-[1.85]">{question.religiousReference}</p>
+                   <h3 className="text-xl font-bold text-[color:var(--tb-c-4b6b42)] mb-4">إضاءة شرعية وتوجيه محكم</h3>
+                   <p className="text-navy font-bold bg-[color:var(--tb-c-f0f5ed)] p-5 md:p-6 rounded-[16px] text-base md:text-lg leading-[1.85]">{question.religiousReference}</p>
                  </div>
                )}
             </div>
@@ -528,7 +530,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2">
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[color:var(--tb-sky)]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <h3 className="text-2xl font-bold text-navy mb-6 flex items-center gap-3">
-                <CheckCircle2 className="text-[#4B6B42] w-8 h-8" /> خطوات عملية
+                <CheckCircle2 className="text-[color:var(--tb-c-4b6b42)] w-8 h-8" /> خطوات عملية
               </h3>
               {question.practicalSteps.length > 0 && (
                 <div className="mb-6">
@@ -561,18 +563,18 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                     transition={{ duration: 0.4, delay: reduceMotion ? 0 : Math.min(idx, 8) * 0.07, ease: 'easeOut' }}
                   >
                     {idx < question.practicalSteps.length - 1 && (
-                      <span aria-hidden="true" className={cn("absolute start-[35px] top-full h-4 w-0.5 rounded-full transition-colors duration-500", isDone ? "bg-[#4B6B42]/60" : "bg-[#8FA9C7]/30")} />
+                      <span aria-hidden="true" className={cn("absolute start-[35px] top-full h-4 w-0.5 rounded-full transition-colors duration-500", isDone ? "bg-[color:var(--tb-c-4b6b42)]/60" : "bg-[color:var(--tb-sky)]/30")} />
                     )}
                     <button
                       type="button"
                       aria-pressed={isDone}
                       onClick={() => setDoneSteps(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx])}
-                      className={cn("w-full text-start flex flex-wrap md:flex-nowrap gap-4 text-ink-mute font-medium p-5 rounded-[16px] border text-base md:text-lg transition-colors", isDone ? "bg-[#F0F5ED] border-[#DFEBD8]" : "bg-[#FAF9F6]/70 border-[color:var(--tb-sky)]/15 hover:border-[color:var(--tb-lilac-soft)]/40")}
+                      className={cn("w-full text-start flex flex-wrap md:flex-nowrap gap-4 text-ink-mute font-medium p-5 rounded-[16px] border text-base md:text-lg transition-colors", isDone ? "bg-[color:var(--tb-c-f0f5ed)] border-[color:var(--tb-c-dfebd8)]" : "bg-[#FAF9F6]/70 border-[color:var(--tb-sky)]/15 hover:border-[color:var(--tb-lilac-soft)]/40")}
                     >
-                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", "transition-colors duration-300", isDone ? "bg-[#4B6B42] text-white" : "bg-[#EAECE6] text-navy")}>
+                      <span className={cn("w-8 h-8 rounded-full font-bold flex items-center justify-center shrink-0", "transition-colors duration-300", isDone ? "bg-[color:var(--tb-c-4b6b42)] text-white" : "bg-[color:var(--tb-c-eaece6)] text-navy")}>
                         {isDone ? <CheckCircle2 className="w-5 h-5" aria-hidden="true" /> : idx + 1}
                       </span>
-                      <span className={cn("mt-1 flex-1", isDone && "line-through decoration-[#4B6B42]/40")}>{step}</span>
+                      <span className={cn("mt-1 flex-1", isDone && "line-through decoration-[color:var(--tb-c-4b6b42)]/40")}>{step}</span>
                     </button>
                   </motion.li>
                   );
@@ -582,12 +584,12 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
             <div className="bg-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[color:var(--tb-sky)]/15 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
               <h3 className="text-2xl font-bold text-navy mb-6 flex items-center gap-3">
-                <Lightbulb className="text-[#A68F58] w-8 h-8" /> تمارين تطبيقية
+                <Lightbulb className="text-[color:var(--tb-c-a68f58)] w-8 h-8" /> تمارين تطبيقية
               </h3>
               <ul className="space-y-4">
                 {question.exercises.map((ex, idx) => (
                   <li key={idx} className="flex flex-wrap md:flex-nowrap gap-4 text-ink-mute font-medium p-4 bg-[#F7F5F2] rounded-[16px] text-base md:text-lg">
-                    <Circle className="shrink-0 w-3 h-3 mt-2.5 fill-[#A68F58] text-[#A68F58]" aria-hidden="true" />
+                    <Circle className="shrink-0 w-3 h-3 mt-2.5 fill-[color:var(--tb-c-a68f58)] text-[color:var(--tb-c-a68f58)]" aria-hidden="true" />
                     <span>{ex}</span>
                   </li>
                 ))}
@@ -595,10 +597,10 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             </div>
             
             {question.whenToWorry && (
-              <div className="bg-[#FAF0E6] rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[#F2D7C8] flex flex-col sm:flex-row gap-6">
-                 <TriangleAlert className="w-9 h-9 text-[#A6603F] shrink-0" aria-hidden="true" />
+              <div className="bg-[color:var(--tb-c-faf0e6)] rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 border border-[color:var(--tb-c-f2d7c8)] flex flex-col sm:flex-row gap-6">
+                 <TriangleAlert className="w-9 h-9 text-[color:var(--tb-c-a6603f)] shrink-0" aria-hidden="true" />
                  <div>
-                   <h3 className="text-[#A6603F] font-bold text-xl md:text-2xl mb-3">متى أطلب التدخل المختص؟</h3>
+                   <h3 className="text-[color:var(--tb-c-a6603f)] font-bold text-xl md:text-2xl mb-3">متى أطلب التدخل المختص؟</h3>
                    {(() => {
                      // Display only: split the same text into sentences; nothing is dropped.
                      const parts = (question.whenToWorry.match(/[^.؛!؟?\n]+[.؛!؟?]?/g) || []).map(t => t.trim()).filter(Boolean);
@@ -606,7 +608,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                        <ul className="space-y-2">
                          {parts.map((t, i) => (
                            <li key={i} className="flex gap-2 text-navy font-medium text-base leading-[1.8]">
-                             <Circle className="shrink-0 w-2.5 h-2.5 mt-2.5 fill-[#A6603F] text-[#A6603F]" aria-hidden="true" />
+                             <Circle className="shrink-0 w-2.5 h-2.5 mt-2.5 fill-[color:var(--tb-c-a6603f)] text-[color:var(--tb-c-a6603f)]" aria-hidden="true" />
                              <span>{t}</span>
                            </li>
                          ))}
@@ -630,15 +632,15 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               const props = res.url ? { href: res.url, target: '_blank', rel: 'noopener noreferrer' } : {};
               
               return (
-                <Wrapper key={idx} {...props} className={cn("block bg-white rounded-[24px] p-6 border border-[color:var(--tb-sky)]/15 shadow-[0_2px_8_rgba(0,0,0,0.04)] transition-all group", res.url ? "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#A68F58] cursor-pointer" : "")}>
+                <Wrapper key={idx} {...props} className={cn("block bg-white rounded-[24px] p-6 border border-[color:var(--tb-sky)]/15 shadow-[0_2px_8_rgba(0,0,0,0.04)] transition-all group", res.url ? "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[color:var(--tb-c-a68f58)] cursor-pointer" : "")}>
                   <div className="flex flex-col gap-4">
-                     <div className={cn("w-14 h-14 rounded-full bg-[#F7F5F2] flex items-center justify-center text-ink-mute transition-colors", res.url ? "group-hover:text-white group-hover:bg-[#A68F58]" : "")}>
+                     <div className={cn("w-14 h-14 rounded-full bg-[#F7F5F2] flex items-center justify-center text-ink-mute transition-colors", res.url ? "group-hover:text-white group-hover:bg-[color:var(--tb-c-a68f58)]" : "")}>
                        {res.type === 'video' ? <Video className="w-7 h-7" /> : res.type === 'book' ? <BookOpen className="w-7 h-7" /> : res.type === 'study' ? <FileText className="w-7 h-7" /> : <Link className="w-7 h-7" />}
                      </div>
                      <div>
-                       <h4 className={cn("font-bold text-navy text-xl transition-colors", res.url ? "group-hover:text-[#A68F58]" : "")}>{res.title}</h4>
-                       <p className="text-[#6B6A65] font-medium mt-2 leading-[1.85]">{res.description}</p>
-                       {!res.url && <p className="text-sm font-bold text-[#A3A19C] mt-3 uppercase">متوفر في المكتبات</p>}
+                       <h4 className={cn("font-bold text-navy text-xl transition-colors", res.url ? "group-hover:text-[color:var(--tb-c-a68f58)]" : "")}>{res.title}</h4>
+                       <p className="text-[color:var(--tb-c-6b6a65)] font-medium mt-2 leading-[1.85]">{res.description}</p>
+                       {!res.url && <p className="text-sm font-bold text-[color:var(--tb-c-a3a19c)] mt-3 uppercase">متوفر في المكتبات</p>}
                      </div>
                   </div>
                 </Wrapper>
@@ -647,8 +649,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             </div>
             
             <div className="bg-[#8E7AAE] text-white rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 text-center mt-12 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-40 h-40 bg-[#A68F58] rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
-              <h3 className="font-serif italic font-light text-2xl md:text-3xl mb-6 text-[#EACD9B]">ومضة ختامية</h3>
+               <div className="absolute top-0 right-0 w-40 h-40 bg-[color:var(--tb-c-a68f58)] rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+              <h3 className="font-serif italic font-light text-2xl md:text-3xl mb-6 text-[color:var(--tb-c-eacd9b)]">ومضة ختامية</h3>
               <p className="text-xl font-medium leading-[1.85] max-w-2xl mx-auto">"{question.closingThought}"</p>
             </div>
 
@@ -657,22 +659,22 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                <p className="text-navy font-bold text-xl">تم إعداد هذه الإجابة عبر مصادر موثوقة</p>
                <div className="flex justify-center gap-3 flex-wrap">
                  {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-ink-mute px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />تدقيق واعتماد الحالة</span>}
-                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />التدقيق الشرعي</span>}
-                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-navy px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
+                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[color:var(--tb-c-f0f5ed)] text-[color:var(--tb-c-4b6b42)] px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />التدقيق الشرعي</span>}
+                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[color:var(--tb-c-eaece6)] text-navy px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
                </div>
 
                <div className="pt-8 border-t border-[color:var(--tb-sky)]/15 mt-8">
                  <p className="font-bold text-ink-mute mb-6 text-lg">هل وجدت هذه الإجابة مفيدة لموقفك؟</p>
                  {feedbackSubmitted ? (
-                   <div className="bg-[#F0F5ED] text-[#4B6B42] px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2">
+                   <div className="bg-[color:var(--tb-c-f0f5ed)] text-[color:var(--tb-c-4b6b42)] px-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2">
                      <CheckCircle2 className="w-5 h-5" />
                      شكراً لمساهمتك، رأيك يهمنا في تحسين جودة الإجابات!
                    </div>
                  ) : (
                    <div className="flex flex-wrap gap-4 justify-center">
-                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'positive'); setFeedbackSubmitted(true); }} className="bg-[#F0F5ED] text-[#4B6B42] hover:bg-[#E3EEDB] px-6 py-3 rounded-full font-bold transition-colors">نعم، جداً</button>
-                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'partial'); setFeedbackSubmitted(true); }} className="bg-[#F6F5F0] text-ink-mute hover:bg-[#EAECE6] px-6 py-3 rounded-full font-bold transition-colors">جزئياً</button>
-                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'negative'); setFeedbackSubmitted(true); }} className="bg-[#FAF0E6] text-[#A6603F] hover:bg-[#F2D7C8] px-6 py-3 rounded-full font-bold transition-colors">لا</button>
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'positive'); setFeedbackSubmitted(true); }} className="bg-[color:var(--tb-c-f0f5ed)] text-[color:var(--tb-c-4b6b42)] hover:bg-[color:var(--tb-c-e3eedb)] px-6 py-3 rounded-full font-bold transition-colors">نعم، جداً</button>
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'partial'); setFeedbackSubmitted(true); }} className="bg-[color:var(--tb-c-f6f5f0)] text-ink-mute hover:bg-[color:var(--tb-c-eaece6)] px-6 py-3 rounded-full font-bold transition-colors">جزئياً</button>
+                     <button onClick={() => { qawlFaslService.submitFeedback(questionId, 'negative'); setFeedbackSubmitted(true); }} className="bg-[color:var(--tb-c-faf0e6)] text-[color:var(--tb-c-a6603f)] hover:bg-[color:var(--tb-c-f2d7c8)] px-6 py-3 rounded-full font-bold transition-colors">لا</button>
                    </div>
                  )}
                </div>
@@ -687,11 +689,11 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                      <button 
                        key={rel.id}
                        onClick={() => onQuestion(rel)}
-                       className="bg-white rounded-[24px] p-6 border border-[color:var(--tb-sky)]/15 text-right shadow-[0_4px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] hover:border-[#A68F58] transition-all flex items-center justify-between group"
+                       className="bg-white rounded-[24px] p-6 border border-[color:var(--tb-sky)]/15 text-right shadow-[0_4px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_20px_rgb(0,0,0,0.06)] hover:border-[color:var(--tb-c-a68f58)] transition-all flex items-center justify-between group"
                      >
-                        <span className="font-bold text-navy text-lg group-hover:text-[#A68F58] transition-colors">{rel.question || rel.title}</span>
-                        <div className="w-10 h-10 rounded-full bg-[#F6F5F0] group-hover:bg-[#A68F58] flex items-center justify-center shrink-0 transition-colors">
-                          <ArrowRight className="w-5 h-5 text-[#6B6A65] group-hover:text-white" />
+                        <span className="font-bold text-navy text-lg group-hover:text-[color:var(--tb-c-a68f58)] transition-colors">{rel.question || rel.title}</span>
+                        <div className="w-10 h-10 rounded-full bg-[color:var(--tb-c-f6f5f0)] group-hover:bg-[color:var(--tb-c-a68f58)] flex items-center justify-center shrink-0 transition-colors">
+                          <ArrowRight className="w-5 h-5 text-[color:var(--tb-c-6b6a65)] group-hover:text-white" />
                         </div>
                      </button>
                   ))}

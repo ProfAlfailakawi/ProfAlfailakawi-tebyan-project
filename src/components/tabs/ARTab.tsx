@@ -181,7 +181,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
              className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-zinc-200/60 shadow-xl shadow-zinc-200/30 space-y-6"
            >
              <div className="space-y-4">
-               <label htmlFor="ar-idea-input" className="block text-sm font-bold text-[#465568]">
+               <label htmlFor="ar-idea-input" className="block text-sm font-bold text-[color:var(--tb-c-465568)]">
                  {language === 'ar' ? 'ما هي الفكرة التي تود تجسيدها؟' : 'What idea would you like to visualize?'}
                </label>
                <textarea

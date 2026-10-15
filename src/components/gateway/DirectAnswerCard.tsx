@@ -52,7 +52,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
       <div className="relative z-10">
         <div className="flex items-center justify-between gap-3 border-b border-[color:var(--tb-sky)]/10 pb-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)]">
               <Sparkles className="h-4 w-4" />
             </span>
             <h2 className="text-[17px] font-black leading-6 text-navy md:text-xl">
@@ -74,19 +74,19 @@ export const DirectAnswerCard: React.FC<Props> = ({
         </details>
 
         <div className="mt-4 space-y-3">
-          <div key={`beat-summary:${summary}`} className="tbn-beat relative rounded-[20px] border border-[color:var(--tb-lilac-soft)]/11 bg-[#F7F3FA] p-4 md:p-5" style={{ ["--beat" as string]: "#8E7AAE" }}>
-            <p className="text-[15px] font-bold leading-[1.95] text-[#273548] md:text-[17px]">
+          <div key={`beat-summary:${summary}`} className="tbn-beat relative rounded-[20px] border border-[color:var(--tb-lilac-soft)]/11 bg-[color:var(--tb-c-f7f3fa)] p-4 md:p-5" style={{ ["--beat" as string]: "#8E7AAE" }}>
+            <p className="text-[15px] font-bold leading-[1.95] text-[color:var(--tb-c-273548)] md:text-[17px]">
               {summary}
             </p>
           </div>
-          <div key={`beat-action:${action}`} className="tbn-beat tbn-beat-2 relative rounded-[20px] border border-[#A8C3BD]/17 bg-[#F3F8F6] p-4 md:p-5" style={{ ["--beat" as string]: "#4D766B" }}>
-            <div className="flex items-center gap-2 text-[#4D766B]">
+          <div key={`beat-action:${action}`} className="tbn-beat tbn-beat-2 relative rounded-[20px] border border-[color:var(--tb-c-a8c3bd)]/17 bg-[color:var(--tb-c-f3f8f6)] p-4 md:p-5" style={{ ["--beat" as string]: "#4D766B" }}>
+            <div className="flex items-center gap-2 text-[color:var(--tb-c-4d766b)]">
               <CheckCircle2 className="h-4 w-4" />
               <h3 className="text-[12px] font-black">
                 {isArabic ? "ماذا تفعل الآن؟" : "What should you do now?"}
               </h3>
             </div>
-            <p className="mt-2 text-[14px] font-bold leading-[1.9] text-[#34524B] md:text-base">
+            <p className="mt-2 text-[14px] font-bold leading-[1.9] text-[color:var(--tb-c-34524b)] md:text-base">
               {action}
             </p>
           </div>
@@ -104,7 +104,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
             type="button"
             onClick={onShowOptions}
             aria-expanded={showOptions}
-            className="min-h-12 rounded-[16px] border border-[color:var(--tb-sky)]/18 bg-white px-4 text-sm font-black text-ink-mute transition-colors hover:bg-[#F7F5FA] active:scale-[0.98]"
+            className="min-h-12 rounded-[16px] border border-[color:var(--tb-sky)]/18 bg-white px-4 text-sm font-black text-ink-mute transition-colors hover:bg-[color:var(--tb-c-f7f5fa)] active:scale-[0.98]"
           >
             {showOptions
               ? isArabic
@@ -129,7 +129,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
                   "min-h-11 rounded-[15px] border px-3 text-[13px] font-black transition-colors active:scale-[0.98]",
                   responseMode === "simple"
                     ? "border-[color:var(--tb-lilac-soft)] bg-[#8E7AAE] text-white"
-                    : "border-[color:var(--tb-lilac-soft)]/18 bg-white text-[color:var(--tb-lilac-deep)] hover:bg-[#F4F0F8]",
+                    : "border-[color:var(--tb-lilac-soft)]/18 bg-white text-[color:var(--tb-lilac-deep)] hover:bg-[color:var(--tb-c-f4f0f8)]",
                 )}
               >
                 {isArabic ? "بسّط أكثر" : "Simplify more"}
@@ -141,7 +141,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
                   "inline-flex min-h-11 items-center justify-center gap-2 rounded-[15px] border px-3 text-[13px] font-black active:scale-[0.98]",
                   responseMode === "deep"
                     ? "border-navy bg-[#182231] text-white"
-                    : "border-navy/14 bg-white text-navy hover:bg-[#F2F4F6]",
+                    : "border-navy/14 bg-white text-navy hover:bg-[color:var(--tb-c-f2f4f6)]",
                 )}
               >
                 {isArabic ? "حلّل بعمق" : "Analyse deeply"}

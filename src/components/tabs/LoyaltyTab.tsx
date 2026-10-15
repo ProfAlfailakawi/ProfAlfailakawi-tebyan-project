@@ -144,14 +144,14 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
             <div className="bg-ivory border border-lilac/15 rounded-[24px] md:rounded-[32px] p-5 md:p-8 text-navy shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-48 h-48 bg-[#8E7AAE]/15 blur-[60px] translate-x-1/4 -translate-y-1/4" />
                 <div className="relative z-10">
-                    <div className="flex items-center gap-3 text-[#5B6E82] mb-6">
+                    <div className="flex items-center gap-3 text-[color:var(--tb-c-5b6e82)] mb-6">
                         <Crown className="w-5 h-5 text-lilac" />
                         <span className="text-xs font-black">{language === 'ar' ? 'رصيد النقاط' : 'Points Balance'}</span>
                     </div>
                     <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex flex-wrap items-baseline gap-2">
                         <span className="text-5xl md:text-6xl font-black">{Number.isFinite(Number(myLoyaltyData.points)) && myLoyaltyData.points !== '' && myLoyaltyData.points != null ? <DnaCountUp value={Number(myLoyaltyData.points)} format={(n) => String(n)} playKey={`loyalty-points:${user?.uid ?? 'guest'}`} /> : myLoyaltyData.points}</span>
-                        <span className="text-xl font-bold text-[#5B6E82]">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
+                        <span className="text-xl font-bold text-[color:var(--tb-c-5b6e82)]">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
                     </div>
                     <DnaRing
                       value={Number(myLoyaltyData.points) || 0}
@@ -165,11 +165,11 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
                     />
                     </div>
-                    <p className="text-[#5B6E82] text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
+                    <p className="text-[color:var(--tb-c-5b6e82)] text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
                     
                     <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-navy/10 flex flex-wrap items-center justify-between gap-4">
                         <div>
-                            <p className="text-xs text-[#5B6E82] font-bold mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
+                            <p className="text-xs text-[color:var(--tb-c-5b6e82)] font-bold mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
                             <p className="text-lg font-black">{language === 'ar' ? `${myLoyaltyData.totalSpent} د.ك` : `KWD ${myLoyaltyData.totalSpent}`}</p>
                         </div>
                         <div className="bg-lilac-mist text-lilac px-4 py-2 rounded-xl text-xs font-black">
@@ -545,7 +545,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
                   <div className="p-6 bg-zinc-50 border-t border-zinc-200 space-y-3">
                      <button 
-                       className="w-full bg-lilac text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[#5d4f7b] transition-all shadow-lg active:scale-95"
+                       className="w-full bg-lilac text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[color:var(--tb-c-5d4f7b)] transition-all shadow-lg active:scale-95"
                        onClick={async () => {
                          const pointsToAdd = window.prompt('كم نقطة تريد إضافتها لهذا العميل؟');
                          if (pointsToAdd && !isNaN(Number(pointsToAdd))) {

@@ -399,7 +399,7 @@ const SessionRestoreLoader = ({
         : "top-5 rounded-full px-4 py-2",
     )}
   >
-    <div className="flex items-center gap-3 text-xs font-black text-[#7D689E]">
+    <div className="flex items-center gap-3 text-xs font-black text-[color:var(--tb-c-7d689e)]">
       <Loader2 className="h-4 w-4 animate-spin" />
       <span>
         {slow
@@ -429,21 +429,21 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => {
       initial={{ y: 22, scale: 0.98, opacity: 0 }}
       animate={{ y: 0, scale: 1, opacity: 1 }}
       exit={{ y: 22, scale: 0.98, opacity: 0 }}
-      className="relative w-full max-w-lg overflow-hidden rounded-[34px] border border-[#F0D8D2] bg-[#FFF9F6]/94 p-5 md:p-7 shadow-[0_34px_110px_rgba(166,96,63,0.16)]"
+      className="relative w-full max-w-lg overflow-hidden rounded-[34px] border border-[color:var(--tb-c-f0d8d2)] bg-[color:var(--tb-c-fff9f6)]/94 p-5 md:p-7 shadow-[0_34px_110px_rgba(166,96,63,0.16)]"
     >
-      <div className="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#F1D7CC]/50 blur-[70px]" />
-      <div className="absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-[#C9BEDF]/35 blur-[80px]" />
+      <div className="absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[color:var(--tb-c-f1d7cc)]/50 blur-[70px]" />
+      <div className="absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-[color:var(--tb-c-c9bedf)]/35 blur-[80px]" />
       <div className="relative flex items-start gap-4">
-        <div className="relative mt-0.5 flex h-14 w-14 shrink-0 items-center justify-center rounded-[24px] bg-[#FAF0E6] text-[#A6603F]">
+        <div className="relative mt-0.5 flex h-14 w-14 shrink-0 items-center justify-center rounded-[24px] bg-[color:var(--tb-c-faf0e6)] text-[color:var(--tb-c-a6603f)]">
           <motion.span
             animate={reduceMotion ? { scale: 1, opacity: 0.5 } : { scale: [1, 1.7, 1], opacity: [0.5, 0, 0.5] }}
             transition={reduceMotion ? { duration: 0 } : { duration: 2.6, repeat: 2, ease: "easeOut" }}
-            className="absolute inset-0 rounded-[24px] border border-[#A6603F]/25"
+            className="absolute inset-0 rounded-[24px] border border-[color:var(--tb-c-a6603f)]/25"
           />
           <WifiOff className="h-6 w-6" />
         </div>
         <div className="min-w-0 text-right">
-          <p className="text-xs font-black tracking-[0.22em] uppercase text-[#A6603F]/75">
+          <p className="text-xs font-black tracking-[0.22em] uppercase text-[color:var(--tb-c-a6603f)]/75">
             {language === "ar" ? "وضع الحفاظ على المسار" : "Path-preserve mode"}
           </p>
           <h3 className="mt-1 text-xl md:text-2xl font-black text-navy">
@@ -456,7 +456,7 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => {
               ? "لا نعيد السبلاش الافتتاحي هنا. تبيان يحفظ حالتك الحالية، وعند عودة الشبكة نكمل من نفس الباب."
               : "We do not replay the opening splash here. Tebyan keeps your state and resumes from the same doorway when the network returns."}
           </p>
-          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-[#E9D7CF] bg-white/60 px-3 py-2 text-xs font-black text-[#8D6A58]">
+          <div className="mt-4 flex items-center gap-2 rounded-2xl border border-[color:var(--tb-c-e9d7cf)] bg-white/60 px-3 py-2 text-xs font-black text-[color:var(--tb-c-8d6a58)]">
             <ShieldCheck className="h-4 w-4" />
             <span>
               {language === "ar"

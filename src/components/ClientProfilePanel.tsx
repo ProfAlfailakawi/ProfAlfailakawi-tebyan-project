@@ -481,19 +481,19 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
             <div className="grid grid-cols-3 px-2 pt-2 gap-1 border-b border-zinc-100 shrink-0">
               <button 
                 onClick={() => setActiveTab('overview')} 
-                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[#F1EEF4]'} rounded-t-lg`}
+                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[color:var(--tb-lilac-bg)]'} rounded-t-lg`}
               >
                 ملخص
               </button>
               <button 
                 onClick={() => setActiveTab('tools')} 
-                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'tools' || activeTab === 'tasks' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[#F1EEF4]'} rounded-t-lg`}
+                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'tools' || activeTab === 'tasks' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[color:var(--tb-lilac-bg)]'} rounded-t-lg`}
               >
                 حفظ وتتبّع
               </button>
               <button 
                 onClick={() => setActiveTab('settings')} 
-                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'settings' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[#F1EEF4]'} rounded-t-lg`}
+                className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'settings' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[color:var(--tb-lilac-bg)]'} rounded-t-lg`}
               >
                 إعدادات
               </button>
@@ -505,7 +505,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
               {activeTab === 'overview' && (
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
                   <div className="tebyan-intellectual-gradient border border-[color:var(--tb-lilac-soft)]/15 rounded-[28px] p-5 shadow-[0_18px_55px_rgba(24,34,49,0.06)] relative overflow-hidden">
-                    <div className="absolute -top-12 -left-12 w-40 h-40 bg-[#8FA9C7]/14 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute -top-12 -left-12 w-40 h-40 bg-[color:var(--tb-sky)]/14 rounded-full blur-3xl pointer-events-none" />
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-5">
                         <div className="w-12 h-12 rounded-2xl bg-white/80 border border-[color:var(--tb-lilac-soft)]/15 text-[color:var(--tb-lilac-deep)] flex items-center justify-center shadow-sm">
@@ -599,9 +599,9 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                             {knowledgeTree.slice(0, showAllLibrary ? undefined : 3).map((item, idx) => (
                                 <div key={item.id || idx} className="p-4 bg-white border border-[color:var(--tb-sky)]/15 rounded-xl shadow-sm hover:border-lilac-soft transition-colors">
                                     <div className="flex items-start gap-3 w-full">
-                                        <div className="p-2 bg-[#F1EEF4] rounded-lg text-lilac shrink-0 mt-1"><Bookmark size={14}/></div>
+                                        <div className="p-2 bg-[color:var(--tb-lilac-bg)] rounded-lg text-lilac shrink-0 mt-1"><Bookmark size={14}/></div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-bold text-[#273548] break-words leading-tight mb-1">{item.mainTopic}</p>
+                                            <p className="text-sm font-bold text-[color:var(--tb-c-273548)] break-words leading-tight mb-1">{item.mainTopic}</p>
                                             <p className="text-xs text-ink-soft line-clamp-2 mb-2 bg-[#F7F5F2] p-2 rounded-lg break-words">الفكرة: {item.originalText}</p>
                                             
                                             {item.variants && item.variants.length > 0 && (
@@ -609,7 +609,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                                     <p className="text-xs font-bold text-lilac mb-1">امتدادات وتفاصيل جديدة:</p>
                                                     <div className="space-y-2">
                                                         {item.variants.map(v => (
-                                                            <div key={v.id} className="text-xs bg-[#F1EEF4]/50 p-2 rounded text-[#3D4A5A] flex flex-col gap-1">
+                                                            <div key={v.id} className="text-xs bg-[color:var(--tb-lilac-bg)]/50 p-2 rounded text-[color:var(--tb-c-3d4a5a)] flex flex-col gap-1">
                                                                 <span className="font-medium">"{v.originalText}"</span>
                                                                 {(v.ageMentioned || v.riskLevel !== 'medium') && (
                                                                   <div className="flex gap-2 text-xs text-lilac">
@@ -630,12 +630,12 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                 </div>
                             ))}
                             {!showAllLibrary && knowledgeTree.length > 3 && (
-                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-[color:var(--tb-lilac-deep)] hover:text-lilac-deep font-bold py-3 bg-[#F1EEF4] rounded-xl transition-colors">
+                                <button onClick={() => setShowAllLibrary(true)} className="w-full text-center text-xs text-[color:var(--tb-lilac-deep)] hover:text-lilac-deep font-bold py-3 bg-[color:var(--tb-lilac-bg)] rounded-xl transition-colors">
                                     +{knowledgeTree.length - 3} أفكار وحالات أخرى - فتح الذاكرة كاملة
                                 </button>
                             )}
                             {showAllLibrary && knowledgeTree.length > 3 && (
-                                <button onClick={() => setShowAllLibrary(false)} className="w-full text-center text-xs text-ink-soft hover:text-[#273548] font-bold py-3 bg-slate-100 rounded-xl transition-colors">
+                                <button onClick={() => setShowAllLibrary(false)} className="w-full text-center text-xs text-ink-soft hover:text-[color:var(--tb-c-273548)] font-bold py-3 bg-slate-100 rounded-xl transition-colors">
                                     إخفاء العناصر الإضافية
                                 </button>
                             )}
@@ -656,12 +656,12 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <div className="space-y-2">
                             {[...archivedSessions].reverse().slice(0, showAllArchive ? undefined : 5).map((query, idx) => (
                                 <div key={idx} className="flex items-start gap-3 p-3 bg-white border border-[color:var(--tb-sky)]/15 rounded-xl shadow-sm hover:border-[color:var(--tb-lilac-soft)]/25 transition-colors">
-                                    <span className="text-xs font-black text-lilac bg-[#F1EEF4] rounded-lg px-2 py-1 shrink-0">{idx + 1}</span>
-                                    <p className="text-sm font-bold text-[#3D4A5A] line-clamp-2 leading-relaxed">{query}</p>
+                                    <span className="text-xs font-black text-lilac bg-[color:var(--tb-lilac-bg)] rounded-lg px-2 py-1 shrink-0">{idx + 1}</span>
+                                    <p className="text-sm font-bold text-[color:var(--tb-c-3d4a5a)] line-clamp-2 leading-relaxed">{query}</p>
                                 </div>
                             ))}
                             {archivedSessions.length > 5 && (
-                                <button onClick={() => setShowAllArchive(v => !v)} className="w-full text-center text-xs text-[color:var(--tb-lilac-deep)] font-bold py-3 bg-[#F1EEF4] rounded-xl transition-colors hover:bg-[#EAE3EF]">
+                                <button onClick={() => setShowAllArchive(v => !v)} className="w-full text-center text-xs text-[color:var(--tb-lilac-deep)] font-bold py-3 bg-[color:var(--tb-lilac-bg)] rounded-xl transition-colors hover:bg-[color:var(--tb-c-eae3ef)]">
                                     {showAllArchive ? 'إخفاء البقية' : `عرض كل الأسئلة (${archivedSessions.length})`}
                                 </button>
                             )}
@@ -678,7 +678,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
               {activeTab === 'insights' && (
                 <motion.div initial={{opacity:0, y: 10}} animate={{opacity:1, y: 0}} className="space-y-6">
                   
-                  <div className="bg-[#F1EEF4] p-4 rounded-2xl border border-[color:var(--tb-lilac-soft)]/18">
+                  <div className="bg-[color:var(--tb-lilac-bg)] p-4 rounded-2xl border border-[color:var(--tb-lilac-soft)]/18">
                     <p className="font-bold text-lilac-deep mb-2 flex items-center gap-2"><Fingerprint size={16}/> ماذا يعرف تبيان عني؟</p>
                     <p className="text-sm text-lilac/80 leading-relaxed">
                         ما تراه هنا مبني على أسئلتك المحفوظة على جهازك فقط. للتحكم بهذه البيانات أو محوها، افتح تبويب «إعدادات».
@@ -691,7 +691,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <button 
                            onClick={() => analyzeGalaxyAndMaturity()}
                            disabled={isAnalyzingGalaxy}
-                           className="text-xs bg-[#F1EEF4] text-[color:var(--tb-lilac-deep)] px-3 py-1.5 rounded-xl border border-[color:var(--tb-lilac-soft)]/18 hover:bg-[#EAE3EF] transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
+                           className="text-xs bg-[color:var(--tb-lilac-bg)] text-[color:var(--tb-lilac-deep)] px-3 py-1.5 rounded-xl border border-[color:var(--tb-lilac-soft)]/18 hover:bg-[color:var(--tb-c-eae3ef)] transition-colors disabled:opacity-50 font-black flex items-center gap-2 shadow-sm"
                         >
                            {isAnalyzingGalaxy ? (
                               <>
@@ -706,8 +706,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                            )}
                         </button>
                      </div>
-                     <div className="bg-[#EEF2F6] p-6 md:p-10 rounded-[32px] relative overflow-hidden h-72 flex items-center justify-center border border-[color:var(--tb-sky)]/20 shadow-[0_18px_60px_rgba(24,34,49,0.08)] group">
-                         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[color:var(--tb-lilac-soft)]/18 via-[#EEF2F6] to-[color:var(--tb-ivory)]" />
+                     <div className="bg-[color:var(--tb-c-eef2f6)] p-6 md:p-10 rounded-[32px] relative overflow-hidden h-72 flex items-center justify-center border border-[color:var(--tb-sky)]/20 shadow-[0_18px_60px_rgba(24,34,49,0.08)] group">
+                         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[color:var(--tb-lilac-soft)]/18 via-[color:var(--tb-c-eef2f6)] to-[color:var(--tb-ivory)]" />
                          
                          {/* Grid background effect */}
                          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(24,34,49,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(24,34,49,0.04)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
@@ -731,7 +731,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                           animate={{ scale: 1, opacity: 1 }}
                                           drag
                                           dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-white/85 backdrop-blur-md border border-[color:var(--tb-lilac-soft)]/30 rounded-full text-[#3D4A5A] text-xs md:text-xs font-black shadow-lg"
+                                          className="absolute cursor-grab active:cursor-grabbing px-4 py-2 bg-white/85 backdrop-blur-md border border-[color:var(--tb-lilac-soft)]/30 rounded-full text-[color:var(--tb-c-3d4a5a)] text-xs md:text-xs font-black shadow-lg"
                                           style={{ 
                                             top: `${15 + (i * 20) % 70}%`, 
                                             left: `${10 + (i * 25) % 80}%` 
@@ -766,7 +766,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       <h4 className="font-bold text-amber-900 mb-2 flex items-center gap-2"><ArrowRightLeft size={16} className="text-lilac" /> كاشف التناقضات المخبأة</h4>
                       <div className="bg-white/60 p-4 rounded-xl border border-amber-200/50 backdrop-blur-sm relative z-10 m-0">
                           {contradiction ? (
-                             <p className="text-sm font-medium text-[#3D4A5A] leading-relaxed whitespace-pre-wrap">
+                             <p className="text-sm font-medium text-[color:var(--tb-c-3d4a5a)] leading-relaxed whitespace-pre-wrap">
                                "{contradiction}"
                              </p>
                           ) : (
@@ -828,7 +828,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                       {commitments.length > 0 && (
                         <button
                           onClick={() => setActiveTab('tools')}
-                          className="mt-2 w-full text-xs font-black text-[color:var(--tb-lilac-deep)] bg-[#F1EEF4] hover:bg-[#EAE3EF] rounded-xl py-3 transition-colors flex items-center justify-center gap-2"
+                          className="mt-2 w-full text-xs font-black text-[color:var(--tb-lilac-deep)] bg-[color:var(--tb-lilac-bg)] hover:bg-[color:var(--tb-c-eae3ef)] rounded-xl py-3 transition-colors flex items-center justify-center gap-2"
                         >
                           <CheckCircle className="w-4 h-4 text-lilac" />
                           {commitments.length} التزام مرصود — افتح «تتبّع»
@@ -858,7 +858,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <button
                           type="button"
                           onClick={openKnowledge}
-                          className="flex items-center gap-4 p-4 rounded-2xl border border-[color:var(--tb-lilac-soft)]/18 bg-[#F1EEF4] hover:bg-[#EAE3EF] transition-colors shadow-sm"
+                          className="flex items-center gap-4 p-4 rounded-2xl border border-[color:var(--tb-lilac-soft)]/18 bg-[color:var(--tb-lilac-bg)] hover:bg-[color:var(--tb-c-eae3ef)] transition-colors shadow-sm"
                         >
                           <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-white text-lilac shadow">
                             <Network className="w-5 h-5" />
@@ -887,7 +887,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                           <Target size={16} />
                                        </div>
                                        <div>
-                                           <p className="text-sm font-bold text-[#273548]">{c}</p>
+                                           <p className="text-sm font-bold text-[color:var(--tb-c-273548)]">{c}</p>
                                            <p className="text-xs text-ink-mute">قرار مرصود من سياق حوارك</p>
                                        </div>
                                    </div>
@@ -941,7 +941,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         <button
                           type="button"
                           onClick={openKnowledge}
-                          className="flex items-center gap-4 p-5 rounded-2xl border border-[color:var(--tb-lilac-soft)]/18 bg-[#F1EEF4] hover:bg-[#EAE3EF] transition-colors shadow-sm"
+                          className="flex items-center gap-4 p-5 rounded-2xl border border-[color:var(--tb-lilac-soft)]/18 bg-[color:var(--tb-lilac-bg)] hover:bg-[color:var(--tb-c-eae3ef)] transition-colors shadow-sm"
                         >
                           <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-white text-lilac shadow">
                             <Network className="w-6 h-6" />
@@ -996,7 +996,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     value={rageText}
                                     onChange={(e) => setRageText(e.target.value)}
                                     placeholder="اكتب هنا، أفرغ غضبك، لا أحد سيقرأ..."
-                                    className="w-full bg-white border border-rose-200 rounded-xl p-3 text-sm text-[#273548] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none h-24"
+                                    className="w-full bg-white border border-rose-200 rounded-xl p-3 text-sm text-[color:var(--tb-c-273548)] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none h-24"
                                 />
                                 <button 
                                     onClick={analyzeRage} 
@@ -1074,7 +1074,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         if (IS_DEMO_MODE) { exitDemoMode(); return; }
                   auth.signOut();
                         window.location.reload();
-                     }} className="w-full py-3 bg-slate-100 hover:bg-rose-50 text-[#3D4A5A] hover:text-rose-600 rounded-xl text-sm font-bold transition-colors">
+                     }} className="w-full py-3 bg-slate-100 hover:bg-rose-50 text-[color:var(--tb-c-3d4a5a)] hover:text-rose-600 rounded-xl text-sm font-bold transition-colors">
                          تسجيل الخروج من الحساب
                      </button>
                   </div>

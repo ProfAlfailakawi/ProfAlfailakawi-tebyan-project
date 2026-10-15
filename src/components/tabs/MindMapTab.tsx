@@ -150,7 +150,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
                 </button>
               </div>
 
-              <div className="tbn-tree prose max-w-none prose-p:text-navy prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-navy prose-headings:font-serif prose-headings:font-bold prose-li:text-navy prose-strong:text-[#4B3F6B]">
+              <div className="tbn-tree prose max-w-none prose-p:text-navy prose-p:leading-[1.8] prose-p:text-lg md:prose-p:text-xl prose-headings:text-navy prose-headings:font-serif prose-headings:font-bold prose-li:text-navy prose-strong:text-[color:var(--tb-c-4b3f6b)]">
                 <ReactMarkdown>{mindMapData}</ReactMarkdown>
               </div>
             </div>

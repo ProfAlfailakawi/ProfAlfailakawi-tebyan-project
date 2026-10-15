@@ -184,7 +184,7 @@ export default function AdminUsersDashboard() {
             </svg>
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold min-w-0">
               <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-rose-50 px-3 py-1.5 text-rose-800"><span className="h-2 w-2 rounded-full bg-rose-600" />مدير <span className="font-black">{adminCount}</span></span>
-              <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[color:var(--tb-lilac-deep)]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
+              <span className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-[color:var(--tb-c-f4f0f8)] px-3 py-1.5 text-[color:var(--tb-lilac-deep)]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />مستخدم <span className="font-black">{userCount}</span></span>
             </div>
           </div>
         );
@@ -213,7 +213,7 @@ export default function AdminUsersDashboard() {
                       <td className="p-4">{user.displayName || 'لا يوجد اسم'}</td>
                       <td className="p-4 text-left" dir="ltr">{user.email}</td>
                       <td className="p-4">
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]'}`}>
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)]'}`}>
                           {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                         </span>
                       </td>
@@ -250,14 +250,14 @@ export default function AdminUsersDashboard() {
                       <p className="font-black text-slate-900 leading-snug">{user.displayName || 'لا يوجد اسم'}</p>
                       <p className="mt-1 text-xs text-slate-500 leading-relaxed" dir="ltr">{user.email}</p>
                     </div>
-                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]'}`}>
+                    <span className={`shrink-0 px-2 py-1 rounded text-xs font-bold ${user.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)]'}`}>
                       {user.role === 'admin' ? 'مدير' : user.role === 'user' ? 'مستخدم' : user.role}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 tebyan-pair-actions">
                     <button 
                       onClick={() => openEditModal(user)}
-                      className="min-h-11 rounded-xl bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] font-bold flex items-center justify-center gap-2"
+                      className="min-h-11 rounded-xl bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)] font-bold flex items-center justify-center gap-2"
                       title="تعديل المستخدم"
                     >
                       <Edit2 size={16} />
@@ -306,7 +306,7 @@ export default function AdminUsersDashboard() {
                   )}
                 </div>
                 <h3 className="font-bold text-lg mb-1 text-center">{editingUser.displayName || 'بدون اسم'}</h3>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]'}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold mb-4 ${editingUser.role === 'admin' ? 'bg-rose-100 text-rose-800' : 'bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)]'}`}>
                   {editingUser.role === 'admin' ? 'مدير النظام' : 'مستخدم'}
                 </span>
 

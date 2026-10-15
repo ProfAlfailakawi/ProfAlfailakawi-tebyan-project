@@ -271,7 +271,7 @@ export default function AdminDashboard() {
                 <button 
                 onClick={runAIAnalysis}
                 disabled={isLoading}
-                className="bg-[#6E5B91] text-white px-4 md:px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-[#5F4E7F] transition-all disabled:bg-slate-500 cursor-pointer text-sm md:text-base leading-tight"
+                className="bg-[#6E5B91] text-white px-4 md:px-6 py-3 rounded-xl flex items-center justify-center gap-2 font-bold hover:bg-[color:var(--tb-c-5f4e7f)] transition-all disabled:bg-slate-500 cursor-pointer text-sm md:text-base leading-tight"
                 >
                     <Brain className="w-5 h-5" /> {isLoading ? 'جاري التحليل...' : 'تشغيل تحليل الذكاء الاصطناعي'}
                 </button>
@@ -314,8 +314,8 @@ export default function AdminDashboard() {
                     <p className="text-emerald-700 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">الطلبات الموفرة (ذاكرة)</p>
                     <h3 className="text-3xl md:text-4xl font-black text-emerald-700"><DnaCountUp value={costStats.cacheHits + costStats.kbHits} format={(n) => String(n)} playKey="admin-cost-saved" /></h3>
                 </div>
-                <div className="bg-[#F8F5EF] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#6E5B91]/15 text-[color:var(--tb-navy)] flex flex-col justify-between gap-3 min-w-0">
-                    <p className="text-[#5B6E82] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
+                <div className="bg-[color:var(--tb-c-f8f5ef)] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[color:var(--tb-c-6e5b91)]/15 text-[color:var(--tb-navy)] flex flex-col justify-between gap-3 min-w-0">
+                    <p className="text-[color:var(--tb-c-5b6e82)] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
                     <div className="flex items-center justify-between gap-3">
                         <h3 className="text-3xl md:text-4xl font-black">{costStats.savedPercentage}٪</h3>
                         <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-xs">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" draw drawKey="admin-cost-ring" />

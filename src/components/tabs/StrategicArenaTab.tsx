@@ -33,7 +33,7 @@ const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }
    they were an analysis. No real data feeds them, so no numbers are drawn: a neutral empty state is shown. */
 const EmotionalLandscape = ({ language }: { language: 'ar' | 'en' }) => {
   return (
-    <div className="w-full bg-[#F1EEF4] p-8 rounded-[40px] border border-[color:var(--tb-sky)]/25 relative overflow-hidden">
+    <div className="w-full bg-[color:var(--tb-lilac-bg)] p-8 rounded-[40px] border border-[color:var(--tb-sky)]/25 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-mood-primary/5 to-transparent pointer-events-none" />
         <div className="flex items-center gap-2 mb-6 relative">
           <Activity className="w-5 h-5 text-mood-primary" />
@@ -147,12 +147,12 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                            </PhysicsCard>
 
                            <PhysicsCard language={language} icon={Hourglass} className="bottom-20 right-10 border-amber-200">
-                              <h4 className="font-black text-lg mb-2 text-[#8B7B4E]">{language === 'ar' ? 'الجدول الزمني' : 'Timeline'}</h4>
+                              <h4 className="font-black text-lg mb-2 text-[color:var(--tb-c-8b7b4e)]">{language === 'ar' ? 'الجدول الزمني' : 'Timeline'}</h4>
                               <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'توقع النتائج المستقبلية' : 'Forecasting future results'}</p>
                            </PhysicsCard>
 
                            <PhysicsCard language={language} icon={Move} className="top-1/3 left-1/3 border-emerald-200">
-                              <h4 className="font-black text-lg mb-2 text-[#5F837A]">{language === 'ar' ? 'ديناميكيات الحركة' : 'Motion Dynamics'}</h4>
+                              <h4 className="font-black text-lg mb-2 text-[color:var(--tb-c-5f837a)]">{language === 'ar' ? 'ديناميكيات الحركة' : 'Motion Dynamics'}</h4>
                               <p className="text-xs text-ink-mute font-bold">{language === 'ar' ? 'الاستجابة للمتغيرات' : 'Responding to variables'}</p>
                            </PhysicsCard>
                            

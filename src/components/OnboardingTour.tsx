@@ -208,7 +208,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100000] flex items-end md:items-center justify-center bg-[#F7F3EE]/75 backdrop-blur-xl p-4"
+          className="fixed inset-0 z-[100000] flex items-end md:items-center justify-center bg-[color:var(--tb-c-f7f3ee)]/75 backdrop-blur-xl p-4"
           dir={language === "ar" ? "rtl" : "ltr"}
         >
           <motion.div
@@ -221,7 +221,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
             <button
               type="button"
               onClick={closeTour}
-              className="absolute left-5 top-5 z-10 rounded-full bg-[#F7F3EE] p-2 text-slate-400 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[color:var(--tb-lilac-soft)]/30"
+              className="absolute left-5 top-5 z-10 rounded-full bg-[color:var(--tb-c-f7f3ee)] p-2 text-slate-400 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[color:var(--tb-lilac-soft)]/30"
               aria-label={language === "ar" ? "إغلاق الدليل" : "Close guide"}
             >
               <X className="h-4 w-4" />
@@ -231,7 +231,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
               <div className="mb-2 flex justify-center">
                 <ProgressiveMark stage={step} />
               </div>
-              <p className="mb-6 text-sm font-bold text-[#7A6330]">
+              <p className="mb-6 text-sm font-bold text-[color:var(--tb-c-7a6330)]">
                 {current.hint}
               </p>
 
@@ -266,7 +266,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
                   onClick={() =>
                     step < steps.length - 1 ? setStep(step + 1) : closeTour()
                   }
-                  className="inline-flex items-center justify-center gap-3 rounded-2xl bg-lilac px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(142,122,174,0.25)] transition hover:bg-[#806D9F] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center gap-3 rounded-2xl bg-lilac px-8 py-3.5 text-sm font-bold text-white shadow-[0_14px_30px_rgba(142,122,174,0.25)] transition hover:bg-[color:var(--tb-c-806d9f)] active:scale-[0.98]"
                 >
                   {current.action}
                   <ArrowLeft

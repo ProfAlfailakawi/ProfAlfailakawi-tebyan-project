@@ -109,11 +109,11 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
     }, [isCinematic, visibleNodes, x, y]);
 
     return (
-        <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "tbn-dark fixed inset-0 z-50 h-screen bg-[#182231] rounded-none" : "tbn-dark h-[68vh] md:h-[70vh] bg-[#182231] rounded-[24px] md:rounded-[40px] border border-[#2b3a52]")}>
+        <div className={cn("relative w-full overflow-hidden shadow-2xl transition-all duration-1000", isCinematic ? "tbn-dark fixed inset-0 z-50 h-screen bg-[#182231] rounded-none" : "tbn-dark h-[68vh] md:h-[70vh] bg-[#182231] rounded-[24px] md:rounded-[40px] border border-[color:var(--tb-c-2b3a52)]")}>
             {/* Nebula Background */}
             <div className={cn("absolute inset-0 pointer-events-none transition-opacity duration-1000", isCinematic ? "opacity-20" : "opacity-40")}>
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-lilac-soft rounded-full blur-[150px]" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#A68F58] rounded-full blur-[150px]" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[color:var(--tb-c-a68f58)] rounded-full blur-[150px]" />
             </div>
 
             {/* Instruction Overlay */}
@@ -139,7 +139,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                   }} 
                   className={cn(
                       "px-3 md:px-4 py-2 rounded-full font-bold text-xs md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
-                      isCinematic ? "bg-[#F8F5EF] text-[color:var(--tb-navy)] border-white" : "bg-[#182231]/70 text-white border-white/20 hover:bg-white/10"
+                      isCinematic ? "bg-[color:var(--tb-c-f8f5ef)] text-[color:var(--tb-navy)] border-white" : "bg-[#182231]/70 text-white border-white/20 hover:bg-white/10"
                   )}
                   aria-pressed={isCinematic}
               >
@@ -222,7 +222,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                 onClick={() => !isCinematic && setSelectedNode(node)}
                                 className={cn(
                                     "absolute rounded-full flex items-center justify-center transition-shadow",
-                                    node.type === 'seed' ? "bg-[#A68F58] shadow-[0_0_20px_rgba(166,143,88,0.55)]" : "bg-lilac-soft shadow-[0_0_15px_rgba(142,122,174,0.5)]"
+                                    node.type === 'seed' ? "bg-[color:var(--tb-c-a68f58)] shadow-[0_0_20px_rgba(166,143,88,0.55)]" : "bg-lilac-soft shadow-[0_0_15px_rgba(142,122,174,0.5)]"
                                 )}
                                 style={{ width: node.size, height: node.size }}
                             >
@@ -286,7 +286,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                         <div className="flex items-center gap-3 mb-4">
                             <div className={cn(
                                 "w-10 h-10 rounded-full flex items-center justify-center",
-                                selectedNode.type === 'seed' ? "bg-[#A68F58] text-white" : "bg-lilac-soft text-white"
+                                selectedNode.type === 'seed' ? "bg-[color:var(--tb-c-a68f58)] text-white" : "bg-lilac-soft text-white"
                             )}>
                                 {selectedNode.type === 'seed' ? <Globe className="w-5 h-5" /> : <Network className="w-5 h-5" />}
                             </div>
@@ -305,7 +305,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                              {!isCinematic && (
                                <button 
                                   onClick={() => onViewDetails(selectedNode.id)}
-                                  className="bg-[#F8F5EF] text-[color:var(--tb-navy)] px-4 py-2 rounded-xl text-sm font-bold shadow-lg"
+                                  className="bg-[color:var(--tb-c-f8f5ef)] text-[color:var(--tb-navy)] px-4 py-2 rounded-xl text-sm font-bold shadow-lg"
                                >
                                   {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
                                </button>

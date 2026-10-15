@@ -232,7 +232,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCFB] font-sans pb-20 md:pb-24 overflow-x-clip">
+    <div className="min-h-screen bg-[color:var(--tb-c-fdfcfb)] font-sans pb-20 md:pb-24 overflow-x-clip">
       {/* Header */}
       <header className="pt-6 md:pt-10 pb-6 md:pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 text-right">
@@ -382,20 +382,20 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         {/* Bento Grid Features */}
         <section className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 lg:min-h-[520px]">
           {/* Main Hero Card - Bento 1 */}
-          <div className="lg:col-span-8 relative overflow-hidden bg-ivory rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-navy flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[#E7DED2] group text-right">
+          <div className="lg:col-span-8 relative overflow-hidden bg-ivory rounded-[32px] md:rounded-[40px] p-8 md:p-12 lg:p-16 text-navy flex flex-col justify-end shadow-[0_24px_70px_rgba(24,34,49,0.10)] border border-[color:var(--tb-c-e7ded2)] group text-right">
             <div className="absolute top-0 right-0 p-6 md:p-12 transition-transform duration-700 group-hover:scale-105 opacity-70">
-              <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-[#C68B6A]" />
+              <ShieldAlert className="w-16 h-16 md:w-32 md:h-32 text-[color:var(--tb-c-c68b6a)]" />
             </div>
             
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(198,139,106,0.22),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.88),rgba(248,245,239,0.72))] pointer-events-none"></div>
 
             <div className="relative z-10 space-y-6 md:space-y-8">
-              <div className="inline-flex bg-white/74 backdrop-blur-md px-4 py-2 rounded-full border border-[#E2D6C8] text-xs md:text-sm font-bold text-[#9A6042] shadow-sm">
+              <div className="inline-flex bg-white/74 backdrop-blur-md px-4 py-2 rounded-full border border-[color:var(--tb-c-e2d6c8)] text-xs md:text-sm font-bold text-[color:var(--tb-c-9a6042)] shadow-sm">
                 خدمة التدخل السريع
               </div>
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-serif font-bold leading-[1.3]">
                 تواجه موقفاً <br className="hidden md:block"/> 
-                <span className="text-[#9A6042]">حرجاً وصعباً؟</span>
+                <span className="text-[color:var(--tb-c-9a6042)]">حرجاً وصعباً؟</span>
               </h2>
               <p className="text-ink-mute text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
                 في لحظات الانفعال، نحتاج للهدوء والحكمة. قسم الطوارئ يوفر لك حلولاً سريعة ومجربة للمواقف والطوارئ الضاغطة.
@@ -504,7 +504,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                   <span className="mt-auto">
                     <DnaCount value={count > 0 ? `${count} حالة مؤكدة` : "قيد الإعداد"} icon={count > 0 ? <BookOpenCheck className="w-3.5 h-3.5" /> : <Clock3 className="w-3.5 h-3.5" />} />
                   </span>
-                  <span className="block h-1 w-full overflow-hidden rounded-full bg-[#E9E2F1]" aria-hidden="true">
+                  <span className="block h-1 w-full overflow-hidden rounded-full bg-[color:var(--tb-c-e9e2f1)]" aria-hidden="true">
                     <span className="block h-full rounded-full" style={{ width: `${Math.round((count / maxCount) * 100)}%`, backgroundColor: '#8E7AAE' }} />
                   </span>
                 </button>

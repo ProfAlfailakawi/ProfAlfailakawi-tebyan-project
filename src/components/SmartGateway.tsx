@@ -813,7 +813,7 @@ const ThoughtJourney = ({
               className="relative rounded-2xl bg-white/72 border border-[color:var(--tb-sky)]/14 px-2 py-3 text-center shadow-sm overflow-hidden"
             >
               {index < steps.length - 1 && (
-                <span className="hidden md:block absolute top-1/2 -left-2 h-px w-4 bg-[#8FA9C7]/28" />
+                <span className="hidden md:block absolute top-1/2 -left-2 h-px w-4 bg-[color:var(--tb-sky)]/28" />
               )}
               <Icon className="h-4 w-4 mx-auto mb-2 text-[color:var(--tb-lilac-deep)]" />
               <span className="block text-xs md:text-xs font-black text-ink-soft">
@@ -3205,13 +3205,13 @@ export const SmartGateway: React.FC<
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: entrancePlaying ? 2.45 : 0.15 }}
-            className="mx-auto mb-4 flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-2xl border border-[#E5DFD4] bg-white/75 px-5 py-3 text-center"
+            className="mx-auto mb-4 flex w-full max-w-2xl flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-2xl border border-[color:var(--tb-c-e5dfd4)] bg-white/75 px-5 py-3 text-center"
             dir={language === "ar" ? "rtl" : "ltr"}
           >
             <span className="text-[12.5px] font-bold text-ink-mute">
               {language === "ar" ? "أهلاً بعودتك — وقفنا عند:" : "Welcome back — we stopped at:"}
             </span>
-            <span className="max-w-full break-words md:max-w-[280px] md:truncate font-serif text-[13.5px] font-bold text-[#5E4D7A] md:max-w-[380px]">
+            <span className="max-w-full break-words md:max-w-[280px] md:truncate font-serif text-[13.5px] font-bold text-[color:var(--tb-c-5e4d7a)] md:max-w-[380px]">
               «{normalizeFollowUpQuery(lastInteraction.query)}»
             </span>
             <button
@@ -3235,7 +3235,7 @@ export const SmartGateway: React.FC<
                 setLastInteraction(null);
               }}
               aria-label={language === "ar" ? "إخفاء" : "Dismiss"}
-              className="text-[12px] font-bold text-[#A8A29B] transition-colors hover:text-ink-mute"
+              className="text-[12px] font-bold text-[color:var(--tb-c-a8a29b)] transition-colors hover:text-ink-mute"
             >
               <X className="w-3.5 h-3.5" aria-hidden="true" />
             </button>
@@ -3322,7 +3322,7 @@ export const SmartGateway: React.FC<
                         opacity: [0, 0.58, 0],
                       }}
                       transition={{ duration: 2.65, ease: "easeInOut" }}
-                      className="h-40 w-40 rounded-full border border-[color:var(--tb-lilac-soft)]/22 bg-[#F4F0FA]/30 blur-[1px]"
+                      className="h-40 w-40 rounded-full border border-[color:var(--tb-lilac-soft)]/22 bg-[color:var(--tb-c-f4f0fa)]/30 blur-[1px]"
                     />
                   </div>
                 )}
@@ -3440,7 +3440,7 @@ export const SmartGateway: React.FC<
                   >
                     {/* 1. الأبواب المقترحة حسب السؤال (Suggested Doors: Top Recommended Door like 'قول فصل' + Companion Doors) */}
                     {liveTypingDoors.length > 0 && (
-                      <div className="overflow-hidden rounded-3xl border border-[color:var(--tb-lilac-soft)]/20 bg-gradient-to-br from-white/96 via-[#FAF9F6]/95 to-[#F6F1FA]/92 p-4 md:p-6 shadow-[0_16px_44px_rgba(142,122,174,0.12)] backdrop-blur-xl transition-all">
+                      <div className="overflow-hidden rounded-3xl border border-[color:var(--tb-lilac-soft)]/20 bg-gradient-to-br from-white/96 via-[color:var(--tb-c-faf9f6)]/95 to-[color:var(--tb-c-f6f1fa)]/92 p-4 md:p-6 shadow-[0_16px_44px_rgba(142,122,174,0.12)] backdrop-blur-xl transition-all">
                         <div className="flex items-center justify-between pb-3.5 border-b border-[color:var(--tb-lilac-soft)]/12">
                           <div className="flex items-center gap-2">
                             <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#8E7AAE]/15 text-[color:var(--tb-lilac-deep)]">
@@ -3464,7 +3464,7 @@ export const SmartGateway: React.FC<
                           return (
                             <div className="mt-3.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 rounded-2xl border border-[color:var(--tb-lilac-soft)]/25 bg-white/92 p-4 shadow-sm hover:border-[color:var(--tb-lilac-soft)]/50 transition-all">
                               <div className="flex items-start gap-3.5 min-w-0 flex-1">
-                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[color:var(--tb-lilac-soft)] to-[#5E4D7A] text-white shadow-md">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[color:var(--tb-lilac-soft)] to-[color:var(--tb-c-5e4d7a)] text-white shadow-md">
                                   <TopIcon className="h-5 w-5" />
                                 </div>
                                 <div className="min-w-0 flex-1">
@@ -3510,7 +3510,7 @@ export const SmartGateway: React.FC<
                                     className="group flex items-center justify-between gap-2.5 rounded-xl border border-[color:var(--tb-sky)]/18 bg-white/75 px-3.5 py-2.5 text-right transition-all hover:bg-white hover:border-[color:var(--tb-lilac-soft)]/40 hover:shadow-sm cursor-pointer"
                                   >
                                     <div className="flex items-center gap-2.5 min-w-0">
-                                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FAF7FD] text-[color:var(--tb-lilac-deep)] group-hover:bg-[#8E7AAE] group-hover:text-white transition-colors">
+                                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[color:var(--tb-c-faf7fd)] text-[color:var(--tb-lilac-deep)] group-hover:bg-[#8E7AAE] group-hover:text-white transition-colors">
                                         <CompIcon className="h-4 w-4" />
                                       </div>
                                       <div className="min-w-0 text-right">
@@ -3538,7 +3538,7 @@ export const SmartGateway: React.FC<
                         <button
                           type="button"
                           onClick={() => setShowQuestionHelper(true)}
-                          className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[color:var(--tb-lilac-soft)]/18 bg-white/80 px-4 py-1.5 text-xs font-bold text-[color:var(--tb-lilac-deep)] transition-all hover:bg-[#F7F3FA] hover:border-[color:var(--tb-lilac-soft)]/40 active:scale-[0.98] shadow-xs cursor-pointer"
+                          className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[color:var(--tb-lilac-soft)]/18 bg-white/80 px-4 py-1.5 text-xs font-bold text-[color:var(--tb-lilac-deep)] transition-all hover:bg-[color:var(--tb-c-f7f3fa)] hover:border-[color:var(--tb-lilac-soft)]/40 active:scale-[0.98] shadow-xs cursor-pointer"
                         >
                           <Sparkles className="h-3.5 w-3.5" />
                           <span>{language === "ar" ? "ساعدني أصيغ السؤال بدقة أكبر" : "Help me phrase this more accurately"}</span>
@@ -3709,7 +3709,7 @@ export const SmartGateway: React.FC<
                                 key={door.id}
                                 type="button"
                                 onClick={() => handlePathSelect(door.id, query)}
-                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[color:var(--tb-lilac-soft)]/50 hover:-translate-y-0.5 active:scale-[0.99]"
+                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[color:var(--tb-c-e5dfd4)] bg-white/85 px-4 py-3 text-right transition-all hover:border-[color:var(--tb-lilac-soft)]/50 hover:-translate-y-0.5 active:scale-[0.99]"
                               >
                                 <span className="min-w-0">
                                   <span className="block text-sm font-black text-navy leading-6 break-words md:truncate">
@@ -3783,9 +3783,9 @@ export const SmartGateway: React.FC<
                             <motion.div
                               initial={{ opacity: 0, scale: 0.95 }}
                               animate={{ opacity: 1, scale: 1 }}
-                              className="p-4 bg-[#EEF4F1] border border-[#A8C3BD]/25 rounded-2xl mb-2"
+                              className="p-4 bg-[color:var(--tb-c-eef4f1)] border border-[color:var(--tb-c-a8c3bd)]/25 rounded-2xl mb-2"
                             >
-                              <p className="text-[#34524B] font-bold text-xs leading-relaxed">
+                              <p className="text-[color:var(--tb-c-34524b)] font-bold text-xs leading-relaxed">
                                 {smartResponse}
                               </p>
                             </motion.div>
@@ -3848,7 +3848,7 @@ export const SmartGateway: React.FC<
                                 key={door.id}
                                 type="button"
                                 onClick={() => handlePathSelect(door.id, query)}
-                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[#E5DFD4] bg-white/85 px-4 py-3 text-right transition-all hover:border-[color:var(--tb-lilac-soft)]/50 hover:-translate-y-0.5 active:scale-[0.99]"
+                                className="w-full flex items-center justify-between gap-3 rounded-2xl border border-[color:var(--tb-c-e5dfd4)] bg-white/85 px-4 py-3 text-right transition-all hover:border-[color:var(--tb-lilac-soft)]/50 hover:-translate-y-0.5 active:scale-[0.99]"
                               >
                                 <span className="min-w-0">
                                   <span className="block text-sm font-black text-navy leading-6 break-words md:truncate">
@@ -3915,7 +3915,7 @@ export const SmartGateway: React.FC<
                         );
                         setTimeout(() => setSelectionFeedback(""), 2200);
                       }}
-                      className="shrink-0 rounded-full bg-[#F4F1F8] px-4 py-2 text-xs font-black text-[color:var(--tb-lilac-deep)] border border-[#DED6EA] transition-all hover:bg-[#EEE8F7] active:scale-95"
+                      className="shrink-0 rounded-full bg-[color:var(--tb-c-f4f1f8)] px-4 py-2 text-xs font-black text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-c-ded6ea)] transition-all hover:bg-[color:var(--tb-c-eee8f7)] active:scale-95"
                     >
                       {language === "ar" ? "ذكرني باجر" : "Remind me tomorrow"}
                     </button>
@@ -3989,7 +3989,7 @@ export const SmartGateway: React.FC<
                     type="button"
                     onClick={() => handleTabChange("discover")}
                     data-testid="all-services-link"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black text-[color:var(--tb-lilac-deep)] underline decoration-[color:var(--tb-lilac-soft)]/40 underline-offset-4 transition-colors hover:text-[#4F4270] active:scale-[0.98]"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black text-[color:var(--tb-lilac-deep)] underline decoration-[color:var(--tb-lilac-soft)]/40 underline-offset-4 transition-colors hover:text-[color:var(--tb-c-4f4270)] active:scale-[0.98]"
                   >
                     <LayoutGrid className="h-4 w-4" aria-hidden="true" />
                     {language === "ar" ? "كل الخدمات" : "All services"}

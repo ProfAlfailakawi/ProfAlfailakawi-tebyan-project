@@ -99,7 +99,7 @@ export default function UserMenu() {
                             }
                         }}
                     />
-                    <p className="text-xs text-[#9A6042] font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
+                    <p className="text-xs text-[color:var(--tb-c-9a6042)] font-bold">أضف بريدك الإلكتروني لتصلك تنبيهات تفاعل الآخرين مع أفكارك.</p>
                 </div>
               )}
             </div>
@@ -134,7 +134,7 @@ export default function UserMenu() {
                   setIsOpen(false);
                   window.dispatchEvent(new Event('tebyan_open_onboarding'));
                 }}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[#7D689E] hover:bg-[#F3EEF8] transition-colors w-full text-start"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[color:var(--tb-c-7d689e)] hover:bg-[color:var(--tb-c-f3eef8)] transition-colors w-full text-start"
               >
                 <Sparkles size={16} className="text-lilac shrink-0" />
                 <span className="text-sm font-bold flex-1">دليل البداية</span>

@@ -53,14 +53,14 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
       dir={isAr ? 'rtl' : 'ltr'}
     >
       <div className="flex items-center gap-3 min-w-0">
-        <div className="w-9 h-9 rounded-2xl bg-[#F4F1F8] text-lilac flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-2xl bg-[color:var(--tb-c-f4f1f8)] text-lilac flex items-center justify-center shrink-0">
           <Sparkles className="w-4 h-4" />
         </div>
         <div className="min-w-0">
           <p className="text-xs font-black uppercase text-lilac">
             {isAr ? 'احفظ المسار' : 'Save this path'}
           </p>
-          <p className="text-xs md:text-sm font-bold text-[#6F7785] leading-relaxed">
+          <p className="text-xs md:text-sm font-bold text-[color:var(--tb-c-6f7785)] leading-relaxed">
             {isAr ? 'زر واحد للحفظ. وإذا احتجت تربطه بنسيج أفكارك، الخيار موجود بهدوء.' : 'One save button. Link it to your idea fabric only when you need.'}
           </p>
         </div>
@@ -71,7 +71,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
           onClick={handleSave}
           className={cn(
             'px-5 py-2.5 rounded-full text-xs font-black border transition-all active:scale-95 flex items-center gap-2 shadow-sm',
-            saved ? 'bg-[#EAF6F1] border-[#CDEBDE] text-[#3F7E66]' : 'bg-[#182231] border-navy text-white hover:bg-black'
+            saved ? 'bg-[color:var(--tb-c-eaf6f1)] border-[color:var(--tb-c-cdebde)] text-[color:var(--tb-c-3f7e66)]' : 'bg-[#182231] border-navy text-white hover:bg-black'
           )}
         >
           {saved ? <CheckCircle2 className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
@@ -81,7 +81,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
           <button
             type="button"
             onClick={onLink}
-            className="px-4 py-2.5 rounded-full bg-[#F4F1F8] border border-[#E6E1EA] text-lilac text-xs font-black transition-all active:scale-95 flex items-center gap-2 hover:bg-[#EEE8F7]"
+            className="px-4 py-2.5 rounded-full bg-[color:var(--tb-c-f4f1f8)] border border-[color:var(--tb-c-e6e1ea)] text-lilac text-xs font-black transition-all active:scale-95 flex items-center gap-2 hover:bg-[color:var(--tb-c-eee8f7)]"
           >
             <Link2 className="w-4 h-4" />
             {isAr ? 'اربطها' : 'Link it'}
