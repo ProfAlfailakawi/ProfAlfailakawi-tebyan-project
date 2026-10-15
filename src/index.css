@@ -4138,8 +4138,8 @@ body:not(.zen-idle)::after {
   }
 
   .tebyan-service-card p {
-    font-size: 0.78rem !important;
-    line-height: 1.65 !important;
+    font-size: 0.84rem !important;
+    line-height: 1.7 !important;
   }
 
   .tebyan-app-header {
@@ -4612,16 +4612,15 @@ main .overflow-x-auto > [role="tab"] {
     font-size: 0.8rem !important;
     line-height: 1.5 !important;
     margin: 0.1rem 0 0;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
+    /* الوصف كاملاً: لا نقتطعه بثلاث نقاط. */
+    display: block;
+    overflow: visible;
   }
   @media (min-width: 768px) {
     .tebyan-tab-header { padding: 0.7rem 0.25rem 0.9rem !important; }
     .tebyan-tab-header .tebyan-tab-header__icon { width: 2.6rem; height: 2.6rem; }
     .tebyan-tab-header .tebyan-tab-header__title { font-size: 1.55rem !important; }
-    .tebyan-tab-header .tebyan-tab-header__desc { font-size: 0.9rem !important; -webkit-line-clamp: 1; }
+    .tebyan-tab-header .tebyan-tab-header__desc { font-size: 0.9rem !important; }
   }
 }
 

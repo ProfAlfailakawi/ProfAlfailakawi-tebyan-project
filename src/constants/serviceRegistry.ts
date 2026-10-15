@@ -1,12 +1,18 @@
 import type { ElementType } from 'react';
 import {
   Activity,
-  BarChart3,
+  BadgeCheck,
+  BookMarked,
   BookOpenText,
+  Compass,
+  DoorOpen,
+  Scale,
+  Target,
+  TrendingUp,
+  Waypoints,
   Box,
   BrainCircuit,
   ClipboardCheck,
-  Command,
   Gamepad2,
   Hourglass,
   LibraryBig,
@@ -103,7 +109,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   {
     id: 'qawlfasl',
     category: 'understand',
-    icon: ScrollText,
+    icon: BadgeCheck,
     titleAr: 'قول فصل',
     titleEn: 'Qawl Fasl',
     brandAr: 'مرجع الوالدين الموثوق',
@@ -130,7 +136,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
     keywordsAr: ['مفهوم', 'تعريف', 'مصطلح', 'شرح'], keywordsEn: ['concept', 'definition', 'term', 'explain'],
   },
   {
-    id: 'knowledgecenter', category: 'understand', icon: Network,
+    id: 'knowledgecenter', category: 'understand', icon: Compass,
     titleAr: 'مركز المعرفة', titleEn: 'Knowledge Center', brandAr: 'ابحث داخل شبكة المعنى', brandEn: 'Search inside the meaning network',
     descriptionAr: 'استكشف موضوعاً عبر جذوره وروابطه ومداخله العلمية والفكرية.', descriptionEn: 'Explore a topic through roots, links, and scholarly entry points.',
     keywordsAr: ['بحث', 'معرفة', 'مصادر', 'مركز', 'شبكة'], keywordsEn: ['research', 'knowledge', 'sources', 'center', 'network'], featured: true,
@@ -160,7 +166,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
     keywordsAr: ['مجلس', 'نقاش', 'آراء', 'حوار'], keywordsEn: ['council', 'debate', 'views', 'dialogue'],
   },
   {
-    id: 'strategicarena', category: 'decide', icon: ClipboardCheck,
+    id: 'strategicarena', category: 'decide', icon: Target,
     titleAr: 'الميدان الاستراتيجي', titleEn: 'Strategic Arena', brandAr: 'حوّل الهدف إلى مناورة', brandEn: 'Turn the goal into a maneuver',
     descriptionAr: 'اختبر الأهداف والخصوم والمخاطر بخطة تنفيذ أكثر صلابة.', descriptionEn: 'Stress-test goals, opposing forces, and risks with a stronger execution plan.',
     keywordsAr: ['استراتيجية', 'هدف', 'مخاطر', 'تنفيذ'], keywordsEn: ['strategy', 'goal', 'risk', 'execution'], featured: true,
@@ -178,7 +184,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
     keywordsAr: ['واقع معزز', 'تصور', 'مجسم', 'روابط'], keywordsEn: ['ar', 'visualize', 'spatial', 'links'],
   },
   {
-    id: 'story', category: 'create', icon: BookOpenText,
+    id: 'story', category: 'create', icon: BookMarked,
     titleAr: 'القصة', titleEn: 'Story', brandAr: 'افهم بالحكاية', brandEn: 'Understand through story',
     descriptionAr: 'حوّل الموضوع إلى قصة توضّح المعنى وتبقيه في الذاكرة.', descriptionEn: 'Turn a topic into a story that clarifies and sticks.',
     keywordsAr: ['قصة', 'حكاية', 'تبسيط', 'طفل'], keywordsEn: ['story', 'narrative', 'simplify', 'child'],
@@ -196,7 +202,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
     keywordsAr: ['اختبار', 'أسئلة', 'تقييم', 'تعلم'], keywordsEn: ['quiz', 'questions', 'assessment', 'learn'],
   },
   {
-    id: 'analytics', category: 'plan', icon: BarChart3,
+    id: 'analytics', category: 'plan', icon: Activity,
     titleAr: 'متابعة السلوك', titleEn: 'Behavior Tracker', brandAr: 'اقرأ الأنماط قبل أن تتفاقم', brandEn: 'Spot patterns before they escalate',
     descriptionAr: 'دوّن ملاحظاتك اليومية، ويكشف لك الذكاء الاصطناعي ما يتكرر وما قد يحدث لاحقاً.', descriptionEn: 'Log quick daily notes and let AI show what repeats and what may come next.',
     keywordsAr: ['تحليل', 'سلوك', 'غضب', 'ملاحظات', 'نمط', 'تقدم'], keywordsEn: ['analytics', 'behavior', 'anger', 'notes', 'patterns', 'progress'],
@@ -222,7 +228,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   {
     id: 'decisionroom',
     category: 'decide',
-    icon: Command,
+    icon: Scale,
     titleAr: 'غرفة القرار',
     titleEn: 'Decision Room',
     brandAr: 'احسم من كل الزوايا',
@@ -262,7 +268,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   {
     id: 'knowledgegraph',
     category: 'understand',
-    icon: Network,
+    icon: Waypoints,
     titleAr: 'خريطة المعرفة',
     titleEn: 'Knowledge Map',
     brandAr: 'أفكارك شبكة مترابطة',
@@ -275,7 +281,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   {
     id: 'growth',
     category: 'personal',
-    icon: Route,
+    icon: TrendingUp,
     titleAr: 'خارطة الطريق والتقدم',
     titleEn: 'Roadmap & Progress',
     brandAr: 'من الهدف إلى الخطة',
@@ -302,7 +308,7 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   {
     id: 'rukni',
     category: 'personal',
-    icon: LibraryBig,
+    icon: DoorOpen,
     titleAr: 'ركني',
     titleEn: 'My Corner',
     brandAr: 'مساحتك الخاصة',
