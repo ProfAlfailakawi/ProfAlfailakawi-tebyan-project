@@ -7,6 +7,7 @@
 import * as React from 'react';
 import './dna.css';
 import { useJourneyReveal } from './useJourneyReveal';
+import { useCountUp, useFirstView } from './useFirstView';
 
 export type DnaTone =
   | 'accent'
@@ -92,6 +93,65 @@ export function DnaCount({
   );
 }
 
+/**
+ * A number that counts 0 -> value once per `playKey` when first scrolled into view.
+ * The FINAL value is always what assistive tech reads, and what is rendered whenever the
+ * intro cannot or should not play (reduced motion, no IntersectionObserver, played key).
+ * Pass the screen's own `format` so the final text is exactly what it was before.
+ */
+export function DnaCountUp({
+  value,
+  format,
+  decimals = 0,
+  playKey,
+  enabled = true,
+  className,
+}: {
+  value: number;
+  format?: (n: number) => React.ReactNode;
+  decimals?: number;
+  playKey?: string | number | null;
+  enabled?: boolean;
+  className?: string;
+}) {
+  const { ref, shown, phase } = useCountUp<HTMLSpanElement>(value, { playKey, decimals, enabled });
+  const fmt = format ?? ((n: number) => n.toLocaleString());
+  return (
+    <span ref={ref} className={className} style={{ fontVariantNumeric: 'tabular-nums' }}>
+      {phase == null ? (
+        fmt(value)
+      ) : (
+        <>
+          <span className="dna-sr">{fmt(value)}</span>
+          <span aria-hidden="true">{fmt(shown)}</span>
+        </>
+      )}
+    </span>
+  );
+}
+
+/**
+ * Wrapper for custom drawings (e.g. an SVG curve): the first time it scrolls into view, children
+ * marked `.dna-dmask` (a mask rect that opens left -> right) and `.dna-dmark` (markers that settle in)
+ * play once per `playKey`. Without the wrapper's data-draw attribute everything is at its final state.
+ */
+export function DnaDrawIn({
+  playKey,
+  className,
+  children,
+}: {
+  playKey?: string | number | null;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const { ref, phase } = useFirstView<HTMLDivElement>({ playKey, ms: 1800 });
+  return (
+    <div ref={ref} className={className} data-draw={phase ?? undefined}>
+      {children}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------- stepper */
 
 export type DnaStepState = 'done' | 'current' | 'pending' | 'returned' | 'blocked';
@@ -145,6 +205,11 @@ export interface DnaStepperProps {
    * whose stations are not completed steps (e.g. model-generated eras).
    */
   plain?: boolean;
+  /**
+   * Which station gets the one-shot change halo when states change after mount.
+   * 'current' (default): the station that became current; 'done': the one just marked done.
+   */
+  haloOn?: 'current' | 'done';
 }
 
 export function DnaStepper({
@@ -160,6 +225,7 @@ export function DnaStepper({
   hold,
   stepMs,
   plain = false,
+  haloOn = 'current',
 }: DnaStepperProps) {
   const text = { ...DEFAULT_STATE_TEXT, ...stateText };
   const labels = showLabels && size !== 'xs';
@@ -176,16 +242,18 @@ export function DnaStepper({
     const prev = prevStates.current;
     prevStates.current = sig;
     const before = prev == null ? [] : prev.split('|');
-    if (prev == null || prev === sig || !(journey || reveal) || before.length !== realSteps.length) return;
+    if (prev == null || prev === sig || before.length !== realSteps.length) return;
     const moved = (want: DnaStepState) => realSteps.findIndex((s, i) => s.state === want && before[i] !== `${s.key}:${s.state}`);
     // the station that became current gets the halo; otherwise the one that just completed
-    const idx = moved('current') >= 0 ? moved('current') : moved('done');
+    const first = haloOn === 'done' ? 'done' : 'current';
+    const second = haloOn === 'done' ? 'current' : 'done';
+    const idx = moved(first) >= 0 ? moved(first) : moved(second);
     if (idx < 0) return;
     setChanged(idx);
     const t = window.setTimeout(() => setChanged(null), 1600);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sig, journey, reveal]);
+  }, [sig]);
   const { ref, lit } = useJourneyReveal<HTMLOListElement>({
     target,
     count: realSteps.length,
@@ -257,6 +325,8 @@ export interface DnaEvent {
   tone?: DnaTone;
   date?: React.ReactNode;
   meta?: React.ReactNode;
+  /** Position in the first-view reveal (default: list order); the list itself is never reordered. */
+  revealOrder?: number;
 }
 
 export function DnaTimeline({
@@ -265,22 +335,34 @@ export function DnaTimeline({
   maxHeight,
   wrapMeta = false,
   className,
+  reveal = false,
+  playKey,
 }: {
   items: DnaEvent[];
   ariaLabel?: string;
   maxHeight?: number | string;
   wrapMeta?: boolean;
   className?: string;
+  /**
+   * Opt-in first-view intro: the dots and connectors draw in, in list order, once per `playKey`.
+   * The rows (text) are readable immediately; nothing is held back.
+   */
+  reveal?: boolean;
+  playKey?: string | number | null;
 }) {
+  const { ref, phase } = useFirstView<HTMLOListElement>({ enabled: reveal && items.length > 0, playKey, ms: 1300 });
+  const stepMs = Math.min(90, Math.max(30, Math.round(480 / Math.max(1, items.length))));
   return (
     <ol
+      ref={ref}
       className={cx('dna', 'dna-tline', className)}
       aria-label={ariaLabel}
       data-wrap={wrapMeta ? 'true' : undefined}
-      style={maxHeight != null ? { maxHeight, overflowY: 'auto' } : undefined}
+      data-draw={phase ?? undefined}
+      style={{ ...(maxHeight != null ? { maxHeight, overflowY: 'auto' as const } : null), ['--tl-step' as string]: `${stepMs}ms` }}
     >
-      {items.map((item) => (
-        <li key={item.key} className="dna-tli" data-dna-tone={item.tone ?? 'accent'}>
+      {items.map((item, i) => (
+        <li key={item.key} className="dna-tli" data-dna-tone={item.tone ?? 'accent'} style={{ ['--i' as string]: item.revealOrder ?? i }}>
           <span className="dna-dot" aria-hidden="true">
             {item.icon ?? <span className="dna-pip" />}
           </span>
@@ -354,9 +436,13 @@ export interface DnaRingProps {
   sublabel?: React.ReactNode;
   ariaLabel?: string;
   className?: string;
+  /** Opt-in: the arc draws in once per `drawKey` when first scrolled into view. */
+  draw?: boolean;
+  drawKey?: string | number | null;
 }
 
-export function DnaRing({ value, max = 100, size = 52, stroke = 4, tone = 'accent', label, sublabel, ariaLabel, className }: DnaRingProps) {
+export function DnaRing({ value, max = 100, size = 52, stroke = 4, tone = 'accent', label, sublabel, ariaLabel, className, draw = false, drawKey }: DnaRingProps) {
+  const { ref, phase } = useFirstView<HTMLDivElement>({ enabled: draw, playKey: drawKey, ms: 1200 });
   const has = typeof value === 'number' && Number.isFinite(value) && max > 0;
   const fraction = has ? Math.min(1, Math.max(0, (value as number) / max)) : 0;
   const r = (size - stroke) / 2;
@@ -364,8 +450,10 @@ export function DnaRing({ value, max = 100, size = 52, stroke = 4, tone = 'accen
   const mid = size / 2;
   return (
     <div
+      ref={ref}
       className={cx('dna', 'dna-ring', className)}
       data-dna-tone={tone}
+      data-draw={phase ?? undefined}
       style={{ inlineSize: size, blockSize: size }}
       role="img"
       aria-label={ariaLabel}
@@ -382,6 +470,7 @@ export function DnaRing({ value, max = 100, size = 52, stroke = 4, tone = 'accen
             strokeWidth={stroke}
             strokeLinecap="round"
             strokeDasharray={`${c * fraction} ${c}`}
+            strokeDashoffset={phase === 'pre' ? c * fraction : phase === 'go' ? 0 : undefined}
             transform={`rotate(-90 ${mid} ${mid})`}
           />
         )}
@@ -447,6 +536,8 @@ export function DnaSpark({
   tone = 'accent',
   ariaLabel,
   className,
+  draw = false,
+  drawKey,
 }: {
   values: number[];
   width?: number;
@@ -454,7 +545,11 @@ export function DnaSpark({
   tone?: DnaTone;
   ariaLabel?: string;
   className?: string;
+  /** Opt-in: the line draws in, then the area fades in, once per `drawKey`. */
+  draw?: boolean;
+  drawKey?: string | number | null;
 }) {
+  const { ref, phase } = useFirstView<SVGSVGElement>({ enabled: draw, playKey: drawKey, ms: 1500 });
   const clean = values.filter((v) => Number.isFinite(v));
   if (clean.length < 2) return null;
   const min = Math.min(...clean);
@@ -470,6 +565,8 @@ export function DnaSpark({
   const last = pts[pts.length - 1];
   return (
     <svg
+      ref={ref}
+      data-draw={phase ?? undefined}
       className={cx('dna', 'dna-spark', className)}
       data-dna-tone={tone}
       width={width}
@@ -480,7 +577,7 @@ export function DnaSpark({
       aria-hidden={ariaLabel ? undefined : true}
     >
       <path className="dna-sparka" d={area} />
-      <path className="dna-sparkl" d={line} />
+      <path className="dna-sparkl" d={line} pathLength={1} />
       <circle cx={last[0]} cy={last[1]} r={2.6} />
     </svg>
   );

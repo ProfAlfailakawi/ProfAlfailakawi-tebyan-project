@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { X, Globe, EyeOff, Sparkles, Anchor } from 'lucide-react';
 import { cn } from '../lib/utils';
 
@@ -10,6 +10,9 @@ interface LighthouseProps {
 }
 
 export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => {
+    // Ambient loops play a few cycles then rest; none for reduced motion (MotionConfig only covers transforms).
+    const reduceMotion = useReducedMotion();
+    const loops = (n: number) => (reduceMotion ? 0 : n);
     return (
         <motion.div 
             initial={{ opacity: 0 }}
@@ -25,7 +28,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                         opacity: [0.1, 0.2, 0.1],
                         rotate: [0, 90, 0]
                     }}
-                    transition={{ duration: 20, repeat: Infinity }}
+                    transition={{ duration: 20, repeat: loops(2) }}
                     className="absolute top-1/4 -right-1/4 w-[80vw] h-[80vw] bg-mood-primary rounded-full blur-[180px]"
                 />
                 <motion.div 
@@ -34,7 +37,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                         opacity: [0.1, 0.15, 0.1],
                         rotate: [0, -90, 0]
                     }}
-                    transition={{ duration: 25, repeat: Infinity, delay: 5 }}
+                    transition={{ duration: 25, repeat: loops(2), delay: 5 }}
                     className="absolute -bottom-1/4 -left-1/4 w-[70vw] h-[70vw] bg-mood-secondary rounded-full blur-[150px]"
                 />
                 
@@ -57,7 +60,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                             }}
                             transition={{ 
                                 duration: 3 + Math.random() * 2,
-                                repeat: Infinity,
+                                repeat: loops(2),
                                 delay: Math.random() * 2
                             }}
                             className="absolute left-1/2 top-1/2 w-1 h-1 bg-white rounded-full blur-[1px]"
@@ -99,7 +102,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                             scale: [1, 1.05, 1.1],
                             y: [0, -5, -10]
                         }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeOut" }}
+                        transition={{ duration: 4, repeat: loops(3), ease: "easeOut" }}
                         className={cn(
                             "absolute inset-0 text-white pointer-events-none select-none blur-[4px]",
                             language === 'ar' ? 'font-serif leading-[1.3]' : 'font-serif italic'
@@ -119,7 +122,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                                 "0 0 20px rgba(var(--mood-primary),0)"
                             ]
                         }}
-                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                        transition={{ duration: 6, repeat: loops(3), ease: "easeInOut" }}
                         className={cn(
                             "relative text-5xl md:text-7xl lg:text-8xl text-white font-medium leading-[1.1] selection:bg-mood-primary selection:text-white",
                             language === 'ar' ? 'font-serif leading-[1.3]' : 'font-serif italic text-7xl md:text-8xl lg:text-9xl'
@@ -165,7 +168,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                 <motion.div 
                     initial={{ x: '-100%' }}
                     animate={{ x: '100%' }}
-                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 30, repeat: loops(1), ease: "linear" }}
                     className="h-full bg-mood-primary w-1/2 shadow-[0_0_15px_rgba(var(--mood-primary),0.5)]"
                 />
             </div>

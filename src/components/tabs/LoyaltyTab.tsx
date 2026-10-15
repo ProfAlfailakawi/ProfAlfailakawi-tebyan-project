@@ -7,7 +7,7 @@ import {
   ExternalLink, CheckCircle2, MoreHorizontal, Sparkles, X, TicketPercent,
   HeartHandshake, Flame, Hand
 } from 'lucide-react';
-import { DnaRing } from '../dna/DnaKit';
+import { DnaRing, DnaCountUp } from '../dna/DnaKit';
 import { cn, formatDisplayDate } from '../../lib/utils';
 import { collection, onSnapshot, query, where, orderBy, limit, doc, Timestamp, getDocs } from 'firebase/firestore';
 import { updateDoc } from '../../lib/firestoreWrites';
@@ -150,7 +150,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     </div>
                     <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex flex-wrap items-baseline gap-2">
-                        <span className="text-5xl md:text-6xl font-black">{myLoyaltyData.points}</span>
+                        <span className="text-5xl md:text-6xl font-black">{Number.isFinite(Number(myLoyaltyData.points)) && myLoyaltyData.points !== '' && myLoyaltyData.points != null ? <DnaCountUp value={Number(myLoyaltyData.points)} format={(n) => String(n)} playKey={`loyalty-points:${user?.uid ?? 'guest'}`} /> : myLoyaltyData.points}</span>
                         <span className="text-xl font-bold text-[#5B6E82]">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
                     </div>
                     <DnaRing
@@ -159,6 +159,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       size={56}
                       stroke={3}
                       tone="lilac"
+                      draw
+                      drawKey={`loyalty-ring-a:${user?.uid ?? 'guest'}`}
                       className="shrink-0"
                       ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
                     />
@@ -207,6 +209,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                            size={44}
                            stroke={3}
                            tone="lilac"
+                           draw
+                           drawKey={`loyalty-ring-b:${user?.uid ?? 'guest'}`}
                            className="ms-auto shrink-0"
                            ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
                          />

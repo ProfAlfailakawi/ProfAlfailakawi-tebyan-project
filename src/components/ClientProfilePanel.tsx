@@ -8,7 +8,7 @@ import {
   ChevronUp, Ghost, Fingerprint, RefreshCw, Globe, CheckCircle,
   LibraryBig, Network, CircleHelp
 } from 'lucide-react';
-import { DnaIconTile, DnaRing, DnaStepper } from './dna/DnaKit';
+import { DnaIconTile, DnaRing, DnaStepper, DnaCountUp, DnaDrawIn } from './dna/DnaKit';
 import { levels } from '../constants/gamification';
 import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
@@ -36,6 +36,7 @@ const AVATARS = [
 
 export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }: ClientProfilePanelProps) {
   const { profile, user } = useAuth();
+  const profileKey = user?.uid ?? "guest";
   const { preferences } = useUser();
   const { sageProgress } = useGamificationContext();
   const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'tasks' | 'tools' | 'settings'>('overview');
@@ -541,7 +542,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           <div className="flex items-center justify-between gap-3">
                             <div>
                               <div className="text-xs text-ink-mute font-black uppercase mb-1">التقدم</div>
-                              <div className="text-sm font-black text-navy">نقاط الاستنارة: {sageProgress.points}</div>
+                              <div className="text-sm font-black text-navy">نقاط الاستنارة: <DnaCountUp value={Number(sageProgress.points)} format={(n) => String(n)} playKey={`profile-points:${profileKey}`} /></div>
                               <div className="text-xs text-ink-mute mt-1">كلما زادت الأسئلة النوعية، اتضحت بصمتك أكثر.</div>
                             </div>
                             <div className="w-12 h-12 rounded-full border-4 border-[color:var(--tb-lilac-soft)]/18 flex items-center justify-center text-[color:var(--tb-lilac-deep)] font-black bg-white">
@@ -718,7 +719,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                                     className="flex flex-col items-center gap-4 text-ink-mute"
                                   >
-                                     <Globe className="w-12 h-12 text-lilac animate-pulse" />
+                                     <Globe className="w-12 h-12 text-lilac" />
                                      <p className="text-xs font-black tebyan-breathe">أستجمع شتات أفكارك...</p>
                                   </motion.div>
                                ) : contextKeywords.length > 0 ? (
@@ -795,15 +796,18 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                         </div>
                       </div>
                       
-                      <div className="relative h-24 mb-8">
+                      <DnaDrawIn className="relative h-24 mb-8" playKey={`profile-maturity:${profileKey}`}>
                           {/* axis captions (depth scale: 5 = deepest, 35 = simplest, as in the analysis prompt) */}
                           <span className="absolute top-0 end-0 text-xs font-bold text-ink-mute">أعمق</span>
                           <svg className={`w-full h-full ${language === 'ar' ? '-scale-x-100' : ''}`} viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true">
                               {[5, 20, 35].map(y => (
                                 <line key={y} x1="0" x2="100" y1={y} y2={y} stroke="#8FA9C7" strokeOpacity="0.25" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
                               ))}
-                              <path d={`M0,${maturityScores.p1} Q25,${maturityScores.p2} 50,${(maturityScores.p2 + maturityScores.p3)/2} T100,${maturityScores.p3}`} fill="none" stroke="url(#lilacGradient)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+                              <path d={`M0,${maturityScores.p1} Q25,${maturityScores.p2} 50,${(maturityScores.p2 + maturityScores.p3)/2} T100,${maturityScores.p3}`} fill="none" stroke="url(#lilacGradient)" strokeWidth="3" vectorEffect="non-scaling-stroke" mask="url(#maturityDrawMask)" />
                               <defs>
+                                  <mask id="maturityDrawMask" maskUnits="userSpaceOnUse" x="-2" y="-10" width="104" height="60">
+                                      <rect className="dna-dmask" x="-2" y="-10" width="104" height="60" fill="#fff" />
+                                  </mask>
                                   <linearGradient id="lilacGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                       <stop offset="0%" stopColor="#B8AACD" />
                                       <stop offset="100%" stopColor="#6E5B91" />
@@ -813,12 +817,12 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                           {/* marker y = point on the Bezier curve at that x (x is linear in t: t=x/50 on the first segment, (x-50)/50 on the second) */}
                           {/* markers are HTML so they stay round regardless of the stretched viewBox */}
                           {[{ x: 10, y: 0.64 * maturityScores.p1 + 0.32 * maturityScores.p2 + 0.04 * ((maturityScores.p2 + maturityScores.p3) / 2), c: '#B8AACD', s: 10 }, { x: 45, y: 0.01 * maturityScores.p1 + 0.18 * maturityScores.p2 + 0.81 * ((maturityScores.p2 + maturityScores.p3) / 2), c: '#8E7AAE', s: 10 }, { x: 90, y: 0.04 * ((maturityScores.p2 + maturityScores.p3) / 2) + 0.96 * maturityScores.p3, c: '#6E5B91', s: 12 }].map((m, i) => (
-                            <span key={i} aria-hidden="true" className={`absolute rounded-full border-2 border-white ${i === 2 ? 'animate-pulse' : ''}`} style={{ left: `${language === 'ar' ? 100 - m.x : m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
+                            <span key={i} aria-hidden="true" className="dna-dmark absolute rounded-full border-2 border-white" style={{ ['--mi' as string]: i, left: `${language === 'ar' ? 100 - m.x : m.x}%`, top: `${(m.y / 40) * 100}%`, width: m.s, height: m.s, background: m.c, transform: 'translate(-50%, -50%)' }} />
                           ))}
                           
                           <div className="absolute bottom-0 right-0 text-xs text-ink-mute font-bold">البداية</div>
                           <div className="absolute bottom-0 left-0 text-xs text-lilac font-black">نقطة النضج الحالية</div>
-                      </div>
+                      </DnaDrawIn>
 
                       {/* Commitments Display */}
                       {commitments.length > 0 && (
@@ -907,7 +911,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                   { l: 'الصبر', v: sageProgress.stats.patience },
                                 ] as const).map(m => {
                                   const pct = Math.min(100, (Number(m.v) || 0) * 10);
-                                  return <DnaRing key={m.l} value={pct} tone="lilac" size={64} sublabel={m.l} ariaLabel={`${m.l}: ${pct}%`} />;
+                                  return <DnaRing key={m.l} value={pct} tone="lilac" size={64} sublabel={m.l} ariaLabel={`${m.l}: ${pct}%`} draw drawKey={`profile-balance:${m.l}:${profileKey}`} />;
                                 })}
                             </div>
                             <p className="text-xs text-ink-mute mt-2 text-center">يعتمد مؤشر التوازن على نوعية تفاعلاتك المستمرة مع المنصة.</p>

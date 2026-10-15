@@ -47,7 +47,7 @@ import {
   RotateCcw,
   LogOut as ExitDemoIcon,
 } from "lucide-react";
-import { motion, AnimatePresence, MotionConfig } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, useReducedMotion } from "motion/react";
 import { TebyanMark } from "./components/TebyanMark";
 import { cn } from "./lib/utils";
 import { useAuth } from "./components/AuthProvider";
@@ -414,7 +414,9 @@ const SessionRestoreLoader = ({
   </motion.div>
 );
 
-const OfflineNotice = ({ language }: { language: "ar" | "en" }) => (
+const OfflineNotice = ({ language }: { language: "ar" | "en" }) => {
+  const reduceMotion = useReducedMotion();
+  return (
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
@@ -434,8 +436,8 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => (
       <div className="relative flex items-start gap-4">
         <div className="relative mt-0.5 flex h-14 w-14 shrink-0 items-center justify-center rounded-[24px] bg-[#FAF0E6] text-[#A6603F]">
           <motion.span
-            animate={{ scale: [1, 1.7, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 2.6, repeat: Infinity, ease: "easeOut" }}
+            animate={reduceMotion ? { scale: 1, opacity: 0.5 } : { scale: [1, 1.7, 1], opacity: [0.5, 0, 0.5] }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 2.6, repeat: 2, ease: "easeOut" }}
             className="absolute inset-0 rounded-[24px] border border-[#A6603F]/25"
           />
           <WifiOff className="h-6 w-6" />
@@ -466,7 +468,8 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => (
       </div>
     </motion.div>
   </motion.div>
-);
+  );
+};
 
 import { LivingIcon } from "./components/LivingIcon";
 

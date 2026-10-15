@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { Zap, RefreshCw, Box, Camera, Mic, Play, Volume2, Sparkles, LayoutGrid, ChevronDown, Loader2, Radio, Download, Pause, Lightbulb, Target, Rocket, Users, Timer, Wrench, Snowflake, Handshake } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '../../lib/utils';
@@ -60,6 +60,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
   const [labPodcastAudioMessage, setLabPodcastAudioMessage] = React.useState<string | null>(null);
   const [labPodcastSpeechText, setLabPodcastSpeechText] = React.useState<string>('');
   const [isLabPodcastPlaying, setIsLabPodcastPlaying] = React.useState(false);
+  // Decorative loops play a few cycles then rest; none for reduced motion (MotionConfig only covers transforms).
+  const reduceMotion = useReducedMotion();
+  const loops = (n: number) => (reduceMotion ? 0 : n);
   const labPodcastAudioRef = React.useRef<HTMLAudioElement | null>(null);
   const [isLabBrowserSpeaking, setIsLabBrowserSpeaking] = React.useState(false);
   const [labUdl, setLabUdl] = React.useState<any[]>([]);
@@ -525,14 +528,14 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                              rotate: [0, 90, 180, 270, 360],
                              borderRadius: ["30% 70% 70% 30% / 30% 30% 70% 70%", "50% 50% 20% 80% / 25% 80% 20% 75%"]
                            }}
-                           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                           transition={{ duration: 15, repeat: loops(2), ease: "linear" }}
                            className="w-full h-full bg-black/[0.03] border border-[color:var(--tb-lilac-soft)]/5 backdrop-blur-sm"
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
                            <div className="relative">
                              <motion.div 
                                animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
-                               transition={{ duration: 3, repeat: Infinity }}
+                               transition={{ duration: 3, repeat: loops(3) }}
                                className="absolute inset-0 bg-black/20 blur-2xl rounded-full"
                              />
                              <Box className="w-16 h-16 text-navy relative z-10" />
@@ -588,7 +591,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                               }}
                               transition={{ 
                                 duration: 0.3 + (i * 0.02), 
-                                repeat: Infinity,
+                                repeat: loops(6),
                                 ease: "easeInOut"
                               }}
                               className="w-1.5 bg-white/20 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.1)]"
@@ -815,7 +818,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                      <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose-500/10 rounded-full blur-[100px]"></div>
                      <div className="relative z-10 flex flex-col items-center">
                          <div className="w-20 h-20 bg-gradient-to-br from-lilac to-rose-500 rounded-full shadow-[0_0_50px_rgba(168,85,247,0.3)] flex items-center justify-center mb-10">
-                            <Zap className="w-10 h-10 text-white animate-pulse" />
+                            <Zap className="w-10 h-10 text-white tbn-pulse-few" />
                          </div>
                          <div className="markdown-body font-serif rtl:font-sans text-xl md:text-2xl leading-[1.8] text-center text-white [&_p]:!text-white [&_h1]:!text-white [&_h2]:!text-white [&_h3]:!text-white [&_strong]:!text-lilac [&_li]:!text-white/90">
                             <ReactMarkdown>{labColliderResult}</ReactMarkdown>

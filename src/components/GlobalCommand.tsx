@@ -247,10 +247,10 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
                       <div className="w-24 h-24 border-4 border-lilac-soft/20 rounded-full"></div>
                       <div className="w-24 h-24 border-4 border-lilac rounded-full border-t-transparent animate-spin absolute inset-0"></div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                         <Sparkles className="w-8 h-8 text-navy animate-pulse" />
+                         <Sparkles className="w-8 h-8 text-navy tbn-pulse-few" />
                       </div>
                     </div>
-                    <p className="mt-6 text-ink-mute font-bold animate-pulse">
+                    <p className="mt-6 text-ink-mute font-bold tbn-pulse-few">
                       {language === 'ar' ? 'جاري تجميع المعرفة...' : 'Synthesizing knowledge...'}
                     </p>
                  </div>

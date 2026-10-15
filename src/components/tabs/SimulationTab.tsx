@@ -285,7 +285,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                  <div className="flex flex-col h-[500px]">
                     <div className="flex justify-between items-center bg-lilac-mist p-4 rounded-t-[24px] border border-lilac/15">
                        <div className="font-bold text-[#4a3c68] flex items-center gap-2">
-                         <div className="w-2 h-2 rounded-full bg-lilac animate-pulse"></div>
+                         <div className="w-2 h-2 rounded-full bg-lilac"></div>
                          {language === 'ar' ? 'المحاكاة جارية...' : 'Simulation Active...'}
                        </div>
                        <button onClick={endRoleplayAndAnalyze} className="text-sm bg-lilac text-white px-4 py-2 rounded-xl font-bold hover:bg-lilac-deep">
@@ -351,7 +351,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                          { v: rpRadar.containment, l: language === 'ar' ? 'القدرة على الاحتواء' : 'Containment', tone: 'lilac' },
                        ] as const).map((m) => (
                          <div key={m.l} className="bg-ivory p-4 md:p-6 rounded-[24px] border border-lilac/10 flex flex-col items-center gap-3 text-center">
-                           <DnaRing value={typeof m.v === 'number' ? m.v : null} tone={m.tone} size={72} stroke={5} ariaLabel={`${m.l}: ${typeof m.v === 'number' ? m.v + '%' : '—'}`} />
+                           <DnaRing value={typeof m.v === 'number' ? m.v : null} tone={m.tone} size={72} stroke={5} draw ariaLabel={`${m.l}: ${typeof m.v === 'number' ? m.v + '%' : '—'}`} />
                            <div className="font-bold text-navy text-sm leading-snug">{m.l}</div>
                          </div>
                        ))}

@@ -553,7 +553,9 @@ body:not(.zen-idle) nav {
 }
 
 .tebyan-breathe {
-  animation: tebyan-breathe 4.8s ease-in-out infinite;
+  /* calm: three breaths, then rest (rest opacity equals the keyframe's start/end) */
+  opacity: 0.92;
+  animation: tebyan-breathe 4.8s ease-in-out 3;
 }
 
 .tebyan-soft-card {
@@ -670,7 +672,11 @@ body.tebyan-focus-mode main {
   }
 }
 .tebyan-gateway-ring {
-  animation: tebyan-gateway-ring-breathe 4.8s ease-in-out infinite;
+  /* calm: rests; two gentle cycles each time the box gains focus, never looping while the user types */
+  animation: none;
+}
+.tebyan-gateway-ring:focus-within {
+  animation: tebyan-gateway-ring-breathe 4.8s ease-in-out 2;
 }
 .tebyan-understanding-pulse::before {
   content: "";
@@ -684,9 +690,11 @@ body.tebyan-focus-mode main {
     rgba(143, 169, 199, 0.14),
     transparent
   );
-  opacity: 0.7;
+  /* rest state equals the keyframe start/end, so the glow settles without a pop */
+  opacity: 0.34;
+  transform: translateX(-1.5%) scale(0.995);
   filter: blur(8px);
-  animation: tebyan-search-aurora 3.8s ease-in-out infinite;
+  animation: tebyan-search-aurora 3.8s ease-in-out 2;
 }
 @keyframes tebyan-search-aurora {
   0%,
@@ -1779,11 +1787,11 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   .tebyan-living-awareness::before {
-    animation: tebyanKnowledgeSweep 9s ease-in-out infinite;
+    animation: tebyanKnowledgeSweep 9s ease-in-out 3;
   }
 
   .tebyan-home-signature::after {
-    animation: tebyanLivingMap 18s ease-in-out infinite alternate;
+    animation: tebyanLivingMap 18s ease-in-out 2 alternate;
   }
 }
 
@@ -5151,5 +5159,70 @@ main :is(h3, h4, h5, h6):not(.tbn-result__body *) {
   .tebyan-page-controls > button.tebyan-page-help-button {
     min-height: 44px !important;
     height: 44px !important;
+  }
+}
+
+/* Direct answer: two quiet beats (summary, then action). The text is never hidden or delayed;
+   a thin accent bar on the inline-start edge draws once and fades, and rests invisible. */
+.tbn-beat::before {
+  content: "";
+  position: absolute;
+  inset-block: 14px;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  border-radius: 3px;
+  background: var(--beat, #8e7aae);
+  opacity: 0;
+  transform-origin: center top;
+  pointer-events: none;
+  animation: tbn-beat-bar 1.1s cubic-bezier(0.22, 0.78, 0.24, 1) backwards 1;
+}
+.tbn-beat-2::before {
+  animation-delay: 0.15s;
+}
+@keyframes tbn-beat-bar {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  45% {
+    transform: scaleY(1);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* Finite stand-in for animate-pulse: three soft pulses, then rest at full opacity. */
+.tbn-pulse-few {
+  animation: tbn-pulse-few 2.4s ease-in-out 3;
+}
+@keyframes tbn-pulse-few {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Finite stand-in for animate-ping: three soft pings, then rest hidden (rest style = keyframe end). */
+.tbn-ping-few {
+  opacity: 0;
+  transform: scale(2);
+  animation: tbn-ping-few 1.8s cubic-bezier(0, 0, 0.2, 1) 3;
+}
+@keyframes tbn-ping-few {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
   }
 }

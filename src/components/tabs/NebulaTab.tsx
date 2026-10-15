@@ -226,7 +226,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                                 )}
                                 style={{ width: node.size, height: node.size }}
                             >
-                                <div className="w-1 h-1 bg-white rounded-full animate-ping" />
+                                <div className="w-1 h-1 bg-white rounded-full tbn-ping-few" />
                                 
                                 {/* Label */}
                                 <div className={cn(

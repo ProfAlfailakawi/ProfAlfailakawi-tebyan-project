@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DnaRing } from './dna/DnaKit';
+import { DnaRing, DnaCountUp } from './dna/DnaKit';
 import { Brain, TrendingUp, DollarSign, Lightbulb, Zap, ArrowRight, BookOpen, Home, RefreshCw, BarChart4, Users, LayoutDashboard, TicketPercent, Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
@@ -304,21 +304,21 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col justify-between min-w-0">
                     <p className="text-slate-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">إجمالي الطلبات</p>
-                    <h3 className="text-3xl md:text-4xl font-black text-slate-800">{costStats.totalCalls}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-slate-800"><DnaCountUp value={costStats.totalCalls} format={(n) => String(n)} playKey="admin-cost-total" /></h3>
                 </div>
                 <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-rose-100 flex flex-col justify-between min-w-0">
                     <p className="text-rose-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">مكالمات الذكاء الاصطناعي (تكلفة)</p>
-                    <h3 className="text-3xl md:text-4xl font-black text-rose-600">{costStats.aiCalls}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-rose-600"><DnaCountUp value={costStats.aiCalls} format={(n) => String(n)} playKey="admin-cost-ai" /></h3>
                 </div>
                 <div className="bg-emerald-50 p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(16,185,129,0.05)] border border-emerald-100 flex flex-col justify-between min-w-0">
                     <p className="text-emerald-700 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">الطلبات الموفرة (ذاكرة)</p>
-                    <h3 className="text-3xl md:text-4xl font-black text-emerald-700">{costStats.cacheHits + costStats.kbHits}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-emerald-700"><DnaCountUp value={costStats.cacheHits + costStats.kbHits} format={(n) => String(n)} playKey="admin-cost-saved" /></h3>
                 </div>
                 <div className="bg-[#F8F5EF] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#6E5B91]/15 text-[color:var(--tb-navy)] flex flex-col justify-between gap-3 min-w-0">
                     <p className="text-[#5B6E82] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
                     <div className="flex items-center justify-between gap-3">
                         <h3 className="text-3xl md:text-4xl font-black">{costStats.savedPercentage}٪</h3>
-                        <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-xs">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" />
+                        <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-xs">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" draw drawKey="admin-cost-ring" />
                     </div>
                 </div>
             </div>
