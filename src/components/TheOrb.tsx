@@ -32,13 +32,13 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
 
   return (
     <motion.div
-        className="fixed bottom-4 left-4 z-[90] touch-none"
+        className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-[90] touch-none"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
     >
       <div className={cn(
-        "absolute -top-16 left-0 transition-opacity duration-500 bg-black/90 backdrop-blur-xl text-white px-5 py-2.5 rounded-full shadow-2xl font-black text-xs uppercase tracking-[0.2em] rtl:tracking-normal border border-white/20 whitespace-nowrap pointer-events-none z-[100] flex items-center justify-center min-w-[120px]",
-        (isHovered || showHint) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+        "absolute left-full top-1/2 -translate-y-1/2 ml-3 transition-opacity duration-500 bg-black/90 backdrop-blur-xl text-white px-4 py-2 rounded-full shadow-lg font-black text-xs uppercase tracking-[0.2em] rtl:tracking-normal border border-white/20 whitespace-nowrap pointer-events-none z-[100] flex items-center justify-center min-w-[104px]",
+        (isHovered || showHint) ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
       )}>
           <div className="flex items-center gap-2">
             <Sparkles className="w-3 h-3 text-emerald-400" />
@@ -53,11 +53,11 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
         onDragEnd={handleDragEnd}
         animate={controls}
         whileTap={{ scale: 0.95 }}
-        className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-black text-white shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex items-center justify-center group border border-white/20 relative"
+        className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-black text-white shadow-[0_6px_20px_rgba(0,0,0,0.25)] flex items-center justify-center group border border-white/20 relative"
       >
         <div className="absolute inset-0 rounded-full bg-gradient-to-t from-indigo-500 via-purple-500 to-emerald-500 opacity-20 group-hover:opacity-60 blur-xl transition-all duration-500"></div>
         <div className="absolute inset-0 rounded-full bg-gradient-to-b from-transparent to-black/50 pointer-events-none" />
-        <Sparkles className="w-8 h-8 md:w-10 md:h-10 relative z-10 transition-transform text-white/90" />
+        <Sparkles className="w-6 h-6 md:w-8 md:h-8 relative z-10 transition-transform text-white/90" />
       </motion.button>
     </motion.div>
   );
