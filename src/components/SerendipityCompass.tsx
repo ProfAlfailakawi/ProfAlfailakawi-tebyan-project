@@ -100,7 +100,7 @@ export const SerendipityCompass = ({ language = 'ar', contextTopic, handleTabCha
                        </div>
                    ) : (
                        <div className="space-y-8 animate-in fade-in duration-1000">
-                           <div className="text-sm font-bold text-blue-400/80 tracking-widest uppercase mb-4 flex items-center gap-2">
+                           <div className="text-sm font-bold text-blue-400/80 uppercase mb-4 flex items-center gap-2">
                                <Sparkles className="w-4 h-4" /> 
                                {language === 'ar' ? 'نقطة الانطلاق:' : 'Starting Point:'} <span className="text-white">{contextTopic}</span>
                            </div>

@@ -94,7 +94,7 @@ export function MessagesFloatingButton() {
                      <CheckCircle className="w-8 h-8" />
                    </motion.div>
                  </div>
-                 <p className="font-black text-xl text-slate-800 tracking-tight">تم إرسال رسالتك!</p>
+                 <p className="font-black text-xl text-slate-800">تم إرسال رسالتك!</p>
                  <p className="text-sm text-slate-500 font-medium leading-relaxed">شكراً لتواصلك. نقدر وقتك وسنقوم بمراجعة رسالتك قريباً.</p>
                </motion.div>
             ) : (

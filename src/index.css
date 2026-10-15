@@ -943,7 +943,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   main [class*="text-4xl"] {
     font-size: clamp(1.55rem, 8vw, 2.35rem) !important;
     line-height: 1.18 !important;
-    letter-spacing: -0.045em !important;
+    letter-spacing: 0 !important;
   }
   main [class*="text-3xl"] {
     font-size: clamp(1.35rem, 6vw, 1.75rem) !important;
@@ -1149,7 +1149,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   .tebyan-tab-header h2 {
     font-size: 1.35rem !important;
     line-height: 1.25 !important;
-    letter-spacing: -0.02em !important;
+    letter-spacing: 0 !important;
   }
   .tebyan-tab-header p {
     font-size: 0.82rem !important;
@@ -1401,7 +1401,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   main h2,
   main h3,
   main .tracking-tighter {
-    letter-spacing: -0.045em;
+    letter-spacing: 0;
   }
 
   main .font-black {
@@ -1743,7 +1743,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   main h1,
   main h2 {
     font-weight: 850 !important;
-    letter-spacing: -0.055em;
+    letter-spacing: 0;
   }
 
   main h3,
@@ -1752,7 +1752,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   }
 
   main p {
-    letter-spacing: -0.012em;
+    letter-spacing: 0;
   }
 
   main section,
@@ -2083,7 +2083,7 @@ body.tebyan-focus-mode .tebyan-result-document {
 .tebyan-knowledge-fabric h2,
 .tebyan-knowledge-fabric h3,
 .tebyan-knowledge-fabric h4 {
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
 }
 .tebyan-fabric-node-card {
   position: relative;
@@ -2447,13 +2447,13 @@ body.tebyan-focus-mode .tebyan-result-document {
   main :where(h1) {
     font-size: clamp(1.65rem, 8.6vw, 2.35rem) !important;
     line-height: 1.12 !important;
-    letter-spacing: -0.045em !important;
+    letter-spacing: 0 !important;
   }
 
   main :where(h2) {
     font-size: clamp(1.25rem, 6.4vw, 1.75rem) !important;
     line-height: 1.22 !important;
-    letter-spacing: -0.035em !important;
+    letter-spacing: 0 !important;
   }
 
   main :where(h3) {
@@ -2769,7 +2769,7 @@ body.tebyan-focus-mode .tebyan-result-document {
   .prose h2,
   .prose h3 {
     color: #182231;
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
   }
 }
 
@@ -3069,7 +3069,7 @@ body {
     font-size: clamp(1.35rem, 6.2vw, 1.8rem) !important;
     line-height: 1.3 !important;
     font-weight: 800 !important;
-    letter-spacing: -0.02em !important;
+    letter-spacing: 0 !important;
   }
   .tebyan-tab-header p {
     font-size: 0.86rem !important;
@@ -3266,7 +3266,7 @@ body {
 @media (max-width: 640px) {
   /* Overall mobile typography: smaller, smoother, less crowded. */
   body {
-    letter-spacing: -0.012em;
+    letter-spacing: 0;
   }
 
   h1,
@@ -3648,7 +3648,7 @@ body:not(.zen-idle)::after {
     max-width: 340px !important;
     font-size: clamp(1.62rem, 7.4vw, 1.82rem) !important;
     line-height: 1.24 !important;
-    letter-spacing: -0.035em !important;
+    letter-spacing: 0 !important;
     text-wrap: balance;
   }
 
@@ -3765,7 +3765,7 @@ body:not(.zen-idle)::after {
     font-size: clamp(1.42rem, 6.2vw, 1.68rem) !important;
     line-height: 1.27 !important;
     font-weight: 800 !important;
-    letter-spacing: -0.035em !important;
+    letter-spacing: 0 !important;
     text-wrap: balance;
   }
 
@@ -3870,7 +3870,7 @@ body:not(.zen-idle)::after {
     font-size: 1.06rem !important;
     line-height: 1.45 !important;
     font-weight: 800 !important;
-    letter-spacing: -0.022em !important;
+    letter-spacing: 0 !important;
   }
 
   .tebyan-service-group-copy {
@@ -3934,7 +3934,7 @@ body:not(.zen-idle)::after {
     font-size: 0.98rem !important;
     line-height: 1.5 !important;
     font-weight: 800 !important;
-    letter-spacing: -0.018em !important;
+    letter-spacing: 0 !important;
   }
 
   .tebyan-service-card-brand {
@@ -4020,7 +4020,7 @@ body:not(.zen-idle)::after {
     max-width: 320px !important;
     font-size: clamp(1.55rem, 6.7vw, 1.76rem) !important;
     line-height: 1.28 !important;
-    letter-spacing: -0.03em !important;
+    letter-spacing: 0 !important;
   }
 
   .tebyan-home-hero p {
@@ -4202,7 +4202,7 @@ body:not(.zen-idle)::after {
 .tebyan-home-hero h1,
 .tebyan-service-title {
   font-weight: 680 !important;
-  letter-spacing: -0.025em !important;
+  letter-spacing: 0 !important;
   text-rendering: optimizeLegibility;
 }
 
@@ -4215,7 +4215,7 @@ body:not(.zen-idle)::after {
 
 .tebyan-route-home textarea {
   font-weight: 480 !important;
-  letter-spacing: -0.012em !important;
+  letter-spacing: 0 !important;
 }
 
 .tebyan-live-suggestions {
@@ -4233,7 +4233,7 @@ body:not(.zen-idle)::after {
   .tebyan-home-hero h1 {
     font-weight: 660 !important;
     line-height: 1.34 !important;
-    letter-spacing: -0.022em !important;
+    letter-spacing: 0 !important;
   }
 
   .tebyan-home-hero p {
@@ -4264,7 +4264,7 @@ body:not(.zen-idle)::after {
   .tebyan-service-explorer .tebyan-service-group-title,
   .tebyan-service-explorer .tebyan-service-card-title {
     font-weight: 630 !important;
-    letter-spacing: -0.012em !important;
+    letter-spacing: 0 !important;
   }
 
   .tebyan-service-explorer .tebyan-service-card-description,
@@ -5045,7 +5045,7 @@ main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-
   background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(142, 122, 174, 0.18));
   box-shadow: 0 6px 16px rgba(110, 95, 142, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
-.tebyan-numeral { font-variant-numeric: tabular-nums lining-nums; letter-spacing: -0.01em; }
+.tebyan-numeral { font-variant-numeric: tabular-nums lining-nums; letter-spacing: 0; }
 
 /* --- Tab pages: tighter top, accent rule under the header, surface depth ---- */
 @layer base {
@@ -5075,4 +5075,32 @@ header.fixed .tebyan-floating-nav .tebyan-services-button span:not(.sr-only) {
   font-size: 0.875rem !important;
   font-weight: 800 !important;
   line-height: 1 !important;
+}
+
+/* عنوان السؤال قد يمتد إلى ٧ أسطر: حجم أصغر وتباعد أسطر ١٫٥ بدون تقييد الحجم العام للعناوين. */
+main h1.tebyan-question-title {
+  font-size: clamp(1.2rem, 5.2vw, 1.5rem) !important;
+  line-height: 1.5 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  color: var(--color-navy) !important;
+}
+@media (min-width: 768px) {
+  main h1.tebyan-question-title {
+    font-size: clamp(1.5rem, 2.4vw, 1.875rem) !important;
+  }
+}
+
+/* الحروف العربية متصلة: لا تباعد حروف في واجهة عربية مهما كان صنف tracking. */
+html[lang="ar"] [class*="tracking-"] {
+  letter-spacing: 0 !important;
+}
+
+/* قاعدة خط العناوين الموحّدة: Amiri لعنوان الصفحة (h1/h2) فقط،
+   و Alexandria لكل ما دونه (عناوين البطاقات والأقسام) حتى لا يتبدّل الخط من بطاقة لأخرى. */
+main :is(h1, h2):not(.tbn-result__body *) {
+  font-family: var(--font-serif);
+}
+main :is(h3, h4, h5, h6):not(.tbn-result__body *) {
+  font-family: var(--font-sans) !important;
 }

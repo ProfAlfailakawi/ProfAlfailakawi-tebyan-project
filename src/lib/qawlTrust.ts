@@ -60,7 +60,9 @@ export function getAnswerTrust(q: any): AnswerTrust {
 
 export function formatArabicDate(d: Date): string {
   try {
-    return new Intl.DateTimeFormat('ar-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+    // «20 سبتمبر» — تُحذف السنة إن كانت السنة الحالية، وتُذكر فيما عداها.
+    const sameYear = d.getFullYear() === new Date().getFullYear();
+    return new Intl.DateTimeFormat('ar-u-nu-latn', sameYear ? { day: 'numeric', month: 'long' } : { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
   } catch {
     return d.toISOString().slice(0, 10);
   }

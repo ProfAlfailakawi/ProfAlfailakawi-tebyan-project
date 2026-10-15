@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BarChart3, TrendingUp, Target, Activity, Cpu, Radar, Plus, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn, formatDisplayDate } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { generatePredictiveRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
@@ -189,7 +189,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                    <ul className="space-y-3">
                      {logs.map((log, i) => (
                        <li key={i} className="bg-white p-4 rounded-xl border border-zinc-100 shadow-sm text-sm">
-                         <div className="text-xs text-zinc-400 mb-1">{log.date}</div>
+                         <div className="text-xs text-zinc-400 mb-1">{formatDisplayDate(log.date, language)}</div>
                          <div className="font-bold text-navy"><span className="text-zinc-500">{language === 'ar' ? 'شعور:' : 'Feeling:'}</span> {log.feeling}</div>
                          <div className="font-bold text-navy mt-1"><span className="text-zinc-500">{language === 'ar' ? 'سلوك:' : 'Behavior:'}</span> {log.behavior}</div>
                        </li>

@@ -92,7 +92,7 @@ export default function Login() {
       >
         <div className="p-6 md:p-10 space-y-6 md:space-y-8">
           <div className="text-center space-y-1 md:space-y-2">
-            <h1 className="text-xl md:text-3xl font-black text-navy tracking-tight">
+            <h1 className="text-xl md:text-3xl font-black text-navy">
               {isSignUp ? 'إنشاء حساب جديد' : 'أهلاً بك في تبيان'}
             </h1>
             <div className="mx-auto w-12 h-12 rounded-2xl bg-[#8E7AAE]/10 text-[#6E5F8E] flex items-center justify-center mb-3 border border-[#8E7AAE]/15 tebyan-breathe">

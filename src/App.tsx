@@ -363,7 +363,7 @@ const SplashScreen = ({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
-            className="font-serif text-5xl font-bold text-navy tracking-tight"
+            className="font-serif text-5xl font-bold text-navy"
           >
             تبيان
           </motion.h1>
@@ -749,6 +749,19 @@ const AppContent: React.FC = () => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 4000);
   };
+
+  // إشعارات من أي مكوّن عبر notify() بدل window.alert.
+  useEffect(() => {
+    const onToast = (event: Event) => {
+      const detail = (event as CustomEvent).detail || {};
+      if (typeof detail.message === "string" && detail.message) {
+        showToast(detail.message, detail.type || "info");
+      }
+    };
+    window.addEventListener("tebyan_toast", onToast);
+    return () => window.removeEventListener("tebyan_toast", onToast);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const checkAuth = useCallback(
     (tab: Tab) => {
@@ -1428,7 +1441,7 @@ const AppContent: React.FC = () => {
             <div className="w-10 h-10 bg-white/90 border border-[#8E7AAE]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
               <TebyanMark size={26} />
             </div>
-            <span className="tebyan-brand-name font-serif text-2xl font-bold text-navy transition-colors group-hover:text-mood-primary">
+            <span className="tebyan-brand-name shrink-0 font-serif text-2xl font-bold text-navy transition-colors group-hover:text-mood-primary">
               تبيان
             </span>
           </button>
@@ -1437,10 +1450,10 @@ const AppContent: React.FC = () => {
             onClick={() => handleTabChange("discover")}
             aria-label={language === "ar" ? "كل الخدمات" : "All services"}
             title={language === "ar" ? "كل الخدمات" : "All services"}
-            className="tebyan-services-button inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#8E7AAE]/20 bg-white/90 px-3 text-sm font-black text-[#6E5F8E] shadow-sm transition-transform active:scale-95"
+            className="tebyan-services-button shrink-0 inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#8E7AAE]/20 bg-white/90 px-3 text-sm font-black text-[#6E5F8E] shadow-sm transition-transform active:scale-95"
           >
             <Grid3X3 className="w-4 h-4" aria-hidden="true" />
-            <span>{language === "ar" ? "الخدمات" : "Services"}</span>
+            <span className={cn(IS_DEMO_MODE && "max-[430px]:hidden")}>{language === "ar" ? "الخدمات" : "Services"}</span>
           </button>
 
         </div>
@@ -1802,7 +1815,7 @@ const AppContent: React.FC = () => {
           <footer className="text-center py-6 max-sm:pb-24! mt-10 text-zinc-400">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Globe className="w-5 h-5" />
-              <span className="font-bold text-zinc-500 tracking-tight">
+              <span className="font-bold text-zinc-500">
                 تبيان
               </span>
             </div>

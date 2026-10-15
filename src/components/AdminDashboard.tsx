@@ -257,7 +257,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
-            <h1 className="text-2xl md:text-4xl font-black text-slate-900 tracking-tight leading-snug">لوحة تحكم الاستراتيجية والقيمة</h1>
+            <h1 className="text-2xl md:text-4xl font-black text-slate-900 leading-snug">لوحة تحكم الاستراتيجية والقيمة</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
                 <button 
                 onClick={handleGenerateQuestions}
@@ -304,20 +304,20 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col justify-between min-w-0">
                     <p className="text-slate-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">إجمالي الطلبات</p>
-                    <h3 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">{costStats.totalCalls}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-slate-800">{costStats.totalCalls}</h3>
                 </div>
                 <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-rose-100 flex flex-col justify-between min-w-0">
                     <p className="text-rose-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">مكالمات الذكاء الاصطناعي (تكلفة)</p>
-                    <h3 className="text-3xl md:text-4xl font-black text-rose-600 tracking-tight">{costStats.aiCalls}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-rose-600">{costStats.aiCalls}</h3>
                 </div>
                 <div className="bg-emerald-50 p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(16,185,129,0.05)] border border-emerald-100 flex flex-col justify-between min-w-0">
                     <p className="text-emerald-700 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">الطلبات الموفرة (ذاكرة)</p>
-                    <h3 className="text-3xl md:text-4xl font-black text-emerald-700 tracking-tight">{costStats.cacheHits + costStats.kbHits}</h3>
+                    <h3 className="text-3xl md:text-4xl font-black text-emerald-700">{costStats.cacheHits + costStats.kbHits}</h3>
                 </div>
                 <div className="bg-[#F8F5EF] p-5 md:p-8 rounded-[24px] md:rounded-[32px] border border-[#6E5B91]/15 text-[#182231] flex flex-col justify-between gap-3 min-w-0">
                     <p className="text-[#5B6E82] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
                     <div className="flex items-center justify-between gap-3">
-                        <h3 className="text-3xl md:text-4xl font-black tracking-tight">{costStats.savedPercentage}٪</h3>
+                        <h3 className="text-3xl md:text-4xl font-black">{costStats.savedPercentage}٪</h3>
                         <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-[11px]">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" />
                     </div>
                 </div>

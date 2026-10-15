@@ -47,8 +47,8 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
             {finalQuestions.map(q => (
               <div key={q.id} className="bg-white flex flex-col justify-between border border-lilac-soft/20 rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all group cursor-pointer h-full luxury-ceramic-sheen" onClick={() => onQuestion(q)}>
                 <div className="space-y-4 md:space-y-6 w-full mb-6">
-                   <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-bold text-navy leading-snug lg:leading-tight group-hover:text-lilac transition-colors" lineClamp={3} />
-                   <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase tracking-widest">
+                   <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-bold text-navy leading-[1.5] group-hover:text-lilac transition-colors" lineClamp={3} />
+                   <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase">
                      {q.riskLevel === 'high' && (
                        <span className="flex items-center gap-1.5 text-rose-700 bg-rose-50 px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>
                      )}

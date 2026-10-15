@@ -22,7 +22,7 @@ const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }
     >
       <div className="flex items-center gap-2 mb-4 text-ink-mute">
         <Icon className="w-4 h-4" />
-        <span className={language === 'ar' ? "text-xs font-black" : "text-xs font-black uppercase tracking-widest"}>{language === 'ar' ? 'مكوّن تفاعلي' : 'Interactive Component'}</span>
+        <span className={language === 'ar' ? "text-xs font-black" : "text-xs font-black uppercase"}>{language === 'ar' ? 'مكوّن تفاعلي' : 'Interactive Component'}</span>
       </div>
       {children}
     </motion.div>
@@ -37,7 +37,7 @@ const EmotionalLandscape = ({ language }: { language: 'ar' | 'en' }) => {
         <div className="absolute inset-0 bg-gradient-to-br from-mood-primary/5 to-transparent pointer-events-none" />
         <div className="flex items-center gap-2 mb-6 relative">
           <Activity className="w-5 h-5 text-mood-primary" />
-          <h3 className={language === 'ar' ? "text-sm font-black text-navy" : "text-sm font-black text-navy uppercase tracking-widest"}>
+          <h3 className={language === 'ar' ? "text-sm font-black text-navy" : "text-sm font-black text-navy uppercase"}>
             {language === 'ar' ? 'الموجات العاطفية للقرار' : 'DECISION EMOTIONAL LANDSCAPE'}
           </h3>
         </div>
@@ -165,7 +165,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                               <div className="w-32 h-32 bg-white rounded-full border-4 border-dashed border-[#8FA9C7]/25 flex items-center justify-center mb-4">
                                  <Move className="w-8 h-8 text-zinc-300 animate-pulse" />
                               </div>
-                              <h3 className="font-black text-zinc-300 uppercase tracking-widest text-sm">
+                              <h3 className="font-black text-zinc-300 uppercase text-sm">
                                 {language === 'ar' ? 'مساحة المحاكاة ثلاثية الأبعاد' : 'SPATIAL SIMULATION ARENA'}
                               </h3>
                               <p className="text-xs text-ink-mute font-bold italic">

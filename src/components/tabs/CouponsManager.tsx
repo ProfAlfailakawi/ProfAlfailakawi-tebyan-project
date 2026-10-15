@@ -7,6 +7,7 @@ import { TicketPercent, Plus, Trash2, Tag, Percent } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { DEMO_COUPONS } from '../../data/demoAdmin';
+import { notify } from '../../lib/notify';
 
 export const CouponsManager = ({ language }: { language: string }) => {
   const [coupons, setCoupons] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_COUPONS : []));
@@ -45,7 +46,7 @@ export const CouponsManager = ({ language }: { language: string }) => {
       setDiscount('');
     } catch (error) {
       console.error(error);
-      alert('خطأ أثناء إنشاء الكوبون');
+      notify('خطأ أثناء إنشاء الكوبون', 'error');
     } finally {
       setIsAdding(false);
     }
@@ -79,7 +80,7 @@ export const CouponsManager = ({ language }: { language: string }) => {
                     <TicketPercent className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-black text-xl tracking-wider text-slate-800">{coupon.code}</h4>
+                    <h4 className="font-black text-xl text-slate-800">{coupon.code}</h4>
                     <p className="text-xs text-zinc-400 font-bold uppercase">{language === 'ar' ? 'خصم:' : 'Discount:'} {coupon.discount}%</p>
                   </div>
                 </div>

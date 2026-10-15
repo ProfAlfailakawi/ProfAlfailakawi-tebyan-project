@@ -37,7 +37,7 @@ export const TabHeader: React.FC<{
                     <Icon strokeWidth={1.75} />
                 </div>
                 <div className="min-w-0 flex-1">
-                    <h2 className={`tebyan-tab-header__title font-extrabold text-navy tracking-tight break-words${hideTitleVisually ? ' sr-only' : ''}`}>
+                    <h2 className={`tebyan-tab-header__title font-extrabold text-navy break-words${hideTitleVisually ? ' sr-only' : ''}`}>
                         {language === 'ar' ? title.ar : title.en}
                     </h2>
                     <p title={language === 'ar' ? description.ar : description.en} className="tebyan-tab-header__desc text-ink-mute font-medium break-words">

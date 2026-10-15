@@ -8,6 +8,7 @@ import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { localizeDemoLibrary } from '../../data/demoFixtures';
 import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
+import { notify } from '../../lib/notify';
 
 const MoodCloud = ({ items, language, action }: { items: any[], language: string, action?: React.ReactNode }) => {
   const counts = items.reduce((acc: any, item: any) => {
@@ -150,8 +151,8 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
         <div className="p-4 md:p-6 pb-28 md:pb-32">
             <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12', embedded && hasSaved && 'mb-0 md:mb-0')}>
                 <div className={cn('space-y-1 text-right', embedded && 'sr-only')}>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
-                  <p className="text-zinc-500 font-bold text-xs md:text-sm tracking-widest uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
+                  <h2 className="text-3xl md:text-4xl font-black">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
+                  <p className="text-zinc-500 font-bold text-xs md:text-sm uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
                 </div>
                 {!hasSaved && exploreBtn}
             </div>
@@ -253,8 +254,8 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                     <div className="mx-auto mt-6 md:mt-10 bg-white border border-stone-300 p-4 md:p-6 shadow-md w-11/12 max-w-[300px] text-center relative pointer-events-auto flex flex-col gap-4">
                                        <div className="w-2 h-2 rounded-full bg-stone-300 mx-auto absolute top-2 left-1/2 -translate-x-1/2 shadow-inner"></div>
                                        <div>
-                                           <div className="text-xs font-black text-black uppercase tracking-widest leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
-                                           <div className="text-xs uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
+                                           <div className="text-xs font-black text-black uppercase leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
+                                           <div className="text-xs uppercase font-bold text-stone-500">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
                                        </div>
                                        <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
                                           <div className="flex gap-2">
@@ -267,7 +268,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                             </button>
                                             <button 
                                                 onClick={() => {
-                                                  alert(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.');
+                                                  notify(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.', 'info');
                                                 }}
                                                 className="flex-1 py-2 bg-lilac text-white hover:bg-lilac-deep rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
                                             >

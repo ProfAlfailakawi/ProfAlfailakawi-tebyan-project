@@ -57,7 +57,7 @@ export const KnowledgeSignature: React.FC<KnowledgeSignatureProps> = ({
           <Sparkles className="w-4 h-4" />
         </div>
         <div className="min-w-0">
-          <p className="text-xs font-black tracking-widest uppercase text-lilac">
+          <p className="text-xs font-black uppercase text-lilac">
             {isAr ? 'احفظ المسار' : 'Save this path'}
           </p>
           <p className="text-xs md:text-sm font-bold text-[#6F7785] leading-relaxed">

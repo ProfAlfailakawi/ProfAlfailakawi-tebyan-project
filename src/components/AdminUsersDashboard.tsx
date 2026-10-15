@@ -7,6 +7,7 @@ import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE } from '../lib/demoMode';
 import { DEMO_USERS } from '../data/demoAdmin';
 import { Users, Trash2, Edit2, Shield, X, KeyRound, Save, Activity, FileText, Ban, CheckCircle, Award, Lightbulb } from 'lucide-react';
+import { notify } from '../lib/notify';
 
 export default function AdminUsersDashboard() {
   const { profile, user, loading: authLoading } = useAuth();
@@ -32,7 +33,7 @@ export default function AdminUsersDashboard() {
       // No need to alert success usually as onSnapshot will update the list
     } catch (error: any) {
       console.error(error);
-      alert('تعذر حذف العميل، يرجى المحاولة لاحقاً.');
+      notify('تعذر حذف العميل، يرجى المحاولة لاحقاً.', 'error');
     }
   };
 
@@ -146,11 +147,11 @@ export default function AdminUsersDashboard() {
                   console.warn('Profile role mirror skipped (blocked by security rules):', roleError);
                 }
 
-                alert('تم تحديث الصلاحيات بنجاح. يرجى تحديث الصفحة.');
+                notify('تم تحديث الصلاحيات بنجاح. يرجى تحديث الصفحة.', 'success');
                 window.location.reload();
               } catch (e: any) {
                 console.error(e);
-                alert(`فشل الإصلاح التلقائي: ${e.message}`);
+                notify(`فشل الإصلاح التلقائي: ${e.message}`, 'error');
               } finally {
                 setLoading(false);
               }

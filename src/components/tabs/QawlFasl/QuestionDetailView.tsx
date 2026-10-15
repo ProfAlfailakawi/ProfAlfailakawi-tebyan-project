@@ -223,10 +223,10 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
              <div className="flex flex-wrap gap-2 text-xs md:text-xs font-bold">
                <span className="bg-[#EAECE6] text-ink-mute px-3 py-1.5 rounded-full">{category?.title}</span>
                {question.riskLevel === 'high' && <span className="bg-[#FAF0E6] text-[#A6603F] px-3 py-1.5 rounded-full inline-flex items-center gap-1.5"><TriangleAlert className="w-3.5 h-3.5" aria-hidden="true" />حساسية</span>}
-               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">أعمار: {question.ageGroups.map((a, i) => <React.Fragment key={i}>{i > 0 && '، '}<span className="inline-block [unicode-bidi:isolate]" dir="ltr">{a}</span></React.Fragment>)}</span>
+               <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">الأعمار: {question.ageGroups.map((a) => /^\d+\s*-\s*\d+$/.test(a.trim()) ? a.trim().replace(/\s*-\s*/, ' إلى ') : a).join('، ')}{question.ageGroups.every((a) => /^\d+\s*-\s*\d+$/.test(a.trim())) ? ' سنوات' : ''}</span>
              </div>
              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-navy leading-snug lg:leading-tight flex-1 tracking-tight min-w-0">
+               <h1 className="tebyan-question-title text-xl md:text-2xl lg:text-3xl font-bold text-navy flex-1 min-w-0">
                  {question.question || question.title}
                </h1>
                <div className="flex items-center gap-2 shrink-0">
@@ -282,7 +282,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
         </div>
 
         {/* Reassurance Message */}
-        <div className="bg-[#F7F5F2] border-y border-[#8FA9C7]/15 py-2 md:py-3 text-center text-ink-mute font-bold text-xs md:text-sm tracking-wide px-4">
+        <div className="bg-[#F7F5F2] border-y border-[#8FA9C7]/15 py-2 md:py-3 text-center text-ink-mute font-bold text-xs md:text-sm px-4">
           {qawlReassurance(audience)}
         </div>
 
@@ -410,7 +410,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             {isSummoningShadow && (
                 <div className="bg-[#F1EEF4] border border-[#8E7AAE]/20 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center animate-pulse">
                     <Scale className="w-8 h-8 text-rose-600 mb-4 animate-bounce" aria-hidden="true" />
-                    <p className="text-rose-700 font-bold tracking-widest text-sm">جاري تجهيز الرأي المخالف...</p>
+                    <p className="text-rose-700 font-bold text-sm">جاري تجهيز الرأي المخالف...</p>
                 </div>
             )}
 
@@ -422,7 +422,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                             <Scale className="w-6 h-6 text-rose-600" aria-hidden="true" />
                         </div>
                         <div className="flex-1">
-                            <h4 className="text-xl font-black text-rose-600 mb-4 tracking-wider">الرأي المخالف:</h4>
+                            <h4 className="text-xl font-black text-rose-600 mb-4">الرأي المخالف:</h4>
                             <div className="font-serif rtl:font-sans text-ink-soft leading-relaxed text-lg [&_p]:text-ink-soft [&_strong]:text-rose-700 [&_h1]:text-rose-700 [&_h2]:text-rose-700 [&_h3]:text-rose-700 [&_li]:text-ink-soft [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
                                 <ReactMarkdown>{shadowResponse}</ReactMarkdown>
                             </div>
@@ -633,7 +633,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                      <div>
                        <h4 className={cn("font-bold text-navy text-xl transition-colors", res.url ? "group-hover:text-[#A68F58]" : "")}>{res.title}</h4>
                        <p className="text-[#6B6A65] font-medium mt-2 leading-[1.85]">{res.description}</p>
-                       {!res.url && <p className="text-sm font-bold text-[#A3A19C] mt-3 uppercase tracking-widest">متوفر في المكتبات</p>}
+                       {!res.url && <p className="text-sm font-bold text-[#A3A19C] mt-3 uppercase">متوفر في المكتبات</p>}
                      </div>
                   </div>
                 </Wrapper>
@@ -651,9 +651,9 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="bg-white border border-[#8FA9C7]/15 rounded-[24px] md:rounded-[32px] p-5 md:p-8 lg:p-12 text-center space-y-6">
                <p className="text-navy font-bold text-xl">تم إعداد هذه الإجابة عبر مصادر موثوقة</p>
                <div className="flex justify-center gap-3 flex-wrap">
-                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-ink-mute px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />تدقيق واعتماد الحالة</span>}
-                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />التدقيق الشرعي</span>}
-                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-navy px-4 py-2 rounded-full text-sm font-bold tracking-wide inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
+                 {(question.reviewStatus.educational === 'published' || question.reviewStatus.educational === 'approved') && <span className="bg-[#F7F5F2] text-ink-mute px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />تدقيق واعتماد الحالة</span>}
+                 {(question.reviewStatus.religious === 'published' || question.reviewStatus.religious === 'approved') && <span className="bg-[#F0F5ED] text-[#4B6B42] px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />التدقيق الشرعي</span>}
+                 {(question.reviewStatus.sources === 'published' || question.reviewStatus.sources === 'approved' || question.reviewStatus.sources === 'verified') && <span className="bg-[#EAECE6] text-navy px-4 py-2 rounded-full text-sm font-bold inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden="true" />المصادر والمراجع</span>}
                </div>
 
                <div className="pt-8 border-t border-[#8FA9C7]/15 mt-8">

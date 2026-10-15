@@ -36,7 +36,7 @@ export const TebyanEmptyState: React.FC<TebyanEmptyStateProps> = ({
       <div className="relative z-10 mx-auto mb-3 w-12 h-12 rounded-full bg-transparent border border-[#8E7AAE]/18 flex items-center justify-center text-[#8E7AAE]/70">
         <Icon className="w-5 h-5" strokeWidth={1.4} />
       </div>
-      <h3 className="relative z-10 text-base md:text-lg font-black text-navy tracking-tight mb-1.5">{title}</h3>
+      <h3 className="relative z-10 text-base md:text-lg font-black text-navy mb-1.5">{title}</h3>
       <p className="relative z-10 text-[13px] font-semibold text-ink-mute leading-relaxed max-w-md mx-auto">{description}</p>
       {actionLabel && onAction && (
         <button

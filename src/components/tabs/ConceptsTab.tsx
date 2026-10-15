@@ -87,7 +87,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
     />
     <div className={cn("tebyan-tab-surface rounded-[32px] p-8 border shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-6 transition-all duration-700", isBrutalMode ? "bg-white border-lilac/30" : "bg-white border-zinc-200/80")}>
       <div className="flex flex-wrap md:flex-nowrap items-center gap-4 mb-4">
-        <h2 className={cn("text-xl font-black tracking-tight", isBrutalMode ? "text-lilac" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
+        <h2 className={cn("text-xl font-black", isBrutalMode ? "text-lilac" : "text-black")}>{language === 'ar' ? 'المدخلات' : 'Input'}</h2>
       </div>
 <DemoStarters tab="concepts" language={language} onPick={setInput} className="mb-3" />
       <textarea 

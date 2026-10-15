@@ -123,7 +123,7 @@ export const SmartIntentEngine: React.FC<SmartIntentEngineProps> = ({
         </div>
         <div className="flex-1 min-w-0 text-right">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <span className="text-xs font-black tracking-widest uppercase text-zinc-400">
+            <span className="text-xs font-black uppercase text-zinc-400">
               {language === 'ar' ? 'محرك النوايا' : 'Intent engine'}
             </span>
             {isSuggestionLoading && <span className="text-xs font-bold text-zinc-300">{language === 'ar' ? 'يصيغ...' : 'refining...'}</span>}

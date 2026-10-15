@@ -59,7 +59,7 @@ export const WhispersOfTheVoid = ({ isZen, language }: { isZen: boolean, languag
               animate={{ opacity: 0.15, filter: 'blur(0px)', y: 0 }}
               exit={{ opacity: 0, filter: 'blur(10px)', transition: { duration: 1.5 } }}
               transition={{ duration: 4, ease: "easeOut", delay: index * 1.5 }}
-              className="absolute font-serif text-2xl md:text-4xl text-zinc-600 tracking-widest text-center"
+              className="absolute font-serif text-2xl md:text-4xl text-zinc-600 text-center"
               style={{ top, left, transform: 'translate(-50%, -50%)', writingMode: isLeft ? 'horizontal-tb' : 'horizontal-tb' }}
             >
               {quotes[idx]}

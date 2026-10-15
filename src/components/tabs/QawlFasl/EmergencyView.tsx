@@ -38,7 +38,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
             <ArrowRight className="w-5 h-5" /><span className="hidden md:inline">رجوع</span>
           </button>
           <div className="text-center w-full md:flex-1">
-             <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-[#2A2925] tracking-tight">لا تقلق… اختر أقرب حالة</h2>
+             <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-[#2A2925]">لا تقلق… اختر أقرب حالة</h2>
           </div>
           <div className="hidden md:block w-24 opacity-0 pointer-events-none" /> {/* Spacer */}
         </div>
@@ -108,7 +108,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-4 no-scrollbar">
-            <span className="text-xs md:text-sm font-bold text-[#A3A19C] shrink-0 ml-2 uppercase tracking-widest">العمر:</span>
+            <span className="text-xs md:text-sm font-bold text-[#A3A19C] shrink-0 ml-2 uppercase">العمر:</span>
             {['0-3', '4-6', '7-9', '10-12', '13-15', '16-18'].map(age => (
               <button 
                 key={age}

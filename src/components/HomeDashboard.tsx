@@ -45,7 +45,7 @@ const HubCard: React.FC<{
            </div>
            <div className="pt-1">
              <h3 className={cn(
-               "text-xl md:text-2xl font-black leading-tight tracking-tight mb-2",
+               "text-xl md:text-2xl font-black leading-tight mb-2",
                inverted ? "text-[#182231]" : "text-[#182231]"
              )}>{title}</h3>
              <p className={cn(
@@ -82,7 +82,7 @@ const HubCard: React.FC<{
                 </div>
                 <div className="flex-1 flex items-center justify-between min-w-0">
                   <span className={cn(
-                    "text-sm font-black tracking-tight truncate", 
+                    "text-sm font-black truncate", 
                     inverted ? "text-[#182231] group-hover/item:text-[#6E5F8E]" : "text-zinc-700 group-hover/item:text-[#182231]"
                   )}>{item.label}</span>
                   <div className={cn(
@@ -198,7 +198,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                 </span>
               )}
             </div>
-            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-[#182231] leading-[1.1] tracking-tight">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-[#182231] leading-[1.1]">
               {language === 'ar' ? (user ? getGenderWord(userGender, 'نظامك الحي جاهز يا بطل', 'نظامكِ الحي جاهز يا بطلة', 'نظامك الحي جاهز') : 'نظامك الحي جاهز') : 'Your living system is ready'}
             </h1>
             <p className="text-sm md:text-lg text-[#64788D] font-bold leading-relaxed max-w-2xl mt-4" style={{ opacity: helpOpacity, transition: 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
@@ -207,7 +207,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           </div>
           <div className="grid grid-cols-2 gap-2 w-full md:w-auto md:min-w-[260px]">
             <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
-              <p className="text-[10px] font-black tracking-widest uppercase text-[#8E7AAE]">{language === 'ar' ? 'المستوى' : 'Level'}</p>
+              <p className="text-[10px] font-black uppercase text-[#8E7AAE]">{language === 'ar' ? 'المستوى' : 'Level'}</p>
               <p className="mt-1 text-2xl font-black text-[#182231]">{state.level}</p>
             </div>
             <div className="rounded-2xl border border-[#8FA9C7]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
@@ -245,7 +245,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-gr-3">
           <div className="space-y-gr-1">
             <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
-            <h2 className="text-2xl md:text-5xl font-black text-[#182231] tracking-tight leading-tight">
+            <h2 className="text-2xl md:text-5xl font-black text-[#182231] leading-tight">
               {language === 'ar' ? getGenderWord(userGender, 'ما القرار الذي نوضّحه اليوم؟', 'ما الفكرة التي نوضّحها اليوم؟', 'ما القرار الذي نوضّحه اليوم؟') : 'What should we clarify today?'}
             </h2>
             <p className="text-sm md:text-base text-[#64788D] font-bold leading-relaxed max-w-2xl" style={{ opacity: helpOpacity, transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)', height: helpOpacity === 0 ? 0 : 'auto', overflow: 'hidden' }}>
@@ -299,7 +299,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               <CircleDashedIcon className="w-5 h-5 animate-spin-slow" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-black tracking-widest text-[#8E7AAE] uppercase">
+              <p className="text-[11px] font-black text-[#8E7AAE] uppercase">
                 {language === 'ar' ? getGenderWord(userGender, 'آخر ما كنت تفكر فيه', 'آخر ما كنتِ تفكرين فيه', 'آخر ما كنت تفكر فيه') : 'Where you left off'}
               </p>
               <h3 className="mt-1 text-base md:text-xl font-black text-[#182231] break-words md:truncate max-w-3xl">

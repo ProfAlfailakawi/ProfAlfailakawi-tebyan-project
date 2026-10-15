@@ -161,7 +161,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
         <div className="md:hidden" />
         <button 
           onClick={() => handleTabChange('home', '', true)} 
-          className="px-6 py-2.5 md:py-3 bg-white border border-[#E6E1EA] text-ink-mute rounded-full font-black text-xs md:text-sm tracking-widest shadow-2xl flex items-center gap-2 hover:bg-[#F7F3FB] hover:text-lilac transition-all active:scale-95 pointer-events-auto cursor-pointer"
+          className="px-6 py-2.5 md:py-3 bg-white border border-[#E6E1EA] text-ink-mute rounded-full font-black text-xs md:text-sm shadow-2xl flex items-center gap-2 hover:bg-[#F7F3FB] hover:text-lilac transition-all active:scale-95 pointer-events-auto cursor-pointer"
         >
           <ArrowRight className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "" : "rotate-180")} />
           {language === 'ar' ? 'الرجوع' : 'BACK'}
@@ -170,7 +170,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
 
       <div className="flex-1 flex flex-col relative z-10 pt-24 md:pt-0">
         <div className="mb-6 md:mb-10 pl-2">
-            <h2 className="text-2xl md:text-5xl font-black text-navy flex items-center gap-4 tracking-tighter">
+            <h2 className="text-2xl md:text-5xl font-black text-navy flex items-center gap-4">
                 <div className="p-3 bg-[#F1ECF7] rounded-2xl border border-[#E8E2F1] flex items-center justify-center shrink-0">
                   <Network className="w-7 h-7 md:w-16 md:h-16 text-lilac" />
                 </div>
@@ -205,7 +205,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
           <div className="tebyan-fabric-list mb-6 grid grid-cols-1 md:grid-cols-2 gap-3">
             {nodes.filter(n => n.type !== 'core').map(node => (
               <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className={cn("tebyan-fabric-node-card text-right rounded-[24px] border bg-white/82 p-4 transition-all", selectedNodes.find(n => n.id === node.id) ? "border-lilac ring-2 ring-lilac/40 bg-lilac-mist" : "border-[#8FA9C7]/16 hover:border-[#8E7AAE]/30")} aria-pressed={Boolean(selectedNodes.find(n => n.id === node.id))}>
-                <p className="text-xs font-black tracking-widest text-lilac mb-1">{language === 'ar' ? (({ concept: 'مفهوم', scientific: 'علمي', philosophical: 'فلسفي', practical: 'عملي', historical: 'تاريخي', golden: 'عقدة ذهبية', idea: 'فكرة' } as Record<string, string>)[node.category || node.type] || node.category || node.type) : (node.category || node.type)}</p>
+                <p className="text-xs font-black text-lilac mb-1">{language === 'ar' ? (({ concept: 'مفهوم', scientific: 'علمي', philosophical: 'فلسفي', practical: 'عملي', historical: 'تاريخي', golden: 'عقدة ذهبية', idea: 'فكرة' } as Record<string, string>)[node.category || node.type] || node.category || node.type) : (node.category || node.type)}</p>
                 <h4 className="font-black text-navy">{node.label}</h4>
                 <p className="text-xs font-bold text-ink-mute mt-2">{language === 'ar' ? 'اضغط لفتح البطاقة الجانبية والروابط.' : 'Tap to open the side card and links.'}</p>
               </button>
@@ -494,7 +494,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                             </div>
 
                             <div className="p-5 bg-[#F7F5F2] rounded-2xl border border-[#8FA9C7]/18 shadow-inner">
-                                <div className={cn("text-xs font-black uppercase tracking-widest mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-[#3F6B55]")}>
+                                <div className={cn("text-xs font-black uppercase mb-3 flex items-center gap-2", selectedNodes[0].type === 'golden' ? "text-amber-400" : "text-[#3F6B55]")}>
                                     <Sparkles className="w-4 h-4" />
                                     {language === 'ar' ? 'دعوة للابتكار' : 'Call for Innovation'}
                                 </div>

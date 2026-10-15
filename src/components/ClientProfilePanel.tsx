@@ -719,7 +719,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                     className="flex flex-col items-center gap-4 text-ink-mute"
                                   >
                                      <Globe className="w-12 h-12 text-lilac animate-pulse" />
-                                     <p className="text-xs font-black tracking-widest tebyan-breathe">أستجمع شتات أفكارك...</p>
+                                     <p className="text-xs font-black tebyan-breathe">أستجمع شتات أفكارك...</p>
                                   </motion.div>
                                ) : contextKeywords.length > 0 ? (
                                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full h-full relative">

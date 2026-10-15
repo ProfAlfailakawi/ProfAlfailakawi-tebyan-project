@@ -375,7 +375,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     </div>
 
                     <div className="bg-ivory text-navy border border-lilac/15 p-5 md:p-6 rounded-[24px]">
-                       <h4 className={cn("font-bold text-[#5B6E82] mb-3 text-sm", language !== 'ar' && "uppercase tracking-widest")}>{language === 'ar' ? 'الخلاصة التقييمية' : 'Executive Summary'}</h4>
+                       <h4 className={cn("font-bold text-[#5B6E82] mb-3 text-sm", language !== 'ar' && "uppercase")}>{language === 'ar' ? 'الخلاصة التقييمية' : 'Executive Summary'}</h4>
                        <p className="text-base font-bold leading-relaxed">{rpRadar.summary}</p>
                     </div>
 

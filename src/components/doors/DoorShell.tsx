@@ -90,7 +90,7 @@ export const DoorShell = ({
   return (
     <div className="w-full" dir={ar ? "rtl" : "ltr"}>
       <header className="max-w-3xl mx-auto px-4 pt-2 pb-1 text-center">
-        <h1 className="font-serif text-[1.6rem] md:text-3xl font-bold text-navy tracking-tight">
+        <h1 className="font-serif text-[1.6rem] md:text-3xl font-bold text-navy">
           {ar ? titleAr : titleEn}
         </h1>
         <p className="mt-1 text-sm md:text-base text-ink-soft font-medium">

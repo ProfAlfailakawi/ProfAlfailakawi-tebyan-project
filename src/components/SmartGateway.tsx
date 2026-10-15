@@ -635,15 +635,15 @@ const decorateJourneyDoors = (
 const getMoodTypography = (mood: string) => {
   switch (mood) {
     case "revolutionary":
-      return "font-black italic skew-x-[-10deg] tracking-tight transition-all duration-700";
+      return "font-black italic skew-x-[-10deg] transition-all duration-700";
     case "calm":
-      return "font-light tracking-widest italic opacity-80 font-sans transition-all duration-1000";
+      return "font-light italic opacity-80 font-sans transition-all duration-1000";
     case "melancholic":
-      return "font-medium tracking-tight opacity-70 underline underline-offset-4 decoration-current transition-all duration-1000";
+      return "font-medium opacity-70 underline underline-offset-4 decoration-current transition-all duration-1000";
     case "optimistic":
       return "font-bold tracking-normal uppercase transition-all duration-500";
     default:
-      return "font-bold tracking-tight transition-all";
+      return "font-bold transition-all";
   }
 };
 
@@ -3187,7 +3187,7 @@ export const SmartGateway: React.FC<
                   : `Welcome, ${userName}`}
               </div>
             )}
-            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-bold leading-[1.3] tracking-tight text-navy md:text-5xl lg:text-[2.85rem]">
+            <h1 className="mx-auto max-w-[720px] text-[1.78rem] font-bold leading-[1.3] text-navy md:text-5xl lg:text-[2.85rem]">
               {language === "ar"
                 ? "ماذا تود أن تفهم أو تحسم اليوم؟"
                 : "What do you want to understand or decide today?"}
@@ -3378,7 +3378,7 @@ export const SmartGateway: React.FC<
                   {smartSuggestion &&
                     smartSuggestion.startsWith(searchValue) && (
                       <div
-                        className="pointer-events-none absolute inset-0 px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold tracking-tight z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
+                        className="pointer-events-none absolute inset-0 px-3 md:px-6 py-2.5 md:py-4 text-[15px] sm:text-base md:text-xl lg:text-2xl font-bold z-0 whitespace-pre-wrap break-words leading-relaxed overflow-hidden"
                         dir={language === "ar" ? "rtl" : "ltr"}
                       >
                         <span className="invisible">{searchValue}</span>
@@ -3644,7 +3644,7 @@ export const SmartGateway: React.FC<
                             >
                               <div className="flex items-center gap-2 mb-2 justify-center">
                                 <Sparkles className="w-4 h-4 text-[#6E5F8E]" />
-                                <span className="text-xs leading-[1.6] font-black text-[#6E5F8E] uppercase tracking-widest">
+                                <span className="text-xs leading-[1.6] font-black text-[#6E5F8E] uppercase">
                                   {language === "ar"
                                     ? "استنتاج أولي"
                                     : "Initial Insight"}
@@ -3699,7 +3699,7 @@ export const SmartGateway: React.FC<
 
                       {showDirectTools && (
                         <div className="mt-3 space-y-2">
-                          <p className="px-1 text-xs font-black uppercase tracking-widest text-lilac">
+                          <p className="px-1 text-xs font-black uppercase text-lilac">
                             {language === "ar" ? "مسارات أخرى" : "Other paths"}
                           </p>
                           {[...secondarySuggestions, ...alternativeSuggestions]
@@ -3838,7 +3838,7 @@ export const SmartGateway: React.FC<
 
                       {showDirectTools && (
                         <div className="mt-3 space-y-2">
-                          <p className="px-1 text-xs font-black uppercase tracking-widest text-lilac">
+                          <p className="px-1 text-xs font-black uppercase text-lilac">
                             {language === "ar" ? "مسارات أخرى" : "Other paths"}
                           </p>
                           {[...secondarySuggestions, ...alternativeSuggestions]

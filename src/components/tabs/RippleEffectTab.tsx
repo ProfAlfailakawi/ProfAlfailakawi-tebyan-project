@@ -913,7 +913,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     <Network className="w-4 h-4 text-[#4F7268]" />
                     <span>{language === 'ar' ? 'الشبكة الاجتماعية للأفكار' : 'Social Network of Ideas'}</span>
                 </motion.div>
-                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
+                <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
                     {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                 </h2>
                 <p className="text-ink-mute text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
@@ -945,7 +945,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                             <HelpCircle className="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-mood-primary tracking-widest uppercase mb-1">
+                                            <p className="text-xs font-black text-mood-primary uppercase mb-1">
                                                 {language === 'ar' ? 'بذرة اليوم' : 'DAILY PROMPT'}
                                             </p>
                                             <p className="text-[#273548] font-bold text-sm md:text-base leading-snug">
@@ -963,7 +963,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             </motion.div>
                         )}
 
-                        <label className="text-sm font-black text-mood-primary/40 tracking-widest uppercase flex items-center gap-2 px-1">
+                        <label className="text-sm font-black text-mood-primary/40 uppercase flex items-center gap-2 px-1">
                             <Sparkles className="w-4 h-4" />
                             {language === 'ar' ? 'ازرع بذرة فكرة مفتوحة المصدر' : 'PLANT AN OPEN SOURCE SEED'}
                         </label>
