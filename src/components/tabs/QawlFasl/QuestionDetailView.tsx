@@ -12,7 +12,7 @@ import { proxyGenerateAudio } from '../../../lib/aiProxy';
 import AnswerTrustPanel from './AnswerTrustPanel';
 import { DnaStatusHeader, DnaStepper, DnaHubMap, DnaTimeline } from '../../dna/DnaKit';
 import type { DnaStepState } from '../../dna/DnaKit';
-import { getAnswerTrust, formatArabicDate } from '../../../lib/qawlTrust';
+import { getAnswerTrust, formatArabicDate, getQawlAudience, qawlSayLabel, qawlReassurance } from '../../../lib/qawlTrust';
 
 interface Props {
   questions: QawlFaslQuestion[];
@@ -181,6 +181,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
   const category = CATEGORIES.find(c => c.id === question.categorySlug);
 
   const trust = getAnswerTrust(question);
+  const audience = getQawlAudience(question.ageGroups);
   const isApproved = (v?: string) => v === 'published' || v === 'approved' || v === 'verified';
   const reviewFlags = [
     isApproved(question.reviewStatus?.educational),
@@ -282,7 +283,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
 
         {/* Reassurance Message */}
         <div className="bg-[#F7F5F2] border-y border-[#8FA9C7]/15 py-2 md:py-3 text-center text-ink-mute font-bold text-xs md:text-sm tracking-wide px-4">
-          هذا السؤال طبيعي جدًا… ويحدث مع كثير من الأطفال.
+          {qawlReassurance(audience)}
         </div>
 
         {/* Pill Navigation */}
@@ -321,8 +322,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                 tone={allApproved ? 'accent' : 'warn'}
                 title={allApproved ? 'جواب مُراجَع ومعتمد' : 'قيد المراجعة'}
                 subtitle={<>
-                  {trust.reviewers.join('، ')}
-                  {trust.reviewedAt && <> · <time dateTime={trust.reviewedAt.toISOString()}>{formatArabicDate(trust.reviewedAt)}</time></>}
+                  {allApproved ? trust.reviewers.join('، ') : 'بانتظار اعتماد المراجعة'}
+                  {allApproved && trust.reviewedAt && <> · <time dateTime={trust.reviewedAt.toISOString()}>{formatArabicDate(trust.reviewedAt)}</time></>}
                 </>}
                 actions={
         <button
@@ -433,7 +434,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-[#F0F5ED] rounded-[24px] p-8 border border-[#DFEBD8] shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                 <h4 className="font-bold text-[#4B6B42] mb-4 flex items-center gap-2 text-lg">
-                  <MessageSquareQuote className="w-6 h-6" aria-hidden="true" /> قل للطفل:
+                  <MessageSquareQuote className="w-6 h-6" aria-hidden="true" /> {qawlSayLabel(audience)}
                 </h4>
                 <p className="text-navy font-medium leading-[1.85] text-base md:text-lg">"{question.quickAnswer.sayThis}"</p>
               </div>

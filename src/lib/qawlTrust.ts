@@ -65,3 +65,34 @@ export function formatArabicDate(d: Date): string {
     return d.toISOString().slice(0, 10);
   }
 }
+
+/** هل اعتُمد الجواب فعلياً (تربوياً وشرعياً ومصادر)؟ نفس منطق شارة الحالة في صفحة السؤال. */
+export function isQawlApproved(q: any): boolean {
+  const ok = (v?: string) => v === 'published' || v === 'approved' || v === 'verified';
+  return ok(q?.reviewStatus?.educational) && ok(q?.reviewStatus?.religious) && ok(q?.reviewStatus?.sources);
+}
+
+export type QawlAudience = 'child' | 'adult';
+
+/** الفئة المخاطَبة من الفئات العمرية للسؤال: كل الفئات ١٩+ أو «كبار» تعني راشدين، وغير ذلك أطفال/مراهقون. */
+export function getQawlAudience(ageGroups?: string[]): QawlAudience {
+  const groups = (ageGroups || []).map((g) => String(g).trim()).filter(Boolean);
+  if (groups.length === 0) return 'child';
+  const adultWord = /(كبار|راشد|بالغ|شباب|adult|senior|elder|مسن)/i;
+  const isAdultGroup = (g: string) => {
+    if (adultWord.test(g)) return true;
+    const nums = (g.match(/\d+/g) || []).map(Number);
+    return nums.length > 0 && Math.min(...nums) >= 19;
+  };
+  return groups.every(isAdultGroup) ? 'adult' : 'child';
+}
+
+export function qawlSayLabel(a: QawlAudience): string {
+  return a === 'adult' ? 'يمكنك أن تقول:' : 'قل للطفل:';
+}
+
+export function qawlReassurance(a: QawlAudience): string {
+  return a === 'adult'
+    ? 'هذا السؤال طبيعي جدًا… ويمر به كثير من الناس.'
+    : 'هذا السؤال طبيعي جدًا… ويحدث مع كثير من الأطفال.';
+}

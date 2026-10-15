@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BookMarked, CalendarCheck2, Flag, Loader2, CheckCircle2, UserCheck, X } from 'lucide-react';
-import { getAnswerTrust, formatArabicDate } from '../../../lib/qawlTrust';
+import { getAnswerTrust, formatArabicDate, isQawlApproved } from '../../../lib/qawlTrust';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import type { QawlFaslQuestion } from './types';
 
@@ -10,6 +10,7 @@ import type { QawlFaslQuestion } from './types';
  */
 export default function AnswerTrustPanel({ question }: { question: QawlFaslQuestion }) {
   const trust = getAnswerTrust(question);
+  const approved = isQawlApproved(question);
   const [open, setOpen] = useState(false);
 
   // Static /qawl/q-* pages link here with ?report=1 to open the form directly.
@@ -49,6 +50,7 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
             </dd>
           </div>
         )}
+        {approved && (
         <div className="tbn-stagger" style={{ ["--i" as any]: 1 }}>
           <dt className="flex items-center gap-1.5 text-sm font-bold text-lilac mb-1">
             <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
@@ -56,7 +58,8 @@ export default function AnswerTrustPanel({ question }: { question: QawlFaslQuest
           </dt>
           <dd className="font-bold text-navy">{trust.reviewers.join('، ')}</dd>
         </div>
-        {trust.reviewedAt && (
+        )}
+        {approved && trust.reviewedAt && (
           <div className="tbn-stagger" style={{ ["--i" as any]: 2 }}>
             <dt className="flex items-center gap-1.5 text-sm font-bold text-lilac mb-1">
               <CalendarCheck2 className="w-3.5 h-3.5" aria-hidden="true" />
