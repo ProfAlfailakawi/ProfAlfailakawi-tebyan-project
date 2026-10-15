@@ -32,16 +32,16 @@ export const TheOrb: React.FC<TheOrbProps> = ({ onTap, onDragUp, language }) => 
 
   return (
     <motion.div
-        className="fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-[90] touch-none"
+        className="tebyan-orb-dock fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-[max(0.75rem,env(safe-area-inset-left))] z-[90] touch-none"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
     >
       <div className={cn(
-        "absolute left-full top-1/2 -translate-y-1/2 ml-3 transition-opacity duration-500 bg-black/90 backdrop-blur-xl text-white px-4 py-2 rounded-full shadow-lg font-black text-xs uppercase tracking-[0.2em] rtl:tracking-normal border border-white/20 whitespace-nowrap pointer-events-none z-[100] flex items-center justify-center min-w-[104px]",
+        "absolute left-full top-1/2 -translate-y-1/2 ml-3 transition-opacity duration-500 bg-white/92 text-[color:var(--tb-lilac-deep)] px-3 py-1.5 rounded-full shadow-[0_6px_20px_rgba(24,34,49,0.1)] font-black text-xs uppercase tracking-[0.2em] rtl:tracking-normal border border-[color:var(--tb-lilac-soft)]/30 whitespace-nowrap pointer-events-none z-[100] flex items-center justify-center min-w-[104px]",
         (isHovered || showHint) ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-2"
       )}>
           <div className="flex items-center gap-2">
-            <Sparkles className="w-3 h-3 text-emerald-400" />
+            <Sparkles className="w-3 h-3 text-[color:var(--tb-lilac-soft)]" />
             {language === 'ar' ? 'اسحب للأعلى' : 'PULL UP'}
           </div>
       </div>
