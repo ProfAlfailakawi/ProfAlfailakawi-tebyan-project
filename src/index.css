@@ -2110,6 +2110,7 @@ body.tebyan-focus-mode .tebyan-result-document {
 .tebyan-fabric-node-card::before {
   content: "";
   position: absolute;
+  inset-inline-start: 0;
   top: 18%;
   width: 4px;
   height: 64%;
@@ -5167,6 +5168,7 @@ main :is(h3, h4, h5, h6):not(.tbn-result__body *) {
   content: "";
   position: absolute;
   inset-block: 14px;
+  inset-inline-start: 0;
   inline-size: 3px;
   border-radius: 3px;
   background: var(--beat, #8e7aae);
