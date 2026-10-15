@@ -3308,7 +3308,7 @@ body {
 
   .smart-intent-engine p,
   .smart-intent-engine button {
-    font-size: 11px !important;
+    font-size: 12px !important;
   }
 
   .smart-intent-engine .smart-intent-start {
@@ -3753,7 +3753,7 @@ body:not(.zen-idle)::after {
     padding: 0.36rem 0.7rem !important;
     gap: 0.36rem !important;
     border-radius: 999px !important;
-    font-size: 0.68rem !important;
+    font-size: 0.75rem !important;
     line-height: 1.35 !important;
     font-weight: 700 !important;
     box-shadow: 0 5px 16px rgba(24, 34, 49, 0.035) !important;
@@ -3846,7 +3846,7 @@ body:not(.zen-idle)::after {
     height: 2.15rem !important;
     padding-inline: 0.78rem !important;
     border-radius: 999px !important;
-    font-size: 0.72rem !important;
+    font-size: 0.75rem !important;
     line-height: 1 !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
@@ -3882,7 +3882,7 @@ body:not(.zen-idle)::after {
 
   .tebyan-service-group-copy {
     margin-top: 0.12rem !important;
-    font-size: 0.73rem !important;
+    font-size: 0.75rem !important;
     line-height: 1.65 !important;
     font-weight: 600 !important;
     color: #7b8998 !important;
@@ -3929,7 +3929,7 @@ body:not(.zen-idle)::after {
     max-width: 9.5rem !important;
     padding: 0.28rem 0.55rem !important;
     border-radius: 999px !important;
-    font-size: 0.63rem !important;
+    font-size: 0.75rem !important;
     line-height: 1.35 !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
@@ -3946,7 +3946,7 @@ body:not(.zen-idle)::after {
 
   .tebyan-service-card-brand {
     margin-top: 0.06rem !important;
-    font-size: 0.69rem !important;
+    font-size: 0.75rem !important;
     line-height: 1.45 !important;
     font-weight: 700 !important;
     letter-spacing: 0 !important;
@@ -3977,7 +3977,7 @@ body:not(.zen-idle)::after {
   
   .tebyan-service-chip {
     padding-inline: 0.68rem !important;
-    font-size: 0.69rem !important;
+    font-size: 0.75rem !important;
   }
 }
 
@@ -4073,7 +4073,7 @@ body:not(.zen-idle)::after {
   .tebyan-service-kicker {
     margin-bottom: 0.55rem !important;
     padding: 0.42rem 0.7rem !important;
-    font-size: 0.72rem !important;
+    font-size: 0.75rem !important;
   }
 
   main .tebyan-service-title {
@@ -4798,7 +4798,7 @@ main input:placeholder-shown {
 /* r60: الحاسوب يلتزم بأرضية 11px للنصوص الصغيرة جدًا (الجوال واللوحي لهما قاعدتهما أعلاه). */
 @media (min-width: 1024px) {
   html body :is(.text-\[9px\], .text-\[10px\]) {
-    font-size: 11px !important;
+    font-size: 12px !important;
   }
 }
 
@@ -5138,5 +5138,18 @@ main :is(h3, h4, h5, h6):not(.tbn-result__body *) {
     font-weight: 800;
     line-height: 1;
     font-family: inherit;
+  }
+}
+
+/* لا تغطي أزرار «رجوع/شرح» آخر المحتوى: مساحة سفلية في الصفحات الداخلية، وأبعاد لمس ٤٤px. */
+@layer base {
+  main.tebyan-route-shell:not(.tebyan-route-home):not(.tebyan-route-discover) {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem) !important;
+  }
+  .tebyan-page-controls > button,
+  .tebyan-page-controls > button.tebyan-global-back,
+  .tebyan-page-controls > button.tebyan-page-help-button {
+    min-height: 44px !important;
+    height: 44px !important;
   }
 }

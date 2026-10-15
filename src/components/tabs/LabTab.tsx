@@ -7,6 +7,7 @@ import { TabHeader } from '../TabHeader';
 import { DnaStepper } from '../dna/DnaKit';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent, proxyGenerateAudio } from '../../lib/aiProxy';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 declare global {
   namespace JSX {
@@ -352,7 +353,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
        <TabHeader 
          icon={Zap}
-         title={{ ar: 'المختبر الإبداعي', en: 'Creative Lab' }}
+         title={getServiceNameBilingual('creativelab')}
          description={{ 
              ar: 'استخدم أدوات المختبر المتنوعة لابتكار حلول وتصاميم استراتيجية متقدمة مبنية على أسس علمية.', 
              en: 'Use various lab tools to innovate advanced strategic solutions and designs based on scientific principles.' 
@@ -415,7 +416,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
              )}
            </div>
 
-           <div className="flex gap-2 overflow-x-auto md:overflow-visible md:flex-wrap pb-4 no-scrollbar">
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:flex md:flex-wrap pb-4">
              {visibleLabTools.map(tool => (
                <button 
                  key={tool.id} 
@@ -425,7 +426,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                  }} 
                  title={language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}
                  className={cn(
-                   "shrink-0 w-[13.5rem] md:w-auto px-6 py-3 rounded-[22px] md:rounded-full border text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
+                   "w-full md:w-auto px-5 md:px-6 py-3 rounded-[22px] md:rounded-full border text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
                    activeLabTool === tool.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white text-ink-mute border-[color:var(--tb-sky)]/15 hover:border-zinc-300"
                  )}
                >

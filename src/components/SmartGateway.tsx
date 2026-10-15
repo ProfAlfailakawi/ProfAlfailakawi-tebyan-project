@@ -2177,7 +2177,7 @@ export const SmartGateway: React.FC<
 
   const ALL_CHIP_SUGGESTIONS = [
     {
-      ar: "مراهق قريب مني يتصرف بعناد، شلون أتعامل بهدوء؟",
+      ar: "مراهق قريب مني يتصرف بعناد، كيف أتعامل معه بهدوء؟",
       en: "A teenager close to me is acting stubborn, how should I handle it calmly?",
     },
     {
@@ -2189,15 +2189,15 @@ export const SmartGateway: React.FC<
       en: "I have a family guidance challenge and need a clear approach",
     },
     {
-      ar: "رفيجي بالدوام وايد يذم فيني قفاي، شلون أتصرف؟",
+      ar: "زميلي في العمل يذمّني كثيراً من وراء ظهري، كيف أتصرف؟",
       en: "My friend at work backbites me, how to behave?",
     },
     {
-      ar: "مديري بالدوام وايد يضغطني وشايل علي، شالحل؟",
+      ar: "مديري في العمل يضغط عليّ كثيراً، فما الحل؟",
       en: "My boss pressures me and has a grudge, what is the solution?",
     },
     {
-      ar: "شخص قريب مني يكذب كثيراً، شلون أبني الثقة؟",
+      ar: "شخص قريب مني يكذب كثيراً، كيف أبني الثقة معه؟",
       en: "Someone close to me lies often, how can I rebuild trust?",
     },
     {
@@ -2205,7 +2205,7 @@ export const SmartGateway: React.FC<
       en: "A student refuses school and makes excuses, what is the best response?",
     },
     {
-      ar: "استخدام الألعاب الإلكترونية صار زائد، شلون أرتبه؟",
+      ar: "استخدام الألعاب الإلكترونية زاد عن الحد، كيف أنظّمه؟",
       en: "Gaming use has become excessive, how can I organize it?",
     },
     {
@@ -3938,8 +3938,8 @@ export const SmartGateway: React.FC<
                   const examples =
                     language === "ar"
                       ? [
-                          "ولدي ما يحب المدرسة، شلون أتعامل معاه؟",
-                          "محتار بين وظيفتين، شلون أقرر؟",
+                          "ابني لا يحب المدرسة، كيف أتعامل معه؟",
+                          "محتار بين وظيفتين، كيف أقرر؟",
                           "اشرح لي هذا الموضوع ببساطة",
                         ]
                       : [

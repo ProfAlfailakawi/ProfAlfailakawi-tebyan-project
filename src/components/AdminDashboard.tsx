@@ -318,7 +318,7 @@ export default function AdminDashboard() {
                     <p className="text-[#5B6E82] font-bold text-xs md:text-sm leading-snug">نسبة التوفير الكلية</p>
                     <div className="flex items-center justify-between gap-3">
                         <h3 className="text-3xl md:text-4xl font-black">{costStats.savedPercentage}٪</h3>
-                        <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-[11px]">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" />
+                        <DnaRing value={Number(costStats.savedPercentage)} tone="lilac" size={56} label={<span className="text-xs">{Math.round(Number(costStats.savedPercentage) || 0)}٪</span>} ariaLabel={`نسبة التوفير الكلية ${costStats.savedPercentage}٪`} className="shrink-0" />
                     </div>
                 </div>
             </div>

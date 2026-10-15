@@ -117,7 +117,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                       <h3 className="font-bold text-lg text-black flex flex-wrap items-center gap-2 leading-snug">
                         {msg.name}
                         {msg.status === 'new' && (
-                          <span className="text-[10px] uppercase font-bold bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] px-2 py-0.5 rounded-full">
+                          <span className="text-xs uppercase font-bold bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] px-2 py-0.5 rounded-full">
                             {language === 'ar' ? 'جديد' : 'New'}
                           </span>
                         )}

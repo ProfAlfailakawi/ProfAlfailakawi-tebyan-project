@@ -147,7 +147,7 @@ export const DEMO_LOYALTY = {
   history: [
     { id: 'h1', date: '2026-09-26', label: 'إكمال خطة «خارطة الطريق» الأسبوعية', points: 50 },
     { id: 'h2', date: '2026-09-22', label: 'استشارة أسرية — 25 د.ك', points: 120 },
-    { id: 'h3', date: '2026-09-18', label: 'استبدال كود TIBYAN15', points: -100 },
+    { id: 'h3', date: '2026-09-18', label: 'استبدال كود خصم 15%', points: -100 },
     { id: 'h4', date: '2026-09-12', label: 'حفظ خمس إجابات من «قول فصل»', points: 70 },
     { id: 'h5', date: '2026-09-03', label: 'ورشة «الشاشات والأسرة» — 20 د.ك', points: 200 },
   ],

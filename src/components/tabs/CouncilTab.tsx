@@ -62,7 +62,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       
       <div className="space-y-6 z-10 relative text-right">
         <div className="mb-4 md:mb-5 text-right">
-           <h2 className="text-xl md:text-3xl font-extrabold text-navy leading-snug">{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
+           <h2 className={cn("text-xl md:text-3xl font-extrabold text-navy leading-snug", inArena && "sr-only")}>{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
            <p className="text-ink-mute mt-2 font-semibold text-sm md:text-base leading-relaxed max-w-2xl ml-auto">{language === 'ar' ? 'اطرح قضيتك أو تحديك على نخبة الخبراء ليتم تحليله بعمق.' : 'Present your case or challenge to the elite experts for deep analysis.'}</p>
         </div>
 

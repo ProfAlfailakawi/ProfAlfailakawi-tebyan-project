@@ -130,7 +130,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
       <div className="w-full bg-white md:min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <TabHeader 
           icon={TicketPercent}
-          title={{ ar: 'محفظة الولاء والجوائز', en: 'Loyalty Wallet' }}
+          title={getServiceNameBilingual('loyalty')}
           description={{ 
               ar: 'رصيدك الحالي، مكافآتك، والكوبونات المتاحة لك.', 
               en: 'Your current balance, rewards, and available coupons.' 
@@ -190,7 +190,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                          </div>
                          <div className="min-w-0">
                             <p className="text-sm font-black text-emerald-900">{language === 'ar' ? 'خصم 15% على الاستشارة القادمة' : '15% Off Your Next Consult'}</p>
-                            <p className="text-xs text-emerald-700 font-bold">{language === 'ar' ? 'كود: TIBYAN15' : 'Code: TIBYAN15'}</p>
+                            <p className="text-xs text-emerald-700 font-bold">{language === 'ar' ? 'كود خصم 15%' : 'Code: TIBYAN15'}</p>
                          </div>
                       </div>
                       <div className="flex items-center gap-3 p-3 sm:gap-4 sm:p-4 bg-zinc-50 rounded-2xl border border-zinc-100 min-w-0">

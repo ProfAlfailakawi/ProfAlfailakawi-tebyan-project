@@ -565,7 +565,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                 } as const;
                               })}
                             />
-                            <p className="mt-2 text-center text-[11px] font-bold text-ink-mute">
+                            <p className="mt-2 text-center text-xs font-bold text-ink-mute">
                               {language === 'ar' ? 'نقاط محفوظة على هذا الجهاز فقط' : 'Points are stored on this device only'}
                             </p>
                           </div>

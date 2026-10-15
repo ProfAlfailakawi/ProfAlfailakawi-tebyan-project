@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { TabHeader } from '../TabHeader';
 import { DnaRing } from '../dna/DnaKit';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { userGender } = useAuth();
@@ -83,7 +84,7 @@ export const QuizTab = React.memo(({ language, initialValue, onValueUsed, handle
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
      <TabHeader 
        icon={ClipboardCheck}
-       title={{ ar: 'الاختبارات الذكية', en: 'Smart Quizzes' }}
+       title={getServiceNameBilingual('quizzes')}
        description={{ 
            ar: getGenderWord(userGender, 'أدخل الموضوع الذي تريد اختبار معلوماتك فيه، وسأقوم بإنشاء أسئلة متنوعة لتقييم فهمك.', 'أدخلي الموضوع الذي تريدين اختبار معلوماتكِ فيه، وسأقوم بإنشاء أسئلة متنوعة لتقييم فهمكِ.', 'أدخل الموضوع الذي تود اختبار معلوماتك فيه.'), 
            en: 'Enter a topic, and I will generate diverse questions to assess your understanding.' 

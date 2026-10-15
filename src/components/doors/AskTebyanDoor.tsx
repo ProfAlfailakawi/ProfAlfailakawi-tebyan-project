@@ -2,6 +2,7 @@ import React, { useState, Suspense } from "react";
 import { MessageCircleQuestion, Lightbulb, Network, BookOpenText, Hourglass, ScrollText } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
 import { TebyanLoader } from "../ui/TebyanLoader";
+import { getServiceName } from "../../constants/serviceRegistry";
 
 /**
  * باب «اسأل تبيان» — ست خدمات قديمة صارت أنماط جواب على صندوق واحد:
@@ -62,8 +63,8 @@ export const AskTebyanDoor = ({
 
   return (
     <DoorShell
-      titleAr="اسأل تبيان"
-      titleEn="Ask Tebyan"
+      titleAr={getServiceName("ask", "ar")}
+      titleEn={getServiceName("ask", "en")}
       subtitleAr="اكتب سؤالك، واختر الأسلوب الذي يريحك"
       subtitleEn="Write your question, then pick the style that suits you"
       modes={MODES}

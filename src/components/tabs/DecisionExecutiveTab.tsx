@@ -225,9 +225,9 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
         <div className="tebyan-decision-room space-y-5 md:space-y-6 px-2 pb-20 max-w-6xl mx-auto" dir={language === 'ar' ? 'rtl' : 'ltr'}>
            <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 md:gap-6 mb-2 md:mb-4">
              <div className="space-y-1">
-                <h1 className="text-lg md:text-xl font-extrabold text-navy tracking-tight leading-tight uppercase">
+                <h2 className="sr-only">
                     {getServiceName('decisionroom', language)}
-                </h1>
+                </h2>
                 <p className="text-ink-mute font-medium text-[13px] md:text-sm max-w-2xl leading-relaxed">
                     {language === 'ar' ? 'بيئة استراتيجية معزولة لتفكيك المعضلات واتخاذ قرارات مبنية على بيانات إدراكية عميقة.' : 'A secure strategic environment to dismantle dilemmas and make decisions based on deep cognitive insights.'}
                 </p>
@@ -259,7 +259,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
            </AnimatePresence>
 
            <div className="relative group/input">
-             <div className="absolute -top-3 right-6 z-20 px-4 py-1 bg-[#8E7AAE] text-white text-xs font-black uppercase rounded-full shadow-lg group-focus-within/input:bg-rose-600 transition-colors">
+             <div className="mb-2 w-fit px-4 py-1 bg-[#8E7AAE] text-white text-xs font-black rounded-full shadow-sm group-focus-within/input:bg-rose-600 transition-colors">
                 {language === 'ar' ? 'مدخلات المعضلة' : 'DILEMMA INPUT'}
              </div>
              <textarea 
@@ -271,7 +271,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                }}
                onKeyDown={handleKeyDown}
                className={cn(
-                 "w-full min-h-[92px] md:min-h-[150px] h-28 md:h-36 p-4 md:p-6 pt-8 rounded-[22px] md:rounded-[34px] border text-[15px] md:text-lg font-medium focus:ring-4 md:focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
+                 "w-full min-h-[92px] md:min-h-[150px] h-28 md:h-36 p-4 md:p-6 rounded-[22px] md:rounded-[34px] border text-[15px] md:text-lg font-medium focus:ring-4 md:focus:ring-8 transition-all relative z-10 custom-scrollbar resize-none leading-relaxed",
                  showRadarWarning ? "border-rose-900/50 bg-white text-navy placeholder:text-ink-mute focus:ring-rose-900/10" : "border-[color:var(--tb-sky)]/15 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.02)] focus:ring-black/5 focus:border-[color:var(--tb-lilac-soft)] focus:shadow-[0_30px_60px_rgba(0,0,0,0.06)]"
                )}
                placeholder={language === 'ar' ? 'صِف الموقف أو القرار أو المعضلة التي تواجهك هنا بصراحة تامة...' : 'Describe the situation, decision, or dilemma you are facing here with total honesty...'}

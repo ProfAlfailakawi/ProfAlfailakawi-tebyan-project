@@ -282,8 +282,8 @@ export const TEBYAN_SERVICES: TebyanService[] = [
     id: 'growth',
     category: 'personal',
     icon: TrendingUp,
-    titleAr: 'خارطة الطريق والتقدم',
-    titleEn: 'Roadmap & Progress',
+    titleAr: 'خطتي وتقدمي',
+    titleEn: 'My Plan & Progress',
     brandAr: 'من الهدف إلى الخطة',
     brandEn: 'From goal to plan',
     descriptionAr: 'حوّل هدفك إلى مراحل واضحة، وتابع تقدمك خطوة بخطوة.',
@@ -326,6 +326,11 @@ export function getServiceName(id: string, language: string, fallback = ''): str
   const service = TEBYAN_SERVICES.find((item) => item.id === id);
   if (!service) return fallback;
   return language === 'ar' ? service.titleAr : service.titleEn;
+}
+
+/** أيقونة الخدمة المعتمدة في السجل. */
+export function getServiceIcon(id: string): ElementType {
+  return (TEBYAN_SERVICES.find((item) => item.id === id)?.icon ?? Sparkles) as ElementType;
 }
 
 /** ثنائي اللغة لاستخدامه مع TabHeader: { ar, en }. */

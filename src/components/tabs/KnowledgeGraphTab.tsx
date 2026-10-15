@@ -6,6 +6,7 @@ import { TabHeader } from '../TabHeader';
 import { cn } from '../../lib/utils';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { getDemoFixtures } from '../../data/demoFixtures';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
   const [history, setHistory] = useState<string[]>([]);
@@ -157,16 +158,6 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
     <div className="tebyan-knowledge-fabric w-full bg-[#FBFAF7] text-navy min-h-[82vh] rounded-[24px] md:rounded-[32px] p-3 md:p-8 shadow-[0_24px_80px_rgba(142,122,174,0.10)] relative overflow-hidden flex flex-col md:flex-row gap-4 md:gap-6 border border-[#E9E2F1]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(216,206,233,0.34)_0%,transparent_58%),radial-gradient(circle_at_15%_75%,rgba(220,234,244,0.42)_0%,transparent_38%)] pointer-events-none"></div>
       
-      <div className="absolute top-4 inset-x-4 md:top-8 md:end-8 md:start-auto z-50 flex justify-between md:justify-end">
-        <div className="md:hidden" />
-        <button 
-          onClick={() => handleTabChange('home', '', true)} 
-          className="px-6 py-2.5 md:py-3 bg-white border border-[#E6E1EA] text-ink-mute rounded-full font-black text-xs md:text-sm shadow-2xl flex items-center gap-2 hover:bg-[#F7F3FB] hover:text-lilac transition-all active:scale-95 pointer-events-auto cursor-pointer"
-        >
-          <ArrowRight className={cn("w-4 h-4 md:w-5 md:h-5", language === 'ar' ? "" : "rotate-180")} />
-          {language === 'ar' ? 'الرجوع' : 'BACK'}
-        </button>
-      </div>
 
       <div className="flex-1 flex flex-col relative z-10 pt-24 md:pt-0">
         <div className="mb-6 md:mb-10 pl-2">
@@ -176,7 +167,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                 </div>
                 <div className="flex-1 min-w-0 pb-1 pt-1">
                   <div className="bg-gradient-to-r from-navy to-[color:var(--tb-lilac-soft)] bg-clip-text text-transparent leading-tight">
-                    {language === 'ar' ? 'البصمة المعرفية' : 'Cognitive Blueprint'}
+                    {getServiceName('knowledgegraph', language)}
                   </div>
                   <div className="text-sm md:text-lg text-lilac font-bold not-italic tracking-normal mt-1">
                     {language === 'ar' ? 'مختبر دمج الأفكار' : 'Ideas Fusion Lab'}

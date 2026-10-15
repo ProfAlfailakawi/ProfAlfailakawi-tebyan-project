@@ -2,9 +2,10 @@ import React, { useState, Suspense } from "react";
 import { Route, Activity, ClipboardCheck } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
 import { TebyanLoader } from "../ui/TebyanLoader";
+import { getServiceName } from "../../constants/serviceRegistry";
 
 /**
- * باب «خارطة الطريق والتقدم» — رحلة واحدة مكتملة:
+ * باب «خطتي وتقدمي» — رحلة واحدة مكتملة:
  * خطّط (خارطة الطريق) ← تتبّع (رادار السلوك) ← تحقّق (الاختبارات).
  */
 const RoadmapTab = React.lazy(() =>
@@ -47,8 +48,8 @@ export const GrowthDoor = ({
 
   return (
     <DoorShell
-      titleAr="خارطة الطريق والتقدم"
-      titleEn="Roadmap & Progress"
+      titleAr={getServiceName("growth", "ar")}
+      titleEn={getServiceName("growth", "en")}
       subtitleAr="من هدفك إلى خطة تمشي عليها"
       subtitleEn="From your goal to a plan you can follow"
       modes={MODES}

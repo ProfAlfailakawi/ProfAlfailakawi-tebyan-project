@@ -151,7 +151,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
         <div className="p-4 md:p-6 pb-28 md:pb-32">
             <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12', embedded && hasSaved && 'mb-0 md:mb-0')}>
                 <div className={cn('space-y-1 text-right', embedded && 'sr-only')}>
-                  <h2 className="text-3xl md:text-4xl font-black">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
+                  <h2 className="text-3xl md:text-4xl font-black">{getServiceName('mylibrary', language)}</h2>
                   <p className="text-zinc-500 font-bold text-xs md:text-sm uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
                 </div>
                 {!hasSaved && exploreBtn}

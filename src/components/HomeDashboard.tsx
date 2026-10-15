@@ -7,7 +7,7 @@ import { levels } from '../constants/gamification';
 import { DnaStepper } from './dna/DnaKit';
 import { generateDailyMission } from '../services/gemini';
 import { Network } from 'lucide-react';
-import { getServiceName } from '../constants/serviceRegistry';
+import { getServiceName, getServiceIcon } from '../constants/serviceRegistry';
 
 const HubCard: React.FC<{
   title: string;
@@ -191,9 +191,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#8E7AAE] opacity-30"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[#8E7AAE]"></span>
               </span>
-              <span className="text-[color:var(--tb-lilac-deep)] font-black text-[10px] tracking-[0.24em] uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
+              <span className="text-[color:var(--tb-lilac-deep)] font-black text-xs tracking-[0.24em] uppercase">{language === 'ar' ? 'الواجهة الرئيسية' : 'Main Dashboard'}</span>
               {state.level > 1 && (
-                <span className="text-[10px] font-black text-emerald-600 border-l border-slate-200 pl-2 ml-2 bg-emerald-50/50 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-black text-emerald-600 border-l border-slate-200 pl-2 ml-2 bg-emerald-50/50 px-2 py-0.5 rounded-full">
                   {language === 'ar' ? 'وضع النقاء الفراغي نشط' : 'Invisible UI mode active'}
                 </span>
               )}
@@ -207,11 +207,11 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           </div>
           <div className="grid grid-cols-2 gap-2 w-full md:w-auto md:min-w-[260px]">
             <div className="rounded-2xl border border-[color:var(--tb-sky)]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
-              <p className="text-[10px] font-black uppercase text-[color:var(--tb-lilac-soft)]">{language === 'ar' ? 'المستوى' : 'Level'}</p>
+              <p className="text-xs font-black uppercase text-[color:var(--tb-lilac-soft)]">{language === 'ar' ? 'المستوى' : 'Level'}</p>
               <p className="mt-1 text-2xl font-black text-[color:var(--tb-navy)]">{state.level}</p>
             </div>
             <div className="rounded-2xl border border-[color:var(--tb-sky)]/16 bg-white/72 p-4 shadow-sm backdrop-blur-xl">
-              <p className="text-[10px] font-black tracking-widest uppercase text-[color:var(--tb-lilac-soft)]">XP</p>
+              <p className="text-xs font-black tracking-widest uppercase text-[color:var(--tb-lilac-soft)]">XP</p>
               <p className="mt-1 text-2xl font-black text-[color:var(--tb-navy)]">{state.xp}</p>
             </div>
             {/* Level ladder: stations up to the current level are lit. XP is stored on this device only. */}
@@ -227,7 +227,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                   state: i < state.level - 1 ? 'done' : i === state.level - 1 ? 'current' : 'pending',
                 }))}
               />
-              <p className="mt-2 text-center text-[11px] font-bold text-[#7C8796]">
+              <p className="mt-2 text-center text-xs font-bold text-[#7C8796]">
                 {language === 'ar' ? 'نقاط محفوظة على هذا الجهاز فقط' : 'Points are stored on this device only'}
               </p>
             </div>
@@ -244,7 +244,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         </div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-gr-3">
           <div className="space-y-gr-1">
-            <p className="text-[10px] font-black tracking-[0.28em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
+            <p className="text-xs font-black tracking-[0.28em] uppercase text-[#7C8796]">{language === 'ar' ? 'ابدأ ببساطة' : 'Start simple'}</p>
             <h2 className="text-2xl md:text-5xl font-black text-[color:var(--tb-navy)] leading-tight">
               {language === 'ar' ? getGenderWord(userGender, 'ما القرار الذي نوضّحه اليوم؟', 'ما الفكرة التي نوضّحها اليوم؟', 'ما القرار الذي نوضّحه اليوم؟') : 'What should we clarify today?'}
             </h2>
@@ -278,7 +278,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                     <item.icon className="w-6 h-6" />
                   </div>
                   <div className="min-w-0">
-                    <span className="text-[10px] font-black tracking-[0.22em] text-[color:var(--tb-lilac-soft)]/70">{item.mark}</span>
+                    <span className="text-xs font-black tracking-[0.22em] text-[color:var(--tb-lilac-soft)]/70">{item.mark}</span>
                     <h3 className="font-black text-xl text-[color:var(--tb-navy)] leading-tight mt-1">{language === 'ar' ? item.ar : item.en}</h3>
                     <p className="text-xs text-[#64788D] font-bold">{language === 'ar' ? item.descAr : item.descEn}</p>
                   </div>
@@ -299,7 +299,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               <CircleDashedIcon className="w-5 h-5 animate-spin-slow" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-black text-[color:var(--tb-lilac-soft)] uppercase">
+              <p className="text-xs font-black text-[color:var(--tb-lilac-soft)] uppercase">
                 {language === 'ar' ? getGenderWord(userGender, 'آخر ما كنت تفكر فيه', 'آخر ما كنتِ تفكرين فيه', 'آخر ما كنت تفكر فيه') : 'Where you left off'}
               </p>
               <h3 className="mt-1 text-base md:text-xl font-black text-[color:var(--tb-navy)] break-words md:truncate max-w-3xl">
@@ -338,8 +338,8 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                   </div>
                   <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
-                          <h3 className="font-black text-[color:var(--tb-lilac-deep)] tracking-[0.2em] rtl:tracking-normal uppercase text-[10px] md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
-                          {!missionCompleted && !missionLoading && <span className="rounded-full bg-white/80 px-2 py-1 text-[10px] font-black text-[color:var(--tb-lilac-soft)] border border-[color:var(--tb-lilac-soft)]/12">+{mission?.xp_reward || 0} XP</span>}
+                          <h3 className="font-black text-[color:var(--tb-lilac-deep)] tracking-[0.2em] rtl:tracking-normal uppercase text-xs md:text-xs">{language === 'ar' ? 'التحدي الميداني اليومي' : 'Daily Challenge'}</h3>
+                          {!missionCompleted && !missionLoading && <span className="rounded-full bg-white/80 px-2 py-1 text-xs font-black text-[color:var(--tb-lilac-soft)] border border-[color:var(--tb-lilac-soft)]/12">+{mission?.xp_reward || 0} XP</span>}
                       </div>
                       {missionLoading ? (
                           <div className="h-10 md:h-12 flex items-center text-[color:var(--tb-lilac-soft)] font-bold text-xs md:text-sm">{language === 'ar' ? 'نرتّب التحدي بهدوء…' : 'Preparing the challenge calmly…'}</div>
@@ -393,7 +393,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
               <Network className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-[11px] font-black tracking-[0.24em] uppercase text-[color:var(--tb-lilac-soft)]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
+              <p className="text-xs font-black tracking-[0.24em] uppercase text-[color:var(--tb-lilac-soft)]/75">{language === 'ar' ? 'ظل النسيج الحي' : 'Living fabric shadow'}</p>
               <h3 className="mt-1 text-xl md:text-3xl font-black text-[color:var(--tb-navy)] leading-tight">
                 {language === 'ar' ? getGenderWord(userGender, 'أفكارك ترسم خريطة هادئة خلف المشهد', 'أفكاركِ ترسم خريطة هادئة خلف المشهد', 'أفكارك ترسم خريطة هادئة خلف المشهد') : 'Your ideas are drawing a quiet map backstage'}
               </h3>
@@ -449,7 +449,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
                    <div className="bg-white text-[color:var(--tb-lilac-deep)] w-12 h-12 md:w-16 md:h-16 rounded-[16px] md:rounded-[22px] flex items-center justify-center shadow-xl mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-500">
                       <tab.icon className="w-7 h-7 md:w-11 md:h-11" />
                    </div>
-                   <span className="bg-[#F6F0E3] text-[#7A6B42] text-[10px] font-black uppercase tracking-[0.2em] rtl:tracking-normal px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
+                   <span className="bg-[#F6F0E3] text-[#7A6B42] text-xs font-black uppercase tracking-[0.2em] rtl:tracking-normal px-3 py-1.5 rounded-full mb-2 md:mb-3 inline-block shadow-lg">
                       {language === 'ar' ? 'البوصلة النوعية' : 'THE CORE EDGE'}
                    </span>
                    <h3 className="text-xl md:text-3xl lg:text-4xl font-black text-[color:var(--tb-navy)] leading-[1.1] mb-2 md:mb-4">
@@ -473,9 +473,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'الاستشارة الشاملة ومتابعة السلوك' : 'Total guidance and predictive analysis'}
           icon={BrainCircuit}
           items={[
-            { id: 'oracle', label: getServiceName('oracle', language), icon: Command },
-            { id: 'analytics', label: getServiceName('analytics', language), icon: BarChart3 },
-            { id: 'decisionroom', label: getServiceName('decisionroom', language), icon: Lock }
+            { id: 'oracle', label: getServiceName('oracle', language), icon: getServiceIcon('oracle') },
+            { id: 'analytics', label: getServiceName('analytics', language), icon: getServiceIcon('analytics') },
+            { id: 'decisionroom', label: getServiceName('decisionroom', language), icon: getServiceIcon('decisionroom') }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -487,7 +487,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'إدارة العملاء والولاء بالدينار الكويتي' : 'Customer & loyalty management (KWD)'}
           icon={Gift}
           items={[
-            { id: 'loyalty', label: getServiceName('loyalty', language), icon: TicketPercent, hidden: tabs.find(t => t.id === 'loyalty')?.hidden }
+            { id: 'loyalty', label: getServiceName('loyalty', language), icon: getServiceIcon('loyalty'), hidden: tabs.find(t => t.id === 'loyalty')?.hidden }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -501,9 +501,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'هيكلة الأفكار والربط العبقري' : 'Idea structuring and genius connections'}
           icon={Zap}
           items={[
-            { id: 'concepts', label: getServiceName('concepts', language), icon: Sparkles },
+            { id: 'concepts', label: getServiceName('concepts', language), icon: getServiceIcon('concepts') },
             { id: 'lab', label: getServiceName('creativelab', language), icon: Zap },
-            { id: 'mindmap', label: getServiceName('mindmap', language), icon: Network }
+            { id: 'mindmap', label: getServiceName('mindmap', language), icon: getServiceIcon('mindmap') }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -516,8 +516,8 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'من الرؤية إلى الميدان' : 'From vision to the field'}
           icon={Route}
           items={[
-            { id: 'roadmap', label: getServiceName('roadmap', language), icon: Route },
-            { id: 'simulation', label: getServiceName('simulation', language), icon: Gamepad2 }
+            { id: 'roadmap', label: getServiceName('roadmap', language), icon: getServiceIcon('roadmap') },
+            { id: 'simulation', label: getServiceName('simulation', language), icon: getServiceIcon('simulation') }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -530,9 +530,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'الحكمة التاريخية والمصادر المختارة' : 'Historical wisdom and selected resources'}
           icon={LibraryBig}
           items={[
-            { id: 'timemachine', label: getServiceName('timemachine', language), icon: Hourglass },
-            { id: 'council', label: getServiceName('council', language), icon: BrainCircuit },
-            { id: 'story', label: getServiceName('story', language), icon: LibraryBig }
+            { id: 'timemachine', label: getServiceName('timemachine', language), icon: getServiceIcon('timemachine') },
+            { id: 'council', label: getServiceName('council', language), icon: getServiceIcon('council') },
+            { id: 'story', label: getServiceName('story', language), icon: getServiceIcon('story') }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -545,7 +545,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'قياس أثر التطور المعرفي' : 'Measuring cognitive growth impact'}
           icon={ClipboardCheck}
           items={[
-            { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck }
+            { id: 'quizzes', label: getServiceName('quizzes', language), icon: getServiceIcon('quizzes') }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}

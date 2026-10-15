@@ -1406,7 +1406,7 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)" }}
             className={cn(
-              "fixed top-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
+              "fixed top-6 left-1/2 -translate-x-1/2 z-[100001] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
               toast.type === "info"
                 ? "bg-white/90 border-zinc-200/50 text-zinc-900"
                 : toast.type === "error"

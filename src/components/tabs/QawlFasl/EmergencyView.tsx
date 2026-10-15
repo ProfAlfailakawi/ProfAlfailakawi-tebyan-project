@@ -101,7 +101,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                   >
                      <span className="opacity-80 flex-shrink-0">هل تقصد:</span> 
                      <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
-                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
+                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-xs font-mono">Tab</kbd>
                   </button>
               </div>
             )}
@@ -136,7 +136,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                   <div key={q.id} className="bg-white flex flex-col justify-between border border-[#EBEAE4] rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all group cursor-pointer h-full" onClick={() => onQuestion(q)}>
                     <div className="space-y-4 md:space-y-6 w-full mb-6">
                        <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-black text-[#2A2925] leading-snug lg:leading-tight group-hover:text-[#5A5A40] transition-colors" lineClamp={3} />
-                       <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold flex-wrap uppercase tracking-widest">
+                       <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase tracking-widest">
                          <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">{cat?.title}</span>
                          {q.riskLevel === 'high' && (
                            <span className="flex items-center gap-1.5 text-[#A6603F] bg-[#FAF0E6] px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>
