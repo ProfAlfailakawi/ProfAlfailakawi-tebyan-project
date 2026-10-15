@@ -138,7 +138,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                     node.type === 'branch' ? "bg-mood-secondary/10 border-mood-secondary/20 text-mood-secondary shadow-lilac/10" :
                     "bg-mood-secondary/5 border-mood-secondary/10 text-mood-secondary shadow-lilac/5 transition-opacity"
                 )}>
-                    {node.type === 'seed' && <div className="absolute inset-0 rounded-full animate-ping bg-mood-primary opacity-20" />}
+                    {node.type === 'seed' && <div className="absolute inset-0 rounded-full tbn-ping-few bg-mood-primary opacity-20" />}
                     {node.type === 'seed' ? <Globe className="w-5 h-5 md:w-6 md:h-6" /> : 
                         node.type === 'branch' ? <Network className="w-5 h-5 md:w-6 md:h-6" /> :
                         <Activity className="w-5 h-5 md:w-6 md:h-6" />}
@@ -462,7 +462,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             if (points > 500) {
                 ranks[uid] = { 
                     rank: language === 'ar' ? 'حكيم تبيان' : 'Sage of Tabyan', 
-                    aura: "ring-2 ring-amber-400 ring-offset-2 animate-pulse",
+                    aura: "ring-2 ring-amber-400 ring-offset-2 tbn-pulse-few",
                     color: "text-[#6F6238]"
                 };
             } else if (points > 100) {

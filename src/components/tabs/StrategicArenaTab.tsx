@@ -162,7 +162,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
 
                            <div className="text-center space-y-4">
                               <div className="w-32 h-32 bg-white rounded-full border-4 border-dashed border-[#8FA9C7]/25 flex items-center justify-center mb-4">
-                                 <Move className="w-8 h-8 text-zinc-300 animate-pulse" />
+                                 <Move className="w-8 h-8 text-zinc-300 tbn-pulse-few" />
                               </div>
                               <h3 className="font-black text-zinc-300 uppercase tracking-widest text-sm">
                                 {language === 'ar' ? 'مساحة المحاكاة الفراغية' : 'SPATIAL SIMULATION ARENA'}
