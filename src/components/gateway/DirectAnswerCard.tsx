@@ -74,12 +74,12 @@ export const DirectAnswerCard: React.FC<Props> = ({
         </details>
 
         <div className="mt-4 space-y-3">
-          <div className="rounded-[20px] border border-[#8E7AAE]/11 bg-[#F7F3FA] p-4 md:p-5">
+          <div key={`beat-summary:${summary}`} className="tbn-beat relative rounded-[20px] border border-[#8E7AAE]/11 bg-[#F7F3FA] p-4 md:p-5" style={{ ["--beat" as string]: "#8E7AAE" }}>
             <p className="text-[15px] font-bold leading-[1.95] text-[#273548] md:text-[17px]">
               {summary}
             </p>
           </div>
-          <div className="rounded-[20px] border border-[#A8C3BD]/17 bg-[#F3F8F6] p-4 md:p-5">
+          <div key={`beat-action:${action}`} className="tbn-beat tbn-beat-2 relative rounded-[20px] border border-[#A8C3BD]/17 bg-[#F3F8F6] p-4 md:p-5" style={{ ["--beat" as string]: "#4D766B" }}>
             <div className="flex items-center gap-2 text-[#4D766B]">
               <CheckCircle2 className="h-4 w-4" />
               <h3 className="text-[12px] font-black">

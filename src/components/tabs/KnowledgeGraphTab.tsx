@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Network, Search, X, Sparkles, Zap, ArrowRight, BrainCircuit, Lightbulb, Beaker, Bookmark, Link2 } from 'lucide-react';
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { TabHeader } from '../TabHeader';
@@ -8,6 +8,9 @@ import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { getDemoFixtures } from '../../data/demoFixtures';
 
 export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: string, handleTabChange: any }) => {
+  // Decorative loops play a few cycles then rest; none at all for reduced motion (MotionConfig only covers transforms).
+  const reduceMotion = useReducedMotion();
+  const loops = (n: number) => (reduceMotion ? 0 : n);
   const [history, setHistory] = useState<string[]>([]);
   const [selectedNodes, setSelectedNodes] = useState<any[]>([]);
   const [timeEra, setTimeEra] = useState<number>(3); // 1: Past, 2: Recent, 3: Present, 4: Future
@@ -298,7 +301,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     duration: 0.8,
                     pathLength: { duration: 2, delay: i * 0.05 },
                     opacity: { duration: 2, delay: i * 0.05 },
-                    strokeDashoffset: { repeat: Infinity, duration: 1, ease: "linear" } 
+                    strokeDashoffset: { repeat: loops(6), duration: 1, ease: "linear" } 
                   }}
                 />
               );
@@ -340,8 +343,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                       transition={{ 
                          cx: { duration: 0.8 }, 
                          cy: { duration: 0.8 }, 
-                         scale: { duration: 1.5, repeat: Infinity, ease: "easeOut" },
-                         opacity: { duration: 1.5, repeat: Infinity, ease: "easeOut" }
+                         scale: { duration: 1.5, repeat: loops(3), ease: "easeOut" },
+                         opacity: { duration: 1.5, repeat: loops(3), ease: "easeOut" }
                       }}
                       style={{ transformOrigin: `${node.x}px ${node.y}px` }}
                     />
@@ -355,7 +358,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     }}
                     transition={{ 
                       cx: { duration: 0.8 },
-                      cy: { repeat: Infinity, duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
+                      cy: { repeat: loops(3), duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
                     }}
                     r={node.type === 'core' ? 38 : isGolden ? 24 : 20} 
                     fill={baseFillUrl} 
@@ -375,8 +378,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                       transition={{ 
                          cx: { duration: 0.8 }, 
                          cy: { duration: 0.8 }, 
-                         scale: { duration: 2.5, repeat: Infinity, ease: "easeOut" },
-                         opacity: { duration: 2.5, repeat: Infinity, ease: "easeOut" }
+                         scale: { duration: 2.5, repeat: loops(3), ease: "easeOut" },
+                         opacity: { duration: 2.5, repeat: loops(3), ease: "easeOut" }
                       }}
                       style={{ transformOrigin: `${node.x}px ${node.y}px` }}
                     />
@@ -391,8 +394,8 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                       transition={{ 
                          cx: { duration: 0.8 }, 
                          cy: { duration: 0.8 }, 
-                         scale: { duration: 1.5, repeat: Infinity, ease: "easeOut" },
-                         opacity: { duration: 1.5, repeat: Infinity, ease: "easeOut" }
+                         scale: { duration: 1.5, repeat: loops(3), ease: "easeOut" },
+                         opacity: { duration: 1.5, repeat: loops(3), ease: "easeOut" }
                       }}
                       style={{ transformOrigin: `${node.x}px ${node.y}px` }}
                     />
@@ -409,7 +412,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                     }}
                     transition={{ 
                       x: { duration: 0.8 },
-                      y: { repeat: Infinity, duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
+                      y: { repeat: loops(3), duration: 4 + (i % 3) * 1.5, ease: "easeInOut" }
                     }}
                     textAnchor="middle" 
                     fill={isSelected ? "#2F7D67" : isGolden ? "#8A6A18" : node.type === 'core' ? "#4B3F6B" : "#465568"} 
@@ -525,7 +528,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                 <>
                     <div className="mt-8 flex-1 flex flex-col justify-center">
                         <div className="text-center mb-6">
-                            <div className="inline-flex p-4 bg-lilac/20 rounded-full border border-lilac/20 mb-4 animate-pulse">
+                            <div className="inline-flex p-4 bg-lilac/20 rounded-full border border-lilac/20 mb-4 tbn-pulse-few">
                                 <Beaker className="w-10 h-10 text-lilac" />
                             </div>
                             <h3 className="text-2xl font-black text-navy">

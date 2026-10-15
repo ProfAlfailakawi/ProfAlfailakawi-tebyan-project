@@ -35,7 +35,7 @@ const STORAGE_PREFIX = 'tbn-journey:';
 const SETTLE_MS = 1600;
 const START_DELAY_MS = 180;
 
-const hasPlayed = (key: string) => {
+export const hasPlayed = (key: string) => {
   if (played.has(key)) return true;
   try {
     return sessionStorage.getItem(STORAGE_PREFIX + key) === '1';
@@ -44,7 +44,7 @@ const hasPlayed = (key: string) => {
   }
 };
 
-const markPlayed = (key: string) => {
+export const markPlayed = (key: string) => {
   played.add(key);
   try {
     sessionStorage.setItem(STORAGE_PREFIX + key, '1');
@@ -92,7 +92,7 @@ export const isInTransition = (el: Element, prevTop: number | null) => {
   return prevTop != null && Math.abs(top - prevTop) > 0.5;
 };
 
-const prefersReducedMotion = () =>
+export const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;

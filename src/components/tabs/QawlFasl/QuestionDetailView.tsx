@@ -407,8 +407,8 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
             )}
 
             {isSummoningShadow && (
-                <div className="bg-[#F1EEF4] border border-[#8E7AAE]/20 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center animate-pulse">
-                    <Ghost className="w-8 h-8 text-rose-600 mb-4 animate-bounce" />
+                <div className="bg-[#F1EEF4] border border-[#8E7AAE]/20 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center">
+                    <Ghost className="w-8 h-8 text-rose-600 mb-4" />
                     <p className="text-rose-700 font-bold tracking-widest text-sm">جاري استدعاء الظل من العالم الموازي...</p>
                 </div>
             )}
@@ -507,8 +507,12 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
               <DnaTimeline
                 ariaLabel="الجواب حسب العمر"
                 wrapMeta
-                items={question.byAgeVersions.map((version, idx) => ({
+                reveal
+                playKey={`age:${question.id}`}
+                items={question.byAgeVersions.map((version, idx, all) => ({
                   key: String(idx),
+                  // the answer "grows with the child": reveal from the youngest age up (display order unchanged)
+                  revealOrder: all.filter((o) => (parseInt(String(o.age), 10) || 0) < (parseInt(String(version.age), 10) || 0)).length,
                   title: `عمر: ${version.age}`,
                   tone: 'lilac' as const,
                   meta: <span className="text-navy font-medium leading-[1.85] text-base md:text-lg block whitespace-normal">{version.text}</span>,
@@ -530,6 +534,7 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                   <DnaStepper
                     size={question.practicalSteps.length > 7 ? 'xs' : 'sm'}
                     journey
+                    haloOn="done"
                     showLabels={false}
                     ariaLabel="تقدّمك في الخطوات"
                     steps={question.practicalSteps.map((_, idx) => {

@@ -74,7 +74,7 @@ export const BreathingText = ({
       {/* Shared Consciousness subtly glowing */}
       {hasSharedConsciousness && !isDwelling && (
           <div className="absolute top-2 right-4 flex items-center md:-right-6 md:top-1/2 md:-translate-y-1/2 opacity-70">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></div>
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
               <div className="absolute w-1.5 h-1.5 rounded-full bg-amber-500"></div>
               <span className="hidden md:inline-block mr-2 text-xs text-amber-500/60 font-bold whitespace-nowrap">عقل آخر يتأمل..</span>
           </div>

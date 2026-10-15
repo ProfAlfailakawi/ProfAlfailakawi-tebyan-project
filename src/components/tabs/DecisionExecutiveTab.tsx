@@ -286,7 +286,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                  >
                    <div className="bg-[#F7E5E3] text-[#A2433D] px-8 py-3 rounded-full flex items-center justify-between gap-6 shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)] whitespace-nowrap border-4 border-white">
                      <div className="flex items-center gap-3">
-                        <VolumeX className="w-5 h-5 animate-bounce" />
+                        <VolumeX className="w-5 h-5" />
                         <span className="font-black text-xs md:text-sm tracking-tight">{language === 'ar' ? 'تحذير: القرار يبدو انفعالياً. تبيان تنصح بالتريث.' : 'ALERT: Decision appears emotional. Tibyan suggests waiting.'}</span>
                      </div>
                      <button onClick={() => setShowRadarWarning(false)} className="p-1 hover:bg-white/20 rounded-full transition-colors">
