@@ -5283,3 +5283,15 @@ html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
     gap: 0 !important;
   }
 }
+
+/* 320px phones: the row (demo chip, install + account pill, brand cluster) cannot fit with
+   the wordmark, so the mark alone stands for the home button (its aria-label is unchanged)
+   instead of letting pills overlap and the account button spill out of its pill. */
+@media (max-width: 340px) {
+  .tebyan-floating-nav > button .tebyan-brand-name {
+    display: none !important;
+  }
+  .tebyan-action-pill {
+    flex-shrink: 0;
+  }
+}
