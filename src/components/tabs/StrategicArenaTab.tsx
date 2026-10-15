@@ -6,6 +6,7 @@ import { CouncilTab } from './CouncilTab';
 import { TimeMachineTab } from './TimeMachineTab';
 import { SimulationTab } from './SimulationTab';
 import { DnaEmpty } from '../dna/DnaKit';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 const PhysicsCard = ({ children, className, icon: Icon = Move, language = 'ar' }: { children: React.ReactNode, className?: string, icon?: React.ComponentType<{ className?: string }>, language?: 'ar' | 'en' }) => {
   return (
@@ -55,9 +56,9 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
   const [showArenaPicker, setShowArenaPicker] = useState(false);
 
   const tabs = [
-    { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
-    { id: 'timemachine', label: language === 'ar' ? 'آلة الزمن' : 'Time Machine', icon: Hourglass },
-    { id: 'simulation', label: language === 'ar' ? 'المحاكي الميداني' : 'Simulator', icon: Gamepad2 },
+    { id: 'council', label: getServiceName('council', language), icon: BrainCircuit },
+    { id: 'timemachine', label: getServiceName('timemachine', language), icon: Hourglass },
+    { id: 'simulation', label: getServiceName('simulation', language), icon: Gamepad2 },
     { id: 'spatial', label: language === 'ar' ? 'الميدان الفراغي' : 'Spatial Field', icon: Move }
   ];
 
@@ -165,7 +166,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
                                  <Move className="w-8 h-8 text-zinc-300 animate-pulse" />
                               </div>
                               <h3 className="font-black text-zinc-300 uppercase tracking-widest text-sm">
-                                {language === 'ar' ? 'مساحة المحاكاة الفراغية' : 'SPATIAL SIMULATION ARENA'}
+                                {language === 'ar' ? 'مساحة المحاكاة ثلاثية الأبعاد' : 'SPATIAL SIMULATION ARENA'}
                               </h3>
                               <p className="text-xs text-ink-mute font-bold italic">
                                 {language === 'ar' ? 'قم بسحب المكونات لتركيب الاستراتيجية' : 'Drag components to assemble strategy'}

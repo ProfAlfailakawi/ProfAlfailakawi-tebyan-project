@@ -8,6 +8,7 @@ import { MindMapTab } from './MindMapTab';
 import { StoryTab } from './StoryTab';
 import { RippleEffectTab } from './RippleEffectTab';
 import { TruthManuscriptTab } from './TruthManuscriptTab';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
   const [activeSubTab, setActiveSubTab] = useState<'lab' | 'concepts' | 'mindmap' | 'story' | 'manuscript'>(() => {
@@ -16,9 +17,9 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
 
   const tabs = [
     { id: 'lab', label: language === 'ar' ? 'المختبر الأصلي' : 'Original Lab', icon: Zap },
-    { id: 'concepts', label: language === 'ar' ? 'هندسة الأفكار' : 'Idea Engineering', icon: Sparkles },
+    { id: 'concepts', label: getServiceName('concepts', language), icon: Sparkles },
     { id: 'mindmap', label: language === 'ar' ? 'خريطة العقل' : 'Mind Map', icon: Network },
-    { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig },
+    { id: 'story', label: getServiceName('story', language), icon: LibraryBig },
     { id: 'manuscript', label: language === 'ar' ? 'المخطوطة القديمة' : 'Lost Manuscript', icon: ScrollText }
   ];
 

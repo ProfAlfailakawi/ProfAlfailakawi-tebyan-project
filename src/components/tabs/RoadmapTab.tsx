@@ -10,6 +10,7 @@ import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 import { TebyanButtonLoader } from '../ui/TebyanLoader';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChange, inDoor }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any, inDoor?: boolean }) => {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
@@ -67,7 +68,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 px-4 sm:px-6 pb-20 relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
         icon={Map}
-        title={{ ar: 'طريق النجاح', en: 'Success Roadmap' }}
+        title={getServiceNameBilingual('roadmap')}
         description={{ 
             ar: getGenderWord(userGender, 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 'رؤية واضحة لمساركِ الشخصي نحو كل هدف تطمحين إليه.', 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.'), 
             en: 'A clear vision of your personal path towards every goal you aspire to.' 

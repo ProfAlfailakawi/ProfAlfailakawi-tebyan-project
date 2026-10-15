@@ -30,6 +30,7 @@ interface Customer {
 }
 
 import { useAuth } from '../AuthProvider';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 const STATUS_AR: Record<string, string> = { All: 'الكل', Active: 'نشط', VIP: 'مميّز', New: 'جديد', 'At Risk': 'بحاجة لمتابعة', Inactive: 'غير نشط' };
 
@@ -292,7 +293,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
     <div className="w-full bg-[#FAFAFA] min-h-screen rounded-[24px] md:rounded-[32px] p-4 lg:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
         icon={Users}
-        title={{ ar: 'الولاء والكوبونات', en: 'Loyalty & Coupons' }}
+        title={getServiceNameBilingual('loyalty')}
         description={{ 
             ar: 'نظام إدارة ولاء العملاء الذكي لرفع نسبةRetention والنمو.', 
             en: 'Smart loyalty management system to increase retention and growth.' 
@@ -517,7 +518,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                      <div className="space-y-4">
                         <h4 className="text-sm font-black text-zinc-800 flex items-center gap-2">
                            <History className="w-4 h-4 text-zinc-400" />
-                           {language === 'ar' ? 'سجل الولاء والكوبونات' : 'Loyalty & Coupon Log'}
+                           {language === 'ar' ? 'سجل النقاط والكوبونات' : 'Points & Coupon Log'}
                         </h4>
                         <div className="space-y-3">
                            {[

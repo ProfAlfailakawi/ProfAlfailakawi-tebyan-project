@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: string, initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { userGender } = useAuth();
@@ -59,7 +60,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
     <div className="w-full space-y-8 px-2">
       <TabHeader 
         icon={Network}
-        title={{ ar: 'العقل المدبر', en: 'The Mastermind' }}
+        title={getServiceNameBilingual('mindmap')}
         description={{ 
             ar: getGenderWord(userGender, 'أدخل أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 'أدخلي أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 'أدخل أي مفهوم أو مشكلة تربوية.'), 
             en: 'Enter any educational concept or problem, and the Omni-AI will dismantle it into a deep structural mind map.' 

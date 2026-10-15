@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { useUser } from '../../../contexts/UserContext';
-import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Ghost, Video, Volume2, ShieldCheck, ShieldEllipsis, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library, TriangleAlert, Circle } from 'lucide-react';
+import { ArrowRight, Lightbulb, UserCheck, ShieldAlert, FileText, CheckCircle2, BookOpen, Link, Share2, Loader2, Bookmark, BookmarkCheck, Video, Volume2, ShieldCheck, ShieldEllipsis, MessageCircleQuestion, Gauge, MessageSquareQuote, Ban, Zap, Users, ListChecks, Library, TriangleAlert, Circle, Scale } from 'lucide-react';
 import { QawlFaslQuestion, CATEGORIES } from './types';
 import { cn } from '../../../lib/utils';
 import ReactMarkdown from 'react-markdown';
@@ -402,15 +402,15 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                         }}
                         className="text-[#A6603F] text-sm font-bold flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#F2D7C8] hover:bg-[#FAF0E6] bg-white transition-colors"
                     >
-                        <Ghost className="w-4 h-4" /> استدعاء القرين الفلسفي والمخالف
+                        <Scale className="w-4 h-4" aria-hidden="true" /> اسمع الرأي المخالف
                     </button>
                 </div>
             )}
 
             {isSummoningShadow && (
                 <div className="bg-[#F1EEF4] border border-[#8E7AAE]/20 p-8 rounded-[24px] shadow-2xl flex flex-col items-center justify-center animate-pulse">
-                    <Ghost className="w-8 h-8 text-rose-600 mb-4 animate-bounce" />
-                    <p className="text-rose-700 font-bold tracking-widest text-sm">جاري استدعاء الظل من العالم الموازي...</p>
+                    <Scale className="w-8 h-8 text-rose-600 mb-4 animate-bounce" aria-hidden="true" />
+                    <p className="text-rose-700 font-bold tracking-widest text-sm">جاري تجهيز الرأي المخالف...</p>
                 </div>
             )}
 
@@ -419,10 +419,10 @@ export default function QuestionDetailView({ questions, onBack, questionId, onQu
                     <div className="absolute top-0 right-0 w-32 h-32 bg-rose-600/10 rounded-full blur-3xl"></div>
                     <div className="flex items-start gap-4 md:gap-6 relative z-10">
                         <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center shrink-0 border border-rose-200">
-                            <Ghost className="w-6 h-6 text-rose-600" />
+                            <Scale className="w-6 h-6 text-rose-600" aria-hidden="true" />
                         </div>
                         <div className="flex-1">
-                            <h4 className="text-xl font-black text-rose-600 mb-4 tracking-wider">ظلّك الفلسفي يتحدث:</h4>
+                            <h4 className="text-xl font-black text-rose-600 mb-4 tracking-wider">الرأي المخالف:</h4>
                             <div className="font-serif rtl:font-sans text-ink-soft leading-relaxed text-lg [&_p]:text-ink-soft [&_strong]:text-rose-700 [&_h1]:text-rose-700 [&_h2]:text-rose-700 [&_h3]:text-rose-700 [&_li]:text-ink-soft [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5">
                                 <ReactMarkdown>{shadowResponse}</ReactMarkdown>
                             </div>

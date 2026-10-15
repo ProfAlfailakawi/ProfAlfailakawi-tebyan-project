@@ -7,6 +7,7 @@ import { levels } from '../constants/gamification';
 import { DnaStepper } from './dna/DnaKit';
 import { generateDailyMission } from '../services/gemini';
 import { Network } from 'lucide-react';
+import { getServiceName } from '../constants/serviceRegistry';
 
 const HubCard: React.FC<{
   title: string;
@@ -469,12 +470,12 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
         {/* HUB 1: Intelligence Hub (Oracle + Analytics) */}
         <HubCard 
           title={language === 'ar' ? 'منصة الذكاء الكلي' : 'Omni Intelligence Hub'}
-          description={language === 'ar' ? 'الاستشارة الشاملة والتحليل الاستباقي' : 'Total guidance and predictive analysis'}
+          description={language === 'ar' ? 'الاستشارة الشاملة ومتابعة السلوك' : 'Total guidance and predictive analysis'}
           icon={BrainCircuit}
           items={[
-            { id: 'oracle', label: language === 'ar' ? 'المستشار الكلي' : 'Omni Counselor', icon: Command },
-            { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
-            { id: 'decisionroom', label: language === 'ar' ? 'غرفة القرار السرية' : 'Secret Decision Room', icon: Lock }
+            { id: 'oracle', label: getServiceName('oracle', language), icon: Command },
+            { id: 'analytics', label: getServiceName('analytics', language), icon: BarChart3 },
+            { id: 'decisionroom', label: getServiceName('decisionroom', language), icon: Lock }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -486,7 +487,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'إدارة العملاء والولاء بالدينار الكويتي' : 'Customer & loyalty management (KWD)'}
           icon={Gift}
           items={[
-            { id: 'loyalty', label: language === 'ar' ? 'الولاء والكوبونات' : 'Loyalty & Coupons', icon: TicketPercent, hidden: tabs.find(t => t.id === 'loyalty')?.hidden }
+            { id: 'loyalty', label: getServiceName('loyalty', language), icon: TicketPercent, hidden: tabs.find(t => t.id === 'loyalty')?.hidden }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -500,9 +501,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'هيكلة الأفكار والربط العبقري' : 'Idea structuring and genius connections'}
           icon={Zap}
           items={[
-            { id: 'concepts', label: language === 'ar' ? 'هندسة الأفكار' : 'Idea Engineering', icon: Sparkles },
-            { id: 'lab', label: language === 'ar' ? 'المختبر الإبداعي' : 'Creative Lab', icon: Zap },
-            { id: 'mindmap', label: language === 'ar' ? 'العقل المدبر' : 'Mastermind', icon: Network }
+            { id: 'concepts', label: getServiceName('concepts', language), icon: Sparkles },
+            { id: 'lab', label: getServiceName('creativelab', language), icon: Zap },
+            { id: 'mindmap', label: getServiceName('mindmap', language), icon: Network }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -511,12 +512,12 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
 
         {/* HUB 3: Execution Hub (Roadmap + Simulation) */}
         <HubCard 
-          title={language === 'ar' ? 'مسار التنفيذ والمحاكاة' : 'Execution & Strategy Path'}
+          title={language === 'ar' ? 'مسار التنفيذ والتدريب' : 'Execution & Strategy Path'}
           description={language === 'ar' ? 'من الرؤية إلى الميدان' : 'From vision to the field'}
           icon={Route}
           items={[
-            { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route },
-            { id: 'simulation', label: language === 'ar' ? 'المحاكي الميداني' : 'Simulator', icon: Gamepad2 }
+            { id: 'roadmap', label: getServiceName('roadmap', language), icon: Route },
+            { id: 'simulation', label: getServiceName('simulation', language), icon: Gamepad2 }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}
@@ -529,9 +530,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
           description={language === 'ar' ? 'الحكمة التاريخية والمصادر المختارة' : 'Historical wisdom and selected resources'}
           icon={LibraryBig}
           items={[
-            { id: 'timemachine', label: language === 'ar' ? 'آلة الزمن' : 'Time Machine', icon: Hourglass },
-            { id: 'council', label: language === 'ar' ? 'طاولة الخبراء' : 'Expert Table', icon: BrainCircuit },
-            { id: 'story', label: language === 'ar' ? 'الراوي' : 'Story Weaver', icon: LibraryBig }
+            { id: 'timemachine', label: getServiceName('timemachine', language), icon: Hourglass },
+            { id: 'council', label: getServiceName('council', language), icon: BrainCircuit },
+            { id: 'story', label: getServiceName('story', language), icon: LibraryBig }
           ]}
           handleTabChange={closeFullDashboardAndGo}
           language={language}

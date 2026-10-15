@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { localizeDemoLibrary } from '../../data/demoFixtures';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 const MoodCloud = ({ items, language, action }: { items: any[], language: string, action?: React.ReactNode }) => {
   const counts = items.reduce((acc: any, item: any) => {
@@ -213,9 +214,9 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
 
                             const typeLabels: Record<string, { ar: string, color: string }> = {
                                 'qawlfasl': { ar: 'قول فصل', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                                'oracle': { ar: 'المستشار الكلي', color: 'bg-lilac-mist text-lilac border-lilac-mist' },
-                                'concept': { ar: 'هندسة الأفكار', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-                                'roadmap': { ar: 'طريق النجاح', color: 'bg-rose-50 text-rose-600 border-rose-100' },
+                                'oracle': { ar: getServiceName('oracle', 'ar'), color: 'bg-lilac-mist text-lilac border-lilac-mist' },
+                                'concept': { ar: getServiceName('concepts', 'ar'), color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                                'roadmap': { ar: getServiceName('roadmap', 'ar'), color: 'bg-rose-50 text-rose-600 border-rose-100' },
                                 'text': { ar: 'نص', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' },
                                 'item': { ar: 'مادة', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' }
                             };

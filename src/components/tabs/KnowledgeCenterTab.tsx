@@ -6,14 +6,15 @@ import { QuizTab } from './QuizTab';
 import { KnowledgeGraphTab } from './KnowledgeGraphTab';
 import { AnalyticsTab } from './AnalyticsTab';
 import { RoadmapTab } from './RoadmapTab';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
   const [activeSubTab, setActiveSubTab] = useState<'quizzes' | 'analytics' | 'roadmap'>('quizzes');
 
   const tabs = [
-    { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck },
-    { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
-    { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route }
+    { id: 'quizzes', label: getServiceName('quizzes', language), icon: ClipboardCheck },
+    { id: 'analytics', label: getServiceName('analytics', language), icon: BarChart3 },
+    { id: 'roadmap', label: getServiceName('roadmap', language), icon: Route }
   ];
 
   return (

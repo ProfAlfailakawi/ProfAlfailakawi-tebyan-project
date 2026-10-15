@@ -8,6 +8,7 @@ import { TabHeader } from '../TabHeader';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { getDemoFixtures } from '../../data/demoFixtures';
 import { DnaRing } from '../dna/DnaKit';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 /* Display-only: long AI text is clamped to 3 lines with a toggle, never truncated in data. */
 const ClampText = ({ text, className, language }: { text: string; className?: string; language: string }) => {
@@ -91,10 +92,10 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
       <div className="max-w-5xl mx-auto space-y-8 md:space-y-12 position-relative md:px-2">
         <TabHeader 
           icon={Radar}
-          title={{ ar: 'الرادار الاستباقي', en: 'Predictive Radar' }}
+          title={getServiceNameBilingual('analytics')}
           description={{ 
-              ar: 'دون ملاحظاتك السريعة يومياً، ودع الذكاء الاصطناعي يقرأ الأنماط الخفية ويتنبأ بالانفجارات السلوكية قبل حدوثها.', 
-              en: 'Log quick daily notes, and let AI read hidden patterns to predict behavioral outbursts before they happen.' 
+              ar: 'دون ملاحظاتك السريعة يومياً، ودع الذكاء الاصطناعي يقرأ الأنماط الخفية وينبّهك إلى نوبات الانفعال المتوقعة قبل حدوثها.', 
+              en: 'Log quick daily notes, and let AI read hidden patterns to warn you about likely emotional flare-ups before they happen.' 
           }}
           language={language}
           onBack={() => handleTabChange('discover', '')}

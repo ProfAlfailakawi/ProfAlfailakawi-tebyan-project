@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
 import { generateRoleplayResponse, generateRoleplayRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
 import { DnaRing } from '../dna/DnaKit';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [simMode, setSimMode] = useState<'decision' | 'roleplay'>('decision');
@@ -142,7 +143,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
      <TabHeader 
        icon={Gamepad2}
-       title={{ ar: 'المحاكي الميداني', en: 'Field Simulator' }}
+       title={getServiceNameBilingual('simulation')}
        description={{ 
            ar: 'تدرب على اتخاذ القرارات أو تقمص الأدوار في مواقف وسيناريوهات حقيقية لصقل مهاراتك الاستراتيجية والتواصلية.', 
            en: 'Practice decision-making or role-playing in real educational and pedagogical situations to hone your skills.' 
@@ -340,7 +341,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                  <div id="rp-radar-results" className="space-y-8 animate-in fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <div className="text-center space-y-2">
                        <ShieldAlert className="w-12 h-12 text-lilac mx-auto" />
-                       <h2 className="text-3xl font-black text-navy">{language === 'ar' ? 'الرادار التحليلي للسلوك' : 'Behavioral Radar'}</h2>
+                       <h2 className="text-3xl font-black text-navy">{language === 'ar' ? 'تحليل أدائك' : 'Your performance analysis'}</h2>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">

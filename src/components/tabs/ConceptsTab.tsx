@@ -8,6 +8,7 @@ import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 import { ResultCard } from '../common/ResultCard';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 interface ConceptsTabProps {
   input: string;
@@ -75,7 +76,7 @@ export const ConceptsTab = React.memo(({ language, initialValue, onValueUsed, ha
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
       icon={Sparkles}
-      title={{ ar: 'هندسة الأفكار', en: 'Idea Engineering' }}
+      title={getServiceNameBilingual('concepts')}
       description={{ 
           ar: 'تبسيط المفاهيم المعقدة واختزالها في أفكار واضحة وممنهجة يسهل فهمها ونقلها.', 
           en: 'Simplify complex concepts and condense them into clear, structured ideas that are easy to understand and share.' 

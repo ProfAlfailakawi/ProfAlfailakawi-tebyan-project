@@ -197,9 +197,9 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   },
   {
     id: 'analytics', category: 'plan', icon: BarChart3,
-    titleAr: 'التحليلات', titleEn: 'Analytics', brandAr: 'اقرأ تقدمك بوضوح', brandEn: 'Read your progress clearly',
-    descriptionAr: 'تابع أنماط استخدامك ونموك المعرفي ومؤشرات التقدم.', descriptionEn: 'Track usage patterns, cognitive growth, and progress signals.',
-    keywordsAr: ['تحليل', 'تقدم', 'مؤشرات', 'إحصاء'], keywordsEn: ['analytics', 'progress', 'metrics', 'stats'],
+    titleAr: 'متابعة السلوك', titleEn: 'Behavior Tracker', brandAr: 'اقرأ الأنماط قبل أن تتفاقم', brandEn: 'Spot patterns before they escalate',
+    descriptionAr: 'دوّن ملاحظاتك اليومية، ويكشف لك الذكاء الاصطناعي ما يتكرر وما قد يحدث لاحقاً.', descriptionEn: 'Log quick daily notes and let AI show what repeats and what may come next.',
+    keywordsAr: ['تحليل', 'سلوك', 'غضب', 'ملاحظات', 'نمط', 'تقدم'], keywordsEn: ['analytics', 'behavior', 'anger', 'notes', 'patterns', 'progress'],
   },
   {
     id: 'mylibrary', category: 'personal', icon: LibraryBig,
@@ -314,6 +314,18 @@ export const TEBYAN_SERVICES: TebyanService[] = [
   },
 ];
 
+
+/** الاسم الوحيد المعتمد للخدمة في كل الواجهة (المصدر: هذا السجل). */
+export function getServiceName(id: string, language: string, fallback = ''): string {
+  const service = TEBYAN_SERVICES.find((item) => item.id === id);
+  if (!service) return fallback;
+  return language === 'ar' ? service.titleAr : service.titleEn;
+}
+
+/** ثنائي اللغة لاستخدامه مع TabHeader: { ar, en }. */
+export function getServiceNameBilingual(id: string) {
+  return { ar: getServiceName(id, 'ar'), en: getServiceName(id, 'en') };
+}
 
 export function getServiceLabel(service: TebyanService, language: 'ar' | 'en') {
   return language === 'ar' ? service.titleAr : service.titleEn;

@@ -12,6 +12,7 @@ import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 import { ResultCard } from '../common/ResultCard';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 const personas = [
   { id: 'parent', ar: 'الوالد/الوالدة', en: 'Parent/Guardian' },
@@ -103,7 +104,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
       icon={Command}
-      title={{ ar: 'المستشار الكلي', en: 'Omni Counselor' }}
+      title={getServiceNameBilingual('oracle')}
       description={{ 
           ar: 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.', 
           en: 'Total guidance and predictive analysis for your personal perspective.' 
