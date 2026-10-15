@@ -33,12 +33,12 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
         <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col md:flex-row items-center md:justify-between gap-4">
           <button 
             onClick={onBack}
-            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center gap-2 text-[#64788D] hover:text-[#6E5F8E] bg-white/92 hover:bg-white px-3 py-2 rounded-2xl font-bold transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
+            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center gap-2 text-[#64788D] hover:text-[color:var(--tb-lilac-deep)] bg-white/92 hover:bg-white px-3 py-2 rounded-2xl font-bold transition-colors border border-[color:var(--tb-sky)]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <ArrowRight className="w-5 h-5" /><span className="hidden md:inline">رجوع</span>
           </button>
           <div className="text-center w-full md:flex-1">
-             <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-[#2A2925] tracking-tight">لا تقلق… اختر أقرب حالة</h2>
+             <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-[#2A2925]">لا تقلق… اختر أقرب حالة</h2>
           </div>
           <div className="hidden md:block w-24 opacity-0 pointer-events-none" /> {/* Spacer */}
         </div>
@@ -71,7 +71,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                   }
                 }
               }}
-              placeholder="ابحث عن سؤال... (مثال: تنمر، خوف)"
+              placeholder="ابحث: تنمر، خوف…"
               className="w-full bg-transparent border border-[#EBEAE4] rounded-[24px] py-4 px-5 pr-14 md:py-5 md:px-6 md:pr-14 text-base md:text-lg text-[#2A2925] font-bold focus:border-[#5A5A40] outline-none placeholder:text-[#A3A19C] transition-colors relative z-10"
             />
             {/* Background for text */}
@@ -101,14 +101,14 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                   >
                      <span className="opacity-80 flex-shrink-0">هل تقصد:</span> 
                      <span className="font-bold flex-1 text-right">{smartSuggestion}</span>
-                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-mono">Tab</kbd>
+                     <kbd className="hidden md:inline-flex items-center justify-center gap-1 opacity-60 bg-white/20 px-1.5 py-0.5 rounded text-xs font-mono">Tab</kbd>
                   </button>
               </div>
             )}
           </div>
 
           <div className="flex items-center gap-2 md:gap-3 overflow-x-auto pb-4 no-scrollbar">
-            <span className="text-xs md:text-sm font-bold text-[#A3A19C] shrink-0 ml-2 uppercase tracking-widest">العمر:</span>
+            <span className="text-xs md:text-sm font-bold text-[#A3A19C] shrink-0 ml-2 uppercase">العمر:</span>
             {['0-3', '4-6', '7-9', '10-12', '13-15', '16-18'].map(age => (
               <button 
                 key={age}
@@ -136,7 +136,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                   <div key={q.id} className="bg-white flex flex-col justify-between border border-[#EBEAE4] rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all group cursor-pointer h-full" onClick={() => onQuestion(q)}>
                     <div className="space-y-4 md:space-y-6 w-full mb-6">
                        <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-black text-[#2A2925] leading-snug lg:leading-tight group-hover:text-[#5A5A40] transition-colors" lineClamp={3} />
-                       <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold flex-wrap uppercase tracking-widest">
+                       <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase tracking-widest">
                          <span className="bg-[#F0F4FA] text-[#4A6B8C] px-3 py-1.5 rounded-full">{cat?.title}</span>
                          {q.riskLevel === 'high' && (
                            <span className="flex items-center gap-1.5 text-[#A6603F] bg-[#FAF0E6] px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>

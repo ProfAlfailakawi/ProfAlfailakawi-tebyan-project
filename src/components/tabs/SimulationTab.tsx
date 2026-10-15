@@ -6,6 +6,7 @@ import { cn } from '../../lib/utils';
 import { generateRoleplayResponse, generateRoleplayRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
 import { DnaRing } from '../dna/DnaKit';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [simMode, setSimMode] = useState<'decision' | 'roleplay'>('decision');
@@ -142,7 +143,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
      <TabHeader 
        icon={Gamepad2}
-       title={{ ar: 'المحاكي الميداني', en: 'Field Simulator' }}
+       title={getServiceNameBilingual('simulation')}
        description={{ 
            ar: 'تدرب على اتخاذ القرارات أو تقمص الأدوار في مواقف وسيناريوهات حقيقية لصقل مهاراتك الاستراتيجية والتواصلية.', 
            en: 'Practice decision-making or role-playing in real educational and pedagogical situations to hone your skills.' 
@@ -193,11 +194,11 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                   <input 
                     value={simTopic} 
                     onChange={(e) => setSimTopic(e.target.value)} 
-                    className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50" 
-                    placeholder={language === 'ar' ? "مثال: دمج الأجهزة المحمولة..." : "Example: Integrating mobile devices..."} 
+                    className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[color:var(--tb-lilac-deep)]/20 bg-white rounded-[16px] outline-none focus:border-[color:var(--tb-lilac-deep)]/50" 
+                    placeholder={language === 'ar' ? "مثال: أقنع ابني بتقليل وقت الشاشة" : "Example: Convince my son to reduce screen time"} 
                   />
                   <button onClick={() => startDecisionSimulation()} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-lilac-deep font-bold shadow-lg transition-all cursor-pointer">
-                    {language === 'ar' ? 'بدء' : 'Start'}
+                    {language === 'ar' ? 'ابدأ التدريب' : 'Start training'}
                   </button>
                 </div>
                 {error && <div className="text-rose-500 font-bold">{error}</div>}
@@ -271,7 +272,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                         value={rpTopic} 
                         onChange={(e) => setRpTopic(e.target.value)} 
                         disabled={isLoading}
-                        className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50 disabled:opacity-50" 
+                        className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[color:var(--tb-lilac-deep)]/20 bg-white rounded-[16px] outline-none focus:border-[color:var(--tb-lilac-deep)]/50 disabled:opacity-50" 
                         placeholder={language === 'ar' ? "مثال: مراهق يرفض المذاكرة بحجة أن المؤثرين أثرياء بدون تعليم..." : "e.g. Teen refusing to study because influencers are rich..."} 
                       />
                       <button onClick={() => startRoleplay()} disabled={isLoading || !rpTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-[#5d4f7b] font-bold shadow-lg shadow-rose-500/20 disabled:opacity-50 transition-all cursor-pointer">
@@ -340,7 +341,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                  <div id="rp-radar-results" className="space-y-8 animate-in fade-in" dir={language === 'ar' ? 'rtl' : 'ltr'}>
                     <div className="text-center space-y-2">
                        <ShieldAlert className="w-12 h-12 text-lilac mx-auto" />
-                       <h2 className="text-3xl font-black text-navy">{language === 'ar' ? 'الرادار التحليلي للسلوك' : 'Behavioral Radar'}</h2>
+                       <h2 className="text-3xl font-black text-navy">{language === 'ar' ? 'تحليل أدائك' : 'Your performance analysis'}</h2>
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
@@ -374,7 +375,7 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     </div>
 
                     <div className="bg-ivory text-navy border border-lilac/15 p-5 md:p-6 rounded-[24px]">
-                       <h4 className={cn("font-bold text-[#5B6E82] mb-3 text-sm", language !== 'ar' && "uppercase tracking-widest")}>{language === 'ar' ? 'الخلاصة التقييمية' : 'Executive Summary'}</h4>
+                       <h4 className={cn("font-bold text-[#5B6E82] mb-3 text-sm", language !== 'ar' && "uppercase")}>{language === 'ar' ? 'الخلاصة التقييمية' : 'Executive Summary'}</h4>
                        <p className="text-base font-bold leading-relaxed">{rpRadar.summary}</p>
                     </div>
 

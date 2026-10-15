@@ -313,7 +313,7 @@ export default function AdminQawlFasl() {
         <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full lg:w-auto [&_svg]:stroke-[1.6]">
           <button 
             disabled={isProcessing}
-            onClick={handleRunAnalysis} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={handleRunAnalysis} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="تحليل البحث"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -337,7 +337,7 @@ export default function AdminQawlFasl() {
               } finally {
                 setIsProcessing(false);
               }
-            }} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            }} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="توليد مسودات ذكية"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Sparkles className="w-4 h-4"/>}
@@ -346,21 +346,21 @@ export default function AdminQawlFasl() {
           <button 
             onClick={handleMigrateCategories} 
             disabled={isMigrating || isProcessing} 
-            className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="تحديث التصنيفات"
           >
             <Wand2 className="w-4 h-4"/> <span className="sr-only sm:not-sr-only">{(isMigrating || isProcessing) ? 'جاري التحديث...' : 'تحديث التصنيفات'}</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowBulkGen(true)} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={() => setShowBulkGen(true)} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="التوليد الشامل"
           >
             <Database className="w-4 h-4"/> <span className="sr-only sm:not-sr-only">التوليد الشامل</span>
           </button>
           <button 
             disabled={isProcessing}
-            onClick={() => setShowUpload(true)} className="bg-white text-[#6E5F8E] border border-[#8E7AAE]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
+            onClick={() => setShowUpload(true)} className="bg-white text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/25 hover:bg-[#F4F0F8] disabled:opacity-50 font-bold p-2 md:px-4 rounded-xl flex items-center justify-center gap-1 md:gap-2 transition-colors text-xs md:text-sm min-h-11 min-w-11"
             title="رفع الأسئلة"
           >
             <UploadCloud className="w-4 h-4"/> <span className="sr-only sm:not-sr-only">رفع الأسئلة</span>
@@ -437,15 +437,15 @@ export default function AdminQawlFasl() {
         const C = 2 * Math.PI * R;
         const publishedLen = (publishedCount / questions.length) * C;
         return (
-          <div className="mb-4 flex items-center gap-5 rounded-[16px] border border-[#8E7AAE]/12 bg-white px-5 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" role="img" aria-label={`منشور ${publishedCount} · مسودة ${draftCount} · ${questions.length}`}>
+          <div className="mb-4 flex items-center gap-5 rounded-[16px] border border-[color:var(--tb-lilac-soft)]/12 bg-white px-5 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.04)]" role="img" aria-label={`منشور ${publishedCount} · مسودة ${draftCount} · ${questions.length}`}>
             <svg width="76" height="76" viewBox="0 0 76 76" className="shrink-0 -rotate-90" aria-hidden="true">
               <circle cx="38" cy="38" r={R} fill="none" stroke="#E9E2F1" strokeWidth="7" />
               <circle cx="38" cy="38" r={R} fill="none" stroke="#B9AFCB" strokeWidth="7" strokeDasharray={`${Math.max(C - publishedLen - 2, 0)} ${C}`} strokeDashoffset={-(publishedLen + 1)} />
               <circle cx="38" cy="38" r={R} fill="none" stroke="#8E7AAE" strokeWidth="7" strokeDasharray={`${Math.max(publishedLen - 2, 0)} ${C}`} strokeDashoffset={-1} />
-              <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[#182231]" style={{ fontSize: 18, fontWeight: 900 }}>{questions.length}</text>
+              <text x="38" y="38" textAnchor="middle" dominantBaseline="central" transform="rotate(90 38 38)" className="fill-[color:var(--tb-navy)]" style={{ fontSize: 18, fontWeight: 900 }}>{questions.length}</text>
             </svg>
             <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[#6E5F8E]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />منشور <span className="font-black">{publishedCount}</span></span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F0F8] px-3 py-1.5 text-[color:var(--tb-lilac-deep)]"><span className="h-2 w-2 rounded-full bg-[#8E7AAE]" />منشور <span className="font-black">{publishedCount}</span></span>
               <span className="inline-flex items-center gap-2 rounded-full bg-[#F4F6F8] px-3 py-1.5 text-[#64788D]"><span className="h-2 w-2 rounded-full bg-[#B9AFCB]" />مسودة <span className="font-black">{draftCount}</span></span>
             </div>
           </div>

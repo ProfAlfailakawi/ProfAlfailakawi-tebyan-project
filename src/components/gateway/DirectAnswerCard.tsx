@@ -39,7 +39,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
 
   return (
     <section
-      className="tebyan-direct-answer relative overflow-hidden rounded-[26px] border border-[#8E7AAE]/15 bg-white/96 p-4 text-right shadow-[0_16px_48px_rgba(24,34,49,0.075)] md:rounded-[30px] md:p-7"
+      className="tebyan-direct-answer relative overflow-hidden rounded-[26px] border border-[color:var(--tb-lilac-soft)]/15 bg-white/96 p-4 text-right shadow-[0_16px_48px_rgba(24,34,49,0.075)] md:rounded-[30px] md:p-7"
       dir={isArabic ? "rtl" : "ltr"}
       aria-live="polite"
     >
@@ -50,9 +50,9 @@ export const DirectAnswerCard: React.FC<Props> = ({
         }}
       />
       <div className="relative z-10">
-        <div className="flex items-center justify-between gap-3 border-b border-[#8FA9C7]/10 pb-3.5">
+        <div className="flex items-center justify-between gap-3 border-b border-[color:var(--tb-sky)]/10 pb-3.5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-[#F4F0F8] text-[#6E5F8E]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]">
               <Sparkles className="h-4 w-4" />
             </span>
             <h2 className="text-[17px] font-black leading-6 text-navy md:text-xl">
@@ -61,20 +61,20 @@ export const DirectAnswerCard: React.FC<Props> = ({
           </div>
         </div>
 
-        <details className="group mt-3 rounded-[16px] border border-[#8FA9C7]/10 bg-[#FAF9F6]/82 px-3.5 py-2.5">
+        <details className="group mt-3 rounded-[16px] border border-[color:var(--tb-sky)]/10 bg-[#FAF9F6]/82 px-3.5 py-2.5">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[12px] font-black text-ink-mute">
             <span>
               {isArabic ? "السؤال الذي فهمته" : "The question I understood"}
             </span>
             <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
           </summary>
-          <p className="mt-2 border-t border-[#8FA9C7]/10 pt-2 text-[13px] font-bold leading-6 text-ink-soft md:text-sm">
+          <p className="mt-2 border-t border-[color:var(--tb-sky)]/10 pt-2 text-[13px] font-bold leading-6 text-ink-soft md:text-sm">
             {query}
           </p>
         </details>
 
         <div className="mt-4 space-y-3">
-          <div key={`beat-summary:${summary}`} className="tbn-beat relative rounded-[20px] border border-[#8E7AAE]/11 bg-[#F7F3FA] p-4 md:p-5" style={{ ["--beat" as string]: "#8E7AAE" }}>
+          <div key={`beat-summary:${summary}`} className="tbn-beat relative rounded-[20px] border border-[color:var(--tb-lilac-soft)]/11 bg-[#F7F3FA] p-4 md:p-5" style={{ ["--beat" as string]: "#8E7AAE" }}>
             <p className="text-[15px] font-bold leading-[1.95] text-[#273548] md:text-[17px]">
               {summary}
             </p>
@@ -104,7 +104,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
             type="button"
             onClick={onShowOptions}
             aria-expanded={showOptions}
-            className="min-h-12 rounded-[16px] border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-ink-mute transition-colors hover:bg-[#F7F5FA] active:scale-[0.98]"
+            className="min-h-12 rounded-[16px] border border-[color:var(--tb-sky)]/18 bg-white px-4 text-sm font-black text-ink-mute transition-colors hover:bg-[#F7F5FA] active:scale-[0.98]"
           >
             {showOptions
               ? isArabic
@@ -117,7 +117,7 @@ export const DirectAnswerCard: React.FC<Props> = ({
         </div>
 
         {showOptions && (
-          <div className="mt-3 border-t border-[#8FA9C7]/10 pt-3">
+          <div className="mt-3 border-t border-[color:var(--tb-sky)]/10 pt-3">
             <p className="mb-2 text-[12px] font-black text-ink-mute">
               {isArabic ? "تحب الجواب أبسط أو أعمق؟" : "Want it simpler or deeper?"}
             </p>
@@ -128,8 +128,8 @@ export const DirectAnswerCard: React.FC<Props> = ({
                 className={cn(
                   "min-h-11 rounded-[15px] border px-3 text-[13px] font-black transition-colors active:scale-[0.98]",
                   responseMode === "simple"
-                    ? "border-[#8E7AAE] bg-[#8E7AAE] text-white"
-                    : "border-[#8E7AAE]/18 bg-white text-[#6E5F8E] hover:bg-[#F4F0F8]",
+                    ? "border-[color:var(--tb-lilac-soft)] bg-[#8E7AAE] text-white"
+                    : "border-[color:var(--tb-lilac-soft)]/18 bg-white text-[color:var(--tb-lilac-deep)] hover:bg-[#F4F0F8]",
                 )}
               >
                 {isArabic ? "بسّط أكثر" : "Simplify more"}

@@ -88,7 +88,7 @@ const SectionBox = ({
                    {loading ? (
                       <div className="flex flex-col items-center justify-center py-6 gap-3 text-zinc-400">
                          <Loader2 className="w-6 h-6 animate-spin text-mood-primary" />
-                         <span className="text-xs font-bold tracking-widest">{language === 'ar' ? 'جاري التحليل العميق...' : 'ANALYZING DEEPLY...'}</span>
+                         <span className="text-xs font-bold">{language === 'ar' ? 'جاري التحليل العميق...' : 'ANALYZING DEEPLY...'}</span>
                       </div>
                    ) : (
                       <div className="text-sm text-zinc-700 leading-[1.8] font-medium md:text-base whitespace-pre-wrap" dir={language === 'ar' ? 'rtl' : 'ltr'}>

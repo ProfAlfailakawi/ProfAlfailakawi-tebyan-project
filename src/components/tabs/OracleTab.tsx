@@ -12,6 +12,7 @@ import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 import { ResultCard } from '../common/ResultCard';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 const personas = [
   { id: 'parent', ar: 'الوالد/الوالدة', en: 'Parent/Guardian' },
@@ -103,7 +104,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
       icon={Command}
-      title={{ ar: 'المستشار الكلي', en: 'Omni Counselor' }}
+      title={getServiceNameBilingual('oracle')}
       description={{ 
           ar: 'استشارة شاملة وتحليل استباقي لمنظورك الشخصي.', 
           en: 'Total guidance and predictive analysis for your personal perspective.' 
@@ -112,7 +113,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="tebyan-tab-surface bg-white rounded-[32px] p-8 border border-[#8FA9C7]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
+    <div className="tebyan-tab-surface bg-white rounded-[32px] p-8 border border-[color:var(--tb-sky)]/40 shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-8">
       <div className="flex flex-wrap gap-3 items-center justify-center">
         {personas.map(p => (
           <button
@@ -121,8 +122,8 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
             className={cn(
               "px-5 py-2.5 rounded-full text-sm font-semibold transition-all cursor-pointer border",
               oraclePersona === p.id 
-                ? "bg-[#8E7AAE] text-white border-[#8E7AAE] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
-                : "bg-white text-ink-soft border-[#8FA9C7]/40 hover:border-zinc-300 hover:text-navy"
+                ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
+                : "bg-white text-ink-soft border-[color:var(--tb-sky)]/40 hover:border-zinc-300 hover:text-navy"
             )}
           >
             {language === 'ar' ? p.ar : p.en}
@@ -134,7 +135,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
         <input 
           type="text" value={input} onChange={(e) => setInput(e.target.value)}
           className={cn(
-            "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-ink-mute rounded-[16px] border border-[#8FA9C7]/40 focus:border-[#8E7AAE] focus:ring-4 focus:ring-[#6e5f8e]/10 outline-none transition-all",
+            "w-full p-6 text-xl font-medium bg-[#F7F5F2] placeholder:text-ink-mute rounded-[16px] border border-[color:var(--tb-sky)]/40 focus:border-[color:var(--tb-lilac-soft)] focus:ring-4 focus:ring-[color:var(--tb-lilac-deep)]/10 outline-none transition-all",
             language === 'ar' ? "pl-32 max-md:!pl-[6.75rem]" : "pr-32 max-md:!pr-[6.75rem]"
           )}
           placeholder={language === 'ar' ? "اسأل تبيان بأي لهجة..." : "Ask Tebyan..."}
@@ -169,7 +170,7 @@ export const OracleTab = React.memo(({ language, initialValue, onValueUsed, hand
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="w-full bg-transparent rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-[#8FA9C7]/40"
+            className="w-full bg-transparent rounded-[16px] flex flex-col items-center justify-center space-y-6 py-20 border border-[color:var(--tb-sky)]/40"
           >
             <TebyanLoader
               size={48}

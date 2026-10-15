@@ -7,6 +7,7 @@ import { TabHeader } from '../TabHeader';
 import { useUser } from '../../contexts/UserContext';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange, inArena }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any, inArena?: boolean }) => {
   const [councilTopic, setCouncilTopic] = React.useState('');
@@ -47,7 +48,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2 relative z-10" dir={language === 'ar' ? 'rtl' : 'ltr'}>
     <TabHeader 
       icon={Users}
-      title={{ ar: 'طاولة الخبراء', en: 'Expert Table' }}
+      title={getServiceNameBilingual('council')}
       description={{ 
           ar: 'اجمع الخبراء والمفكرين ليتجادلوا ويقدموا خلاصة عميقة ومدروسة لحالتك أو تحديك الخاص.', 
           en: 'Gather historical and educational experts to debate and provide a deep, well-thought-out verdict for your specific challenge.' 
@@ -57,11 +58,11 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
       onBack={() => handleTabChange('discover', '')}
       onClose={() => handleTabChange('discover', '', true)}
     />
-    <div className="bg-white border border-[#8FA9C7]/12 text-navy p-4 md:p-8 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
+    <div className="bg-white border border-[color:var(--tb-sky)]/12 text-navy p-4 md:p-8 rounded-[28px] md:rounded-[32px] shadow-[0_18px_45px_rgba(24,34,49,0.20)] space-y-6 md:space-y-10 relative overflow-hidden">
       
       <div className="space-y-6 z-10 relative text-right">
         <div className="mb-4 md:mb-5 text-right">
-           <h2 className="text-xl md:text-3xl font-extrabold text-navy tracking-tight leading-snug">{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
+           <h2 className={cn("text-xl md:text-3xl font-extrabold text-navy leading-snug", inArena && "sr-only")}>{language === 'ar' ? 'استشارة المجلس' : 'Council Consultation'}</h2>
            <p className="text-ink-mute mt-2 font-semibold text-sm md:text-base leading-relaxed max-w-2xl ml-auto">{language === 'ar' ? 'اطرح قضيتك أو تحديك على نخبة الخبراء ليتم تحليله بعمق.' : 'Present your case or challenge to the elite experts for deep analysis.'}</p>
         </div>
 
@@ -72,13 +73,13 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(false); }}
                className={cn("px-6 py-2.5 rounded-full text-sm font-black transition-all cursor-pointer", !isShadowCouncil ? "bg-white text-black shadow-lg" : "text-ink-mute hover:text-navy")}
              >
-               {language === 'ar' ? 'المجلس القياسي' : 'Standard Council'}
+               {language === 'ar' ? 'المجلس المتوازن' : 'Balanced Council'}
              </button>
              <button 
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(true); }}
                className={cn("px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-extrabold transition-all cursor-pointer", isShadowCouncil ? "bg-[#B85D63] text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]" : "text-ink-mute hover:text-navy")}
              >
-               <span className="inline-flex items-center gap-1.5"><Swords className="w-4 h-4" aria-hidden="true" />{language === 'ar' ? 'مجلس الظل' : 'Shadow Council'}</span>
+               <span className="inline-flex items-center gap-1.5"><Swords className="w-4 h-4" aria-hidden="true" />{language === 'ar' ? 'المجلس المعارض' : 'Opposing Council'}</span>
              </button>
            </div>
         </div>
@@ -94,7 +95,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
                  ? "bg-white border-2 border-lilac/30 text-navy placeholder-[#8A97A6] focus:border-lilac/30 focus:shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
                  : "bg-white border-2 border-navy/10 text-navy placeholder-[#8A97A6] focus:border-lilac/30 focus:bg-ivory"
             )}
-            placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف هنا بدقة..." : "Type your question or describe the situation here..."} 
+            placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف" : "Type your question or describe the situation here..."} 
           />
         </div>
         
@@ -118,7 +119,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
           ) : (
             <>
               <Users className="w-7 h-7" />
-              <span>{isShadowCouncil ? (language === 'ar' ? 'استدعاء مجلس الظل' : 'Summon Shadow Council') : (language === 'ar' ? 'استدعاء المجلس' : 'Summon Council')}</span>
+              <span>{isShadowCouncil ? (language === 'ar' ? 'استدعاء المجلس المعارض' : 'Summon Opposing Council') : (language === 'ar' ? 'استدعاء المجلس' : 'Summon Council')}</span>
             </>
           )}
         </button>

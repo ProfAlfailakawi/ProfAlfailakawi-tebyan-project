@@ -129,7 +129,7 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
            animate={{ y: 0, opacity: 1 }}
            exit={{ y: '100%', opacity: 0 }}
            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-           className="fixed inset-0 z-[300] bg-black text-white p-6 md:p-12 overflow-y-auto flex flex-col items-center justify-center font-sans tracking-wide"
+           className="fixed inset-0 z-[300] bg-black text-white p-6 md:p-12 overflow-y-auto flex flex-col items-center justify-center font-sans"
            dir={language === 'ar' ? 'rtl' : 'ltr'}
            onClick={(e) => {
              if (e.target === e.currentTarget) onClose();
@@ -172,7 +172,7 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
                     <motion.span 
                       initial={{ opacity: 0 }} 
                       animate={{ opacity: 1 }} 
-                      className="text-white/65 tracking-widest block"
+                      className="text-white/65 block"
                     >
                       ...
                     </motion.span>
@@ -205,7 +205,7 @@ export const VoiceCanvas = ({ isOpen, onClose, language }: { isOpen: boolean, on
                      >
                        <button 
                          onClick={() => { setResult(null); setTranscript(''); startListening(); }}
-                         className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-full text-sm font-bold tracking-widest uppercase transition-colors"
+                         className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-full text-sm font-bold uppercase transition-colors"
                        >
                          {language === 'ar' ? 'تحدث مجدداً' : 'Speak again'}
                        </button>

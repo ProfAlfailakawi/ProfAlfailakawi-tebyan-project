@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
   ArrowLeft,
-  ArrowRight,
   BookOpenText,
   Grid3X3,
   LibraryBig,
@@ -9,7 +8,6 @@ import {
   Route,
   Scale,
   Search,
-  Sparkles,
   Wrench,
 } from "lucide-react";
 import { cn } from "../lib/utils";
@@ -43,7 +41,6 @@ export const ServiceExplorer: React.FC<Props> = ({
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<ServiceCategory | null>(null);
-  const [showAll, setShowAll] = useState(true);
   const isArabic = language === "ar";
 
   const filteredServices = useMemo(() => {
@@ -107,16 +104,50 @@ export const ServiceExplorer: React.FC<Props> = ({
     return hits.sort((a, b) => b.score - a.score).map((item) => item.service);
   }, [query, selectedCategory]);
 
-  const isDirectoryView =
-    Boolean(query.trim()) || Boolean(selectedCategory) || showAll;
-  const selectedCategoryMeta = selectedCategory
-    ? SERVICE_CATEGORIES.find((category) => category.id === selectedCategory)
-    : null;
+  const isSearching = Boolean(query.trim());
+  const visibleCategories = SERVICE_CATEGORIES.filter(
+    (category) => !selectedCategory || category.id === selectedCategory,
+  ).filter((category) =>
+    TEBYAN_SERVICES.some((service) => service.category === category.id),
+  );
 
-  const resetDirectory = () => {
-    setQuery("");
-    setSelectedCategory(null);
-    setShowAll(false);
+  const renderCard = (service: (typeof TEBYAN_SERVICES)[number], idx: number) => {
+    const Icon = service.icon;
+    return (
+      <button
+        type="button"
+        key={service.id}
+        onClick={() => handleTabChange(service.id)}
+        style={{ ["--i" as any]: Math.min(idx, 12) }}
+        className="tbn-stagger tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[color:var(--tb-sky)]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[color:var(--tb-lilac-soft)]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+      >
+        <div className="relative flex h-full flex-col">
+          <div className="flex items-start justify-between gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[color:var(--tb-lilac-soft)]/12 bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
+              <Icon className="h-5 w-5" strokeWidth={1.6} />
+            </span>
+          </div>
+          <h3 className="tebyan-service-card-title mt-3 text-[15px] font-black leading-6 text-navy md:text-base">
+            {getServiceLabel(service, language)}
+          </h3>
+          <p className="tebyan-service-card-brand mt-0.5 text-xs font-bold text-lilac">
+            {getServiceBrand(service, language)}
+          </p>
+          <p className="tebyan-service-card-description mt-1.5 flex-1 text-sm font-medium leading-6 text-ink-mute">
+            {getServiceDescription(service, language)}
+          </p>
+          <span className="mt-2 inline-flex items-center gap-2 self-end text-[13px] font-black text-navy">
+            <span className="sr-only">{isArabic ? "افتح" : "Open"}</span>
+            <ArrowLeft
+              className={cn(
+                "h-4 w-4 text-lilac transition-transform group-hover:-translate-x-1 rtl:group-hover:-translate-x-1",
+                isArabic ? "" : "rotate-180",
+              )}
+            />
+          </span>
+        </div>
+      </button>
+    );
   };
 
   return (
@@ -125,34 +156,27 @@ export const ServiceExplorer: React.FC<Props> = ({
       dir={isArabic ? "rtl" : "ltr"}
     >
       <header className="tebyan-service-hero mx-auto max-w-3xl pt-2 text-center md:pt-6">
-        <div className="tebyan-service-kicker mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-[#8E7AAE]/14 bg-white/78 px-3.5 py-2 text-sm font-bold text-[#6E5F8E] shadow-sm">
-          <Sparkles className="h-4 w-4" />
-          {isArabic ? "ابدأ من حاجتك" : "Start from your need"}
-        </div>
         <h1 className="tebyan-service-title font-serif text-[1.9rem] font-bold text-navy md:text-5xl">
-          {isArabic ? "ما الذي تريد إنجازه؟" : "What do you need to do?"}
+          {isArabic ? "كل الخدمات" : "All services"}
         </h1>
         <p className="tebyan-service-intro mx-auto mt-2 max-w-2xl text-sm font-bold leading-7 text-ink-mute md:mt-4 md:text-lg md:leading-8">
           {isArabic
-            ? "اختر ما يقربك من هدفك، أو اكتب حاجتك بكلماتك."
-            : "Pick what fits your goal, or type your need in your own words."}
+            ? "اختر الخدمة التي تقرّبك من هدفك، أو اكتب حاجتك بكلماتك."
+            : "Pick the service that fits your goal, or type your need in your own words."}
         </p>
       </header>
 
       <div className="tebyan-service-search-wrap mx-auto mt-6 max-w-3xl md:mt-8">
-        <label className="tebyan-service-search flex min-h-12 items-center gap-3 rounded-[18px] border border-[#8FA9C7]/18 bg-white px-4 shadow-[0_8px_24px_rgba(24,34,49,0.045)]">
+        <label className="tebyan-service-search flex min-h-12 items-center gap-3 rounded-[18px] border border-[color:var(--tb-sky)]/18 bg-white px-4 shadow-[0_8px_24px_rgba(24,34,49,0.045)]">
           <Search className="h-5 w-5 shrink-0 text-lilac" />
           <input
             value={query}
-            onChange={(event) => {
-              setQuery(event.target.value);
-              if (event.target.value.trim()) setShowAll(false);
-            }}
+            onChange={(event) => setQuery(event.target.value)}
             className="tebyan-service-search-input min-w-0 flex-1 border-0 bg-transparent py-3 text-[15px] font-bold text-navy outline-none placeholder:text-ink-mute/80"
             placeholder={
               isArabic
-                ? "اكتب حاجتك: قرار، شرح، خطة، فكرة…"
-                : "Type your need: decision, explanation, plan, idea…"
+                ? "ابحث: قرار، شرح، خطة، فكرة"
+                : "Search: decision, explanation, plan, idea"
             }
             aria-label={
               isArabic ? "البحث في خدمات تبيان" : "Search Tebyan services"
@@ -161,158 +185,79 @@ export const ServiceExplorer: React.FC<Props> = ({
         </label>
       </div>
 
-      {!isDirectoryView && (
-        <div className="tebyan-needs-grid mx-auto mt-7 grid max-w-4xl grid-cols-2 gap-3 md:mt-9 md:grid-cols-3">
-          {SERVICE_CATEGORIES.map((category, idx) => {
-            const Icon = CATEGORY_ICONS[category.id];
-            const count = TEBYAN_SERVICES.filter(
-              (service) => service.category === category.id,
-            ).length;
+      {!isSearching && (
+        <div
+          className="tebyan-service-filters mx-auto mt-5 flex max-w-4xl flex-wrap items-center justify-center gap-2"
+          role="group"
+          aria-label={isArabic ? "تصفية حسب الفئة" : "Filter by category"}
+        >
+          {[null, ...SERVICE_CATEGORIES.filter((c) => TEBYAN_SERVICES.some((s) => s.category === c.id)).map((c) => c.id)].map((id) => {
+            const meta = id ? SERVICE_CATEGORIES.find((c) => c.id === id) : null;
+            const active = selectedCategory === id;
+            const Icon = id ? CATEGORY_ICONS[id] : Grid3X3;
             return (
               <button
-                key={category.id}
+                key={id ?? "all"}
                 type="button"
-                onClick={() => setSelectedCategory(category.id)}
-                style={{ ["--i" as any]: idx }}
-                className="tbn-stagger tebyan-need-card group relative min-h-[142px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_10px_28px_rgba(24,34,49,0.045)] transition-[transform,border-color,box-shadow] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
+                aria-pressed={active}
+                onClick={() => setSelectedCategory(id)}
+                className={cn(
+                  "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-black transition-colors",
+                  active
+                    ? "border-[color:var(--tb-lilac-soft)] bg-[#8E7AAE] text-white"
+                    : "border-[color:var(--tb-sky)]/18 bg-white text-ink-mute hover:border-[color:var(--tb-lilac-soft)]/30 hover:text-[color:var(--tb-lilac-deep)]",
+                )}
               >
-                <Icon
-                  aria-hidden="true"
-                  strokeWidth={1}
-                  className="pointer-events-none absolute -bottom-5 -left-5 h-28 w-28 text-[#8E7AAE]/[0.07] transition-colors group-hover:text-[#8E7AAE]/[0.12]"
-                />
-                <div className="relative flex items-start justify-between gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
-                    <Icon className="h-5 w-5" strokeWidth={1.6} />
-                  </span>
-                  <span className="rounded-full bg-[#F4F6F8] px-2.5 py-1 text-xs font-bold text-ink-mute">
-                    {isArabic ? `${count} خيارات` : `${count} options`}
-                  </span>
-                </div>
-                <h2 className="relative mt-3 text-[15px] font-black leading-6 text-navy md:text-base">
-                  {isArabic ? category.titleAr : category.titleEn}
-                </h2>
-                <p className="relative mt-1 text-sm font-semibold leading-6 text-ink-mute">
-                  {isArabic ? category.descriptionAr : category.descriptionEn}
-                </p>
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {id ? (isArabic ? meta!.titleAr : meta!.titleEn) : isArabic ? "الكل" : "All"}
               </button>
             );
           })}
         </div>
       )}
 
-      {!isDirectoryView && (
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={() => setShowAll(true)}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-ink-mute shadow-sm transition-colors hover:border-[#8E7AAE]/30 hover:text-[#6E5F8E]"
-          >
-            <Grid3X3 className="h-4 w-4" />
-            {isArabic ? "عرض جميع الخدمات" : "Show all services"}
-          </button>
-        </div>
-      )}
-
-      {isDirectoryView && (
-        <div className="tebyan-service-directory mx-auto mt-7 max-w-5xl md:mt-9">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <div className="text-right">
-              <p className="text-xs font-bold text-lilac">
-                {selectedCategoryMeta
-                  ? isArabic
-                    ? selectedCategoryMeta.titleAr
-                    : selectedCategoryMeta.titleEn
-                  : isArabic
-                    ? "المناسب لك"
-                    : "Suggested for you"}
-              </p>
-              <h2 className="mt-0.5 text-lg font-black text-navy md:text-2xl">
-                {query.trim()
-                  ? isArabic
-                    ? `نتائج “${query.trim()}”`
-                    : `Results for “${query.trim()}”`
-                  : selectedCategoryMeta
-                    ? isArabic
-                      ? selectedCategoryMeta.descriptionAr
-                      : selectedCategoryMeta.descriptionEn
-                    : isArabic
-                      ? "اختر ما يناسبك"
-                      : "Choose what fits"}
-              </h2>
+      <div className="tebyan-service-directory mx-auto mt-7 max-w-5xl md:mt-9">
+        {isSearching ? (
+          <>
+            <h2 className="mb-4 text-lg font-black text-navy md:text-2xl">
+              {isArabic ? `نتائج “${query.trim()}”` : `Results for “${query.trim()}”`}
+            </h2>
+            <div className="tebyan-service-grid grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {filteredServices.map(renderCard)}
             </div>
-            <button
-              type="button"
-              onClick={resetDirectory}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#8FA9C7]/18 bg-white px-4 text-sm font-black text-ink-mute shadow-sm"
-            >
-              {isArabic ? (
-                <ArrowRight className="h-4 w-4" />
-              ) : (
-                <ArrowLeft className="h-4 w-4" />
-              )}
-              {isArabic ? "الحاجات الرئيسية" : "Main needs"}
-            </button>
-          </div>
-
-          <div className="tebyan-service-grid grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {filteredServices.map((service, idx) => {
-              const Icon = service.icon;
-              return (
-                <button
-                  type="button"
-                  key={service.id}
-                  onClick={() => handleTabChange(service.id)}
-                  style={{ ["--i" as any]: Math.min(idx, 12) }}
-                  className={cn("tbn-stagger tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[#8FA9C7]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[#8E7AAE]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5", service.featured && "border-lilac/35 bg-lilac-mist/40")}
-                >
-                  <div className="relative flex h-full flex-col">
-                    <div className="flex items-start justify-between gap-3">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[16px] border border-[#8E7AAE]/12 bg-[#F4F0F8] text-[#6E5F8E] transition-colors group-hover:bg-[#8E7AAE] group-hover:text-white">
-                        <Icon className="h-5 w-5" strokeWidth={1.6} />
-                      </span>
-                      {service.featured && (
-                        <span
-                          role="img"
-                          title={isArabic ? "مناسب للبداية" : "Good start"}
-                          aria-label={isArabic ? "مناسب للبداية" : "Good start"}
-                          className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-lilac shadow-[0_0_0_4px_rgba(110,91,145,0.14)]"
-                        />
-                      )}
-                    </div>
-                    <h3 className="mt-3 text-[15px] font-black leading-6 text-navy md:text-base">
-                      {getServiceBrand(service, language)}
-                    </h3>
-                    <p className="mt-0.5 text-xs font-bold text-lilac">
-                      {getServiceLabel(service, language)}
+          </>
+        ) : (
+          visibleCategories.map((category) => {
+            const CategoryIcon = CATEGORY_ICONS[category.id];
+            const items = filteredServices.filter((service) => service.category === category.id);
+            return (
+              <section key={category.id} className="mb-9" aria-labelledby={`cat-${category.id}`}>
+                <div className="mb-3 flex items-start gap-3 text-right">
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F4F0F8] text-[color:var(--tb-lilac-deep)]">
+                    <CategoryIcon className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <div>
+                    <h2 id={`cat-${category.id}`} className="tebyan-service-group-title text-lg font-black text-navy md:text-xl">
+                      {isArabic ? category.titleAr : category.titleEn}
+                    </h2>
+                    <p className="mt-0.5 text-sm font-semibold leading-6 text-ink-mute">
+                      {isArabic ? category.descriptionAr : category.descriptionEn}
                     </p>
-                    <p
-                      title={getServiceDescription(service, language)}
-                      className="mt-1.5 line-clamp-2 flex-1 text-sm font-medium leading-6 text-ink-mute"
-                    >
-                      {getServiceDescription(service, language)}
-                    </p>
-                    <span className="mt-2 inline-flex items-center gap-2 self-end text-[13px] font-black text-navy">
-                      <span className="sr-only">{isArabic ? "افتح" : "Open"}</span>
-                      <ArrowLeft
-                        className={cn(
-                          "h-4 w-4 text-lilac transition-transform group-hover:-translate-x-1 rtl:group-hover:-translate-x-1",
-                          isArabic ? "" : "rotate-180",
-                        )}
-                      />
-                    </span>
                   </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                </div>
+                <div className="tebyan-service-grid grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+                  {items.map(renderCard)}
+                </div>
+              </section>
+            );
+          })
+        )}
+      </div>
 
-      {isDirectoryView && !filteredServices.length && (
-        <div className="mx-auto mt-8 max-w-3xl rounded-[24px] border border-[#8FA9C7]/14 bg-white/82 p-6 text-center">
+      {isSearching && !filteredServices.length && (
+        <div className="mx-auto mt-8 max-w-3xl rounded-[24px] border border-[color:var(--tb-sky)]/14 bg-white/82 p-6 text-center">
           <h2 className="text-lg font-black text-navy">
-            {isArabic ? "ما لقينا نتيجة بهذه العبارة" : "No matching result"}
+            {isArabic ? "لا توجد نتيجة بهذه العبارة" : "No matching result"}
           </h2>
           <p className="mt-2 text-sm font-bold leading-7 text-ink-mute">
             {isArabic

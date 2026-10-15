@@ -59,7 +59,7 @@ const U = (id: string, displayName: string, role: 'admin' | 'user', status: 'act
 
 export const DEMO_USERS: any[] = [
   U('demo-admin', 'مدير العرض', 'admin', 'active', '2026-05-12T08:00:00Z', 'حساب إدارة تجريبي.'),
-  U('um-saud', 'أم سعود', 'user', 'active', '2026-06-03T09:20:00Z', 'ولية أمر نشطة؛ تستخدم قول فصل والرادار الاستباقي.'),
+  U('um-saud', 'أم سعود', 'user', 'active', '2026-06-03T09:20:00Z', 'ولية أمر نشطة؛ تستخدم قول فصل ومتابعة السلوك.'),
   U('abu-fahad', 'أبو فهد', 'user', 'active', '2026-06-18T17:45:00Z'),
   U('um-yousef', 'أم يوسف', 'user', 'active', '2026-06-27T11:05:00Z'),
   U('abu-reem', 'أبو ريم', 'user', 'active', '2026-07-04T19:30:00Z'),

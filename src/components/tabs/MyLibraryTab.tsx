@@ -7,6 +7,8 @@ import ReactMarkdown from 'react-markdown';
 import { TebyanEmptyState } from '../common/TebyanEmptyState';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { localizeDemoLibrary } from '../../data/demoFixtures';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
+import { notify } from '../../lib/notify';
 
 const MoodCloud = ({ items, language, action }: { items: any[], language: string, action?: React.ReactNode }) => {
   const counts = items.reduce((acc: any, item: any) => {
@@ -17,7 +19,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
 
   const typeData: Record<string, { color: string, labelAr: string, labelEn: string }> = {
     'qawlfasl': { color: 'bg-[#eef3ef] text-[#3f6b55]', labelAr: 'قول فصل', labelEn: 'Decision' },
-    'oracle': { color: 'bg-[#f1eef6] text-[#6e5f8e]', labelAr: 'المستشار', labelEn: 'Oracle' },
+    'oracle': { color: 'bg-[#f1eef6] text-[color:var(--tb-lilac-deep)]', labelAr: 'المستشار', labelEn: 'Oracle' },
     'concept': { color: 'bg-[#f7f1e6] text-[#725326]', labelAr: 'الأفكار', labelEn: 'Concepts' },
     'roadmap': { color: 'bg-[#f6eeef] text-[#7c4650]', labelAr: 'المسار', labelEn: 'Roadmap' },
     'item': { color: 'bg-[#f2f2f4] text-[#5b6472]', labelAr: 'مادة', labelEn: 'Items' }
@@ -69,7 +71,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
            animate={{ scale: 1 }}
                       role="listitem"
            className={cn(
-             "pe-4 ps-2 py-1.5 rounded-full flex items-center gap-2.5 border border-[#6e5f8e]/10",
+             "pe-4 ps-2 py-1.5 rounded-full flex items-center gap-2.5 border border-[color:var(--tb-lilac-deep)]/10",
              typeData[type]?.color || 'bg-[#f2f2f4] text-[#5b6472]'
            )}
          >
@@ -149,8 +151,8 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
         <div className="p-4 md:p-6 pb-28 md:pb-32">
             <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12', embedded && hasSaved && 'mb-0 md:mb-0')}>
                 <div className={cn('space-y-1 text-right', embedded && 'sr-only')}>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight">{language === 'ar' ? 'قصر الذاكرة' : 'Memory Palace'}</h2>
-                  <p className="text-zinc-500 font-bold text-xs md:text-sm tracking-widest uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
+                  <h2 className="text-3xl md:text-4xl font-black">{getServiceName('mylibrary', language)}</h2>
+                  <p className="text-zinc-500 font-bold text-xs md:text-sm uppercase leading-relaxed">{language === 'ar' ? 'مخزن الأفكار المُلهمة والمسارات المحفوظة' : 'Storehouse of inspiring ideas and saved paths'}</p>
                 </div>
                 {!hasSaved && exploreBtn}
             </div>
@@ -213,9 +215,9 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
 
                             const typeLabels: Record<string, { ar: string, color: string }> = {
                                 'qawlfasl': { ar: 'قول فصل', color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
-                                'oracle': { ar: 'المستشار الكلي', color: 'bg-lilac-mist text-lilac border-lilac-mist' },
-                                'concept': { ar: 'هندسة الأفكار', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-                                'roadmap': { ar: 'طريق النجاح', color: 'bg-rose-50 text-rose-600 border-rose-100' },
+                                'oracle': { ar: getServiceName('oracle', 'ar'), color: 'bg-lilac-mist text-lilac border-lilac-mist' },
+                                'concept': { ar: getServiceName('concepts', 'ar'), color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                                'roadmap': { ar: getServiceName('roadmap', 'ar'), color: 'bg-rose-50 text-rose-600 border-rose-100' },
                                 'text': { ar: 'نص', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' },
                                 'item': { ar: 'مادة', color: 'bg-zinc-50 text-zinc-600 border-zinc-100' }
                             };
@@ -252,8 +254,8 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                     <div className="mx-auto mt-6 md:mt-10 bg-white border border-stone-300 p-4 md:p-6 shadow-md w-11/12 max-w-[300px] text-center relative pointer-events-auto flex flex-col gap-4">
                                        <div className="w-2 h-2 rounded-full bg-stone-300 mx-auto absolute top-2 left-1/2 -translate-x-1/2 shadow-inner"></div>
                                        <div>
-                                           <div className="text-xs font-black text-black uppercase tracking-widest leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
-                                           <div className="text-xs uppercase font-bold text-stone-500 tracking-wider">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
+                                           <div className="text-xs font-black text-black uppercase leading-none mb-2">{language === 'ar' ? label.ar : type}</div>
+                                           <div className="text-xs uppercase font-bold text-stone-500">{language === 'ar' ? 'العنصر رقم' : 'Item No.'} {String(index + 1).padStart(3, '0')}</div>
                                        </div>
                                        <div className="flex flex-col gap-2 relative z-10 w-full mt-2 border-t pt-4">
                                           <div className="flex gap-2">
@@ -266,7 +268,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                             </button>
                                             <button 
                                                 onClick={() => {
-                                                  alert(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.');
+                                                  notify(language === 'ar' ? 'لقد ارتديت روح هذا المفهوم الآن.' : 'You have now donned the spirit of this concept.', 'info');
                                                 }}
                                                 className="flex-1 py-2 bg-lilac text-white hover:bg-lilac-deep rounded-lg text-xs font-black transition-all flex items-center justify-center gap-2"
                                             >

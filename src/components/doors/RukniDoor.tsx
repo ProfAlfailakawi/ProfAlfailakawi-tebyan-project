@@ -2,6 +2,7 @@ import React, { useState, Suspense } from "react";
 import { LibraryBig, TicketPercent, Mail } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
 import { TebyanLoader } from "../ui/TebyanLoader";
+import { getServiceName } from "../../constants/serviceRegistry";
 
 /**
  * باب «ركني» — مساحتك الشخصية: محفوظاتك، نقاطك، وتواصلك — في مكان واحد.
@@ -41,8 +42,8 @@ export const RukniDoor = ({
 
   return (
     <DoorShell
-      titleAr="ركني"
-      titleEn="My Corner"
+      titleAr={getServiceName("rukni", "ar")}
+      titleEn={getServiceName("rukni", "en")}
       subtitleAr="محفوظاتك ونقاطك في مكان واحد"
       subtitleEn="Your saves and points in one place"
       modes={MODES}

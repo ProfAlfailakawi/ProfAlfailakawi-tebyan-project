@@ -363,7 +363,7 @@ const SplashScreen = ({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
-            className="font-serif text-5xl font-bold text-navy tracking-tight"
+            className="font-serif text-5xl font-bold text-navy"
           >
             تبيان
           </motion.h1>
@@ -753,6 +753,19 @@ const AppContent: React.FC = () => {
     setTimeout(() => setToast(null), 4000);
   };
 
+  // إشعارات من أي مكوّن عبر notify() بدل window.alert.
+  useEffect(() => {
+    const onToast = (event: Event) => {
+      const detail = (event as CustomEvent).detail || {};
+      if (typeof detail.message === "string" && detail.message) {
+        showToast(detail.message, detail.type || "info");
+      }
+    };
+    window.addEventListener("tebyan_toast", onToast);
+    return () => window.removeEventListener("tebyan_toast", onToast);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const checkAuth = useCallback(
     (tab: Tab) => {
       const needsAccount = protectedFeatures.includes(tab);
@@ -885,8 +898,8 @@ const AppContent: React.FC = () => {
     ...getServiceTabs(language),
     {
       id: "discover",
-      label: language === "ar" ? "المشكاة" : "Mishkat",
-      brand: language === "ar" ? "كل أدوات تبيان" : "All of Tebyan",
+      label: language === "ar" ? "كل الخدمات" : "All services",
+      brand: language === "ar" ? "اكتشف كل أدوات تبيان" : "All of Tebyan",
       icon: Lamp,
       tooltip:
         language === "ar"
@@ -1316,11 +1329,12 @@ const AppContent: React.FC = () => {
             aria-label={language === "ar" ? "رجوع" : "Back"}
             title={language === "ar" ? "رجوع" : "Back"}
             data-no-auto-scroll="true"
-            className="tebyan-global-back w-12 h-12 rounded-2xl bg-white/90 text-[#6e5f8e] border border-[#6e5f8e]/20 shadow-sm backdrop-blur-xl transition-all hover:bg-[#6e5f8e] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+            className="tebyan-global-back w-12 h-12 rounded-2xl bg-white/90 text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-deep)]/20 shadow-sm backdrop-blur-xl transition-all hover:bg-[#6e5f8e] hover:text-white hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
           >
             <ArrowLeft
               className={cn("w-5 h-5", language === "ar" ? "rotate-180" : "")}
             />
+            <span className="tebyan-ctl-label">{language === "ar" ? "رجوع" : "Back"}</span>
           </button>
           <button
             type="button"
@@ -1332,9 +1346,10 @@ const AppContent: React.FC = () => {
             aria-label={language === "ar" ? "شرح الصفحة" : "Page help"}
             title={language === "ar" ? "شرح الصفحة" : "Page help"}
             data-no-auto-scroll="true"
-            className="tebyan-page-help-button w-10 h-10 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
+            className="tebyan-page-help-button w-10 h-10 rounded-full bg-white/92 text-[color:var(--tb-lilac-deep)] border border-[color:var(--tb-lilac-soft)]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
           >
             <HelpCircle className="w-4 h-4" />
+            <span className="tebyan-ctl-label">{language === "ar" ? "شرح" : "Help"}</span>
           </button>
         </div>
       )}
@@ -1349,17 +1364,17 @@ const AppContent: React.FC = () => {
                 initial={{ opacity: 0, y: -8, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                className="tebyan-page-help-popup fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[#8E7AAE]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
+                className="tebyan-page-help-popup fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[color:var(--tb-lilac-soft)]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
                 dir={language === "ar" ? "rtl" : "ltr"}
               >
-                <div className="flex items-center gap-2 mb-2 text-[#6E5F8E] border-b border-[#8E7AAE]/10 pb-2">
+                <div className="flex items-center gap-2 mb-2 text-[color:var(--tb-lilac-deep)] border-b border-[color:var(--tb-lilac-soft)]/10 pb-2">
                   <HelpCircle className="w-5 h-5 shrink-0" />
                   <span className="text-sm font-black text-navy">
                     {helpData.title}
                   </span>
                 </div>
 
-                <p className="text-xs font-bold leading-relaxed text-ink-mute mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[#8E7AAE]/5">
+                <p className="text-xs font-bold leading-relaxed text-ink-mute mb-3.5 bg-[#FAF9F6] p-2 rounded-xl border border-[color:var(--tb-lilac-soft)]/5">
                   {helpData.intro}
                 </p>
 
@@ -1377,7 +1392,7 @@ const AppContent: React.FC = () => {
                   ))}
                 </div>
 
-                <div className="bg-[#FAF9F6] border border-[#8FA9C7]/15 rounded-xl p-2.5 text-xs font-bold text-[#6E5F8E] leading-relaxed flex items-start gap-1.5">
+                <div className="bg-[#FAF9F6] border border-[color:var(--tb-sky)]/15 rounded-xl p-2.5 text-xs font-bold text-[color:var(--tb-lilac-deep)] leading-relaxed flex items-start gap-1.5">
                   <Lightbulb className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden="true" />
                   <span>{helpData.tip}</span>
                 </div>
@@ -1394,7 +1409,7 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)" }}
             className={cn(
-              "fixed top-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
+              "fixed top-6 left-1/2 -translate-x-1/2 z-[100001] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
               toast.type === "info"
                 ? "bg-white/90 border-zinc-200/50 text-zinc-900"
                 : toast.type === "error"
@@ -1428,12 +1443,22 @@ const AppContent: React.FC = () => {
             className="flex items-center gap-3 transition-transform active:scale-95"
             aria-label={language === "ar" ? "الصفحة الرئيسية" : "Home"}
           >
-            <div className="w-10 h-10 bg-white/90 border border-[#8E7AAE]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
+            <div className="w-10 h-10 bg-white/90 border border-[color:var(--tb-lilac-soft)]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
               <TebyanMark size={26} />
             </div>
-            <span className="font-serif text-2xl font-bold text-navy tracking-tight transition-colors group-hover:text-mood-primary">
+            <span className="tebyan-brand-name shrink-0 font-serif text-2xl font-bold text-navy transition-colors group-hover:text-mood-primary">
               تبيان
             </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTabChange("discover")}
+            aria-label={language === "ar" ? "كل الخدمات" : "All services"}
+            title={language === "ar" ? "كل الخدمات" : "All services"}
+            className="tebyan-services-button shrink-0 inline-flex h-10 items-center gap-1.5 rounded-xl border border-[color:var(--tb-lilac-soft)]/20 bg-white/90 px-3 text-sm font-black text-[color:var(--tb-lilac-deep)] shadow-sm transition-transform active:scale-95"
+          >
+            <Grid3X3 className="w-4 h-4" aria-hidden="true" />
+            <span className={cn(IS_DEMO_MODE && "max-[430px]:hidden")}>{language === "ar" ? "الخدمات" : "Services"}</span>
           </button>
 
         </div>
@@ -1492,7 +1517,7 @@ const AppContent: React.FC = () => {
               ) : authReady ? (
                 <button
                   onClick={() => setShowLogin(true)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#8FA9C7]/18 bg-white/88 p-0 text-zinc-900 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-[color:var(--tb-sky)]/18 bg-white/88 p-0 text-zinc-900 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
                   title={language === "ar" ? "تسجيل الدخول" : "Login"}
                 >
                   <User className="w-4 h-4" />
@@ -1795,7 +1820,7 @@ const AppContent: React.FC = () => {
           <footer className="text-center py-6 max-sm:pb-24! mt-10 text-zinc-400">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Globe className="w-5 h-5" />
-              <span className="font-bold text-zinc-500 tracking-tight">
+              <span className="font-bold text-zinc-500">
                 تبيان
               </span>
             </div>

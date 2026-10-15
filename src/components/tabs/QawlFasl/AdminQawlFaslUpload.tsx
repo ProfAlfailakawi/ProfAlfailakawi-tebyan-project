@@ -5,6 +5,7 @@ import { db } from '../../../lib/firebase';
 import { UploadCloud, CheckCircle, AlertTriangle, Loader2, PlayCircle, StopCircle, RefreshCw } from 'lucide-react';
 import { generateQawlFaslContent, GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { CATEGORIES } from './types';
+import { notify } from '../../../lib/notify';
 
 interface UploadReport {
   total: number;
@@ -50,7 +51,7 @@ export default function AdminQawlFaslUpload() {
       const data = XLSX.utils.sheet_to_json<any>(sheet);
 
       if (data.length === 0) {
-        alert('الملف فارغ!');
+        notify('الملف فارغ!', 'info');
         setIsUploading(false);
         return;
       }
@@ -154,7 +155,7 @@ export default function AdminQawlFaslUpload() {
 
     } catch (error) {
       console.error(error);
-      alert('حدث خطأ أثناء معالجة الملف.');
+      notify('حدث خطأ أثناء معالجة الملف.', 'error');
     } finally {
       setIsUploading(false);
       setProgress(100);
@@ -184,7 +185,7 @@ export default function AdminQawlFaslUpload() {
       });
 
       if (unprocessed.length === 0) {
-        alert('لا توجد مسودات مرفوعة معلقة بدون إجابات.');
+        notify('لا توجد مسودات مرفوعة معلقة بدون إجابات.', 'error');
         setIsGenerating(false);
         return;
       }
@@ -227,14 +228,14 @@ export default function AdminQawlFaslUpload() {
         await new Promise(resolve => setTimeout(resolve, 2500));
       }
 
-      alert('تم إنهاء التوليد.');
+      notify('تم إنهاء التوليد.', 'success');
     } catch (e: any) {
       const errorStr = (e?.message || JSON.stringify(e)).toLowerCase();
       if (errorStr.includes("api key") || errorStr.includes("gemini_api_key_not_configured")) {
-        alert('عذراً، محرك الذكاء الاصطناعي غير متصل حالياً للمتابعة في التوليد المجمع.');
+        notify('عذراً، محرك الذكاء الاصطناعي غير متصل حالياً للمتابعة في التوليد المجمع.', 'error');
       } else {
         console.error("Batch Gen Error", e);
-        alert('أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب المحاولة مرة أخرى بعد قليل.');
+        notify('أعتذر، المحرك مزدحم حالياً بالأفكار.. جرّب المحاولة مرة أخرى بعد قليل.', 'error');
       }
     } finally {
       setIsGenerating(false);

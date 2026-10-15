@@ -124,7 +124,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
                         }}
                         transition={{ duration: 6, repeat: loops(3), ease: "easeInOut" }}
                         className={cn(
-                            "relative text-5xl md:text-7xl lg:text-8xl text-white font-medium leading-[1.1] tracking-tighter selection:bg-mood-primary selection:text-white",
+                            "relative text-5xl md:text-7xl lg:text-8xl text-white font-medium leading-[1.1] selection:bg-mood-primary selection:text-white",
                             language === 'ar' ? 'font-serif leading-[1.3]' : 'font-serif italic text-7xl md:text-8xl lg:text-9xl'
                         )}
                     >

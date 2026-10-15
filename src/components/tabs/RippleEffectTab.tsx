@@ -126,7 +126,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
             )}>
                 {level > 0 && (
                     <div className={cn(
-                        "absolute top-5 md:top-6 w-4 md:w-8 h-8 rounded-bl-3xl border-b-2 border-l-2 border-[#8FA9C7]/25 z-0 opacity-50",
+                        "absolute top-5 md:top-6 w-4 md:w-8 h-8 rounded-bl-3xl border-b-2 border-l-2 border-[color:var(--tb-sky)]/25 z-0 opacity-50",
                         language === 'ar' ? "right-[-18px] md:right-[-38px] border-l-0 border-r-2 rounded-bl-none rounded-br-3xl" : "left-[-18px] md:left-[-38px]"
                     )} style={{ transform: 'translateY(-100%)' }} />
                 )}
@@ -149,13 +149,13 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                     initial={{ opacity: 0, x: language === 'ar' ? -20 : 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     className={cn(
-                        "flex-1 min-w-0 bg-white/70 backdrop-blur-sm p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-[#6e5f8e]/10 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden",
+                        "flex-1 min-w-0 bg-white/70 backdrop-blur-sm p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-[color:var(--tb-lilac-deep)]/10 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden",
                         node.type === 'seed' ? "ring-2 ring-mood-primary/10 shadow-mood-glow" : "shadow-zinc-900/5",
                         isSelectedRipple ? "ring-4 ring-mood-primary shadow-mood-glow scale-[1.02]" : ""
                     )}
                 >
                         {node.type === 'seed' && <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-mood-primary/20 to-transparent rounded-full blur-[40px] pointer-events-none" />}
-                        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 md:gap-4 mb-4 border-b border-[#8FA9C7]/15 pb-3">
+                        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 md:gap-4 mb-4 border-b border-[color:var(--tb-sky)]/15 pb-3">
                             <div className="flex items-center gap-3 flex-wrap">
                                 <div className={cn(
                                     "flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm ring-1 ring-zinc-900/5 relative",
@@ -192,7 +192,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                 </div>
                                 <span className={cn(
                                     "text-xs px-3 py-1 rounded-full font-semibold",
-                                    (node as any).isTimeCapsule ? "bg-[#f1eef6] text-[#6e5f8e]" :
+                                    (node as any).isTimeCapsule ? "bg-[#f1eef6] text-[color:var(--tb-lilac-deep)]" :
                                     node.type === 'seed' ? "bg-mood-primary/10 text-mood-primary" :
                                     node.type === 'branch' ? "bg-[#EEF4F1] text-[#4A6B62]" :
                                     "bg-[#F6F0E3] text-[#6F6238]"
@@ -361,7 +361,7 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     className="mt-4 flex gap-3 w-full bg-mood-primary/5 p-3 rounded-2xl border border-mood-primary/10"
                                     style={{ overflow: 'hidden' }}
                                 >
-                                    <input autoFocus value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-white rounded-xl p-3 md:p-4 text-sm md:text-base font-medium shadow-inner border border-[#8FA9C7]/40 outline-none focus:border-mood-primary focus:ring-4 focus:ring-mood-primary/20 transition-all placeholder:text-ink-mute" placeholder={language === 'ar' ? "كيف يمكن تطوير أو تطبيق هذه الفكرة؟" : "How can this idea be evolved?"} />
+                                    <input autoFocus value={replyText} onChange={(e) => setReplyText(e.target.value)} className="flex-1 min-w-0 bg-white rounded-xl p-3 md:p-4 text-sm md:text-base font-medium shadow-inner border border-[color:var(--tb-sky)]/40 outline-none focus:border-mood-primary focus:ring-4 focus:ring-mood-primary/20 transition-all placeholder:text-ink-mute" placeholder={language === 'ar' ? "كيف يمكن تطوير أو تطبيق هذه الفكرة؟" : "How can this idea be evolved?"} />
                                     <button onClick={() => {
                                         if(replyText.trim()) {
                                             handleAddReply(node.id, replyText);
@@ -913,7 +913,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     <Network className="w-4 h-4 text-[#4F7268]" />
                     <span>{language === 'ar' ? 'الشبكة الاجتماعية للأفكار' : 'Social Network of Ideas'}</span>
                 </motion.div>
-                <h2 className="text-4xl md:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
+                <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
                     {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
                 </h2>
                 <p className="text-ink-mute text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
@@ -927,11 +927,11 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             <motion.div 
                initial={{ opacity: 0, y: 20 }}
                animate={{ opacity: 1, y: 0 }}
-               className="bg-white/80 backdrop-blur-xl p-6 md:p-8 rounded-[32px] shadow-sm border border-[#6e5f8e]/10 relative overflow-hidden z-10"
+               className="bg-white/80 backdrop-blur-xl p-6 md:p-8 rounded-[32px] shadow-sm border border-[color:var(--tb-lilac-deep)]/10 relative overflow-hidden z-10"
                dir={language === 'ar' ? 'rtl' : 'ltr'}
             >
-                <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-mood-primary/10 to-[#8fa9c7]/10 rounded-full blur-[100px] pointer-events-none" />
-                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-[#f7f5f2]/40 to-[#8fa9c7]/10 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute -top-32 -right-32 w-96 h-96 bg-gradient-to-br from-mood-primary/10 to-[color:var(--tb-sky)]/10 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-gradient-to-tr from-[color:var(--tb-ivory)]/40 to-[color:var(--tb-sky)]/10 rounded-full blur-[100px] pointer-events-none" />
                     <div className="relative z-10 flex flex-col gap-4">
                         {dailyPrompt && (
                             <motion.div 
@@ -945,7 +945,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                             <HelpCircle className="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-black text-mood-primary tracking-widest uppercase mb-1">
+                                            <p className="text-xs font-black text-mood-primary uppercase mb-1">
                                                 {language === 'ar' ? 'بذرة اليوم' : 'DAILY PROMPT'}
                                             </p>
                                             <p className="text-[#273548] font-bold text-sm md:text-base leading-snug">
@@ -963,7 +963,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             </motion.div>
                         )}
 
-                        <label className="text-sm font-black text-mood-primary/40 tracking-widest uppercase flex items-center gap-2 px-1">
+                        <label className="text-sm font-black text-mood-primary/40 uppercase flex items-center gap-2 px-1">
                             <Sparkles className="w-4 h-4" />
                             {language === 'ar' ? 'ازرع بذرة فكرة مفتوحة المصدر' : 'PLANT AN OPEN SOURCE SEED'}
                         </label>
@@ -989,7 +989,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         value={newIdea}
                         onChange={(e) => setNewIdea(e.target.value)}
                         placeholder={language === 'ar' ? "فكرتي هي..." : "My idea is..."}
-                        className="w-full bg-white/50 border-2 border-[#8FA9C7]/40 rounded-2xl p-5 text-lg md:text-xl font-bold text-[#273548] focus:bg-white focus:border-mood-primary/50 focus:ring-4 focus:ring-mood-primary/10 outline-none resize-none h-40 placeholder:text-zinc-300 transition-all shadow-inner"
+                        className="w-full bg-white/50 border-2 border-[color:var(--tb-sky)]/40 rounded-2xl p-5 text-lg md:text-xl font-bold text-[#273548] focus:bg-white focus:border-mood-primary/50 focus:ring-4 focus:ring-mood-primary/10 outline-none resize-none h-40 placeholder:text-zinc-300 transition-all shadow-inner"
                     />
                     <div className="flex flex-wrap justify-between items-center gap-4 text-xs font-bold text-ink-mute px-1">
                         <div className="flex gap-4">
@@ -1037,7 +1037,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         <button 
                             onClick={handleRefine}
                             disabled={isRefining || !newIdea.trim()}
-                            className="bg-[#FAF9F6]/88 border-2 border-[#8FA9C7]/15 text-ink-soft hover:text-mood-primary hover:border-mood-primary/20 px-6 py-3.5 rounded-2xl font-black flex items-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50"
+                            className="bg-[#FAF9F6]/88 border-2 border-[color:var(--tb-sky)]/15 text-ink-soft hover:text-mood-primary hover:border-mood-primary/20 px-6 py-3.5 rounded-2xl font-black flex items-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50"
                         >
                             {isRefining ? (
                                 <div className="w-5 h-5 border-2 border-mood-primary/20 border-t-mood-primary rounded-full animate-spin" />
@@ -1072,7 +1072,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             {/* Ripples Tree */}
             <div className="mt-20 space-y-8 relative">
                 <div className="flex flex-col sm:flex-row items-center justify-between mb-12 relative z-10 gap-6">
-                    <div className="flex items-center gap-4 bg-[#F1EEF4]/50 p-1.5 rounded-2xl border border-[#8FA9C7]/25">
+                    <div className="flex items-center gap-4 bg-[#F1EEF4]/50 p-1.5 rounded-2xl border border-[color:var(--tb-sky)]/25">
                         <button 
                             onClick={() => setActiveView('list')}
                             className={cn(
@@ -1101,7 +1101,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             <input 
                                 value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} 
                                 placeholder={language === 'ar' ? 'ابحث في العقول...' : 'Search in minds...'} 
-                                className={cn("w-full bg-[#FAF9F6]/88 border border-[#8FA9C7]/25 px-4 py-3 rounded-full text-sm font-medium shadow-sm focus:ring-2 focus:ring-lilac outline-none transition-all", language === 'ar' ? "pr-10" : "pl-10")} 
+                                className={cn("w-full bg-[#FAF9F6]/88 border border-[color:var(--tb-sky)]/25 px-4 py-3 rounded-full text-sm font-medium shadow-sm focus:ring-2 focus:ring-lilac outline-none transition-all", language === 'ar' ? "pr-10" : "pl-10")} 
                             />
                         </div>
                         <div className="flex gap-2 items-center flex-wrap">
@@ -1159,7 +1159,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                 ))}
                                 <button 
                                     onClick={() => setLimitCount(prev => prev + 50)}
-                                    className="w-full text-center py-4 text-ink-mute font-bold hover:text-mood-primary border-t border-[#8FA9C7]/25"
+                                    className="w-full text-center py-4 text-ink-mute font-bold hover:text-mood-primary border-t border-[color:var(--tb-sky)]/25"
                                 >
                                     {language === 'ar' ? 'تحميل المزيد من الأفكار...' : 'Load more ideas...'}
                                 </button>

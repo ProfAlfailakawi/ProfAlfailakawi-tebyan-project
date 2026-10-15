@@ -5,6 +5,7 @@ import { collection, serverTimestamp } from 'firebase/firestore';
 import { addDoc } from '../../lib/firestoreWrites';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const ContactTab = ({ language }: { language: string }) => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -45,7 +46,7 @@ export const ContactTab = ({ language }: { language: string }) => {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <TabHeader
-        title={{ ar: 'تواصل معنا', en: 'Contact Us' }}
+        title={getServiceNameBilingual('contact')}
         description={{ ar: 'نحن هنا للإجابة على استفساراتك واقتراحاتك.', en: 'We are here to answer your questions and suggestions.' }}
         icon={Mail}
         language={language}

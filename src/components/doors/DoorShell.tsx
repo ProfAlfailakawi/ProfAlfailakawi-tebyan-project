@@ -90,7 +90,7 @@ export const DoorShell = ({
   return (
     <div className="w-full" dir={ar ? "rtl" : "ltr"}>
       <header className="max-w-3xl mx-auto px-4 pt-2 pb-1 text-center">
-        <h1 className="font-serif text-[1.6rem] md:text-3xl font-bold text-navy tracking-tight">
+        <h1 className="font-serif text-[1.6rem] md:text-3xl font-bold text-navy">
           {ar ? titleAr : titleEn}
         </h1>
         <p className="mt-1 text-sm md:text-base text-ink-soft font-medium">
@@ -122,8 +122,8 @@ export const DoorShell = ({
                       : "shrink-0 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13.5px] font-semibold transition-all border ") +
                     (modes.length <= 3 ? "max-md:grow max-md:justify-center max-md:whitespace-nowrap " : "") +
                     (on
-                      ? "bg-[#8E7AAE] border-[#8E7AAE] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
-                      : "bg-white/80 border-[#E5DFD4] text-ink-soft hover:border-[#8E7AAE]/50 hover:text-[#5E4D7A]")
+                      ? "bg-[#8E7AAE] border-[color:var(--tb-lilac-soft)] text-white shadow-[0_8px_20px_rgba(142,122,174,0.28)]"
+                      : "bg-white/80 border-[#E5DFD4] text-ink-soft hover:border-[color:var(--tb-lilac-soft)]/50 hover:text-[#5E4D7A]")
                   }
                 >
                   {Icon && <Icon className={emphasis ? "w-4 h-4" : "w-3.5 h-3.5"} />}

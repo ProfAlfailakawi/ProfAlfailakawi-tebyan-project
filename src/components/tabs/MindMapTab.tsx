@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 import { TebyanLoader, TebyanButtonLoader } from '../ui/TebyanLoader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: string, initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const { userGender } = useAuth();
@@ -59,7 +60,7 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
     <div className="w-full space-y-8 px-2">
       <TabHeader 
         icon={Network}
-        title={{ ar: 'العقل المدبر', en: 'The Mastermind' }}
+        title={getServiceNameBilingual('mindmap')}
         description={{ 
             ar: getGenderWord(userGender, 'أدخل أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 'أدخلي أي مفهوم أو مشكلة تربوية وسيقوم الذكاء الكلي بتفكيكها إلى خريطة ذهنية هيكلية عميقة.', 'أدخل أي مفهوم أو مشكلة تربوية.'), 
             en: 'Enter any educational concept or problem, and the Omni-AI will dismantle it into a deep structural mind map.' 
@@ -81,9 +82,9 @@ export const MindMapTab = ({ language, initialValue, onValueUsed, handleTabChang
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder={language === 'ar' ? 'مثال: التنمر المدرسي، تعزيز الثقة بالنفس، صعوبات التعلم...' : 'e.g. School Bullying, Self-confidence...'}
-              className={`w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 ${language === 'ar' ? 'pr-6 pl-14' : 'pl-6 pr-14'} text-lg font-medium text-navy placeholder:text-ink-mute outline-none focus:border-[#6e5f8e]/50 focus:shadow-sm transition-all`}
+              className={`w-full bg-white border border-zinc-200/80 rounded-[20px] py-4 ${language === 'ar' ? 'pr-6 pl-14' : 'pl-6 pr-14'} text-lg font-medium text-navy placeholder:text-ink-mute outline-none focus:border-[color:var(--tb-lilac-deep)]/50 focus:shadow-sm transition-all`}
             />
-            <Brain className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[#6e5f8e]/70 ${language === 'ar' ? 'left-5' : 'right-5'}`} />
+            <Brain className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-[color:var(--tb-lilac-deep)]/70 ${language === 'ar' ? 'left-5' : 'right-5'}`} />
           </div>
           <button
             type="submit"

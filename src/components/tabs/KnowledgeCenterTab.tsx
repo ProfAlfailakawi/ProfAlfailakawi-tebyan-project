@@ -6,14 +6,15 @@ import { QuizTab } from './QuizTab';
 import { KnowledgeGraphTab } from './KnowledgeGraphTab';
 import { AnalyticsTab } from './AnalyticsTab';
 import { RoadmapTab } from './RoadmapTab';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export default React.memo(({ language, handleTabChange, initialValue, onValueUsed }: any) => {
   const [activeSubTab, setActiveSubTab] = useState<'quizzes' | 'analytics' | 'roadmap'>('quizzes');
 
   const tabs = [
-    { id: 'quizzes', label: language === 'ar' ? 'الاختبارات الذكية' : 'Smart Quizzes', icon: ClipboardCheck },
-    { id: 'analytics', label: language === 'ar' ? 'الرادار الاستباقي' : 'Predictive Radar', icon: BarChart3 },
-    { id: 'roadmap', label: language === 'ar' ? 'طريق النجاح' : 'Success Roadmap', icon: Route }
+    { id: 'quizzes', label: getServiceName('quizzes', language), icon: ClipboardCheck },
+    { id: 'analytics', label: getServiceName('analytics', language), icon: BarChart3 },
+    { id: 'roadmap', label: getServiceName('roadmap', language), icon: Route }
   ];
 
   return (
@@ -28,7 +29,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
               onClick={() => setActiveSubTab(tab.id as any)}
               className={cn(
                 "flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap",
-                isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "bg-white text-ink-mute hover:bg-[#F1EEF4] border border-[#8FA9C7]/25"
+                isActive ? "bg-mood-primary text-white shadow-lg shadow-mood-glow" : "bg-white text-ink-mute hover:bg-[#F1EEF4] border border-[color:var(--tb-sky)]/25"
               )}
             >
               <Icon className="w-4 h-4" />

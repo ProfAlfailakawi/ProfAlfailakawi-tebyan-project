@@ -29,7 +29,7 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
         <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 flex flex-col md:flex-row items-center md:justify-between gap-4">
           <button 
             onClick={onBack}
-            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center gap-2 text-ink-mute hover:text-[#6E5F8E] bg-white/92 hover:bg-white px-3 py-2 rounded-2xl font-bold transition-colors border border-[#8FA9C7]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
+            className="tebyan-page-back fixed top-[78px] start-4 md:top-[84px] md:start-6 z-[60] flex items-center gap-2 text-ink-mute hover:text-[color:var(--tb-lilac-deep)] bg-white/92 hover:bg-white px-3 py-2 rounded-2xl font-bold transition-colors border border-[color:var(--tb-sky)]/18 shadow-[0_10px_30px_rgba(24,34,49,0.10)] backdrop-blur-xl"
           >
             <ArrowRight className="w-5 h-5" /><span className="hidden md:inline">رجوع</span>
           </button>
@@ -47,8 +47,8 @@ export default function CategoryView({ questions, categoryId, onBack, onQuestion
             {finalQuestions.map(q => (
               <div key={q.id} className="bg-white flex flex-col justify-between border border-lilac-soft/20 rounded-[28px] p-6 lg:p-10 shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all group cursor-pointer h-full luxury-ceramic-sheen" onClick={() => onQuestion(q)}>
                 <div className="space-y-4 md:space-y-6 w-full mb-6">
-                   <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-bold text-navy leading-snug lg:leading-tight group-hover:text-lilac transition-colors" lineClamp={3} />
-                   <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase tracking-widest">
+                   <ExpandableText text={q.question || q.title || ''} className="text-lg md:text-xl font-bold text-navy leading-[1.5] group-hover:text-lilac transition-colors" lineClamp={3} />
+                   <div className="flex items-center gap-2 text-xs md:text-xs font-bold flex-wrap uppercase">
                      {q.riskLevel === 'high' && (
                        <span className="flex items-center gap-1.5 text-rose-700 bg-rose-50 px-3 py-1.5 rounded-full"><ShieldAlert className="w-3.5 h-3.5" /> حساسية</span>
                      )}

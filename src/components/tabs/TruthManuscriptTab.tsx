@@ -8,6 +8,7 @@ import { TebyanLoader } from '../ui/TebyanLoader';
 import { TabHeader } from '../TabHeader';
 import { proxyGenerateContent } from '../../lib/aiProxy';
 import { KnowledgeMemoryService } from '../../services/knowledgeMemoryService';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initialValue }: { language: 'ar' | 'en', handleTabChange: any, initialValue?: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -280,7 +281,7 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
       <div className="w-full mb-8">
         <TabHeader 
           icon={ScrollText}
-          title={{ ar: 'مخطوطة الحقيقة الضائعة', en: 'Lost Truth Manuscript' }}
+          title={getServiceNameBilingual('truthmanuscript')}
           description={{ ar: 'أزل الغبار المتراكم، لتتجلى لك الحكمة العميقة وراء ما تبحث عنه.', en: 'Clear the dust to reveal the deep wisdom you seek.' }}
           language={language}
           onBack={() => handleTabChange('discover', '')}

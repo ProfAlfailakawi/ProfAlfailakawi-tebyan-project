@@ -2,6 +2,7 @@ import React, { useState, Suspense } from "react";
 import { Command, Users } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
 import { TebyanLoader } from "../ui/TebyanLoader";
+import { getServiceName } from "../../constants/serviceRegistry";
 
 /**
  * باب «غرفة القرار» — أدوات الحسم الكاملة + مجلس الحكماء تحت سقف واحد.
@@ -44,8 +45,8 @@ export const DecisionDoor = ({
 
   return (
     <DoorShell
-      titleAr="غرفة القرار"
-      titleEn="Decision Room"
+      titleAr={getServiceName("decisionroom", "ar")}
+      titleEn={getServiceName("decisionroom", "en")}
       subtitleAr="اكتب قضيتك، واختر ما يساعدك على الحسم"
       subtitleEn="Write your case, then choose what helps you decide"
       modes={MODES}

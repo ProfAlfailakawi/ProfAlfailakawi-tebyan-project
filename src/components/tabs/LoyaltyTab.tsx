@@ -8,7 +8,7 @@ import {
   HeartHandshake, Flame, Hand
 } from 'lucide-react';
 import { DnaRing, DnaCountUp } from '../dna/DnaKit';
-import { cn } from '../../lib/utils';
+import { cn, formatDisplayDate } from '../../lib/utils';
 import { collection, onSnapshot, query, where, orderBy, limit, doc, Timestamp, getDocs } from 'firebase/firestore';
 import { updateDoc } from '../../lib/firestoreWrites';
 import { db } from '../../lib/firebase';
@@ -30,6 +30,8 @@ interface Customer {
 }
 
 import { useAuth } from '../AuthProvider';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
+import { notify } from '../../lib/notify';
 
 const STATUS_AR: Record<string, string> = { All: 'الكل', Active: 'نشط', VIP: 'مميّز', New: 'جديد', 'At Risk': 'بحاجة لمتابعة', Inactive: 'غير نشط' };
 
@@ -128,7 +130,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
       <div className="w-full bg-white md:min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <TabHeader 
           icon={TicketPercent}
-          title={{ ar: 'محفظة الولاء والجوائز', en: 'Loyalty Wallet' }}
+          title={getServiceNameBilingual('loyalty')}
           description={{ 
               ar: 'رصيدك الحالي، مكافآتك، والكوبونات المتاحة لك.', 
               en: 'Your current balance, rewards, and available coupons.' 
@@ -168,7 +170,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-navy/10 flex flex-wrap items-center justify-between gap-4">
                         <div>
                             <p className="text-xs text-[#5B6E82] font-bold mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
-                            <p className="text-lg font-black tracking-tight">{language === 'ar' ? `${myLoyaltyData.totalSpent} د.ك` : `KWD ${myLoyaltyData.totalSpent}`}</p>
+                            <p className="text-lg font-black">{language === 'ar' ? `${myLoyaltyData.totalSpent} د.ك` : `KWD ${myLoyaltyData.totalSpent}`}</p>
                         </div>
                         <div className="bg-lilac-mist text-lilac px-4 py-2 rounded-xl text-xs font-black">
                             {language === 'ar'
@@ -190,7 +192,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                          </div>
                          <div className="min-w-0">
                             <p className="text-sm font-black text-emerald-900">{language === 'ar' ? 'خصم 15% على الاستشارة القادمة' : '15% Off Your Next Consult'}</p>
-                            <p className="text-xs text-emerald-700 font-bold">{language === 'ar' ? 'كود: TIBYAN15' : 'Code: TIBYAN15'}</p>
+                            <p className="text-xs text-emerald-700 font-bold">{language === 'ar' ? 'كود خصم 15%' : 'Code: TIBYAN15'}</p>
                          </div>
                       </div>
                       <div className="flex items-center gap-3 p-3 sm:gap-4 sm:p-4 bg-zinc-50 rounded-2xl border border-zinc-100 min-w-0">
@@ -239,7 +241,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                       <li key={h.id} className="p-4 md:px-6 flex items-center justify-between gap-4 text-sm">
                         <div className="min-w-0">
                           <p className="font-black text-navy">{h.label}</p>
-                          <p className="text-xs text-ink-mute font-bold">{h.date}</p>
+                          <p className="text-xs text-ink-mute font-bold">{formatDisplayDate(h.date, language)}</p>
                         </div>
                         <span className={cn('font-black shrink-0', h.points >= 0 ? 'text-emerald-600' : 'text-rose-600')} dir="ltr">
                           {h.points >= 0 ? `+${h.points}` : h.points}
@@ -296,7 +298,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
     <div className="w-full bg-[#FAFAFA] min-h-screen rounded-[24px] md:rounded-[32px] p-4 lg:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
         icon={Users}
-        title={{ ar: 'الولاء والكوبونات', en: 'Loyalty & Coupons' }}
+        title={getServiceNameBilingual('loyalty')}
         description={{ 
             ar: 'نظام إدارة ولاء العملاء الذكي لرفع نسبةRetention والنمو.', 
             en: 'Smart loyalty management system to increase retention and growth.' 
@@ -398,11 +400,11 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
 
                    <div className="flex w-full order-last sm:order-none sm:w-auto items-center gap-8 md:gap-12 pt-3 sm:pt-0 sm:px-6 border-t sm:border-0 border-zinc-100">
                       <div className="text-right">
-                         <p className="text-xs text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'النقاط' : 'Points'}</p>
+                         <p className="text-xs text-zinc-400 font-bold uppercase">{language === 'ar' ? 'النقاط' : 'Points'}</p>
                          <p className="text-sm font-black text-lilac">{customer.points.toLocaleString('en-US')}</p>
                       </div>
                       <div className="text-right">
-                         <p className="text-xs text-zinc-400 font-bold uppercase tracking-widest">{language === 'ar' ? 'الإنفاق' : 'Spent'}</p>
+                         <p className="text-xs text-zinc-400 font-bold uppercase">{language === 'ar' ? 'الإنفاق' : 'Spent'}</p>
                          <p className="text-sm font-black text-black">{language === 'ar' ? `${customer.totalSpent.toLocaleString('en-US')} د.ك` : `KWD ${customer.totalSpent.toLocaleString('en-US')}`}</p>
                       </div>
                    </div>
@@ -506,7 +508,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                              );
                            })()}
                            <button 
-                             onClick={() => alert('تم النسخ!')}
+                             onClick={() => notify('تم النسخ.', 'success')}
                              className="absolute top-4 left-4 p-2 bg-white rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
                            >
                               <Send className="w-3 h-3 text-black" />
@@ -521,7 +523,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                      <div className="space-y-4">
                         <h4 className="text-sm font-black text-zinc-800 flex items-center gap-2">
                            <History className="w-4 h-4 text-zinc-400" />
-                           {language === 'ar' ? 'سجل الولاء والكوبونات' : 'Loyalty & Coupon Log'}
+                           {language === 'ar' ? 'سجل النقاط والكوبونات' : 'Points & Coupon Log'}
                         </h4>
                         <div className="space-y-3">
                            {[
@@ -551,10 +553,10 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                              await updateDoc(doc(db, 'users', selectedCustomer.id), {
                                points: (selectedCustomer.points || 0) + Number(pointsToAdd)
                              });
-                             alert('تم إضافة النقاط بنجاح!');
+                             notify('تم إضافة النقاط بنجاح!', 'success');
                            } catch(e) {
                              console.error(e);
-                             alert('تعذر إضافة النقاط الآن، يرجى المحاولة لاحقاً.');
+                             notify('تعذر إضافة النقاط الآن، يرجى المحاولة لاحقاً.', 'error');
                            }
                          }
                        }}
@@ -564,7 +566,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                      </button>
                      <button 
                        className="w-full bg-lilac text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-lilac-deep transition-all shadow-lg active:scale-95"
-                       onClick={() => window.alert('سيتم فتح نظام المكافآت المتقدم قريباً!')}
+                       onClick={() => notify('نظام المكافآت المتقدم قادم قريباً.', 'info')}
                      >
                         <Gift className="w-4 h-4" />
                         {language === 'ar' ? 'إرسال مكافأة فورية' : 'Send Instant Reward'}
@@ -591,7 +593,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
             <div className="text-right min-w-0">
                <div className="flex items-center gap-2 mb-2">
                   <Sparkles className="w-5 h-5 text-amber-400" />
-                  <span className="text-xs font-black text-amber-400 uppercase tracking-widest">{language === 'ar' ? 'التحكم الذكي بالمكافآت' : 'Intelligent Reward Control'}</span>
+                  <span className="text-xs font-black text-amber-400 uppercase">{language === 'ar' ? 'التحكم الذكي بالمكافآت' : 'Intelligent Reward Control'}</span>
                </div>
                <h3 className="text-2xl font-black text-white mb-2">{language === 'ar' ? 'تفعيل المكافآت الديناميكية' : 'Enable Dynamic Rewards'}</h3>
                <p className="text-zinc-200 text-sm max-w-lg font-medium leading-relaxed">
@@ -603,7 +605,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                <div className="flex flex-col items-center gap-2">
                   <span className="text-xs font-bold text-zinc-500">{language === 'ar' ? 'الحالة الحالية' : 'Current Status'}</span>
-                  <div className="relative w-16 h-8 bg-white/10 rounded-full p-1 cursor-pointer" onClick={() => window.alert('تم تغيير الوضع!')}>
+                  <div className="relative w-16 h-8 bg-white/10 rounded-full p-1 cursor-pointer" onClick={() => notify('تم تغيير الوضع!', 'success')}>
                      <div className="w-6 h-6 bg-amber-400 rounded-full shadow-lg translate-x-8 rtl:-translate-x-8 transition-transform" />
                   </div>
                </div>

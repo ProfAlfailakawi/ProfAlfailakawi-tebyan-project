@@ -53,7 +53,7 @@ export function MessagesFloatingButton() {
         className="fixed bottom-6 right-6 z-[100]"
       >
         <motion.button
-          className="h-12 w-12 md:h-13 md:w-13 rounded-full bg-white/90 text-[#6E5F8E] border border-[#C9BEDF]/50 shadow-xl flex items-center justify-center hover:scale-105 transition-transform global-floating-buttons"
+          className="h-12 w-12 md:h-13 md:w-13 rounded-full bg-white/90 text-[color:var(--tb-lilac-deep)] border border-[#C9BEDF]/50 shadow-xl flex items-center justify-center hover:scale-105 transition-transform global-floating-buttons"
           onClick={() => setIsOpen(!isOpen)}
           whileTap={{ scale: 0.9 }}
         >
@@ -94,7 +94,7 @@ export function MessagesFloatingButton() {
                      <CheckCircle className="w-8 h-8" />
                    </motion.div>
                  </div>
-                 <p className="font-black text-xl text-slate-800 tracking-tight">تم إرسال رسالتك!</p>
+                 <p className="font-black text-xl text-slate-800">تم إرسال رسالتك!</p>
                  <p className="text-sm text-slate-500 font-medium leading-relaxed">شكراً لتواصلك. نقدر وقتك وسنقوم بمراجعة رسالتك قريباً.</p>
                </motion.div>
             ) : (

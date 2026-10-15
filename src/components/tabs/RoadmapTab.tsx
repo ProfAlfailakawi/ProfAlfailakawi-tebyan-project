@@ -10,6 +10,7 @@ import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
 import { TebyanButtonLoader } from '../ui/TebyanLoader';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChange, inDoor }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any, inDoor?: boolean }) => {
   const { preferences, addToLibrary, removeFromLibrary } = useUser();
@@ -67,7 +68,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 px-4 sm:px-6 pb-20 relative" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <TabHeader 
         icon={Map}
-        title={{ ar: 'طريق النجاح', en: 'Success Roadmap' }}
+        title={getServiceNameBilingual('roadmap')}
         description={{ 
             ar: getGenderWord(userGender, 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.', 'رؤية واضحة لمساركِ الشخصي نحو كل هدف تطمحين إليه.', 'رؤية واضحة لمسارك الشخصي نحو كل هدف تطمح إليه.'), 
             en: 'A clear vision of your personal path towards every goal you aspire to.' 
@@ -78,7 +79,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
         onClose={() => handleTabChange('discover', '', true)}
       />
       
-      <div className="tebyan-tab-surface relative overflow-hidden bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-[#6e5f8e]/10">
+      <div className="tebyan-tab-surface relative overflow-hidden bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-[color:var(--tb-lilac-deep)]/10">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#6e5f8e]/[0.06] rounded-full blur-3xl"></div>
         <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#8fa9c7]/[0.08] rounded-full blur-3xl"></div>
         
@@ -95,7 +96,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
               disabled={isLoading}
               placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة، بدء مشروع تجاري، احتراف البرمجة...' : 'Example: Learn a new language, start a business, master programming...'}
               className={cn(
-                "w-full bg-white/70 border border-[#6e5f8e]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[#6e5f8e]/50 focus:ring-4 focus:ring-[#6e5f8e]/10 transition-all text-navy",
+                "w-full bg-white/70 border border-[color:var(--tb-lilac-deep)]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[color:var(--tb-lilac-deep)]/50 focus:ring-4 focus:ring-[color:var(--tb-lilac-deep)]/10 transition-all text-navy",
                 language === 'ar' ? 'text-right' : 'text-left'
               )}
             />

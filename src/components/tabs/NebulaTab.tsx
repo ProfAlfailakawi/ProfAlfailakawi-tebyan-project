@@ -139,7 +139,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                   }} 
                   className={cn(
                       "px-3 md:px-4 py-2 rounded-full font-bold text-xs md:text-xs flex items-center gap-1.5 md:gap-2 backdrop-blur-md shadow-lg transition-all border",
-                      isCinematic ? "bg-[#F8F5EF] text-[#182231] border-white" : "bg-[#182231]/70 text-white border-white/20 hover:bg-white/10"
+                      isCinematic ? "bg-[#F8F5EF] text-[color:var(--tb-navy)] border-white" : "bg-[#182231]/70 text-white border-white/20 hover:bg-white/10"
                   )}
                   aria-pressed={isCinematic}
               >
@@ -305,7 +305,7 @@ export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', 
                              {!isCinematic && (
                                <button 
                                   onClick={() => onViewDetails(selectedNode.id)}
-                                  className="bg-[#F8F5EF] text-[#182231] px-4 py-2 rounded-xl text-sm font-bold shadow-lg"
+                                  className="bg-[#F8F5EF] text-[color:var(--tb-navy)] px-4 py-2 rounded-xl text-sm font-bold shadow-lg"
                                >
                                   {language === 'ar' ? 'عرض التفاصيل' : 'View Details'}
                                </button>

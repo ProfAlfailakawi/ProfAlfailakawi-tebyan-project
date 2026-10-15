@@ -221,7 +221,7 @@ export const TebyanOverture = ({ onDone }: { onDone: () => void }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: dawn ? 0 : 0.75 }}
         transition={{ duration: 0.5, delay: dawn ? 0 : 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-full border border-white/20 px-5 py-1.5 text-[13px] font-bold tracking-wide text-white/80 hover:text-white hover:border-white/40 transition-colors"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-full border border-white/20 px-5 py-1.5 text-[13px] font-bold text-white/80 hover:text-white hover:border-white/40 transition-colors"
         style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
         aria-label="تخطي الافتتاحية"
       >

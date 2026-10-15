@@ -2,9 +2,10 @@ import React, { useState, Suspense } from "react";
 import { Route, Activity, ClipboardCheck } from "lucide-react";
 import { DoorShell, DoorMode } from "./DoorShell";
 import { TebyanLoader } from "../ui/TebyanLoader";
+import { getServiceName } from "../../constants/serviceRegistry";
 
 /**
- * باب «خارطة الطريق والتقدم» — رحلة واحدة مكتملة:
+ * باب «خطتي وتقدمي» — رحلة واحدة مكتملة:
  * خطّط (خارطة الطريق) ← تتبّع (رادار السلوك) ← تحقّق (الاختبارات).
  */
 const RoadmapTab = React.lazy(() =>
@@ -19,7 +20,7 @@ const QuizTab = React.lazy(() =>
 
 const MODES: DoorMode[] = [
   { id: "plan", labelAr: "1 · خطّط", labelEn: "1 · Plan", hintAr: "هدفك يتحول إلى مراحل واضحة قابلة للتنفيذ", hintEn: "Your goal becomes clear actionable stages", icon: Route },
-  { id: "track", labelAr: "2 · تتبّع", labelEn: "2 · Track", hintAr: "سجّل يومك ودع الرادار يقرأ مسارك", hintEn: "Log your days and let the radar read your path", icon: Activity },
+  { id: "track", labelAr: "2 · تتبّع", labelEn: "2 · Track", hintAr: "سجّل يومك ودع تبيان يقرأ مسارك", hintEn: "Log your days and let Tebyan read your path", icon: Activity },
   { id: "verify", labelAr: "3 · تحقّق", labelEn: "3 · Verify", hintAr: "اختبار سريع يثبت ما تعلمته", hintEn: "A quick quiz that proves what you learned", icon: ClipboardCheck },
 ];
 
@@ -47,8 +48,8 @@ export const GrowthDoor = ({
 
   return (
     <DoorShell
-      titleAr="خارطة الطريق والتقدم"
-      titleEn="Roadmap & Progress"
+      titleAr={getServiceName("growth", "ar")}
+      titleEn={getServiceName("growth", "en")}
       subtitleAr="من هدفك إلى خطة تمشي عليها"
       subtitleEn="From your goal to a plan you can follow"
       modes={MODES}

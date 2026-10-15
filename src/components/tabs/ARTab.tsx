@@ -166,7 +166,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
            <div className="inline-flex items-center justify-center p-3 sm:p-4 bg-black rounded-2xl sm:rounded-[24px] shadow-xl sm:shadow-2xl shadow-black/20 mb-2">
              <Box className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
            </div>
-           <h1 className="text-2xl sm:text-4xl font-serif text-black font-medium tracking-tight">
+           <h1 className="text-2xl sm:text-4xl font-serif text-black font-medium">
              {language === 'ar' ? 'فضاء تبيان' : 'Tabyan Space'}
            </h1>
            <p className="text-sm sm:text-lg text-zinc-500 font-medium">

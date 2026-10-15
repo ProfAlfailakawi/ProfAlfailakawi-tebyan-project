@@ -7,6 +7,7 @@ import { cn } from '../../lib/utils';
 import Markdown from 'react-markdown';
 import { TabHeader } from '../TabHeader';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [topic, setTopic] = useState('');
@@ -41,7 +42,7 @@ export const StoryTab = ({ language, initialValue, onValueUsed, handleTabChange 
     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6 px-2">
       <TabHeader 
         icon={BookOpen}
-        title={{ ar: 'الراوي', en: 'Story Weaver' }}
+        title={getServiceNameBilingual('story')}
         description={{ 
             ar: 'القصص هي أسرع طريق لغرس القيم. أخبرني ماذا تريد أن تزرع في عقل الطفل أو الطالب وسأنسج لك قصة ساحرة.', 
             en: 'Stories are the fastest way to instill values. Tell me what you want to plant in your child\'s or student\'s mind, and I will weave a magical story.' 

@@ -14,6 +14,7 @@ import { loadDemoLibrary } from '../../../data/demoLibrary';
 
 import { MessageCircleQuestion } from 'lucide-react';
 import { TabHeader } from '../../TabHeader';
+import { getServiceNameBilingual } from '../../../constants/serviceRegistry';
 
 export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, onSearch?: (query: string) => void, handleTabChange: any }) => {
   const [currentView, setCurrentView] = useState<'home' | 'emergency' | 'question' | 'category'>('home');
@@ -170,7 +171,7 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
     >
       <TabHeader 
         icon={MessageCircleQuestion}
-        title={{ ar: 'قول فصل', en: 'Qawl Fasl' }}
+        title={getServiceNameBilingual('qawlfasl')}
         description={{ 
             ar: 'مكتبة أجوبة تربوية واضحة لأسئلتك عن الأبناء، مع خطوات تبدأ بها اليوم.', 
             en: 'A comprehensive educational library that answers your questions and shows you the right approach in dealing with children.' 

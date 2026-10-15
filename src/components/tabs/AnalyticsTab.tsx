@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BarChart3, TrendingUp, Target, Activity, Cpu, Radar, Plus, AlertTriangle, ShieldCheck, Sparkles } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn, formatDisplayDate } from '../../lib/utils';
 import { useAuth } from '../AuthProvider';
 import { generatePredictiveRadar } from '../../services/gemini';
 import { TabHeader } from '../TabHeader';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { getDemoFixtures } from '../../data/demoFixtures';
 import { DnaRing } from '../dna/DnaKit';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 /* Display-only: long AI text is clamped to 3 lines with a toggle, never truncated in data. */
 const ClampText = ({ text, className, language }: { text: string; className?: string; language: string }) => {
@@ -91,10 +92,10 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
       <div className="max-w-5xl mx-auto space-y-8 md:space-y-12 position-relative md:px-2">
         <TabHeader 
           icon={Radar}
-          title={{ ar: 'الرادار الاستباقي', en: 'Predictive Radar' }}
+          title={getServiceNameBilingual('analytics')}
           description={{ 
-              ar: 'دون ملاحظاتك السريعة يومياً، ودع الذكاء الاصطناعي يقرأ الأنماط الخفية ويتنبأ بالانفجارات السلوكية قبل حدوثها.', 
-              en: 'Log quick daily notes, and let AI read hidden patterns to predict behavioral outbursts before they happen.' 
+              ar: 'دون ملاحظاتك السريعة يومياً، ودع الذكاء الاصطناعي يقرأ الأنماط الخفية وينبّهك إلى نوبات الانفعال المتوقعة قبل حدوثها.', 
+              en: 'Log quick daily notes, and let AI read hidden patterns to warn you about likely emotional flare-ups before they happen.' 
           }}
           language={language}
           onBack={() => handleTabChange('discover', '')}
@@ -109,15 +110,15 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                  initial={{ opacity: 0, y: 10 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: idx * 0.1 }}
-                 className="tebyan-stat-card px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[#6e5f8e]/10 flex flex-1 flex-col items-start gap-2 min-[430px]:flex-row min-[430px]:items-center min-[430px]:gap-2.5 min-w-0"
+                 className="tebyan-stat-card px-3 py-3 md:px-5 md:py-4 rounded-2xl bg-[#faf9f7] border border-[color:var(--tb-lilac-deep)]/10 flex flex-1 flex-col items-start gap-2 min-[430px]:flex-row min-[430px]:items-center min-[430px]:gap-2.5 min-w-0"
                >
-                  <div className="tebyan-icon-tile w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[#6e5f8e]/10 flex items-center justify-center">
-                     <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[#6e5f8e]" strokeWidth={1.5} />
+                  <div className="tebyan-icon-tile w-9 h-9 md:w-10 md:h-10 shrink-0 bg-white rounded-xl border border-[color:var(--tb-lilac-deep)]/10 flex items-center justify-center">
+                     <stat.icon className="w-4 h-4 md:w-5 md:h-5 text-[color:var(--tb-lilac-deep)]" strokeWidth={1.5} />
                   </div>
                   <div className="min-w-0 w-full min-[430px]:w-auto flex-1">
                       <div className="tebyan-numeral text-3xl md:text-4xl font-extrabold leading-none text-navy">{stat.value}</div>
                       <div className="mt-1 text-zinc-500 font-bold text-xs md:text-sm truncate">{stat.label}</div>
-                      <div className="mt-0.5 text-[#6e5f8e] font-semibold flex items-start gap-1 text-xs md:text-xs leading-snug">
+                      <div className="mt-0.5 text-[color:var(--tb-lilac-deep)] font-semibold flex items-start gap-1 text-xs md:text-xs leading-snug">
                         <TrendingUp className="w-3 h-3 shrink-0 mt-0.5" />
                         <span className="[overflow-wrap:normal] break-normal">{stat.trend}</span>
                       </div>
@@ -188,7 +189,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                    <ul className="space-y-3">
                      {logs.map((log, i) => (
                        <li key={i} className="bg-white p-4 rounded-xl border border-zinc-100 shadow-sm text-sm">
-                         <div className="text-xs text-zinc-400 mb-1">{log.date}</div>
+                         <div className="text-xs text-zinc-400 mb-1">{formatDisplayDate(log.date, language)}</div>
                          <div className="font-bold text-navy"><span className="text-zinc-500">{language === 'ar' ? 'شعور:' : 'Feeling:'}</span> {log.feeling}</div>
                          <div className="font-bold text-navy mt-1"><span className="text-zinc-500">{language === 'ar' ? 'سلوك:' : 'Behavior:'}</span> {log.behavior}</div>
                        </li>

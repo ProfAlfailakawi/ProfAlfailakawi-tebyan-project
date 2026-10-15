@@ -162,19 +162,19 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
           {
             title: "مكانٌ واحد لكل ما يشغل بالك",
             body: "اكتب موقفك بكلماتك — سؤال، حيرة، هدف — وتبيان يفتح لك الباب الأنسب. لا تحتاج أن تعرف أسماء الأدوات؛ كلماتك تكفي.",
-            hint: "القوس: مشكاة تتسع لكل أسئلتك",
+            hint: "مكان واحد يتسع لكل أسئلتك",
             action: "التالي",
           },
           {
             title: "الجواب يصعد إليك أولاً",
             body: "قبل أي تفاصيل، تصلك خلاصة واضحة وخطوة عملية واحدة. وبعدها — إن أردت — تتعمق في التحليل أو الخطة على راحتك.",
-            hint: "الألِف: خيط الجواب الصاعد",
+            hint: "الجواب المختصر يأتيك أولاً",
             action: "التالي",
           },
           {
             title: "وكل فهمٍ يبقى نوراً محفوظاً",
             body: "ما تفهمه لا يضيع: يُحفظ في مكتبتك، يترابط مع أفكارك، وتعود إليه متى شئت. تبيان ذاكرة تفكير، لا إجابة عابرة.",
-            hint: "النور: اكتملت العلامة — وابتدأت رحلتك",
+            hint: "كل ما تفهمه يبقى محفوظاً لك",
             action: "ابدأ الآن",
           },
         ]
@@ -216,12 +216,12 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 24, opacity: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="relative w-full max-w-lg max-h-full overflow-x-hidden overflow-y-auto overscroll-contain rounded-[32px] border border-[#8E7AAE]/12 bg-white shadow-[0_30px_90px_rgba(103,88,132,0.16)]"
+            className="relative w-full max-w-lg max-h-full overflow-x-hidden overflow-y-auto overscroll-contain rounded-[32px] border border-[color:var(--tb-lilac-soft)]/12 bg-white shadow-[0_30px_90px_rgba(103,88,132,0.16)]"
           >
             <button
               type="button"
               onClick={closeTour}
-              className="absolute left-5 top-5 z-10 rounded-full bg-[#F7F3EE] p-2 text-slate-400 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#8E7AAE]/30"
+              className="absolute left-5 top-5 z-10 rounded-full bg-[#F7F3EE] p-2 text-slate-400 transition hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-[color:var(--tb-lilac-soft)]/30"
               aria-label={language === "ar" ? "إغلاق الدليل" : "Close guide"}
             >
               <X className="h-4 w-4" />

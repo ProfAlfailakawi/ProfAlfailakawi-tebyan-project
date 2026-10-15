@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Download, X, Share } from 'lucide-react';
 import { TebyanTooltip } from './TebyanTooltip';
+import { notify } from '../lib/notify';
 
 let deferredPromptGlobal: any = null;
 
@@ -45,7 +46,7 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
       }
       deferredPromptGlobal = null;
     } else {
-        alert("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).");
+        notify("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).", 'info');
     }
   };
 
@@ -87,7 +88,7 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
                <button onClick={() => setShowIOSInstructions(false)} className="absolute top-4 left-4 p-2 text-zinc-400 hover:text-black bg-zinc-50 rounded-full transition-colors">
                  <X className="w-4 h-4" />
                </button>
-               <h3 className="font-black text-zinc-900 text-xl mb-6 pr-2 pt-2 tracking-tight">تثبيت التطبيق على آيفون</h3>
+               <h3 className="font-black text-zinc-900 text-xl mb-6 pr-2 pt-2">تثبيت التطبيق على آيفون</h3>
                <ol className="space-y-5 px-2">
                  <li className="flex items-start gap-4 text-sm font-medium text-zinc-700">
                    <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center shrink-0 font-bold text-zinc-500 shadow-inner">1</div>

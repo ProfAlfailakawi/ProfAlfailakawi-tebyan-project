@@ -18,7 +18,7 @@ export const TypographicAcoustic = forwardRef<HTMLDivElement, {
         initial={{ opacity: 0, scale: 0.98, filter: 'blur(2px)' }}
         animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
         transition={{ type: 'spring', stiffness: 400, damping: 25, mass: 0.5 }}
-        className={`font-bold tracking-tight ${className}`}
+        className={`font-bold ${className}`}
       >
         {children}
       </motion.div>

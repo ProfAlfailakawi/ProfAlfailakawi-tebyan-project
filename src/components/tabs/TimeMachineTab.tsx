@@ -7,6 +7,7 @@ import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { DnaStepper } from '../dna/DnaKit';
 import { ToolEmptyHint } from '../common/ToolEmptyHint';
+import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
 
 export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed, handleTabChange }: { language: 'ar' | 'en', initialValue?: string, onValueUsed?: () => void, handleTabChange: any }) => {
   const [timeMachineTopic, setTimeMachineTopic] = React.useState(initialValue || 'طرق التدريس');
@@ -50,7 +51,7 @@ export const TimeMachineTab = React.memo(({ language, initialValue, onValueUsed,
   <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-8 px-2">
     <TabHeader 
       icon={Hourglass}
-      title={{ ar: 'رحلة عبر آلة الزمن', en: 'Time Machine Journey' }}
+      title={getServiceNameBilingual('timemachine')}
       description={{ 
           ar: 'شاهد كيف تطور العلم وسيتطور مستقبلاً عبر رحلة مشوقة في العصور المختلفة.', 
           en: 'See how education evolved and will evolve in the future through an exciting journey across different eras.' 
