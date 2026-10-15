@@ -2794,7 +2794,7 @@ export const SmartGateway: React.FC<
         ar: {
           label: "زد العمق",
           title: "افتح زاوية جديدة",
-          desc: "نضيف باباً واحداً فقط، عشان تبقى الصورة هادئة.",
+          desc: "نضيف باباً واحداً فقط ليبقى المشهد هادئاً.",
         },
         en: {
           label: "Go deeper",
@@ -2806,7 +2806,7 @@ export const SmartGateway: React.FC<
         ar: {
           label: "اكشف الزاوية المخفية",
           title: "ظهرت زاوية ما كانت واضحة",
-          desc: "هذا الباب يفتح معنى مختلف، مو تكراراً للباب الأول.",
+          desc: "هذا الباب يفتح معنى مختلفاً، وليس تكراراً للباب الأول.",
         },
         en: {
           label: "Reveal the hidden angle",
@@ -2818,7 +2818,7 @@ export const SmartGateway: React.FC<
         ar: {
           label: "اختبرها بقوة",
           title: "حان وقت اختبار الفكرة",
-          desc: "نضغط الاحتمال شوي عشان نعرف قوته قبل القرار.",
+          desc: "نختبر الاحتمال قليلاً لنعرف قوته قبل القرار.",
         },
         en: {
           label: "Stress-test it",
@@ -3281,7 +3281,7 @@ export const SmartGateway: React.FC<
                       <div className="flex w-full items-center justify-between gap-2">
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-black tracking-[0.2em] rtl:tracking-normal uppercase text-ink-mute">
-                            {language === "ar" ? "باب باجر" : "Tomorrow"}
+                            {language === "ar" ? "سؤال الغد" : "Tomorrow"}
                           </p>
                           <p className="mt-0.5 line-clamp-2 max-w-full break-words text-xs sm:text-xs font-black leading-relaxed text-navy">
                             "{tomorrowRoom.query}"

@@ -257,7 +257,7 @@ export const ServiceExplorer: React.FC<Props> = ({
       {isSearching && !filteredServices.length && (
         <div className="mx-auto mt-8 max-w-3xl rounded-[24px] border border-[#8FA9C7]/14 bg-white/82 p-6 text-center">
           <h2 className="text-lg font-black text-navy">
-            {isArabic ? "ما لقينا نتيجة بهذه العبارة" : "No matching result"}
+            {isArabic ? "لا توجد نتيجة بهذه العبارة" : "No matching result"}
           </h2>
           <p className="mt-2 text-sm font-bold leading-7 text-ink-mute">
             {isArabic
