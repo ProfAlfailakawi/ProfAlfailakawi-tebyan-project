@@ -94,7 +94,7 @@ export const RoadmapTab = ({ language, initialValue, onValueUsed, handleTabChang
               value={goal}
               onChange={e => setGoal(e.target.value)}
               disabled={isLoading}
-              placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة، بدء مشروع تجاري، احتراف البرمجة...' : 'Example: Learn a new language, start a business, master programming...'}
+              placeholder={language === 'ar' ? 'مثال: تعلم لغة جديدة' : 'Example: Learn a new language, start a business, master programming...'}
               className={cn(
                 "w-full bg-white/70 border border-[color:var(--tb-lilac-deep)]/20 rounded-[24px] p-5 md:p-6 text-base md:text-xl font-medium text-ellipsis placeholder:text-ellipsis outline-none focus:border-[color:var(--tb-lilac-deep)]/50 focus:ring-4 focus:ring-[color:var(--tb-lilac-deep)]/10 transition-all text-navy",
                 language === 'ar' ? 'text-right' : 'text-left'

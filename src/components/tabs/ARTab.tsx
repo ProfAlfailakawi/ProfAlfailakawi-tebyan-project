@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useAnimation } from 'motion/react';
 import { Box, Sparkles, AlertTriangle, ArrowRight, ShieldCheck, Zap, X, Type, Layers } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ai, parseGeminiError } from '../../services/gemini';
+import { getServiceName } from '../../constants/serviceRegistry';
 
 export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
   const [idea, setIdea] = useState(initialValue || '');
@@ -167,7 +168,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
              <Box className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
            </div>
            <h1 className="text-2xl sm:text-4xl font-serif text-black font-medium">
-             {language === 'ar' ? 'فضاء تبيان' : 'Tabyan Space'}
+             {getServiceName('ar', language)}
            </h1>
            <p className="text-sm sm:text-lg text-zinc-500 font-medium">
              {language === 'ar' ? 'المشهد المعرفي: شاهد أفكارك تتجسد أمامك في مساحة ثلاثية الأبعاد' : 'Cognitive Scene: See your ideas materialize in a 3D space'}

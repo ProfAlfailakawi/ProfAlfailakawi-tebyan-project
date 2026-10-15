@@ -19,9 +19,9 @@ const QuizTab = React.lazy(() =>
 );
 
 const MODES: DoorMode[] = [
-  { id: "plan", labelAr: "1 · خطّط", labelEn: "1 · Plan", hintAr: "هدفك يتحول إلى مراحل واضحة قابلة للتنفيذ", hintEn: "Your goal becomes clear actionable stages", icon: Route },
-  { id: "track", labelAr: "2 · تتبّع", labelEn: "2 · Track", hintAr: "سجّل يومك ودع تبيان يقرأ مسارك", hintEn: "Log your days and let Tebyan read your path", icon: Activity },
-  { id: "verify", labelAr: "3 · تحقّق", labelEn: "3 · Verify", hintAr: "اختبار سريع يثبت ما تعلمته", hintEn: "A quick quiz that proves what you learned", icon: ClipboardCheck },
+  { id: "plan", labelAr: `1 · ${getServiceName("roadmap", "ar")}`, labelEn: `1 · ${getServiceName("roadmap", "en")}`, hintAr: "هدفك يتحول إلى مراحل واضحة قابلة للتنفيذ", hintEn: "Your goal becomes clear actionable stages", icon: Route },
+  { id: "track", labelAr: `2 · ${getServiceName("analytics", "ar")}`, labelEn: `2 · ${getServiceName("analytics", "en")}`, hintAr: "سجّل يومك ودع تبيان يقرأ مسارك", hintEn: "Log your days and let Tebyan read your path", icon: Activity },
+  { id: "verify", labelAr: `3 · ${getServiceName("quizzes", "ar")}`, labelEn: `3 · ${getServiceName("quizzes", "en")}`, hintAr: "اختبار سريع يثبت ما تعلمته", hintEn: "A quick quiz that proves what you learned", icon: ClipboardCheck },
 ];
 
 const Fallback = () => (

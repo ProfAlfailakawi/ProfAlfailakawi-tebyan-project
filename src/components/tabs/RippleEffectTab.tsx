@@ -13,6 +13,7 @@ import { seedData } from '../../data/seedData';
 import { NebulaTab } from './NebulaTab';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { InsightsPanel } from './InsightsPanel';
+import { getServiceName } from '../../constants/serviceRegistry';
 
 
 /* عرض فقط: مصطلحات لاتينية معروفة تُعرض بالعربية في الواجهة العربية؛ ما ليس في القائمة يبقى كما هو. */
@@ -879,13 +880,6 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 {showInsights && <InsightsPanel ideas={combinedRipples} onClose={() => setShowInsights(false)} language={language} handleTabChange={handleTabChange} />}
             </AnimatePresence>
 
-            <button
-                onClick={() => handleTabChange('home')}
-                className="absolute top-12 md:top-8 left-4 p-2 rounded-lg bg-[color:var(--tb-lilac-bg)] hover:bg-zinc-200 text-ink-soft transition-colors z-20 flex items-center gap-2"
-            >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="text-sm font-bold hidden md:inline">{language === 'ar' ? 'رجوع' : 'Back'}</span>
-            </button>
             {/* Local Toast */}
             <AnimatePresence>
                 {toast && (
@@ -914,7 +908,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     <span>{language === 'ar' ? 'الشبكة الاجتماعية للأفكار' : 'Social Network of Ideas'}</span>
                 </motion.div>
                 <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-600 py-2 leading-tight">
-                    {language === 'ar' ? 'نسيج الأفكار' : 'Idea Fabric'}
+                    {getServiceName('ripple', language)}
                 </h2>
                 <p className="text-ink-mute text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
                     {language === 'ar' 

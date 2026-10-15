@@ -69,7 +69,7 @@ export default React.memo(({ language, handleTabChange, initialValue, onValueUse
       <div className="bg-[#FAF9F6]/88 border border-[color:var(--tb-sky)]/15 rounded-[32px] p-5 md:p-6 shadow-sm space-y-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="text-right">
-            <h2 className="text-lg md:text-xl font-black text-navy">{language === 'ar' ? 'ماذا تريد أن ترى في الميدان؟' : 'What do you want to explore in the arena?'}</h2>
+            <h2 className="text-lg md:text-xl font-black text-navy">{getServiceName('strategicarena', language)}</h2>
             <p className="text-xs md:text-sm text-ink-mute font-bold mt-1 leading-relaxed">{language === 'ar' ? 'أربع بوابات مرتبة بوضوح، كل واحدة تقودك لعمق مختلف بدون إخفاء أي ميزة.' : 'Four clear gates, each leading to a different depth without hiding any feature.'}</p>
           </div>
         </div>
