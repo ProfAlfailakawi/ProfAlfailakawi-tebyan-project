@@ -130,6 +130,28 @@ export function DnaCountUp({
   );
 }
 
+/**
+ * Wrapper for custom drawings (e.g. an SVG curve): the first time it scrolls into view, children
+ * marked `.dna-dmask` (a mask rect that opens left -> right) and `.dna-dmark` (markers that settle in)
+ * play once per `playKey`. Without the wrapper's data-draw attribute everything is at its final state.
+ */
+export function DnaDrawIn({
+  playKey,
+  className,
+  children,
+}: {
+  playKey?: string | number | null;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const { ref, phase } = useFirstView<HTMLDivElement>({ playKey, ms: 1800 });
+  return (
+    <div ref={ref} className={className} data-draw={phase ?? undefined}>
+      {children}
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------- stepper */
 
 export type DnaStepState = 'done' | 'current' | 'pending' | 'returned' | 'blocked';

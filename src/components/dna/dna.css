@@ -1058,6 +1058,13 @@ button.dna-hubn:focus-visible .dna-hubt { transform: translateY(-2px); }
   transition-delay: calc(var(--i, 0) * var(--tl-step, 60ms) + 0.12s);
 }
 
+/* ---------- custom drawing first-view (DnaDrawIn): a mask opens along the curve, markers settle in ---------- */
+[data-draw] .dna-dmask { transform-box: fill-box; transform-origin: left center; }
+[data-draw='pre'] .dna-dmask { transform: scaleX(0); }
+[data-draw='pre'] .dna-dmark { opacity: 0; }
+[data-draw='go'] .dna-dmask { transition: transform 1s var(--dna-ease); }
+[data-draw='go'] .dna-dmark { transition: opacity 0.5s var(--dna-ease) calc(0.8s + var(--mi, 0) * 0.1s); }
+
 /* ---------- motion safety ---------- */
 @media (prefers-reduced-motion: reduce) {
   .dna-hub .dna-hubln,
@@ -1072,6 +1079,8 @@ button.dna-hubn:focus-visible .dna-hubt { transform: translateY(-2px); }
   .dna-spark circle,
   .dna-tline .dna-dot,
   .dna-tline .dna-tli::after,
+  .dna-dmask,
+  .dna-dmark,
   .dna-stepi + .dna-stepi::before,
   .dna-stepi + .dna-stepi::after,
   .dna-steps[data-journey] .dna-lbl { transition: none !important; }
