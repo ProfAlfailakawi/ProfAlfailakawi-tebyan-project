@@ -3984,6 +3984,17 @@ export const SmartGateway: React.FC<
                     </div>
                   );
                 })()}
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => handleTabChange("discover")}
+                    data-testid="all-services-link"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-4 text-sm font-black text-[#6E5F8E] underline decoration-[#8E7AAE]/40 underline-offset-4 transition-colors hover:text-[#4F4270] active:scale-[0.98]"
+                  >
+                    <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+                    {language === "ar" ? "كل الخدمات" : "All services"}
+                  </button>
+                </div>
               </div>
 
 

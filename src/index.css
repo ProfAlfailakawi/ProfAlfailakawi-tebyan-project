@@ -4147,8 +4147,11 @@ body:not(.zen-idle)::after {
     padding-inline: 0.8rem !important;
   }
 
-  .tebyan-floating-nav > button > span:last-child {
-    display: none !important;
+  .tebyan-floating-nav > button .tebyan-brand-name {
+    font-size: 1.25rem !important;
+  }
+  .tebyan-floating-nav {
+    gap: 0.5rem !important;
   }
 
   .tebyan-floating-nav {
@@ -5061,4 +5064,15 @@ main .text-mood-primary:not(.text-white) { color: color-mix(in srgb, var(--mood-
 @keyframes tebyan-surface-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: no-preference) {
   .tebyan-tab-surface { animation: tebyan-surface-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 80ms backwards; }
+}
+
+/* زر «الخدمات» في الشريط العلوي: نص واضح بحجم ثابت بدل وراثة خط العلامة. */
+.tebyan-floating-nav .tebyan-services-button {
+  min-height: 40px;
+}
+header.fixed .tebyan-floating-nav .tebyan-services-button span:not(.sr-only) {
+  font-family: inherit !important;
+  font-size: 0.875rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
 }

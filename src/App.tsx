@@ -882,8 +882,8 @@ const AppContent: React.FC = () => {
     ...getServiceTabs(language),
     {
       id: "discover",
-      label: language === "ar" ? "المشكاة" : "Mishkat",
-      brand: language === "ar" ? "كل أدوات تبيان" : "All of Tebyan",
+      label: language === "ar" ? "كل الخدمات" : "All services",
+      brand: language === "ar" ? "اكتشف كل أدوات تبيان" : "All of Tebyan",
       icon: Lamp,
       tooltip:
         language === "ar"
@@ -1428,9 +1428,19 @@ const AppContent: React.FC = () => {
             <div className="w-10 h-10 bg-white/90 border border-[#8E7AAE]/20 rounded-2xl flex items-center justify-center shadow-sm transition-all duration-500 tebyan-orb-mark">
               <TebyanMark size={26} />
             </div>
-            <span className="font-serif text-2xl font-bold text-navy tracking-tight transition-colors group-hover:text-mood-primary">
+            <span className="tebyan-brand-name font-serif text-2xl font-bold text-navy transition-colors group-hover:text-mood-primary">
               تبيان
             </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleTabChange("discover")}
+            aria-label={language === "ar" ? "كل الخدمات" : "All services"}
+            title={language === "ar" ? "كل الخدمات" : "All services"}
+            className="tebyan-services-button inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#8E7AAE]/20 bg-white/90 px-3 text-sm font-black text-[#6E5F8E] shadow-sm transition-transform active:scale-95"
+          >
+            <Grid3X3 className="w-4 h-4" aria-hidden="true" />
+            <span>{language === "ar" ? "الخدمات" : "Services"}</span>
           </button>
 
         </div>
