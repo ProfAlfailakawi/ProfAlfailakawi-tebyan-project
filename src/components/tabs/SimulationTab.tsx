@@ -195,10 +195,10 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
                     value={simTopic} 
                     onChange={(e) => setSimTopic(e.target.value)} 
                     className="flex-1 w-full p-4 md:p-6 text-base md:text-xl font-medium border border-[#6e5f8e]/20 bg-white rounded-[16px] outline-none focus:border-[#6e5f8e]/50" 
-                    placeholder={language === 'ar' ? "مثال: دمج الأجهزة المحمولة..." : "Example: Integrating mobile devices..."} 
+                    placeholder={language === 'ar' ? "مثال: أقنع ابني بتقليل وقت الشاشة" : "Example: Convince my son to reduce screen time"} 
                   />
                   <button onClick={() => startDecisionSimulation()} disabled={isLoading || !simTopic.trim()} className="w-full md:w-auto px-10 py-4 rounded-[16px] bg-lilac text-white hover:bg-lilac-deep font-bold shadow-lg transition-all cursor-pointer">
-                    {language === 'ar' ? 'بدء' : 'Start'}
+                    {language === 'ar' ? 'ابدأ التدريب' : 'Start training'}
                   </button>
                 </div>
                 {error && <div className="text-rose-500 font-bold">{error}</div>}

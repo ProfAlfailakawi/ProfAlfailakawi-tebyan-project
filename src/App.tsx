@@ -1331,6 +1331,7 @@ const AppContent: React.FC = () => {
             <ArrowLeft
               className={cn("w-5 h-5", language === "ar" ? "rotate-180" : "")}
             />
+            <span className="tebyan-ctl-label">{language === "ar" ? "رجوع" : "Back"}</span>
           </button>
           <button
             type="button"
@@ -1345,6 +1346,7 @@ const AppContent: React.FC = () => {
             className="tebyan-page-help-button w-10 h-10 rounded-full bg-white/92 text-[#6E5F8E] border border-[#8E7AAE]/20 shadow-[0_10px_24px_rgba(24,34,49,0.12)] backdrop-blur-xl transition-all hover:bg-white hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer"
           >
             <HelpCircle className="w-4 h-4" />
+            <span className="tebyan-ctl-label">{language === "ar" ? "شرح" : "Help"}</span>
           </button>
         </div>
       )}
