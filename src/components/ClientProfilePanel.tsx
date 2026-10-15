@@ -960,7 +960,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                                 <textarea 
                                     value={capsuleItem}
                                     onChange={(e) => setCapsuleItem(e.target.value)}
-                                    placeholder="مثال: خائف جداً من ترك وظيفتي والبدء في مشروعي..."
+                                    placeholder="مثال: أخاف من ترك وظيفتي"
                                     className="w-full bg-white/10 border border-white/20 rounded-xl p-3 text-sm text-white placeholder-lilac-soft/50 focus:outline-none focus:ring-2 focus:ring-lilac resize-none h-24"
                                 />
                                 <div className="flex gap-2">

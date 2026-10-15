@@ -95,7 +95,7 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
                  ? "bg-white border-2 border-lilac/30 text-navy placeholder-[#8A97A6] focus:border-lilac/30 focus:shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]"
                  : "bg-white border-2 border-navy/10 text-navy placeholder-[#8A97A6] focus:border-lilac/30 focus:bg-ivory"
             )}
-            placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف هنا بدقة..." : "Type your question or describe the situation here..."} 
+            placeholder={language === 'ar' ? "اكتب سؤالك أو صف الموقف" : "Type your question or describe the situation here..."} 
           />
         </div>
         

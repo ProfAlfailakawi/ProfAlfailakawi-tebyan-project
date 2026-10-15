@@ -71,7 +71,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                   }
                 }
               }}
-              placeholder="ابحث عن سؤال... (مثال: تنمر، خوف)"
+              placeholder="ابحث: تنمر، خوف…"
               className="w-full bg-transparent border border-[#EBEAE4] rounded-[24px] py-4 px-5 pr-14 md:py-5 md:px-6 md:pr-14 text-base md:text-lg text-[#2A2925] font-bold focus:border-[#5A5A40] outline-none placeholder:text-[#A3A19C] transition-colors relative z-10"
             />
             {/* Background for text */}
