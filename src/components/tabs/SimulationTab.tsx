@@ -152,11 +152,11 @@ export const SimulationTab = React.memo(({ language, initialValue, onValueUsed, 
        onBack={() => handleTabChange('discover', '')}
        onClose={() => handleTabChange('discover', '', true)}
      />
-     <div className="flex bg-white/50 backdrop-blur-md rounded-full shadow-sm p-1 max-w-[400px] mx-auto border border-lilac-soft/25 text-sm md:text-base">
-        <button onClick={() => setSimMode('decision')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'decision' ? "bg-lilac text-white shadow-md block" : "text-ink-mute hover:bg-ivory block")}>
+     <div className="flex bg-white/50 backdrop-blur-md rounded-full shadow-sm p-1 w-full max-w-[460px] mx-auto border border-lilac-soft/25 text-sm md:text-base">
+        <button onClick={() => setSimMode('decision')} className={cn("flex-1 [white-space:nowrap]! py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'decision' ? "bg-lilac text-white shadow-md block" : "text-ink-mute hover:bg-ivory block")}>
            {language === 'ar' ? 'نموذج القرار' : 'Decision Model'}
         </button>
-        <button onClick={() => setSimMode('roleplay')} className={cn("flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'roleplay' ? "bg-lilac text-white shadow-md block" : "text-ink-mute hover:bg-ivory block")}>
+        <button onClick={() => setSimMode('roleplay')} className={cn("flex-1 [white-space:nowrap]! py-2.5 md:py-3 px-3 md:px-4 rounded-full font-bold transition-all", simMode === 'roleplay' ? "bg-lilac text-white shadow-md block" : "text-ink-mute hover:bg-ivory block")}>
            {language === 'ar' ? 'تقمص الأدوار المباشر' : 'Live Roleplay'}
         </button>
      </div>
