@@ -5565,3 +5565,11 @@ html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
     white-space: nowrap;
   }
 }
+/* Narrowest phones keep the dedicated 40px targets of the (max-width: 349px) fitting rules. */
+@media (max-width: 349px) {
+  header.fixed .tebyan-floating-nav > .tebyan-services-button {
+    min-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+  }
+}
