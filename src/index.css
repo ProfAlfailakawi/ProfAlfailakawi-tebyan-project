@@ -5540,3 +5540,28 @@ html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
     line-height: 1;
   }
 }
+
+/* Demo header on phones (<= 449px): the inline "Services" label cannot sit beside the icon
+   without pushing the wordmark under it, so the label is stacked under the icon inside the
+   same 44px-wide target instead of being hidden. Presentation only; the button keeps its
+   aria-label and the row keeps the same elements. */
+@media (max-width: 449px) {
+  header.fixed .tebyan-floating-nav > .tebyan-services-button {
+    flex-direction: column;
+    gap: 1px;
+    width: auto !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding-inline: 0 !important;
+    justify-content: center;
+  }
+  header.fixed .tebyan-floating-nav > .tebyan-services-button > span[class*="max-[430px]:hidden"] {
+    display: block !important;
+  }
+  header.fixed .tebyan-floating-nav > .tebyan-services-button > span:not(.sr-only) {
+    font-size: 0.625rem !important;
+    line-height: 1 !important;
+    white-space: nowrap;
+  }
+}
