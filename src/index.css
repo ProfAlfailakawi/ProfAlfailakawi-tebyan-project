@@ -5413,3 +5413,130 @@ html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
     gap: 0 !important;
   }
 }
+
+/* Very narrow phones (<= 349px, e.g. 320): the wordmark, Services button, demo chip and
+   account pill all share one row. Every element stays visible; the row is fitted by
+   presentation only: 40px targets (still comfortable), tighter gaps and side padding. */
+@media (max-width: 349px) {
+  header.fixed.tebyan-app-header {
+    inset-inline: 0 !important;
+    max-width: 100vw;
+    padding-inline: 0.25rem !important;
+  }
+  header.fixed.tebyan-app-header button {
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+  .tebyan-floating-nav {
+    gap: 0.125rem !important;
+  }
+  .tebyan-floating-nav > button {
+    gap: 0.25rem !important;
+    min-width: 0 !important;
+    min-height: 40px !important;
+  }
+  .tebyan-header-actions [role="status"] > svg {
+    flex-shrink: 0;
+  }
+  .tebyan-floating-nav > button .tebyan-brand-name {
+    font-size: 1.05rem !important;
+  }
+  .tebyan-floating-nav .tebyan-orb-mark,
+  .tebyan-floating-nav .tebyan-services-button,
+  .tebyan-header-actions [role="status"] button {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+  .tebyan-floating-nav .tebyan-orb-mark svg {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+  .tebyan-floating-nav > .tebyan-services-button {
+    padding-inline: 0 !important;
+    justify-content: center;
+  }
+  .tebyan-header-actions [role="status"] {
+    gap: 0 !important;
+    padding-inline: 0.2rem !important;
+  }
+  .tebyan-header-actions .tebyan-action-pill {
+    padding: 1px !important;
+    gap: 0 !important;
+  }
+  .tebyan-header-actions .tebyan-action-pill > .block > button,
+  .tebyan-header-actions .tebyan-action-pill > .block > .relative > button {
+    margin-inline: 0 !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+@layer base {
+  @media (max-width: 349px) {
+    .tebyan-action-pill > .block > button,
+    .tebyan-action-pill > .block > .relative > button {
+      min-width: 40px !important;
+      min-height: 40px !important;
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
+}
+
+/* 341-370px phones (360 is the most common Android width): same row, same elements.
+   The install button's own side margins and the header inset were enough to push the
+   wordmark under the Services button; reclaim them (target sizes stay 44px). */
+@media (max-width: 370px) {
+  header.fixed.tebyan-app-header {
+    inset-inline: 0 !important;
+    max-width: 100vw;
+    padding-inline: 0.5rem !important;
+  }
+  .tebyan-header-actions .tebyan-action-pill > .block > button,
+  .tebyan-header-actions .tebyan-action-pill > .block > .relative > button {
+    margin-inline: 0 !important;
+  }
+}
+
+/* Small progress rings (44px): "100%" at the default 13px nearly touches the stroke. */
+.tebyan-ring-compact .dna-ringc {
+  font-size: 12px;
+  letter-spacing: -0.04em;
+}
+
+/* Behaviour tracking: on wide screens the page was an inner 85vh scroller nested in the
+   route scroller, which cut the last cards mid-line above the footer. Let the page flow. */
+@media (min-width: 768px) {
+  .tebyan-analytics-page {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+/* Knowledge graph: the svg's height="100%" overrides its own bottom inset, so the lowest
+   node sat under the time-travel slider. Make the reserved bottom band real. */
+.tebyan-knowledge-fabric svg.touch-none {
+  height: calc(100% - 10rem) !important;
+}
+@media (min-width: 768px) {
+  .tebyan-knowledge-fabric svg.touch-none {
+    height: calc(100% - 8rem) !important;
+  }
+}
+
+/* Loyalty balance: a five-digit balance must stay on one line in the narrow two-column
+   card (768-1023px) instead of dropping its last digit to a second line. */
+.tebyan-points-figure {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .tebyan-points-figure {
+    font-size: 3rem;
+    line-height: 1;
+  }
+}

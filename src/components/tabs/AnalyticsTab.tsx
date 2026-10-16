@@ -88,7 +88,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
   };
 
   return (
-    <div className="w-full md:max-h-[85vh] md:overflow-y-auto p-1 md:p-2 custom-scrollbar">
+    <div className="tebyan-analytics-page w-full md:max-h-[85vh] md:overflow-y-auto p-1 md:p-2 custom-scrollbar">
       <div className="max-w-5xl mx-auto space-y-8 md:space-y-12 position-relative md:px-2">
         <TabHeader 
           icon={Radar}

@@ -150,7 +150,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     </div>
                     <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex flex-wrap items-baseline gap-2">
-                        <span className="text-5xl md:text-6xl font-black">{Number.isFinite(Number(myLoyaltyData.points)) && myLoyaltyData.points !== '' && myLoyaltyData.points != null ? <DnaCountUp value={Number(myLoyaltyData.points)} format={(n) => String(n)} playKey={`loyalty-points:${user?.uid ?? 'guest'}`} /> : myLoyaltyData.points}</span>
+                        <span className="tebyan-points-figure text-5xl md:text-6xl font-black">{Number.isFinite(Number(myLoyaltyData.points)) && myLoyaltyData.points !== '' && myLoyaltyData.points != null ? <DnaCountUp value={Number(myLoyaltyData.points)} format={(n) => String(n)} playKey={`loyalty-points:${user?.uid ?? 'guest'}`} /> : myLoyaltyData.points}</span>
                         <span className="text-xl font-bold text-[color:var(--tb-c-5b6e82)]">{language === 'ar' ? 'نقطة' : 'PTS'}</span>
                     </div>
                     <DnaRing
@@ -211,7 +211,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                            tone="lilac"
                            draw
                            drawKey={`loyalty-ring-b:${user?.uid ?? 'guest'}`}
-                           className="ms-auto shrink-0"
+                           className="ms-auto shrink-0 tebyan-ring-compact"
                            ariaLabel={language === 'ar' ? `التقدم نحو المكافأة: ${myLoyaltyData.points || 0} من 500 نقطة` : `Progress to reward: ${myLoyaltyData.points || 0} of 500 points`}
                          />
                       </div>
