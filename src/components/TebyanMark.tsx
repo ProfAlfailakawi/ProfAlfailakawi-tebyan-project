@@ -15,8 +15,8 @@ export const TebyanMark = ({
   animated?: boolean;
   className?: string;
 }) => {
-  const stroke = "#8E7AAE";
-  const gold = "#A68F58";
+  const stroke = "#2D4478";
+  const gold = "#B98A2C";
   // Under prefers-reduced-motion, render the completed mark statically —
   // never a blank or half-drawn glyph.
   const reduce =

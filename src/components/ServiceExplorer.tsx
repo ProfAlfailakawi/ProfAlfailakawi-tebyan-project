@@ -117,6 +117,7 @@ export const ServiceExplorer: React.FC<Props> = ({
       <button
         type="button"
         key={service.id}
+        data-category={service.category}
         onClick={() => handleTabChange(service.id)}
         style={{ ["--i" as any]: Math.min(idx, 12) }}
         className="tbn-stagger tebyan-service-card group relative min-h-[132px] overflow-hidden rounded-[24px] border border-[color:var(--tb-sky)]/14 bg-white/90 p-4 text-right shadow-[0_9px_26px_rgba(24,34,49,0.045)] transition-[border-color,box-shadow,transform] duration-150 hover:-translate-y-0.5 hover:border-[color:var(--tb-lilac-soft)]/28 hover:shadow-[0_15px_34px_rgba(24,34,49,0.075)] active:scale-[0.985] md:p-5"
