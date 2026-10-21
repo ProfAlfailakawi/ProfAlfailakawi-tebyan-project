@@ -29,8 +29,8 @@ export const consumeHeroEntrancePlay = (): boolean => {
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const STROKE = "#8E7AAE";
-const GOLD = "#A68F58";
+const STROKE = "#2D4478";
+const GOLD = "#B98A2C";
 
 // نقاط تلتئم على هندسة العلامة نفسها (قوس المشكاة، العتبة، الألف).
 // إزاحات البداية ثابتة ومحسوبة مسبقاً كي تبقى الحركة هادئة ومتكررة الطابع.

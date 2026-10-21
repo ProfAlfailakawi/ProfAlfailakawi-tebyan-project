@@ -43,8 +43,8 @@ export const consumeOverturePlay = (): boolean => {
 };
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const STROKE = "#8E7AAE";
-const GOLD = "#A68F58";
+const STROKE = "#2D4478";
+const GOLD = "#B98A2C";
 const DARK = "#0B0E15";
 
 type Glide = { x: number; y: number; scale: number } | null;

@@ -18,8 +18,8 @@ const prefersReducedMotion = () =>
  * عند آخر خطوة تكتمل العلامة — واكتمالها هو نهاية الجولة.
  */
 const ProgressiveMark = ({ stage }: { stage: number }) => {
-  const stroke = "#8E7AAE";
-  const gold = "#A68F58";
+  const stroke = "#2D4478";
+  const gold = "#B98A2C";
   const reduce = prefersReducedMotion();
   const drawn = { pathLength: 1, opacity: 1 };
   const hidden = { pathLength: 0, opacity: 0 };

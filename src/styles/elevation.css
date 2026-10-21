@@ -1,0 +1,188 @@
+/* تبيان — طبقة الهوية البصرية «مشكاة ومخطوطة».
+   عرضٌ فقط: ألوان وخطوط وحدود وحركة. لا يمسّ منطقًا ولا بيانات.
+   الفكرة: سؤالك يُكتب على ورقة مسطّرة بهامش ذهبي، والجواب نورٌ يخرج من مشكاة.
+   لازوردي الحبر (لا بنفسجي) + ذهب السراج + ورق بارد؛ زوايا ناعمة بقدر، وشريط
+   فئة ملوّن على بطاقة الخدمة يحمل معنى الفئة. */
+
+:root {
+  --tbe-ink: #1b2a52;          /* حبر لازوردي */
+  --tbe-ink-2: #2d4478;
+  --tbe-lapis: #35539a;        /* تفاعل/روابط، ≥ 7:1 على الأبيض */
+  --tbe-lapis-soft: #7a92c4;
+  --tbe-lapis-mist: #e9eef8;
+  --tbe-gold: #b98a2c;         /* ذهب السراج: زخرفة لا نص */
+  --tbe-gold-ink: #7a5710;     /* ذهب للنص ≥ 4.5:1 */
+  --tbe-paper: #f5f6f9;
+  --tbe-paper-2: #fbfbfd;
+  --tbe-rule: rgba(53, 83, 154, 0.075);
+  --tbe-radius: 14px;
+
+  /* إعادة تعيين عائلة «اللَيلَكي» إلى اللازوردي: كل ما يقرؤها يتبع الهوية الجديدة */
+  --tb-lilac-soft: var(--tbe-lapis-soft);
+  --tb-lilac-deep: var(--tbe-ink-2);
+  --tb-lilac-bg: var(--tbe-lapis-mist);
+  --color-lilac: var(--tbe-lapis);
+  --color-lilac-deep: var(--tbe-ink-2);
+  --color-lilac-soft: var(--tbe-lapis-soft);
+  --color-lilac-mist: var(--tbe-lapis-mist);
+  --color-navy: var(--tbe-ink);
+  --tebyan-lilac: var(--tbe-lapis-soft);
+}
+
+/* ——— الورقة: خطوط مسطرة تخبو نحو المركز + هامش ذهبي في جهة الكتابة ——— */
+.tebyan-living-background {
+  background:
+    linear-gradient(to left, transparent calc(2.75rem - 1px), rgba(185, 138, 44, .42) calc(2.75rem - 1px) 2.75rem, transparent 2.75rem),
+    radial-gradient(ellipse 58% 66% at 50% 42%, var(--tbe-paper) 0 50%, transparent 100%),
+    repeating-linear-gradient(to bottom, transparent 0 calc(2.25rem - 1px), rgba(53, 83, 154, .11) calc(2.25rem - 1px) 2.25rem),
+    var(--tbe-paper) !important;
+}
+.tebyan-living-background::before,
+.tebyan-living-background::after { display: none !important; }
+@media (max-width: 767px) {
+  .tebyan-living-background {
+    background:
+      linear-gradient(to left, transparent calc(1rem - 1px), rgba(185, 138, 44, .45) calc(1rem - 1px) 1rem, transparent 1rem),
+      repeating-linear-gradient(to bottom, transparent 0 calc(2rem - 1px), rgba(53, 83, 154, .1) calc(2rem - 1px) 2rem),
+      var(--tbe-paper) !important;
+  }
+}
+.tebyan-home-orbit::after { display: none; }
+
+/* ——— الرأس: شريط حبر رفيع بخيط ذهبي ——— */
+header.tebyan-app-header .tebyan-floating-nav,
+header.tebyan-app-header .tebyan-action-pill {
+  border-color: rgba(27, 42, 82, .12) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, .86) !important;
+  box-shadow: 0 1px 0 rgba(185, 138, 44, .55), 0 10px 30px rgba(27, 42, 82, .07) !important;
+}
+.tebyan-brand-name { color: var(--tbe-ink) !important; letter-spacing: 0; }
+.tebyan-floating-nav .tebyan-services-button {
+  border-radius: 11px !important;
+  border-color: rgba(53, 83, 154, .22) !important;
+  background: var(--tbe-lapis-mist) !important;
+  color: var(--tbe-ink-2) !important;
+}
+
+/* ——— الواجهة الرئيسية: عنوان بخطّ حبر وسطر ذهبي يُكتب مرة واحدة ——— */
+.tebyan-home-hero h1 {
+  color: var(--tbe-ink) !important;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 1.15rem;
+}
+.tebyan-home-hero h1::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  margin-inline: auto;
+  width: 4.5rem;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(to left, var(--tbe-gold), rgba(185, 138, 44, .15));
+  transform-origin: right center;
+  animation: tbe-ink-draw .9s .45s cubic-bezier(.65, 0, .35, 1) both;
+}
+.tebyan-home-hero p { color: #43557a !important; }
+@keyframes tbe-ink-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ——— حقل السؤال: «سطر» على ورقة؛ نور ذهبي يمرّ عند التركيز ——— */
+.tour-search-input.tebyan-gateway-ring {
+  border-radius: 16px !important;
+  background: #fff !important;
+  border: 1px solid rgba(27, 42, 82, .14) !important;
+  border-bottom: 3px solid var(--tbe-gold) !important;
+  box-shadow: 0 18px 44px rgba(27, 42, 82, .08) !important;
+  backdrop-filter: none !important;
+  overflow: hidden !important;
+  position: relative;
+  transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease !important;
+}
+.tour-search-input.tebyan-gateway-ring:focus-within {
+  border-bottom-color: var(--tbe-ink) !important;
+  box-shadow: 0 0 0 4px rgba(53, 83, 154, .12), 0 22px 54px rgba(27, 42, 82, .12) !important;
+}
+.tour-search-input.tebyan-gateway-ring::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -3px;
+  height: 3px;
+  background: linear-gradient(to left, transparent, #f3d58a, transparent);
+  transform: translateX(120%);
+  pointer-events: none;
+}
+.tour-search-input.tebyan-gateway-ring:focus-within::after { animation: tbe-lamp-pass 1.4s .1s ease-out 1; }
+@keyframes tbe-lamp-pass { from { transform: translateX(120%); } to { transform: translateX(-120%); } }
+.tour-search-input textarea { color: var(--tbe-ink) !important; }
+.tour-search-input textarea::placeholder { color: #5b6b90 !important; opacity: 1 !important; }
+.tour-search-input button[type="submit"] {
+  background: var(--tbe-ink) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+}
+.tour-search-input button[type="submit"][class*="opacity-35"] { background: var(--tbe-lapis-soft) !important; opacity: .55 !important; }
+
+/* ——— الخدمات: شريط فئة بلون ومعنى ——— */
+.tebyan-service-card[data-category] { --cat: var(--tbe-lapis); }
+.tebyan-service-card[data-category="understand"] { --cat: #35539a; }
+.tebyan-service-card[data-category="decide"]     { --cat: #8a6516; }
+.tebyan-service-card[data-category="solve"]      { --cat: #2b7a69; }
+.tebyan-service-card[data-category="create"]     { --cat: #a2492c; }
+.tebyan-service-card[data-category="plan"]       { --cat: #476b8f; }
+.tebyan-service-card[data-category="personal"]   { --cat: #5a4a86; }
+button.tebyan-service-card {
+  border-radius: var(--tbe-radius) !important;
+  border: 1px solid rgba(27, 42, 82, .1) !important;
+  border-inline-start: 5px solid var(--cat, var(--tbe-lapis)) !important;
+  background: #fff !important;
+  box-shadow: 0 1px 0 rgba(27, 42, 82, .04), 0 8px 22px rgba(27, 42, 82, .05) !important;
+}
+button.tebyan-service-card:hover {
+  border-color: color-mix(in srgb, var(--cat, var(--tbe-lapis)) 40%, transparent) !important;
+  box-shadow: 0 14px 32px rgba(27, 42, 82, .1) !important;
+}
+button.tebyan-service-card:focus-visible { outline: 3px solid var(--cat, var(--tbe-lapis)); outline-offset: 2px; }
+button.tebyan-service-card > div > div:first-child > span:first-child {
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--cat, var(--tbe-lapis)) 11%, #fff) !important;
+  border-color: transparent !important;
+  color: var(--cat, var(--tbe-lapis)) !important;
+}
+button.tebyan-service-card:hover > div > div:first-child > span:first-child {
+  background: var(--cat, var(--tbe-lapis)) !important;
+  color: #fff !important;
+}
+.tebyan-service-card-brand { color: var(--cat, var(--tbe-lapis)) !important; filter: brightness(.92); }
+.tebyan-service-card svg.lucide-arrow-left { color: var(--cat, var(--tbe-lapis)) !important; }
+.tebyan-service-title { color: var(--tbe-ink) !important; position: relative; padding-bottom: .9rem; }
+.tebyan-service-title::after {
+  content: ""; position: absolute; inset-inline: 0; bottom: 0; margin-inline: auto;
+  width: 3.5rem; height: 3px; border-radius: 3px; background: var(--tbe-gold);
+}
+.tebyan-service-group-title { font-family: var(--font-serif); font-size: 1.5rem; }
+.tebyan-service-search {
+  border-radius: 14px !important;
+  border-color: rgba(27, 42, 82, .14) !important;
+  border-bottom: 3px solid var(--tbe-gold) !important;
+}
+.tebyan-service-filters button { border-radius: 12px !important; }
+.tebyan-service-filters button[aria-pressed="true"] {
+  background: var(--tbe-ink) !important; border-color: var(--tbe-ink) !important; color: #fff !important;
+}
+.tebyan-service-filters button[aria-pressed="false"] { color: var(--tbe-ink-2) !important; }
+
+/* بقايا #8E7AAE المكتوبة حرفيًا في الصفوف: تتبع اللازوردي */
+[class*="bg-[#8E7AAE]"]:not([class*="bg-[#8E7AAE]/"]) { background-color: var(--tbe-lapis) !important; }
+[class*="bg-[#8E7AAE]/"] { background-color: color-mix(in srgb, var(--tbe-lapis) 12%, transparent) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tebyan-home-hero h1::after { animation: none !important; }
+  .tour-search-input.tebyan-gateway-ring::after { animation: none !important; display: none; }
+}
+
+/* غلاف المسار كان يغطي الورقة بتدرّج خاص؛ نتركه شفافًا لتظهر السطور والهامش */
+.tebyan-living-background > main.tebyan-route-shell { background: transparent !important; }
