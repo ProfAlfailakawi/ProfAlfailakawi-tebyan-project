@@ -4,6 +4,28 @@
   initial-value: #6366f1;
 }
 
+/* Tebyan's knowledge gateway: an abstract semantic orbit around the existing dashboard greeting. */
+.tebyan-home-orbit { isolation: isolate; }
+.tebyan-home-orbit::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset-inline-end: -5.5rem;
+  inset-block-start: 50%;
+  width: clamp(11rem, 25vw, 20rem);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  border: 1px solid color-mix(in srgb, var(--tb-lilac-soft) 15%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.35rem color-mix(in srgb, var(--tb-sky) 5%, transparent), 0 0 0 2.7rem color-mix(in srgb, var(--tb-lilac-soft) 4%, transparent);
+  pointer-events: none;
+}
+.tebyan-home-orbit > * { position: relative; z-index: 1; }
+@media (max-width: 767px) {
+  .tebyan-home-orbit::after { inset-inline-end: -9rem; opacity: .6; }
+}
+@media (prefers-reduced-motion: reduce) { .tebyan-home-orbit::after { transition: none; } }
+
 @property --mood-secondary {
   syntax: "<color>";
   inherits: true;

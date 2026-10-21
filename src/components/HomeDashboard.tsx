@@ -178,7 +178,7 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
 
   return (
     <div className="tebyan-home-signature tebyan-home-masterpiece relative w-full flex flex-col pt-gr-2 pb-gr-8 md:pt-gr-3 px-gr-2 md:px-gr-3 max-w-7xl mx-auto space-y-gr-5">
-      <header className="tebyan-cinematic-hero tebyan-aurora-shell relative overflow-hidden rounded-[34px] md:rounded-[55px] border border-white/70 bg-gradient-to-br from-white/88 via-[color:var(--tb-c-fbfaf7)]/92 to-[color:var(--tb-c-eef2f6)]/88 p-gr-3 md:p-gr-5 shadow-[0_28px_90px_rgba(24,34,49,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <header className="tebyan-home-orbit tebyan-cinematic-hero tebyan-aurora-shell relative overflow-hidden rounded-[34px] md:rounded-[55px] border border-white/70 bg-gradient-to-br from-white/88 via-[color:var(--tb-c-fbfaf7)]/92 to-[color:var(--tb-c-eef2f6)]/88 p-gr-3 md:p-gr-5 shadow-[0_28px_90px_rgba(24,34,49,0.08)]" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-24 -right-20 h-64 w-64 rounded-full bg-[#8E7AAE]/16 blur-[70px]" />
           <div className="absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-[color:var(--tb-sky)]/18 blur-[80px]" />
