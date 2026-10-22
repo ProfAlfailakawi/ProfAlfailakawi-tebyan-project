@@ -241,7 +241,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               جواب واضح <span className="text-lilac">لكل سؤال في تربية أبنائك</span>
             </h1>
           </div>
-          <p className="text-base md:text-lg text-ink-soft font-medium leading-[1.8] max-w-sm">
+          <p className="hidden md:block text-base md:text-lg text-ink-soft font-medium leading-[1.8] max-w-sm">
             اكتب ما يشغلك، وسنقدّم لك جواباً هادئاً وخطوات بسيطة تبدأ بها اليوم.
           </p>
         </div>
@@ -398,7 +398,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                 <span className="text-[color:var(--tb-c-9a6042)]">حرجاً وصعباً؟</span>
               </h2>
               <p className="text-ink-mute text-sm md:text-base lg:text-lg max-w-xl leading-[1.7] font-bold">
-                في لحظات الانفعال، نحتاج للهدوء والحكمة. قسم الطوارئ يوفر لك حلولاً سريعة ومجربة للمواقف والطوارئ الضاغطة.
+                حلول سريعة ومجرّبة للمواقف الضاغطة.
               </p>
               <button 
                 onClick={onEmergency}

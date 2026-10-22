@@ -228,7 +228,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <h2 className="sr-only">
                     {getServiceName('decisionroom', language)}
                 </h2>
-                <p className="text-ink-mute font-medium text-[13px] md:text-sm max-w-2xl leading-relaxed">
+                <p className="hidden md:block text-ink-mute font-medium text-[13px] md:text-sm max-w-2xl leading-relaxed">
                     {language === 'ar' ? 'بيئة استراتيجية معزولة لتفكيك المعضلات واتخاذ قرارات مبنية على بيانات إدراكية عميقة.' : 'A secure strategic environment to dismantle dilemmas and make decisions based on deep cognitive insights.'}
                 </p>
              </div>
@@ -307,7 +307,7 @@ export const DecisionExecutiveTab = ({ language, handleTabChange, initialValue =
                 <div>
                   <p className="text-xs font-black tracking-[0.28em] uppercase text-lilac">{language === 'ar' ? 'رحلة قرار لا قائمة أدوات' : 'A decision journey, not a tool list'}</p>
                   <h2 className="mt-1 text-xl md:text-2xl font-black text-navy">{language === 'ar' ? 'تبيان يفتح لك الزاوية المناسبة فقط' : 'Tebyan opens only the right angle'}</h2>
-                  <p className="text-sm text-ink-mute font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، افتح زاوية إضافية بهدوء. الأدوات موجودة بالخلفية بدون زحمة.' : 'Need more depth? Open one extra angle calmly. The tools stay in the background.'}</p>
+                  <p className="hidden md:block text-sm text-ink-mute font-bold mt-1 max-w-2xl">{language === 'ar' ? 'إذا احتجت عمقاً أكثر، افتح زاوية إضافية بهدوء. الأدوات موجودة بالخلفية بدون زحمة.' : 'Need more depth? Open one extra angle calmly. The tools stay in the background.'}</p>
                 </div>
                 <button
                   type="button"

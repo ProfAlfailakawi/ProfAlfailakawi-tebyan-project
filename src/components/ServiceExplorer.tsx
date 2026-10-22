@@ -241,7 +241,7 @@ export const ServiceExplorer: React.FC<Props> = ({
                     <h2 id={`cat-${category.id}`} className="tebyan-service-group-title text-lg font-black text-navy md:text-xl">
                       {isArabic ? category.titleAr : category.titleEn}
                     </h2>
-                    <p className="mt-0.5 text-sm font-semibold leading-6 text-ink-mute">
+                    <p className="mt-0.5 hidden text-sm font-semibold leading-6 text-ink-mute md:block">
                       {isArabic ? category.descriptionAr : category.descriptionEn}
                     </p>
                   </div>
