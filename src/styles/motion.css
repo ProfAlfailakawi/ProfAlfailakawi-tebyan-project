@@ -1,0 +1,86 @@
+/* تبيان — نظام الحركة (الجولة 2). حركة هادئة لا تُزعج:
+   - transform + opacity فقط (وstroke-dashoffset عند الحاجة)، ‎120–300ms، بلا تكرار لانهائي.
+   - الحالة النهائية = التصميم الساكن تمامًا (animation-fill-mode: backwards، فلا يبقى transform
+     ولا يتكوّن سياق تموضع جديد بعد انتهاء الحركة).
+   - لا حركة على نصوص القراءة الطويلة ولا حقول الكتابة ولا الجداول ولا الاختبارات ولا المصحف.
+   - كل شيء مُعطَّل تحت prefers-reduced-motion: reduce. بلا JavaScript: المحتوى ظاهر دائمًا. */
+
+:root {
+  --tbm-ease: cubic-bezier(.2, .7, .2, 1);
+  --tbm-d1: 120ms;
+  --tbm-d2: 180ms;
+  --tbm-d3: 260ms;
+  --tbm-step: 40ms;
+  --tbm-rise: 8px;
+}
+
+@keyframes tbm-rise {
+  from { opacity: 0; transform: translateY(var(--tbm-rise)); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes tbm-fill {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes tbm-fade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* 1) ظهور متدرّج مرة واحدة لبطاقات/صفوف الشاشات «التصفّحية» فقط (حتى 8 عناصر، خطوة 40ms).
+        مستثناة: الأسئلة والاختبارات والمخطوطة والقصة والتواصل ومخرجات الذكاء الطويلة. */
+  :is(.tebyan-route-qawlfasl, .tebyan-route-decisionroom, .tebyan-route-creativelab, .tebyan-route-lab,
+      .tebyan-route-loyalty, .tebyan-route-mylibrary, .tebyan-route-rukni, .tebyan-route-analytics,
+      .tebyan-route-growth, .tebyan-route-discover, .tebyan-route-knowledgecenter)
+    :is(.grid, ul, ol, [class*="space-y-"], [class*="flex-col"])
+    > :is(a, button, article, section, li, div)[class*="rounded-"]:not([class*="animate-"]):nth-child(-n+8) {
+    animation: tbm-rise var(--tbm-d3) var(--tbm-ease) backwards;
+    animation-delay: calc(var(--tbm-i, 0) * var(--tbm-step));
+  }
+  :nth-child(1) { --tbm-i: 0; }
+  :nth-child(2) { --tbm-i: 1; }
+  :nth-child(3) { --tbm-i: 2; }
+  :nth-child(4) { --tbm-i: 3; }
+  :nth-child(5) { --tbm-i: 4; }
+  :nth-child(6) { --tbm-i: 5; }
+  :nth-child(7) { --tbm-i: 6; }
+  :nth-child(8) { --tbm-i: 7; }
+
+  /* 2) أشرطة التقدّم الحقيقية (عرضها من قيمة فعلية): تملأ مرة واحدة حتى قيمتها.
+        تُستثنى الاختبارات وأشرطة الرفع/التوليد (قيمها حيّة التغيّر). */
+  .tebyan-route-shell:not(.tebyan-route-quizzes):not(.tebyan-route-adminusers) :is([class~="h-full"][class*="rounded-full"])[style*="width"]:not([class*="transition"]) {
+    transform-origin: right center;
+    animation: tbm-fill 520ms var(--tbm-ease) 120ms backwards;
+  }
+  html[dir="ltr"] .tebyan-route-shell :is([class~="h-full"][class*="rounded-full"])[style*="width"]:not([class*="transition"]) { transform-origin: left center; }
+
+  /* 3) انفتاح عناصر <details> */
+  details[open] > :not(summary) { animation: tbm-fade var(--tbm-d2) var(--tbm-ease) backwards; }
+
+  /* 4) تفاعلات مجهرية: رفع خفيف عند التحويم، ضغط، ونقرة سهم الأمام */
+  :where(.tebyan-route-shell button, .tebyan-route-shell a) {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform, translate, scale;
+    transition-duration: var(--tbm-d2);
+    transition-timing-function: var(--tbm-ease);
+  }
+  @media (hover: hover) {
+    .tebyan-route-shell :is(a, button)[class*="rounded-2xl"]:not(:disabled):not([class*="translate"]):hover,
+    .tebyan-route-shell :is(a, button)[class*="rounded-3xl"]:not(:disabled):not([class*="translate"]):hover,
+    .tebyan-route-shell :is(a, button)[class*="rounded-[2"]:not(:disabled):not([class*="translate"]):hover,
+    .tebyan-route-shell :is(a, button)[class*="rounded-[3"]:not(:disabled):not([class*="translate"]):hover {
+      translate: 0 -1px;
+      box-shadow: var(--tbm-lift-shadow, 0 12px 26px -14px rgba(27, 42, 82, .28));
+    }
+    :is(button, a):not(:disabled):hover > svg.lucide-arrow-left:not([class*="translate"]) { translate: -3px 0; }
+    html[dir="ltr"] :is(button, a):not(:disabled):hover > svg.lucide-arrow-left:not([class*="translate"]) { translate: 3px 0; }
+    :is(button, a) > svg.lucide-arrow-left { transition: translate var(--tbm-d2) var(--tbm-ease); }
+  }
+  button:not(:disabled):active:not([class*="active:scale"]) { scale: .98; }
+}
+
+/* الحركة كلها داخل no-preference أعلاه؛ مع reduce لا يُطبَّق شيء منها فتظهر العناصر كاملة. */
+@media (prefers-reduced-motion: reduce) {
+  details[open] > :not(summary) { animation: none; }
+}
