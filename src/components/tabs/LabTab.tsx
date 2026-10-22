@@ -373,7 +373,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                  <Sparkles className="w-5 h-5" />
                  {language === 'ar' ? 'ماذا تريد من المختبر؟' : 'What do you need from the lab?'}
                </h2>
-               <p className="text-sm text-ink-mute font-bold mt-2">
+               <p className="hidden md:block text-sm text-ink-mute font-bold mt-2">
                  {language === 'ar' ? 'اختر مقصدك أولاً؛ الأدوات كلها موجودة، لكن تبيان يقرّب لك الأنسب.' : 'Choose your intent first; all tools remain available, Tibyan simply brings the best fit closer.'}
                </p>
              </div>
