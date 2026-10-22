@@ -471,8 +471,8 @@ export default function AdminQawlFasl() {
                  <td className="p-4 text-zinc-500">{CATEGORIES.find(c => c.id === (q.categoryId || q.categorySlug))?.title || q.category || 'غير مصنف'}</td>
                  <td className="p-4"><span className={`px-2 py-1 rounded text-xs font-bold ${q.status==='published' ? 'bg-emerald-100 text-emerald-800' : 'bg-zinc-100 text-zinc-800'}`}>{q.status === 'published' ? 'منشور' : q.status === 'draft' ? 'مسودة' : q.status}</span></td>
                  <td className="p-4 flex gap-2">
-                   <button onClick={() => { setEditingId(q.id); setFormData(q as any); }} className="text-zinc-400 hover:text-black disabled:opacity-30" disabled={isProcessing}><Edit2 size={16} /></button>
-                   <button onClick={() => remove(q.id)} className="text-zinc-400 hover:text-rose-600 disabled:opacity-30" disabled={isProcessing}><Trash2 size={16} /></button>
+                   <button aria-label="تعديل السؤال" onClick={() => { setEditingId(q.id); setFormData(q as any); }} className="text-zinc-400 hover:text-black disabled:opacity-30" disabled={isProcessing}><Edit2 size={16} /></button>
+                   <button aria-label="حذف السؤال" onClick={() => remove(q.id)} className="text-zinc-400 hover:text-rose-600 disabled:opacity-30" disabled={isProcessing}><Trash2 size={16} /></button>
                  </td>
               </tr>
             ))}

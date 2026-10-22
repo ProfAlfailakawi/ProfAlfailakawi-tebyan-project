@@ -871,6 +871,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             <div className="fixed top-20 left-6 z-50">
                 <button 
                     onClick={() => setShowInsights(true)}
+                    aria-label={language === 'ar' ? 'رؤى وتحليلات' : 'Insights'}
                     className="bg-lilac text-white p-3 md:p-4 rounded-full shadow-lg"
                 >
                     <Sparkles />
