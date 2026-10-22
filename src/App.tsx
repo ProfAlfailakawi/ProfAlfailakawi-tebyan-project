@@ -58,7 +58,7 @@ import {
 } from "./components/PWAInstallPrompt";
 import { OnboardingTour } from "./components/OnboardingTour";
 import { TebyanTooltip } from "./components/TebyanTooltip";
-import { getServiceTabs } from "./constants/serviceRegistry";
+import { getServiceTabs, getServiceName } from "./constants/serviceRegistry";
 
 import { migrateLegacyData } from "./lib/migration";
 
@@ -1531,11 +1531,16 @@ const AppContent: React.FC = () => {
 
       <main
         ref={mainRef}
+        tabIndex={-1}
         className={cn(
           "flex-1 w-full min-h-0 pt-24 pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
           `tebyan-route-${activeTab}`,
         )}
       >
+        {activeTab !== "home" && (
+          <h1 className="sr-only">{getServiceName(activeTab, language, language === "ar" ? "تبيان" : "Tebyan")}</h1>
+        )}
+
         {/* Error Banner */}
         {error && (
           <div className="m-4 md:m-8 bg-rose-50 border border-rose-200 text-rose-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-4 shadow-sm">

@@ -429,7 +429,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                     >
                       <span className="text-lilac font-bold text-sm pt-1">{String(i + 1).padStart(2, '0')}</span>
                       <div className="flex-1">
-                        <h4 className="text-base font-bold text-navy line-clamp-1 group-hover:text-lilac">{q.question || q.title}</h4>
+                        <h3 className="text-base font-bold text-navy line-clamp-1 group-hover:text-lilac">{q.question || q.title}</h3>
                         <p className="text-xs text-ink-mute mt-0.5">{q.mainCategory || 'عام'}</p>
                       </div>
                       <ArrowRight className="w-3 h-3 text-lilac -scale-x-100 group-hover:text-lilac self-center" />

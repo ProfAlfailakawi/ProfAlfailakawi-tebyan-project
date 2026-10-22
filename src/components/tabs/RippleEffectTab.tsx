@@ -860,6 +860,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 <div className="fixed bottom-6 right-6 z-50">
                      <button 
                         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        aria-label={language === 'ar' ? 'العودة إلى الأعلى' : 'Back to top'}
                         className="bg-zinc-800 text-white p-3 rounded-full shadow-lg hover:bg-zinc-700"
                     >
                         <ChevronUp />

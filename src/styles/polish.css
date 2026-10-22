@@ -50,3 +50,23 @@
   }
   main button.tebyan-run-action:not(:disabled):hover { background: var(--tbe-ink-2, #2d4478) !important; }
 }
+
+/* ───────── الجولة 3: تباين وتركيز (ألوان وحدود فقط) ───────── */
+
+/* حلقة التركيز تظهر فورًا: عناصر كثيرة تحمل transition-all فكانت الحلقة تنمو من 0 إلى 2px
+   (تأخير يُقرأ كغياب للحلقة عند أول تركيز بلوحة المفاتيح). نستثني outline من الانتقال. */
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform, translate, scale;
+  outline-width: 2px;
+}
+
+/* نصوص التقدّم/الخصم على الأبيض: الزمرّدي-600 (3.5:1) والوردي-600 (4.3:1) أخفّ من AA للنص الصغير الغامق. */
+.tebyan-route-shell .text-emerald-600:not(svg) { color: #047857; }
+.tebyan-route-shell .text-rose-600:not(svg) { color: #be123c; }
+
+/* زر «إزالة» الثانوي (نص رمادي فاتح 2.5:1 على بطاقة رمادية): نرفع النص فقط، والخلفية كما هي. */
+.tebyan-route-shell button.bg-stone-50.text-stone-400:not(:disabled) { color: #57534e; }
+.tebyan-route-shell button.bg-stone-50.text-stone-400:not(:disabled):hover { color: #be123c; }
+
+/* main صار قابلًا للتركيز برمجيًا (tabIndex=-1) لتخطي التنقل؛ لا حلقة على الحاوية نفسها. */
+main:focus, main:focus-visible { outline: none; }
