@@ -200,7 +200,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
             {nodes.filter(n => n.type !== 'core').map(node => (
               <button key={node.id} type="button" onClick={() => handleNodeClick(node)} className={cn("tebyan-fabric-node-card text-right rounded-[24px] border bg-white/82 p-4 transition-all", selectedNodes.find(n => n.id === node.id) ? "border-lilac ring-2 ring-lilac/40 bg-lilac-mist" : "border-[color:var(--tb-sky)]/16 hover:border-[color:var(--tb-lilac-soft)]/30")} aria-pressed={Boolean(selectedNodes.find(n => n.id === node.id))}>
                 <p className="text-xs font-black text-lilac mb-1">{language === 'ar' ? (({ concept: 'مفهوم', scientific: 'علمي', philosophical: 'فلسفي', practical: 'عملي', historical: 'تاريخي', golden: 'عقدة ذهبية', idea: 'فكرة' } as Record<string, string>)[node.category || node.type] || node.category || node.type) : (node.category || node.type)}</p>
-                <h4 className="font-black text-navy">{node.label}</h4>
+                <h3 className="font-black text-navy">{node.label}</h3>
                 <p className="text-xs font-bold text-ink-mute mt-2">{language === 'ar' ? 'اضغط لفتح البطاقة الجانبية والروابط.' : 'Tap to open the side card and links.'}</p>
               </button>
             ))}
@@ -426,6 +426,7 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                  </span>
                  <input 
                     type="range" 
+                    aria-label={language === 'ar' ? 'العصر الزمني' : 'Era'} 
                     min="1" max="4" 
                     value={timeEra} 
                     onChange={e => setTimeEra(parseInt(e.target.value))} 

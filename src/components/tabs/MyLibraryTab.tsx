@@ -241,7 +241,7 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
                                       <div className="bg-[color:var(--tb-c-f0ece1)] p-6 md:p-10 border border-[color:var(--tb-c-e0d6c8)] shadow-inner relative overflow-hidden h-[400px] md:h-[500px] flex flex-col justify-center text-center">
                                           <div className="absolute inset-0 bg-[color:var(--tb-c-e9dbce)] mix-blend-multiply opacity-20 pointer-events-none"></div>
                                           
-                                          <div className="relative z-10 h-full overflow-y-auto custom-scrollbar pr-2 flex flex-col justify-center">
+                                          <div tabIndex={0} className="relative z-10 h-full overflow-y-auto custom-scrollbar pr-2 flex flex-col justify-center">
                                             {title && <h3 className="text-[color:var(--tb-c-2a1e12)] font-black text-xl md:text-3xl leading-snug mb-6" style={{ fontFamily: 'Amiri, serif' }}>{title}</h3>}
                                             <div className="tbn-frame-text text-[color:var(--tb-c-4a3b2c)] font-medium leading-loose text-sm md:text-lg italic" style={{ fontFamily: 'Aref Ruqaa, auto' }}>
                                                 {type === 'oracle' ? <ReactMarkdown>{content.substring(0, 300) + (content.length > 300 ? '...' : '')}</ReactMarkdown> : content}

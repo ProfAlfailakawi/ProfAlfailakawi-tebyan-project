@@ -1531,15 +1531,13 @@ const AppContent: React.FC = () => {
 
       <main
         ref={mainRef}
-        tabIndex={-1}
+        tabIndex={0}
         className={cn(
           "flex-1 w-full min-h-0 pt-24 pb-0 overflow-y-auto overflow-x-hidden relative custom-scrollbar tebyan-route-shell",
           `tebyan-route-${activeTab}`,
         )}
       >
-        {activeTab !== "home" && (
-          <h1 className="sr-only">{getServiceName(activeTab, language, language === "ar" ? "تبيان" : "Tebyan")}</h1>
-        )}
+        <h1 className="sr-only">{activeTab === "home" ? (language === "ar" ? "تبيان" : "Tebyan") : getServiceName(activeTab, language, language === "ar" ? "تبيان" : "Tebyan")}</h1>
 
         {/* Error Banner */}
         {error && (

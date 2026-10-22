@@ -68,5 +68,11 @@
 .tebyan-route-shell button.bg-stone-50.text-stone-400:not(:disabled) { color: #57534e; }
 .tebyan-route-shell button.bg-stone-50.text-stone-400:not(:disabled):hover { color: #be123c; }
 
-/* main صار قابلًا للتركيز برمجيًا (tabIndex=-1) لتخطي التنقل؛ لا حلقة على الحاوية نفسها. */
-main:focus, main:focus-visible { outline: none; }
+/* main قابلة للتركيز (منطقة تمرير بلوحة المفاتيح): لا حلقة عند النقر، وحلقة داخلية عند Tab. */
+main:focus:not(:focus-visible) { outline: none; }
+main:focus-visible { outline-offset: -3px; }
+
+/* نصوص ثانوية صغيرة رمادية فاتحة على أسطح فاتحة (2.6:1) ← 4.8:1؛ الأسطح الداكنة لا تتأثر. */
+.tebyan-route-shell :is(.bg-white, .bg-zinc-50, .bg-stone-50) .text-zinc-400:not(svg) { color: #71717a; }
+/* رؤوس الجداول الإدارية: الرمادي-500 على الرمادي-100 (4.35:1) ← 7:1 */
+.tebyan-route-shell thead.bg-slate-100 { color: #475569; }

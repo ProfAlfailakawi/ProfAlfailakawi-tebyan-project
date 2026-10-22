@@ -959,7 +959,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                             </motion.div>
                         )}
 
-                        <label className="text-sm font-black text-mood-primary/40 uppercase flex items-center gap-2 px-1">
+                        <label className="text-sm font-black text-mood-primary/75 uppercase flex items-center gap-2 px-1">
                             <Sparkles className="w-4 h-4" />
                             {language === 'ar' ? 'ازرع بذرة فكرة مفتوحة المصدر' : 'PLANT AN OPEN SOURCE SEED'}
                         </label>
