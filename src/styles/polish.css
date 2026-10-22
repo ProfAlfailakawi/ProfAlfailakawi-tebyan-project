@@ -1,0 +1,52 @@
+/* تبيان — طبقة الصقل البصري (الجولة 2). عرضٌ فقط، تُحمَّل بعد elevation.css.
+   تبني على هوية «لازورد الحبر + ذهب السراج» ولا تكرّرها: توحيد اللون التفاعلي،
+   تدرّج طباعي أهدأ، وحالات فارغة أرقّ. لا تغيّر نصًا ولا سلوكًا ولا أبعاد التخطيط. */
+
+/* توحيد لون الإجراء في عدّة الـDNA (كان بنفسجيًا باهتًا بجانب اللازوردي في بقية الشاشات).
+   لازوردي #35539a على الأبيض ≥ 7:1، والأبيض عليه كذلك. */
+:root:root {
+  --dna-accent: var(--tbe-lapis, #35539a);
+  --dna-accent-soft: var(--tbe-lapis-mist, #e9eef8);
+  --dna-core: var(--tbe-ink, #1b2a52);
+  --dna-ink: #182440;
+  --dna-r-lg: 22px;
+}
+[data-dna-tone='lilac'][data-dna-tone] { --t-fg: var(--tbe-lapis, #35539a); --t-bgl: var(--tbe-lapis-mist, #e9eef8); }
+
+/* طباعة: موازنة أسطر العناوين والفقرات القصيرة بلا تغيير النص */
+.tebyan-route-shell :is(h1, h2, h3, .tebyan-tab-header__title, .dna-voidh) { text-wrap: balance; }
+.tebyan-route-shell :is(p, .dna-voids, .tebyan-tab-header__desc) { text-wrap: pretty; }
+
+/* الحالة الفارغة: هالة لازوردية ناعمة خلف الأيقونة بدل مربع مسطّح */
+.dna-voida::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--t-fg, var(--dna-accent)) 13%, transparent), transparent);
+  pointer-events: none;
+}
+.dna-voida > .dna-tile { position: relative; box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--t-fg, var(--dna-accent)) 45%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--t-fg, var(--dna-accent)) 16%, transparent); }
+
+/* درجة ارتفاع واحدة للبطاقات التفاعلية الكبيرة عند التحويم (الراحة كما هي) */
+@media (hover: hover) {
+  .tebyan-route-shell :is(a, button)[class*="rounded-2xl"],
+  .tebyan-route-shell :is(a, button)[class*="rounded-3xl"],
+  .tebyan-route-shell :is(a, button)[class*="rounded-[2"],
+  .tebyan-route-shell :is(a, button)[class*="rounded-[3"] { --tbm-lift-shadow: 0 12px 26px -14px rgba(27, 42, 82, .28); }
+}
+
+/* مؤشر التركيز: حلقة لازوردية بتباين كافٍ تتبع الهوية */
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline-color: var(--tbe-lapis, #35539a);
+}
+
+/* زر «تشغيل»: كان بنفسجيًا داكنًا (!important داخل @layer base) بجوار أزرار لازوردية.
+   نوحّده مع لون الإجراء؛ نكتب في الطبقة نفسها كي يعمل ترتيب المصدر. */
+@layer base {
+  main button.tebyan-run-action:not(:disabled) {
+    background: var(--tbe-lapis, #35539a) !important;
+    border-color: var(--tbe-lapis, #35539a) !important;
+  }
+  main button.tebyan-run-action:not(:disabled):hover { background: var(--tbe-ink-2, #2d4478) !important; }
+}
