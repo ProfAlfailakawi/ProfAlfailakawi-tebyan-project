@@ -181,7 +181,7 @@ export const AnalyticsTab = ({ language, handleTabChange }: { language: string, 
                 </form>
               </div>
 
-              <div className="bg-zinc-50 border rounded-[24px] p-6 shadow-inner max-h-[300px] overflow-y-auto">
+              <div tabIndex={0} role="region" aria-label={language === 'ar' ? 'السجلات النشطة' : 'Active Logs'} className="bg-zinc-50 border rounded-[24px] p-6 shadow-inner max-h-[300px] overflow-y-auto">
                  <h4 className="font-bold text-zinc-500 mb-4">{language === 'ar' ? 'السجلات النشطة' : 'Active Logs'}</h4>
                  {logs.length === 0 ? (
                    <div className="text-center text-zinc-400 font-medium py-8">{language === 'ar' ? 'لا توجد سجلات بعد.' : 'No logs yet.'}</div>
