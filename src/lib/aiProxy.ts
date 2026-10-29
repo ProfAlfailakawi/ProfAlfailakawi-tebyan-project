@@ -3,6 +3,7 @@ import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } 
 import { getAppCheckHeaders } from "./appCheck";
 import { IS_DEMO_MODE } from "./demoMode";
 import { demoAiResponse, demoAudioResponse } from "./demoAi";
+import { apiAnswers, isPlatformUpdating, showUpdatingNotice, UPDATING_MESSAGE } from "./updatingNotice";
 
 /**
  * AI Proxy for Client-side usage.
@@ -68,6 +69,11 @@ ${buildUserAddressingInstruction(addressing)}
   }
 
   const contentType = response.headers.get('content-type');
+  // 5xx بصفحة HTML: منصّة Google تجيب بدل الدالة (نشرٌ أو تعثّر) — شريطٌ هادئ لا خطأ غامض.
+  if (isPlatformUpdating(response.status, contentType)) {
+    showUpdatingNotice(apiAnswers);
+    throw new Error(UPDATING_MESSAGE);
+  }
   if (!contentType || !contentType.includes('application/json')) {
     // If we got HTML, log the start of it for debugging
     const htmlSnippet = await response.text();
@@ -158,6 +164,11 @@ export async function proxyGenerateAudio(params: {
   }
 
   const contentType = response.headers.get('content-type');
+  // 5xx بصفحة HTML: منصّة Google تجيب بدل الدالة (نشرٌ أو تعثّر) — شريطٌ هادئ لا خطأ غامض.
+  if (isPlatformUpdating(response.status, contentType)) {
+    showUpdatingNotice(apiAnswers);
+    throw new Error(UPDATING_MESSAGE);
+  }
   if (!contentType || !contentType.includes('application/json')) {
     throw new Error('يبدو أنك تستخدم النسخة المرفوعة (Static) والتي لا تحتوي على خادم (Backend) لدعم الذكاء الاصطناعي. يرجى التأكد من تشغيل التطبيق في بيئة تدعم خادم Node.js.');
   }

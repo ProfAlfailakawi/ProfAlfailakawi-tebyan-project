@@ -15,12 +15,50 @@ const APP_SHELL = [
   '/pwa-maskable-512.png',
 ];
 
+/* «نُحدّث البرنامج» بدل صفحة Google الإنجليزية. التنقّل يُجاب من Firebase Hosting، فلا
+   فجوة نشرٍ هنا عادةً؛ لكن إن أجابت الاستضافة تنقّلاً بـ 500/502/503/504 قُدّمت هذه الصفحة
+   (503، no-store) من الكاش، وهي تعيد فتح الرابط نفسه حين يعود الموقع. لا تمسّ /api ولا غير
+   GET ولا الجواب الناجح، ولا يُحفظ أيّ 5xx. انقطاعُ الطلب يبقى كما كان: هيكل التطبيق. */
+const UPDATING_PAGE = '/updating.html';
+const isUpdatingStatus = (status) => status === 500 || status === 502 || status === 503 || status === 504;
+const storeUpdatingPage = () =>
+  fetch(UPDATING_PAGE, { cache: 'no-store', credentials: 'same-origin' })
+    .then((response) => {
+      if (!response.ok || !(response.headers.get('content-type') || '').includes('text/html')) return undefined;
+      return caches.open(CACHE_VERSION).then((cache) => cache.put(UPDATING_PAGE, response));
+    })
+    .catch(() => undefined);
+/* مسحها التعافي مع كل الكاش؟ تُعاد بعد أول تنقّلٍ ناجح، ولا يُنتظر ذلك. */
+const refillUpdatingPage = () =>
+  caches
+    .open(CACHE_VERSION)
+    .then((cache) => cache.match(UPDATING_PAGE))
+    .then((hit) => (hit ? undefined : storeUpdatingPage()))
+    .catch(() => undefined);
+const updatingResponse = () =>
+  caches
+    .open(CACHE_VERSION)
+    .then((cache) => cache.match(UPDATING_PAGE))
+    .then((page) => {
+      if (!page) return null;
+      return page.text().then(
+        (body) =>
+          new Response(body, {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Retry-After': '5', 'X-Tebyan-Updating': '1' },
+          }),
+      );
+    })
+    .catch(() => null);
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_VERSION)
       .then((cache) => cache.addAll(APP_SHELL))
       .catch(() => {})
+      .then(() => storeUpdatingPage())
       .then(() => self.skipWaiting()),
   );
 });
@@ -62,10 +100,12 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(url.pathname + url.search, { cache: 'no-store', credentials: 'same-origin', redirect: 'manual' })
         .then((response) => {
+          if (isUpdatingStatus(response.status)) return updatingResponse().then((page) => page || response);
           if (url.pathname === '/' && response.ok && response.type === 'basic' && !response.redirected) {
             const copy = response.clone();
             caches.open(CACHE_VERSION).then((cache) => cache.put('/', copy));
           }
+          if (response.ok) void refillUpdatingPage();
           return response;
         })
         .catch(() =>
