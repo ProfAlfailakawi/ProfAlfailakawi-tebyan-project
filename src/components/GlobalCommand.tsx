@@ -8,7 +8,7 @@ import { useCognitiveMode } from '../contexts/CognitiveModeContext';
 import { useAcoustics } from '../hooks/useAcoustics';
 import { TebyanTooltip } from './TebyanTooltip';
 
-export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange }: { isOpen: boolean, onClose: () => void, language: string, tabs: any[], handleTabChange: (tab: string) => void }) => {
+export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange }: { isOpen: boolean, onClose: () => void, language: string, tabs: any[], handleTabChange: (tab: string, context?: string) => void }) => {
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
     if (qLower.includes('حاكي') || qLower.includes('محاكاة') || qLower.includes('simulate')) {
         playSound('chime');
         sessionStorage.setItem('tebyan_current_query', query);
-        handleTabChange('simulation');
+        handleTabChange('simulation', query);
         onClose();
         return;
     }
@@ -66,7 +66,8 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
     if (qLower.includes('زمن') || qLower.includes('استشرف') || qLower.includes('time machine') || qLower.includes('مستقبل')) {
         playSound('chime');
         sessionStorage.setItem('tebyan_time_query', query);
-        handleTabChange('time-machine');
+        // The tab id is 'timemachine'; 'time-machine' rendered an empty screen.
+        handleTabChange('timemachine', query);
         onClose();
         return;
     }
@@ -75,7 +76,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
     if (qLower.includes('خريطة') || qLower.includes('mindmap') || qLower.includes('تفكيك')) {
         playSound('chime');
         sessionStorage.setItem('tebyan_mindmap_query', query);
-        handleTabChange('mindmap');
+        handleTabChange('mindmap', query);
         onClose();
         return;
     }
@@ -84,7 +85,8 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
     if (qLower.includes('أوراكل') || qLower.includes('oracle')) {
         playSound('chime');
         sessionStorage.setItem('tebyan_current_query', query);
-        handleTabChange('gateway');
+        // There is no 'gateway' tab (it rendered an empty screen); the Oracle is 'oracle'.
+        handleTabChange('oracle', query);
         onClose();
         return;
     }

@@ -1,7 +1,7 @@
 import './lib/demoStorage';
 import React, {StrictMode, lazy, Suspense} from 'react';
 import {createRoot} from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
 import './components/dna/dna-theme.css';
@@ -31,6 +31,13 @@ if ('serviceWorker' in navigator) {
 }
 
 const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+
+// Any other path (a typo, an old link, /index.html) used to match no route and
+// leave a blank page. Send it to the home page, keeping ?tab=… and #… intact.
+function RedirectHome() {
+  const { search, hash } = useLocation();
+  return <Navigate to={{ pathname: '/', search, hash }} replace />;
+}
 
 declare global {
   interface Window {
@@ -65,6 +72,7 @@ createRoot(document.getElementById('root')!).render(
                 <AdminDashboard />
               </AdminRoute>
             } />
+            <Route path="*" element={<RedirectHome />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

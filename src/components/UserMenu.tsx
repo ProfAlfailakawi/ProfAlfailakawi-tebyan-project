@@ -3,6 +3,7 @@ import { LogOut, User as UserIcon, Shield, LayoutDashboard, UserCircle, Sparkles
 import { auth, db } from '../lib/firebase';
 import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
+import { clearLocalUserDataOnSignOut } from '../lib/localUserData';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import ClientProfilePanel from './ClientProfilePanel';
@@ -143,15 +144,9 @@ export default function UserMenu() {
               <button 
                 onClick={() => {
                   setIsOpen(false);
-                  localStorage.removeItem('tebyan_memory');
-                  localStorage.removeItem('tebyan_cognitive_memory');
-                  localStorage.removeItem('tebyan_sage_progress');
-                  localStorage.removeItem('tebyan_search_history');
-                  localStorage.removeItem('tebyan_usage_stats');
-                  localStorage.removeItem('tebyan_analytics_logs');
-                  localStorage.removeItem('tebyan_galaxy_cache');
-                  localStorage.removeItem('tebyan_custom_avatar');
-                  localStorage.removeItem('tebyan_style_confirmed');
+                  // Same list as the profile panel's sign-out, including the
+                  // «الذاكرة المعرفية» questions the next account would see.
+                  clearLocalUserDataOnSignOut();
                   if (IS_DEMO_MODE) { exitDemoMode(); return; }
                   auth.signOut();
                 }}

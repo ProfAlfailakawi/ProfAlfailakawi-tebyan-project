@@ -12,6 +12,7 @@ import { DnaIconTile, DnaRing, DnaStepper, DnaCountUp, DnaDrawIn } from './dna/D
 import { levels } from '../constants/gamification';
 import { useAuth } from './AuthProvider';
 import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
+import { clearLocalUserDataOnSignOut, clearQuestionHistory } from '../lib/localUserData';
 import { useUser } from '../contexts/UserContext';
 import { auth, db } from '../lib/firebase';
 import { doc } from 'firebase/firestore';
@@ -366,7 +367,10 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
   // يمحو فعلياً كل ما يعتمد عليه هذا اللوح: الذاكرة، السجل، والتحليل المخزّن.
   const clearMemory = () => {
     if(window.confirm('سيتم محو سجل أسئلتك وتحليلها المحفوظ على هذا الجهاز. لا يمكن التراجع. هل تريد المتابعة؟')) {
-      ['tebyan_memory', 'tebyan_search_history', 'tebyan_galaxy_cache'].forEach(k => localStorage.removeItem(k));
+      // Includes «الذاكرة المعرفية» (tebyan_thought_memory) shown in this panel,
+      // which the old list left behind and kept sending to the AI as context.
+      clearQuestionHistory();
+      setKnowledgeTree([]);
       setContextKeywords([]);
       setFrequentKeyword('لا يوجد بعد');
       setArchivedSessions([]);
@@ -1071,8 +1075,11 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   <div className="border-t border-[color:var(--tb-sky)]/15 pt-6">
                      <button onClick={() => {
                         onClose();
+                        // This sign-out cleared nothing, so the next account on the
+                        // device saw this user's question archive and memory.
+                        clearLocalUserDataOnSignOut();
                         if (IS_DEMO_MODE) { exitDemoMode(); return; }
-                  auth.signOut();
+                        auth.signOut();
                         window.location.reload();
                      }} className="w-full py-3 bg-slate-100 hover:bg-rose-50 text-[color:var(--tb-c-3d4a5a)] hover:text-rose-600 rounded-xl text-sm font-bold transition-colors">
                          تسجيل الخروج من الحساب

@@ -53,13 +53,19 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api')) return;
 
   /* Navigations (HTML) always come from the network with cache: "no-store" — a stored
-     shell names hashed bundles the next deploy removed. Cache is an offline fallback only. */
+     shell names hashed bundles the next deploy removed. Cache is an offline fallback only.
+     redirect: 'manual' hands a redirect (Hosting sends /qawl/q-5 → /qawl/q-5/) back to the
+     browser: a navigation answered with an already-followed redirect is a network error.
+     Only the real app shell at "/" becomes the offline page — never a static article,
+     a redirect or an error response. */
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(url.pathname + url.search, { cache: 'no-store', credentials: 'same-origin' })
+      fetch(url.pathname + url.search, { cache: 'no-store', credentials: 'same-origin', redirect: 'manual' })
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_VERSION).then((cache) => cache.put('/', copy));
+          if (url.pathname === '/' && response.ok && response.type === 'basic' && !response.redirected) {
+            const copy = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put('/', copy));
+          }
           return response;
         })
         .catch(() =>

@@ -5,6 +5,7 @@ import { CATEGORIES, MAIN_CATEGORIES, QawlFaslQuestion } from './types';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { GeminiKeyMissingError } from '../../../services/qawlFaslAiService';
 import { useSmartSearch } from '../../../hooks/useSmartSearch';
+import { findLocalQawlMatch } from '../../../lib/qawlSearch';
 import { TebyanLoader } from '../../ui/TebyanLoader';
 import { DnaIconTile, DnaCount } from '../../dna/DnaKit';
 import type { DnaTone } from '../../dna/DnaKit';
@@ -86,9 +87,13 @@ interface Props {
   questions: QawlFaslQuestion[];
   initialValue?: string;
   onValueUsed?: () => void;
+  /** Only an admin can save a generated answer to the library (firestore.rules). */
+  canPublish?: boolean;
+  /** Hand a question with no ready answer to the main «اسأل تبيان» flow. */
+  onAskTebyan?: (query: string) => void;
 }
 
-export default function HomeView({ onEmergency, onQuestion, onCategory, lastViewedId, questions, initialValue, onValueUsed }: Props) {
+export default function HomeView({ onEmergency, onQuestion, onCategory, lastViewedId, questions, initialValue, onValueUsed, canPublish = false, onAskTebyan }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -153,6 +158,15 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
   const displayedDaily = dailyQuestions.length > 0 ? dailyQuestions : fallbackDaily;
 
+  // «رائج الآن» lists raw visitor queries from search_trends: any visitor can add
+  // search logs, and on a quiet day one parent's private question can top the
+  // list shown to everyone. Show only terms that lead to an answer already in
+  // the library (generic topics), which is also what a click on them promises.
+  const visibleTrends = React.useMemo(
+    () => trendingSearches.filter((t) => typeof t?.query === 'string' && findLocalQawlMatch(questions, t.query)),
+    [trendingSearches, questions],
+  );
+
   useEffect(() => {
     if (initialValue && initialValue.trim().length > 2) {
       const cleanInitialValue = normalizeQawlSearchText(initialValue);
@@ -175,20 +189,37 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
   const [isSearching, setIsSearching] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // A search with no ready answer, for visitors who cannot publish one.
+  const [missQuery, setMissQuery] = useState<string | null>(null);
 
   const handleSearchRecursive = async (query: string) => {
     if (query.trim().length > 2) {
       setIsSearching(true);
       setIsGenerating(false);
       setError(null);
+      setMissQuery(null);
+      const cleanQuery = normalizeQawlSearchText(query);
       try {
-        const cleanQuery = normalizeQawlSearchText(query);
         if (cleanQuery !== searchQuery) setSearchQuery(cleanQuery);
+        // The library on screen (built-in + published, or the demo library)
+        // first, with Arabic-tolerant matching: «اين الله» finds «أين الله؟».
+        const localMatch = findLocalQawlMatch(questions, cleanQuery);
+        if (localMatch) {
+          await qawlFaslService.logSearch(cleanQuery, true);
+          onQuestion(localMatch);
+          return;
+        }
         const results = await qawlFaslService.searchQuestions(cleanQuery);
         await qawlFaslService.logSearch(cleanQuery, results.length > 0);
         
         if (results.length > 0) {
           onQuestion(results[0]);
+        } else if (!canPublish) {
+          // Generating here would spend a Gemini call whose answer the library
+          // then refuses to save (writes are admin-only), and the visitor was
+          // dropped into the emergency guide with no explanation. Say so
+          // plainly and offer the next steps instead.
+          setMissQuery(cleanQuery);
         } else {
           setIsSearching(false);
           setIsGenerating(true);
@@ -218,7 +249,8 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
         }
       } catch (err) {
         console.error(err);
-        onEmergency();
+        if (canPublish) onEmergency();
+        else setMissQuery(cleanQuery);
       } finally {
         setIsSearching(false);
         setIsGenerating(false);
@@ -300,6 +332,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                        setIsSearching(false);
                        setIsGenerating(false);
                        setError(null);
+                       setMissQuery(null);
                      }}
                      className="absolute right-11 top-5 sm:top-1/2 sm:-translate-y-1/2 text-ink-mute hover:text-rose-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-rose-50 transition-colors z-10"
                    >
@@ -351,6 +384,33 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               </div>
             )}
 
+            {missQuery && !isSearching && !isGenerating && (
+              <div className="mt-8 flex justify-center" role="status">
+                <div className="w-full max-w-2xl bg-lilac-mist/60 border border-lilac-soft/25 px-5 md:px-7 py-5 rounded-3xl shadow-sm text-right space-y-3">
+                  <p className="text-navy font-bold md:text-lg leading-relaxed">لا يوجد في المكتبة جواب جاهز لهذا السؤال بعد.</p>
+                  <p className="text-ink-soft text-sm md:text-base leading-relaxed">جرّب كلمة أقصر أو تصفّح الأبواب أدناه. وإن كان الموقف عاجلاً فدليل الطوارئ يرشدك لأول خطوة.</p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {onAskTebyan && (
+                      <button
+                        type="button"
+                        onClick={() => onAskTebyan(missQuery)}
+                        className="bg-lilac hover:bg-lilac-deep text-white px-5 py-2.5 rounded-full font-bold text-sm md:text-base transition-colors"
+                      >
+                        اسأل تبيان عن سؤالك
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={onEmergency}
+                      className="bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 px-5 py-2.5 rounded-full font-bold text-sm md:text-base transition-colors"
+                    >
+                      دليل الطوارئ
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {error && (
               <div className="mt-8 flex justify-center">
                 <div className="bg-rose-50 border border-rose-200 px-8 py-4 rounded-full flex items-center gap-4 shadow-sm text-rose-800 font-bold text-center">
@@ -359,10 +419,10 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               </div>
             )}
 
-            {trendingSearches.length > 0 && !isGenerating && (
+            {visibleTrends.length > 0 && !isGenerating && (
               <div className="mt-6 md:mt-8 flex flex-wrap gap-2 md:gap-3 justify-center items-center">
                 <span className="text-ink-soft text-sm font-bold pl-2 py-2">رائج الآن:</span>
-                {trendingSearches.map((term, i) => (
+                {visibleTrends.map((term, i) => (
                   <button 
                     key={i} 
                     onClick={() => {

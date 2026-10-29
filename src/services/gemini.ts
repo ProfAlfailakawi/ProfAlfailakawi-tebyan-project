@@ -9,11 +9,11 @@ const Type = {
 };
 
 import { perfMonitor } from "../lib/performance";
-import { IS_DEMO_MODE } from "../lib/demoMode";
 import { proxyGenerateContent } from "../lib/aiProxy";
 import { db } from "../lib/firebase";
 import { collection, serverTimestamp } from "firebase/firestore";
 import { addDoc } from "../lib/firestoreWrites";
+import { AI_CACHE_MAX_ENTRIES, buildAiCacheKey } from "../lib/aiCacheKey";
 import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
 
 export const ai: any = {
@@ -70,12 +70,13 @@ ${buildUserAddressingInstruction(addressing)}
     systemInstruction: tweakedSystemInstruction
   };
 
-  // Faster cache key generation: use a simple hash of the prompt instead of stringifying the whole config
   const promptText = params.contents?.[0]?.parts?.[0]?.text || "";
   const modelName = params.model || "gemini";
   const persona = params.config?.systemInstruction || "";
-  const cacheKey = `${modelName}-${promptText.substring(0, 100)}-${persona.substring(0, 100)}`;
-  
+  // The whole request is the key: a 100-character prefix made different topics
+  // (roadmap goal, council topic, simulation…) return the previous answer.
+  const cacheKey = buildAiCacheKey(params);
+
   if (!params.skipCache && aiCache.has(cacheKey)) {
     return aiCache.get(cacheKey);
   }
@@ -88,6 +89,9 @@ ${buildUserAddressingInstruction(addressing)}
   perfMonitor.recordApiCall(modelName, durationMs);
   
   if (!params.skipCache) {
+    if (aiCache.size >= AI_CACHE_MAX_ENTRIES) {
+      aiCache.delete(aiCache.keys().next().value);
+    }
     aiCache.set(cacheKey, result);
   }
   
@@ -381,7 +385,9 @@ export async function generateSimulation(topic: string = 'Digital Transformation
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: [{ parts: [{ text: IS_DEMO_MODE ? `ابدأ المحاكاة الآن حول: ${topic}` : "ابدأ المحاكاة الآن" }] }],
+        // The topic must reach the model in production too; without it every
+        // simulation was a generic scenario unrelated to what the user typed.
+        contents: [{ parts: [{ text: `ابدأ المحاكاة الآن حول: ${topic}` }] }],
         config: {
           systemInstruction,
           responseMimeType: "application/json",

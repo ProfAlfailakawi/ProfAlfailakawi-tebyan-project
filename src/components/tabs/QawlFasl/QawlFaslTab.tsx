@@ -11,6 +11,9 @@ import { mockQuestions as fallbackMock } from './mockData';
 import { qawlFaslService } from '../../../services/qawlFaslService';
 import { IS_DEMO_MODE } from '../../../lib/demoMode';
 import { loadDemoLibrary } from '../../../data/demoLibrary';
+import { useAuth } from '../../AuthProvider';
+import { isAdminIdentity } from '../../../lib/adminAccess';
+import { isQawlQuestionId } from '../../../lib/qawlSearch';
 
 import { MessageCircleQuestion } from 'lucide-react';
 import { TabHeader } from '../../TabHeader';
@@ -27,23 +30,35 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
   const [questions, setQuestions] = useState<QawlFaslQuestion[]>(fallbackMock);
   const [lastViewedId, setLastViewedId] = useState<string | null>(null);
 
-  const [consumedQuery, setConsumedQuery] = useState(false);
+  // The search text HomeView already ran. A boolean reset in a parent effect ran
+  // after the child had consumed the value (child effects run first), so every
+  // return to the library home re-ran the same search.
+  const [consumedValue, setConsumedValue] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    setConsumedQuery(false);
-  }, [initialValue]);
+  // Writing to the library is admin-only (firestore.rules: qawl_fasl_questions,
+  // system_config). For anyone else the daily generator and the instant
+  // "missing answer" generator spend Gemini calls whose result is then refused.
+  const { user, profile } = useAuth();
+  const canPublish = !IS_DEMO_MODE && (isAdminIdentity(user) || profile?.role === 'admin');
 
+  // A deep link (/?tab=qawlfasl&q=q-5 from the static pages, or /qawl/<id>)
+  // carries a question id, not search text: it opens that answer and must not
+  // be searched as if the visitor had typed "q-5".
+  const initialIsQuestionId = isQawlQuestionId(initialValue, questions.map(q => q.id));
+
+  const dailyTriggered = useRef(false);
   useEffect(() => {
-    // التوليد اليومي يكتب إلى Firestore، فلا مكان له في وضع العرض.
-    if (IS_DEMO_MODE) return;
+    // التوليد اليومي يكتب إلى Firestore، فلا مكان له في وضع العرض ولا لغير المدير.
+    if (!canPublish || dailyTriggered.current) return;
+    dailyTriggered.current = true;
     // Trigger daily generation if needed
     qawlFaslService.triggerDailyGenerationIfNecessary().catch(err => {
       console.warn("Daily trigger skipped or failed (common if not admin or quota reached):", err);
     });
-  }, []);
+  }, [canPublish]);
 
   useEffect(() => {
-    if (initialValue && initialValue.trim().length > 2) {
+    if (initialValue && initialValue.trim().length > 2 && !initialIsQuestionId) {
       // Store in persistence
       localStorage.setItem('tebyan_last_query', initialValue);
       sessionStorage.setItem('tebyan_current_query', initialValue);
@@ -196,8 +211,10 @@ export const QawlFaslTab = ({ language, initialValue, onValueUsed, onSearch, han
               onEmergency={goToEmergency} 
               onQuestion={goToQuestion} 
               onCategory={goToCategory} 
-              initialValue={consumedQuery ? undefined : initialValue}
-              onValueUsed={() => setConsumedQuery(true)}
+              initialValue={initialValue && !initialIsQuestionId && initialValue !== consumedValue ? initialValue : undefined}
+              onValueUsed={() => setConsumedValue(initialValue)}
+              canPublish={canPublish}
+              onAskTebyan={(q: string) => handleTabChange('home', q)}
             />
           </motion.div>
         )}

@@ -72,7 +72,7 @@ const head = (title, description, url) => `<!doctype html>
      page gets type from our origin and, once installed, offline. -->
 <link rel="stylesheet" href="/fonts/fonts.css">
 <style>
-  :root{--paper:#F8F5EF;--surface:#fff;--ink:#182231;--muted:#64788D;--line:#E4DDEE;
+  :root{--paper:#F8F5EF;--surface:#fff;--ink:#182231;--muted:#5A6C80;--line:#E4DDEE;
   --accent:#6E5B91;--accent-soft:#EFEAF6;--lilac:#6E5B91;
   --say:#3E7C5B;--say-bg:#E9F2EC;--dont:#A8433B;--dont-bg:#F8EAE7;--now:#4A6C8C;--now-bg:#E9EFF5;--quote:#F1ECF6}
   *{box-sizing:border-box}
@@ -149,7 +149,9 @@ const head = (title, description, url) => `<!doctype html>
 const footer = `<footer>قول فصل — مكتبة الأجوبة التربوية الموثوقة · جزء من منظومة <a href="/">تبيان</a></footer></body></html>`;
 
 const questionPage = (q) => {
-  const url = `${SITE}/qawl/${q.id}`;
+  // With the trailing slash: Hosting 301-redirects /qawl/<id> to /qawl/<id>/ (the page is a
+  // folder index), and a canonical, sitemap or card link should not point at a redirect.
+  const url = `${SITE}/qawl/${q.id}/`;
   const desc = q.quickSummary || "";
   const trust = trustOf(q);
   const author = { "@type": "Person", name: trust.reviewers[0], url: SITE };
@@ -236,7 +238,7 @@ const indexPage = () => {
 <p style="text-align:center;color:var(--muted);max-width:52ch;margin:10px auto 0">
 ${questions.length} سؤالاً محسوماً بمراجعة تربوية وشرعية — لكل سؤال جوابه الكامل: ماذا تقول، وماذا لا تقول، وماذا تفعل الآن.</p>
 <div class="grid">
-${questions.map((q) => `<a class="qcard" href="/qawl/${q.id}"><h3>${esc(q.title)}</h3><p>${esc((q.quickSummary || "").slice(0, 120))}…</p></a>`).join("\n")}
+${questions.map((q) => `<a class="qcard" href="/qawl/${q.id}/"><h3>${esc(q.title)}</h3><p>${esc((q.quickSummary || "").slice(0, 120))}…</p></a>`).join("\n")}
 </div></div>`;
   return (
     head("قول فصل — مرجع الوالدين الموثوق", `${questions.length} جواباً محسوماً ومراجعاً لأصعب أسئلة الأطفال ومواقف التربية.`, url) +
@@ -259,7 +261,7 @@ for (const q of questions) {
 const smPath = path.join(root, "public", "sitemap.xml");
 let sm = fs.readFileSync(smPath, "utf8");
 sm = sm.replace(/\s*<url><loc>[^<]*\/qawl[^<]*<\/loc><\/url>/g, "");
-const entries = [`  <url><loc>${SITE}/qawl/</loc></url>`, ...questions.map((q) => `  <url><loc>${SITE}/qawl/${q.id}</loc></url>`)].join("\n");
+const entries = [`  <url><loc>${SITE}/qawl/</loc></url>`, ...questions.map((q) => `  <url><loc>${SITE}/qawl/${q.id}/</loc></url>`)].join("\n");
 sm = sm.replace("</urlset>", `${entries}\n</urlset>`);
 fs.writeFileSync(smPath, sm);
 

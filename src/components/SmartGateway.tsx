@@ -978,16 +978,26 @@ export const SmartGateway: React.FC<
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Type-to-focus: a printable key pressed while no field has focus goes into
+    // the question box. Space is left alone (it activates the focused button or
+    // link), and keys typed inside an open dialog or menu stay there.
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.defaultPrevented) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (!e.key || e.key.length !== 1 || e.key === " ") return;
+      const active = document.activeElement as HTMLElement | null;
       if (
-        document.activeElement?.tagName === "INPUT" ||
-        document.activeElement?.tagName === "TEXTAREA"
+        active &&
+        (active.tagName === "INPUT" ||
+          active.tagName === "TEXTAREA" ||
+          active.tagName === "SELECT" ||
+          active.isContentEditable ||
+          active.closest(
+            '[role="dialog"], [aria-modal="true"], [role="menu"], [role="listbox"]',
+          ))
       )
         return;
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      if (e.key && e.key.length === 1) {
-        inputRef.current?.focus();
-      }
+      inputRef.current?.focus();
     };
     window.addEventListener("keydown", handleGlobalKeyDown);
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
@@ -3339,29 +3349,39 @@ export const SmartGateway: React.FC<
                         : "Write your question here, even if it is not organized"
                     }
                     onKeyDown={(e) => {
+                      // Only a completion the user can actually see (the faint
+                      // ghost text after their words) may take over these keys.
+                      // A rewrite is never drawn, so Enter must submit what
+                      // they typed instead of silently swapping it.
+                      const ghostSuggestion =
+                        smartSuggestion &&
+                        smartSuggestion.length > searchValue.length &&
+                        smartSuggestion.startsWith(searchValue)
+                          ? smartSuggestion
+                          : "";
                       if (
                         (e.key === "Tab" ||
                           (e.key === "Enter" && !e.shiftKey)) &&
-                        smartSuggestion
+                        ghostSuggestion
                       ) {
                         e.preventDefault();
-                        setSearchValue(smartSuggestion);
-                        latestInputRef.current = smartSuggestion;
+                        setSearchValue(ghostSuggestion);
+                        latestInputRef.current = ghostSuggestion;
                         setSmartSuggestion("");
                       } else if (e.key === "Enter" && !e.shiftKey) {
                         e.preventDefault();
                         handleSubmit(undefined, searchValue);
                       } else if (
                         (e.key === "ArrowRight" || e.key === "ArrowLeft") &&
-                        smartSuggestion
+                        ghostSuggestion
                       ) {
                         if (
                           e.currentTarget.selectionStart === searchValue.length
                         ) {
                           e.preventDefault();
-                          setSearchValue(smartSuggestion);
-                          latestInputRef.current = smartSuggestion;
-                          setQuery(smartSuggestion);
+                          setSearchValue(ghostSuggestion);
+                          latestInputRef.current = ghostSuggestion;
+                          setQuery(ghostSuggestion);
                           setSmartSuggestion("");
                         }
                       }
