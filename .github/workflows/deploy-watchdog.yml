@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      SITE: https://tebyan-clean-2026.web.app
+      SITE: https://tebyan-app-2026.web.app
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Live site serves the latest main commit

@@ -14,8 +14,8 @@ import cors from "cors";
 // عبر متغيّر البيئة TEBYAN_ALLOWED_ORIGINS (مفصولة بفواصل).
 const DEFAULT_ALLOWED_ORIGINS = [
   "https://tebyan.dr-alfailakawi.com",
-  "https://tebyan-clean-2026.web.app",
-  "https://tebyan-clean-2026.firebaseapp.com",
+  "https://tebyan-app-2026.web.app",
+  "https://tebyan-app-2026.firebaseapp.com",
 ];
 const allowedOrigins = () => {
   const configured = String(process.env.TEBYAN_ALLOWED_ORIGINS || "")

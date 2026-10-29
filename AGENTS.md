@@ -63,8 +63,8 @@
     *.backup*
 
 الوضع الحالي الصحيح (محدّث 2026-07-08 ليطابق الواقع):
-- Firebase project: tebyan-clean-2026  (سابقاً tebyan-80d93 — تم الانتقال)
-- Hosting site: tebyan-clean-2026
+- Firebase project: tebyan-app-2026 (حساب volcanokw — نُقل في 2026-10-29؛ قبله tebyan-clean-2026 ثم tebyan-80d93)
+- Hosting site: tebyan-app-2026
 - باك-إند الإنتاج: Cloud Function باسم "api" (region us-central1) — هو المربوط في firebase.json عبر /api/**
 - باك-إند التطوير/البديل: server.ts (يُشغَّل عبر `npm run dev`، ويُبنى إلى dist/server.js وهو نسخة Cloud Run tebyan-api)
 - قاعدة مهمة: يجب إبقاء functions/index.js و server.ts **متطابقين سلوكياً** (كاش + rate-limit + retry) لأن كليهما يخدم /api في سياقين مختلفين
