@@ -1,0 +1,34 @@
+# نشر قواعد Firestore — يدويٌّ فقط.
+# ci.yml ينشر الاستضافة وحدها؛ فالقواعد (firestore.rules) لا تصل الإنتاج إلا من هنا.
+# الدخول بالهوية نفسها التي يستعملها نشر الاستضافة (Workload Identity، بلا مفتاح مخزَّن).
+name: نشر قواعد Firestore
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: tebyan-firestore-rules
+  cancel-in-progress: false
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/604777946510/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: github-deploy@tebyan-clean-2026.iam.gserviceaccount.com
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: نشر firestore.rules
+        run: npx -y firebase-tools@15 deploy --project=tebyan-clean-2026 --only firestore:rules --non-interactive
