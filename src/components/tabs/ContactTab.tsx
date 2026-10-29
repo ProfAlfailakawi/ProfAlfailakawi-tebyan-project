@@ -3,6 +3,7 @@ import { Mail, CheckCircle2, AlertCircle, Send } from 'lucide-react';
 import { db } from '../../lib/firebase';
 import { collection, serverTimestamp } from 'firebase/firestore';
 import { addDoc } from '../../lib/firestoreWrites';
+import { CONTACT_LIMITS, buildContactRequest, sendContactRequest } from '../../lib/contactRequest';
 import { cn } from '../../lib/utils';
 import { TabHeader } from '../TabHeader';
 import { getServiceName, getServiceNameBilingual } from '../../constants/serviceRegistry';
@@ -22,25 +23,23 @@ export const ContactTab = ({ language }: { language: string }) => {
     
     setStatus('submitting');
     
-    try {
-      // 1. Store in Firestore as the primary reliable database
-      await addDoc(collection(db, 'contact_requests'), {
-        ...formData,
-        language,
-        createdAt: serverTimestamp(),
-        status: 'new' // To be processed by the admin
-      });
-
-      setStatus('success');
-      setFormData({ name: '', email: '', message: '' });
-      
-      setTimeout(() => {
-        setStatus('idle');
-      }, 5000);
-    } catch (error) {
-      console.error('Error submitting contact form:', error);
+    // Success is shown only after Firestore accepts the write.
+    const result = await sendContactRequest(
+      (data) => addDoc(collection(db, 'contact_requests'), data),
+      buildContactRequest({ ...formData, language }, serverTimestamp()),
+    );
+    if (!result.ok) {
+      console.error('Error submitting contact form:', result.error);
       setStatus('error');
+      return;
     }
+
+    setStatus('success');
+    setFormData({ name: '', email: '', message: '' });
+
+    setTimeout(() => {
+      setStatus('idle');
+    }, 5000);
   };
 
   return (
@@ -63,6 +62,7 @@ export const ContactTab = ({ language }: { language: string }) => {
                 <input
                   type="text"
                   name="name"
+                  maxLength={CONTACT_LIMITS.name}
                   value={formData.name}
                   onChange={handleChange}
                   required
@@ -76,6 +76,7 @@ export const ContactTab = ({ language }: { language: string }) => {
                 <input
                   type="email"
                   name="email"
+                  maxLength={CONTACT_LIMITS.email}
                   value={formData.email}
                   onChange={handleChange}
                   required
@@ -89,6 +90,7 @@ export const ContactTab = ({ language }: { language: string }) => {
                 <label className="block text-zinc-700 mb-1.5">{language === 'ar' ? 'الرسالة' : 'Message'}</label>
                 <textarea
                   name="message"
+                  maxLength={CONTACT_LIMITS.message}
                   value={formData.message}
                   onChange={handleChange}
                   required
@@ -127,7 +129,7 @@ export const ContactTab = ({ language }: { language: string }) => {
               <div className="bg-rose-50 text-rose-700 p-4 rounded-xl flex items-center gap-3">
                 <AlertCircle className="w-5 h-5 shrink-0" />
                 <p className="font-semibold text-sm">
-                {language === 'ar' ? 'حدث تعثر بسيط، أعد المحاولة وسأكمل معك.' : 'A slight glitch occurred, retry and I will continue with you.'}
+                {language === 'ar' ? 'لم تُرسَل رسالتك. تحقّق من الاتصال وأعد المحاولة.' : 'Your message was not sent. Check your connection and try again.'}
                 </p>
               </div>
             )}

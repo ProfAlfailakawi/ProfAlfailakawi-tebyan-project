@@ -107,6 +107,25 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
     }
 
+    // «تواصل» contact form (ContactTab + MessagesFloatingButton). Anyone,
+    // signed in or not, may create one bounded message; nobody but admins can
+    // read it back. Caps mirror CONTACT_LIMITS in src/lib/contactRequest.ts.
+    // Admins read, delete, and mark as read (AdminContactTab: status only).
+    match /contact_requests/{requestId} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'message', 'language', 'source', 'status', 'createdAt'])
+        && request.resource.data.keys().hasAll(['name', 'email', 'message', 'status', 'createdAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 200
+        && request.resource.data.email is string && request.resource.data.email.size() > 0 && request.resource.data.email.size() <= 320
+        && request.resource.data.message is string && request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 5000
+        && (!('language' in request.resource.data) || (request.resource.data.language is string && request.resource.data.language.size() <= 10))
+        && (!('source' in request.resource.data) || (request.resource.data.source is string && request.resource.data.source.size() <= 40))
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time;
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+    }
+
     match /search_logs/{document=**} {
       allow read: if isAdmin();
       allow create: if isBoundedLog(request.resource.data, 8);
