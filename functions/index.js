@@ -26,8 +26,8 @@ const IS_PRODUCTION = !IS_EMULATOR && (
 // TEBYAN_ALLOWED_ORIGINS env var; otherwise the project's own domains are used.
 const DEFAULT_ALLOWED_ORIGINS = [
     "https://tebyan.dr-alfailakawi.com",
-    "https://tebyan-clean-2026.web.app",
-    "https://tebyan-clean-2026.firebaseapp.com",
+    "https://tebyan-app-2026.web.app",
+    "https://tebyan-app-2026.firebaseapp.com",
 ];
 const LOCAL_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
@@ -589,5 +589,9 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
 });
 
 
-// Export the app as 'api' function
-exports.api = functions.https.onRequest(app);
+// Export the app as 'api' function.
+// GEMINI_API_KEY comes from Secret Manager (firebase functions:secrets:set GEMINI_API_KEY).
+// One warm-less instance at most, like the owner's other services: no idle cost, no runaway scaling.
+exports.api = functions
+    .runWith({ secrets: ["GEMINI_API_KEY"], maxInstances: 1, minInstances: 0, memory: "256MB" })
+    .https.onRequest(app);

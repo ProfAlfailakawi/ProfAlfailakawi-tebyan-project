@@ -1,10 +1,10 @@
 {
-  "projectId": "tebyan-clean-2026",
-  "appId": "1:604777946510:web:c068b28ec01c63b5f718df",
-  "apiKey": "AIzaSyDQCCO9Nn2hCjR-G4FR3WC0zDDnS-BW3hE",
-  "authDomain": "tebyan-clean-2026.firebaseapp.com",
+  "projectId": "tebyan-app-2026",
+  "appId": "1:727728541245:web:f5a88de20a5f5ac5a16454",
+  "apiKey": "AIzaSyBVul5JuzQObYeGymHT-4x_jo8GSiqK0tM",
+  "authDomain": "tebyan-app-2026.firebaseapp.com",
   "firestoreDatabaseId": "default",
-  "storageBucket": "tebyan-clean-2026.firebasestorage.app",
-  "messagingSenderId": "604777946510",
+  "storageBucket": "tebyan-app-2026.firebasestorage.app",
+  "messagingSenderId": "727728541245",
   "measurementId": ""
 }

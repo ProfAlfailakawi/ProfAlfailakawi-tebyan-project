@@ -77,22 +77,22 @@ jobs:
 
       - uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: projects/604777946510/locations/global/workloadIdentityPools/github/providers/github-oidc
-          service_account: github-deploy@tebyan-clean-2026.iam.gserviceaccount.com
+          workload_identity_provider: projects/727728541245/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: github-deploy@tebyan-app-2026.iam.gserviceaccount.com
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
       - name: النشر إلى Firebase Hosting
-        run: npx -y firebase-tools@15 deploy --project=tebyan-clean-2026 --only hosting --non-interactive
+        run: npx -y firebase-tools@15 deploy --project=tebyan-app-2026 --only hosting --non-interactive
 
       # نشرٌ «ناجح» لا يراه الزوار يجب أن يفشل.
       - name: الموقع الحيّ يقدّم هذا البناء
         run: |
           want=$(jq -r .build dist/build-id.json)
           for i in $(seq 1 10); do
-            got=$(curl -fsS "https://tebyan-clean-2026.web.app/build-id.json?t=$(date +%s)" | jq -r .build || true)
+            got=$(curl -fsS "https://tebyan-app-2026.web.app/build-id.json?t=$(date +%s)" | jq -r .build || true)
             if [ "$got" = "$want" ]; then echo "Live: $got"; exit 0; fi
             echo "Waiting for live build ($got != $want)"; sleep 6
           done

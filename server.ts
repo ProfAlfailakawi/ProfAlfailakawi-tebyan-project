@@ -23,8 +23,8 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 const DEFAULT_ALLOWED_ORIGINS = [
     "https://tebyan.dr-alfailakawi.com",
-    "https://tebyan-clean-2026.web.app",
-    "https://tebyan-clean-2026.firebaseapp.com",
+    "https://tebyan-app-2026.web.app",
+    "https://tebyan-app-2026.firebaseapp.com",
 ];
 const LOCAL_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 
