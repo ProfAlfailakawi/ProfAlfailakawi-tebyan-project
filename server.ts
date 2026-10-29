@@ -328,8 +328,9 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }: { text?:
         : allVoices[Math.floor(Math.random() * allVoices.length)];
 
     const apiKey = getGeminiTtsApiKey();
-    const standardPrefix = "AI" + "za";
-    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
+    // Google issues more than one key format (legacy "AIza…" and newer AI Studio keys),
+    // so only reject what is clearly not a key: empty, too short, or containing whitespace.
+    if (!apiKey || apiKey.length < 30 || /\s/.test(apiKey)) {
         return {
             audioData: "",
             mimeType: "audio/wav",
