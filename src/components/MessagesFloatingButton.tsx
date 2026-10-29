@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MessageSquare, X, Send, CheckCircle } from 'lucide-react';
+import { MessageSquare, X, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { collection, serverTimestamp } from 'firebase/firestore';
 import { addDoc } from '../lib/firestoreWrites';
 import { db } from '../lib/firebase';
+import { CONTACT_LIMITS, buildContactRequest, sendContactRequest } from '../lib/contactRequest';
 import { TebyanTooltip } from './TebyanTooltip';
 import { SmartIconWrapper } from './common/SmartIconGuidance';
 
@@ -14,34 +15,33 @@ export function MessagesFloatingButton() {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [sendFailed, setSendFailed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !message || !email) return;
     
     setIsSending(true);
-    try {
-      await addDoc(collection(db, 'contact_requests'), {
-        name,
-        email,
-        message,
-        source: 'floating_button',
-        createdAt: serverTimestamp(),
-        status: 'new'
-      });
-      setIsSent(true);
-      setName('');
-      setEmail('');
-      setMessage('');
-      setTimeout(() => {
-        setIsOpen(false);
-        setTimeout(() => setIsSent(false), 500); // reset after closing
-      }, 3000);
-    } catch(err) {
-      console.error(err);
-    } finally {
-      setIsSending(false);
+    setSendFailed(false);
+    // Success is shown only after Firestore accepts the write.
+    const result = await sendContactRequest(
+      (data) => addDoc(collection(db, 'contact_requests'), data),
+      buildContactRequest({ name, email, message, source: 'floating_button' }, serverTimestamp()),
+    );
+    setIsSending(false);
+    if (!result.ok) {
+      console.error(result.error);
+      setSendFailed(true);
+      return;
     }
+    setIsSent(true);
+    setName('');
+    setEmail('');
+    setMessage('');
+    setTimeout(() => {
+      setIsOpen(false);
+      setTimeout(() => setIsSent(false), 500); // reset after closing
+    }, 3000);
   };
 
   return (
@@ -103,6 +103,7 @@ export function MessagesFloatingButton() {
                       <input 
                           type="text" 
                           placeholder="اسمك الكريم" 
+                          maxLength={CONTACT_LIMITS.name}
                           className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-lilac-soft focus:ring-4 focus:ring-lilac/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium cursor-text pointer-events-auto"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
@@ -113,6 +114,7 @@ export function MessagesFloatingButton() {
                       <input 
                           type="email" 
                           placeholder="البريد الإلكتروني للتواصل" 
+                          maxLength={CONTACT_LIMITS.email}
                           className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-lilac-soft focus:ring-4 focus:ring-lilac/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium cursor-text pointer-events-auto text-right"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -123,12 +125,19 @@ export function MessagesFloatingButton() {
                     <div className="relative pointer-events-auto">
                       <textarea
                           placeholder="اكتب رسالتك أو استفسارك هنا..."
+                          maxLength={CONTACT_LIMITS.message}
                           className="w-full p-4 rounded-2xl border border-zinc-200 bg-zinc-50 focus:bg-white focus:border-lilac-soft focus:ring-4 focus:ring-lilac/10 transition-all outline-none text-zinc-900 placeholder:text-zinc-400 font-medium h-32 resize-none leading-relaxed cursor-text pointer-events-auto"
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           required
                       />
                     </div>
+                    {sendFailed && (
+                      <div role="alert" className="bg-rose-50 text-rose-700 p-3 rounded-2xl flex items-center gap-2 text-sm font-semibold">
+                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <span>لم تُرسَل رسالتك. تحقّق من الاتصال وأعد المحاولة.</span>
+                      </div>
+                    )}
                     <button 
                         type="submit"
                         disabled={isSending}
