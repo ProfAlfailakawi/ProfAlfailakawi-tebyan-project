@@ -196,8 +196,9 @@ const getGenAI = () => {
     if (!apiKey || apiKey === "YOUR_ACTUAL_API_KEY_HERE" || apiKey === "MY_GEMINI_API_KEY") {
         apiKey = (process.env.GOOGLE_API_KEY || "").trim();
     }
-    const standardPrefix = "AI" + "za";
-    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
+    // Google issues more than one key format (legacy "AIza…" and newer AI Studio keys),
+    // so only reject what is clearly not a key: empty, too short, or containing whitespace.
+    if (!apiKey || apiKey.length < 30 || /\s/.test(apiKey)) {
         console.warn("Invalid or missing GEMINI_API_KEY in Cloud Functions env.");
         return null;
     }
@@ -298,8 +299,9 @@ async function generateTtsAudio({ text, voiceName, style = "natural" }) {
         : allVoices[Math.floor(Math.random() * allVoices.length)];
 
     const apiKey = getGeminiApiKey();
-    const standardPrefix = "AI" + "za";
-    if (!apiKey || !apiKey.startsWith(standardPrefix)) {
+    // Google issues more than one key format (legacy "AIza…" and newer AI Studio keys),
+    // so only reject what is clearly not a key: empty, too short, or containing whitespace.
+    if (!apiKey || apiKey.length < 30 || /\s/.test(apiKey)) {
         return {
             audioData: "",
             mimeType: "audio/wav",
