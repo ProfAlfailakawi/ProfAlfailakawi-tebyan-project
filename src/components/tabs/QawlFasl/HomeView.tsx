@@ -158,6 +158,15 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
 
   const displayedDaily = dailyQuestions.length > 0 ? dailyQuestions : fallbackDaily;
 
+  // «رائج الآن» lists raw visitor queries from search_trends: any visitor can add
+  // search logs, and on a quiet day one parent's private question can top the
+  // list shown to everyone. Show only terms that lead to an answer already in
+  // the library (generic topics), which is also what a click on them promises.
+  const visibleTrends = React.useMemo(
+    () => trendingSearches.filter((t) => typeof t?.query === 'string' && findLocalQawlMatch(questions, t.query)),
+    [trendingSearches, questions],
+  );
+
   useEffect(() => {
     if (initialValue && initialValue.trim().length > 2) {
       const cleanInitialValue = normalizeQawlSearchText(initialValue);
@@ -410,10 +419,10 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
               </div>
             )}
 
-            {trendingSearches.length > 0 && !isGenerating && (
+            {visibleTrends.length > 0 && !isGenerating && (
               <div className="mt-6 md:mt-8 flex flex-wrap gap-2 md:gap-3 justify-center items-center">
                 <span className="text-ink-soft text-sm font-bold pl-2 py-2">رائج الآن:</span>
-                {trendingSearches.map((term, i) => (
+                {visibleTrends.map((term, i) => (
                   <button 
                     key={i} 
                     onClick={() => {

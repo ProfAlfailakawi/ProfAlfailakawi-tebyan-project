@@ -46,3 +46,12 @@ test('Qawl tab: ids are not searched, generation is admin-only, the search runs 
   assert.ok(missBranch > 0 && generate > missBranch, 'non-admins must branch off before the generator is called');
   assert.match(home, /لا يوجد في المكتبة جواب جاهز لهذا السؤال بعد/);
 });
+
+test('Qawl trending: only terms that match the library are shown to everyone', () => {
+  const home = read('src/components/tabs/QawlFasl/HomeView.tsx');
+  assert.match(home, /trendingSearches\.filter\(\(t\) => typeof t\?\.query === 'string' && findLocalQawlMatch\(questions, t\.query\)\)/);
+  assert.equal(/\{trendingSearches\.map\(/.test(home), false);
+  // A private free-text query matches nothing in the library, a generic topic does.
+  assert.equal(findLocalQawlMatch(library, 'ابنتي عمرها ١٢ تعرضت لموقف من قريب لنا'), null);
+  assert.ok(findLocalQawlMatch(library, 'الكذب'));
+});
