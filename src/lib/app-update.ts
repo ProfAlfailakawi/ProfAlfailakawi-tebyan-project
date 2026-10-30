@@ -20,6 +20,8 @@
  * المستخدم المخزّنة (تفضيلاته وجلسته) — نمسح الكاش وعامل الخدمة فقط.
  */
 
+import { SERVER_BACK_EVENT, showUpdatingNotice, siteAnswers } from './updatingNotice';
+
 declare const __BUILD_ID__: string;
 
 /** بصمة الحزمة التي يعمل بها هذا التبويب الآن. */
@@ -248,6 +250,12 @@ function looksLikeStaleChunk(message: string): boolean {
 }
 
 async function recoverFromStaleChunk(): Promise<void> {
+  /* حزمةٌ تعثّرت والموقع نفسه لا يجيب ليست نسخةً قديمة: المسح الآن يُسقط العامل الذي
+     يحمل صفحة «نُحدّث البرنامج». ننتظر الموقع ثم نعيد التحميل — بلا مسح. */
+  if (!(await siteAnswers())) {
+    showUpdatingNotice(siteAnswers, () => { window.location.reload(); });
+    return;
+  }
   try {
     // حارس في sessionStorage: بناءٌ معطوب فعلًا يجب ألّا يتحول إلى حلقة لا تنتهي.
     if (window.sessionStorage.getItem(CHUNK_KEY)) return;
@@ -305,6 +313,9 @@ export function installAppUpdate(options: { chunkRecovery?: boolean } = {}): voi
   window.addEventListener('pageshow', (event) => {
     if ((event as PageTransitionEvent).persisted) void checkForUpdate();
   });
+
+  // عاد الخادم بعد تعثّر: قد يكون هذا التبويب الآن على الإصدار القديم.
+  window.addEventListener(SERVER_BACK_EVENT, () => { void checkForUpdate(); });
 
   // العودة إلى التبويب.
   document.addEventListener('visibilitychange', () => {
