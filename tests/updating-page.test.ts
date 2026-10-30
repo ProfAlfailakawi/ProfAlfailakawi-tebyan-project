@@ -63,7 +63,7 @@ const failing = (status: number | 'drop'): Net => async (pathname) => {
 };
 const isUpdatingPage = async (response: Response | null) =>
   Boolean(response) && response!.status === 503 && response!.headers.get('cache-control') === 'no-store'
-  && /text\/html/.test(response!.headers.get('content-type') || '') && (await response!.clone().text()).includes('نُحدّث البرنامج الآن');
+  && /text\/html/.test(response!.headers.get('content-type') || '') && (await response!.clone().text()).includes('نُعيد ترتيب الصفحات');
 
 test('U1 navigation answered 500/502/503/504 → updating page (503, no-store)', async () => {
   for (const status of [500, 502, 503, 504]) {
@@ -126,9 +126,11 @@ test('U4 page: self-contained, RTL, light/dark, Tebyan identity and copy', () =>
   assert.match(PAGE, /<html lang="ar" dir="rtl">/);
   assert.match(PAGE, /prefers-color-scheme:dark/);
   assert.match(PAGE, /prefers-reduced-motion/);
-  assert.match(PAGE, /<title>نُحدّث البرنامج · تبيان<\/title>/);
+  assert.match(PAGE, /<title>نُعيد ترتيب الصفحات · تبيان<\/title>/);
   assert.ok(PAGE.includes('M148 408 V244 C148 164 200 112 256 84'), 'the mark is Tebyan’s icon.svg');
-  for (const text of ['نُحدّث البرنامج الآن ✨', 'لحظاتٍ ونعود', 'أعد المحاولة الآن']) assert.ok(PAGE.includes(text), text);
+  for (const text of ['نُعيد ترتيب الصفحات', 'يُجدَّد تبيان', 'من تلقاء نفسه', 'افتح الصفحة الآن']) assert.ok(PAGE.includes(text), text);
+  assert.match(PAGE, /id="note" role="status" aria-live="polite"/);
+  assert.match(PAGE, /<button type="button" id="retry">/);
 });
 
 function runPage(options: { probe: boolean[]; recent?: number[]; pathname?: string; online?: boolean }) {
@@ -191,7 +193,7 @@ test('U4 opened by name → back to "/"; offline → says so and does not ask', 
 test('U5 app: only a non-JSON 5xx is the platform; the AI proxy shows the calm bar before reading JSON', () => {
   assert.ok(isPlatformUpdating(502, 'text/html; charset=UTF-8') && isPlatformUpdating(503, '') && isPlatformUpdating(500, 'text/html') && isPlatformUpdating(504, null));
   assert.ok(!isPlatformUpdating(503, 'application/json; charset=utf-8') && !isPlatformUpdating(404, 'text/html') && !isPlatformUpdating(200, 'text/html'));
-  assert.ok(UPDATING_MESSAGE.includes('نُحدّث البرنامج'));
+  assert.ok(UPDATING_MESSAGE.includes('يُجدَّد تبيان'));
   const proxy = read('src/lib/aiProxy.ts');
   for (const fn of ['export async function proxyGenerateContent', 'export async function proxyGenerateAudio']) {
     const start = proxy.indexOf(fn);

@@ -3,13 +3,13 @@
  *
  * دالة /api (Cloud Function «api») تجيب بـ JSON دائماً. فإن جاء 500/502/503/504 بصفحة
  * HTML، فهذا جوابُ منصّة Google لا جوابُ تبيان: الدالة تُنشر أو تتعثّر. بدل رسالة خطأٍ غامضة
- * يظهر شريطٌ هادئ واحد، ويسأل `probe` كل ثلاث ثوانٍ (ويتباطأ إلى خمس عشرة) حتى يعود
+ * يظهر إشعارٌ هادئ واحد بشكل إشعارات تبيان (حبّة أعلى الشاشة بنقطةٍ ذهبية)، ويسأل `probe` كل ثلاث ثوانٍ (ويتباطأ إلى خمس عشرة) حتى يعود
  * الخادم، فيختفي ويُعلم من ينتظر عبر SERVER_BACK_EVENT.
  */
 
 const UPDATING_STATUSES = new Set([500, 502, 503, 504]);
 
-export const UPDATING_MESSAGE = 'نُحدّث البرنامج الآن ✨ لحظاتٍ ونعود.';
+export const UPDATING_MESSAGE = 'يُجدَّد تبيان الآن؛ نُعيد ترتيب صفحاته ونعود بعد قليل.';
 /** يُطلق على window حين يعود الخادم. */
 export const SERVER_BACK_EVENT = 'tebyan:server-back';
 
@@ -37,12 +37,19 @@ export function showUpdatingNotice(probe: () => Promise<boolean>, onBack?: () =>
   bar.setAttribute('role', 'status');
   bar.setAttribute('aria-live', 'polite');
   bar.dir = 'rtl';
-  bar.textContent = UPDATING_MESSAGE;
+  /* مثل إشعار App.tsx: حبّةٌ أعلى الشاشة تحت الترويسة، بيضاءُ شفيفة ونقطةٌ في أولها — هنا ذهبيةٌ كشريط العلامة. */
+  const dot = document.createElement('span');
+  dot.setAttribute('aria-hidden', 'true');
+  dot.style.cssText = 'flex:none;width:8px;height:8px;border-radius:999px;background:#a68f58;box-shadow:0 0 0 3px rgb(166 143 88 / .18)';
+  const text = document.createElement('span');
+  text.textContent = UPDATING_MESSAGE;
+  bar.append(dot, text);
   bar.style.cssText = [
-    'position:fixed', 'inset-inline:0', 'bottom:max(18px,env(safe-area-inset-bottom))', 'margin:0 auto', 'width:max-content', 'max-width:calc(100vw - 32px)',
-    'z-index:2147483000', 'padding:11px 18px', 'border-radius:14px', 'font-family:inherit', 'font-size:14px', 'font-weight:600', 'line-height:1.6',
-    'background:#ffffff', 'color:#182231', 'border:1px solid rgb(24 34 49 / .12)',
-    'box-shadow:0 14px 36px rgb(24 34 49 / .18)', 'text-align:center', 'pointer-events:none',
+    'position:fixed', 'top:calc(env(safe-area-inset-top) + 5.25rem)', 'left:50%', 'transform:translateX(-50%)', 'width:max-content', 'max-width:90vw',
+    'z-index:2147483000', 'display:flex', 'align-items:center', 'gap:12px', 'padding:12px 22px', 'border-radius:999px',
+    'font-family:inherit', 'font-size:14px', 'font-weight:500', 'line-height:1.6',
+    'background:rgb(255 255 255 / .9)', 'color:#182231', 'border:1px solid rgb(110 91 145 / .18)',
+    '-webkit-backdrop-filter:blur(24px)', 'backdrop-filter:blur(24px)', 'box-shadow:0 8px 30px rgb(0 0 0 / .12)', 'pointer-events:none',
   ].join(';');
   document.body.appendChild(bar);
   notice = bar;
