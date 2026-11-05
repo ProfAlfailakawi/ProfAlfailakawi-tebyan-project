@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { ScrollText, Sparkles, Wand2, RefreshCw, Eye, X, Mail } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAmbientIntelligence } from '../../hooks/useAmbientIntelligence';
