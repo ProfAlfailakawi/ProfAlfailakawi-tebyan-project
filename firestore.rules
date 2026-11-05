@@ -12,13 +12,19 @@ service cloud.firestore {
       let email = request.auth.token.get('email', '').lower();
       return isSignedIn() && (
         request.auth.uid == "VfYbpLBoYFQGoVyBVOlMfVCESdm1" ||
-        email in [
+        (email in [
           "alfailakawidrahmad@gmail.com",
           "alfailakawidrahmad@outlook.com",
           "dr.ahmad@gmail.com",
           "dr.ahmad.alfailakawi@gmail.com",
           "ah_f@hotmail.com"
-        ] ||
+        ] && (
+          // Email/password sign-up is open, so anyone can register an UNVERIFIED account
+          // with an admin address. Federated providers (Google, ...) verify the email
+          // themselves; password accounts must have a verified email to count as admin.
+          request.auth.token.firebase.sign_in_provider != 'password' ||
+          request.auth.token.get('email_verified', false) == true
+        )) ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
