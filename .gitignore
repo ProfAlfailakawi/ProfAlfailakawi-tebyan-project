@@ -9,3 +9,7 @@ functions/.env.*
 *.log
 build/
 *.tsbuildinfo
+
+# Desloppify local state
+.desloppify/
+scorecard.png
