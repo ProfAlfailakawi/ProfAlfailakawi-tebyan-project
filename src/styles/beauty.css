@@ -28,7 +28,7 @@ main.tebyan-route-shell::-webkit-scrollbar { display: none; width: 0; height: 0;
   .tebyan-home-hero > div:first-child h2 { font-size: 2rem; line-height: 1; }
   .tebyan-home-hero h1 { font-size: clamp(1.7rem, 3.4vw, 2.25rem) !important; line-height: 1.25 !important; max-width: 760px !important; }
   .tebyan-home-hero h1::after { margin-top: .4rem !important; }
-  .tebyan-home-hero p { margin-top: .35rem !important; font-size: .98rem !important; line-height: 1.6 !important; }
+  .tebyan-home-hero p { margin-top: .35rem !important; font-size: .98rem !important; line-height: 1.6 !important; max-width: 520px !important; }
   .tebyan-search-stage { margin-top: .2rem !important; margin-bottom: .6rem !important; }
 }
 @media (min-width: 600px) and (max-height: 560px) {
