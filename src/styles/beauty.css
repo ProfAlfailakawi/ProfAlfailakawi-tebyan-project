@@ -157,3 +157,20 @@ main [role="tablist"].overflow-x-auto {
   .tebyan-moodcloud__chips > * > div { width: 1.5rem !important; height: 1.5rem !important; font-size: .78rem !important; }
   .tebyan-moodcloud__chips > * > span:last-child { font-size: .8125rem !important; }
 }
+
+/* قول فصل: أيقونة البحث كانت تلامس أول حرف من النص المساعد عند 600–767px. */
+@media (min-width: 600px) and (max-width: 767px) {
+  .tebyan-qf-search { padding-inline-start: 4.25rem; }
+}
+
+/* كل مناطق التمرير الداخلية (custom-scrollbar): نفس المعالجة — لا مستطيل رمادي ملتصق بحافة البطاقة على اللمس. */
+@media (hover: none), (pointer: coarse) {
+  .custom-scrollbar { scrollbar-width: none; }
+  .custom-scrollbar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(53, 83, 154, .28) transparent; }
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(53, 83, 154, .26); border-radius: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(53, 83, 154, .5); }
+}
