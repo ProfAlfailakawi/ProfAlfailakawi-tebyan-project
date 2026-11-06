@@ -1501,9 +1501,10 @@ const AppContent: React.FC = () => {
               onClick={() => enterDemoMode()}
               title={language === "ar" ? "استعراض ببيانات تجريبية" : "Explore with demo data"}
               aria-label={language === "ar" ? "استعراض ببيانات تجريبية" : "Explore with demo data"}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-400/35 bg-amber-50/90 p-0 text-amber-800 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
+              className="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-amber-400/35 bg-amber-50/90 px-2.5 text-[11px] font-bold text-amber-800 shadow-[0_7px_20px_rgba(24,34,49,0.06)] transition-transform duration-100 active:scale-[0.96]"
             >
-              <FlaskConical className="w-4 h-4" />
+              <FlaskConical className="w-4 h-4" aria-hidden="true" />
+              <span>{language === "ar" ? "عرض تجريبي" : "Demo"}</span>
             </button>
           ) : null}
           <div className="tebyan-action-pill flex items-center">

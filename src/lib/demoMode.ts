@@ -24,11 +24,35 @@ export const DEMO_AVAILABLE =
 /**
  * إظهار زر الدخول إلى العرض في الواجهة.
  *
- * مخفيّ الآن بطلبٍ صريح من صاحب المنتج. والإخفاء مقصورٌ على الزر وحده: الوضع
- * نفسه ومنعُ الكتابة ونقطةُ الحراسة واختباراتها كلها باقية على حالها، فلا شيء
- * يحتاج إعادةَ بناء حين يُطلب رجوعه — تحويل هذه القيمة إلى true وحدها يكفي.
+ * مخفيّ افتراضيًا بطلبٍ صريح من صاحب المنتج، فمظهر الإنتاج لا يتغيّر. وللمالك أن
+ * يُظهره لبناءٍ بعينه بوضع `VITE_DEMO_ENTRY_VISIBLE=true` وقت البناء (الافتراضي
+ * مطفأ). والإخفاء مقصورٌ على الزر وحده: الوضع نفسه ومنعُ الكتابة ونقطةُ الحراسة
+ * واختباراتها باقية كما هي.
  */
-export const DEMO_ENTRY_VISIBLE: boolean = false;
+export const DEMO_ENTRY_VISIBLE: boolean =
+  (import.meta as any).env?.VITE_DEMO_ENTRY_VISIBLE === 'true';
+
+/** اسم وسيط الرابط المقصود: `?demo=1` — مسارٌ صريح لا يُرى في الواجهة العادية. */
+export const DEMO_ENTRY_PARAM = 'demo';
+
+/**
+ * رابط الدخول المقصود (`?demo=1`): يرفع الراية في هذا التبويب ثم يمحو الوسيط من
+ * العنوان. يعمل ما دام `DEMO_AVAILABLE` (مفتاح الإيقاف: VITE_DISABLE_DEMO_MODE=true).
+ * يُنفَّذ عند تحميل الوحدة، قبل حساب IS_DEMO_MODE، فلا حاجة لإعادة تحميل.
+ */
+function consumeEntryParam(): void {
+  if (!DEMO_AVAILABLE || typeof window === 'undefined') return;
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get(DEMO_ENTRY_PARAM) !== '1') return;
+    window.sessionStorage.setItem(DEMO_FLAG_KEY, 'true');
+    url.searchParams.delete(DEMO_ENTRY_PARAM);
+    window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+  } catch {
+    // تخزين محجوب أو بيئة بلا history: لا دخول، والتطبيق يعمل عاديًا.
+  }
+}
+consumeEntryParam();
 
 function readFlag(): boolean {
   if (typeof window === 'undefined') return false;
