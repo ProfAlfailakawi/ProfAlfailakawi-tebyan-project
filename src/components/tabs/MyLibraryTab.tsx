@@ -36,7 +36,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
   let offset = 0;
 
   return (
-    <div className="mb-10 md:mb-12 flex flex-col md:flex-row items-center justify-center gap-5 md:gap-12">
+    <div className="tebyan-moodcloud mb-10 md:mb-12 flex flex-col md:flex-row items-center justify-center gap-5 md:gap-12">
     {total > 0 && (
       <div className="relative h-36 w-36 md:h-44 md:w-44" role="img" aria-label={entries.map(([t, c]) => `${language === 'ar' ? (typeData[t]?.labelAr || t) : (typeData[t]?.labelEn || t)} ${c}`).join(' · ')}>
         <svg viewBox="0 0 128 128" className="h-full w-full -rotate-90" aria-hidden="true">
@@ -63,7 +63,7 @@ const MoodCloud = ({ items, language, action }: { items: any[], language: string
         <div className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-black text-navy">{total}</div>
       </div>
     )}
-    <div className="flex flex-wrap gap-2 justify-center md:flex-col md:items-stretch" role="list">
+    <div className="tebyan-moodcloud__chips flex flex-wrap gap-2 justify-center md:flex-col md:items-stretch" role="list">
        {Object.entries(counts).map(([type, count]: [any, any]) => (
          <motion.div
            key={type}
@@ -141,14 +141,14 @@ const MyLibraryTab = ({ language = 'ar', handleTabChange, embedded = false }: { 
     const exploreBtn = handleTabChange ? (
         <button
             onClick={() => handleTabChange('discover')}
-            className="w-full sm:w-auto order-first md:order-none px-5 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-[20px] text-sm font-black transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
+            className="tebyan-explore-btn w-full sm:w-auto order-first md:order-none px-5 py-3 bg-white border border-zinc-200 hover:border-black hover:bg-zinc-50 rounded-[20px] text-sm font-black transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
         >
             {language === 'ar' ? 'استكشف تبيان' : 'Explore Tebyan'}
         </button>
     ) : null;
 
     return (
-        <div className="p-4 md:p-6 pb-28 md:pb-32">
+        <div className="tebyan-library p-4 md:p-6 pb-28 md:pb-32">
             <div className={cn('flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 md:mb-12', embedded && hasSaved && 'mb-0 md:mb-0')}>
                 <div className={cn('space-y-1 text-right', embedded && 'sr-only')}>
                   <h2 className="text-3xl md:text-4xl font-black">{getServiceName('mylibrary', language)}</h2>

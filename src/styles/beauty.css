@@ -28,7 +28,7 @@ main.tebyan-route-shell::-webkit-scrollbar { display: none; width: 0; height: 0;
   .tebyan-home-hero > div:first-child h2 { font-size: 2rem; line-height: 1; }
   .tebyan-home-hero h1 { font-size: clamp(1.7rem, 3.4vw, 2.25rem) !important; line-height: 1.25 !important; max-width: 760px !important; }
   .tebyan-home-hero h1::after { margin-top: .4rem !important; }
-  .tebyan-home-hero p { margin-top: .35rem !important; font-size: .98rem !important; line-height: 1.6 !important; }
+  .tebyan-home-hero p { margin-top: .35rem !important; font-size: .98rem !important; line-height: 1.6 !important; max-width: 520px !important; }
   .tebyan-search-stage { margin-top: .2rem !important; margin-bottom: .6rem !important; }
 }
 @media (min-width: 600px) and (max-height: 560px) {
@@ -46,7 +46,7 @@ main.tebyan-route-shell::-webkit-scrollbar { display: none; width: 0; height: 0;
 /* ───────── 3) أزرار «رجوع/شرح»: زجاج لازوردي بدل مستطيل أبيض بحدّ بنفسجي ثقيل ───────── */
 @layer base {
   .tebyan-page-controls {
-    background: color-mix(in srgb, #ffffff 82%, transparent) !important;
+    background: color-mix(in srgb, #ffffff 92%, transparent) !important;
     -webkit-backdrop-filter: blur(18px) saturate(1.4);
     backdrop-filter: blur(18px) saturate(1.4);
     border: 1px solid rgba(53, 83, 154, .22) !important;
@@ -72,6 +72,105 @@ main.tebyan-route-shell::-webkit-scrollbar { display: none; width: 0; height: 0;
 /* ───────── 4) صفوف الشرائح/التبويبات الأفقية: تلاشٍ ناعم عند الحافة بدل القصّ الحادّ ───────── */
 main nav.overflow-x-auto,
 main [role="tablist"].overflow-x-auto {
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+  padding-inline: 14px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+
+/* ───────── مكتبتي: حلقة + شرائح متوازنة + زرّ استكشاف أنيق ───────── */
+.tebyan-moodcloud { margin-bottom: clamp(1.25rem, 3vw, 2rem); }
+.tebyan-moodcloud__chips { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; width: 100%; max-width: 360px; }
+.tebyan-moodcloud__chips > :last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; min-width: 50%; }
+.tebyan-moodcloud__chips > * { justify-content: flex-start; min-height: 44px; }
+.tebyan-explore-btn {
+  min-height: 44px; border-radius: 999px !important; touch-action: manipulation;
+  background: linear-gradient(180deg, #3d5ca5, var(--tbe-lapis, #35539a)) !important; color: #fff !important;
+  border: 0 !important; padding-inline: 1.5rem !important;
+  box-shadow: 0 10px 22px -12px rgba(53, 83, 154, .7), inset 0 1px 0 rgba(255,255,255,.25) !important;
+}
+.tebyan-explore-btn:hover { background: var(--tbe-ink-2, #2d4478) !important; }
+@media (min-width: 600px) {
+  .tebyan-moodcloud { flex-wrap: wrap; row-gap: 1rem; }
+  .tebyan-moodcloud::after { content: ""; flex: 0 0 100%; height: 0; order: 2; }
+  .tebyan-moodcloud > .tebyan-explore-btn { order: 3; width: auto !important; }
+}
+@media (min-width: 600px) and (max-height: 720px) {
+  .tebyan-library > div:first-child { margin-bottom: 1rem !important; }
+  .tebyan-moodcloud > div[role="img"] { width: 6.5rem; height: 6.5rem; }
+  .tebyan-moodcloud > div[role="img"] > div { font-size: 2rem; }
+  .tebyan-moodcloud__chips { max-width: 420px; }
+}
+
+/* ───────── كل الخدمات: على النوافذ القصيرة يظهر الدليل مبكرًا ───────── */
+@media (min-width: 600px) and (max-height: 720px) {
+  .tebyan-service-hero { padding-top: 0 !important; }
+  .tebyan-service-title { font-size: 2.2rem !important; line-height: 1.2 !important; }
+  .tebyan-service-title::after { margin-top: .35rem !important; }
+  .tebyan-service-intro { margin-top: .3rem !important; font-size: 1rem !important; line-height: 1.6 !important; }
+  .tebyan-service-search-wrap { margin-top: .85rem !important; }
+  .tebyan-service-filters { margin-top: .7rem !important; }
+  .tebyan-service-directory { margin-top: 1.1rem !important; }
+}
+
+/* كل الخدمات: شرائح التصفية صفوف متوازنة بلا يتيم، والبطاقات عمودان من 600px (الديو مفتوحًا 669). */
+@media (max-width: 899px) {
+  .tebyan-service-filters { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 640px; gap: .5rem; }
+  .tebyan-service-filters > button { justify-content: center; padding-inline: .5rem; white-space: normal; text-align: center; line-height: 1.3; padding-block: .35rem; }
+}
+@media (max-width: 599px) {
+  .tebyan-service-filters {
+    display: flex !important; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; max-width: none;
+    margin-inline: -1rem; padding-inline: 1rem; scrollbar-width: none; scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
+  .tebyan-service-filters::-webkit-scrollbar { display: none; }
+  .tebyan-service-filters > button { flex: 0 0 auto; padding-inline: 1rem; white-space: nowrap; scroll-snap-align: start; }
+}
+@media (min-width: 600px) and (max-width: 767px) {
+  .tebyan-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+/* مفتاح المجلس (متوازن/معارض): الحالة المختارة كانت بيضاء على أبيض (لا تُرى)، والنص ينكسر في سطرين مطويًّا. */
+.tebyan-seg { max-width: 100%; gap: .25rem !important; }
+.tebyan-seg__btn { white-space: nowrap; min-height: 44px; touch-action: manipulation; }
+.tebyan-seg__btn[aria-pressed="true"]:not([class*="b85d63"]) {
+  background: var(--tbe-lapis-mist, #e9eef8) !important; color: var(--tbe-ink, #1b2a52) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(53, 83, 154, .45) !important;
+}
+@media (max-width: 479px) {
+  .tebyan-seg { width: 100%; }
+  .tebyan-seg__btn { flex: 1 1 0; min-width: 0; padding-inline: .35rem !important; font-size: .78rem !important; }
+  .tebyan-seg__btn svg { display: none; }
+  .tebyan-seg { padding: .25rem !important; }
+}
+
+/* خريطة المعرفة: فراغ علوي قديم (محجوز لزرّ رجوع كان عائمًا في الأعلى)، وعنوان متدرّج باهت، ونص مضبوط يترك فجوات. */
+.tebyan-knowledge-fabric > div.flex-1 { padding-top: .5rem !important; }
+.tebyan-knowledge-fabric h2 .bg-clip-text { background-image: linear-gradient(90deg, var(--tbe-ink, #1b2a52), var(--tbe-lapis, #35539a)) !important; }
+.tebyan-knowledge-fabric p.text-justify { text-align: start; }
+
+@media (max-width: 479px) {
+  .tebyan-moodcloud__chips { gap: .4rem; }
+  .tebyan-moodcloud__chips > * { gap: .35rem !important; padding-inline-end: .6rem !important; padding-inline-start: .35rem !important; white-space: nowrap; }
+  .tebyan-moodcloud__chips > * > span:first-child { margin-inline-start: .15rem !important; }
+  .tebyan-moodcloud__chips > * > div { width: 1.5rem !important; height: 1.5rem !important; font-size: .78rem !important; }
+  .tebyan-moodcloud__chips > * > span:last-child { font-size: .8125rem !important; }
+}
+
+/* قول فصل: أيقونة البحث كانت تلامس أول حرف من النص المساعد عند 600–767px. */
+@media (min-width: 600px) and (max-width: 767px) {
+  .tebyan-qf-search { padding-inline-start: 4.25rem; }
+}
+
+/* كل مناطق التمرير الداخلية (custom-scrollbar): نفس المعالجة — لا مستطيل رمادي ملتصق بحافة البطاقة على اللمس. */
+@media (hover: none), (pointer: coarse) {
+  .custom-scrollbar { scrollbar-width: none; }
+  .custom-scrollbar::-webkit-scrollbar { display: none; width: 0; height: 0; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(53, 83, 154, .28) transparent; }
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(53, 83, 154, .26); border-radius: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(53, 83, 154, .5); }
 }

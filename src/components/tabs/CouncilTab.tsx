@@ -68,16 +68,18 @@ export const CouncilTab = React.memo(({ language, initialValue, onValueUsed, han
 
       <div className="flex flex-col gap-5 md:gap-8 mt-2 md:mt-3 p-4 md:p-6 bg-white rounded-[28px] md:rounded-[40px] border border-navy/10 shadow-inner">
         <div className="flex items-center justify-between mb-2">
-           <div className="flex items-center gap-3 bg-white p-2 rounded-full border border-navy/10 shadow-sm">
+           <div className="tebyan-seg flex items-center gap-3 bg-white p-2 rounded-full border border-navy/10 shadow-sm" role="group">
              <button 
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(false); }}
-               className={cn("px-6 py-2.5 rounded-full text-sm font-black transition-all cursor-pointer", !isShadowCouncil ? "bg-white text-black shadow-lg" : "text-ink-mute hover:text-navy")}
+               aria-pressed={!isShadowCouncil}
+               className={cn("tebyan-seg__btn px-6 py-2.5 rounded-full text-sm font-black transition-all cursor-pointer", !isShadowCouncil ? "bg-white text-black shadow-lg" : "text-ink-mute hover:text-navy")}
              >
                {language === 'ar' ? 'المجلس المتوازن' : 'Balanced Council'}
              </button>
              <button 
                onClick={(e) => { e.stopPropagation(); setIsShadowCouncil(true); }}
-               className={cn("px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-extrabold transition-all cursor-pointer", isShadowCouncil ? "bg-[color:var(--tb-c-b85d63)] text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]" : "text-ink-mute hover:text-navy")}
+               aria-pressed={isShadowCouncil}
+               className={cn("tebyan-seg__btn px-4 md:px-6 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-extrabold transition-all cursor-pointer", isShadowCouncil ? "bg-[color:var(--tb-c-b85d63)] text-white shadow-[0_12px_30px_-18px_rgba(24,34,49,0.2)]" : "text-ink-mute hover:text-navy")}
              >
                <span className="inline-flex items-center gap-1.5"><Swords className="w-4 h-4" aria-hidden="true" />{language === 'ar' ? 'المجلس المعارض' : 'Opposing Council'}</span>
              </button>
