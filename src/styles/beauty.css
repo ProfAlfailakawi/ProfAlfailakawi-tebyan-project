@@ -46,7 +46,7 @@ main.tebyan-route-shell::-webkit-scrollbar { display: none; width: 0; height: 0;
 /* ───────── 3) أزرار «رجوع/شرح»: زجاج لازوردي بدل مستطيل أبيض بحدّ بنفسجي ثقيل ───────── */
 @layer base {
   .tebyan-page-controls {
-    background: color-mix(in srgb, #ffffff 82%, transparent) !important;
+    background: color-mix(in srgb, #ffffff 92%, transparent) !important;
     -webkit-backdrop-filter: blur(18px) saturate(1.4);
     backdrop-filter: blur(18px) saturate(1.4);
     border: 1px solid rgba(53, 83, 154, .22) !important;
@@ -72,8 +72,9 @@ main.tebyan-route-shell::-webkit-scrollbar { display: none; width: 0; height: 0;
 /* ───────── 4) صفوف الشرائح/التبويبات الأفقية: تلاشٍ ناعم عند الحافة بدل القصّ الحادّ ───────── */
 main nav.overflow-x-auto,
 main [role="tablist"].overflow-x-auto {
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
-  mask-image: linear-gradient(to right, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
+  padding-inline: 14px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
 }
 
 /* ───────── مكتبتي: حلقة + شرائح متوازنة + زرّ استكشاف أنيق ───────── */
@@ -141,3 +142,8 @@ main [role="tablist"].overflow-x-auto {
   .tebyan-seg { width: 100%; }
   .tebyan-seg__btn { flex: 1 1 0; padding-inline: .5rem !important; font-size: .8125rem !important; }
 }
+
+/* خريطة المعرفة: فراغ علوي قديم (محجوز لزرّ رجوع كان عائمًا في الأعلى)، وعنوان متدرّج باهت، ونص مضبوط يترك فجوات. */
+.tebyan-knowledge-fabric > div.flex-1 { padding-top: .5rem !important; }
+.tebyan-knowledge-fabric h2 .bg-clip-text { background-image: linear-gradient(90deg, var(--tbe-ink, #1b2a52), var(--tbe-lapis, #35539a)) !important; }
+.tebyan-knowledge-fabric p.text-justify { text-align: start; }
