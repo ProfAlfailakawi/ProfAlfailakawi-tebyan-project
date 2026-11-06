@@ -7,6 +7,7 @@ import './index.css';
 import './components/dna/dna-theme.css';
 import './styles/elevation.css';
 import './styles/polish.css';
+import './styles/beauty.css';
 import './styles/motion.css';
 import { installAppUpdate } from './lib/app-update';
 import { IS_DEMO_MODE } from './lib/demoMode';
