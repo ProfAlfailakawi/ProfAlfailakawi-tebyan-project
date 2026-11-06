@@ -75,3 +75,38 @@ main [role="tablist"].overflow-x-auto {
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
   mask-image: linear-gradient(to right, transparent 0, #000 22px, #000 calc(100% - 22px), transparent 100%);
 }
+
+/* ───────── مكتبتي: حلقة + شرائح متوازنة + زرّ استكشاف أنيق ───────── */
+.tebyan-moodcloud { margin-bottom: clamp(1.25rem, 3vw, 2rem); }
+.tebyan-moodcloud__chips { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; width: 100%; max-width: 360px; }
+.tebyan-moodcloud__chips > :last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; min-width: 50%; }
+.tebyan-moodcloud__chips > * { justify-content: flex-start; min-height: 44px; }
+.tebyan-explore-btn {
+  min-height: 44px; border-radius: 999px !important; touch-action: manipulation;
+  background: linear-gradient(180deg, #3d5ca5, var(--tbe-lapis, #35539a)) !important; color: #fff !important;
+  border: 0 !important; padding-inline: 1.5rem !important;
+  box-shadow: 0 10px 22px -12px rgba(53, 83, 154, .7), inset 0 1px 0 rgba(255,255,255,.25) !important;
+}
+.tebyan-explore-btn:hover { background: var(--tbe-ink-2, #2d4478) !important; }
+@media (min-width: 600px) {
+  .tebyan-moodcloud { flex-wrap: wrap; row-gap: 1rem; }
+  .tebyan-moodcloud::after { content: ""; flex: 0 0 100%; height: 0; order: 2; }
+  .tebyan-moodcloud > .tebyan-explore-btn { order: 3; width: auto !important; }
+}
+@media (min-width: 600px) and (max-height: 720px) {
+  .tebyan-library > div:first-child { margin-bottom: 1rem !important; }
+  .tebyan-moodcloud > div[role="img"] { width: 6.5rem; height: 6.5rem; }
+  .tebyan-moodcloud > div[role="img"] > div { font-size: 2rem; }
+  .tebyan-moodcloud__chips { max-width: 420px; }
+}
+
+/* ───────── كل الخدمات: على النوافذ القصيرة يظهر الدليل مبكرًا ───────── */
+@media (min-width: 600px) and (max-height: 720px) {
+  .tebyan-service-hero { padding-top: 0 !important; }
+  .tebyan-service-title { font-size: 2.2rem !important; line-height: 1.2 !important; }
+  .tebyan-service-title::after { margin-top: .35rem !important; }
+  .tebyan-service-intro { margin-top: .3rem !important; font-size: 1rem !important; line-height: 1.6 !important; }
+  .tebyan-service-search-wrap { margin-top: .85rem !important; }
+  .tebyan-service-filters { margin-top: .7rem !important; }
+  .tebyan-service-directory { margin-top: 1.1rem !important; }
+}
