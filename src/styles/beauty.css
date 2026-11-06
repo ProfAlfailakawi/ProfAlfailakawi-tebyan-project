@@ -110,3 +110,34 @@ main [role="tablist"].overflow-x-auto {
   .tebyan-service-filters { margin-top: .7rem !important; }
   .tebyan-service-directory { margin-top: 1.1rem !important; }
 }
+
+/* كل الخدمات: شرائح التصفية صفوف متوازنة بلا يتيم، والبطاقات عمودان من 600px (الديو مفتوحًا 669). */
+@media (max-width: 899px) {
+  .tebyan-service-filters { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 640px; gap: .5rem; }
+  .tebyan-service-filters > button { justify-content: center; padding-inline: .5rem; white-space: nowrap; }
+}
+@media (max-width: 479px) {
+  .tebyan-service-filters {
+    display: flex !important; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; max-width: none;
+    margin-inline: -1rem; padding-inline: 1rem; scrollbar-width: none; scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
+  .tebyan-service-filters::-webkit-scrollbar { display: none; }
+  .tebyan-service-filters > button { flex: 0 0 auto; padding-inline: 1rem; scroll-snap-align: start; }
+}
+@media (min-width: 600px) and (max-width: 767px) {
+  .tebyan-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+/* مفتاح المجلس (متوازن/معارض): الحالة المختارة كانت بيضاء على أبيض (لا تُرى)، والنص ينكسر في سطرين مطويًّا. */
+.tebyan-seg { max-width: 100%; gap: .25rem !important; }
+.tebyan-seg__btn { white-space: nowrap; min-height: 44px; touch-action: manipulation; }
+.tebyan-seg__btn[aria-pressed="true"]:not([class*="b85d63"]) {
+  background: var(--tbe-lapis-mist, #e9eef8) !important; color: var(--tbe-ink, #1b2a52) !important;
+  box-shadow: inset 0 0 0 1.5px rgba(53, 83, 154, .45) !important;
+}
+@media (max-width: 479px) {
+  .tebyan-seg { width: 100%; }
+  .tebyan-seg__btn { flex: 1 1 0; padding-inline: .5rem !important; font-size: .8125rem !important; }
+}
