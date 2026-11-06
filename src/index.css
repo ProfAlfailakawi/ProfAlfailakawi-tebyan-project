@@ -5597,14 +5597,110 @@ html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
 }
 
 
-/* iPhone Duo folded postures only. Unsupported/disabled Safari preview features
-   leave the existing site styles unchanged on every other device and posture. */
-@media (device-posture: folded) and (horizontal-viewport-segments: 2) {
-  html, body, #root { min-width: 0; max-width: 100%; }
+/* ==========================================================================
+   iPhone Duo + phones: one width/height-based rule set.
+   Layout never depends on device-posture or viewport-segments (both are null by
+   default in Safari); the window's real width and height decide, so folded
+   (382), Split View (~320/470/620), opened (~669/951) and every phone follow the
+   same rules and switch live without a reload.
+   ========================================================================== */
+
+/* Pinch-zoom stays available; only the accidental double-tap zoom is removed. */
+html { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+/* The page and header respect the camera cut-out and the rounded corners. */
+.tebyan-app-header {
+  padding-inline-start: max(1rem, env(safe-area-inset-left, 0px)) !important;
+  padding-inline-end: max(1rem, env(safe-area-inset-right, 0px)) !important;
 }
-@media (device-posture: folded) and (vertical-viewport-segments: 2) {
-  html, body, #root { min-width: 0; max-width: 100%; }
+
+/* Touch targets: every header control is at least 44x44 on touch screens. This
+   replaces the older 40px rules (also the <=349px ones). */
+@media (pointer: coarse) {
+  header.fixed .tebyan-floating-nav > .tebyan-services-button,
+  .tebyan-header-actions button,
+  .tebyan-header-actions [role="status"] button,
+  .tebyan-action-pill button {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  .tebyan-header-actions [role="status"] button { width: 44px !important; height: 44px !important; }
 }
-@media (device-posture: folded) and (orientation: landscape) and (max-height: 520px) {
-  html { scroll-padding-block: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-bottom)); }
+
+/* Folded Duo header: the stacked 10px "Services" label is replaced by a clean
+   44px icon button (the label stays for screen readers). */
+@media (max-width: 449px) {
+  header.fixed .tebyan-floating-nav > .tebyan-services-button > span:not(.sr-only) {
+    display: none !important;
+  }
+  header.fixed .tebyan-floating-nav > .tebyan-services-button {
+    width: 44px !important;
+    height: 44px !important;
+    padding-inline: 0 !important;
+    justify-content: center;
+  }
+}
+/* Demo header on very narrow panes (Split View 1/3): the wordmark and the
+   install shortcut step aside so every control keeps a 44px target. */
+@media (max-width: 359px) {
+  .tebyan-app-header:has([role="status"]) .tebyan-brand-name { display: none; }
+}
+@media (max-width: 349px) {
+  .tebyan-header-actions:has([role="status"]) .tebyan-action-pill > div:first-child { display: none; }
+}
+
+/* Short windows (landscape phone, Duo folded landscape ~600x350, pinned-video
+   portrait): the fixed header and the content's top gap shrink so the page keeps
+   most of the height. Decided by height, not by device. */
+@media (max-height: 480px) {
+  .tebyan-app-header {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.25rem) !important;
+    padding-bottom: 0.25rem !important;
+  }
+  .tebyan-route-shell {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 4rem) !important;
+  }
+  .tebyan-floating-nav .tebyan-orb-mark svg { width: 22px; height: 22px; }
+}
+
+/* Reading comfort on the in-between widths (opened portrait 669, wide Split
+   View 620): headings balance their lines instead of leaving orphans. */
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+
+/* Keyboard focus is always visible on the glass controls. */
+.tebyan-app-header button:focus-visible,
+.tebyan-header-actions a:focus-visible {
+  outline: 2px solid var(--tb-lilac-deep, #4c3f7a);
+  outline-offset: 2px;
+}
+
+/* Header glass: a soft gold hairline under the bar once content scrolls beneath. */
+.tebyan-app-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 140, 50, 0.28), transparent);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+}
+
+/* Narrowest Split View pane (~320): the older 40px fitting rules lose to 44px
+   targets here too (home mark and the account menu). */
+@media (max-width: 349px) and (pointer: coarse) {
+  html body header.fixed .tebyan-floating-nav > button,
+  html body header.fixed .tebyan-floating-nav .tebyan-orb-mark,
+  html body header.fixed .tebyan-header-actions .tebyan-action-pill button,
+  html body header.fixed .tebyan-header-actions [aria-label="القائمة الشخصية"] {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  html body header.fixed .tebyan-floating-nav .tebyan-orb-mark {
+    width: 44px !important;
+    height: 44px !important;
+  }
 }
