@@ -115,9 +115,9 @@ main [role="tablist"].overflow-x-auto {
 /* كل الخدمات: شرائح التصفية صفوف متوازنة بلا يتيم، والبطاقات عمودان من 600px (الديو مفتوحًا 669). */
 @media (max-width: 899px) {
   .tebyan-service-filters { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 640px; gap: .5rem; }
-  .tebyan-service-filters > button { justify-content: center; padding-inline: .5rem; white-space: nowrap; }
+  .tebyan-service-filters > button { justify-content: center; padding-inline: .5rem; white-space: normal; text-align: center; line-height: 1.3; padding-block: .35rem; }
 }
-@media (max-width: 479px) {
+@media (max-width: 599px) {
   .tebyan-service-filters {
     display: flex !important; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; max-width: none;
     margin-inline: -1rem; padding-inline: 1rem; scrollbar-width: none; scroll-snap-type: x proximity;
@@ -125,7 +125,7 @@ main [role="tablist"].overflow-x-auto {
     mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
   }
   .tebyan-service-filters::-webkit-scrollbar { display: none; }
-  .tebyan-service-filters > button { flex: 0 0 auto; padding-inline: 1rem; scroll-snap-align: start; }
+  .tebyan-service-filters > button { flex: 0 0 auto; padding-inline: 1rem; white-space: nowrap; scroll-snap-align: start; }
 }
 @media (min-width: 600px) and (max-width: 767px) {
   .tebyan-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
