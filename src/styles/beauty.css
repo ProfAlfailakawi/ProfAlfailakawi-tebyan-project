@@ -174,3 +174,17 @@ main [role="tablist"].overflow-x-auto {
   .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(53, 83, 154, .26); border-radius: 6px; }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(53, 83, 154, .5); }
 }
+
+/* أمثلة التجربة (DemoStarters): مطويًّا (≤479px) كانت كل شريحة في سطر وتأكل ~250px من الشاشة الأولى.
+   صفٌّ أفقي واحد قابل للتمرير مع تلاشٍ ناعم؛ الوسم «جرّب مثالًا» أول الصف. */
+@media (max-width: 479px) {
+  [data-demo-starters] {
+    flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity;
+    margin-inline: -.25rem; padding: .125rem .25rem;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%);
+  }
+  [data-demo-starters]::-webkit-scrollbar { display: none; }
+  [data-demo-starters] > * { flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start; }
+  [data-demo-starters] > button { min-height: 44px; max-width: none !important; }
+}
