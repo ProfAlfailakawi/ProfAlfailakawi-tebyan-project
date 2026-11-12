@@ -300,7 +300,7 @@ export default function AdminDashboard() {
       
       {costStats && (
         <section className="mb-12">
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-slate-800 flex items-start md:items-center gap-2 leading-snug"><BarChart4 className="w-6 h-6 text-indigo-500 shrink-0" /> توفير تكلفة الذكاء الاصطناعي (AI Cost Engine)</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-slate-800 flex items-start md:items-center gap-2 leading-snug"><BarChart4 className="w-6 h-6 text-indigo-500 shrink-0" /> <span>توفير تكلفة الذكاء الاصطناعي <span dir="ltr" className="inline-block">(AI Cost Engine)</span></span></h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 <div className="bg-white p-5 md:p-8 rounded-[24px] md:rounded-[32px] shadow-[0_4px_20px_rgb(0,0,0,0.02)] border border-slate-100 flex flex-col justify-between min-w-0">
                     <p className="text-slate-600 mb-2 font-bold text-xs md:text-sm uppercase leading-snug">إجمالي الطلبات</p>
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
             
             {topQueries.length > 0 && (
                 <div className="mt-8 bg-white p-4 md:p-6 rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                    <h3 className="text-xl font-bold mb-4 text-slate-800">أكثر الأسئلة والاستعلامات تكراراً (Top 20)</h3>
+                    <h3 className="text-lg md:text-xl font-bold mb-4 text-slate-800 leading-snug">أكثر الأسئلة والاستعلامات تكراراً <span dir="ltr" className="inline-block">(Top 20)</span></h3>
                     {/* الجوال: بطاقات تُظهر نص الاستعلام كاملاً بدل جدول يحتاج تمريراً أفقياً. */}
                     <ul className="md:hidden divide-y divide-slate-100">
                         {topQueries.map((q, i) => (
@@ -377,7 +377,7 @@ export default function AdminDashboard() {
       )}
       
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6 text-slate-800">اقتراحات التطوير الاستراتيجي (AI Driven)</h2>
+        <h2 className="text-xl md:text-2xl font-bold mb-6 text-slate-800 leading-snug">اقتراحات التطوير الاستراتيجي <span dir="ltr" className="inline-block">(AI Driven)</span></h2>
         {suggestions.length === 0 && !isLoading && (
             <p className="text-slate-500">اضغط على "تشغيل تحليل الذكاء الاصطناعي" للحصول على اقتراحات.</p>
         )}
@@ -398,8 +398,8 @@ export default function AdminDashboard() {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-            <h2 className="text-2xl font-bold mb-8">مؤشرات القيمة والنضج (Valuation)</h2>
+        <div className="bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-slate-200">
+            <h2 className="text-xl md:text-2xl font-bold mb-8 leading-snug">مؤشرات القيمة والنضج <span dir="ltr" className="inline-block">(Valuation)</span></h2>
             <div className="space-y-6">
                 {valuationMetrics.map((sm, i) => (
                     <div key={i} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-b pb-6 last:border-0 last:pb-0">
@@ -416,10 +416,10 @@ export default function AdminDashboard() {
             </div>
         </div>
         
-        <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-            <h2 className="text-2xl font-bold mb-6 italic">نصيحة المدير التقني</h2>
-            <div className="bg-slate-900 text-white p-6 rounded-2xl">
-                <p className="text-lg leading-relaxed">
+        <div className="bg-white p-5 md:p-8 rounded-3xl shadow-sm border border-slate-200">
+            <h2 className="text-xl md:text-2xl font-bold mb-6 italic leading-snug">نصيحة المدير التقني</h2>
+            <div className="bg-slate-900 text-white p-5 md:p-6 rounded-2xl">
+                <p className="text-base md:text-lg leading-relaxed">
                     لرفع قيمة التطبيق استعداداً لأي عملية بيع مستقبيلة، ركز في الربع القادم على توثيق الكود البرمجي (Technical Documentation) 
                     بشكل كامل والتحول إلى هيكلية Microservices. هذا سيقلل من Technical Debt ويزيد من جاذبية المنصة للمستثمرين.
                 </p>
