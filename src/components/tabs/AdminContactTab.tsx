@@ -122,7 +122,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                           </span>
                         )}
                       </h3>
-                      <a href={`mailto:${msg.email}`} className="text-sm text-zinc-600 hover:text-black hover:underline font-medium" onClick={e => e.stopPropagation()} dir="ltr">
+                      <a href={`mailto:${msg.email}`} className="inline-block py-3 -my-3 md:py-0 md:my-0 text-sm text-zinc-600 hover:text-black hover:underline font-medium" onClick={e => e.stopPropagation()} dir="ltr">
                         {msg.email}
                       </a>
                     </div>

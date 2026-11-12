@@ -76,3 +76,15 @@ main:focus-visible { outline-offset: -3px; }
 .tebyan-route-shell :is(.bg-white, .bg-zinc-50, .bg-stone-50) .text-zinc-400:not(svg) { color: #71717a; }
 /* رؤوس الجداول الإدارية: الرمادي-500 على الرمادي-100 (4.35:1) ← 7:1 */
 .tebyan-route-shell thead.bg-slate-100 { color: #475569; }
+
+/* حقول الإدخال على الهاتف: 16px حتى لا يكبّر Safari على iOS الصفحة عند التركيز.
+   القاعدة غير الطبقية في index.css (قسم الهاتف) كانت تخسر أمام !important داخل
+   @layer components/base (0.95rem و15px)، فكان حقل الرئيسية وبحث الخدمات 15.2px.
+   نكتبها في @layer base لأن !important الطبقي الأسبق يغلب. */
+@layer base {
+  @media (max-width: 767px) {
+    html body :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select) {
+      font-size: 16px !important;
+    }
+  }
+}

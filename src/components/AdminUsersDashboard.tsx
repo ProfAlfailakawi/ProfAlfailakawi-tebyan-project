@@ -288,7 +288,7 @@ export default function AdminUsersDashboard() {
             >
               <X className="w-5 h-5" />
             </button>
-            <h2 className="text-xl md:text-2xl font-black mb-6 md:mb-8 border-b pb-4 leading-snug pe-12">ملف العميل (Client Profile)</h2>
+            <h2 className="text-xl md:text-2xl font-black mb-6 md:mb-8 border-b pb-4 leading-snug pe-12">ملف العميل <span dir="ltr" className="inline-block">(Client Profile)</span></h2>
 
             <div className="flex flex-col md:flex-row gap-8 mb-8 text-right">
               {/* Profile Sidebar */}
