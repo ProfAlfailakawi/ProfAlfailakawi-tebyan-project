@@ -474,7 +474,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 onClick={handleRunLabTool} 
                 disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
                 className={cn(
-                  "md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
+                  "tebyan-run-action md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
                   (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-lilac to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 cursor-pointer"
                 )}
               >
