@@ -201,3 +201,11 @@ main.tebyan-route-shell button:disabled:is([class*="bg-lilac"], [class*="bg-[#35
   box-shadow: none !important;
 }
 main.tebyan-route-shell button:disabled:is([class*="bg-lilac"], [class*="bg-[#35539a]"], [class*="bg-navy"], .tebyan-run-action) svg { color: currentColor !important; opacity: .75; }
+
+/* قول فصل — أقسام المكتبة: كانت قاعدة «عمود واحد» العامة على الهاتف تمدّ تسع بطاقات صغيرة
+   فوق بعضها (~900px تمرير). عمودان: لوحة أيقونات متوازنة تُقرأ بنظرة. */
+@media (max-width: 767px) {
+  main .tebyan-qf-categories { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .6rem !important; }
+  main .tebyan-qf-categories > button { min-height: 0 !important; padding: .8rem !important; gap: .55rem !important; }
+  main .tebyan-qf-categories > button:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
