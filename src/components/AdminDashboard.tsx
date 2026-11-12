@@ -256,9 +256,9 @@ export default function AdminDashboard() {
               ))}
           </div>
 
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+          <div className="flex flex-col gap-4">
             <h1 className="text-2xl md:text-4xl font-black text-slate-900 leading-snug">لوحة تحكم الاستراتيجية والقيمة</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto lg:self-start lg:[&>button]:whitespace-nowrap">
                 <button 
                 onClick={handleGenerateQuestions}
                 disabled={isGenerating}
