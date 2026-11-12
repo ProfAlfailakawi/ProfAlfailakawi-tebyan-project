@@ -188,3 +188,24 @@ main [role="tablist"].overflow-x-auto {
   [data-demo-starters] > * { flex: 0 0 auto; white-space: nowrap; scroll-snap-align: start; }
   [data-demo-starters] > button { min-height: 44px; max-width: none !important; }
 }
+
+/* ───────── الجولة 4: أزرار التشغيل المعطّلة ─────────
+   قبل كتابة المدخل كان زر التشغيل لازورديًا بشفافية 50%: أبيض على لازوردي باهت (~2:1) يبدو «مكسورًا».
+   الآن: زرّ ضبابي هادئ بنص لازوردي مقروء، يقول «جاهز حين تكتب» دون أن يصرخ. لا تغيير في السلوك. */
+main.tebyan-route-shell button:disabled:is([class*="bg-lilac"], [class*="bg-[#35539a]"], [class*="bg-navy"], .tebyan-run-action) {
+  opacity: 1 !important;
+  background: var(--tbe-lapis-mist, #e9eef8) !important;
+  background-image: none !important;
+  color: var(--tbe-lapis, #35539a) !important;
+  border-color: rgba(53, 83, 154, .16) !important;
+  box-shadow: none !important;
+}
+main.tebyan-route-shell button:disabled:is([class*="bg-lilac"], [class*="bg-[#35539a]"], [class*="bg-navy"], .tebyan-run-action) svg { color: currentColor !important; opacity: .75; }
+
+/* قول فصل — أقسام المكتبة: كانت قاعدة «عمود واحد» العامة على الهاتف تمدّ تسع بطاقات صغيرة
+   فوق بعضها (~900px تمرير). عمودان: لوحة أيقونات متوازنة تُقرأ بنظرة. */
+@media (max-width: 767px) {
+  main .tebyan-qf-categories { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .6rem !important; }
+  main .tebyan-qf-categories > button { min-height: 0 !important; padding: .8rem !important; gap: .55rem !important; }
+  main .tebyan-qf-categories > button:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}

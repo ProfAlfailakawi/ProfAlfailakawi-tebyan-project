@@ -178,21 +178,21 @@ export const KnowledgeGraphTab = ({ language, handleTabChange }: { language: str
                 </div>
             </h2>
             <div className="mt-4 md:mt-6 p-4 md:p-5 rounded-2xl bg-white/70 border border-[color:var(--tb-c-e9e2f1)] backdrop-blur-sm max-w-3xl">
-                <p className="text-[color:var(--tb-c-6f7785)] font-medium leading-relaxed text-sm md:text-lg text-justify">
+                <p className="hidden md:block text-[color:var(--tb-c-6f7785)] font-medium leading-relaxed text-sm md:text-lg">
                     {language === 'ar' 
                       ? 'هنا لا نعطيك مجرد إجابات مُعلبة، بل نُريك المجرة المعرفية المحيطة بها. الأفكار لا تعيش في عزلة.. اكتشف الروابط الخفية بين قراراتك، وكيف يمكن لفكرة واحدة أن تفتح لك مسارات لم تكن تتوقعها.' 
                       : 'Here we don’t just give you canned answers; we show you the cognitive galaxy surrounding them. Ideas don’t live in isolation. Discover the hidden connections between your decisions.'}
                 </p>
-                <div className="mt-4 flex items-center gap-3 text-[color:var(--tb-c-3f6b55)] font-bold text-sm">
-                    <Sparkles className="w-5 h-5" />
+                <div className="md:mt-4 flex items-center gap-3 text-[color:var(--tb-c-3f6b55)] font-bold text-sm">
+                    <Sparkles aria-hidden className="w-5 h-5 shrink-0" />
                     <span>{language === 'ar' ? 'تحليل شبكتك: تتركز اهتماماتك بقوة حول مفاهيمك الحالية، استكشف لربطها وتوسيع مداركك.' : 'Network Analysis: Your focus is strong on current concepts, merge them to expand your mindset.'}</span>
                 </div>
             </div>
         </div>
 
         <div className="mb-4 flex items-center gap-2 rounded-full bg-white/72 border border-[color:var(--tb-c-e9e2f1)] p-1 w-full sm:w-fit shadow-sm overflow-x-auto">
-          <button type="button" onClick={() => setViewMode('map')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
-          <button type="button" onClick={() => setViewMode('list')} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
+          <button type="button" onClick={() => setViewMode('map')} aria-pressed={viewMode === 'map'} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'map' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'خريطة الوعي' : 'Mind map'}</button>
+          <button type="button" onClick={() => setViewMode('list')} aria-pressed={viewMode === 'list'} className={cn('flex-1 sm:flex-none px-4 py-2 rounded-full text-xs font-black border transition-all whitespace-nowrap', viewMode === 'list' ? 'bg-[#6E5F8E] text-white border-[color:var(--tb-lilac-deep)] shadow-sm' : 'bg-transparent text-ink-mute border-transparent hover:bg-white')}>{language === 'ar' ? 'العرض التقليدي' : 'List view'}</button>
         </div>
 
         {viewMode === 'list' && (

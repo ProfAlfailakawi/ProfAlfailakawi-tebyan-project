@@ -428,8 +428,9 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                    resetAllLabResults();
                  }} 
                  title={language === 'ar' ? tool.tooltip.ar : tool.tooltip.en}
+                 aria-pressed={activeLabTool === tool.id}
                  className={cn(
-                   "w-full md:w-auto px-5 md:px-6 py-3 rounded-[22px] md:rounded-full border text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer", 
+                   "w-full md:w-auto px-5 md:px-6 py-3 rounded-[22px] md:rounded-full border text-sm font-bold transition-all break-words text-wrap md:whitespace-nowrap cursor-pointer text-start md:text-center", 
                    activeLabTool === tool.id ? "bg-[#8E7AAE] text-white border-[color:var(--tb-lilac-soft)] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" : "bg-white text-ink-mute border-[color:var(--tb-sky)]/15 hover:border-zinc-300"
                  )}
                >
@@ -446,7 +447,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     <input 
                       value={labInput} 
                       onChange={(e) => setLabInput(e.target.value)} 
-                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-lilac-soft outline-none transition-all placeholder:text-zinc-300" 
+                      className="flex-1 p-6 border-2 border-[color:var(--tb-sky)]/25 bg-white rounded-[16px] text-xl font-bold focus:border-lilac-soft outline-none transition-all placeholder:text-zinc-300" 
                       placeholder={language === 'ar' ? "الفكرة الأولى (مثال: العدمية)..." : "Concept A..."} 
                     />
                     <div className="flex items-center justify-center -mx-2 z-10 hidden md:flex">
@@ -455,7 +456,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                     <input 
                       value={labInput2} 
                       onChange={(e) => setLabInput2(e.target.value)} 
-                      className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-rose-200 outline-none transition-all placeholder:text-zinc-300" 
+                      className="flex-1 p-6 border-2 border-[color:var(--tb-sky)]/25 bg-white rounded-[16px] text-xl font-bold focus:border-rose-200 outline-none transition-all placeholder:text-zinc-300" 
                       placeholder={language === 'ar' ? "الفكرة الثانية (مثال: الأمل)..." : "Concept B..."} 
                     />
                 </div>
@@ -463,7 +464,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 <input 
                   value={labInput} 
                   onChange={(e) => setLabInput(e.target.value)} 
-                  className="flex-1 p-6 border-4 border-zinc-50 rounded-[16px] text-xl font-bold focus:border-[color:var(--tb-sky)]/40 outline-none transition-all" 
+                  className="flex-1 p-6 border-2 border-[color:var(--tb-sky)]/25 bg-white rounded-[16px] text-xl font-bold focus:border-[color:var(--tb-sky)]/40 outline-none transition-all" 
                   placeholder={language === 'ar' ? "أدخل الموضوع أو التحدي..." : "Enter topic or challenge..."} 
                 />
             )}
@@ -473,7 +474,7 @@ export const LabTab = React.memo(({ language, initialValue, onValueUsed, handleT
                 onClick={handleRunLabTool} 
                 disabled={isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))}
                 className={cn(
-                  "md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
+                  "tebyan-run-action md:px-12 py-4 rounded-[16px] font-bold shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all flex items-center justify-center gap-3",
                   (isLoading || (activeLabTool === 'collider' && (!labInput || !labInput2))) ? "bg-zinc-400 cursor-not-allowed" : activeLabTool === 'collider' ? "bg-gradient-to-r from-lilac to-rose-600 text-white hover:opacity-90 cursor-pointer" : "bg-[#8E7AAE] text-white hover:bg-zinc-900 cursor-pointer"
                 )}
               >

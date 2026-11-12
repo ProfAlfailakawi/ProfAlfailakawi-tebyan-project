@@ -1068,11 +1068,12 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             {/* Ripples Tree */}
             <div className="mt-20 space-y-8 relative">
                 <div className="flex flex-col sm:flex-row items-center justify-between mb-12 relative z-10 gap-6">
-                    <div className="flex items-center gap-4 bg-[color:var(--tb-lilac-bg)]/50 p-1.5 rounded-2xl border border-[color:var(--tb-sky)]/25">
+                    <div className="w-full sm:w-auto flex items-center gap-1 bg-[color:var(--tb-lilac-bg)]/50 p-1.5 rounded-2xl border border-[color:var(--tb-sky)]/25">
                         <button 
                             onClick={() => setActiveView('list')}
+                            aria-pressed={activeView === 'list'}
                             className={cn(
-                                "px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-2",
+                                "flex-1 sm:flex-none justify-center px-3 sm:px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-1.5 whitespace-nowrap",
                                 activeView === 'list' ? "bg-white text-navy shadow-sm" : "text-ink-mute hover:text-ink-soft"
                             )}
                         >
@@ -1081,8 +1082,9 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                         </button>
                         <button 
                             onClick={() => setActiveView('nebula')}
+                            aria-pressed={activeView === 'nebula'}
                             className={cn(
-                                "px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-2",
+                                "flex-1 sm:flex-none justify-center px-3 sm:px-4 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-1.5 whitespace-nowrap",
                                 activeView === 'nebula' ? "bg-white text-navy shadow-sm" : "text-ink-mute hover:text-ink-soft"
                             )}
                         >

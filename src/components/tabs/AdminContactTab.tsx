@@ -112,12 +112,12 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                   {msg.status === 'new' && (
                     <div aria-hidden className="absolute top-3 rtl:left-3 ltr:right-3 rounded-full bg-[#8E7AAE]" style={{ width: 8, height: 8, minWidth: 0, minHeight: 0 }} />
                   )}
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4 pl-4 rtl:pr-4 rtl:pl-0">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-3 mb-3 ps-4">
                     <div className="min-w-0">
-                      <h3 className="font-bold text-lg text-black flex flex-wrap items-center gap-2 leading-snug">
-                        {msg.name}
+                      <h3 className="font-bold text-lg text-navy flex flex-wrap items-center gap-2 leading-snug">
+                        <bdi>{msg.name}</bdi>
                         {msg.status === 'new' && (
-                          <span className="text-xs uppercase font-bold bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)] px-2 py-0.5 rounded-full">
+                          <span className="text-xs font-bold bg-[color:var(--tb-c-f4f0f8)] text-[color:var(--tb-lilac-deep)] px-2 py-0.5 rounded-full">
                             {language === 'ar' ? 'جديد' : 'New'}
                           </span>
                         )}
@@ -128,7 +128,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                     </div>
                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between gap-2">
                       <span className="text-xs text-zinc-500 font-medium flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
+                        <Clock aria-hidden className="w-3.5 h-3.5" />
                         {msg.createdAt?.toDate ? msg.createdAt.toDate().toLocaleString(language === 'ar' ? 'ar-SA-u-nu-latn' : 'en-US') : (language === 'ar' ? 'الآن' : 'Just now')}
                       </span>
                       <div className="flex gap-2">
@@ -137,6 +137,7 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                             onClick={(e) => { e.stopPropagation(); markAsRead(msg.id, msg.status); }}
                             className="p-2 rounded-full text-zinc-500 hover:text-[color:var(--tb-lilac-deep)] hover:bg-[color:var(--tb-c-f4f0f8)] transition-colors"
                             title={language === 'ar' ? 'تحديد كمقروء' : 'Mark as read'}
+                            aria-label={language === 'ar' ? 'تحديد كمقروء' : 'Mark as read'}
                           >
                             <CheckCircle2 className="w-4 h-4" />
                           </button>
@@ -145,14 +146,15 @@ export const AdminContactTab = ({ language }: { language: string }) => {
                           onClick={(e) => { e.stopPropagation(); deleteMessage(msg.id); }}
                           className="p-2 rounded-full text-zinc-500 hover:text-rose-600 hover:bg-rose-50 transition-colors"
                           title={language === 'ar' ? 'حذف' : 'Delete'}
+                          aria-label={language === 'ar' ? 'حذف' : 'Delete'}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
                   </div>
-                  <div className="pl-4 rtl:pr-4 rtl:pl-0">
-                    <p className="text-zinc-800 whitespace-pre-wrap leading-relaxed text-sm bg-white border border-zinc-100 p-4 rounded-xl shadow-sm">
+                  <div className="ps-4">
+                    <p dir="auto" className="text-start text-zinc-800 whitespace-pre-wrap leading-relaxed text-sm bg-white border border-zinc-100 p-4 rounded-xl shadow-sm">
                       {msg.message}
                     </p>
                   </div>

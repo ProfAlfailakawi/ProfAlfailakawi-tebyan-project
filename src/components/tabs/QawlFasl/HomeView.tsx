@@ -488,8 +488,8 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
                       className="w-full text-right p-3 rounded-xl hover:bg-white transition-all border border-transparent hover:border-lilac-soft/20 group flex gap-3 items-start"
                     >
                       <span className="text-lilac font-bold text-sm pt-1">{String(i + 1).padStart(2, '0')}</span>
-                      <div className="flex-1">
-                        <h3 className="text-base font-bold text-navy line-clamp-1 group-hover:text-lilac">{q.question || q.title}</h3>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-[0.95rem] md:text-base leading-snug font-bold text-navy line-clamp-2 md:line-clamp-1 group-hover:text-lilac">{q.question || q.title}</h3>
                         <p className="text-xs text-ink-mute mt-0.5">{q.mainCategory || 'عام'}</p>
                       </div>
                       <ArrowRight className="w-3 h-3 text-lilac -scale-x-100 group-hover:text-lilac self-center" />
@@ -538,7 +538,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
             <div className="h-px flex-1 bg-lilac-soft/25 mx-0 md:mx-8 w-full md:w-auto"></div>
           </div>
           
-          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-6 relative z-10">
+          <div className="tebyan-qf-categories grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-3 gap-2.5 md:gap-5 lg:gap-6 relative z-10">
             {(() => {
               const countFor = (category: any) => questions.filter(q => 
                 q.categoryId === category.id || 
