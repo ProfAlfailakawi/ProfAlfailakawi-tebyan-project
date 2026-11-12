@@ -1,0 +1,21 @@
+{
+  "repo": "ProfAlfailakawi-tebyan-project",
+  "appId": "com.dralfailakawi.tebyan",
+  "nameAr": "تبيان",
+  "nameEn": "Tebyan",
+  "displayName": "تبيان",
+  "url": "https://tebyan.dr-alfailakawi.com",
+  "allowNavigation": [
+    "tebyan-app-2026.firebaseapp.com",
+    "tebyan-clean-2026.web.app",
+    "*.googleapis.com",
+    "accounts.google.com"
+  ],
+  "icon": "public/icon.svg",
+  "background": "#F7F3EE",
+  "backgroundDark": "#1C1A17",
+  "accent": "#8A5A2B",
+  "lsCategory": "public.app-category.reference",
+  "version": "1.0.0",
+  "build": 1
+}

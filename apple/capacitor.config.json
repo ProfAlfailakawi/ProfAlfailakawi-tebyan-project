@@ -1,0 +1,31 @@
+{
+  "appId": "com.dralfailakawi.tebyan",
+  "appName": "Tebyan",
+  "webDir": "www",
+  "server": {
+    "url": "https://tebyan.dr-alfailakawi.com",
+    "errorPath": "offline.html",
+    "allowNavigation": [
+      "tebyan.dr-alfailakawi.com",
+      "tebyan-app-2026.firebaseapp.com",
+      "tebyan-clean-2026.web.app",
+      "*.googleapis.com",
+      "accounts.google.com"
+    ]
+  },
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#F7F3EE",
+    "scheme": "Tebyan",
+    "limitsNavigationsToAppBoundDomains": false,
+    "preferredContentMode": "mobile"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "launchAutoHide": true,
+      "backgroundColor": "#F7F3EE",
+      "showSpinner": false
+    }
+  }
+}
