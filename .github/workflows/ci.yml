@@ -45,6 +45,11 @@ jobs:
       - name: البناء
         run: npm run build
 
+      # الاختبارات (node --test عبر tsx) بعد البناء: تفحص ما سيُنشر فعلاً،
+      # وفشلها يمنع النشر لأن deploy يعتمد على verify. لا تحتاج أي سرّ أو شبكة.
+      - name: الاختبارات
+        run: npm test
+
       - name: حفظ البناء للنشر
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
@@ -69,6 +74,9 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
+        with:
+          # التاريخ كاملاً لخطوة «انحراف الدالة api» في آخر هذه المهمة.
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v4
         with:
@@ -98,3 +106,29 @@ jobs:
           done
           echo "::error::Deploy finished but the live site is not serving build $want"
           exit 1
+
+      # الدالة api (functions/) لا تُنشر من هنا — تُنشر يدوياً فقط (npm run deploy).
+      # هذه الخطوة مجانية ولا تُفشل النشر: تقارن وقت آخر نشر للدالة بآخر تعديل
+      # على functions/ في main، وتنبّه إن كانت الدالة الحيّة أقدم من الكود.
+      - name: انحراف الدالة api عن main (تنبيه فقط)
+        continue-on-error: true
+        run: |
+          deployed=$(gcloud functions describe api --region=us-central1 --project=tebyan-app-2026 --format='value(updateTime)' 2>/dev/null || true)
+          if [ -z "$deployed" ]; then
+            echo "::warning title=Function drift not checked::Could not read the last deploy time of Cloud Function api (github-deploy@ needs cloudfunctions.functions.get)."
+            exit 0
+          fi
+          changed=$(git log --since="$deployed" --format='%h %cs %s' -- functions/)
+          if [ -z "$changed" ]; then
+            echo "Cloud Function api is current with functions/ (last deployed $deployed)."
+            exit 0
+          fi
+          echo "::warning title=Cloud Function api is behind main::functions/ changed after the last function deploy ($deployed). Hosting was deployed; the function was not. Deploy it manually: firebase deploy --project=tebyan-app-2026 --only functions:api"
+          {
+            echo "### Cloud Function \`api\` is behind main"
+            echo "Last function deploy: \`$deployed\`. Commits touching \`functions/\` since then:"
+            echo '```'
+            echo "$changed"
+            echo '```'
+            echo "Deploy manually: \`firebase deploy --project=tebyan-app-2026 --only functions:api\`"
+          } >> "$GITHUB_STEP_SUMMARY"
