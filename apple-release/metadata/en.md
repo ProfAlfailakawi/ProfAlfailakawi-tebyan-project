@@ -6,7 +6,7 @@
 | Subtitle (≤30) | Grounded answers & learning |
 | Keywords (≤100) | knowledge,questions,answers,learning,sources,research,education,reading |
 | Category | Reference / Education |
-| Bundle ID | `com.dralfailakawi.tebyan` |
+| Bundle ID | `com.dralfailakawi.tebyan.ios` |
 | Distribution | Public App Store |
 
 ## Description
