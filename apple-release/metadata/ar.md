@@ -6,7 +6,7 @@
 | العنوان الفرعي (≤30) | مساعد معرفي وأسئلة موثّقة |
 | الكلمات المفتاحية (≤100) | تبيان,معرفة,أسئلة,أجوبة,تعلم,مصادر,بحث,تربية,ثقافة |
 | الفئة | Reference / Education |
-| معرّف الحزمة | `com.dralfailakawi.tebyan` |
+| معرّف الحزمة | `com.dralfailakawi.tebyan.ios` |
 | الإصدار | 1.0.0 (1) |
 | رابط الخصوصية | https://tebyan.dr-alfailakawi.com/privacy — OWNER-TODO: تأكد أنه يعمل |
 | رابط الدعم | https://tebyan.dr-alfailakawi.com — OWNER-TODO: صفحة دعم/تواصل |

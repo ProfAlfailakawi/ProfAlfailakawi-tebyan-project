@@ -4,7 +4,7 @@
 - [x] أيقونة 1024 بدون شفافية، شاشة إطلاق، اسم عربي
 - [x] Privacy Manifest، إعفاء التشفير، أذونات مبررة فقط
 - [ ] بناء موقّع (Archive) بفريق مدفوع
-- [ ] سجل التطبيق في App Store Connect بنفس Bundle ID `com.dralfailakawi.tebyan`
+- [ ] سجل التطبيق في App Store Connect بنفس Bundle ID `com.dralfailakawi.tebyan.ios`
 - [ ] رفع البناء + انتهاء المعالجة
 - [ ] TestFlight داخلي
 - [ ] لقطات الشاشة (iPhone 6.9" + iPad 13")
