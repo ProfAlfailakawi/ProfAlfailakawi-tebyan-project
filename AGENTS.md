@@ -11,15 +11,13 @@
 2. الموديل المعتمد في كل ملفات المشروع هو:
    gemini-2.5-flash
 
-3. ممنوع تعديل `firebase.json` بطريقة تلغي ربط `/api/**` مع Cloud Run.
-   يجب أن يبقى الربط كالتالي:
-   /api/** → Cloud Run service: tebyan-api
+3. ممنوع تعديل `firebase.json` بطريقة تلغي ربط `/api/**` مع Cloud Function `api`.
+   يجب أن يبقى الربط كالتالي (كما في `firebase.json` → hosting.rewrites):
+   /api/** → Cloud Function: api (الكود في `functions/index.js`)
    region: us-central1
 
-4. ممنوع إعادة `/api/**` إلى:
-   function: api
-   أو إلى index.html
-   أو حذف rewrite الخاص بـ tebyan-api.
+4. ممنوع توجيه `/api/**` إلى index.html، أو حذف rewrite الخاص بالدالة `api`،
+   أو نقله إلى خدمة أخرى (مثل Cloud Run) دون قرار صريح من المالك.
 
 5. ممنوع وضع `GEMINI_API_KEY` داخل الكود أو داخل أي ملف مثل:
    .env
@@ -31,8 +29,7 @@
 6. مفتاح Gemini يجب أن يبقى فقط في Google Secret Manager باسم:
    GEMINI_API_KEY
 
-7. خدمة Cloud Run:
-   tebyan-api
+7. الدالة `api` (Cloud Function، us-central1):
    يجب أن تقرأ `GEMINI_API_KEY` من Secret Manager كـ Secret Reference.
 
 8. لا تضف أي API key مكشوف داخل الواجهة أو ملفات المشروع.
@@ -52,8 +49,8 @@
     أي service account json
 
 11. بعد أي تعديل، يجب نشر الاثنين إذا تغيرت ملفات الواجهة أو السيرفر:
-    - Firebase Hosting
-    - Cloud Run tebyan-api
+    - Firebase Hosting (تلقائي عند الدمج في main عبر `.github/workflows/ci.yml`)
+    - الدالة `api` إذا تغيّر `functions/` (يدوي فقط: `npm run deploy`؛ خطوة CI تنبّه إن تأخرت)
 
 12. لا ترفع ملفات:
     node_modules
@@ -66,7 +63,7 @@
 - Firebase project: tebyan-app-2026 (حساب volcanokw — نُقل في 2026-10-29؛ قبله tebyan-clean-2026 ثم tebyan-80d93)
 - Hosting site: tebyan-app-2026
 - باك-إند الإنتاج: Cloud Function باسم "api" (region us-central1) — هو المربوط في firebase.json عبر /api/**
-- باك-إند التطوير/البديل: server.ts (يُشغَّل عبر `npm run dev`، ويُبنى إلى dist/server.js وهو نسخة Cloud Run tebyan-api)
+- باك-إند التطوير/البديل: server.ts (يُشغَّل عبر `npm run dev`، ويُبنى إلى dist/server.js؛ غير موصول بالإنتاج)
 - قاعدة مهمة: يجب إبقاء functions/index.js و server.ts **متطابقين سلوكياً** (كاش + rate-limit + retry) لأن كليهما يخدم /api في سياقين مختلفين
 - AI model: gemini-2.5-flash
 - Secret name: GEMINI_API_KEY (في Secret Manager / بيئة الدالة)
@@ -74,6 +71,6 @@
 - النشر: `npm run deploy` (يبني وينشر hosting + functions:api + firestore:rules)
 - لا توجد مفاتيح مكشوفة داخل ملفات المشروع
 
-ملاحظة على البندين 3 و4 أعلاه: الإنتاج فعلياً يوجّه /api/** إلى Cloud Function "api" (وليس Cloud Run مباشرة). عند أي تعديل، حافظ على هذا الربط ولا تكسره، وأبقِ server.ts متطابقاً كنسخة احتياطية.
+ملاحظة على البندين 3 و4 أعلاه: صُحّحا في 2026-11-13 ليطابقا `firebase.json` (كانا يذكران Cloud Run tebyan-api). عند أي تعديل، حافظ على ربط /api/** بالدالة "api"، وأبقِ server.ts متطابقاً كنسخة احتياطية.
 
 لا تقم بإعادة توليد أو استبدال هذه الإعدادات تلقائياً. إذا احتجت تعديل الذكاء الاصطناعي، حافظ على gemini-2.5-flash و GEMINI_API_KEY في Secret Manager كما هي.
