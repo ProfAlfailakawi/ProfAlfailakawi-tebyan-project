@@ -89,7 +89,7 @@ Arabic-first AI knowledge assistant (React + Vite, Gemini via a server-side prox
 
 - **الواجهة:** React 18 + Vite 6 + Tailwind 4، بلا React Router؛ التنقّل بين الخدمات عبر `?tab=` و `/qawl/<id>` داخل [src/App.tsx](src/App.tsx). سجلّ الخدمات وأسماؤها في [src/constants/serviceRegistry.ts](src/constants/serviceRegistry.ts).
 - **الذكاء الاصطناعي:** الواجهة لا تحمل مفتاح Gemini؛ كل النداءات تمرّ عبر [src/lib/aiProxy.ts](src/lib/aiProxy.ts) إلى `/api/ai/*`. المفتاح في Google Secret Manager باسم `GEMINI_API_KEY` (القواعد في [AGENTS.md](AGENTS.md)).
-- **الخادم في الإنتاج:** Cloud Function باسم `api` في [functions/index.js](functions/index.js) (Express: حدّ للطلبات، App Check، إعادة المحاولة عند أخطاء Gemini المؤقتة)، موصولة بـ `/api/**` في [firebase.json](firebase.json). الملف [functions/src/index.ts](functions/src/index.ts) قديم ومعلَّم «لا يُنشر».
+- **الخادم في الإنتاج:** Cloud Function باسم `api` في [functions/index.js](functions/index.js) (Express: حدّ للطلبات، App Check، إعادة المحاولة عند أخطاء Gemini المؤقتة)، موصولة بـ `/api/**` في [firebase.json](firebase.json). (الملف القديم `functions/src/index.ts` المعلَّم «لا يُنشر» حُذف في 2026-11-13.)
 - **الخادم المحلي/البديل:** [server.ts](server.ts) (يُشغَّل بـ `npm run dev`، ويُبنى إلى `dist/server.js`)، ويجب أن يبقى مطابقاً سلوكياً للدالة.
 - **البيانات:** Firebase Auth + Firestore ([src/lib/firebase.ts](src/lib/firebase.ts))، والقواعد في [firestore.rules](firestore.rules)، و App Check في [src/lib/appCheck.ts](src/lib/appCheck.ts).
 
