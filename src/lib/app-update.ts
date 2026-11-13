@@ -5,7 +5,9 @@
  * تطلب من إنسان أن يُصلح البرنامج يدويًا. البرنامج هو الذي يُصلح نفسه، بلا إشعار ولا زر.
  *
  * أربع طبقات:
- *  1) بصمة إصدار: ثابت `__BUILD_ID__` داخل الحزمة مقابل `GET /api/version` من الخادم.
+ *  1) بصمة إصدار: ثابت `__BUILD_ID__` داخل الحزمة مقابل `/build-id.json` الثابت الذي يكتبه
+ *     البناء نفسه (Firebase Hosting يقدّمه بلا كاش، ولا يمرّ بالـ Cloud Function)، ثم
+ *     `GET /api/version` احتياطًا لخادم Express المستضاف ذاتيًا.
  *  2) منارة إصدار: نسأل الخادم عند pageshow المستأنَف من الـ bfcache (أكثر الحالات نسيانًا،
  *     إذ يستأنف كود قديم من الذاكرة بلا شبكة ولا أي حدث)، وعند العودة إلى التبويب، وكل
  *     دقيقتين كشبكة أمان.
@@ -32,7 +34,9 @@ const HARD_KEY = 'app-update:hard-refreshed';   // حارس التصعيد: hard
 const CHUNK_KEY = 'app-update:chunk-recovered'; // حارس تعافي الحزم المفقودة (sessionStorage)
 const POLL_MS = 120_000;                        // شبكة الأمان البطيئة: كل دقيقتين
 const BUSY_RETRY_MS = 4_000;                    // الصفحة مشغولة: نعيد المحاولة بعد أربع ثوانٍ
-const VERSION_URL = '/api/version';
+/* في الإنتاج يذهب `/api/**` إلى الـ Cloud Function `api` (firebase.json) ولا مسار version فيها،
+   أما build-id.json فملف ثابت من البناء ذاته — الشكل نفسه { build } — فهو المصدر الأول. */
+const VERSION_URLS = ['/build-id.json', '/api/version'];
 
 /**
  * وضع الإنتاج. لا نكتب `import.meta.env.PROD` مباشرةً: بعض إعدادات tsconfig في هذه
@@ -157,19 +161,28 @@ async function purgeShell(): Promise<void> {
 }
 
 /* ------------------------ الطبقة الأولى: سؤال الخادم ------------------------ */
-async function fetchServerBuild(): Promise<string | null> {
+async function fetchBuildFrom(url: string): Promise<string | null> {
   try {
-    const response = await fetch(VERSION_URL, {
+    const response = await fetch(url, {
       cache: 'no-store',
       credentials: 'same-origin',
       headers: { accept: 'application/json' },
     });
     if (!response.ok) return null;
+    // مسار مفقود قد يعود بصفحة index.html (إعادة كتابة SPA) بحالة 200 — فشل التحليل = لا بصمة.
     const data = (await response.json()) as { build?: unknown };
     return typeof data?.build === 'string' && data.build ? data.build : null;
   } catch {
     return null; // انقطاع الشبكة ليس إصدارًا جديدًا
   }
+}
+
+async function fetchServerBuild(): Promise<string | null> {
+  for (const url of VERSION_URLS) {
+    const build = await fetchBuildFrom(url);
+    if (build) return build;
+  }
+  return null;
 }
 
 /* --------------------- الطبقة الثالثة: التحديث ثم التصعيد --------------------- */
