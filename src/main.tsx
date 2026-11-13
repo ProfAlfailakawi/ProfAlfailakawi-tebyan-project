@@ -60,7 +60,7 @@ createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <BrowserRouter>
         <Suspense fallback={
-          <div className="flex h-screen w-full items-center justify-center">
+          <div className="flex h-dvh w-full items-center justify-center">
              <div className="w-12 h-12 border-4 border-slate-200 border-t-brand-primary rounded-full animate-spin"></div>
           </div>
         }>

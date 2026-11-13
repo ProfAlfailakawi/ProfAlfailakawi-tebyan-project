@@ -5490,20 +5490,23 @@ html:has(.tebyan-page-controls, .tebyan-orb-dock)::after {
   .tebyan-header-actions .tebyan-action-pill > .block > button,
   .tebyan-header-actions .tebyan-action-pill > .block > .relative > button {
     margin-inline: 0 !important;
-    min-width: 40px !important;
-    min-height: 40px !important;
-    width: 40px !important;
-    height: 40px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
   }
 }
+/* 44px, not 40: an !important rule inside @layer beats every unlayered !important one,
+   so the 44px touch-target rule further down could never reach the install and account
+   buttons at <=349px (Split View 1/3 ~320). */
 @layer base {
   @media (max-width: 349px) {
     .tebyan-action-pill > .block > button,
     .tebyan-action-pill > .block > .relative > button {
-      min-width: 40px !important;
-      min-height: 40px !important;
-      width: 40px !important;
-      height: 40px !important;
+      min-width: 44px !important;
+      min-height: 44px !important;
+      width: 44px !important;
+      height: 44px !important;
     }
   }
 }
@@ -5702,5 +5705,32 @@ p { text-wrap: pretty; }
   html body header.fixed .tebyan-floating-nav .tebyan-orb-mark {
     width: 44px !important;
     height: 44px !important;
+  }
+}
+
+/* Full-bleed header canopy (all widths up to 900: folded 382, Split View 470/620,
+   opened portrait 669). The <=900px rule above pulled the fixed header in by
+   0.5rem on each side (inset-inline: .5rem; max-width: 100vw - 1rem), so its canopy
+   painted as a box with an 8px strip of another colour at each edge. The header now
+   spans the window again; the old 0.5rem becomes a transparent border, which the
+   background paints under but the controls do not enter, so every control keeps
+   its exact place. (<=370px already sat at inset 0 with its own padding.) */
+@media (min-width: 371px) and (max-width: 900px) {
+  header.fixed.tebyan-app-header {
+    inset-inline: 0 !important;
+    max-width: none;
+    border-inline: 0.5rem solid transparent;
+  }
+}
+/* The canopy is the page's own paper (cool, --tbe-paper-2), not the older warm
+   ivory, so the band under the header reads as the same sheet. Same alphas as before. */
+@media (max-width: 767px) {
+  header.fixed.tebyan-app-header {
+    background: linear-gradient(180deg, rgba(251, 251, 253, 0.99) 0%, rgba(251, 251, 253, 0.96) 72%, rgba(251, 251, 253, 0) 100%) !important;
+  }
+}
+@media (min-width: 768px) {
+  header.fixed.tebyan-app-header {
+    background: linear-gradient(180deg, rgba(251, 251, 253, 0.9) 0%, rgba(251, 251, 253, 0.82) 78%, rgba(251, 251, 253, 0) 100%) !important;
   }
 }

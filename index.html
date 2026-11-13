@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="app-version" content="4.0.0.Release" />
     <meta name="last-updated" content="2026-05-10T18:54:00Z" />
-    <meta name="theme-color" content="#F7F3EE" />
+    <meta name="theme-color" content="#f5f6f9" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -74,7 +74,7 @@
         position: fixed;
         inset: 0;
         z-index: 100000;
-        background: #f8f5ef;
+        background: #f5f6f9; /* = --tbe-paper: no colour step when the app takes over */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -111,9 +111,9 @@
         border-radius: 9999px;
         background: radial-gradient(
           circle,
-          rgba(142, 122, 174, 0.16) 0%,
-          rgba(166, 143, 88, 0.08) 42%,
-          rgba(248, 245, 239, 0) 70%
+          rgba(53, 83, 154, 0.12) 0%,
+          rgba(185, 138, 44, 0.08) 42%,
+          rgba(245, 246, 249, 0) 70%
         );
         animation: tebyan-boot-shimmer 2600ms ease-in-out infinite;
       }
@@ -181,10 +181,10 @@
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M24 78 V46 C24 30 34 20 48 14 C62 20 72 30 72 46 V78" stroke="#8E7AAE" stroke-width="4.5" stroke-linecap="round" />
-            <path d="M18 78 H78" stroke="#8E7AAE" stroke-width="4.5" stroke-linecap="round" />
-            <path d="M48 66 V40" stroke="#A68F58" stroke-width="4" stroke-linecap="round" />
-            <circle cx="48" cy="31" r="5" fill="#A68F58" />
+            <path d="M24 78 V46 C24 30 34 20 48 14 C62 20 72 30 72 46 V78" stroke="#2D4478" stroke-width="4.5" stroke-linecap="round" />
+            <path d="M18 78 H78" stroke="#2D4478" stroke-width="4.5" stroke-linecap="round" />
+            <path d="M48 66 V40" stroke="#B98A2C" stroke-width="4" stroke-linecap="round" />
+            <circle cx="48" cy="31" r="5" fill="#B98A2C" />
           </svg>
           <!-- Reserves the exact height of the wordmark + tagline block in the
                React splash (48px title + 8px gap + 20px tagline) so the mark
