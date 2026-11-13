@@ -1557,7 +1557,7 @@ const AppContent: React.FC = () => {
         )}
 
         <div
-          className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full min-h-full cursor-default"
+          className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full min-h-full flex flex-col cursor-default"
           onClick={(e) => {
             // Do not navigate on empty background clicks; this caused accidental exits and felt like lag.
           }}
@@ -1821,7 +1821,7 @@ const AppContent: React.FC = () => {
             </React.Suspense>
           </motion.div>
 
-          <footer className="text-center py-6 max-sm:pb-24! mt-10 text-zinc-400">
+          <footer className="text-center pt-16 pb-6 max-sm:pb-24! mt-auto text-zinc-400">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Globe className="w-5 h-5" />
               <span className="font-bold text-zinc-500">

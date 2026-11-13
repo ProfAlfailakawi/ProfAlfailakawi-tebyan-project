@@ -59,6 +59,18 @@ body{
   grid-template-columns:minmax(0,1fr);
 }
 @media (min-width:760px){ .folio{grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:52px} }
+/* الحواف الجانبية تحترم القطع في الوضع العرضي (الكاميرا/الأشرطة)، لا 20px ثابتة. */
+body{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+/* نوافذ عريضة قصيرة (iPhone Duo مطويًا عرضيًا ~594x368، هاتف عرضي): الكتاب والحاشية
+   جنبًا إلى جنب، فيبقى العنوان وزرّ «افتح الصفحة الآن» في الشاشة الأولى بدل أن يملأها الكتاب. */
+@media (max-height:500px) and (min-width:540px){
+  body{padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(14px,env(safe-area-inset-bottom))}
+  .folio{grid-template-columns:minmax(0,clamp(190px,38vw,360px)) minmax(0,1fr);gap:28px}
+  .book-wrap{width:100%;padding-bottom:10px}
+  .margin{max-width:none}
+  h1{font-size:clamp(26px,9vh,40px)}
+  .lead{line-height:1.75}
+}
 
 /* ——— الحاشية: نصٌّ إلى جانب الكتاب، كتعليقٍ في هامشه ——— */
 .margin{

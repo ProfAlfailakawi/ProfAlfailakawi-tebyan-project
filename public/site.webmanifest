@@ -4,8 +4,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#F7F3EE",
-  "theme_color": "#F7F3EE",
+  "background_color": "#f5f6f9",
+  "theme_color": "#f5f6f9",
   "description": "تبيان - مساحة ذكية للفهم والقرار وبناء المعرفة.",
   "icons": [
     {
