@@ -15,6 +15,7 @@ import { IS_DEMO_MODE, exitDemoMode } from '../lib/demoMode';
 import { clearLocalUserDataOnSignOut, clearQuestionHistory } from '../lib/localUserData';
 import { useUser } from '../contexts/UserContext';
 import { auth, db } from '../lib/firebase';
+import DeleteAccountSection from './DeleteAccountSection';
 import { doc } from 'firebase/firestore';
 import { updateDoc } from '../lib/firestoreWrites';
 import { useGamificationContext } from './GamificationProvider';
@@ -1085,6 +1086,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                          تسجيل الخروج من الحساب
                      </button>
                   </div>
+
+                  <DeleteAccountSection language={language} />
 
                 </motion.div>
               )}

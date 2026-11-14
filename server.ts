@@ -7,6 +7,7 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
+import { createDeleteAccountHandler } from "./functions/accountDeletion.js";
 
 dotenv.config({ override: true });
 
@@ -887,7 +888,7 @@ async function startServer() {
     // response; throwing would surface a confusing 500 instead.
     app.use(cors({
         origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
-        methods: ['GET', 'POST', 'OPTIONS'],
+        methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'X-Firebase-AppCheck'],
         maxAge: 3600
     }));
@@ -920,6 +921,17 @@ async function startServer() {
         cachedBuildId = process.env.BUILD_ID || "dev";
         return cachedBuildId;
     };
+    // Self-service account deletion (App Store 5.1.1(v)): verifies the caller's
+    // ID token and deletes only that uid. See functions/accountDeletion.js.
+    app.delete("/api/account", createDeleteAccountHandler({
+        getServices: async () => {
+            const admin = await getAdmin();
+            if (!admin) return null;
+            const fsMod: any = await import("firebase-admin/firestore");
+            return { auth: admin.auth, firestore: fsMod.getFirestore() };
+        },
+    }));
+
     app.get("/api/version", (_req, res) => {
         res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
         res.json({ build: currentBuildId() });

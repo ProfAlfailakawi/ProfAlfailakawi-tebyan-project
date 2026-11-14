@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const crypto = require("crypto");
+const { createDeleteAccountHandler } = require("./accountDeletion");
 
 const app = express();
 
@@ -56,7 +57,7 @@ app.use(cors({
     // Returning `false` simply omits the CORS headers, so the browser blocks the
     // response. Throwing instead would surface a confusing 500.
     origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
-    methods: ["GET", "POST", "OPTIONS"],
+    methods: ["GET", "POST", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Firebase-AppCheck"],
     maxAge: 3600,
 }));
@@ -211,6 +212,22 @@ app.get(["/health", "/api/health"], (req, res) => {
     res.json({ status: "ok" });
 });
 
+// Self-service account deletion (App Store 5.1.1(v)): verifies the caller's ID
+// token and deletes only that uid. See functions/accountDeletion.js.
+app.delete("/api/account", createDeleteAccountHandler({
+    getServices: async () => {
+        try {
+            const { getApps, initializeApp } = require("firebase-admin/app");
+            const { getAuth } = require("firebase-admin/auth");
+            const { getFirestore } = require("firebase-admin/firestore");
+            if (!getApps().length) initializeApp();
+            return { auth: getAuth(), firestore: getFirestore() };
+        } catch (err) {
+            console.error("[AccountDeletion] firebase-admin init failed:", err && err.message ? err.message : err);
+            return null;
+        }
+    },
+}));
 
 const getGeminiApiKey = () => {
     let apiKey = (process.env.GEMINI_API_KEY || "").trim();
