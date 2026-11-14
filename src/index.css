@@ -5746,7 +5746,7 @@ p { text-wrap: pretty; }
 /* ==========================================================================
    Book spread — the Duo's inner screen, opened (portrait ~669x867, landscape
    ~951x585). Safari does not expose the hinge, so the window's size decides:
-     portrait book  : 640–760 wide, at least 520 tall
+     portrait book  : 640–720 wide, at least 520 tall
      landscape book : 840–1000 wide, at least 520 tall, two-pane aspect (>= 3:2)
    iPad portrait (768) and landscape (1024) stay out; so do Split View panes.
    The content wrapper (.tebyan-book in App.tsx) becomes two pages with a calm
@@ -5758,7 +5758,7 @@ p { text-wrap: pretty; }
 .tebyan-book-aside { display: none; }
 .tebyan-service-lead { display: contents; }
 
-@media screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px),
+@media screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px),
        screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
   :root {
     --book-spine: 32px;
@@ -5923,7 +5923,7 @@ p { text-wrap: pretty; }
 /* A page of the spread is phone-wide, so screens laid out for the full window
    fall back to their phone arrangement inside it: rows that open up at sm/md
    (640/768) stack again, and fixed md widths fill the page. */
-@media screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
+@media screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px) {
   .tebyan-book-main .sm\:flex-row { flex-direction: column; }
   .tebyan-book-main .sm\:w-auto { width: 100%; }
   .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -6068,7 +6068,7 @@ p { text-wrap: pretty; }
 .tebyan-book-link:focus-visible { outline: 2px solid var(--tb-lilac-deep); outline-offset: 2px; border-radius: 6px; }
 /* Portrait book: the demo badge keeps its icon only, as on phones, so the header
    actions fit their page. */
-@media screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
+@media screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px) {
   .tebyan-header-actions [role="status"] > span { display: none; }
 }
 .tebyan-book-arrow { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-lilac-soft); }

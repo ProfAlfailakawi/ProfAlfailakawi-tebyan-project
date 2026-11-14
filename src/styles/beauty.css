@@ -127,12 +127,12 @@ main [role="tablist"].overflow-x-auto {
   .tebyan-service-filters::-webkit-scrollbar { display: none; }
   .tebyan-service-filters > button { flex: 0 0 auto; padding-inline: 1rem; white-space: nowrap; scroll-snap-align: start; }
 }
-/* ...except on the Duo's inner screen in portrait (a screen 640–760 wide, 520+ tall; print keeps
+/* ...except on the Duo's inner screen in portrait (a screen 640–720 wide, 520+ tall; print keeps
    two cards), where the
    cards fill one page of the book spread (src/index.css «Book spread»). */
 @media (min-width: 600px) and (max-width: 639px),
        (min-width: 640px) and (max-width: 767px) and (max-height: 519px),
-       (min-width: 761px) and (max-width: 767px),
+       (min-width: 721px) and (max-width: 767px),
        print and (min-width: 640px) and (max-width: 767px) {
   .tebyan-service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
 }
