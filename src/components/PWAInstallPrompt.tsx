@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Download, X, Share } from 'lucide-react';
 import { TebyanTooltip } from './TebyanTooltip';
 import { notify } from '../lib/notify';
+import { isAppleNativeShell } from '../lib/appleNativeShell';
+import {
+  APP_STORE_URL, PLAY_STORE_URL, detectInstallPlatform, resolveInstallAction, shouldShowInstall,
+} from '../shared/install-banner';
 
 let deferredPromptGlobal: any = null;
 
@@ -15,9 +19,12 @@ const isStandaloneMode = () => {
   return window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
 };
 
-const isIOsDevice = () => {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-};
+const currentPlatform = () =>
+  detectInstallPlatform({
+    userAgent: navigator.userAgent,
+    maxTouchPoints: navigator.maxTouchPoints,
+    isNativeIos: isAppleNativeShell(),
+  });
 
 // ============================================
 // The Header Icon (Always visible if not installed)
@@ -27,26 +34,31 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
 
   useEffect(() => {
-    if (!isStandaloneMode()) {
-       setShowIcon(true);
-    }
+    setShowIcon(shouldShowInstall({ platform: currentPlatform(), standalone: isStandaloneMode() }));
   }, []);
 
   const handleInstallClick = async () => {
-    if (isIOsDevice()) {
-      setShowIOSInstructions(true);
-      return;
-    }
+    const action = resolveInstallAction({
+      platform: currentPlatform(),
+      standalone: isStandaloneMode(),
+      hasDeferredPrompt: !!deferredPromptGlobal,
+      appStoreUrl: APP_STORE_URL,
+      playStoreUrl: PLAY_STORE_URL,
+    });
 
-    if (deferredPromptGlobal) {
+    if (action.kind === 'open-store') {
+      window.open(action.url, '_blank', 'noopener,noreferrer');
+    } else if (action.kind === 'ios-instructions') {
+      setShowIOSInstructions(true);
+    } else if (action.kind === 'pwa-prompt') {
       deferredPromptGlobal.prompt();
       const { outcome } = await deferredPromptGlobal.userChoice;
       if (outcome === 'accepted') {
         setShowIcon(false); // Hide on successful install
       }
       deferredPromptGlobal = null;
-    } else {
-        notify("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).", 'info');
+    } else if (action.kind === 'browser-menu-hint') {
+      notify("يرجى تثبيت التطبيق من قائمة المتصفح (⋮).", 'info');
     }
   };
 
