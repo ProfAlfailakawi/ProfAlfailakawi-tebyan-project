@@ -14,7 +14,7 @@ const REAUTH_WINDOW_SECONDS = 5 * 60;
 
 // Deleted: the user's profile (users/{uid}), admin marker (admins/{uid}), the
 // ripples they authored (with their likes subcollections) and the like markers
-// they left on other ripples.
+// they left on other ripples. Their reporterUid on ripple_reports is cleared.
 // Kept: anonymous logs (search_logs, ai_logs, analytics) and contact_requests /
 // answer_reports, none of which are keyed by uid; replies other people wrote
 // under the user's ripples belong to those authors.
@@ -28,6 +28,14 @@ async function eraseUserData(firestore, uid) {
     } catch (err) {
         // Like markers hold only the opaque uid; a missing collection-group index must not block deletion.
         console.warn("[AccountDeletion] like markers not removed:", err && err.code ? err.code : err);
+    }
+
+    // Reports the user filed keep the moderation record but lose the link to the account.
+    try {
+        const reports = await firestore.collection("ripple_reports").where("reporterUid", "==", uid).get();
+        for (const doc of reports.docs) await doc.ref.update({ reporterUid: null });
+    } catch (err) {
+        console.warn("[AccountDeletion] reporter ids not cleared:", err && err.code ? err.code : err);
     }
 
     await firestore.collection("users").doc(uid).delete();

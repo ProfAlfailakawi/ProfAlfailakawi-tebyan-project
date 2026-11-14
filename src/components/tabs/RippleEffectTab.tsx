@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp, Brain, Lock, Ghost, Award, HelpCircle, Languages, Eye, Zap, GitBranch, Loader2, Heart } from 'lucide-react';
+import { Sparkles, Network, Globe, Plus, Share2, Search, ArrowRight, ArrowLeft, UserCircle, Activity, Trash2, X, ChevronDown, ChevronUp, Brain, Lock, Ghost, Award, HelpCircle, Languages, Eye, Zap, GitBranch, Loader2, Heart, Flag, Ban } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { SmartIconWrapper } from '../common/SmartIconGuidance';
 import { collection, onSnapshot, doc, increment, query, orderBy, getDoc, where, getDocs, limit } from 'firebase/firestore';
@@ -14,6 +14,8 @@ import { NebulaTab } from './NebulaTab';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { InsightsPanel } from './InsightsPanel';
 import { getServiceName } from '../../constants/serviceRegistry';
+import { ModerationContactLine, RippleReportDialog } from './RippleModeration';
+import { blockAuthor, clearBlockedAuthors, useBlockedAuthors } from '../../lib/blockedAuthors';
 
 
 /* عرض فقط: مصطلحات لاتينية معروفة تُعرض بالعربية في الواجهة العربية؛ ما ليس في القائمة يبقى كما هو. */
@@ -71,9 +73,11 @@ type RippleNodeComponentProps = {
     setToast: (toast: any) => void;
     userRanks: Record<string, { rank: string, aura: string, color: string }>;
     onFocusMode?: (idea: { text: string, author: string }) => void;
+    onReport: (rippleId: string) => void;
+    onBlock: (authorId: string) => void;
 };
 
-const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat, auth, handleLike, handleDelete, handleAddReply, setToast, userRanks, onFocusMode }: RippleNodeComponentProps) => {
+const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat, auth, handleLike, handleDelete, handleAddReply, setToast, userRanks, onFocusMode, onReport, onBlock }: RippleNodeComponentProps) => {
     const [isTranslating, setIsTranslating] = useState(false);
     const [translatedText, setTranslatedText] = useState<string | null>(null);
 
@@ -351,6 +355,33 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                     <span className="hidden sm:inline text-sm">{language === 'ar' ? 'حذف' : 'Delete'}</span>
                                 </button>
                             )}
+
+                            {!isUserIdea && !IS_DEMO_MODE && !(node as any).isVirtual && (
+                                <>
+                                    <button
+                                        onClick={() => onReport(node.id)}
+                                        aria-label={language === 'ar' ? 'إبلاغ' : 'Report'}
+                                        className="flex items-center gap-2 hover:bg-rose-50 px-3 py-2 rounded-xl text-ink-mute hover:text-rose-600 font-bold cursor-pointer transition-all"
+                                    >
+                                        <Flag className="w-4 h-4" />
+                                        <span className="text-sm">{language === 'ar' ? 'إبلاغ' : 'Report'}</span>
+                                    </button>
+                                    {node.authorId && node.authorId !== 'anon' && (
+                                        <button
+                                            onClick={() => {
+                                                if (window.confirm(language === 'ar' ? 'حظر هذا المستخدم؟ ستختفي أفكاره من قوائمك.' : 'Block this user? Their ideas will be hidden from your lists.')) {
+                                                    onBlock(node.authorId!);
+                                                }
+                                            }}
+                                            aria-label={language === 'ar' ? 'حظر هذا المستخدم' : 'Block this user'}
+                                            className="flex items-center gap-2 hover:bg-rose-50 px-3 py-2 rounded-xl text-ink-mute hover:text-rose-600 font-bold cursor-pointer transition-all"
+                                        >
+                                            <Ban className="w-4 h-4" />
+                                            <span className="text-sm">{language === 'ar' ? 'حظر' : 'Block'}</span>
+                                        </button>
+                                    )}
+                                </>
+                            )}
                         </div>
                         
                         <AnimatePresence>
@@ -404,6 +435,8 @@ const RippleNodeComponent = React.memo(({ node, level = 0, language, ripplesFlat
                                 setToast={setToast}
                                 userRanks={userRanks}
                                 onFocusMode={onFocusMode}
+                                onReport={onReport}
+                                onBlock={onBlock}
                             />
                         ))}
                     </AnimatePresence>
@@ -433,12 +466,20 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+    const blockedAuthors = useBlockedAuthors();
+    const [reportingId, setReportingId] = useState<string | null>(null);
+    const handleBlock = (authorId: string) => {
+        blockAuthor(auth.currentUser?.uid, authorId);
+        setToast({ message: language === 'ar' ? 'تم حظر المستخدم وإخفاء أفكاره.' : 'User blocked; their ideas are hidden.', type: 'success' });
+    };
     const combinedRipples = useMemo(() => {
+        // Ideas by authors this user blocked never reach any list (App Store 1.2).
+        const visibleFlat = blockedAuthors.size ? ripplesFlat.filter(r => !r.authorId || !blockedAuthors.has(r.authorId)) : ripplesFlat;
         // Find existing real data IDs to avoid overlap (though unlikely)
-        const realIds = new Set(ripplesFlat.map(r => r.id));
+        const realIds = new Set(visibleFlat.map(r => r.id));
         
         // If we have enough real data (e.g. 15 nodes), we don't show seeds
-        if (ripplesFlat.length > 15) return ripplesFlat;
+        if (visibleFlat.length > 15) return visibleFlat;
         
         // Otherwise, add seeds that don't clash with real data
         const virtualSeeds = seedData.filter(s => !realIds.has(s.id)).map(s => ({
@@ -447,8 +488,8 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             isVirtual: true
         }));
         
-        return [...ripplesFlat, ...virtualSeeds];
-    }, [ripplesFlat]);
+        return [...visibleFlat, ...virtualSeeds];
+    }, [ripplesFlat, blockedAuthors]);
 
     const userRanks = useMemo(() => {
         const stats: Record<string, number> = {};
@@ -900,6 +941,10 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 )}
             </AnimatePresence>
 
+            {reportingId && (
+                <RippleReportDialog rippleId={reportingId} language={language} onClose={() => setReportingId(null)} onResult={(message, type) => setToast({ message, type })} />
+            )}
+
             {/* Header */}
             <div className="text-center space-y-6 relative z-10 mb-12 pt-20 md:pt-0">
                 <motion.div 
@@ -1130,6 +1175,17 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                     </div>
                 </div>
 
+                {!IS_DEMO_MODE && (
+                    <div className="relative z-10 mb-4 space-y-2">
+                        <ModerationContactLine language={language} />
+                        {blockedAuthors.size > 0 && (
+                            <button onClick={() => clearBlockedAuthors(auth.currentUser?.uid)} className="text-xs font-bold underline text-ink-mute">
+                                {language === 'ar' ? `إلغاء حظر ${blockedAuthors.size} مستخدم` : `Unblock ${blockedAuthors.size} user(s)`}
+                            </button>
+                        )}
+                    </div>
+                )}
+
                 <div className="relative z-10 w-full overflow-x-auto pb-8 scrollbar-hide">
                     <AnimatePresence mode="wait">
                         {activeView === 'list' ? (
@@ -1153,6 +1209,8 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                                         setToast={setToast}
                                         userRanks={userRanks}
                                         onFocusMode={onFocusMode}
+                                        onReport={setReportingId}
+                                        onBlock={handleBlock}
                                     />
                                 ))}
                                 <button 

@@ -280,6 +280,11 @@ const AdminUsersDashboard = React.lazy(
 const AdminQawlFasl = React.lazy(
   () => import("./components/tabs/QawlFasl/AdminQawlFasl"),
 );
+const AdminRippleReports = React.lazy(() =>
+  import("./components/tabs/AdminRippleReports").then((m) => ({
+    default: m.AdminRippleReports,
+  })),
+);
 const AdminContactTab = React.lazy(() =>
   import("./components/tabs/AdminContactTab").then((m) => ({
     default: m.AdminContactTab,
@@ -1816,7 +1821,10 @@ const AppContent: React.FC = () => {
                     ) : null;
                   case "adminmessages":
                     return isAdminViewer ? (
-                      <AdminContactTab language={language} />
+                      <>
+                        <AdminContactTab language={language} />
+                        <AdminRippleReports language={language} />
+                      </>
                     ) : null;
                   case "admindashboard":
                     return isAdminViewer ? (
