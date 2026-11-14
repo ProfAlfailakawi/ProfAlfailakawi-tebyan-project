@@ -8,6 +8,7 @@ import { DnaStepper } from './dna/DnaKit';
 import { generateDailyMission } from '../services/gemini';
 import { Network } from 'lucide-react';
 import { getServiceName, getServiceIcon } from '../constants/serviceRegistry';
+import { isAppleNativeShell } from '../lib/appleNativeShell';
 
 const HubCard: React.FC<{
   title: string;
@@ -484,7 +485,9 @@ export const HomeDashboard = ({ tabs, handleTabChange, language }: { tabs: any[]
 
         <HubCard 
           title={language === 'ar' ? 'الولاء والمكافآت' : 'Loyalty & Rewards'}
-          description={language === 'ar' ? 'إدارة العملاء والولاء بالدينار الكويتي' : 'Customer & loyalty management (KWD)'}
+          description={isAppleNativeShell()
+            ? (language === 'ar' ? 'نقاطك وتقدمك في الرحلة' : 'Your points and progress')
+            : (language === 'ar' ? 'إدارة العملاء والولاء بالدينار الكويتي' : 'Customer & loyalty management (KWD)')}
           icon={Gift}
           items={[
             { id: 'loyalty', label: getServiceName('loyalty', language), icon: getServiceIcon('loyalty'), hidden: tabs.find(t => t.id === 'loyalty')?.hidden }

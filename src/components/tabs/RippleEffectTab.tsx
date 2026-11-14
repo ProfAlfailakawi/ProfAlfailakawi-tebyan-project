@@ -15,6 +15,8 @@ import { IS_DEMO_MODE } from '../../lib/demoMode';
 import { InsightsPanel } from './InsightsPanel';
 import { getServiceName } from '../../constants/serviceRegistry';
 import { ModerationContactLine, RippleReportDialog } from './RippleModeration';
+import { RippleTermsDialog, hasAcceptedUgcTerms, acceptUgcTerms } from './RippleTerms';
+import { isAppleNativeShell } from '../../lib/appleNativeShell';
 import { blockAuthor, clearBlockedAuthors, useBlockedAuthors } from '../../lib/blockedAuthors';
 
 
@@ -468,6 +470,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
     }, []);
     const blockedAuthors = useBlockedAuthors();
     const [reportingId, setReportingId] = useState<string | null>(null);
+    const [termsPending, setTermsPending] = useState<null | (() => void)>(null);
     const handleBlock = (authorId: string) => {
         blockAuthor(auth.currentUser?.uid, authorId);
         setToast({ message: language === 'ar' ? 'تم حظر المستخدم وإخفاء أفكاره.' : 'User blocked; their ideas are hidden.', type: 'success' });
@@ -782,7 +785,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
         }
     };
 
-    const handleDropIdea = async () => {
+    const handleDropIdeaNow = async () => {
         if (!auth.currentUser) {
             setToast({ 
                 message: language === 'ar' ? 'رحلة الألف فكرة تبدأ بتسجيل دخول! انضم إلينا الآن لنشر بذور إبداعك.' : 'A journey of a thousand ideas starts with a login! Join us now to spread your creative seeds.', 
@@ -865,7 +868,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
         }
     };
 
-    const handleAddReply = async (parentId: string, text: string) => {
+    const handleAddReplyNow = async (parentId: string, text: string) => {
         try {
             const parent = ripplesFlat.find(r => r.id === parentId);
             const rootId = parent?.rootId || parentId;
@@ -885,6 +888,18 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
         } catch (error) {
             console.error("Error replying:", error);
         }
+    };
+
+
+    // iOS app only (App Store 1.2): community terms before the first post or reply.
+    const requireTerms = (run: () => void) => {
+        const uid = auth.currentUser?.uid;
+        if (!isAppleNativeShell() || !uid || hasAcceptedUgcTerms(uid)) { run(); return; }
+        setTermsPending(() => run);
+    };
+    const handleDropIdea = () => requireTerms(() => { void handleDropIdeaNow(); });
+    const handleAddReply = async (parentId: string, text: string) => {
+        requireTerms(() => { void handleAddReplyNow(parentId, text); });
     };
 
 
@@ -941,6 +956,13 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 )}
             </AnimatePresence>
 
+            {termsPending && (
+                <RippleTermsDialog
+                    language={language}
+                    onCancel={() => setTermsPending(null)}
+                    onAccept={() => { acceptUgcTerms(auth.currentUser?.uid); const run = termsPending; setTermsPending(null); run(); }}
+                />
+            )}
             {reportingId && (
                 <RippleReportDialog rippleId={reportingId} language={language} onClose={() => setReportingId(null)} onResult={(message, type) => setToast({ message, type })} />
             )}
