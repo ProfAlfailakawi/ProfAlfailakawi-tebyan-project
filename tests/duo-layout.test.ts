@@ -88,7 +88,27 @@ test('widget keep-out: defined once for the Duo inner screen (tab AND installed 
     norm('screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape)'),
     norm('screen and (min-width:640px) and (max-width:720px) and (min-height:520px) and (max-height:960px) and (orientation:portrait)'),
   ]);
-  assert.match(css, /--duo-cutout-w: 116px; --duo-cutout-h: 116px/);
+  assert.match(css, /:root \{ --duo-cutout-w: 116px; --duo-cutout-h: 116px; --duo-cutout-reach: 268px; \}/);
+  // the box is measured on the native app: ~80px wide, down to ~y=250-265; one box (w x reach) covers it
+  assert.equal([...css.matchAll(/--duo-cutout-reach\s*:/g)].length, 1, 'reach is defined once, inside the two inner-screen bands');
+  assert.equal([...css.matchAll(/--duo-cutout-w\s*:/g)].length, 1);
+  assert.equal([...css.matchAll(/--duo-cutout-h\s*:/g)].length, 1);
+  // below the header band the content flows beside the box (an empty float), it is not pushed down
+  assert.match(css, /\.tebyan-book-main::before \{\s*content: "";\s*float: right;\s*width: var\(--duo-cutout-w\);\s*height: max\(0px, calc\(var\(--duo-cutout-reach\)/);
+  assert.match(css, /\.tebyan-keepout-overlay\b/);
+  for (const f of ['src/components/GlobalCommand.tsx', 'src/App.tsx']) {
+    assert.match(readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /tebyan-book-overlay tebyan-keepout-overlay/, f);
+  }
+  // the static privacy page (outside React) reserves the same box: 268px minus its 24px body padding
+  const privacy = readFileSync(new URL('../public/privacy-policy.html', import.meta.url), 'utf8');
+  assert.match(privacy, /main::before\{content:"";float:right;width:116px;height:244px\}/);
+  assert.doesNotMatch(privacy, /display-mode/);
+  // the static Qawl Fasl pages (generated, outside React) reserve it too: header steps inward, first lines flow beside the box
+  for (const f of ['scripts/generate-qawl-pages.mjs', 'public/qawl/index.html', 'public/qawl/q-1/index.html']) {
+    const t = readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
+    assert.match(t, /\.top-in\{padding-right:132px\}\s*\.wrap::before\{content:"";float:right;width:116px;height:178px\}/, f);
+    assert.doesNotMatch(t, /display-mode/, f);
+  }
   assert.match(css, /header\.fixed\.tebyan-app-header \{ padding-right: calc\(var\(--duo-cutout-w\)/);
   assert.match(css, /padding-top: calc\(env\(safe-area-inset-top, 0px\) \+ var\(--duo-cutout-h\)/);
 });
