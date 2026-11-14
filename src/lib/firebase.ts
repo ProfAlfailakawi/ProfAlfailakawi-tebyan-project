@@ -3,8 +3,16 @@ import { initializeAppCheck, ReCaptchaV3Provider, type AppCheck } from 'firebase
 import { getAuth } from 'firebase/auth';
 import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
+import { resolveAuthDomain } from './authDomain';
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+  ...firebaseConfig,
+  authDomain: resolveAuthDomain(
+    firebaseConfig.authDomain,
+    typeof window !== 'undefined' ? window.location.hostname : undefined,
+    (import.meta as any).env?.VITE_FIREBASE_AUTH_DOMAIN,
+  ),
+});
 
 // Firebase App Check — the real defense against API abuse / cost attacks.
 // Inert until you set VITE_RECAPTCHA_SITE_KEY (register a reCAPTCHA v3 site key

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { 
-  signInWithPopup, 
+  signInWithPopup,
+  signInWithRedirect,
   GoogleAuthProvider, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { shouldFallbackToRedirect } from '../lib/authDomain';
 import { isAppleNativeShell } from '../lib/appleNativeShell';
 import { LogIn, Mail, Lock, UserPlus, AlertCircle, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -26,6 +28,14 @@ export default function Login() {
     try {
       await signInWithPopup(auth, provider);
     } catch (error: any) {
+      if (shouldFallbackToRedirect(error?.code)) {
+        try {
+          await signInWithRedirect(auth, provider);
+          return;
+        } catch (redirectError: any) {
+          error = redirectError;
+        }
+      }
       if (error.code === 'auth/popup-closed-by-user') return;
       
       console.error("Google Auth error:", error);
