@@ -79,6 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (cancelled) return;
 
+        // Completes a signInWithRedirect fallback; the user itself arrives via
+        // onAuthStateChanged below, so failures here are only logged.
+        authApi.getRedirectResult(auth).catch((redirectError) => {
+          console.warn("Redirect sign-in failed:", redirectError?.code || redirectError);
+        });
+
         unsubscribe = authApi.onAuthStateChanged(auth, async (nextUser) => {
           if (cancelled) return;
           setAuthReady(true);
