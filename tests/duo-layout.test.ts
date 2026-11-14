@@ -76,3 +76,14 @@ test('Duo ≠ iPad: portrait book posture stops at 720px wide, landscape at 1000
   }
   assert.ok(seen >= 10, `expected the book queries, saw ${seen}`);
 });
+
+test('narrow phones (320-382px): segmented switches size by content and wrap; demo chip rows keep their label clear of the fade', () => {
+  const beauty = readFileSync(new URL('../src/styles/beauty.css', import.meta.url), 'utf8');
+  // flex-basis 0 + nowrap crushed the longer label past its pill (min-width:max-content from index.css)
+  assert.match(beauty, /\.tebyan-seg__btn \{ flex: 1 1 auto;/);
+  assert.match(beauty, /main \.tebyan-seg \.tebyan-seg__btn \{[^}]*min-width: 0 !important[^}]*white-space: normal/);
+  // the 12px edge fade must not sit on the "try an example" label
+  assert.match(beauty, /\[data-demo-starters\] \{[^}]*margin-inline: -\.75rem; padding: \.125rem \.75rem;/);
+  const sim = readFileSync(new URL('../src/components/tabs/SimulationTab.tsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(sim, /cn\("flex-1 \[white-space:nowrap\]!/);
+});
