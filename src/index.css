@@ -6171,44 +6171,38 @@ p { text-wrap: pretty; }
    (left/right/padding-right, never inline-end, which flips with dir).
 
    One source of truth: three tokens, 0 everywhere else so no other device changes.
-     --duo-widget-w    box width incl. the gap to the edge
-     --duo-widget-gap  breathing room between content and the box
-     --duo-widget-h    box height = clamp(64px, 30vh, 200px)
+     --duo-widget-w    box width incl. the gap to the edge: 96px
+     --duo-widget-gap  breathing room between content and the box: 8px
+     --duo-widget-h    box height = clamp(64px, 31vh, 270px)
+   The numbers are ESTIMATES from the owner's in-app screenshots (scale calibrated on
+   44pt buttons, inferred app viewport ~457x678): column ~54pt wide starting ~20pt from
+   the edge (far edge ~75pt), from ~20pt to ~166pt; another measure said ~84–112px wide and
+   down to y~270. ?duo-debug=1&duo-w=..&duo-h=.. lets the owner calibrate on the device.
    Who consumes them: the top bar (header column), the page top (route shell), side
    panels / sheets (.tebyan-keepout-pad), right-anchored fixed controls
-   (.tebyan-keepout-fixed) and full-screen dialogs (.tebyan-book-overlay). Backgrounds,
-   gradients and glass keep running full-bleed underneath.
+   (.tebyan-keepout-fixed / -top) and full-screen dialogs (.tebyan-book-overlay).
 
-   Who gets it (size based, because Safari exposes no hinge/segments by default and
-   layout never depends on viewport-segments or device-posture):
-     portrait  : (a) width <= 700px and height/width <= 1.75: the Duo's outer screen
-                 (382x580, 470x780) and the opened portrait book (669x867); excludes
-                 ordinary phones (390x844, 360x740, 320x568, 375x667), iPad (width >= 744)
-                 and desktop. (b) The installed app (Capacitor, contentInset never) has no
-                 browser toolbars, so its viewport is TALLER than in Safari. Height gates
-                 would lose it, so the two known outer-screen widths (380-386 and 466-474px)
-                 match up to height/width 2.22 (382x844, 470x900). Real iPhones are 375/390+,
-                 so they do not match; a 384px-wide Android phone taller than 2.22 does not either.
-     landscape : 560–1000px wide with width/height between 1.25 and 1.75 (594x368,
-                 951x585, 951x669, 867x669, 780x470). iPad (width >= 1024) and
-                 ordinary landscape phones (aspect >= 1.8) never match.
-   The landscape box position is NOT verified on a real device: the same physical
-   top-right box is assumed. No display-mode gate: Safari tab, Capacitor and the
-   installed PWA all get it.
+   Who gets it: a generic size gate, never exact widths, never display-mode / UA / hinge
+   (Safari exposes no segments by default and layout never depends on them):
+     portrait  : width <= 700px, height >= 360px, height/width <= 2.0. Covers 457x678 (the
+                 inferred app viewport), 382x580, 470x780, 669x867 and taller app viewports
+                 up to 2.0 (382x764); leaves 390x844, 393x852, 430x932 (aspect > 2.0) alone.
+                 Smaller older phones (375x667, 320x568) fall inside it: the safe default.
+     landscape : 520–1000px wide, >= 300px tall, width/height 1.25–1.75 (594x368, 678x457,
+                 780x470, 867x669, 951x585). iPad (>= 1024) and landscape phones never match.
+   The landscape box position is NOT verified on a device. No display-mode gate.
    ========================================================================== */
 :root {
   --duo-widget-w: 0px;
   --duo-widget-gap: 0px;
   --duo-widget-h: 0px;
 }
-@media screen and (orientation: portrait) and (max-width: 700px) and (min-aspect-ratio: 4/7),
-       screen and (orientation: portrait) and (min-width: 380px) and (max-width: 386px) and (min-aspect-ratio: 9/20),
-       screen and (orientation: portrait) and (min-width: 466px) and (max-width: 474px) and (min-aspect-ratio: 9/20),
-       screen and (orientation: landscape) and (min-width: 560px) and (max-width: 1000px) and (min-aspect-ratio: 5/4) and (max-aspect-ratio: 7/4) {
+@media screen and (orientation: portrait) and (max-width: 700px) and (min-height: 360px) and (min-aspect-ratio: 1/2),
+       screen and (orientation: landscape) and (min-width: 520px) and (max-width: 1000px) and (min-height: 300px) and (min-aspect-ratio: 5/4) and (max-aspect-ratio: 7/4) {
   :root {
-    --duo-widget-w: 70px;
+    --duo-widget-w: 96px;
     --duo-widget-gap: 8px;
-    --duo-widget-h: clamp(64px, 30vh, 200px);
+    --duo-widget-h: clamp(64px, 31vh, 270px);
     /* the landscape book's pages start under the box */
     --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap));
   }
@@ -6223,7 +6217,7 @@ p { text-wrap: pretty; }
   html body main.tebyan-route-shell[class*="tebyan-route-"] {
     padding-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap)) !important;
   }
-  /* On the narrow outer screen (382/470) the column leaves ~300px: icon-only brand so the
+  /* On the narrow outer screen (382/457) the column leaves ~280px: icon-only brand so the
      Services pill never sits on the wordmark. */
   @media (max-width: 480px) { .tebyan-floating-nav .tebyan-brand-name { display: none; } }
   /* Side panels and sheets that hug the right edge: header/body keep the column. */

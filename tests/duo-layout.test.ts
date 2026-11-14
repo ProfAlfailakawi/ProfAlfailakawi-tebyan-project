@@ -80,15 +80,15 @@ test('book = landscape only: every book media query is exactly the shared BOOK c
   assert.doesNotMatch(css, /@media[^{]*min-width:\s*640px\)[^{]*max-width:\s*720px\)[^{]*min-height:\s*520px\)\s*(,|\{)/);
 });
 
-const DUO_GATE = /@media([^{]*)\{(?=\s*:root \{\s*--duo-widget-w: 70px;)/;
+const DUO_GATE = /@media([^{]*)\{(?=\s*:root \{\s*--duo-widget-w: 96px;)/;
 
 test('widget corner: three tokens at :root, 0px outside the Duo, set once inside one size-based gate (tab, Capacitor and installed app alike)', () => {
   assert.match(css, /:root \{\s*--duo-widget-w: 0px;\s*--duo-widget-gap: 0px;\s*--duo-widget-h: 0px;\s*\}/);
   const gate = css.match(DUO_GATE);
   assert.ok(gate, 'the Duo gate block must set the tokens');
-  assert.equal([...css.matchAll(/--duo-widget-w: 70px/g)].length, 1);
+  assert.equal([...css.matchAll(/--duo-widget-w: 96px/g)].length, 1);
   assert.match(css, /--duo-widget-gap: 8px;/);
-  assert.match(css, /--duo-widget-h: clamp\(64px, 30vh, 200px\);/);
+  assert.match(css, /--duo-widget-h: clamp\(64px, 31vh, 270px\);/);
   assert.doesNotMatch(gate[1], /display-mode/);
   // the old 116px box and its variables are gone, not stacked under the new ones
   assert.doesNotMatch(css, /--duo-cutout/);
@@ -99,7 +99,7 @@ test('widget corner: three tokens at :root, 0px outside the Duo, set once inside
   assert.match(css, /\.tebyan-book-overlay \{ padding-right: calc\(var\(--duo-widget-w\)/);
 });
 
-test('widget corner gate: real queries from index.css evaluated on sizes (Duo on, every other device off)', () => {
+test('widget corner gate: real queries from index.css evaluated on sizes (Duo and the inferred app viewport on, tall phones and iPads off; no exact widths)', () => {
   const gate = css.match(DUO_GATE);
   assert.ok(gate);
   const queries = gate[1].split(',').map((q) => q.trim());
@@ -107,6 +107,8 @@ test('widget corner gate: real queries from index.css evaluated on sizes (Duo on
     /^screen\b/.test(q) && [...q.matchAll(/\(\s*([a-z-]+)\s*:\s*([a-z0-9/]+?)(px)?\s*\)/g)].every(([, k, v]) => {
       if (k === 'min-width') return w >= +v;
       if (k === 'max-width') return w <= +v;
+      if (k === 'min-height') return h >= +v;
+      if (k === 'max-height') return h <= +v;
       if (k === 'orientation') return v === (h >= w ? 'portrait' : 'landscape');
       const [n, d] = v.split('/').map(Number);
       if (k === 'min-aspect-ratio') return w / h >= n / d;
@@ -114,15 +116,13 @@ test('widget corner gate: real queries from index.css evaluated on sizes (Duo on
       return false;
     });
   const applies = (w: number, h: number) => queries.some((q) => evalQ(q, w, h));
-  // known Duo sizes, both orientations (the brief's five plus the landscape book)
-  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [951, 669], [720, 900], [640, 867]]) {
+  // known Duo sizes and the inferred app viewport (457x678), both orientations
+  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [457, 678], [457, 760], [457, 700], [440, 660], [480, 720], [951, 669], [640, 867], [382, 700], [382, 764], [470, 900], [385, 760]]) {
     assert.ok(applies(w, h), `${w}x${h} must apply`);
-    if (w !== 951 || h !== 669) assert.ok(applies(h, w), `${h}x${w} must apply`);
+    if (w / h < 1 && h / w <= 1.75) assert.ok(applies(h, w), `${h}x${w} must apply (rotated)`);
   }
-  // the installed app's taller full-screen viewports on the outer screen (no browser toolbars)
-  for (const [w, h] of [[382, 700], [382, 780], [382, 844], [385, 800], [470, 900]]) assert.ok(applies(w, h), `${w}x${h} (app, taller) must apply`);
-  // ordinary phones, iPads, desktops: tokens stay 0
-  for (const [w, h] of [[390, 844], [844, 390], [430, 932], [932, 430], [360, 740], [320, 568], [568, 320], [744, 1024], [1024, 768], [1180, 820], [820, 1180], [1280, 800], [1440, 900], [367, 740], [951, 350], [393, 852], [384, 854], [375, 667], [402, 874], [414, 896]]) {
+  // ordinary tall phones, iPads, desktops, landscape phones: tokens stay 0
+  for (const [w, h] of [[390, 844], [844, 390], [430, 932], [932, 430], [393, 852], [402, 874], [360, 740], [744, 1024], [1024, 768], [1180, 820], [820, 1180], [1280, 800], [1440, 900], [951, 350], [568, 320]]) {
     assert.ok(!applies(w, h), `${w}x${h} must NOT apply`);
   }
 });

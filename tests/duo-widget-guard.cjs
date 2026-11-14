@@ -2,7 +2,7 @@
  *
  * يتأكد أن صفر عناصر «مهمة» (نص مرئي، a/button/input/select/textarea/[role=tab]/[role=button]/img/svg)
  * يتقاطع صندوقها مع المستطيل الفيزيائي المحجوز في أعلى اليمين:
- *     x >= vw - W   و   y <= H        (W = 70px، H = clamp(64px, 30vh, 200px))
+ *     x >= vw - W   و   y <= H        (W = 96px، H = clamp(64px, 31vh, 270px))
  * لا يقرأ W و H من CSS (حتى لا يخدع نفسه إن كُسر التوكن)؛ يقارنهما بالقيم المتوقعة ويفشل إن اختلفتا
  * أو إن لم تكن المنطقة نشطة على مقاس Duo، أو نشطة على جهاز آخر.
  *
@@ -23,15 +23,15 @@ const QUICK = !!process.env.DUO_GUARD_QUICK;
 const ZONE_ONLY = !!process.env.DUO_GUARD_ZONE_ONLY;
 let BASE = process.env.BASE || '';
 
-const W = 70;
-const hOf = (vh) => Math.min(200, Math.max(64, 0.3 * vh));
+const W = 96;
+const hOf = (vh) => Math.min(270, Math.max(64, 0.31 * vh));
 
 // المقاسات المعروفة (طولي) ومقلوبها (عرضي).
-const SIZES = [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585]];
+const SIZES = [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [457, 678], [457, 760]];
 const VIEWPORTS = SIZES.flatMap(([w, h]) => [[w, h], [h, w]]);
 // أجهزة أخرى: يجب أن تبقى المتغيرات 0.
-const TALL = [[382, 700], [382, 780], [382, 844], [470, 900]]; // التطبيق بلا أشرطة متصفح
-const CONTROLS = [[393, 852], [384, 854], [375, 667], [390, 844], [844, 390], [430, 932], [744, 1024], [1024, 768], [1280, 800], [360, 740], [820, 1180]];
+const TALL = [[382, 700], [382, 764], [470, 900]]; // التطبيق بلا أشرطة متصفح
+const CONTROLS = [[393, 852], [430, 932], [402, 874], [390, 844], [844, 390], [744, 1024], [1024, 768], [1280, 800], [360, 740], [820, 1180]];
 
 const extra = {
   profile: { id: 'profile-sidebar', url: '/', steps: [{ click: '.tebyan-action-pill > div:last-child button' }, { wait: 500 }, { clickText: 'حسابي' }, { wait: 900 }] },
@@ -58,7 +58,7 @@ async function waitServer() {
 function measureInPage({ W }) {
   const vw = document.documentElement.clientWidth;
   const vh = window.innerHeight;
-  const H = Math.min(200, Math.max(64, 0.3 * vh));
+  const H = Math.min(270, Math.max(64, 0.31 * vh));
   const z = { left: vw - W, top: 0, bottom: H };
   const cs0 = getComputedStyle(document.documentElement);
   const vars = { w: cs0.getPropertyValue('--duo-widget-w').trim(), gap: cs0.getPropertyValue('--duo-widget-gap').trim(), h: cs0.getPropertyValue('--duo-widget-h').trim() };
@@ -225,7 +225,7 @@ async function main() {
       await page0.setViewportSize({ width: w, height: h });
       await page0.waitForTimeout(150);
       const v = await readVars();
-      const wantH = Math.min(200, Math.max(64, 0.3 * h));
+      const wantH = Math.min(270, Math.max(64, 0.31 * h));
       const ok = ZONE_ONLY || (Math.abs(v.w - W) < 0.5 && Math.abs(v.h - wantH) < 1 && Math.abs(v.gap - 8) < 0.5);
       if (!ok) problems.push(`المنطقة غير نشطة/خاطئة على ${w}x${h}: w=${v.w} h=${v.h} gap=${v.gap} (المتوقع ${W}/${wantH.toFixed(0)}/8)`);
     }
@@ -252,7 +252,7 @@ async function main() {
       process.stdout.write('|');
     }
     // سياق التطبيق: كل المقاسات (مع عرضي) + مقاسات الشاشة الكاملة الأطول (بلا أشرطة متصفح)
-    const appVps = only.length ? only : [...(QUICK ? [[382, 580], [669, 867], [951, 585]] : VIEWPORTS), [382, 700], [382, 780], [382, 844], [470, 900]];
+    const appVps = only.length ? only : [...(QUICK ? [[382, 580], [669, 867], [951, 585]] : VIEWPORTS), [382, 700], [382, 764], [470, 900]];
     const APP_SCREENS = ids.length ? pick(ids) : SMALL;
     for (const vp of appVps) {
       await runSet(vp, APP_SCREENS.filter((x) => x.demo !== false), { app: true }, true);

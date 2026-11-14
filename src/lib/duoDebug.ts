@@ -5,8 +5,8 @@
  * لا تغيّر شيئاً في الصفحة ولا تكتب أي بيانات.
  */
 
-const W = 70; // نفس --duo-widget-w
-const H = 'clamp(64px, 30vh, 200px)'; // نفس --duo-widget-h
+const W = 96; // نفس --duo-widget-w (تقدير)
+const H = 'clamp(64px, 31vh, 270px)'; // نفس --duo-widget-h (تقدير)
 
 function envPx(side: 'top' | 'right' | 'bottom' | 'left'): string {
   const probe = document.createElement('div');
@@ -19,6 +19,12 @@ function envPx(side: 'top' | 'right' | 'bottom' | 'left'): string {
 
 export function mountDuoDebug(): void {
   if (document.getElementById('duo-debug-root')) return;
+  // معايرة حيّة على الجهاز: ?duo-debug=1&duo-w=110&duo-h=270 تتجاوز المتغيرين (هنا فقط، ومع duo-debug).
+  const q = new URLSearchParams(window.location.search);
+  const ow = parseFloat(q.get('duo-w') || '');
+  const oh = parseFloat(q.get('duo-h') || '');
+  if (ow > 0) document.documentElement.style.setProperty('--duo-widget-w', `${ow}px`);
+  if (oh > 0) document.documentElement.style.setProperty('--duo-widget-h', `${oh}px`);
   const root = document.createElement('div');
   root.id = 'duo-debug-root';
   root.setAttribute('aria-hidden', 'true');
@@ -26,7 +32,7 @@ export function mountDuoDebug(): void {
 
   // الإطار: يُرسم دائماً بمقاس الركن المتوقع، حتى لو كانت المنطقة غير نشطة، ليرى المالك أين ستقع.
   const frame = document.createElement('div');
-  frame.style.cssText = `position:absolute;top:0;right:0;width:${W}px;height:${H};box-sizing:border-box;border:2px solid rgba(220,0,0,.9);background:rgba(220,0,0,.10);pointer-events:none`;
+  frame.style.cssText = `position:absolute;top:0;right:0;width:${ow > 0 ? ow : W}px;height:${oh > 0 ? oh + 'px' : H};box-sizing:border-box;border:2px solid rgba(220,0,0,.9);background:rgba(220,0,0,.10);pointer-events:none`;
   root.appendChild(frame);
 
   const panel = document.createElement('pre');
@@ -44,7 +50,7 @@ export function mountDuoDebug(): void {
     panel.textContent = [
       `widget zone active : ${w > 0 ? 'YES' : 'NO (tokens are 0 on this screen)'}`,
       `--duo-widget-w/gap : ${v('--duo-widget-w')} / ${v('--duo-widget-gap')}`,
-      `--duo-widget-h     : ${v('--duo-widget-h')} (frame ${Math.round(Math.min(200, Math.max(64, window.innerHeight * 0.3)))}px)`,
+      `--duo-widget-h     : ${v('--duo-widget-h')} (frame ${oh > 0 ? oh : Math.round(Math.min(270, Math.max(64, window.innerHeight * 0.31)))}px)`,
       `safe-area t/r/b/l  : ${envPx('top')} ${envPx('right')} ${envPx('bottom')} ${envPx('left')}`,
       `inner              : ${window.innerWidth} x ${window.innerHeight}`,
       `visualViewport     : ${vv ? `${Math.round(vv.width)} x ${Math.round(vv.height)} @ ${vv.scale.toFixed(2)}x` : 'n/a'}`,
@@ -52,6 +58,9 @@ export function mountDuoDebug(): void {
       `standalone         : navigator=${String(nav.standalone ?? 'n/a')} display-mode=${matchMedia('(display-mode: standalone)').matches}`,
       `Capacitor          : ${cap?.isNativePlatform?.() ? `native ${(cap as { getPlatform?: () => string }).getPlatform?.() ?? '?'}` : 'not native (browser)'}`,
       `UA                 : ${/AppleWebKit/.test(navigator.userAgent) && !/Safari\//.test(navigator.userAgent) ? 'WKWebView-like (no Safari/ token)' : 'Safari/browser (has Safari/ token)'}`,
+      `override           : duo-w=${ow > 0 ? ow : '-'} duo-h=${oh > 0 ? oh : '-'}`,
+      'calibrate: send a screenshot WITH the red frame; raise duo-w / duo-h',
+      '(?duo-debug=1&duo-w=110&duo-h=270) until the frame covers the capsule.',
     ].join('\n');
   };
   render();

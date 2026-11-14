@@ -34,6 +34,8 @@
   @media(max-width:480px){.top-in small{display:none}.top-in{padding:10px 16px}}
   .top-in .app{margin-inline-start:auto;font-size:.85rem;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px}
   .wrap{max-width:760px;margin:0 auto;padding:34px 22px 90px}
+  /* iPhone Duo: ركن ودجت النظام أعلى اليمين الفيزيائي (70px + 8px، حتى clamp(64px,30vh,200px)) — نفس بوابة src/index.css */
+  @media screen and (orientation:portrait) and (max-width:700px) and (min-aspect-ratio:4/7),screen and (orientation:portrait) and (min-width:380px) and (max-width:386px) and (min-aspect-ratio:9/20),screen and (orientation:portrait) and (min-width:466px) and (max-width:474px) and (min-aspect-ratio:9/20),screen and (orientation:landscape) and (min-width:560px) and (max-width:1000px) and (min-aspect-ratio:5/4) and (max-aspect-ratio:7/4){.top-in{padding-right:78px}.wrap{padding-top:calc(clamp(64px,30vh,200px) - 44px)}}
   .crumb{font-size:.8rem;color:var(--muted);margin-bottom:20px}
   h1{font-size:clamp(1.5rem,4.5vw,2.15rem);margin-bottom:12px}
   .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
