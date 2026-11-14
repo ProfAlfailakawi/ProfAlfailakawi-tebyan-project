@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, animate } from 'motion/react';
 import { Sparkles, Network, Globe, Maximize2, MousePointer2, ZoomIn, ZoomOut, Info, Clapperboard } from 'lucide-react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { useBlockedAuthors } from '../../lib/blockedAuthors';
 import { db } from '../../lib/firebase';
 import { cn } from '../../lib/utils';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
@@ -28,7 +29,9 @@ type IdeaNode = {
 };
 
 export const NebulaTab = ({ language, onViewDetails }: { language: 'ar' | 'en', onViewDetails: (nodeId: string) => void }) => {
-    const [ripples, setRipples] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_NEBULA_SEEDS : []));
+    const [allRipples, setRipples] = useState<any[]>(() => (IS_DEMO_MODE ? DEMO_NEBULA_SEEDS : []));
+    const blockedAuthors = useBlockedAuthors();
+    const ripples = useMemo(() => (blockedAuthors.size ? allRipples.filter(r => !r.authorId || !blockedAuthors.has(r.authorId)) : allRipples), [allRipples, blockedAuthors]);
     const [selectedNode, setSelectedNode] = useState<IdeaNode | null>(null);
     const [zoom, setZoom] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768 ? 0.4 : 1);
     const [isCinematic, setIsCinematic] = useState(false);

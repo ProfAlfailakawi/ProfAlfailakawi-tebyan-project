@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import { createDeleteAccountHandler } from "./functions/accountDeletion.js";
+import { createReportRippleHandler, createListRippleReportsHandler } from "./functions/rippleModeration.js";
 
 dotenv.config({ override: true });
 
@@ -938,6 +939,24 @@ async function startServer() {
             return { auth: admin.auth, firestore: fsMod.getFirestore() };
         },
     }));
+
+    // Reports of public ripples (App Store 1.2): writes to `ripple_reports` with
+    // firebase-admin only (no Firestore rules involved). See functions/rippleModeration.js.
+    const rippleReportRateLimit = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 20,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: "RATE_LIMITED" }
+    });
+    const getModerationServices = async () => {
+        const admin = await getAdmin();
+        if (!admin) return null;
+        const fsMod: any = await import("firebase-admin/firestore");
+        return { auth: admin.auth, firestore: fsMod.getFirestore() };
+    };
+    app.post("/api/ripple-reports", rippleReportRateLimit, createReportRippleHandler({ getServices: getModerationServices }));
+    app.get("/api/admin/ripple-reports", rippleReportRateLimit, createListRippleReportsHandler({ getServices: getModerationServices }));
 
     app.get("/api/version", (_req, res) => {
         res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");

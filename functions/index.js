@@ -5,6 +5,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const crypto = require("crypto");
 const rateLimit = require("express-rate-limit");
 const { createDeleteAccountHandler } = require("./accountDeletion");
+const { createReportRippleHandler, createListRippleReportsHandler } = require("./rippleModeration");
 
 const app = express();
 
@@ -239,6 +240,32 @@ app.delete("/api/account", accountRateLimit, createDeleteAccountHandler({
         }
     },
 }));
+
+// Reports of public ripples (App Store 1.2): writes to `ripple_reports` with
+// firebase-admin only (no Firestore rules involved). See functions/rippleModeration.js.
+const rippleReportRateLimit = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => String(req.headers["x-forwarded-for"] || req.ip || "unknown").split(",")[0].trim(),
+    validate: false,
+    message: { error: "RATE_LIMITED" },
+});
+const getModerationServices = async () => {
+    try {
+        const { getApps, initializeApp } = require("firebase-admin/app");
+        const { getAuth } = require("firebase-admin/auth");
+        const { getFirestore } = require("firebase-admin/firestore");
+        if (!getApps().length) initializeApp();
+        return { auth: getAuth(), firestore: getFirestore() };
+    } catch (err) {
+        console.error("[RippleReport] firebase-admin init failed:", err && err.message ? err.message : err);
+        return null;
+    }
+};
+app.post("/api/ripple-reports", rippleReportRateLimit, createReportRippleHandler({ getServices: getModerationServices }));
+app.get("/api/admin/ripple-reports", rippleReportRateLimit, createListRippleReportsHandler({ getServices: getModerationServices }));
 
 const getGeminiApiKey = () => {
     let apiKey = (process.env.GEMINI_API_KEY || "").trim();
