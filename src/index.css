@@ -4632,7 +4632,7 @@ body:not(.zen-idle)::after {
     top: auto !important;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 74px) !important;
     left: 12px !important;
-    /* the Duo's portrait book narrows the sheet to the left page («Book spread») */
+    /* the Duo's book narrows the sheet to the left page («Book spread») */
     right: var(--tebyan-help-sheet-right, 12px) !important;
     width: auto !important;
     max-height: min(62dvh, 520px) !important;
@@ -5746,9 +5746,10 @@ p { text-wrap: pretty; }
 /* ==========================================================================
    Book spread — the Duo's inner screen, opened (portrait ~669x867, landscape
    ~951x585). Safari does not expose the hinge, so the window's size decides:
-     portrait book  : 640–720 wide, at least 520 tall
-     landscape book : 840–1000 wide, at least 520 tall, two-pane aspect (>= 3:2)
-   iPad portrait (768) and landscape (1024) stay out; so do Split View panes.
+     book (landscape ONLY): 721–1000 wide, 520–960 tall
+   Portrait is never split: the inner screen in portrait (~669x867) is a normal
+   single-column phone/tablet layout. iPad portrait (744+) and landscape (1024+),
+   phones in landscape (< 520 tall) and Split View panes stay out.
    The content wrapper (.tebyan-book in App.tsx) becomes two pages with a calm
    spine between them: the task on the first page (right in RTL) and its context
    (BookContextPage) on the facing page. Screens listed as "bespoke" split their
@@ -5758,8 +5759,7 @@ p { text-wrap: pretty; }
 .tebyan-book-aside { display: none; }
 .tebyan-service-lead { display: contents; }
 
-@media screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px),
-       screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
+@media screen and (min-width: 721px) and (max-width: 1000px) and (min-height: 520px) and (max-height: 960px) and (orientation: landscape) {
   :root {
     --book-spine: 32px;
     --book-gutter: 1rem;
@@ -5923,19 +5923,55 @@ p { text-wrap: pretty; }
 /* A page of the spread is phone-wide, so screens laid out for the full window
    fall back to their phone arrangement inside it: rows that open up at sm/md
    (640/768) stack again, and fixed md widths fill the page. */
-@media screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px) {
-  .tebyan-book-main .sm\:flex-row { flex-direction: column; }
-  .tebyan-book-main .sm\:w-auto { width: 100%; }
-  .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
+@media screen and (min-width: 721px) and (max-width: 1000px) and (min-height: 520px) and (max-height: 960px) and (orientation: landscape) {
   .tebyan-book-main :is(.sm\:flex-row, .md\:flex-row) { flex-direction: column; }
-  .tebyan-book-main :is(.sm\:w-auto, .md\:w-auto, .md\:w-64) { width: 100%; }
+  .tebyan-book-main :is(.sm\:w-auto, .md\:w-auto, .md\:w-64, .md\:w-1\/3, .md\:w-2\/3, .md\:w-44, .sm\:w-72, .sm\:w-56) { width: 100%; max-width: 100%; }
+  .tebyan-book-main .md\:w-\[450px\] { width: min(88%, 350px); }
   .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4, .md\:grid-cols-3, .md\:grid-cols-4, .md\:grid-cols-5) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   /* dialogs on a page (command palette modes) keep their phone column */
   .tebyan-book-overlay .md\:grid-cols-3 { grid-template-columns: minmax(0, 1fr); }
+  /* Sizes follow the page, not the window: two-up grids that open at md (768) would
+     squeeze every column to ~175px inside a ~435px page, so they stack as on a phone
+     (unless the phone layout is already two-up). */
+  .tebyan-book-main .md\:grid-cols-2:not(.grid-cols-2) { grid-template-columns: minmax(0, 1fr); }
+  .tebyan-book-main .md\:col-span-2 { grid-column: auto; }
+  /* Tab rows (sub-tabs, pills) wrap inside their page instead of scrolling past the fold. */
+  .tebyan-book-main .flex.overflow-x-auto:has(> button) { flex-wrap: wrap; overflow-x: visible; }
+  .tebyan-book-main .flex.overflow-x-auto > button { flex-shrink: 1; }
+}
+
+/* Reading in the book (ResultCard sets [data-spread] and the two custom properties):
+   the text opens across both pages like a printed spread, two columns, the first on the
+   page that comes first (right in Arabic), the fold between them. Headings stay with
+   the paragraph that follows; list items and quotes never split. The facing page's
+   context page gives way while the sheet is open (it returns with the next question). */
+@media screen and (min-width: 721px) and (max-width: 1000px) and (min-height: 520px) and (max-height: 960px) and (orientation: landscape) {
+  .tebyan-book-main .tbn-result[data-spread] {
+    box-sizing: border-box;
+    inline-size: var(--spread-w);
+    max-inline-size: none;
+    margin-inline-start: var(--spread-shift);
+    padding: 1.5rem 28px 1.25rem;
+    /* the sheet comes back (the page rule above flattens it on one page) */
+    border: 1px solid rgba(142, 122, 174, 0.28);
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 10px 30px -22px rgba(24, 34, 49, 0.25);
+  }
+  .tebyan-book-main .tbn-result[data-spread] .tbn-result__body {
+    column-count: 2;
+    column-gap: calc(var(--book-spine) + 56px);
+    column-fill: balance;
+    text-align: justify;
+    hyphens: auto;
+  }
+  .tebyan-book-main .tbn-result[data-spread] .tbn-result__body :where(h1, h2, h3, h4) { break-after: avoid; break-inside: avoid; }
+  .tebyan-book-main .tbn-result[data-spread] .tbn-result__body :where(li, blockquote, pre, table, img) { break-inside: avoid; }
+  .tebyan-book-main .tbn-result[data-spread] .tbn-result__body :where(p) { orphans: 3; widows: 3; }
+  .tebyan-book-main .tbn-result[data-spread] .tbn-result__body > :first-child { margin-top: 0; }
+  body:has(.tbn-result[data-spread]) .tebyan-book-aside { display: none; }
 }
 
 /* The facing page itself: an editorial page on the shared paper — no card, no glass. */
@@ -6066,11 +6102,6 @@ p { text-wrap: pretty; }
 }
 .tebyan-book-link:hover { color: var(--color-lilac); }
 .tebyan-book-link:focus-visible { outline: 2px solid var(--tb-lilac-deep); outline-offset: 2px; border-radius: 6px; }
-/* Portrait book: the demo badge keeps its icon only, as on phones, so the header
-   actions fit their page. */
-@media screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px) {
-  .tebyan-header-actions [role="status"] > span { display: none; }
-}
 .tebyan-book-arrow { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-lilac-soft); }
 
 /* ==========================================================================
@@ -6126,4 +6157,35 @@ p { text-wrap: pretty; }
   .tebyan-page-controls .tebyan-ctl-label,
   .tebyan-header-actions [role="status"] > span { display: none; }
   body:has(.tebyan-page-controls) .tebyan-header-actions { margin-inline-end: 6.5rem; }
+}
+
+/* ==========================================================================
+   Duo widget keep-out. The installed app (display-mode: standalone) on the Duo's
+   inner screen gets a system status widget floating over the physical top-right
+   corner (~55–80px wide, from the top edge down to ~y=125). It is system-owned,
+   so its exact box is unknown: a generous box is kept free of anything readable
+   or tappable. Backgrounds and heroes still run full-bleed behind it. The box
+   belongs to the physical right (the start side in Arabic) and, in the book, to
+   the right-hand page only. Two inner-screen postures: the landscape book and the
+   plain portrait column (~669x867). The browser tab layout avoids the widget on
+   its own, and ordinary phones (no widget) never match: the folded outer screen
+   (~367x740) cannot be told from an iPhone, so it is deliberately left alone.
+   ========================================================================== */
+:root { --duo-cutout-w: 0px; --duo-cutout-h: 0px; }
+@media screen and (display-mode: standalone) and (min-width: 721px) and (max-width: 1000px) and (min-height: 520px) and (max-height: 960px) and (orientation: landscape),
+       screen and (display-mode: standalone) and (min-width: 640px) and (max-width: 720px) and (min-height: 520px) and (max-height: 960px) and (orientation: portrait) {
+  :root { --duo-cutout-w: 116px; --duo-cutout-h: 116px; }
+
+  /* The top bar: brand and Services step inward; the bar's own gradient stays full-bleed. */
+  header.fixed.tebyan-app-header { padding-right: calc(var(--duo-cutout-w) + 0.75rem) !important; }
+  /* The page starts below the box (per-route paddings are !important, so is this). */
+  html body main.tebyan-route-shell[class*="tebyan-route-"] {
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--duo-cutout-h) + 0.25rem) !important;
+  }
+  :root { --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-cutout-h) + 0.25rem); }
+  /* Right-anchored fixed controls move inward; full-screen states start below the box. */
+  .tebyan-keepout-pad { padding-right: calc(var(--duo-cutout-w) + 0.5rem) !important; }
+  .tebyan-keepout-fixed { top: calc(var(--duo-cutout-h) + 0.5rem) !important; right: 1rem !important; }
+  .tebyan-book-overlay,
+  .tebyan-book-overlay:not(.flex-col) { padding-top: var(--duo-cutout-h); }
 }

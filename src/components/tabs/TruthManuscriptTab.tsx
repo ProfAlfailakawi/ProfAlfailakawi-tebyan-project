@@ -388,7 +388,7 @@ export const TruthManuscriptTab = React.memo(({ language, handleTabChange, initi
           >
             <button
               onClick={() => setIsZenMode(false)}
-              className="fixed top-8 right-8 z-50 p-4 text-ink-mute hover:text-navy transition-colors rounded-full hover:bg-white"
+              className="tebyan-keepout-fixed fixed top-8 right-8 z-50 p-4 text-ink-mute hover:text-navy transition-colors rounded-full hover:bg-white"
             >
               <X className="w-8 h-8" />
             </button>

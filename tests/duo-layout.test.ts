@@ -50,7 +50,10 @@ test('Duo book/laptop media queries apply to screens only (printing keeps one co
   assert.ok(seen >= 10, `expected the Duo queries, saw ${seen}`);
 });
 
-test('Duo ≠ iPad: portrait book posture stops at 720px wide, landscape at 1000px (iPad mini portrait is 744)', () => {
+const BOOK = 'screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape)';
+const norm = (x: string) => x.replace(/\s+/g, ' ').replace(/: /g, ':').replace(/\( /g, '(').trim();
+
+test('book = landscape only: every book media query is exactly the shared BOOK condition (no portrait split, iPad/phones untouched)', () => {
   const read = (p: string) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
   const sources: Record<string, string> = {
     'src/index.css': css,
@@ -59,22 +62,34 @@ test('Duo ≠ iPad: portrait book posture stops at 720px wide, landscape at 1000
     'public/privacy-policy.html': read('public/privacy-policy.html'),
     'public/qawl/index.html': read('public/qawl/index.html'),
     'public/qawl/q-1/index.html': read('public/qawl/q-1/index.html'),
+    'src/components/common/ResultCard.tsx': read('src/components/common/ResultCard.tsx'),
   };
   let seen = 0;
   for (const [file, text] of Object.entries(sources)) {
     for (const m of text.matchAll(/@media([^{]*)\{/g)) {
       for (const alt of m[1].split(',')) {
-        if (!/min-height:\s*520px/.test(alt)) continue;
-        const max = Number(alt.match(/max-width:\s*(\d+)px/)?.[1]);
-        const min = Number(alt.match(/min-width:\s*(\d+)px/)?.[1]);
-        if (!max || !min) continue;
+        if (!/min-height:\s*520px/.test(alt) || /display-mode/.test(alt)) continue;
         seen++;
-        const limit = min >= 800 ? 1000 : 720;
-        assert.ok(max <= limit, `${file}: ${alt.trim()} allows width ${max} > ${limit}`);
+        assert.equal(norm(alt), BOOK, `${file}: ${alt.trim()}`);
       }
     }
   }
-  assert.ok(seen >= 10, `expected the book queries, saw ${seen}`);
+  assert.ok(seen >= 8, `expected the book queries, saw ${seen}`);
+  assert.match(sources['src/components/common/ResultCard.tsx'], /min-width: 721px\) and \(max-width: 1000px\) and \(min-height: 520px\) and \(max-height: 960px\) and \(orientation: landscape\)/);
+  assert.doesNotMatch(css, /min-aspect-ratio:\s*3\/2/);
+  assert.doesNotMatch(css, /@media[^{]*min-width:\s*640px\)[^{]*max-width:\s*720px\)[^{]*min-height:\s*520px\)\s*(,|\{)/);
+});
+
+test('widget keep-out: defined once for Duo inner + standalone, used by header, page top and fixed controls', () => {
+  const blocks = [...css.matchAll(/@media([^{]*display-mode:\s*standalone[^{]*)\{/g)];
+  assert.equal(blocks.length, 1);
+  const alts = blocks[0][1].split(',').map(norm);
+  assert.equal(alts.length, 2);
+  assert.ok(alts.some((a) => a.includes('(orientation:landscape)') && a.includes('(min-width:721px)')));
+  assert.ok(alts.some((a) => a.includes('(orientation:portrait)') && a.includes('(min-width:640px)') && a.includes('(max-width:720px)')));
+  assert.match(css, /--duo-cutout-w: 116px; --duo-cutout-h: 116px/);
+  assert.match(css, /header\.fixed\.tebyan-app-header \{ padding-right: calc\(var\(--duo-cutout-w\)/);
+  assert.match(css, /padding-top: calc\(env\(safe-area-inset-top, 0px\) \+ var\(--duo-cutout-h\)/);
 });
 
 test('narrow phones (320-382px): segmented switches size by content and wrap; demo chip rows keep their label clear of the fade', () => {

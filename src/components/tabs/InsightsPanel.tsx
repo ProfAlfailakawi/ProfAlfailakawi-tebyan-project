@@ -22,7 +22,7 @@ export const InsightsPanel = ({ ideas, onClose, language, handleTabChange }: { i
     };
 
     return (
-        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50 p-6 overflow-y-auto">
+        <motion.div initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }} className="tebyan-keepout-pad fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50 p-6 overflow-y-auto">
             <button onClick={onClose} className="mb-4 text-zinc-500"><X /></button>
             <h2 className="text-xl font-bold mb-6">{language === 'ar' ? 'لوحة الأفكار' : 'Insights Panel'}</h2>
             

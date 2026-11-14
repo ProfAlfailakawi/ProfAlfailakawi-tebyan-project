@@ -140,11 +140,11 @@ const head = (title, description, url) => `<!doctype html>
   .qcard:hover{border-color:var(--accent)}
   .qcard h3{font-size:1.08rem;margin-bottom:4px}
   .qcard p{margin:0;font-size:.83rem;color:var(--muted)}
-  /* iPhone Duo opened (~669x867, ~951x585): two facing pages around the middle of the
+  /* iPhone Duo opened (~951x585 landscape): two facing pages around the middle of the
      screen. The answer reads on the first page; who reviewed it, its sources and the
      report link stay in view on the facing page. The library: title on the first page,
      the questions on the facing page. Nothing sits on the fold (centre ± 16px). */
-  @media screen and (min-width:640px) and (max-width:720px) and (min-height:520px),screen and (min-width:840px) and (max-width:1000px) and (min-height:520px) and (min-aspect-ratio:3/2){
+  @media screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape){
     .wrap{max-width:none;padding-inline:16px}
     .wrap>.crumb,footer{width:calc(50% - 16px);box-sizing:border-box}
     footer{margin-inline-start:16px;margin-inline-end:auto}
