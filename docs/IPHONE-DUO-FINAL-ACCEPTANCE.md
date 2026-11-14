@@ -277,3 +277,67 @@ NODE_PATH=/opt/node22/lib/node_modules PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers
 **حارس:** اختبار جديد في `tests/duo-layout.test.ts` يفشل إن سمح استعلام كتاب عمودي بعرض > 720 أو أفقي > 1000 (والاختبار القائم يفرض `screen`).
 
 **قيد معروف:** نافذة Split View أو Slide Over على iPad بعرض ~640–720 لا تُميَّز عن الـDuo بالمقاس. الفارق الحقيقي الوحيد هو `(horizontal-viewport-segments: 2)` حيث يكشفه المتصفح، وهو ممنوع عمدًا في الاختبار القائم. محاكاة فقط، لا جهاز حقيقي.
+
+## ركن الودجت (2026-11-14، فرع `duo-widget-corner-1114`)
+
+على iPhone Duo يرسم النظام عنصرًا ثابتًا (كبسولة المصباح + أيقونة الحساب/الموقع + الوقت + بطارية/واي فاي) فوق **أعلى اليمين الفيزيائي** للشاشة، وهو ليس جزءًا من safe-area ولا يخبر به أي `env()`. الموقع RTL، فأعلى اليمين هو بداية السطر: الشعار والعنوان وأول تبويب وأول عنصر في القوائم تبدأ تحته. **كل ما في هذا القسم محاكاة في Playwright WebKit سطح المكتب. لم يُجرَّب على جهاز حقيقي ولا داخل TestFlight.**
+
+### السبب الجذري (من الكود)
+1. **بوابة الجهاز لم تلتقط الأوضاع الفعلية.** حيّز #132 (`--duo-cutout-w/h`) كان مربوطًا بنطاقين فقط: عرضي `721–1000 × 520–960` وطولي `640–720 × 520–960`. الشاشة الخارجية (382×580، 470×780) والكتاب المفتوح بارتفاع أو عرض خارج النطاق لا تتطابق، فالمتغيران غير معرّفين هناك وكان الشعار تحت الكبسولة (لقطة «قبل» 382×580). والتطبيق المثبّت (Capacitor، `contentInset: never`) بلا أشرطة متصفح فنافذته أطول، فأي بوابة بالارتفاع تفوته.
+2. **الصندوق نفسه أصغر من الودجت:** 116×116px، والمقاس الفعلي ≈ 64pt عرضًا (+6pt للحافة) وحتى ≈ 30% من الارتفاع (حتى 200).
+3. **التغطية جزئية:** تطبّق القاعدة على الترويسة الرئيسية وقشرة الصفحة وثلاثة أصناف فقط؛ أزرار «رجوع» في قول فصل (`start-4`، أي اليمين في RTL، عند y=78px) وقوائم ولوحات أخرى لا تعرف الركن.
+4. **الـcascade:** أكثر من ستّ قواعد للترويسة تضبط `padding-inline` بـ`!important`، فلا يغلبها إلا `padding-right !important` بالخصوصية نفسها وآخر الملف؛ كما أن القاعدة كانت ضمن كتلة مرتبطة بأبعاد الكتاب.
+5. **التطبيق مقابل Safari:** زر «تثبيت التطبيق» في الترويسة يظهر داخل التطبيق لأن `navigator.standalone` غير معرّف في WKWebView و`display-mode` ليس standalone (`PWAInstallPrompt.tsx`)، فيزاحم الأزرار قرب الركن.
+
+### ما فُعل
+- **توكنات واحدة في `src/index.css`** (صفر خارج Duo): `--duo-widget-w: 70px` (≈64 + 6 للحافة)، `--duo-widget-gap: 8px`، `--duo-widget-h: clamp(64px, 30vh, 200px)` (30% من الارتفاع بسقف 200). حُذف حيّز 116px ومتغيراته بدل تكديس قاعدة فوقه.
+- **بوابة بالمقاس لا بالجهاز ولا بالمتصفح** (بلا `display-mode` ولا UA ولا `horizontal-viewport-segments` لأن الاختبارات القائمة تمنع الاعتماد عليه وهو `null` افتراضيًا في Safari): طولي بعرض ≤ 700 ونسبة ارتفاع/عرض ≤ 1.75؛ والعرضان المعروفان للشاشة الخارجية (380–386 و466–474) حتى نسبة 2.22 كي يلتقط التطبيق الأطول (382×844، 470×900)؛ وعرضي 560–1000 بنسبة 1.25–1.75. **هندسة العرضي لم تُتحقق على جهاز:** نفترض الصندوق الفيزيائي نفسه أعلى اليمين.
+- **الاستهلاك (كله فيزيائي left/right، ليس inline-end):** عمود الترويسة `padding-right` (هو الأولى بعد الـ`!important` المستبدل)، أعلى الصفحة تحت الصندوق (`padding-top` لقشرة المسار)، الألواح الجانبية `.tebyan-keepout-pad`، الأزرار الثابتة اليمنى `.tebyan-keepout-fixed`، الحوارات الكاملة `.tebyan-book-overlay` (padding-right، فتتمركز النافذة فيما تبقى والستارة تغطي الحافتين)، و`--book-top` للكتاب الأفقي. الخلفيات والتدرجات والزجاج تكمل تحت الصندوق.
+- على ≤ 480px تُخفى كلمة «تبيان» في الترويسة (أيقونة فقط) كي لا تقع أيقونة الخدمات فوقها في العمود الضيق.
+- زر تثبيت التطبيق يُخفى داخل Capacitor (`isCapacitorNative()` في `PWAInstallPrompt.tsx`).
+- **صفحة التشخيص `?duo-debug=1`** (`src/lib/duoDebug.ts`، تُحمَّل بـ`import()` فقط عند وجود المعامل): إطار أحمر شفاف بحجم الركن، ولوحة أسفل اليسار (خارج المنطقة) تعرض: هل المنطقة نشطة، قيم المتغيرات، safe-area (أعلى/يمين/أسفل/يسار)، `innerWidth/innerHeight`، `visualViewport`، `dir`، standalone، «Capacitor: native ios» أو لا، وهل الوكيل بلا `Safari/` (WKWebView).
+
+### جرد السطوح
+
+| # | الملف / المحدد | ما فُعل |
+|---|---|---|
+| 1 | `src/index.css` `:root` + بوابة Duo | توكنات `--duo-widget-w/gap/h` (0 خارج Duo) وحذف `--duo-cutout-*` |
+| 2 | `App.tsx` `header.tebyan-app-header` (fixed top-0) | عمود الترويسة: `padding-right: w+gap !important` (استبدال القاعدة القديمة) |
+| 3 | `App.tsx` `main.tebyan-route-shell` (كل التبويبات والمسارات) | بداية الصفحة تحت الصندوق |
+| 4 | `InsightsPanel.tsx` (لوحة fixed right-0) | `.tebyan-keepout-pad` |
+| 5 | `ClientProfilePanel.tsx` (لوحة الحساب الجانبية) | `.tebyan-keepout-pad` على ترويستها (جسمها يخضع للحارس) |
+| 6 | `TruthManuscriptTab.tsx:391` زر إغلاق fixed top-8 right-8 | `.tebyan-keepout-fixed` |
+| 7–12 | حوارات `tebyan-book-overlay`: `OnboardingTour`، `GlobalCommand`، `LighthouseMode`، `App.tsx` (البداية، حوار الأوضاع، الدخول) | `padding-right: w+gap` |
+| 13–14 | `App.tsx` إشعار التحميل وإشعار toast (fixed top، مركزان) | `.tebyan-keepout-top` |
+| 15–17 | `QawlFasl/QuestionDetailView` و`CategoryView` و`EmergencyView`: زر رجوع `start-4` (= اليمين في RTL) | `.tebyan-keepout-top` |
+| 18 | `scripts/generate-qawl-pages.mjs` (قالب صفحات قول فصل الثابتة، 48 صفحة مولَّدة) | `.top-in` و`.wrap` خارج الركن |
+| 19 | `public/updating.html` | حشوة يمين وأعلى |
+| 20 | `public/privacy-policy.html` | حشوة يمين وأعلى |
+| 21 | `PWAInstallPrompt.tsx` زر التثبيت | يُخفى داخل Capacitor |
+| — | `apple/www/index.html`، `offline.html` | لا يحتاج: محتوى في المنتصف (h1 عند y≈250 على 382×580) ولا يُعرضان إلا عند فشل `server.url`؛ لم يُقَس آليًا |
+| — | `App.tsx` `.tebyan-page-controls` (رجوع/شرح، left-4)، `TabHeader` رجوع (left-3)، `TheOrb` و`SerendipityCompass` و`MessagesFloatingButton` و`WhisperHint` و`DevPanel` (أسفل/يسار) | لا يحتاج: خارج الركن (يسار أو أسفل) |
+| — | `ThoughtNebula`، `WhispersOfTheVoid`، `RippleEffectTab` خلفيات `fixed inset-0` بلا نص/تفاعل | لا يحتاج: خلفيات ممتدة (`aria-hidden`/`pointer-events:none`) |
+| — | حوارات مركزية `fixed inset-0` في `AnswerTrustPanel`، `AdminQawlFasl`، `AdminUsersDashboard`، `RippleModeration`، `SerendipityCompass`، `NebulaTab` (سينمائي)، `PWAInstallPrompt` (تعليمات iOS) | **غير مُغطّاة بعد بقاعدة**: تعتمد على الحارس؛ لم تُقَس كلها (انظر الحالة) |
+
+### حارس التقاطع
+`tests/duo-widget-guard.cjs` (`npm run test:duo-widget`، Playwright 1.56.1 WebKit): يتحقق أولًا أن المتغيرات نشطة بالقيم الصحيحة على كل مقاس Duo (طولي وعرضي + الأطول للتطبيق) وصفر على 11 جهازًا آخر، ثم يقيس تقاطع كل نص مرئي/رابط/زر/حقل/`[role=tab]`/img/svg مع المستطيل `x ≥ vw−70` و`y ≤ clamp(64px,30vh,200px)`. المصفوفة: 5 مقاسات طولي وعرضي، فاتح/داكن، نص 200%، الدخول (زائر)، القائمة/اللوحة الجانبية، المودالات، وسياقان: Safari ومحاكاة التطبيق. الاستثناءات (`sr-only`، `data-duo-bleed`، الزخرفة الممتدة) تُسجَّل ولا تُخفى. لم يُربط بـ`npm test` ولا بـCI لأنه يحتاج متصفح WebKit مثبّتًا (`npx playwright install --with-deps webkit`).
+
+### التطبيق (Capacitor) مقابل Safari
+- في WKWebView: الوكيل بلا `Safari/`، `navigator.standalone` غير معرّف، `display-mode` ليس standalone، لا أشرطة متصفح فالنافذة أطول، و`window.Capacitor` موجود، و`contentInset: never` مع `viewport-fit=cover` فالصفحة تبدأ من y=0 و`env(safe-area-inset-*)=0`.
+- لذلك لا تعتمد البوابة على UA ولا display-mode ولا الارتفاع، وتتسع للعرضين 380–386 و466–474 حتى نسبة 2.22.
+- الحارس يضيف سياق APP (وكيل WKWebView، `window.Capacitor` ios، `standalone` غير معرّف، ومقاسات أطول 382×700/780/844 و470×900). **هذا السياق محاكى في WebKit سطح المكتب، وليس WKWebView حقيقيًا ولا جهازًا**: يجب أن يتأكد المالك بـ`?duo-debug=1` داخل TestFlight.
+- قياس المالك من لقطة التطبيق: العمود x≈84–95% وy≈3–25% (≈142px) وفجوة يمين ≈17px؛ الصندوق (70×174 على 580 ارتفاعًا) يغطيه.
+
+### خطوات فحص المالك على الجهاز
+1. افتح `https://tebyan.dr-alfailakawi.com/?duo-debug=1` في Safari وفي تطبيق TestFlight.
+2. تأكد أن اللوحة أسفل اليسار تقول `widget zone active : YES` وأن `Capacitor` = `native ios` داخل التطبيق.
+3. الإطار الأحمر لا يجب أن يغطي شعارًا ولا عنوانًا ولا تبويبًا ولا زرًا في: الرئيسية، القائمة الجانبية (حسابي)، نافذة الدخول، قول فصل. أرسل لقطة طولي وكتاب وعرضي.
+
+### الحالة والقيود (بصدق)
+- **لم يُجرَّب على جهاز حقيقي.** هندسة العرضي غير متحقَّق منها.
+- سبق تشغيل الحارس مرحليًا قبل الإصلاحات الأخيرة (3 مقاسات، 8 شاشات): المخالفة الوحيدة كانت `h1.sr-only` (نص لقارئ الشاشة غير مرئي، صار استثناءً مسجَّلًا)؛ **التشغيل الكامل النهائي (كل المقاسات في السياقين) وlint وtest وbuild بعد آخر تعديلات لم تكتمل** في هذه الجلسة بسبب طابور القفل المشترك، فلا يُعدّ هذا القسم قبولًا نهائيًا.
+- قيد معروف: نافذة Split View على iPad بعرض ~640–700 طوليًا لا تُميَّز عن Duo بالمقاس وتحصل على الركن.
+
+### دخول Google داخل التطبيق
+**موجود في الكود، ومخفي داخل التطبيق الحالي.** `src/components/Login.tsx:27-33` يستعمل `GoogleAuthProvider` مع `signInWithPopup` ثم `signInWithRedirect`، و`src/lib/authDomain.ts` يضبط authDomain من نفس الأصل. غلاف Capacitor (`apple/capacitor.config.json`) يفتح الموقع عبر `server.url` = `https://tebyan.dr-alfailakawi.com` ويسمح بـ`accounts.google.com`. في WKWebView تمنع Google OAuth بـ`disallowed_useragent`، والرجوع من Safari الخارجي يفقد الحالة فيظهر «Unable to process request due to missing initial state». لكن `Login.tsx:24` يخفي زر Google داخل التطبيق (`isAppleNativeShell()` في `src/lib/appleNativeShell.ts`، بند App Store 4.8)، فالخطأ يظهر فقط في بناء TestFlight أقدم من هذا الإخفاء أو إن فُتح الزر بطريقة أخرى. لم يُعدَّل كود المصادقة.
+**توصية P0 (لا تُنفَّذ هنا):** (1) تثبيت `@capgo/capacitor-social-login` في `apple/package.json`؛ (2) تعريف iOS client ID في Google Cloud وإضافته إلى `apple/ios/App/App/Info.plist` مع URL scheme المعكوس (`CFBundleURLTypes`)؛ (3) في `Login.tsx` عند `isAppleNativeShell()` استدعاء `SocialLogin.login({provider:'google'})` ثم `signInWithCredential(auth, GoogleAuthProvider.credential(idToken))`، دون لمس مسار الويب؛ (4) توفير «Sign in with Apple» بالتوازي لأن بند 4.8 يوجبه مع أي دخول اجتماعي؛ (5) `cd apple && npx cap sync ios`؛ (6) بناء وأرشفة iOS جديد ورفعه إلى TestFlight عبر `apple/apple-release.sh`.

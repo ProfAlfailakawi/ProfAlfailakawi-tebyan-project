@@ -23,6 +23,11 @@ if (IS_DEMO_MODE) {
   window.setTimeout(() => { void import('./data/demoLibrary').then((m) => m.loadDemoLibrary()); }, 600);
 }
 
+// تشخيص ركن ودجت iPhone Duo: لا يُحمَّل شيء منه إلا مع ?duo-debug=1.
+if (new URLSearchParams(window.location.search).has('duo-debug')) {
+  void import('./lib/duoDebug').then((m) => m.mountDuoDebug());
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(err => {

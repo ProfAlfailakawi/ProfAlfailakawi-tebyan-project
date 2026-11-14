@@ -399,7 +399,7 @@ const SessionRestoreLoader = ({
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     className={cn(
-      "fixed left-1/2 z-[9998] -translate-x-1/2 border border-white/70 bg-white/84 shadow-[0_14px_40px_rgba(103,88,132,0.12)] backdrop-blur-xl",
+      "tebyan-keepout-top fixed left-1/2 z-[9998] -translate-x-1/2 border border-white/70 bg-white/84 shadow-[0_14px_40px_rgba(103,88,132,0.12)] backdrop-blur-xl",
       slow
         ? "top-6 rounded-[28px] px-5 py-4 max-w-md w-[calc(100%-2rem)]"
         : "top-5 rounded-full px-4 py-2",
@@ -1419,7 +1419,7 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)" }}
             className={cn(
-              "fixed top-[calc(env(safe-area-inset-top)+5.25rem)] left-1/2 -translate-x-1/2 z-[100001] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
+              "tebyan-keepout-top fixed top-[calc(env(safe-area-inset-top)+5.25rem)] left-1/2 -translate-x-1/2 z-[100001] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
               toast.type === "info"
                 ? "bg-white/90 border-zinc-200/50 text-zinc-900"
                 : toast.type === "error"
