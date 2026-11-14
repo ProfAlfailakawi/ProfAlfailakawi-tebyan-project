@@ -267,7 +267,7 @@ export default function HomeView({ onEmergency, onQuestion, onCategory, lastView
     <div className="font-sans pb-20 md:pb-24 overflow-x-clip">
       {/* Header */}
       <header className="pt-6 md:pt-10 pb-6 md:pb-8 px-4 md:px-8 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 text-right">
+        <div className="tebyan-qf-hero flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 text-right">
           <div className="max-w-2xl">
             <h1 className="font-serif text-3xl md:text-5xl font-bold text-navy leading-[1.3]">
               جواب واضح <span className="text-lilac">لكل سؤال في تربية أبنائك</span>

@@ -57,6 +57,7 @@ import {
   PWAHeaderButton,
 } from "./components/PWAInstallPrompt";
 import { OnboardingTour } from "./components/OnboardingTour";
+import BookContextPage from "./components/BookContextPage";
 import { TebyanTooltip } from "./components/TebyanTooltip";
 import { getServiceTabs, getServiceName } from "./constants/serviceRegistry";
 
@@ -351,7 +352,7 @@ const SplashScreen = ({
         opacity: 0,
         transition: { duration: 0.5, ease: "easeInOut" },
       }}
-      className="fixed inset-0 z-[99999] bg-ivory flex flex-col items-center justify-center"
+      className="tebyan-book-overlay fixed inset-0 z-[99999] bg-ivory flex flex-col items-center justify-center"
       // خلفية وz-index مثبّتان inline أيضًا: غطاء الافتتاحية يجب ألا يعتمد على توليد
       // كلاسات Tailwind الاعتباطية — أي فشل فيها يجعل الغطاء شفافًا فتظهر العلامة فوق نص الصفحة.
       style={{ backgroundColor: "#F8F5EF", zIndex: 99999 }}
@@ -422,7 +423,7 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => {
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.35, ease: "easeOut" }}
-    className="fixed inset-0 z-[9999] flex items-end justify-center p-4 md:items-center bg-ivory/62 backdrop-blur-[6px]"
+    className="tebyan-book-overlay fixed inset-0 z-[9999] flex items-end justify-center p-4 md:items-center bg-ivory/62 backdrop-blur-[6px]"
     dir={language === "ar" ? "rtl" : "ltr"}
   >
     <motion.div
@@ -472,6 +473,10 @@ const OfflineNotice = ({ language }: { language: "ar" | "en" }) => {
 };
 
 import { LivingIcon } from "./components/LivingIcon";
+
+// Screens that compose their own two-page spread on the Duo's inner screen; every
+// other screen gets the shared facing page (BookContextPage).
+const BOOK_BESPOKE_TABS: string[] = ["discover", "admindashboard"];
 
 const AppContent: React.FC = () => {
   const { user, profile, loading, authReady, userName, userGender } = useAuth();
@@ -1556,8 +1561,13 @@ const AppContent: React.FC = () => {
           </div>
         )}
 
+        {/* tebyan-book: on the Duo's inner screen this wrapper becomes a two-page spread
+            (src/index.css «Book spread»): the task on the first page, its context
+            (BookContextPage, after </main>) on the facing page. Pure CSS; nothing
+            remounts on fold. */}
         <div
-          className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full min-h-full flex flex-col cursor-default"
+          className="tebyan-book max-w-7xl mx-auto p-4 md:p-6 lg:p-8 w-full min-h-full flex flex-col cursor-default"
+          data-book={BOOK_BESPOKE_TABS.includes(activeTab) ? "bespoke" : "spread"}
           onClick={(e) => {
             // Do not navigate on empty background clicks; this caused accidental exits and felt like lag.
           }}
@@ -1576,7 +1586,7 @@ const AppContent: React.FC = () => {
                 : 0.14,
               ease: "easeOut",
             }}
-            className="relative z-10"
+            className="tebyan-book-main relative z-10"
           >
             <div className="absolute -top-10 left-12 w-32 h-32 bg-mood-glow rounded-full blur-[80px] pointer-events-none opacity-50" />
             <React.Suspense fallback={<TabFallback />}>
@@ -1821,7 +1831,7 @@ const AppContent: React.FC = () => {
             </React.Suspense>
           </motion.div>
 
-          <footer className="text-center pt-16 pb-6 max-sm:pb-24! mt-auto text-zinc-400">
+          <footer className="tebyan-book-footer text-center pt-16 pb-6 max-sm:pb-24! mt-auto text-zinc-400">
             <div className="flex items-center justify-center gap-2 mb-3">
               <Globe className="w-5 h-5" />
               <span className="font-bold text-zinc-500">
@@ -1834,6 +1844,17 @@ const AppContent: React.FC = () => {
           </footer>
         </div>
       </main>
+
+      {/* The facing page of the book spread. Outside <main> so the older blanket
+          "main p/li/button" rules do not restyle it; shown only on the inner screen. */}
+      {!BOOK_BESPOKE_TABS.includes(activeTab) && (
+        <BookContextPage
+          activeTab={activeTab}
+          language={language}
+          help={getPageHelpDetails()}
+          onOpen={(tab) => handleTabChange(tab as Tab)}
+        />
+      )}
 
       {/* Login Modal - Moved out of flow */}
       <AnimatePresence>
@@ -1850,7 +1871,7 @@ const AppContent: React.FC = () => {
               bottom: 0,
               zIndex: 99999,
             }}
-            className="flex items-center justify-center p-4 bg-zinc-900/40"
+            className="tebyan-book-overlay flex items-center justify-center p-4 bg-zinc-900/40"
             onClick={() => setShowLogin(false)}
           >
             <div
