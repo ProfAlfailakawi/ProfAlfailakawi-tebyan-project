@@ -114,7 +114,7 @@ export default function EmergencyView({ questions, onBack, onQuestion }: Props) 
                 key={age}
                 onClick={() => setAgeFilter(a => a === age ? null : age)}
                 className={cn(
-                  "px-4 py-2 rounded-full text-xs md:text-sm font-bold shrink-0 transition-colors border",
+                  "min-h-11 px-4 py-2 rounded-full text-xs md:text-sm font-bold shrink-0 transition-colors border",
                   ageFilter === age 
                     ? "bg-[color:var(--tb-c-2a2925)] text-white border-[color:var(--tb-c-2a2925)] shadow-[0_8px_30px_rgb(0,0,0,0.04)]" 
                     : "bg-white text-[color:var(--tb-c-6b6a65)] border-[color:var(--tb-c-ebeae4)] hover:bg-[color:var(--tb-c-f6f5f0)]"

@@ -154,12 +154,12 @@ async function newPage(browser, w, h, extra = {}, demo = true) {
     await page.waitForTimeout(700);
     const r = await page.evaluate((sel) => {
       const el = document.activeElement; const b = el.getBoundingClientRect();
-      const bar = document.querySelector('header.fixed')?.getBoundingClientRect();
+      const hb = document.querySelector('header.fixed'); const bar = hb && getComputedStyle(hb).opacity !== '0' ? hb.getBoundingClientRect() : null;
       return { focusedKept: el.matches(sel), visible: b.top >= 0 && b.bottom <= innerHeight, coveredByBar: !!bar && b.bottom > bar.top && b.top < bar.bottom && bar.top > innerHeight / 2 };
     }, sel);
     // the browser scrolls a focused field into view when the keyboard opens; emulate that once
     if (!r.visible) await page.locator(sel).first().scrollIntoViewIfNeeded();
-    const r2 = await page.evaluate(() => { const b = document.activeElement.getBoundingClientRect(); const bar = document.querySelector('header.fixed')?.getBoundingClientRect(); return { visibleAfterScroll: b.top >= 0 && b.bottom <= innerHeight, coveredByBarAfterScroll: !!bar && bar.top > innerHeight / 2 && b.bottom > bar.top }; });
+    const r2 = await page.evaluate(() => { const b = document.activeElement.getBoundingClientRect(); const hb = document.querySelector('header.fixed'); const bar = hb && getComputedStyle(hb).opacity !== '0' ? hb.getBoundingClientRect() : null; return { visibleAfterScroll: b.top >= 0 && b.bottom <= innerHeight, coveredByBarAfterScroll: !!bar && bar.top > innerHeight / 2 && b.bottom > bar.top }; });
     out.stress.push({ variant: 'keyboard', vp: `${w}x350`, url, ...r, ...r2, ...(await geometry(page)) });
     await ctx.close();
     process.stdout.write('K');
@@ -174,7 +174,8 @@ async function newPage(browser, w, h, extra = {}, demo = true) {
       // I: one page instance through the whole sequence
       const { ctx, page } = await newPage(browser, ...SEQ[0], {}, sc.demo !== false);
       await page.goto(BASE + sc.url, { waitUntil: 'load' });
-      await page.waitForTimeout(1800);
+      // settle: some tabs replace their URL a moment after load (e.g. ripple)
+      await page.waitForTimeout(Number(process.env.SETTLE || 1800));
       for (const st of sc.steps || []) await runStep(page, st);
       await page.evaluate(() => { window.__duoMarker = 42; });
       for (const [w, h] of SEQ) {
