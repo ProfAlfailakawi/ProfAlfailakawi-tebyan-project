@@ -13,7 +13,8 @@
     "deploy": "npm run build && firebase deploy --only functions:api,hosting,firestore:rules",
     "verify:pwa": "PWA_GUARD_SPLASH_IN_ROOT=ok node scripts/verify-pwa.mjs",
     "verify:demo": "node scripts/verify-demo-write-guard.mjs",
-    "test": "tsx --test tests/*.test.ts"
+    "test": "tsx --test tests/*.test.ts",
+    "test:duo-widget": "node tests/duo-widget-guard.cjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",
@@ -51,6 +52,7 @@
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.28.0",
     "eslint": "^10.2.1",
+    "playwright": "^1.56.1",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

@@ -80,68 +80,68 @@ test('book = landscape only: every book media query is exactly the shared BOOK c
   assert.doesNotMatch(css, /@media[^{]*min-width:\s*640px\)[^{]*max-width:\s*720px\)[^{]*min-height:\s*520px\)\s*(,|\{)/);
 });
 
-test('widget keep-out: defined once for the Duo inner screen (tab AND installed app), used by header, page top and fixed controls', () => {
-  const blocks = [...css.matchAll(/@media([^{]*)\{(?=\s*:root \{ --duo-cutout-w: 116px)/g)];
-  assert.equal(blocks.length, 1);
-  const alts = blocks[0][1].split(',').map(norm);
-  assert.deepEqual(alts, [
-    norm('screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape)'),
-    norm('screen and (min-width:640px) and (max-width:720px) and (min-height:520px) and (max-height:960px) and (orientation:portrait)'),
-  ]);
-  assert.match(css, /:root \{ --duo-cutout-w: 116px; --duo-cutout-h: 116px; --duo-cutout-reach: 268px; \}/);
-  // the box is measured on the native app: ~80px wide, down to ~y=250-265; one box (w x reach) covers it
-  assert.equal([...css.matchAll(/--duo-cutout-reach\s*:/g)].length, 1, 'reach is defined once, inside the two inner-screen bands');
-  assert.equal([...css.matchAll(/--duo-cutout-w\s*:/g)].length, 1);
-  assert.equal([...css.matchAll(/--duo-cutout-h\s*:/g)].length, 1);
-  // below the header band the content flows beside the box (an empty float), it is not pushed down
-  assert.match(css, /\.tebyan-book-main::before \{\s*content: "";\s*float: right;\s*width: var\(--duo-cutout-w\);\s*height: max\(0px, calc\(var\(--duo-cutout-reach\)/);
-  assert.match(css, /\.tebyan-keepout-overlay\b/);
-  for (const f of ['src/components/GlobalCommand.tsx', 'src/App.tsx']) {
-    assert.match(readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /tebyan-book-overlay tebyan-keepout-overlay/, f);
-  }
-  // the static privacy page (outside React) reserves the same box: 268px minus its 24px body padding
-  const privacy = readFileSync(new URL('../public/privacy-policy.html', import.meta.url), 'utf8');
-  assert.match(privacy, /main::before\{content:"";float:right;width:116px;height:244px\}/);
-  assert.doesNotMatch(privacy, /display-mode/);
-  // the static Qawl Fasl pages (generated, outside React) reserve it too: header steps inward, first lines flow beside the box
-  for (const f of ['scripts/generate-qawl-pages.mjs', 'public/qawl/index.html', 'public/qawl/q-1/index.html']) {
-    const t = readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
-    assert.match(t, /\.top-in\{padding-right:132px\}\s*\.wrap::before\{content:"";float:right;width:116px;height:178px\}/, f);
-    assert.doesNotMatch(t, /display-mode/, f);
-  }
-  assert.match(css, /header\.fixed\.tebyan-app-header \{ padding-right: calc\(var\(--duo-cutout-w\)/);
-  assert.match(css, /padding-top: calc\(env\(safe-area-inset-top, 0px\) \+ var\(--duo-cutout-h\)/);
+const DUO_GATE = /@media([^{]*)\{(?=\s*:root \{\s*--duo-widget-w: 70px;)/;
+
+test('widget corner: three tokens at :root, 0px outside the Duo, set once inside one size-based gate (tab, Capacitor and installed app alike)', () => {
+  assert.match(css, /:root \{\s*--duo-widget-w: 0px;\s*--duo-widget-gap: 0px;\s*--duo-widget-h: 0px;\s*\}/);
+  const gate = css.match(DUO_GATE);
+  assert.ok(gate, 'the Duo gate block must set the tokens');
+  assert.equal([...css.matchAll(/--duo-widget-w: 70px/g)].length, 1);
+  assert.match(css, /--duo-widget-gap: 8px;/);
+  assert.match(css, /--duo-widget-h: clamp\(64px, 30vh, 200px\);/);
+  assert.doesNotMatch(gate[1], /display-mode/);
+  // the old 116px box and its variables are gone, not stacked under the new ones
+  assert.doesNotMatch(css, /--duo-cutout/);
+  // physical right only: never the logical end side, which flips with dir
+  assert.match(css, /header\.fixed\.tebyan-app-header \{ padding-right: calc\(var\(--duo-widget-w\) \+ var\(--duo-widget-gap\)\) !important; \}/);
+  assert.match(css, /padding-top: calc\(env\(safe-area-inset-top, 0px\) \+ var\(--duo-widget-h\) \+ var\(--duo-widget-gap\)\) !important;/);
+  assert.match(css, /\.tebyan-keepout-pad \{ padding-right: calc\(var\(--duo-widget-w\)/);
+  assert.match(css, /\.tebyan-book-overlay \{ padding-right: calc\(var\(--duo-widget-w\)/);
 });
 
-test('widget keep-out guard: real queries from index.css, evaluated on sizes; never gated on display-mode', () => {
-  const start = css.indexOf('Duo widget keep-out.');
-  assert.ok(start > 0);
-  const section = css.slice(start, css.indexOf('}\n', css.indexOf('.tebyan-book-overlay:not(.flex-col)', start)) + 2);
-  assert.doesNotMatch(section, /display-mode/);
-  // no other rule that uses the keep-out variables may be display-mode gated either
+test('widget corner gate: real queries from index.css evaluated on sizes (Duo on, every other device off)', () => {
+  const gate = css.match(DUO_GATE);
+  assert.ok(gate);
+  const queries = gate[1].split(',').map((q) => q.trim());
+  const evalQ = (q: string, w: number, h: number) =>
+    /^screen\b/.test(q) && [...q.matchAll(/\(\s*([a-z-]+)\s*:\s*([a-z0-9/]+?)(px)?\s*\)/g)].every(([, k, v]) => {
+      if (k === 'min-width') return w >= +v;
+      if (k === 'max-width') return w <= +v;
+      if (k === 'orientation') return v === (h >= w ? 'portrait' : 'landscape');
+      const [n, d] = v.split('/').map(Number);
+      if (k === 'min-aspect-ratio') return w / h >= n / d;
+      if (k === 'max-aspect-ratio') return w / h <= n / d;
+      return false;
+    });
+  const applies = (w: number, h: number) => queries.some((q) => evalQ(q, w, h));
+  // known Duo sizes, both orientations (the brief's five plus the landscape book)
+  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [951, 669], [720, 900], [640, 867]]) {
+    assert.ok(applies(w, h), `${w}x${h} must apply`);
+    if (w !== 951 || h !== 669) assert.ok(applies(h, w), `${h}x${w} must apply`);
+  }
+  // the installed app's taller full-screen viewports on the outer screen (no browser toolbars)
+  for (const [w, h] of [[382, 700], [382, 780], [382, 844], [385, 800], [470, 900]]) assert.ok(applies(w, h), `${w}x${h} (app, taller) must apply`);
+  // ordinary phones, iPads, desktops: tokens stay 0
+  for (const [w, h] of [[390, 844], [844, 390], [430, 932], [932, 430], [360, 740], [320, 568], [568, 320], [744, 1024], [1024, 768], [1180, 820], [820, 1180], [1280, 800], [1440, 900], [367, 740], [951, 350], [393, 852], [384, 854], [375, 667], [402, 874], [414, 896]]) {
+    assert.ok(!applies(w, h), `${w}x${h} must NOT apply`);
+  }
+});
+
+test('widget corner: never gated on display-mode or posture', () => {
   for (const m of css.matchAll(/@media([^{]*)\{/g)) {
     let depth = 1, i = (m.index ?? 0) + m[0].length;
     const from = i;
     while (i < css.length && depth) { depth += css[i] === '{' ? 1 : css[i] === '}' ? -1 : 0; i++; }
-    if (css.slice(from, i).includes('--duo-cutout')) assert.doesNotMatch(m[1], /display-mode/);
+    if (css.slice(from, i).includes('--duo-widget')) assert.doesNotMatch(m[1], /display-mode|device-posture|viewport-segments/);
   }
-  const m = css.match(/@media([^{]*)\{(?=\s*:root \{ --duo-cutout-w: 116px)/);
-  assert.ok(m);
-  const queries = m![1].split(',').map((q) => q.trim());
-  const evalQ = (q: string, w: number, h: number) =>
-    /^screen\b/.test(q) && [...q.matchAll(/\(\s*([a-z-]+)\s*:\s*([a-z0-9]+?)(px)?\s*\)/g)].every(([, k, v]) => {
-      if (k === 'min-width') return w >= +v;
-      if (k === 'max-width') return w <= +v;
-      if (k === 'min-height') return h >= +v;
-      if (k === 'max-height') return h <= +v;
-      if (k === 'orientation') return v === (h >= w ? 'portrait' : 'landscape');
-      return false;
-    });
-  const applies = (w: number, h: number) => queries.some((q) => evalQ(q, w, h));
-  for (const [w, h] of [[951, 669], [951, 585], [669, 867], [720, 900]]) assert.ok(applies(w, h), `${w}x${h} must apply`);
-  for (const [w, h] of [[390, 844], [844, 390], [932, 430], [744, 1024], [820, 1180], [1024, 768], [1180, 820], [1280, 800], [1440, 900], [367, 740], [951, 350]]) {
-    assert.ok(!applies(w, h), `${w}x${h} must NOT apply`);
-  }
+});
+
+test('widget corner guard (Playwright WebKit) and ?duo-debug=1 overlay are wired', () => {
+  const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.match(pkg.scripts['test:duo-widget'], /duo-widget-guard/);
+  const main = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8');
+  assert.match(main, /duo-debug/);
+  assert.match(main, /import\(['"]\.\/lib\/duoDebug/);
 });
 
 test('narrow phones (320-382px): segmented switches size by content and wrap; demo chip rows keep their label clear of the fade', () => {
