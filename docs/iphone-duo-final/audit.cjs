@@ -23,7 +23,7 @@ const BASE = process.env.BASE || 'http://127.0.0.1:5170';
 const SHOTS = process.env.SHOTS || '';
 const [, , OUT = 'duo-audit.json', POSES_ARG = '', SCREENS_ARG = ''] = process.argv;
 
-const BOOK_MQ = '(min-width: 640px) and (max-width: 760px) and (min-height: 520px), (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2)';
+const BOOK_MQ = 'screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px), screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2)';
 const SPINE = 32;
 
 // [width, height, scope]: 'all' = every inventoried screen, 'main' = the main screens only.

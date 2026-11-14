@@ -8,7 +8,7 @@ const { webkit } = require('playwright');
 const fs = require('fs');
 const BASE = process.env.BASE || 'http://127.0.0.1:5170';
 const OUT = process.argv[2] || 'duo-live-stress.json';
-const BOOK_MQ = '(min-width: 640px) and (max-width: 760px) and (min-height: 520px), (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2)';
+const BOOK_MQ = 'screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px), screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2)';
 const SEQ = [[951, 585], [669, 867], [470, 700], [382, 580], [594, 368], [951, 350], [951, 585]];
 
 const geometry = (page) => page.evaluate((BOOK_MQ) => {
