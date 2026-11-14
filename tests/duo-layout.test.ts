@@ -28,3 +28,24 @@ test('touch targets and short-window rules exist', () => {
   assert.match(css, /@media \(pointer: coarse\)[\s\S]*min-height: 44px/);
   assert.match(css, /@media \(max-height: 480px\)/);
 });
+
+test('Duo book/laptop media queries apply to screens only (printing keeps one column)', () => {
+  const sources = {
+    'src/index.css': css,
+    'scripts/generate-qawl-pages.mjs': readFileSync(new URL('../scripts/generate-qawl-pages.mjs', import.meta.url), 'utf8'),
+    'public/updating.html': readFileSync(new URL('../public/updating.html', import.meta.url), 'utf8'),
+    'public/privacy-policy.html': readFileSync(new URL('../public/privacy-policy.html', import.meta.url), 'utf8'),
+    'public/qawl/q-1/index.html': readFileSync(new URL('../public/qawl/q-1/index.html', import.meta.url), 'utf8'),
+  };
+  let seen = 0;
+  for (const [file, text] of Object.entries(sources)) {
+    for (const m of text.matchAll(/@media([^{]*)\{/g)) {
+      for (const alt of m[1].split(',')) {
+        if (!/min-height:\s*520px|max-height:\s*420px/.test(alt)) continue;
+        seen++;
+        assert.match(alt.trim(), /^screen and /, `${file}: ${alt.trim()}`);
+      }
+    }
+  }
+  assert.ok(seen >= 10, `expected the Duo queries, saw ${seen}`);
+});

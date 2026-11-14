@@ -5758,8 +5758,8 @@ p { text-wrap: pretty; }
 .tebyan-book-aside { display: none; }
 .tebyan-service-lead { display: contents; }
 
-@media (min-width: 640px) and (max-width: 760px) and (min-height: 520px),
-       (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
+@media screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px),
+       screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
   :root {
     --book-spine: 32px;
     --book-gutter: 1rem;
@@ -5923,12 +5923,12 @@ p { text-wrap: pretty; }
 /* A page of the spread is phone-wide, so screens laid out for the full window
    fall back to their phone arrangement inside it: rows that open up at sm/md
    (640/768) stack again, and fixed md widths fill the page. */
-@media (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
+@media screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
   .tebyan-book-main .sm\:flex-row { flex-direction: column; }
   .tebyan-book-main .sm\:w-auto { width: 100%; }
   .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
+@media screen and (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
   .tebyan-book-main :is(.sm\:flex-row, .md\:flex-row) { flex-direction: column; }
   .tebyan-book-main :is(.sm\:w-auto, .md\:w-auto, .md\:w-64) { width: 100%; }
   .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4, .md\:grid-cols-3, .md\:grid-cols-4, .md\:grid-cols-5) {
@@ -6068,7 +6068,7 @@ p { text-wrap: pretty; }
 .tebyan-book-link:focus-visible { outline: 2px solid var(--tb-lilac-deep); outline-offset: 2px; border-radius: 6px; }
 /* Portrait book: the demo badge keeps its icon only, as on phones, so the header
    actions fit their page. */
-@media (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
+@media screen and (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
   .tebyan-header-actions [role="status"] > span { display: none; }
 }
 .tebyan-book-arrow { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-lilac-soft); }
@@ -6080,10 +6080,12 @@ p { text-wrap: pretty; }
    like a keyboard deck. The bar never covers content: the page ends with a
    spacer the height of the bar. Decided by size, not by device.
    ========================================================================== */
-@media (min-width: 560px) and (max-height: 420px) {
+@media screen and (min-width: 560px) and (max-height: 420px) {
   /* The bar. `transform: none` because the hide-on-scroll animation writes an
      inline translateY(-100px), which would lift a bottom bar into the page. The
-     paddings replace the short-window header paddings above (same !important). */
+     paddings replace the short-window header paddings above, and the background the
+     canopy gradients (both already !important); the main paddings below replace the
+     per-route padding rules, which are !important too. */
   header.fixed.tebyan-app-header {
     top: auto;
     bottom: 0;
@@ -6112,7 +6114,7 @@ p { text-wrap: pretty; }
 }
 /* Typing on the deck: a focused field scrolls clear of the bar, and the bar steps
    aside while the keyboard is up (as the Back/Help controls already do on phones). */
-@media (min-width: 560px) and (max-height: 420px) {
+@media screen and (min-width: 560px) and (max-height: 420px) {
   main.tebyan-route-shell { scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.75rem); }
   body:has(:is(input:not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]):focus) :is(header.fixed.tebyan-app-header, .tebyan-page-controls) {
     opacity: 0;
@@ -6120,7 +6122,7 @@ p { text-wrap: pretty; }
   }
 }
 /* Narrow decks (~600): icons only, as on phones, so both pills fit beside the brand. */
-@media (min-width: 560px) and (max-width: 759px) and (max-height: 420px) {
+@media screen and (min-width: 560px) and (max-width: 759px) and (max-height: 420px) {
   .tebyan-page-controls .tebyan-ctl-label,
   .tebyan-header-actions [role="status"] > span { display: none; }
   body:has(.tebyan-page-controls) .tebyan-header-actions { margin-inline-end: 6.5rem; }
