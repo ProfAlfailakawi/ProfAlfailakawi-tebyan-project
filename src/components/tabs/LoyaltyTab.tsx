@@ -14,6 +14,7 @@ import { updateDoc } from '../../lib/firestoreWrites';
 import { db } from '../../lib/firebase';
 import { TabHeader } from '../TabHeader';
 import { IS_DEMO_MODE } from '../../lib/demoMode';
+import { isAppleNativeShell } from '../../lib/appleNativeShell';
 import { getDemoFixtures } from '../../data/demoFixtures';
 import { DEMO_CUSTOMERS } from '../../data/demoAdmin';
 
@@ -126,14 +127,16 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
   }, [filteredCustomers, currentPage]);
 
   if (!isAdmin) {
+    // iOS shell only: no spend totals, discount codes or redeem button (App Store payment-adjacent wording).
+    const native = isAppleNativeShell();
     return (
       <div className="w-full bg-white md:min-h-screen rounded-[24px] md:rounded-[32px] p-4 md:p-10 shadow-sm border border-zinc-200 overflow-hidden flex flex-col font-sans" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <TabHeader 
           icon={TicketPercent}
           title={getServiceNameBilingual('loyalty')}
           description={{ 
-              ar: 'رصيدك الحالي، مكافآتك، والكوبونات المتاحة لك.', 
-              en: 'Your current balance, rewards, and available coupons.' 
+              ar: native ? 'رصيد نقاطك وتقدمك في الرحلة.' : 'رصيدك الحالي، مكافآتك، والكوبونات المتاحة لك.', 
+              en: native ? 'Your points and progress on the journey.' : 'Your current balance, rewards, and available coupons.' 
           }}
           language={language}
           onBack={() => handleTabChange('home')}
@@ -168,10 +171,12 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     <p className="text-[color:var(--tb-c-5b6e82)] text-sm font-medium">{language === 'ar' ? 'أنت عضو في القائمة الذهبية' : 'You are a Gold Tier Member'}</p>
                     
                     <div className="mt-8 md:mt-10 pt-6 md:pt-8 border-t border-navy/10 flex flex-wrap items-center justify-between gap-4">
+                        {!native && (
                         <div>
                             <p className="text-xs text-[color:var(--tb-c-5b6e82)] font-bold mb-1">{language === 'ar' ? 'الإنفاق الإجمالي' : 'Total Spent'}</p>
                             <p className="text-lg font-black">{language === 'ar' ? `${myLoyaltyData.totalSpent} د.ك` : `KWD ${myLoyaltyData.totalSpent}`}</p>
                         </div>
+                        )}
                         <div className="bg-lilac-mist text-lilac px-4 py-2 rounded-xl text-xs font-black">
                             {language === 'ar'
                               ? ({ Active: 'نشط', VIP: 'مميّز', New: 'جديد', 'At Risk': 'بحاجة لمتابعة', Inactive: 'غير نشط' } as Record<string, string>)[myLoyaltyData.status] || myLoyaltyData.status
@@ -181,7 +186,8 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                 </div>
             </div>
 
-            {/* Coupons Card */}
+            {/* Coupons Card (hidden in the iOS shell) */}
+            {!native && (
             <div className="bg-white rounded-[24px] md:rounded-[32px] border-2 border-zinc-100 p-5 md:p-8 flex flex-col justify-between">
                 <div>
                    <h3 className="text-xl font-black mb-6">{language === 'ar' ? 'مكافآتك المتاحة' : 'Your Available Rewards'}</h3>
@@ -226,6 +232,7 @@ export const LoyaltyTab = ({ language, handleTabChange }: { language: string, ha
                     </p>
                 )}
             </div>
+            )}
         </div>
 
         {/* History Section */}

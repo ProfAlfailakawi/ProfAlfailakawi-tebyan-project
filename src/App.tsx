@@ -1,5 +1,6 @@
 import { GamificationProvider } from "./components/GamificationProvider";
 import { isAdminIdentity } from "./lib/adminAccess";
+import { isAppleNativeShell } from "./lib/appleNativeShell";
 import { UserProvider } from "./contexts/UserContext";
 import { CognitiveModeProvider } from "./contexts/CognitiveModeContext";
 import { useAmbientIntelligence } from "./hooks/useAmbientIntelligence";
@@ -795,10 +796,15 @@ const AppContent: React.FC = () => {
       if (tab === "qawlfasl") return true;
 
       if (!user && needsAccount) {
+        const native = isAppleNativeShell();
         const msg =
           language === "ar"
-            ? "هذه الخدمة خاصة للمشتركين... يرجى التسجيل أو الدخول."
-            : "This service is for subscribers only. Please register or login to access.";
+            ? native
+              ? "هذه الخدمة تحتاج حساباً... يرجى التسجيل أو الدخول."
+              : "هذه الخدمة خاصة للمشتركين... يرجى التسجيل أو الدخول."
+            : native
+              ? "This feature needs an account. Please register or log in to access."
+              : "This service is for subscribers only. Please register or login to access.";
         showToast(msg, "info");
         setShowLogin(true);
         return false;
@@ -1085,7 +1091,9 @@ const AppContent: React.FC = () => {
               "عقد تبيان المميز لتقدير رحلتك المعرفية معنا وتقديم الهدايا الفريدة.",
             steps: [
               "• اجمع النقاط والأوسمة الفكرية من خلال استخدامك اليومي للتطبيق.",
-              "• فعّل الهدايا والكوبونات للاستفادة من الميزات الخاصة بعضويتك.",
+              isAppleNativeShell()
+                ? "• تابع نقاطك وأوسمتك في رحلتك."
+                : "• فعّل الهدايا والكوبونات للاستفادة من الميزات الخاصة بعضويتك.",
               "• تفقّد مستواك الفكري الحالي والامتيازات الصاحبة له.",
             ],
             tip: "استخدامك اليومي الذكي يقودك لبلوغ مراتب علمية أعلى في النظام!",
@@ -1230,8 +1238,12 @@ const AppContent: React.FC = () => {
               "Tebyan’s token of appreciation for your loyalty, unlocking deep benefits and badges.",
             steps: [
               "• Earn unique points and badges by exploring and using more tools daily.",
-              "• Activate promo coupons or special gifts granted to members.",
-              "• Track your current level and the associated premium benefits.",
+              isAppleNativeShell()
+                ? "• Follow your points and badges along your journey."
+                : "• Activate promo coupons or special gifts granted to members.",
+              isAppleNativeShell()
+                ? "• Track your current level and progress."
+                : "• Track your current level and the associated premium benefits.",
             ],
             tip: "Consistent daily intellectual engagement rises your standing in the global hierarchy!",
           };
