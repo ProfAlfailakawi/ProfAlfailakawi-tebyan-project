@@ -18,7 +18,7 @@ export const LighthouseMode = ({ idea, onClose, language }: LighthouseProps) => 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-8 overflow-hidden"
+            className="tebyan-book-overlay fixed inset-0 z-[60] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-8 overflow-hidden"
         >
             {/* Cinematic Background Elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">

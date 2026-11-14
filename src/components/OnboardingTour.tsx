@@ -208,7 +208,7 @@ export const OnboardingTour = ({ language }: { language: "ar" | "en" }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100000] flex items-end md:items-center justify-center bg-[color:var(--tb-c-f7f3ee)]/75 backdrop-blur-xl p-4"
+          className="tebyan-book-overlay fixed inset-0 z-[100000] flex items-end md:items-center justify-center bg-[color:var(--tb-c-f7f3ee)]/75 backdrop-blur-xl p-4"
           dir={language === "ar" ? "rtl" : "ltr"}
         >
           <motion.div

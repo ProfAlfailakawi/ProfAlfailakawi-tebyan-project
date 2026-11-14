@@ -119,7 +119,7 @@ export const GlobalCommand = ({ isOpen, onClose, language, tabs, handleTabChange
           initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
           animate={{ opacity: 1, backdropFilter: 'blur(20px)' }}
           exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-navy/50 transition-all font-sans"
+          className="tebyan-book-overlay fixed inset-0 z-[200] flex items-center justify-center p-4 bg-navy/50 transition-all font-sans"
           dir={language === 'ar' ? 'rtl' : 'ltr'}
           onClick={onClose}
         >

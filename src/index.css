@@ -4632,7 +4632,8 @@ body:not(.zen-idle)::after {
     top: auto !important;
     bottom: calc(env(safe-area-inset-bottom, 0px) + 74px) !important;
     left: 12px !important;
-    right: 12px !important;
+    /* the Duo's portrait book narrows the sheet to the left page («Book spread») */
+    right: var(--tebyan-help-sheet-right, 12px) !important;
     width: auto !important;
     max-height: min(62dvh, 520px) !important;
   }
@@ -4665,6 +4666,13 @@ body:not(.zen-idle)::after {
   .tebyan-page-controls button {
     min-width: 44px !important;
     min-height: 44px !important;
+  }
+}
+/* Large touch screens (iPad landscape 1024+, touch laptops): the same 44px floor for
+   chips and buttons (they measured 40px there). Mouse-only desktops are unchanged. */
+@media (min-width: 1024px) and (pointer: coarse) {
+  html body :is(button, [role="button"], [role="tab"], a[href], select, summary):not(.tebyan-tap-exempt) {
+    min-height: 44px;
   }
 }
 
@@ -5733,4 +5741,387 @@ p { text-wrap: pretty; }
   header.fixed.tebyan-app-header {
     background: linear-gradient(180deg, rgba(251, 251, 253, 0.9) 0%, rgba(251, 251, 253, 0.82) 78%, rgba(251, 251, 253, 0) 100%) !important;
   }
+}
+
+/* ==========================================================================
+   Book spread — the Duo's inner screen, opened (portrait ~669x867, landscape
+   ~951x585). Safari does not expose the hinge, so the window's size decides:
+     portrait book  : 640–760 wide, at least 520 tall
+     landscape book : 840–1000 wide, at least 520 tall, two-pane aspect (>= 3:2)
+   iPad portrait (768) and landscape (1024) stay out; so do Split View panes.
+   The content wrapper (.tebyan-book in App.tsx) becomes two pages with a calm
+   spine between them: the task on the first page (right in RTL) and its context
+   (BookContextPage) on the facing page. Screens listed as "bespoke" split their
+   own content across the two pages. Nothing crosses the spine zone
+   (centre ± --book-spine/2). Pure CSS: no remount, state survives the fold.
+   ========================================================================== */
+.tebyan-book-aside { display: none; }
+.tebyan-service-lead { display: contents; }
+
+@media (min-width: 640px) and (max-width: 760px) and (min-height: 520px),
+       (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
+  :root {
+    --book-spine: 32px;
+    --book-gutter: 1rem;
+    /* where the pages start under the fixed header */
+    --book-top: calc(env(safe-area-inset-top, 0px) + 5.25rem);
+    /* one page's width: half the window minus half the spine and the outer gutter */
+    --book-page: calc(50vw - var(--book-spine) / 2 - var(--book-gutter));
+  }
+
+  /* The spine: a hairline of the brand gold inside a soft fold shadow, from top to
+     bottom of the window (also through the header), never catching a tap. */
+  .tebyan-route-shell::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: calc(50% - var(--book-spine) / 2);
+    width: var(--book-spine);
+    pointer-events: none;
+    z-index: 45;
+    background:
+      linear-gradient(180deg, rgba(184, 140, 50, 0), rgba(184, 140, 50, 0.26) 14%, rgba(184, 140, 50, 0.26) 86%, rgba(184, 140, 50, 0)) center / 1px 100% no-repeat,
+      linear-gradient(90deg, rgba(24, 34, 49, 0) 0%, rgba(24, 34, 49, 0.028) 32%, rgba(24, 34, 49, 0.07) 50%, rgba(24, 34, 49, 0.028) 68%, rgba(24, 34, 49, 0) 100%);
+  }
+
+  /* First page: the task and the footer keep to the right half (left in English);
+     the facing page is fixed beside it and scrolls on its own, like a real book.
+     Widths, not paddings: older blanket "main > div { padding }" rules stay
+     symmetric, so half of the wrapper's content box ends exactly at the spine. */
+  .tebyan-book { max-width: none; padding-top: 0.25rem; }
+  .tebyan-book > .tebyan-book-main,
+  .tebyan-book > .tebyan-book-footer {
+    width: calc(50% - var(--book-spine) / 2);
+    align-self: flex-start;
+    min-width: 0;
+  }
+  .tebyan-book[data-book="bespoke"] > .tebyan-book-main { width: auto; align-self: stretch; }
+  .tebyan-book-aside {
+    display: block;
+    position: fixed;
+    z-index: 30;
+    top: var(--book-top);
+    /* ends above the Back/Help controls, which sit at the foot of this page */
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 3.75rem);
+    inset-inline-end: 0;
+    width: calc(50% - var(--book-spine) / 2);
+    padding-inline: var(--book-gutter);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .tebyan-book-aside::-webkit-scrollbar { display: none; }
+
+  /* Header: each group keeps to its own page. With very large text the Services
+     label gives way (ellipsis) before the group reaches the spine. */
+  header.fixed.tebyan-app-header > .tebyan-floating-nav,
+  header.fixed.tebyan-app-header > .tebyan-header-actions {
+    max-width: calc(50% - var(--book-spine) / 2 - 0.5rem);
+    min-width: 0;
+  }
+  header.fixed .tebyan-floating-nav > .tebyan-services-button {
+    flex-shrink: 1;
+    min-width: 44px;
+    overflow: hidden;
+  }
+  header.fixed .tebyan-floating-nav > .tebyan-services-button > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* A page is phone-wide: generous card paddings (2–3rem) shrink to a page margin,
+     in px so that enlarged text does not also enlarge the padding. */
+  .tebyan-book-main :is(.tebyan-tab-surface, .p-8, .md\:p-8, .md\:p-10, .md\:p-12) {
+    padding: min(2rem, 24px);
+  }
+
+  /* Answers read straight off the page: inside a tool card the result loses its
+     second frame and side padding, so a phone-wide page keeps a real measure. */
+  .tebyan-book-main :is(.tebyan-tab-surface, .p-8) .tbn-result {
+    padding-inline: 0;
+    border-inline: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  /* Status headers (DnaKit) wrap their actions under the title, as on phones
+     (dna.css does this below 560px of window; a page is narrower than that). */
+  .tebyan-book-main .dna-headrow { flex-wrap: wrap; }
+  .tebyan-book-main .dna-headact { inline-size: 100%; }
+  /* Two-choice switches (council balanced/opposing…) wrap their labels in a page. */
+  .tebyan-book-main .tebyan-seg__btn { white-space: normal; line-height: 1.35; text-align: center; }
+
+  /* All services (bespoke): the title, search and filters hold the first page and
+     stay in view; the directory fills the facing page, one card per row. */
+  .tebyan-service-explorer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--book-spine) minmax(0, 1fr);
+    align-items: start;
+    max-width: none;
+    padding-inline: 0;
+  }
+  .tebyan-service-explorer > .tebyan-service-lead {
+    display: block;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    position: sticky;
+    top: var(--book-top);
+    padding-inline: 0.5rem;
+  }
+  .tebyan-service-lead > * { width: 100%; max-width: none; margin-inline: 0; }
+  .tebyan-service-lead > .tebyan-service-hero { padding-top: 1.25rem; }
+  .tebyan-service-lead > .tebyan-service-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-content: flex-start; }
+  .tebyan-service-explorer > .tebyan-service-directory,
+  .tebyan-service-explorer > .tebyan-service-directory ~ div {
+    grid-column: 3;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-inline: 0.5rem;
+  }
+  .tebyan-service-explorer > .tebyan-service-directory { grid-row: 1; padding-top: 1.25rem; }
+  .tebyan-service-explorer > .tebyan-service-directory ~ div { grid-row: 2; }
+  .tebyan-service-explorer .tebyan-service-grid { grid-template-columns: minmax(0, 1fr); }
+
+  /* Admin dashboard (/admin and its tab, bespoke): the controls — home, the four
+     admin doors, the title and the two run buttons — hold the first page; the
+     figures and lists fill the facing page. */
+  .tebyan-admin-dash {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--book-spine) minmax(0, 1fr);
+    align-items: start;
+    max-width: none;
+    padding-inline: var(--book-gutter);
+  }
+  .tebyan-admin-dash > * { grid-column: 3; min-width: 0; }
+  .tebyan-admin-dash > header { grid-column: 1; grid-row: 1 / span 30; }
+
+
+  /* Qawl Fasl: the title and its line stack inside the page instead of sharing a row. */
+  .tebyan-qf-hero { flex-direction: column; align-items: stretch; }
+
+  /* Dialogs, sheets and full-screen states (splash, offline, onboarding, command
+     palette, login, focus mode) open on the first page: centred on the page, not on
+     the fold. Their backdrop still covers both pages. */
+  .tebyan-book-overlay {
+    padding-inline-start: var(--book-gutter);
+    padding-inline-end: calc(50% + var(--book-spine) / 2 + var(--book-gutter));
+  }
+  .tebyan-book-overlay > * { max-width: 100%; }
+  /* A dialog taller than the window scrolls inside its page instead of losing its
+     top edge (row overlays: centred while it fits, from the top once it does not). */
+  .tebyan-book-overlay:not(.flex-col) { align-items: flex-start; overflow-y: auto; padding-block: 3.5rem 1rem; }
+  .tebyan-book-overlay:not(.flex-col) > * { margin-block: auto; }
+
+  /* Page help popover / sheet stays on the left page, never across the fold. */
+  .tebyan-page-help-popup { width: min(340px, calc(var(--book-page) - 1rem)); }
+  :root { --tebyan-help-sheet-right: calc(50% + var(--book-spine) / 2 + 12px); }
+}
+
+/* A page of the spread is phone-wide, so screens laid out for the full window
+   fall back to their phone arrangement inside it: rows that open up at sm/md
+   (640/768) stack again, and fixed md widths fill the page. */
+@media (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
+  .tebyan-book-main .sm\:flex-row { flex-direction: column; }
+  .tebyan-book-main .sm\:w-auto { width: 100%; }
+  .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 840px) and (max-width: 1000px) and (min-height: 520px) and (min-aspect-ratio: 3/2) {
+  .tebyan-book-main :is(.sm\:flex-row, .md\:flex-row) { flex-direction: column; }
+  .tebyan-book-main :is(.sm\:w-auto, .md\:w-auto, .md\:w-64) { width: 100%; }
+  .tebyan-book-main :is(.sm\:grid-cols-3, .sm\:grid-cols-4, .md\:grid-cols-3, .md\:grid-cols-4, .md\:grid-cols-5) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* dialogs on a page (command palette modes) keep their phone column */
+  .tebyan-book-overlay .md\:grid-cols-3 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The facing page itself: an editorial page on the shared paper — no card, no glass. */
+.tebyan-book-aside__inner {
+  padding: 0.75rem 1.25rem 1.5rem;
+  text-align: start;
+}
+.tebyan-book-kicker {
+  margin-bottom: 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-lilac);
+}
+.tebyan-book-service__head { display: flex; align-items: center; gap: 0.85rem; }
+.tebyan-book-service__icon {
+  display: flex;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  border: 1px solid rgba(142, 122, 174, 0.14);
+  background: var(--tb-c-f4f0f8);
+  color: var(--tb-lilac-deep);
+}
+.tebyan-book-service__icon svg { width: 1.35rem; height: 1.35rem; }
+.tebyan-book-service__name {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-navy);
+}
+.tebyan-book-service__brand { font-size: 0.8rem; font-weight: 700; color: var(--color-lilac); }
+.tebyan-book-service__desc {
+  margin-top: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.85;
+  color: var(--color-ink-soft);
+}
+.tebyan-book-help {
+  position: relative;
+  margin-top: 1.4rem;
+  padding-top: 1.4rem;
+}
+.tebyan-book-help::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 3.5rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(184, 140, 50, 0.65), rgba(184, 140, 50, 0.15));
+}
+.tebyan-book-help__intro {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.85;
+  color: var(--color-ink-mute);
+}
+.tebyan-book-steps { margin-top: 0.9rem; display: grid; gap: 0.7rem; }
+.tebyan-book-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  line-height: 1.75;
+  color: var(--color-ink-soft);
+}
+.tebyan-book-steps__num {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  background: var(--color-lilac-mist);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-lilac);
+}
+.tebyan-book-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(184, 140, 50, 0.18);
+  background: rgba(250, 246, 236, 0.7);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.7;
+  color: var(--color-lilac-deep);
+}
+.tebyan-book-tip svg { width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 0.2rem; color: #b98a2c; }
+.tebyan-book-index { margin-top: 1.6rem; }
+.tebyan-book-kicker + .tebyan-book-index { margin-top: 0; }
+.tebyan-book-index__title {
+  margin-bottom: 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-navy);
+}
+.tebyan-book-index ul { border-top: 1px solid rgba(143, 169, 199, 0.18); }
+.tebyan-book-index li { border-bottom: 1px solid rgba(143, 169, 199, 0.18); }
+.tebyan-book-link {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-inline: 0.15rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  text-align: start;
+  transition: color 150ms ease;
+}
+.tebyan-book-link:hover { color: var(--color-lilac); }
+.tebyan-book-link:focus-visible { outline: 2px solid var(--tb-lilac-deep); outline-offset: 2px; border-radius: 6px; }
+/* Portrait book: the demo badge keeps its icon only, as on phones, so the header
+   actions fit their page. */
+@media (min-width: 640px) and (max-width: 760px) and (min-height: 520px) {
+  .tebyan-header-actions [role="status"] > span { display: none; }
+}
+.tebyan-book-arrow { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-lilac-soft); }
+
+/* ==========================================================================
+   Laptop posture — wide and short (Duo half-folded like a laptop ~951x350 and
+   ~600x350; the folded Duo on its side ~594x368; phones in landscape): the page
+   keeps the top of the window and the controls move to a bar at the bottom,
+   like a keyboard deck. The bar never covers content: the page ends with a
+   spacer the height of the bar. Decided by size, not by device.
+   ========================================================================== */
+@media (min-width: 560px) and (max-height: 420px) {
+  /* The bar. `transform: none` because the hide-on-scroll animation writes an
+     inline translateY(-100px), which would lift a bottom bar into the page. The
+     paddings replace the short-window header paddings above (same !important). */
+  header.fixed.tebyan-app-header {
+    top: auto;
+    bottom: 0;
+    transform: none !important;
+    align-items: flex-end;
+    padding-top: 0.5rem !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 0.5rem) !important;
+    background: linear-gradient(0deg, rgba(251, 251, 253, 0.99) 0%, rgba(251, 251, 253, 0.96) 70%, rgba(251, 251, 253, 0) 100%) !important;
+  }
+  .tebyan-app-header::after { top: 0; bottom: auto; }
+  /* The page starts at the top edge (the header used to sit there). */
+  /* [class*=] lifts specificity above the per-route rules (.tebyan-route-home…). */
+  html body main.tebyan-route-shell[class*="tebyan-route-"] {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem) !important;
+    padding-bottom: 0 !important;
+  }
+  .tebyan-book::after {
+    content: "";
+    display: block;
+    flex-shrink: 0;
+    height: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+  }
+  /* Back/Help keep their corner of the deck; the account actions step inward so
+     the two pills sit side by side in the bar instead of on top of each other. */
+  body:has(.tebyan-page-controls) .tebyan-header-actions { margin-inline-end: 10.5rem; }
+}
+/* Typing on the deck: a focused field scrolls clear of the bar, and the bar steps
+   aside while the keyboard is up (as the Back/Help controls already do on phones). */
+@media (min-width: 560px) and (max-height: 420px) {
+  main.tebyan-route-shell { scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.75rem); }
+  body:has(:is(input:not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]):focus) :is(header.fixed.tebyan-app-header, .tebyan-page-controls) {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+/* Narrow decks (~600): icons only, as on phones, so both pills fit beside the brand. */
+@media (min-width: 560px) and (max-width: 759px) and (max-height: 420px) {
+  .tebyan-page-controls .tebyan-ctl-label,
+  .tebyan-header-actions [role="status"] > span { display: none; }
+  body:has(.tebyan-page-controls) .tebyan-header-actions { margin-inline-end: 6.5rem; }
 }

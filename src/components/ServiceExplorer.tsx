@@ -156,6 +156,9 @@ export const ServiceExplorer: React.FC<Props> = ({
       className="tebyan-service-explorer mx-auto w-full max-w-6xl px-4 pb-28 md:px-8"
       dir={isArabic ? "rtl" : "ltr"}
     >
+      {/* tebyan-service-lead: display: contents everywhere except the Duo's inner
+          screen, where it holds the first page of the spread (src/index.css). */}
+      <div className="tebyan-service-lead">
       <header className="tebyan-service-hero mx-auto max-w-3xl pt-2 text-center md:pt-6">
         <h1 className="tebyan-service-title font-serif text-[1.9rem] font-bold text-navy md:text-5xl">
           {isArabic ? "كل الخدمات" : "All services"}
@@ -216,6 +219,8 @@ export const ServiceExplorer: React.FC<Props> = ({
           })}
         </div>
       )}
+
+      </div>
 
       <div className="tebyan-service-directory mx-auto mt-7 max-w-5xl md:mt-9">
         {isSearching ? (
