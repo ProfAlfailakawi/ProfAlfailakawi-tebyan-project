@@ -7,6 +7,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth } from '../lib/firebase';
+import { isAppleNativeShell } from '../lib/appleNativeShell';
 import { LogIn, Mail, Lock, UserPlus, AlertCircle, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -17,6 +18,8 @@ export default function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  // App Store 4.8: no Google sign-in inside the iOS app; email + password stays.
+  const hideThirdPartySignIn = isAppleNativeShell();
 
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -183,6 +186,8 @@ export default function Login() {
             </button>
           </form>
 
+          {!hideThirdPartySignIn && (
+          <>
           <div className="relative flex items-center gap-4 py-1">
             <div className="h-px bg-zinc-100 flex-1"></div>
             <span className="text-ink-mute font-bold text-sm">أو</span>
@@ -204,6 +209,8 @@ export default function Login() {
             </button>
 
           </div>
+          </>
+          )}
 
           <div className="text-center pb-2">
             <button 
