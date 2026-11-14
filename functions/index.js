@@ -214,7 +214,12 @@ app.get(["/health", "/api/health"], (req, res) => {
 
 // Self-service account deletion (App Store 5.1.1(v)): verifies the caller's ID
 // token and deletes only that uid. See functions/accountDeletion.js.
-app.delete("/api/account", createDeleteAccountHandler({
+app.delete("/api/account", (req, res, next) => {
+    if (rateLimited(req)) {
+        return res.status(429).json({ error: "RATE_LIMITED" });
+    }
+    next();
+}, createDeleteAccountHandler({
     getServices: async () => {
         try {
             const { getApps, initializeApp } = require("firebase-admin/app");

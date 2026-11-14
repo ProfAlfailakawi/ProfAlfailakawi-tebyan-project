@@ -923,7 +923,14 @@ async function startServer() {
     };
     // Self-service account deletion (App Store 5.1.1(v)): verifies the caller's
     // ID token and deletes only that uid. See functions/accountDeletion.js.
-    app.delete("/api/account", createDeleteAccountHandler({
+    const accountRateLimit = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 10,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: "RATE_LIMITED" }
+    });
+    app.delete("/api/account", accountRateLimit, createDeleteAccountHandler({
         getServices: async () => {
             const admin = await getAdmin();
             if (!admin) return null;
