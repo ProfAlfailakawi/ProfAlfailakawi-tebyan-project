@@ -1879,7 +1879,8 @@ const AppContent: React.FC = () => {
               bottom: 0,
               zIndex: 99999,
             }}
-            className="tebyan-book-overlay flex items-center justify-center p-4 bg-zinc-900/40"
+            className="tebyan-book-overlay tebyan-keepout-overlay flex items-center justify-center p-4 bg-zinc-900/40"
+            dir={language === "ar" ? "rtl" : "ltr"}
             onClick={() => setShowLogin(false)}
           >
             <div

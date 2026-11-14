@@ -156,6 +156,23 @@ const head = (title, description, url) => `<!doctype html>
     .wrap:has(>.grid)>*{grid-column:1}
     .wrap>.grid{grid-column:3;grid-row:1/span 10;margin-top:0;grid-template-columns:1fr}
   }
+  /* The Duo's inner screen (the landscape book above, or the portrait column 640-720px
+     wide): the system widget floats over the physical top-right corner, about 116px wide
+     and down to about 268px from the top (measured on the native app; the box is not
+     documented by the system). Nothing readable or tappable sits in it: the brand steps
+     inward and the first lines flow beside it (an empty float: 268px minus the ~56px
+     header and the 34px top padding of .wrap). Same box as the app shell. */
+  @media screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape),screen and (min-width:640px) and (max-width:720px) and (min-height:520px) and (max-height:960px) and (orientation:portrait){
+    .top-in{padding-right:132px}
+    .wrap::before{content:"";float:right;width:116px;height:178px}
+  }
+  /* The library page is a two-column grid in the landscape book (title on the first page,
+     questions on the facing one): a float cannot sit in a grid, so its title block keeps
+     one column (132px) clear of the box instead. */
+  @media screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape){
+    .wrap:has(>.grid)::before{display:none}
+    .wrap:has(>.grid)>:not(.grid){padding-right:132px}
+  }
 </style>
 </head>
 <body>
