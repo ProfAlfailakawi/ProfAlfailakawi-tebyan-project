@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const crypto = require("crypto");
+const rateLimit = require("express-rate-limit");
 const { createDeleteAccountHandler } = require("./accountDeletion");
 
 const app = express();
@@ -214,12 +215,17 @@ app.get(["/health", "/api/health"], (req, res) => {
 
 // Self-service account deletion (App Store 5.1.1(v)): verifies the caller's ID
 // token and deletes only that uid. See functions/accountDeletion.js.
-app.delete("/api/account", (req, res, next) => {
-    if (rateLimited(req)) {
-        return res.status(429).json({ error: "RATE_LIMITED" });
-    }
-    next();
-}, createDeleteAccountHandler({
+const accountRateLimit = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    // Behind Hosting/Cloud Run req.ip is the proxy; key on the client address like rateLimited().
+    keyGenerator: (req) => String(req.headers["x-forwarded-for"] || req.ip || "unknown").split(",")[0].trim(),
+    validate: false,
+    message: { error: "RATE_LIMITED" },
+});
+app.delete("/api/account", accountRateLimit, createDeleteAccountHandler({
     getServices: async () => {
         try {
             const { getApps, initializeApp } = require("firebase-admin/app");
