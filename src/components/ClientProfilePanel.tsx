@@ -445,7 +445,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
             style={{ direction: language === 'ar' ? 'rtl' : 'ltr', pointerEvents: 'auto' }}
           >
             {/* Header Area */}
-            <div className="p-6 border-b bg-[radial-gradient(circle_at_top_right,rgba(142,122,174,0.14),transparent_35%),linear-gradient(135deg,#FAF9F6,#F0F4F8)] text-zinc-900 transition-colors duration-500 flex flex-col shrink-0 relative overflow-hidden">
+            <div className="tebyan-keepout-pad p-6 border-b bg-[radial-gradient(circle_at_top_right,rgba(142,122,174,0.14),transparent_35%),linear-gradient(135deg,#FAF9F6,#F0F4F8)] text-zinc-900 transition-colors duration-500 flex flex-col shrink-0 relative overflow-hidden">
               <div className="relative z-10">
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center gap-2">
