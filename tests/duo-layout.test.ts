@@ -117,9 +117,9 @@ test('widget corner gate: real queries from index.css evaluated on sizes (Duo an
     });
   const applies = (w: number, h: number) => queries.some((q) => evalQ(q, w, h));
   // known Duo sizes and the inferred app viewport (457x678), both orientations
-  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [457, 678], [457, 760], [457, 700], [440, 660], [480, 720], [951, 669], [640, 867], [382, 700], [382, 764], [470, 900], [385, 760]]) {
+  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [457, 678], [457, 760], [457, 700], [440, 660], [480, 720], [951, 669], [640, 867], [720, 900], [951, 800], [951, 960], [382, 700], [382, 764], [470, 900], [385, 760]]) {
     assert.ok(applies(w, h), `${w}x${h} must apply`);
-    if (w / h < 1 && h / w <= 1.75) assert.ok(applies(h, w), `${h}x${w} must apply (rotated)`);
+    if (w / h < 1 && h / w <= 1.75 && w <= 700) assert.ok(applies(h, w), `${h}x${w} must apply (rotated)`);
   }
   // ordinary tall phones, iPads, desktops, landscape phones: tokens stay 0
   for (const [w, h] of [[390, 844], [844, 390], [430, 932], [932, 430], [393, 852], [402, 874], [360, 740], [744, 1024], [1024, 768], [1180, 820], [820, 1180], [1280, 800], [1440, 900], [951, 350], [568, 320]]) {

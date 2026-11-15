@@ -6184,12 +6184,14 @@ p { text-wrap: pretty; }
 
    Who gets it: a generic size gate, never exact widths, never display-mode / UA / hinge
    (Safari exposes no segments by default and layout never depends on them):
-     portrait  : width <= 700px, height >= 360px, height/width <= 2.0. Covers 457x678 (the
-                 inferred app viewport), 382x580, 470x780, 669x867 and taller app viewports
-                 up to 2.0 (382x764); leaves 390x844, 393x852, 430x932 (aspect > 2.0) alone.
+     portrait  : width <= 720px, height >= 360px, height/width <= 2.0. Covers 457x678 (the
+                 inferred app viewport), 382x580, 470x780, 669x867, 720x900 (the old portrait
+                 book) and taller app viewports up to 2.0 (382x764); leaves 390x844, 393x852, 430x932 (aspect > 2.0) alone.
                  Smaller older phones (375x667, 320x568) fall inside it: the safe default.
-     landscape : 520–1000px wide, >= 300px tall, width/height 1.25–1.75 (594x368, 678x457,
-                 780x470, 867x669, 951x585). iPad (>= 1024) and landscape phones never match.
+     wide band : 540–1000px wide, 300–960px tall, width/height 0.9–1.75 (594x368, 678x457, 780x470,
+                 867x669, 951x585, 951x669, 951x800, 951x960: the old landscape book 721–1000 x
+                 520–960 stays protected). iPad (height > 960 or width >= 1024) and landscape
+                 phones (aspect > 1.75) never match.
    The landscape box position is NOT verified on a device. No display-mode gate.
    ========================================================================== */
 :root {
@@ -6197,8 +6199,8 @@ p { text-wrap: pretty; }
   --duo-widget-gap: 0px;
   --duo-widget-h: 0px;
 }
-@media screen and (orientation: portrait) and (max-width: 700px) and (min-height: 360px) and (min-aspect-ratio: 1/2),
-       screen and (orientation: landscape) and (min-width: 520px) and (max-width: 1000px) and (min-height: 300px) and (min-aspect-ratio: 5/4) and (max-aspect-ratio: 7/4) {
+@media screen and (orientation: portrait) and (max-width: 720px) and (min-height: 360px) and (min-aspect-ratio: 1/2),
+       screen and (min-width: 540px) and (max-width: 1000px) and (min-height: 300px) and (max-height: 960px) and (min-aspect-ratio: 9/10) and (max-aspect-ratio: 7/4) {
   :root {
     --duo-widget-w: 96px;
     --duo-widget-gap: 8px;
