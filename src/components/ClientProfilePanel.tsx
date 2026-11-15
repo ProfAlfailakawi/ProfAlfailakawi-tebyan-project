@@ -483,7 +483,7 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
             </div>
 
             {/* Tabs */}
-            <div className="grid grid-cols-3 px-2 pt-2 gap-1 border-b border-zinc-100 shrink-0">
+            <div className="tebyan-keepout-pad grid grid-cols-3 px-2 pt-2 gap-1 border-b border-zinc-100 shrink-0">
               <button 
                 onClick={() => setActiveTab('overview')} 
                 className={`py-3 text-xs font-bold border-b-2 transition-colors ${activeTab === 'overview' ? 'border-[color:var(--tb-lilac-soft)] text-[color:var(--tb-lilac-deep)]' : 'border-transparent text-ink-mute hover:text-[color:var(--tb-lilac-deep)] hover:bg-[color:var(--tb-lilac-bg)]'} rounded-t-lg`}

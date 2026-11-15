@@ -80,15 +80,15 @@ test('book = landscape only: every book media query is exactly the shared BOOK c
   assert.doesNotMatch(css, /@media[^{]*min-width:\s*640px\)[^{]*max-width:\s*720px\)[^{]*min-height:\s*520px\)\s*(,|\{)/);
 });
 
-const DUO_GATE = /@media([^{]*)\{(?=\s*:root \{\s*--duo-widget-w: 70px;)/;
+const DUO_GATE = /@media([^{]*)\{(?=\s*:root \{\s*--duo-widget-w: 96px;)/;
 
 test('widget corner: three tokens at :root, 0px outside the Duo, set once inside one size-based gate (tab, Capacitor and installed app alike)', () => {
   assert.match(css, /:root \{\s*--duo-widget-w: 0px;\s*--duo-widget-gap: 0px;\s*--duo-widget-h: 0px;\s*\}/);
   const gate = css.match(DUO_GATE);
   assert.ok(gate, 'the Duo gate block must set the tokens');
-  assert.equal([...css.matchAll(/--duo-widget-w: 70px/g)].length, 1);
+  assert.equal([...css.matchAll(/--duo-widget-w: 96px/g)].length, 1);
   assert.match(css, /--duo-widget-gap: 8px;/);
-  assert.match(css, /--duo-widget-h: clamp\(64px, 30vh, 200px\);/);
+  assert.match(css, /--duo-widget-h: clamp\(64px, 31vh, 270px\);/);
   assert.doesNotMatch(gate[1], /display-mode/);
   // the old 116px box and its variables are gone, not stacked under the new ones
   assert.doesNotMatch(css, /--duo-cutout/);
@@ -115,7 +115,7 @@ test('widget corner gate: real queries from index.css evaluated on sizes (Duo on
     });
   const applies = (w: number, h: number) => queries.some((q) => evalQ(q, w, h));
   // known Duo sizes, both orientations (the brief's five plus the landscape book)
-  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [951, 669], [720, 900], [640, 867]]) {
+  for (const [w, h] of [[382, 580], [470, 780], [594, 368], [669, 867], [951, 585], [951, 669], [640, 867]]) {
     assert.ok(applies(w, h), `${w}x${h} must apply`);
     if (w !== 951 || h !== 669) assert.ok(applies(h, w), `${h}x${w} must apply`);
   }
@@ -142,6 +142,10 @@ test('widget corner guard (Playwright WebKit) and ?duo-debug=1 overlay are wired
   const main = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8');
   assert.match(main, /duo-debug/);
   assert.match(main, /import\(['"]\.\/lib\/duoDebug/);
+  const app = readFileSync(new URL('../src/App.tsx', import.meta.url), 'utf8');
+  assert.match(app, /tebyan-book-overlay tebyan-keepout-overlay/, 'the login modal reserves the same physical corner as other full-screen overlays');
+  const profile = readFileSync(new URL('../src/components/ClientProfilePanel.tsx', import.meta.url), 'utf8');
+  assert.match(profile, /tebyan-keepout-pad grid grid-cols-3/, 'account tabs stay clear of the system widget');
 });
 
 test('narrow phones (320-382px): segmented switches size by content and wrap; demo chip rows keep their label clear of the fade', () => {

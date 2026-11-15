@@ -6165,7 +6165,7 @@ p { text-wrap: pretty; }
    battery/Wi-Fi) over the PHYSICAL top-right corner of the screen. It is not part
    of the safe area and no env() value reports it, so the page reserves the box
    itself: ~64pt wide + ~6pt from the edge, from the top edge down to ~30% of the
-   height (measured on a 1371x2034 capture: x 82%–95%, y 3%–30%, capped at 200pt).
+   height (measured on a 1371x2034 capture: x 82%–95%, y 3%–30%, capped at 270pt).
    In RTL the physical right is the START side, the worst corner: logo, title, first
    tab and first list item all begin there. Everything here is PHYSICAL
    (left/right/padding-right, never inline-end, which flips with dir).
@@ -6173,7 +6173,7 @@ p { text-wrap: pretty; }
    One source of truth: three tokens, 0 everywhere else so no other device changes.
      --duo-widget-w    box width incl. the gap to the edge
      --duo-widget-gap  breathing room between content and the box
-     --duo-widget-h    box height = clamp(64px, 30vh, 200px)
+     --duo-widget-h    box height = clamp(64px, 31vh, 270px)
    Who consumes them: the top bar (header column), the page top (route shell), side
    panels / sheets (.tebyan-keepout-pad), right-anchored fixed controls
    (.tebyan-keepout-fixed) and full-screen dialogs (.tebyan-book-overlay). Backgrounds,
@@ -6206,9 +6206,9 @@ p { text-wrap: pretty; }
        screen and (orientation: portrait) and (min-width: 466px) and (max-width: 474px) and (min-aspect-ratio: 9/20),
        screen and (orientation: landscape) and (min-width: 560px) and (max-width: 1000px) and (min-aspect-ratio: 5/4) and (max-aspect-ratio: 7/4) {
   :root {
-    --duo-widget-w: 70px;
+    --duo-widget-w: 96px;
     --duo-widget-gap: 8px;
-    --duo-widget-h: clamp(64px, 30vh, 200px);
+    --duo-widget-h: clamp(64px, 31vh, 270px);
     /* the landscape book's pages start under the box */
     --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap));
   }

@@ -5,8 +5,8 @@
  * لا تغيّر شيئاً في الصفحة ولا تكتب أي بيانات.
  */
 
-const W = 70; // نفس --duo-widget-w
-const H = 'clamp(64px, 30vh, 200px)'; // نفس --duo-widget-h
+const W = 96; // نفس --duo-widget-w
+const H = 'clamp(64px, 31vh, 270px)'; // نفس --duo-widget-h
 
 function envPx(side: 'top' | 'right' | 'bottom' | 'left'): string {
   const probe = document.createElement('div');
@@ -44,7 +44,7 @@ export function mountDuoDebug(): void {
     panel.textContent = [
       `widget zone active : ${w > 0 ? 'YES' : 'NO (tokens are 0 on this screen)'}`,
       `--duo-widget-w/gap : ${v('--duo-widget-w')} / ${v('--duo-widget-gap')}`,
-      `--duo-widget-h     : ${v('--duo-widget-h')} (frame ${Math.round(Math.min(200, Math.max(64, window.innerHeight * 0.3)))}px)`,
+      `--duo-widget-h     : ${v('--duo-widget-h')} (frame ${Math.round(Math.min(270, Math.max(64, window.innerHeight * 0.31)))}px)`,
       `safe-area t/r/b/l  : ${envPx('top')} ${envPx('right')} ${envPx('bottom')} ${envPx('left')}`,
       `inner              : ${window.innerWidth} x ${window.innerHeight}`,
       `visualViewport     : ${vv ? `${Math.round(vv.width)} x ${Math.round(vv.height)} @ ${vv.scale.toFixed(2)}x` : 'n/a'}`,

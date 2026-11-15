@@ -1,8 +1,8 @@
 /* لقطات «قبل/بعد» لركن الودجت (Playwright WebKit، محاكاة مقاسات لا جهاز).
  *   BASE=http://127.0.0.1:5183 PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node docs/iphone-duo-widget-corner/shots.cjs before|after
- * يرسم إطار المنطقة (70px × clamp(64px,30vh,200px)) بالأحمر فوق الصفحة ليظهر ما يقع داخله.
+ * يرسم إطار المنطقة (96px × clamp(64px,31vh,270px)) بالأحمر فوق الصفحة ليظهر ما يقع داخله.
  */
-const { webkit } = require('playwright');
+const { webkit } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const path = require('node:path');
 
 const BASE = process.env.BASE || 'http://127.0.0.1:5183';
@@ -27,7 +27,7 @@ const SIZES = [[382, 580], [669, 867], [951, 585]];
       await page.evaluate(() => {
         const vh = window.innerHeight;
         const d = document.createElement('div');
-        d.style.cssText = `position:fixed;top:0;left:${document.documentElement.clientWidth - 70}px;width:70px;height:${Math.min(200, Math.max(64, 0.3 * vh))}px;border:2px solid rgba(220,0,0,.9);background:rgba(220,0,0,.12);pointer-events:none;z-index:2147483647;box-sizing:border-box`;
+        d.style.cssText = `position:fixed;top:0;left:${document.documentElement.clientWidth - 96}px;width:96px;height:${Math.min(270, Math.max(64, 0.31 * vh))}px;border:2px solid rgba(220,0,0,.9);background:rgba(220,0,0,.12);pointer-events:none;z-index:2147483647;box-sizing:border-box`;
         document.body.appendChild(d);
       });
       await page.screenshot({ path: path.join(__dirname, name === "home" ? `${tag}-${w}x${h}.png` : `${tag}-${name}-${w}x${h}.png`) });

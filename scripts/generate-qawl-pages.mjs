@@ -88,8 +88,8 @@ const head = (title, description, url) => `<!doctype html>
   @media(max-width:480px){.top-in small{display:none}.top-in{padding:10px 16px}}
   .top-in .app{margin-inline-start:auto;font-size:.85rem;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px}
   .wrap{max-width:760px;margin:0 auto;padding:34px 22px 90px}
-  /* iPhone Duo: ركن ودجت النظام أعلى اليمين الفيزيائي (70px + 8px، حتى clamp(64px,30vh,200px)) — نفس بوابة src/index.css */
-  @media screen and (orientation:portrait) and (max-width:700px) and (min-aspect-ratio:4/7),screen and (orientation:portrait) and (min-width:380px) and (max-width:386px) and (min-aspect-ratio:9/20),screen and (orientation:portrait) and (min-width:466px) and (max-width:474px) and (min-aspect-ratio:9/20),screen and (orientation:landscape) and (min-width:560px) and (max-width:1000px) and (min-aspect-ratio:5/4) and (max-aspect-ratio:7/4){.top-in{padding-right:78px}.wrap{padding-top:calc(clamp(64px,30vh,200px) - 44px)}}
+  /* iPhone Duo: ركن ودجت النظام أعلى اليمين الفيزيائي (96px + 8px، حتى clamp(64px,31vh,270px)) — نفس بوابة src/index.css */
+  @media screen and (orientation:portrait) and (max-width:700px) and (min-aspect-ratio:4/7),screen and (orientation:portrait) and (min-width:380px) and (max-width:386px) and (min-aspect-ratio:9/20),screen and (orientation:portrait) and (min-width:466px) and (max-width:474px) and (min-aspect-ratio:9/20),screen and (orientation:landscape) and (min-width:560px) and (max-width:1000px) and (min-aspect-ratio:5/4) and (max-aspect-ratio:7/4){.top-in{padding-right:104px}.wrap{padding-top:calc(clamp(64px,31vh,270px) - 44px)}}
   .crumb{font-size:.8rem;color:var(--muted);margin-bottom:20px}
   h1{font-size:clamp(1.5rem,4.5vw,2.15rem);margin-bottom:12px}
   .meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
@@ -159,21 +159,21 @@ const head = (title, description, url) => `<!doctype html>
     .wrap>.grid{grid-column:3;grid-row:1/span 10;margin-top:0;grid-template-columns:1fr}
   }
   /* The Duo's inner screen (the landscape book above, or the portrait column 640-720px
-     wide): the system widget floats over the physical top-right corner, about 116px wide
-     and down to about 268px from the top (measured on the native app; the box is not
+     wide): the system widget floats over the physical top-right corner, about 104px wide
+     and down to about 270px from the top (measured on the native app; the box is not
      documented by the system). Nothing readable or tappable sits in it: the brand steps
-     inward and the first lines flow beside it (an empty float: 268px minus the ~56px
+     inward and the first lines flow beside it (an empty float: 270px minus the ~56px
      header and the 34px top padding of .wrap). Same box as the app shell. */
   @media screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape),screen and (min-width:640px) and (max-width:720px) and (min-height:520px) and (max-height:960px) and (orientation:portrait){
-    .top-in{padding-right:132px}
-    .wrap::before{content:"";float:right;width:116px;height:178px}
+    .top-in{padding-right:120px}
+    .wrap::before{content:"";float:right;width:104px;height:214px}
   }
   /* The library page is a two-column grid in the landscape book (title on the first page,
      questions on the facing one): a float cannot sit in a grid, so its title block keeps
-     one column (132px) clear of the box instead. */
+     one column (120px) clear of the box instead. */
   @media screen and (min-width:721px) and (max-width:1000px) and (min-height:520px) and (max-height:960px) and (orientation:landscape){
     .wrap:has(>.grid)::before{display:none}
-    .wrap:has(>.grid)>:not(.grid){padding-right:132px}
+    .wrap:has(>.grid)>:not(.grid){padding-right:120px}
   }
 </style>
 </head>
