@@ -15,8 +15,12 @@ window.addEventListener('beforeinstallprompt', (e) => {
   deferredPromptGlobal = e;
 });
 
+// Inside the iOS app (Capacitor WKWebView) navigator.standalone is undefined and display-mode is
+// not standalone, so the install button used to show inside the installed app.
+const isCapacitorNative = () => !!(window as any).Capacitor?.isNativePlatform?.();
+
 const isStandaloneMode = () => {
-  return window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+  return isCapacitorNative() || window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
 };
 
 const currentPlatform = () =>

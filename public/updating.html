@@ -61,6 +61,8 @@ body{
 @media (min-width:760px){ .folio{grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:52px} }
 /* الحواف الجانبية تحترم القطع في الوضع العرضي (الكاميرا/الأشرطة)، لا 20px ثابتة. */
 body{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+/* iPhone Duo: ركن ودجت النظام أعلى اليمين الفيزيائي (70px + 8px، حتى clamp(64px,30vh,200px)) — نفس بوابة src/index.css */
+  @media screen and (orientation:portrait) and (max-width:700px) and (min-aspect-ratio:4/7),screen and (orientation:portrait) and (min-width:380px) and (max-width:386px) and (min-aspect-ratio:9/20),screen and (orientation:portrait) and (min-width:466px) and (max-width:474px) and (min-aspect-ratio:9/20),screen and (orientation:landscape) and (min-width:560px) and (max-width:1000px) and (min-aspect-ratio:5/4) and (max-aspect-ratio:7/4){body{padding-right:78px;padding-top:calc(clamp(64px,30vh,200px) + 8px)}}
 /* نوافذ عريضة قصيرة (iPhone Duo مطويًا عرضيًا ~594x368، هاتف عرضي): الكتاب والحاشية
    جنبًا إلى جنب، فيبقى العنوان وزرّ «افتح الصفحة الآن» في الشاشة الأولى بدل أن يملأها الكتاب. */
 @media (max-height:500px) and (min-width:540px){

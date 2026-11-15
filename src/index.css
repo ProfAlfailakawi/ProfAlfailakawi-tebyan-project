@@ -6160,73 +6160,80 @@ p { text-wrap: pretty; }
 }
 
 /* ==========================================================================
-   Duo widget keep-out. The Duo's inner screen has a system status widget (location
-   arrow, clock, Wi-Fi ring) floating over the physical top-right corner. It is
-   system-owned and its box is only measured, not documented. Measured on the
-   native iOS app, where the page starts at the very top of the screen (the app
-   loads this site with contentInset "never"): about 80px wide, 30-110px in from
-   the right edge, from y~92 down to y~250-265 (CSS px). In a Safari tab the
-   toolbar pushes the page down, so less of it reaches the page. One generous box
-   covers both: --duo-cutout-w x --duo-cutout-reach from the physical top-right
-   (--duo-cutout-h is the header band, the top part of it). Nothing readable or
-   tappable may sit inside it. Backgrounds and heroes still run full-bleed behind it.
-   The box belongs to the physical right (the start side in Arabic) and, in the
-   book, to the right-hand page only. Two inner-screen postures: the landscape
-   book and the plain portrait column (~669x867). It is not tied to the installed
-   app: it applies in a browser tab, in a home-screen app and in the native app
-   alike. Ordinary phones, iPads and desktops never match: the folded outer screen
-   (~367x740) cannot be told from an iPhone, so it is deliberately left alone.
-   ========================================================================== */
-/* --duo-cutout-w/h/reach are deliberately undefined outside the two inner-screen
-   bands below (every use of them sits inside that block). */
-@media screen and (min-width: 721px) and (max-width: 1000px) and (min-height: 520px) and (max-height: 960px) and (orientation: landscape),
-       screen and (min-width: 640px) and (max-width: 720px) and (min-height: 520px) and (max-height: 960px) and (orientation: portrait) {
-  :root { --duo-cutout-w: 116px; --duo-cutout-h: 116px; --duo-cutout-reach: 268px; }
+   Duo widget corner — ركن ودجت النظام (iPhone Duo).
+   The Duo draws a system widget (torch capsule, account/location icon, clock,
+   battery/Wi-Fi) over the PHYSICAL top-right corner of the screen. It is not part
+   of the safe area and no env() value reports it, so the page reserves the box
+   itself: ~64pt wide + ~6pt from the edge, from the top edge down to ~30% of the
+   height (measured on a 1371x2034 capture: x 82%–95%, y 3%–30%, capped at 270pt).
+   In RTL the physical right is the START side, the worst corner: logo, title, first
+   tab and first list item all begin there. Everything here is PHYSICAL
+   (left/right/padding-right, never inline-end, which flips with dir).
 
-  /* The top bar: brand and Services step inward; the bar's own gradient stays full-bleed. */
-  header.fixed.tebyan-app-header { padding-right: calc(var(--duo-cutout-w) + 0.75rem) !important; }
-  /* The page starts below the header band (per-route paddings are !important, so is this). */
+   One source of truth: three tokens, 0 everywhere else so no other device changes.
+     --duo-widget-w    box width incl. the gap to the edge
+     --duo-widget-gap  breathing room between content and the box
+     --duo-widget-h    box height = clamp(64px, 31vh, 270px)
+   Who consumes them: the top bar (header column), the page top (route shell), side
+   panels / sheets (.tebyan-keepout-pad), right-anchored fixed controls
+   (.tebyan-keepout-fixed) and full-screen dialogs (.tebyan-book-overlay). Backgrounds,
+   gradients and glass keep running full-bleed underneath.
+
+   Who gets it (size based, because Safari exposes no hinge/segments by default and
+   layout never depends on viewport-segments or device-posture):
+     portrait  : (a) width <= 700px and height/width <= 1.75: the Duo's outer screen
+                 (382x580, 470x780) and the opened portrait book (669x867); excludes
+                 ordinary phones (390x844, 360x740, 320x568, 375x667), iPad (width >= 744)
+                 and desktop. (b) The installed app (Capacitor, contentInset never) has no
+                 browser toolbars, so its viewport is TALLER than in Safari. Height gates
+                 would lose it, so the two known outer-screen widths (380-386 and 466-474px)
+                 match up to height/width 2.22 (382x844, 470x900). Real iPhones are 375/390+,
+                 so they do not match; a 384px-wide Android phone taller than 2.22 does not either.
+     landscape : 560–1000px wide with width/height between 1.25 and 1.75 (594x368,
+                 951x585, 951x669, 867x669, 780x470). iPad (width >= 1024) and
+                 ordinary landscape phones (aspect >= 1.8) never match.
+   The landscape box position is NOT verified on a real device: the same physical
+   top-right box is assumed. No display-mode gate: Safari tab, Capacitor and the
+   installed PWA all get it.
+   ========================================================================== */
+:root {
+  --duo-widget-w: 0px;
+  --duo-widget-gap: 0px;
+  --duo-widget-h: 0px;
+}
+@media screen and (orientation: portrait) and (max-width: 700px) and (min-aspect-ratio: 4/7),
+       screen and (orientation: portrait) and (min-width: 380px) and (max-width: 386px) and (min-aspect-ratio: 9/20),
+       screen and (orientation: portrait) and (min-width: 466px) and (max-width: 474px) and (min-aspect-ratio: 9/20),
+       screen and (orientation: landscape) and (min-width: 560px) and (max-width: 1000px) and (min-aspect-ratio: 5/4) and (max-aspect-ratio: 7/4) {
+  :root {
+    --duo-widget-w: 96px;
+    --duo-widget-gap: 8px;
+    --duo-widget-h: clamp(64px, 31vh, 270px);
+    /* the landscape book's pages start under the box */
+    --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap));
+  }
+
+  /* Top bar: the first column (physical right) is the box; brand, Services and
+     the action pills step inward. The bar's own gradient stays full-bleed.
+     This replaces (does not stack on) the old keep-out rule: half a dozen header rules
+     set padding-inline with !important, so only an !important physical padding-right
+     of the same specificity, last in the file, can win. */
+  header.fixed.tebyan-app-header { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)) !important; }
+  /* The page starts below the box (per-route paddings are !important, so is this). */
   html body main.tebyan-route-shell[class*="tebyan-route-"] {
-    padding-top: calc(env(safe-area-inset-top, 0px) + var(--duo-cutout-h) + 0.25rem) !important;
+    padding-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap)) !important;
   }
-  :root { --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-cutout-h) + 0.25rem); }
-  /* Below the band the content flows BESIDE the box, not under it: an empty float the
-     size of the rest of the box sits at the physical right at the start of every
-     screen. Lines of text wrap around it and full-width blocks (cards, tab rows) step
-     below it, so the heading block narrows by one column and nothing leaves a gap. */
-  .tebyan-book-main::before {
-    content: "";
-    float: right;
-    width: var(--duo-cutout-w);
-    height: max(0px, calc(var(--duo-cutout-reach) - env(safe-area-inset-top, 0px) - var(--duo-cutout-h) - 0.5rem));
-    pointer-events: none;
-  }
-  /* The home hero is a centred column. In the portrait column it already sits clear of
-     the box, so it gets no spacer. In the landscape book only the end of its headline
-     reaches the box: it starts about 50px lower there, not 144px (which would push the
-     search field off the page). */
-  .tebyan-route-home .tebyan-book-main::before,
-  .tebyan-route-admindashboard .tebyan-book-main::before { display: none; }
-  @media (orientation: landscape) {
-    .tebyan-route-home .tebyan-book-main::before,
-    .tebyan-route-admindashboard .tebyan-book-main::before {
-      display: block;
-      height: max(0px, calc(var(--duo-cutout-reach) - env(safe-area-inset-top, 0px) - var(--duo-cutout-h) - 0.5rem - 4rem));
-    }
-  }
-  /* Right-anchored fixed controls move inward; full-screen states start below the band. */
-  .tebyan-keepout-pad { padding-right: calc(var(--duo-cutout-w) + 0.5rem) !important; }
-  /* A centred dialog (command palette, sign-in) keeps to the left of the box for its
-     whole height: in the portrait column always, and in the landscape book on the
-     first page (the right-hand one in Arabic; in English that page is the left one
-     and the box falls on the facing page, so nothing moves). */
-  @media (orientation: portrait) {
-    .tebyan-keepout-overlay { padding-right: calc(var(--duo-cutout-w) + 0.5rem) !important; }
-  }
-  @media (orientation: landscape) {
-    .tebyan-keepout-overlay[dir="rtl"] { padding-right: calc(var(--duo-cutout-w) + 0.5rem) !important; }
-  }
-  .tebyan-keepout-fixed { top: calc(var(--duo-cutout-h) + 0.5rem) !important; right: 1rem !important; }
-  .tebyan-book-overlay,
-  .tebyan-book-overlay:not(.flex-col) { padding-top: var(--duo-cutout-h); }
+  /* On the narrow outer screen (382/470) the column leaves ~300px: icon-only brand so the
+     Services pill never sits on the wordmark. */
+  @media (max-width: 480px) { .tebyan-floating-nav .tebyan-brand-name { display: none; } }
+  /* Side panels and sheets that hug the right edge: header/body keep the column. */
+  .tebyan-keepout-pad { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
+  /* Fixed things that sit at the start side near the top (toasts, loading notice, the
+     Qawl Fasl back buttons at start-4 = physical right in RTL) drop below the box. The
+     back buttons already carry per-breakpoint `top` with !important, so this one must too. */
+  .tebyan-keepout-top { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)) !important; }
+  /* Right-anchored fixed controls drop below the box. */
+  .tebyan-keepout-fixed { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)); right: 1rem; }
+  /* Full-screen dialogs: the scrim runs edge to edge, the dialog centres in what is left. */
+  .tebyan-book-overlay { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
 }

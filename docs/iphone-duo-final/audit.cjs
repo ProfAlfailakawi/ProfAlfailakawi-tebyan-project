@@ -71,7 +71,7 @@ const SCREENS = [
   { id: 'onboarding', url: '/', steps: [{ event: 'tebyan_open_onboarding' }, { wait: 900 }] },
   { id: 'global-command', url: '/', steps: [{ key: 'Meta+k' }, { wait: 800 }] },
   { id: 'user-menu', url: '/', steps: [{ click: '.tebyan-action-pill > div:last-child button' }, { wait: 600 }] },
-  { id: 'login-modal', url: '/', demo: false, steps: [{ waitFor: 'button[title="تسجيل الدخول"]' }, { click: 'button[title="تسجيل الدخول"]' }, { wait: 900 }] },
+  { id: 'login-modal', url: '/', steps: [{ waitFor: 'button[title="تسجيل الدخول"]' }, { click: 'button[title="تسجيل الدخول"]' }, { wait: 900 }] },
   { id: 'offline', url: '/', offline: true },
   { id: 'oracle-result', url: '/?tab=oracle', steps: [{ fill: 'main input[type=text]', text: 'كيف أقلل وقت الشاشة؟' }, { click: '.tebyan-run-action' }, { wait: 4000 }] },
   { id: 'ask-result', url: '/?tab=ask', steps: [{ fill: 'main textarea, main input[type=text]', text: 'لماذا السماء زرقاء؟' }, { key: 'Enter' }, { wait: 4000 }] },
