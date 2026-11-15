@@ -186,6 +186,7 @@ async function runStep(page, s) {
   if (s.fill) { const l = page.locator(s.fill).first(); await l.fill(s.text, { timeout: 4000 }); await page.waitForTimeout(400); }
   if (s.click) await page.locator(s.click).first().click({ timeout: 4000 });
   if (s.clickText) await page.getByText(s.clickText, { exact: false }).first().click({ timeout: 4000 });
+  if (s.clickTextDom) await page.evaluate((needle) => { const el = [...document.querySelectorAll('button,a,[role=button]')].find((x) => x.offsetParent && (x.innerText || '').includes(needle)); if (!el) throw new Error(`visible control text missing: ${needle}`); el.click(); }, s.clickTextDom);
   if (s.key) await page.keyboard.press(s.key);
   if (s.event) await page.evaluate((e) => window.dispatchEvent(new Event(e)), s.event);
 }
