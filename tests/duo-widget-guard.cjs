@@ -34,7 +34,7 @@ const TALL = [[382, 700], [382, 780], [382, 844], [470, 900]]; // التطبيق
 const CONTROLS = [[393, 852], [384, 854], [375, 667], [390, 844], [844, 390], [430, 932], [744, 1024], [1024, 768], [1280, 800], [360, 740], [820, 1180]];
 
 const extra = {
-  profile: { id: 'profile-sidebar', url: '/', steps: [{ click: '.tebyan-action-pill > div:last-child button' }, { wait: 500 }, { clickText: 'حسابي' }, { wait: 900 }] },
+  profile: { id: 'profile-sidebar', url: '/', steps: [{ click: '.tebyan-action-pill > div:last-child button' }, { wait: 500 }, { clickTextDom: 'حسابي' }, { wait: 900 }] },
 };
 const BY_ID = Object.fromEntries([...SCREENS, ...Object.values(extra)].map((s) => [s.id, s]));
 const pick = (ids) => ids.map((i) => BY_ID[i]).filter(Boolean);
@@ -197,7 +197,10 @@ async function main() {
         try {
           await page.goto(BASE + s.url, { waitUntil: 'load' }).catch(() => {});
           await page.waitForTimeout(700);
-          for (const st of s.steps || []) await runStep(page, st);
+          for (const st of s.steps || []) {
+            try { await runStep(page, st); }
+            catch (e) { throw new Error(`step ${JSON.stringify(st)}: ${e.message}`); }
+          }
           await page.waitForTimeout(350);
           Object.assign(rec, await page.evaluate(measureInPage, { W }));
         } catch (e) { if (/closed|crash|Target/i.test(String(e.message))) throw e; rec.error = String(e.message).split('\n')[0].slice(0, 160); }

@@ -6236,4 +6236,12 @@ p { text-wrap: pretty; }
   .tebyan-keepout-fixed { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)); right: 1rem; }
   /* Full-screen dialogs: the scrim runs edge to edge, the dialog centres in what is left. */
   .tebyan-book-overlay { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
+  /* The standalone admin route has its own layout, outside the shared route shell. */
+  .tebyan-admin-dash { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap) + 8px) !important; }
+  /* Help is fixed near the top on wide/short views and near the bottom on phones;
+     either way its panel must end before the physical system corner. */
+  .tebyan-page-help-popup {
+    right: calc(var(--duo-widget-w) + var(--duo-widget-gap)) !important;
+    max-width: calc(100vw - var(--duo-widget-w) - var(--duo-widget-gap) - 24px) !important;
+  }
 }
