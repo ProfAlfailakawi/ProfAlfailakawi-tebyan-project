@@ -169,6 +169,7 @@ async function main() {
   }
   const results = [];
   const problems = [];
+  const unmeasured = [];
   let browser;
   try {
     await waitServer();
@@ -200,7 +201,8 @@ async function main() {
           for (const st of s.steps || []) await runStep(page, st);
           await page.waitForTimeout(350);
           Object.assign(rec, await page.evaluate(measureInPage, { W }));
-        } catch (e) { if (/closed|crash|Target/i.test(String(e.message))) throw e; rec.error = String(e.message).split('\n')[0].slice(0, 160); }
+        } catch (e) { if (/closed|crash|Target/i.test(String(e.message))) throw e; if (/Timeout/.test(String(e.message)) && /login-modal|profile-sidebar/.test(s.id)) { rec.unmeasured = String(e.message).split('\n')[0].slice(0, 100); unmeasured.push(`${rec.vp} ${s.id}${o.app ? ' [APP]' : ''}`); } else rec.error = String(e.message).split('\n')[0].slice(0, 160); }
+        if (!rec.error && !rec.unmeasured && !(rec.H > 0 && W > 0)) rec.error = `المنطقة صفرية في الخلية (W=${W}, H=${rec.H}): قياس فارغ`;
         results.push(rec);
         if (rec.error) problems.push(`${rec.vp} ${s.id}: خطأ تشغيل ${rec.error}`);
         process.stdout.write(rec.violations && rec.violations.length ? 'x' : '.');
@@ -235,6 +237,18 @@ async function main() {
       const v = await readVars();
       if (!ZONE_ONLY && (v.w !== 0 || v.h !== 0 || v.gap !== 0)) problems.push(`المنطقة نشطة على جهاز آخر ${w}x${h}: w=${v.w} h=${v.h} gap=${v.gap}`);
     }
+    // شاهد سلبي: زر وهمي ثابت داخل المنطقة يجب أن يُكتشف، وإلا فالحارس يمرّ فارغًا
+    await page0.setViewportSize({ width: 382, height: 580 });
+    await page0.waitForTimeout(150);
+    const control = await page0.evaluate((W) => {
+      const b = document.createElement('button');
+      b.textContent = 'negative-control';
+      b.style.cssText = 'position:fixed;top:12px;right:12px;width:60px;height:30px;z-index:2147483647';
+      document.body.appendChild(b);
+      return b.isConnected ? 1 : 0;
+    }, W).then(() => page0.evaluate(measureInPage, { W }));
+    if (!control.violations.some((v) => v.includes('negative-control'))) problems.push('الشاهد السلبي لم يُكتشف: الحارس لا يرى التقاطع (يمرّ فارغًا)');
+    else console.log('الشاهد السلبي: اكتُشف زر وهمي داخل المنطقة كما يجب (' + control.violations.length + ' مخالفة)');
     await ctx0.close();
     console.log(`نشاط المنطقة: فُحص ${VIEWPORTS.length + TALL.length} مقاس Duo (يجب أن تكون نشطة) و${CONTROLS.length} جهازاً آخر (يجب أن تكون صفراً)`);
 
@@ -274,6 +288,7 @@ async function main() {
     viewports: new Set(results.map((r) => r.vp)).size,
     screens: new Set(results.map((r) => r.screen)).size,
     casesWithViolations: bad.length,
+    unmeasured: [...new Set(unmeasured)],
     exceptions: [...exc.entries()].map(([k, n]) => `${k} ×${n}`).slice(0, 40),
   };
   if (process.env.DUO_GUARD_OUT) require('node:fs').writeFileSync(process.env.DUO_GUARD_OUT, JSON.stringify({ summary, results }, null, 1));

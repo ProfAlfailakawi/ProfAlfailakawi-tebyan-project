@@ -6226,6 +6226,11 @@ p { text-wrap: pretty; }
      Qawl Fasl back buttons at start-4 = physical right in RTL) drop below the box. The
      back buttons already carry per-breakpoint `top` with !important, so this one must too. */
   .tebyan-keepout-top { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)) !important; }
+  /* Standalone pages that are not inside the route shell (the /admin dashboard) start below the box. */
+  .tebyan-keepout-page { padding-top: calc(var(--duo-widget-h) + var(--duo-widget-gap)); }
+  /* The help sheet (fixed, bottom-anchored, right edge via a variable made for this): on short
+     landscape windows it is tall enough to reach the box, so its right edge steps inside. */
+  @media (max-height: 519px) { :root { --tebyan-help-sheet-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); } }
   /* Right-anchored fixed controls drop below the box. */
   .tebyan-keepout-fixed { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)); right: 1rem; }
   /* Full-screen dialogs: the scrim runs edge to edge, the dialog centres in what is left. */
