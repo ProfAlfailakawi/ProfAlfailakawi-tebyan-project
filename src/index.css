@@ -6245,3 +6245,17 @@ p { text-wrap: pretty; }
     max-width: calc(100vw - var(--duo-widget-w) - var(--duo-widget-gap) - 24px) !important;
   }
 }
+
+/* Duo short canvases: fit the first-run onboarding actions above the fold.
+   Keep the story and order; compact the mark, text rhythm and margins only. */
+@media screen and (max-width: 1023.98px) and (max-height: 620px) {
+  .tebyan-book-overlay > .max-w-lg > div { padding: 14px 20px; }
+  .tebyan-book-overlay > .max-w-lg > div > .mb-2 { margin-bottom: .25rem; }
+  .tebyan-book-overlay > .max-w-lg svg[viewBox="0 0 96 96"] { width: 76px; height: 76px; }
+  .tebyan-book-overlay > .max-w-lg p.mb-6 { margin-bottom: .75rem; }
+  .tebyan-book-overlay > .max-w-lg h2 { margin-bottom: .5rem; line-height: 1.25; }
+  .tebyan-book-overlay > .max-w-lg p.mx-auto { font-size: 14px; line-height: 1.55; }
+  .tebyan-book-overlay > .max-w-lg .mt-8,
+  .tebyan-book-overlay > .max-w-lg .mt-7 { margin-top: .75rem; }
+  .tebyan-book-overlay > .max-w-lg button:not([aria-label]) { padding-block: .65rem; }
+}
