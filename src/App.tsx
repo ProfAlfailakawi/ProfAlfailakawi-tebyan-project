@@ -47,6 +47,10 @@ import {
   FlaskConical,
   RotateCcw,
   LogOut as ExitDemoIcon,
+  Home as DuoHomeIcon,
+  Plus as DuoPlusIcon,
+  Search as DuoSearchIcon,
+  BookMarked as DuoLibraryIcon,
 } from "lucide-react";
 import { motion, AnimatePresence, MotionConfig, useReducedMotion } from "motion/react";
 import { TebyanMark } from "./components/TebyanMark";
@@ -1551,6 +1555,33 @@ const AppContent: React.FC = () => {
           </div>
         </div>
       </motion.header>
+
+      {/* iPhone Duo only (hidden elsewhere; «iPhone Duo pattern» in src/index.css): the page
+          title for the clock strip, the primary «+» (a new question) and a small navigation
+          capsule. Outside the header, whose hide-on-scroll transform would carry fixed children. */}
+      <div className="duo-dock" data-duo-dock="">
+        <span className="duo-strip-title" aria-hidden="true">
+          {activeTab === "home" ? (language === "ar" ? "تبيان" : "Tebyan") : getServiceName(activeTab, language, language === "ar" ? "تبيان" : "Tebyan")}
+        </span>
+        <button
+          type="button"
+          className="duo-dock-add"
+          onClick={() => {
+            handleTabChange("home");
+            window.setTimeout(() => document.querySelector<HTMLTextAreaElement>(".tebyan-route-home textarea")?.focus(), 350);
+          }}
+          aria-label={language === "ar" ? "سؤال جديد" : "New question"}
+          title={language === "ar" ? "سؤال جديد" : "New question"}
+        >
+          <DuoPlusIcon size={22} strokeWidth={2.4} aria-hidden="true" />
+        </button>
+        <nav className="duo-dock-nav" aria-label={language === "ar" ? "التنقل السريع" : "Quick navigation"}>
+          <button type="button" className={activeTab === "home" ? "is-active" : undefined} onClick={() => handleTabChange("home")} aria-label={language === "ar" ? "الصفحة الرئيسية" : "Home"} title={language === "ar" ? "الصفحة الرئيسية" : "Home"}><DuoHomeIcon size={20} aria-hidden="true" /></button>
+          <button type="button" className={activeTab === "discover" ? "is-active" : undefined} onClick={() => handleTabChange("discover")} aria-label={language === "ar" ? "كل الخدمات" : "All services"} title={language === "ar" ? "كل الخدمات" : "All services"}><Grid3X3 size={20} aria-hidden="true" /></button>
+          <button type="button" className={activeTab === "mylibrary" ? "is-active" : undefined} onClick={() => handleTabChange("mylibrary")} aria-label={language === "ar" ? "مكتبتي" : "My library"} title={language === "ar" ? "مكتبتي" : "My library"}><DuoLibraryIcon size={20} aria-hidden="true" /></button>
+          <button type="button" onClick={() => setShowGlobalCommand(true)} aria-label={language === "ar" ? "البحث السريع" : "Quick search"} title={language === "ar" ? "البحث السريع" : "Quick search"}><DuoSearchIcon size={20} aria-hidden="true" /></button>
+        </nav>
+      </div>
 
       <main
         ref={mainRef}
