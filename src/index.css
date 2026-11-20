@@ -6259,3 +6259,60 @@ p { text-wrap: pretty; }
   .tebyan-book-overlay > .max-w-lg .mt-7 { margin-top: .75rem; }
   .tebyan-book-overlay > .max-w-lg button:not([aria-label]) { padding-block: .65rem; }
 }
+
+/* ==========================================================================
+   iPhone Duo pattern (2026-11-19) — every rule below is under html[data-device="duo"]
+   (set in src/main.tsx from the near-square screen), so iPhone and iPad never change.
+   The fixed 96px × 31vh corner above was an empty strip in Safari (the clock lives in
+   Safari's own bar there) and a guess in the app. The tokens now follow what iOS
+   reports: env(safe-area-inset-*) — the outer screen's side column (84pt) and the
+   inner portrait's top strip (82pt) in the app, zero in Safari.
+     --duo-widget-w   the side column (physical right; mirrored when iOS reports it left)
+     --duo-widget-h   clearance under the top bar (the strip itself is already in
+                      env(safe-area-inset-top), which every consumer adds)
+   ========================================================================== */
+:root[data-device="duo"] {
+  --duo-widget-w: env(safe-area-inset-right, 0px);
+  --duo-widget-gap: 0px;
+  --duo-widget-h: 4.5rem;
+}
+/* Widget column on the left after rotation (app): mirror the side reservations. */
+html[data-device="duo"][data-widget-side="left"] header.fixed.tebyan-app-header,
+html[data-device="duo"][data-widget-side="left"] .tebyan-keepout-pad,
+html[data-device="duo"][data-widget-side="left"] .tebyan-book-overlay {
+  padding-left: calc(env(safe-area-inset-left, 0px) + 0.5rem) !important;
+}
+/* Content never runs under Safari's buttons or the home indicator. */
+html[data-device="duo"] main.tebyan-route-shell {
+  scroll-padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+}
+html[data-device="duo"] .tebyan-book::after {
+  content: "";
+  display: block;
+  flex-shrink: 0;
+  height: max(env(safe-area-inset-bottom, 0px), 0.75rem);
+}
+/* Compact page headings: one tight line instead of a hero block. */
+html[data-device="duo"] main.tebyan-route-shell h1 {
+  font-size: clamp(1.25rem, 4.6vw, 1.75rem) !important;
+  line-height: 1.3 !important;
+  margin-block-end: 0.5rem;
+}
+/* Headers inside a flex column (pages, drawers, sheets) never shrink to nothing.
+   No backdrop-filter/transform/filter is added on any ancestor of a fixed bar. */
+html[data-device="duo"] header,
+html[data-device="duo"] [role="dialog"] > header {
+  flex-shrink: 0;
+}
+/* Overlays (dialogs, sheets, menus, tours): scroll as one inside the window, clear of
+   the system strips; never squeezed to zero height by a shared flex column. */
+html[data-device="duo"] .tebyan-book-overlay {
+  padding-top: max(env(safe-area-inset-top, 0px), 0.75rem);
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.75rem);
+  overflow-y: auto;
+}
+html[data-device="duo"] [role="dialog"],
+html[data-device="duo"] [role="menu"] {
+  max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 1rem);
+  overflow-y: auto;
+}

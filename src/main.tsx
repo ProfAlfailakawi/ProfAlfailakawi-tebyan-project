@@ -9,6 +9,7 @@ import './styles/elevation.css';
 import './styles/polish.css';
 import './styles/beauty.css';
 import './styles/motion.css';
+import { installDuoMarkers } from './lib/duo-markers';
 import { installAppUpdate } from './lib/app-update';
 import { IS_DEMO_MODE } from './lib/demoMode';
 
@@ -22,6 +23,9 @@ installAppUpdate();
 if (IS_DEMO_MODE) {
   window.setTimeout(() => { void import('./data/demoLibrary').then((m) => m.loadDemoLibrary()); }, 600);
 }
+
+// علامات iPhone Duo (data-device / data-shell / data-widget-side) قبل أول رسم.
+installDuoMarkers();
 
 // تشخيص ركن ودجت iPhone Duo: لا يُحمَّل شيء منه إلا مع ?duo-debug=1.
 if (new URLSearchParams(window.location.search).has('duo-debug')) {
