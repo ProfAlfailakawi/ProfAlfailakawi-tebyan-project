@@ -158,3 +158,31 @@ test('narrow phones (320-382px): segmented switches size by content and wrap; de
   const sim = readFileSync(new URL('../src/components/tabs/SimulationTab.tsx', import.meta.url), 'utf8');
   assert.doesNotMatch(sim, /cn\("flex-1 \[white-space:nowrap\]!/);
 });
+
+// The gate above goes by window size and aspect alone, so it also matched an ordinary iPhone in Safari (390x664 with its bars,
+// 4/7 or squarer), a narrow iPad window and a narrow desktop window, leaving an empty ~104px column on the right. The corner is
+// real on the iPhone Duo only (html[data-device="duo"], src/lib/duo-markers.ts): off the Duo the tokens are 0 and no corner rule applies.
+test('widget corner: off the iPhone Duo the tokens are 0 and every corner rule is scoped to html[data-device="duo"]', () => {
+  const flat = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const reset = flat.match(/html:not\(\[data-device="duo"\]\) \{([^}]*)\}/);
+  assert.ok(reset, 'the reset html:not([data-device="duo"]) is missing: the corner would return on ordinary iPhones in Safari, narrow iPads and desktops');
+  for (const v of ['--duo-widget-w', '--duo-widget-gap', '--duo-widget-h']) assert.match(reset[1], new RegExp(`${v}: 0px;`), `${v} must be 0px off the Duo`);
+  const gate = flat.match(DUO_GATE);
+  const start = flat.indexOf(gate[0]);
+  const block = flat.slice(start + gate[0].length, flat.indexOf('html:not([data-device="duo"])', start));
+  const selectors = [...block.matchAll(/(?:^|[;{}])\s*([^;{}@]+?)\s*\{/g)].map((m) => m[1].trim()).filter((s) => s && s !== ':root');
+  assert.ok(selectors.length >= 10, `found ${selectors.length} corner rules`);
+  for (const sel of selectors) for (const part of sel.split(/,(?![^(]*\))/)) {
+    const p = part.trim();
+    assert.ok(p.startsWith(':where(html[data-device="duo"]) ') || p.startsWith('html:where([data-device="duo"]) ') || p === ':root:where([data-device="duo"])', `corner rule reaches non-Duo screens: ${p}`);
+  }
+  // a non-zero token lives only on :root inside the gate or under [data-device="duo"], never !important
+  for (const m of flat.matchAll(/([^{};]+)\{([^{}]*--duo-widget-(?:w|gap|h)\s*:[^{}]*)\}/g)) {
+    for (const d of m[2].matchAll(/--duo-widget-(?:w|gap|h)\s*:\s*([^;]+)/g)) {
+      assert.doesNotMatch(d[1], /!important/);
+      if (d[1].trim() === '0px') continue;
+      const sel = m[1].trim();
+      assert.ok(sel === ':root' || (/\[data-device="duo"\]/.test(sel) && !/:not\(/.test(sel)), `non-zero corner token via ${sel}`);
+    }
+  }
+});

@@ -6209,41 +6209,52 @@ p { text-wrap: pretty; }
     --duo-widget-w: 96px;
     --duo-widget-gap: 8px;
     --duo-widget-h: clamp(64px, 31vh, 270px);
-    /* the landscape book's pages start under the box */
-    --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap));
   }
+  /* the landscape book's pages start under the box (on the Duo only; elsewhere the book keeps its own --book-top) */
+  :root:where([data-device="duo"]) { --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap)); }
 
   /* Top bar: the first column (physical right) is the box; brand, Services and
      the action pills step inward. The bar's own gradient stays full-bleed.
      This replaces (does not stack on) the old keep-out rule: half a dozen header rules
      set padding-inline with !important, so only an !important physical padding-right
      of the same specificity, last in the file, can win. */
-  header.fixed.tebyan-app-header { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)) !important; }
+  :where(html[data-device="duo"]) header.fixed.tebyan-app-header { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)) !important; }
   /* The page starts below the box (per-route paddings are !important, so is this). */
-  html body main.tebyan-route-shell[class*="tebyan-route-"] {
+  html:where([data-device="duo"]) body main.tebyan-route-shell[class*="tebyan-route-"] {
     padding-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap)) !important;
   }
   /* On the narrow outer screen (382/470) the column leaves ~300px: icon-only brand so the
      Services pill never sits on the wordmark. */
-  @media (max-width: 480px) { .tebyan-floating-nav .tebyan-brand-name { display: none; } }
+  @media (max-width: 480px) { :where(html[data-device="duo"]) .tebyan-floating-nav .tebyan-brand-name { display: none; } }
   /* Side panels and sheets that hug the right edge: header/body keep the column. */
-  .tebyan-keepout-pad { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
+  :where(html[data-device="duo"]) .tebyan-keepout-pad { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
   /* Fixed things that sit at the start side near the top (toasts, loading notice, the
      Qawl Fasl back buttons at start-4 = physical right in RTL) drop below the box. The
      back buttons already carry per-breakpoint `top` with !important, so this one must too. */
-  .tebyan-keepout-top { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)) !important; }
+  :where(html[data-device="duo"]) .tebyan-keepout-top { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)) !important; }
   /* Right-anchored fixed controls drop below the box. */
-  .tebyan-keepout-fixed { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)); right: 1rem; }
+  :where(html[data-device="duo"]) .tebyan-keepout-fixed { top: calc(var(--duo-widget-h) + var(--duo-widget-gap)); right: 1rem; }
   /* Full-screen dialogs: the scrim runs edge to edge, the dialog centres in what is left. */
-  .tebyan-book-overlay { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
+  :where(html[data-device="duo"]) .tebyan-book-overlay { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)); }
   /* The standalone admin route has its own layout, outside the shared route shell. */
-  .tebyan-admin-dash { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap) + 8px) !important; }
+  :where(html[data-device="duo"]) .tebyan-admin-dash { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap) + 8px) !important; }
   /* Help is fixed near the top on wide/short views and near the bottom on phones;
      either way its panel must end before the physical system corner. */
-  .tebyan-page-help-popup {
+  :where(html[data-device="duo"]) .tebyan-page-help-popup {
     right: calc(var(--duo-widget-w) + var(--duo-widget-gap)) !important;
     max-width: calc(100vw - var(--duo-widget-w) - var(--duo-widget-gap) - 24px) !important;
   }
+}
+
+/* The gate above goes by window size and aspect alone, so it also matched an ordinary iPhone in Safari (390x664 with its bars,
+   4/7 or squarer), a narrow iPad window and a narrow desktop window, leaving an empty ~104px column on the right of the top bar.
+   The corner is real on the iPhone Duo only: src/lib/duo-markers.ts sets html[data-device="duo"] there (and the Duo pattern
+   below re-points the tokens to what iOS reports). The rules above are scoped to it with :where() (no added specificity, so
+   nothing changes on the Duo), and everywhere else the tokens go back to 0. */
+html:not([data-device="duo"]) {
+  --duo-widget-w: 0px;
+  --duo-widget-gap: 0px;
+  --duo-widget-h: 0px;
 }
 
 /* Duo short canvases: fit the first-run onboarding actions above the fold.
