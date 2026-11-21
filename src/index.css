@@ -6259,3 +6259,141 @@ p { text-wrap: pretty; }
   .tebyan-book-overlay > .max-w-lg .mt-7 { margin-top: .75rem; }
   .tebyan-book-overlay > .max-w-lg button:not([aria-label]) { padding-block: .65rem; }
 }
+
+/* ==========================================================================
+   iPhone Duo pattern (2026-11-19) — every rule below is under html[data-device="duo"]
+   (set by src/lib/duo-markers.ts from the near-square screen), so iPhone and iPad never
+   change. The fixed 96px × 31vh corner above was an empty strip in Safari (the clock lives
+   in Safari's own bar there) and a guess in the app. The tokens now follow what iOS
+   reports — the outer screen's side column and the inner portrait's top strip in the app,
+   zero in Safari. The insets are named once (--duo-sa-*) so emulation can stand in for iOS.
+     --duo-widget-w   the side column (physical right; mirrored when iOS reports it left)
+     --duo-widget-h   clearance under the top bar
+   ========================================================================== */
+.duo-dock { display: none; }
+:root[data-device="duo"] {
+  --duo-sa-t: env(safe-area-inset-top, 0px);
+  --duo-sa-r: env(safe-area-inset-right, 0px);
+  --duo-sa-b: env(safe-area-inset-bottom, 0px);
+  --duo-sa-l: env(safe-area-inset-left, 0px);
+  --duo-widget-w: var(--duo-sa-r);
+  --duo-widget-gap: 0px;
+  --duo-widget-h: 4.5rem;
+  --book-top: calc(var(--duo-sa-t) + var(--duo-widget-h));
+  --duo-clock-end: 160px;
+  --duo-glass: rgb(38 32 66 / 0.86);
+  --duo-accent: var(--tb-lilac-deep, #4c3f7a);
+}
+/* Top bar and page top follow the reported strip (the older rules read env() directly). */
+html[data-device="duo"] header.fixed.tebyan-app-header {
+  padding-top: calc(var(--duo-sa-t) + 0.5rem) !important;
+  padding-right: calc(var(--duo-sa-r) + 0.75rem) !important;
+}
+html[data-device="duo"] body main.tebyan-route-shell[class*="tebyan-route-"] {
+  padding-top: calc(var(--duo-sa-t) + var(--duo-widget-h)) !important;
+  scroll-padding-bottom: calc(var(--duo-sa-b) + 1rem);
+}
+/* App, clock column (outer screen): the page and its bottom controls stop before the column. */
+html[data-device="duo"][data-shell="app"][data-widget-side="right"] body main.tebyan-route-shell[class*="tebyan-route-"] { padding-right: var(--duo-sa-r) !important; }
+html[data-device="duo"][data-shell="app"][data-widget-side="left"] body main.tebyan-route-shell[class*="tebyan-route-"] { padding-left: var(--duo-sa-l) !important; }
+html[data-device="duo"][data-shell="app"][data-widget-side="right"] .tebyan-page-controls { right: calc(var(--duo-sa-r) + 0.5rem) !important; }
+html[data-device="duo"][data-shell="app"][data-widget-side="left"] .tebyan-page-controls { left: calc(var(--duo-sa-l) + 0.5rem) !important; }
+/* Widget column on the left after rotation (app): mirror the side reservations. */
+html[data-device="duo"][data-widget-side="left"] header.fixed.tebyan-app-header,
+html[data-device="duo"][data-widget-side="left"] .tebyan-keepout-pad,
+html[data-device="duo"][data-widget-side="left"] .tebyan-book-overlay {
+  padding-left: calc(var(--duo-sa-l) + 0.75rem) !important;
+}
+/* Content never runs under Safari's buttons or the home indicator. */
+html[data-device="duo"] .tebyan-book::after {
+  content: "";
+  display: block;
+  flex-shrink: 0;
+  height: max(var(--duo-sa-b), 0.75rem);
+}
+/* Compact page headings: one tight line instead of a hero block. */
+html[data-device="duo"] main.tebyan-route-shell h1:not(.sr-only) {
+  font-size: clamp(1.25rem, 4.6vw, 1.75rem) !important;
+  line-height: 1.3 !important;
+  margin-block-end: 0.5rem;
+}
+/* Headers inside a flex column (pages, drawers, sheets) never shrink to nothing.
+   No backdrop-filter/transform/filter is added on any ancestor of a fixed bar. */
+html[data-device="duo"] header,
+html[data-device="duo"] [role="dialog"] > header {
+  flex-shrink: 0;
+}
+/* Overlays (login, dialogs, sheets, menus, tours): scroll as one inside the window,
+   clear of the clock column/strip and of Safari's bar. */
+html[data-device="duo"] .tebyan-book-overlay {
+  padding-top: max(var(--duo-sa-t), 0.75rem) !important;
+  padding-bottom: max(var(--duo-sa-b), 0.75rem) !important;
+  padding-right: max(var(--duo-sa-r), 0.75rem) !important;
+  padding-left: max(var(--duo-sa-l), 0.75rem) !important;
+  overflow-y: auto;
+}
+html[data-device="duo"] [role="dialog"],
+html[data-device="duo"] [role="menu"] {
+  max-height: calc(100dvh - var(--duo-sa-t) - var(--duo-sa-b) - 1rem);
+  overflow-y: auto;
+}
+
+/* ---- App, outer screen: «+» and a navigation capsule in the clock column ---- */
+@media screen and (orientation: portrait) and (max-width: 559px),
+       screen and (orientation: landscape) and (max-height: 520px) {
+  html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) .duo-dock {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    position: fixed; z-index: 45; top: var(--duo-clock-end);
+  }
+  html[data-device="duo"][data-shell="app"][data-widget-side="right"] .duo-dock { right: calc((var(--duo-sa-r) - 56px) / 2); }
+  html[data-device="duo"][data-shell="app"][data-widget-side="left"] .duo-dock { left: calc((var(--duo-sa-l) - 56px) / 2); }
+  html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) .duo-dock-nav { flex-direction: column; }
+  /* the capsule is the navigation now: no second Services/Home in the top bar */
+  html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) header.fixed .tebyan-floating-nav > .tebyan-services-button { display: none !important; }
+}
+@media screen and (orientation: landscape) and (max-height: 520px) {
+  html[data-device="duo"][data-shell="app"] { --duo-clock-end: 96px; }
+  /* the laptop-deck bottom bar keeps clear of the column */
+  html[data-device="duo"][data-shell="app"] header.fixed.tebyan-app-header { padding-bottom: calc(var(--duo-sa-b) + 0.5rem) !important; }
+}
+
+/* ---- App, inner portrait: title in the clock strip; floating glass bar and «+» at the bottom ---- */
+@media screen and (orientation: portrait) and (min-width: 560px) {
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] .duo-dock { display: contents; }
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] .duo-strip-title {
+    display: flex; align-items: center; position: fixed; z-index: 45; top: 0; left: 24px;
+    height: var(--duo-sa-t); max-width: calc(100vw - 200px);
+    font-family: var(--font-serif, serif); font-size: 22px; font-weight: 800; color: var(--tb-lilac-deep, #2b2347);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none;
+  }
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] .duo-dock-nav {
+    position: fixed; z-index: 45; bottom: calc(var(--duo-sa-b) + 12px); left: calc(50% - 120px); flex-direction: row;
+  }
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] .duo-dock-add {
+    position: fixed; z-index: 45; bottom: calc(var(--duo-sa-b) + 12px); left: calc(50% + 90px);
+  }
+  /* the strip shows the title and the glass bar navigates: the top bar drops brand and Services */
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] header.fixed .tebyan-floating-nav { visibility: hidden; }
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] body main.tebyan-route-shell[class*="tebyan-route-"] { padding-bottom: calc(var(--duo-sa-b) + 76px) !important; }
+  html[data-device="duo"][data-shell="app"][data-widget-side="none"] .tebyan-page-controls { bottom: calc(var(--duo-sa-b) + 76px) !important; }
+}
+
+/* the dock's own look: glass capsules, a coloured «+» (no ancestor of a fixed bar is filtered) */
+html[data-device="duo"] .duo-strip-title { display: none; }
+html[data-device="duo"] .duo-dock-nav {
+  display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 999px;
+  background: var(--duo-glass); border: 1px solid rgb(255 255 255 / 0.1);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 12px 30px rgb(20 14 40 / 0.28);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+}
+html[data-device="duo"] .duo-dock-nav button {
+  width: 44px; height: 44px; min-width: 44px; border-radius: 50%; border: 0; background: none;
+  display: grid; place-items: center; color: rgb(255 255 255 / 0.82); cursor: pointer;
+}
+html[data-device="duo"] .duo-dock-nav button.is-active { background: rgb(255 255 255 / 0.16); color: #fff; }
+html[data-device="duo"] .duo-dock-add {
+  width: 52px; height: 52px; min-width: 52px; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(160deg, #6a5aa8, var(--duo-accent));
+  box-shadow: 0 0 0 1px rgb(184 140 50 / 0.45), 0 12px 28px rgb(43 35 71 / 0.38);
+}
