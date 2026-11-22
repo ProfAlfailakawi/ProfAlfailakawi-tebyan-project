@@ -6291,7 +6291,7 @@ html:not([data-device="duo"]) {
   --duo-widget-gap: 0px;
   --duo-widget-h: 4.5rem;
   --book-top: calc(var(--duo-sa-t) + var(--duo-widget-h));
-  --duo-clock-end: 160px;
+  --duo-clock-end: 176px;
   --duo-glass: rgb(38 32 66 / 0.86);
   --duo-accent: var(--tb-lilac-deep, #4c3f7a);
 }
