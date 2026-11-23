@@ -9,7 +9,9 @@ import './styles/elevation.css';
 import './styles/polish.css';
 import './styles/beauty.css';
 import './styles/motion.css';
+import './styles/dock-motion.css';
 import { installDuoMarkers } from './lib/duo-markers';
+import { installDockMotion } from './lib/dockMotion';
 import { installAppUpdate } from './lib/app-update';
 import { IS_DEMO_MODE } from './lib/demoMode';
 
@@ -26,6 +28,9 @@ if (IS_DEMO_MODE) {
 
 // علامات iPhone Duo (data-device / data-shell / data-widget-side) قبل أول رسم.
 installDuoMarkers();
+
+// حركة كبسولة التنقّل (بصرية فقط): مؤشّرٌ منزلق وضغطةٌ فورية.
+installDockMotion({ dock: '.duo-dock-nav', link: 'button', active: 'button.is-active', sampleActive: true });
 
 // تشخيص ركن ودجت iPhone Duo: لا يُحمَّل شيء منه إلا مع ?duo-debug=1.
 if (new URLSearchParams(window.location.search).has('duo-debug')) {

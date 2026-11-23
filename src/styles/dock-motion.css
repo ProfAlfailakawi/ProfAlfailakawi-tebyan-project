@@ -1,0 +1,42 @@
+/* ==========================================================================
+   حركة كبسولة التنقّل (src/lib/dockMotion.ts) — بصرية فقط.
+   تبيان ليس له شريطٌ سفلي على الهاتف؛ كبسولة التنقّل (`.duo-dock-nav`) تظهر في تطبيق الدوو وحده:
+   عمودٌ تحت الساعة في الخارجية، وشريطٌ زجاجي عائم في الداخلية الطولية. مؤشّرٌ واحد (.dm-ind) ينزلق
+   تحت الوجهة النشطة بدل خلفيةٍ تقفز من زرّ إلى زرّ، بلون الزرّ النشط نفسه (يقيسه السكربت لحظةً بسمة
+   data-dm-sample). الوجهات وترتيبها وموضع الكبسولة وحجمها كما هي.
+   ========================================================================== */
+html[data-device="duo"] .duo-dock-nav[data-dm-ready]{ transition:transform .32s cubic-bezier(.32,.72,0,1), opacity .22s ease }
+html[data-device="duo"] .duo-dock-nav > .dm-ind{
+  position:absolute; z-index:0; pointer-events:none; opacity:0; display:block;
+  min-width:0; min-height:0; margin:0; padding:0; border:0;
+  border-radius:var(--dm-auto-radius, 999px);
+  background-color:var(--dm-auto-bg, rgb(255 255 255 / .16));
+  background-image:var(--dm-auto-img, none);
+  box-shadow:var(--dm-auto-shadow, none), inset 0 0 0 1px rgb(255 255 255 / .08);
+  transition:transform .26s cubic-bezier(.34,1.56,.64,1), opacity .2s ease;
+}
+html[data-device="duo"] .duo-dock-nav > .dm-ind.dm-press{ transform:scale(.94); transition-duration:.09s; transition-timing-function:ease-out }
+html[data-device="duo"] .duo-dock-nav[data-dm-ready] button{
+  position:relative; z-index:1; -webkit-tap-highlight-color:transparent;
+  transition:transform .26s cubic-bezier(.34,1.56,.64,1), color .2s ease !important;
+}
+/* الخلفية النشطة صار يرسمها المؤشّر المنزلق (إلا لحظة القياس). */
+html[data-device="duo"] .duo-dock-nav[data-dm-ready]:not([data-dm-sample]) button:is(.is-active, :active){ background:transparent !important; box-shadow:none !important }
+html[data-device="duo"] .duo-dock-nav[data-dm-sample] button{ transition:none !important }
+html[data-device="duo"] .duo-dock-nav[data-dm-ready] button.dm-press{ transform:scale(.9); transition-duration:.09s !important; transition-timing-function:ease-out !important }
+/* الأيقونة التي صارت نشطة تتنفّس مرّةً واحدة، فيُفهم الانتقال دون لونٍ وحده. */
+html[data-device="duo"] .duo-dock-nav[data-dm-ready] button.is-active > svg{ animation:dm-pop .38s cubic-bezier(.32,.72,0,1) }
+@keyframes dm-pop{ 0%{ transform:scale(.84) } 55%{ transform:scale(1.07) } 100%{ transform:none } }
+html[data-device="duo"] .duo-dock-nav[data-dm-ready] button:focus-visible{ outline:2px solid #fff; outline-offset:2px }
+/* لوحة المفاتيح: الكبسولة المثبّتة تتنحّى وتعود حين تُغلق. */
+html[data-device="duo"] .duo-dock-nav.dm-kb{ transform:translateY(calc(100% + 28px)); opacity:0; pointer-events:none }
+@media (prefers-reduced-motion:reduce){
+  html[data-device="duo"] .duo-dock-nav[data-dm-ready], html[data-device="duo"] .duo-dock-nav > .dm-ind, html[data-device="duo"] .duo-dock-nav[data-dm-ready] button{ transition:none !important }
+  html[data-device="duo"] .duo-dock-nav[data-dm-ready] button.dm-press{ transform:scale(.96) }
+  html[data-device="duo"] .duo-dock-nav[data-dm-ready] button > svg{ animation:none }
+}
+@media (prefers-contrast:more){
+  html[data-device="duo"] .duo-dock-nav > .dm-ind{ outline:2px solid #fff; outline-offset:-2px }
+}
+/* مرجعٌ للمؤشّر حين لا تكون الكبسولة مُموضَعةً أصلًا (عمود الساعة)؛ أدنى أولوية فلا يغلب «fixed». */
+:where(.duo-dock-nav){ position:relative }

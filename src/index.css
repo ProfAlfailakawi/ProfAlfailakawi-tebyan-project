@@ -6363,7 +6363,8 @@ html[data-device="duo"] [role="menu"] {
   html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) header.fixed .tebyan-floating-nav > .tebyan-services-button { display: none !important; }
 }
 @media screen and (orientation: landscape) and (max-height: 520px) {
-  html[data-device="duo"][data-shell="app"] { --duo-clock-end: 96px; }
+  /* the clock box on the outer screen turned sideways is ~112pt tall: «+» starts under it, not inside it */
+  html[data-device="duo"][data-shell="app"] { --duo-clock-end: 120px; }
   /* the laptop-deck bottom bar keeps clear of the column */
   html[data-device="duo"][data-shell="app"] header.fixed.tebyan-app-header { padding-bottom: calc(var(--duo-sa-b) + 0.5rem) !important; }
 }
@@ -6422,4 +6423,36 @@ html[data-device="duo"] .duo-dock-add {
     bottom: max(0.75rem, calc(var(--duo-sa-b) + 0.4rem)) !important;
   }
 }
+}
+
+/* ---- Inner screen, landscape (book), app: the two pages meet on the hinge ----
+   The page reserved the clock column on one side only, so the content box ran 0–916 of 1000 and its
+   centre (where «All services» splits title|directory, and every task page ends) sat ~42px left of the
+   drawn spine: the search field and filters crossed the fold. The same reserve on both sides puts the
+   split exactly on the hinge. */
+@media screen and (min-width: 721px) and (max-width: 1000px) and (min-height: 521px) and (max-height: 960px) and (orientation: landscape) {
+  html[data-device="duo"][data-shell="app"][data-widget-side="right"] body main.tebyan-route-shell[class*="tebyan-route-"] { padding-left: var(--duo-sa-r) !important; }
+  html[data-device="duo"][data-shell="app"][data-widget-side="left"] body main.tebyan-route-shell[class*="tebyan-route-"] { padding-right: var(--duo-sa-l) !important; }
+}
+/* The paper's gold margin rule sits 2.75rem from the right edge; in the open book (Safari) the first page's
+   content reaches past it, so the rule ran through the title, the intro and the search field. The book keeps
+   its ruled lines and its spine; the margin rule steps aside. */
+@media screen and (min-width: 721px) and (max-width: 1000px) and (min-height: 521px) and (max-height: 960px) and (orientation: landscape) {
+  html[data-device="duo"] .tebyan-living-background {
+    background:
+      radial-gradient(ellipse 58% 66% at 50% 42%, var(--tbe-paper) 0 50%, transparent 100%),
+      repeating-linear-gradient(to bottom, transparent 0 calc(2.25rem - 1px), rgba(53, 83, 154, .11) calc(2.25rem - 1px) 2.25rem),
+      var(--tbe-paper) !important;
+  }
+}
+/* Outer screen turned sideways with the clock column on the left (app): the Back/Explain pill sat at the
+   screen's left edge, inside the column and under the navigation capsule. It keeps to the page, past the
+   column. In @layer base: the pill's older placement rules are layered !important. */
+@layer base {
+  @media screen and (orientation: landscape) and (max-height: 520px) {
+    html[data-device="duo"][data-shell="app"][data-widget-side="left"] .tebyan-page-controls {
+      left: calc(var(--duo-sa-l) + 0.5rem) !important;
+      right: auto !important;
+    }
+  }
 }
