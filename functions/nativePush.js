@@ -72,6 +72,9 @@ function apnsPayload(message) {
 
 const shortToken = (token) => `${String(token).slice(0, 6)}…`;
 
+/**
+ * @param {{ http2?: any, crypto: any, env?: () => Record<string, string | undefined>, now?: () => number, timeoutMs?: number, connect?: (origin: string) => any }} options
+ */
 function createApnsSender({ http2, crypto, env = () => process.env, now = Date.now, timeoutMs = APNS_TIMEOUT_MS, connect } = {}) {
     const doConnect = connect || ((origin) => http2.connect(origin));
     let cached = null;
