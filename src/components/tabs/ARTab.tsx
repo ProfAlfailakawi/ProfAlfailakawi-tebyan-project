@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'motion/react';
 import { Box, Sparkles, AlertTriangle, ArrowRight, ShieldCheck, Zap, X, Type, Layers } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { isAppleNativeShell } from '../../lib/appleNativeShell';
+import { cameraDeniedMessage } from '../../lib/cameraDeniedMessage';
 import { ai, parseGeminiError } from '../../services/gemini';
 import { getServiceName } from '../../constants/serviceRegistry';
 
@@ -241,7 +243,7 @@ export const ARTab = ({ language, initialValue, handleTabChange }: any) => {
                    {language === 'ar' ? 'عذراً لا يمكن الوصول للكاميرا' : 'Camera Access Denied'}
                  </h3>
                  <p className="text-white/70 text-sm">
-                   {language === 'ar' ? 'يرجى السماح بالوصول للكاميرا في إعدادات المتصفح لتجربة الواقع المعزز.' : 'Please allow camera access in browser settings to experience AR.'}
+                   {cameraDeniedMessage(language === 'ar', isAppleNativeShell())}
                  </p>
                </div>
              </div>
