@@ -17,6 +17,7 @@ import { IS_DEMO_MODE } from './lib/demoMode';
 
 import { AuthProvider } from './components/AuthProvider';
 import AdminRoute from './components/AdminRoute';
+import { initNativePush } from './lib/nativePush';
 
 // التحديث الذاتي الصامت: بصمة الإصدار، منارتها، ثم التحديث والتصعيد عند اللزوم.
 installAppUpdate();
@@ -68,6 +69,9 @@ const dismissBootSplash = () => {
     requestAnimationFrame(() => window.__tebyanBootDone?.());
   });
 };
+
+// iOS app only: open the page a tapped notification points to (no-op on the web).
+initNativePush();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import { SmartIconWrapper } from '../common/SmartIconGuidance';
 import { collection, onSnapshot, doc, increment, query, orderBy, getDoc, where, getDocs, limit } from 'firebase/firestore';
 import { addDoc, updateDoc, deleteDoc, setDoc, writeBatch } from '../../lib/firestoreWrites';
+import { notifyRippleReply } from '../../lib/nativePush';
 import { auth, db } from '../../lib/firebase';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreError';
 import { refineIdea, translateWithContext } from '../../services/geminiService';
@@ -873,7 +874,7 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
             const parent = ripplesFlat.find(r => r.id === parentId);
             const rootId = parent?.rootId || parentId;
 
-            await addDoc(ripplesCollection, {
+            const replyRef: any = await addDoc(ripplesCollection, {
                 text,
                 author: auth.currentUser?.displayName || 'Anonymous',
                 authorId: auth.currentUser?.uid || 'anon',
@@ -883,8 +884,8 @@ export const RippleEffectTab = ({ language, handleTabChange, onFocusMode }: { la
                 parentId,
                 rootId
             });
-            // Mock email notification
-            console.log("[Email Notification] تم التفاعل مع فكرتك في تبيان: تم إضافة تطوير على فكرتك");
+            // تنبيه iOS لصاحب الفكرة (الخادم يتحقق من الرد ومن كاتبه).
+            if (replyRef?.id) void notifyRippleReply(replyRef.id);
         } catch (error) {
             console.error("Error replying:", error);
         }

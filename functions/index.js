@@ -5,7 +5,16 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const crypto = require("crypto");
 const rateLimit = require("express-rate-limit");
 const { createDeleteAccountHandler } = require("./accountDeletion");
-const { createReportRippleHandler, createListRippleReportsHandler } = require("./rippleModeration");
+const { createReportRippleHandler, createListRippleReportsHandler, isAdminToken, OWNER_UID } = require("./rippleModeration");
+const http2 = require("http2");
+const {
+    createApnsSender,
+    createPushService,
+    createSubscribeNativeHandler,
+    createUnsubscribeNativeHandler,
+    createRippleReplyPushHandler,
+    createAdminPushHandler,
+} = require("./nativePush");
 
 const app = express();
 
@@ -264,7 +273,34 @@ const getModerationServices = async () => {
         return null;
     }
 };
-app.post("/api/ripple-reports", rippleReportRateLimit, createReportRippleHandler({ getServices: getModerationServices }));
+// Native iOS push (APNs). See functions/nativePush.js. Without the four APNS_*
+// secrets every send is a silent no-op; token registration still works.
+const apnsSender = createApnsSender({ http2, crypto });
+const nativePush = createPushService({ sender: apnsSender, getServices: getModerationServices, crypto });
+const pushRateLimit = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 60,
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => String(req.headers["x-forwarded-for"] || req.ip || "unknown").split(",")[0].trim(),
+    validate: false,
+    message: { error: "RATE_LIMITED" },
+});
+app.post("/api/push/subscribe-native", pushRateLimit, createSubscribeNativeHandler({ push: nativePush, getServices: getModerationServices }));
+app.post("/api/push/unsubscribe-native", pushRateLimit, createUnsubscribeNativeHandler({ push: nativePush, getServices: getModerationServices }));
+app.post("/api/push/ripple-reply", pushRateLimit, createRippleReplyPushHandler({ push: nativePush, getServices: getModerationServices }));
+app.post("/api/admin/push", pushRateLimit, createAdminPushHandler({ push: nativePush, getServices: getModerationServices, isAdminToken }));
+const notifyAdminsOfReport = async () => {
+    const services = await getModerationServices();
+    if (!services || !apnsSender.configured()) return;
+    await nativePush.sendToUsers(await nativePush.adminUids(services.firestore, OWNER_UID), {
+        title: "بلاغٌ جديد عن محتوى",
+        body: "وصل بلاغٌ عن فكرةٍ منشورة في «أثر الفراشة». راجِعه من لوحة الرسائل.",
+        url: "/?tab=adminmessages",
+        tag: "ripple-reports",
+    });
+};
+app.post("/api/ripple-reports", rippleReportRateLimit, createReportRippleHandler({ getServices: getModerationServices, onReported: notifyAdminsOfReport }));
 app.get("/api/admin/ripple-reports", rippleReportRateLimit, createListRippleReportsHandler({ getServices: getModerationServices }));
 
 const getGeminiApiKey = () => {
@@ -649,6 +685,13 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
 // Export the app as 'api' function.
 // GEMINI_API_KEY comes from Secret Manager (firebase functions:secrets:set GEMINI_API_KEY).
 // One warm-less instance at most, like the owner's other services: no idle cost, no runaway scaling.
+// APNS_* (native iOS push) are Secret Manager references too, but declaring a
+// secret that does not exist yet makes `firebase deploy` fail. So they are
+// attached only once APNS_SECRETS_READY is true: create the four secrets first
+// (firebase functions:secrets:set APNS_KEY_P8 ... ), then flip this flag and
+// redeploy. Until then push is a silent no-op (nativePush.js reads process.env).
+const APNS_SECRETS_READY = false;
+const APNS_SECRETS = ["APNS_KEY_P8", "APNS_KEY_ID", "APNS_TEAM_ID", "APNS_TOPIC"];
 exports.api = functions
-    .runWith({ secrets: ["GEMINI_API_KEY"], maxInstances: 1, minInstances: 0, memory: "256MB" })
+    .runWith({ secrets: ["GEMINI_API_KEY", ...(APNS_SECRETS_READY ? APNS_SECRETS : [])], maxInstances: 1, minInstances: 0, memory: "256MB" })
     .https.onRequest(app);
