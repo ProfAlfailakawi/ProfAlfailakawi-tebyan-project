@@ -1,0 +1,28 @@
+{
+  "appId": "kw.edu.tebyan.app",
+  "appName": "تبيان",
+  "webDir": "www",
+  "server": {
+    "url": "https://tebyan.dr-alfailakawi.com",
+    "errorPath": "offline.html",
+    "allowNavigation": [
+      "tebyan.dr-alfailakawi.com",
+      "tebyan-app-2026.firebaseapp.com",
+      "tebyan-clean-2026.web.app",
+      "*.googleapis.com",
+      "accounts.google.com"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "launchAutoHide": true,
+      "backgroundColor": "#F7F3EE",
+      "showSpinner": false
+    }
+  },
+  "android": {
+    "backgroundColor": "#F7F3EE",
+    "allowMixedContent": false
+  }
+}
