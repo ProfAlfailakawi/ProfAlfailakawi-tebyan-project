@@ -31,7 +31,7 @@ function bearerToken(req) {
 }
 
 // Anonymous visitors may report; a presented token must be valid.
-function createReportRippleHandler({ getServices, now = () => Date.now() }) {
+function createReportRippleHandler({ getServices, now = () => Date.now(), onReported = null }) {
     return async function reportRipple(req, res) {
         const body = req.body && typeof req.body === "object" ? req.body : {};
         const { rippleId, reason, note } = body;
@@ -80,6 +80,10 @@ function createReportRippleHandler({ getServices, now = () => Date.now() }) {
         } catch (err) {
             console.error("[RippleReport] failed:", err && err.message ? err.message : err);
             return res.status(500).json({ error: "REPORT_FAILED" });
+        }
+        // Optional hook (native push to admins). Never blocks or fails the report.
+        if (typeof onReported === "function") {
+            try { await onReported({ rippleId, reason }); } catch (_) { /* best effort */ }
         }
         return res.json({ reported: true });
     };
@@ -130,6 +134,8 @@ function createListRippleReportsHandler({ getServices }) {
 module.exports = {
     createReportRippleHandler,
     createListRippleReportsHandler,
+    isAdminToken,
+    OWNER_UID,
     REASONS,
     NOTE_MAX,
 };

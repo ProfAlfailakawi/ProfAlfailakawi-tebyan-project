@@ -8,7 +8,16 @@ import dotenv from "dotenv";
 import cors from "cors";
 import fs from "fs";
 import { createDeleteAccountHandler } from "./functions/accountDeletion.js";
-import { createReportRippleHandler, createListRippleReportsHandler } from "./functions/rippleModeration.js";
+import { createReportRippleHandler, createListRippleReportsHandler, isAdminToken, OWNER_UID } from "./functions/rippleModeration.js";
+import http2 from "node:http2";
+import {
+    createApnsSender,
+    createPushService,
+    createSubscribeNativeHandler,
+    createUnsubscribeNativeHandler,
+    createRippleReplyPushHandler,
+    createAdminPushHandler,
+} from "./functions/nativePush.js";
 
 dotenv.config({ override: true });
 
@@ -955,7 +964,31 @@ async function startServer() {
         const fsMod: any = await import("firebase-admin/firestore");
         return { auth: admin.auth, firestore: fsMod.getFirestore() };
     };
-    app.post("/api/ripple-reports", rippleReportRateLimit, createReportRippleHandler({ getServices: getModerationServices }));
+    // Native iOS push (APNs), mirrors functions/index.js. See functions/nativePush.js.
+    const apnsSender = createApnsSender({ http2, crypto });
+    const nativePush = createPushService({ sender: apnsSender, getServices: getModerationServices, crypto });
+    const pushRateLimit = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 60,
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: "RATE_LIMITED" }
+    });
+    app.post("/api/push/subscribe-native", pushRateLimit, createSubscribeNativeHandler({ push: nativePush, getServices: getModerationServices }));
+    app.post("/api/push/unsubscribe-native", pushRateLimit, createUnsubscribeNativeHandler({ push: nativePush, getServices: getModerationServices }));
+    app.post("/api/push/ripple-reply", pushRateLimit, createRippleReplyPushHandler({ push: nativePush, getServices: getModerationServices }));
+    app.post("/api/admin/push", pushRateLimit, createAdminPushHandler({ push: nativePush, getServices: getModerationServices, isAdminToken }));
+    const notifyAdminsOfReport = async () => {
+        const services = await getModerationServices();
+        if (!services || !apnsSender.configured()) return;
+        await nativePush.sendToUsers(await nativePush.adminUids(services.firestore, OWNER_UID), {
+            title: "بلاغٌ جديد عن محتوى",
+            body: "وصل بلاغٌ عن فكرةٍ منشورة في «أثر الفراشة». راجِعه من لوحة الرسائل.",
+            url: "/?tab=adminmessages",
+            tag: "ripple-reports",
+        });
+    };
+    app.post("/api/ripple-reports", rippleReportRateLimit, createReportRippleHandler({ getServices: getModerationServices, onReported: notifyAdminsOfReport }));
     app.get("/api/admin/ripple-reports", rippleReportRateLimit, createListRippleReportsHandler({ getServices: getModerationServices }));
 
     app.get("/api/version", (_req, res) => {

@@ -16,6 +16,7 @@ import { clearLocalUserDataOnSignOut, clearQuestionHistory } from '../lib/localU
 import { useUser } from '../contexts/UserContext';
 import { auth, db } from '../lib/firebase';
 import DeleteAccountSection from './DeleteAccountSection';
+import NativePushToggle from './NativePushToggle';
 import { doc } from 'firebase/firestore';
 import { updateDoc } from '../lib/firestoreWrites';
 import { useGamificationContext } from './GamificationProvider';
@@ -1086,6 +1087,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                          تسجيل الخروج من الحساب
                      </button>
                   </div>
+
+                  <NativePushToggle />
 
                   <DeleteAccountSection language={language} />
 
