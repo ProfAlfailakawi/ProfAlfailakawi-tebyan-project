@@ -690,7 +690,7 @@ app.post(["/generate", "/api/ai/generate", "/api/generate"], async (req, res) =>
 // attached only once APNS_SECRETS_READY is true: create the four secrets first
 // (firebase functions:secrets:set APNS_KEY_P8 ... ), then flip this flag and
 // redeploy. Until then push is a silent no-op (nativePush.js reads process.env).
-const APNS_SECRETS_READY = false;
+const APNS_SECRETS_READY = true;
 const APNS_SECRETS = ["APNS_KEY_P8", "APNS_KEY_ID", "APNS_TEAM_ID", "APNS_TOPIC"];
 exports.api = functions
     .runWith({ secrets: ["GEMINI_API_KEY", ...(APNS_SECRETS_READY ? APNS_SECRETS : [])], maxInstances: 1, minInstances: 0, memory: "256MB" })
