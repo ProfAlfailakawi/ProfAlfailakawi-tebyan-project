@@ -13,7 +13,7 @@
 /** Public App Store page of this app. Leave empty until the app is live. */
 export const APP_STORE_URL = '';
 /** Public Google Play page of this app. Leave empty until it has a public link. */
-export const PLAY_STORE_URL = '';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=kw.edu.tebyan.app';
 
 export type InstallPlatform = 'native-ios' | 'ios' | 'android' | 'desktop';
 

@@ -68,6 +68,18 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
 
   if (!showIcon) return null;
 
+  // يوجد تطبيق في المتجر لهذا الجهاز: الزر «حمّل التطبيق» لا «تثبيت».
+  const opensStore = resolveInstallAction({
+    platform: currentPlatform(),
+    standalone: false,
+    hasDeferredPrompt: false,
+    appStoreUrl: APP_STORE_URL,
+    playStoreUrl: PLAY_STORE_URL,
+  }).kind === 'open-store';
+  const label = opensStore
+    ? (language === 'ar' ? 'حمّل التطبيق' : 'Get the app')
+    : (language === 'ar' ? 'تثبيت التطبيق' : 'Install app');
+
   return (
     <>
       <button
@@ -75,11 +87,13 @@ export const PWAHeaderButton = ({ variant = 'icon', language = 'ar' }: { variant
         className={variant === 'menu'
           ? 'w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-bold text-right text-zinc-600 hover:bg-zinc-100 active:bg-zinc-100 transition-colors'
           : 'flex items-center justify-center w-10 h-10 md:w-11 md:h-11 mx-1 md:mx-2 rounded-xl bg-white/85 text-[color:var(--tb-c-7d689e)] shadow-[0_10px_30px_rgba(103,88,132,0.10)] hover:scale-105 active:scale-95 transition-all border border-[color:var(--tb-c-c9bedf)]/40 backdrop-blur-xl'}
-        title={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
-        aria-label={language === 'ar' ? 'تثبيت التطبيق' : 'Install app'}
+        title={label}
+        aria-label={label}
       >
         <Download className="w-5 h-5 text-lilac shrink-0" />
-        {variant === 'menu' && <span>{language === 'ar' ? 'ثبّت تبيان على جهازك' : 'Install Tebyan on your device'}</span>}
+        {variant === 'menu' && <span>{opensStore
+          ? (language === 'ar' ? 'حمّل تطبيق تبيان' : 'Get the Tebyan app')
+          : (language === 'ar' ? 'ثبّت تبيان على جهازك' : 'Install Tebyan on your device')}</span>}
       </button>
 
       {/* iOS Instructions Modal */}
