@@ -10,9 +10,9 @@ const ANDROID = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) Chrome/120 Mobile Safa
 const MAC = IPAD_DESKTOP_UA;
 const base = { standalone: false, hasDeferredPrompt: false };
 
-test('store URL constants ship empty (apps not live)', () => {
+test('store URL constants (App Store not live yet, Google Play live)', () => {
   assert.equal(APP_STORE_URL, '');
-  assert.equal(PLAY_STORE_URL, '');
+  assert.equal(PLAY_STORE_URL, 'https://play.google.com/store/apps/details?id=kw.edu.tebyan.app');
 });
 
 test('platform detection', () => {

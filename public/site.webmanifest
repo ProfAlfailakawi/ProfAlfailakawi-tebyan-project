@@ -48,5 +48,13 @@
       "form_factor": "wide",
       "label": "تبيان | Tebyan"
     }
-  ]
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=kw.edu.tebyan.app",
+      "id": "kw.edu.tebyan.app"
+    }
+  ],
+  "prefer_related_applications": false
 }
