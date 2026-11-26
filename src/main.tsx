@@ -71,7 +71,12 @@ const dismissBootSplash = () => {
 };
 
 // iOS app only: open the page a tapped notification points to (no-op on the web).
-initNativePush();
+// Never let an optional native feature stop the app from rendering.
+try {
+  initNativePush();
+} catch (error) {
+  console.warn('initNativePush failed', error);
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
