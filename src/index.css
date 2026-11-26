@@ -219,6 +219,16 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Top safe area. Inside the iOS app the CSS top inset can read 0 in the
+   WebView, so the header sat under the clock and the Dynamic Island and its
+   buttons could not be tapped. The native shell publishes the real inset as
+   --duo-native-safe-top; take whichever is larger. Browsers are unchanged. */
+:root { --tb-safe-top: env(safe-area-inset-top, 0px); }
+html[data-duo-native-regions="true"] {
+  --tb-safe-top: max(env(safe-area-inset-top, 0px), var(--duo-native-safe-top, 0px));
+}
+
+
 @theme {
   --font-sans: "Alexandria", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Amiri", ui-serif, Georgia, serif;
@@ -3216,7 +3226,7 @@ body {
   /* Back button must live at the top of the page, not on cards */
   .tebyan-page-back {
     position: fixed !important;
-    top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+    top: calc(var(--tb-safe-top) + 12px) !important;
     left: 12px !important;
     right: auto !important;
     inset-inline-start: auto !important;
@@ -3409,7 +3419,7 @@ body {
 /* Keep the global back action at the top of the screen, away from content. */
 .tebyan-page-back {
   position: fixed !important;
-  top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+  top: calc(var(--tb-safe-top) + 12px) !important;
   left: 12px !important;
   right: auto !important;
   z-index: 1000 !important;
@@ -3793,7 +3803,7 @@ body:not(.zen-idle)::after {
 
 @media (max-width: 767px) {
   .tebyan-route-home.tebyan-route-shell {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 4.7rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 4.7rem) !important;
     padding-bottom: 0.75rem !important;
   }
 
@@ -3856,7 +3866,7 @@ body:not(.zen-idle)::after {
   }
 
   .tebyan-service-filter {
-    top: calc(env(safe-area-inset-top, 0px) + 4.4rem) !important;
+    top: calc(var(--tb-safe-top) + 4.4rem) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
@@ -3872,7 +3882,7 @@ body:not(.zen-idle)::after {
 @media (max-width: 767px) {
   /* A quiet header canopy prevents scrolled content from showing behind controls. */
   .tebyan-app-header {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 0.52rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 0.52rem) !important;
     padding-bottom: 1.05rem !important;
     background: linear-gradient(
       180deg,
@@ -3883,7 +3893,7 @@ body:not(.zen-idle)::after {
   }
 
   .tebyan-route-discover.tebyan-route-shell {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 4.9rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 4.9rem) !important;
     padding-inline: 0.55rem !important;
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.35rem) !important;
   }
@@ -4176,7 +4186,7 @@ body:not(.zen-idle)::after {
    to neutralize older broad mobile typography overrides. */
 @media (max-width: 767px) {
   .tebyan-route-home.tebyan-route-shell {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 4.25rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 4.25rem) !important;
   }
 
   .tebyan-home-hero {
@@ -4310,7 +4320,7 @@ body:not(.zen-idle)::after {
   }
 
   .tebyan-app-header {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 0.45rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 0.45rem) !important;
     padding-inline: 0.8rem !important;
   }
 
@@ -5665,11 +5675,11 @@ html { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
    most of the height. Decided by height, not by device. */
 @media (max-height: 480px) {
   .tebyan-app-header {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 0.25rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 0.25rem) !important;
     padding-bottom: 0.25rem !important;
   }
   .tebyan-route-shell {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 4rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 4rem) !important;
   }
   .tebyan-floating-nav .tebyan-orb-mark svg { width: 22px; height: 22px; }
 }
@@ -5764,7 +5774,7 @@ p { text-wrap: pretty; }
     --book-spine: 32px;
     --book-gutter: 1rem;
     /* where the pages start under the fixed header */
-    --book-top: calc(env(safe-area-inset-top, 0px) + 5.25rem);
+    --book-top: calc(var(--tb-safe-top) + 5.25rem);
     /* one page's width: half the window minus half the spine and the outer gutter */
     --book-page: calc(50vw - var(--book-spine) / 2 - var(--book-gutter));
   }
@@ -6130,7 +6140,7 @@ p { text-wrap: pretty; }
   /* The page starts at the top edge (the header used to sit there). */
   /* [class*=] lifts specificity above the per-route rules (.tebyan-route-home…). */
   html body main.tebyan-route-shell[class*="tebyan-route-"] {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem) !important;
+    padding-top: calc(var(--tb-safe-top) + 0.75rem) !important;
     padding-bottom: 0 !important;
   }
   .tebyan-book::after {
@@ -6211,7 +6221,7 @@ p { text-wrap: pretty; }
     --duo-widget-h: clamp(64px, 31vh, 270px);
   }
   /* the landscape book's pages start under the box (on the Duo only; elsewhere the book keeps its own --book-top) */
-  :root:where([data-device="duo"]) { --book-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap)); }
+  :root:where([data-device="duo"]) { --book-top: calc(var(--tb-safe-top) + var(--duo-widget-h) + var(--duo-widget-gap)); }
 
   /* Top bar: the first column (physical right) is the box; brand, Services and
      the action pills step inward. The bar's own gradient stays full-bleed.
@@ -6221,7 +6231,7 @@ p { text-wrap: pretty; }
   :where(html[data-device="duo"]) header.fixed.tebyan-app-header { padding-right: calc(var(--duo-widget-w) + var(--duo-widget-gap)) !important; }
   /* The page starts below the box (per-route paddings are !important, so is this). */
   html:where([data-device="duo"]) body main.tebyan-route-shell[class*="tebyan-route-"] {
-    padding-top: calc(env(safe-area-inset-top, 0px) + var(--duo-widget-h) + var(--duo-widget-gap)) !important;
+    padding-top: calc(var(--tb-safe-top) + var(--duo-widget-h) + var(--duo-widget-gap)) !important;
   }
   /* On the narrow outer screen (382/470) the column leaves ~300px: icon-only brand so the
      Services pill never sits on the wordmark. */
@@ -6283,7 +6293,7 @@ html:not([data-device="duo"]) {
    ========================================================================== */
 .duo-dock { display: none; }
 :root[data-device="duo"] {
-  --duo-sa-t: env(safe-area-inset-top, 0px);
+  --duo-sa-t: var(--tb-safe-top);
   --duo-sa-r: env(safe-area-inset-right, 0px);
   --duo-sa-b: env(safe-area-inset-bottom, 0px);
   --duo-sa-l: env(safe-area-inset-left, 0px);

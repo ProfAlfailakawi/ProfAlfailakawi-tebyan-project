@@ -45,7 +45,7 @@ export function showUpdatingNotice(probe: () => Promise<boolean>, onBack?: () =>
   text.textContent = UPDATING_MESSAGE;
   bar.append(dot, text);
   bar.style.cssText = [
-    'position:fixed', 'top:calc(env(safe-area-inset-top) + 5.25rem)', 'left:50%', 'transform:translateX(-50%)', 'width:max-content', 'max-width:90vw',
+    'position:fixed', 'top:calc(var(--tb-safe-top) + 5.25rem)', 'left:50%', 'transform:translateX(-50%)', 'width:max-content', 'max-width:90vw',
     'z-index:2147483000', 'display:flex', 'align-items:center', 'gap:12px', 'padding:12px 22px', 'border-radius:999px',
     'font-family:inherit', 'font-size:14px', 'font-weight:500', 'line-height:1.6',
     'background:rgb(255 255 255 / .9)', 'color:#182231', 'border:1px solid rgb(110 91 145 / .18)',

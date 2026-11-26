@@ -1343,7 +1343,7 @@ const AppContent: React.FC = () => {
         </React.Suspense>
       )}
       {isInternalPage && (
-        <div className="tebyan-page-controls fixed top-[calc(env(safe-area-inset-top)+84px)] left-4 md:left-8 z-[1000] flex items-center gap-2.5 pointer-events-auto">
+        <div className="tebyan-page-controls fixed top-[calc(var(--tb-safe-top)+84px)] left-4 md:left-8 z-[1000] flex items-center gap-2.5 pointer-events-auto">
           <button
             type="button"
             onClick={(e) => {
@@ -1390,7 +1390,7 @@ const AppContent: React.FC = () => {
                 initial={{ opacity: 0, y: -8, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -8, scale: 0.96 }}
-                className="tebyan-page-help-popup fixed top-[calc(env(safe-area-inset-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[color:var(--tb-lilac-soft)]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
+                className="tebyan-page-help-popup fixed top-[calc(var(--tb-safe-top)+134px)] left-4 md:left-8 z-[999] w-[min(340px,calc(100vw-24px))] rounded-[26px] bg-white/98 border border-[color:var(--tb-lilac-soft)]/20 shadow-[0_24px_75px_rgba(24,34,49,0.18)] backdrop-blur-3xl p-5 text-right overflow-y-auto max-h-[70vh] tebyan-custom-scroll"
                 dir={language === "ar" ? "rtl" : "ltr"}
               >
                 <div className="flex items-center gap-2 mb-2 text-[color:var(--tb-lilac-deep)] border-b border-[color:var(--tb-lilac-soft)]/10 pb-2">
@@ -1435,7 +1435,7 @@ const AppContent: React.FC = () => {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)" }}
             className={cn(
-              "tebyan-keepout-top fixed top-[calc(env(safe-area-inset-top)+5.25rem)] left-1/2 -translate-x-1/2 z-[100001] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
+              "tebyan-keepout-top fixed top-[calc(var(--tb-safe-top)+5.25rem)] left-1/2 -translate-x-1/2 z-[100001] px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border font-medium flex items-center gap-3 text-sm max-w-[90vw] md:max-w-md w-max backdrop-blur-xl",
               toast.type === "info"
                 ? "bg-white/90 border-zinc-200/50 text-zinc-900"
                 : toast.type === "error"
