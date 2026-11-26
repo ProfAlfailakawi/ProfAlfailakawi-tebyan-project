@@ -6303,7 +6303,10 @@ html:not([data-device="duo"]) {
   --duo-widget-gap: 0px;
   --duo-widget-h: 4.5rem;
   --book-top: calc(var(--duo-sa-t) + var(--duo-widget-h));
-  --duo-clock-end: 176px;
+  /* the clock box on the real outer screen runs from the top pill down to the battery ring (~235pt, owner's device
+     shots 2026-11-26; ~170pt in emulation), upright and sideways: the column starts at 244pt, or below the widget
+     height the native shell publishes when that is larger */
+  --duo-clock-end: max(244px, calc(var(--duo-widget-h, 0px) + 8px));
   --duo-glass: rgb(38 32 66 / 0.86);
   --duo-accent: var(--tb-lilac-deep, #4c3f7a);
 }
@@ -6371,12 +6374,16 @@ html[data-device="duo"] [role="menu"] {
   html[data-device="duo"][data-shell="app"][data-widget-side="right"] .duo-dock { right: calc((var(--duo-sa-r) - 56px) / 2); }
   html[data-device="duo"][data-shell="app"][data-widget-side="left"] .duo-dock { left: calc((var(--duo-sa-l) - 56px) / 2); }
   html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) .duo-dock-nav { flex-direction: column; }
+  /* sideways the column under the clock is too short for the whole capsule: it ends above the home indicator and scrolls inside itself */
+  html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) .duo-dock .duo-dock-nav {
+    max-height: calc(100dvh - var(--duo-clock-end) - 56px - 12px - var(--duo-sa-b) - 8px);
+    overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; justify-content: flex-start;
+  }
+  html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) .duo-dock .duo-dock-nav > * { flex: none; }
   /* the capsule is the navigation now: no second Services/Home in the top bar */
   html[data-device="duo"][data-shell="app"]:not([data-widget-side="none"]) header.fixed .tebyan-floating-nav > .tebyan-services-button { display: none !important; }
 }
 @media screen and (orientation: landscape) and (max-height: 520px) {
-  /* the clock box on the outer screen turned sideways is ~112pt tall: «+» starts under it, not inside it */
-  html[data-device="duo"][data-shell="app"] { --duo-clock-end: 120px; }
   /* the laptop-deck bottom bar keeps clear of the column */
   html[data-device="duo"][data-shell="app"] header.fixed.tebyan-app-header { padding-bottom: calc(var(--duo-sa-b) + 0.5rem) !important; }
 }
