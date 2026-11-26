@@ -1098,6 +1098,8 @@ body.tebyan-focus-mode .tebyan-result-document {
   /* Header must not visually collide with content */
   header.fixed {
     padding: 0.65rem 0.75rem !important;
+    /* keep clear of the status bar and the Dynamic Island (iPhone app and Safari) */
+    padding-top: calc(var(--tb-safe-top) + 0.65rem) !important;
   }
   header.fixed span:not(.sr-only) {
     font-size: 1.15rem !important;
