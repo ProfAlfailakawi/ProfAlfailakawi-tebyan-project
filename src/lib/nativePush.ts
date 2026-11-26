@@ -145,10 +145,18 @@ export function initNativePush(navigate: (path: string) => void = (p) => window.
   const plugin = getPlugin();
   if (!plugin || started) return;
   started = true;
-  plugin.addListener('pushNotificationActionPerformed', (action: any) => {
-    const path = safePushPath(action?.notification?.data?.url);
-    if (path) navigate(path);
-  }).catch(() => undefined);
+  // addListener قد يعيد مقبضاً لا وعداً داخل غلاف Capacitor؛ نلفّه في Promise.resolve
+  // حتى لا يرمي استدعاء ‎.catch‎ خطأً عند الإقلاع فيتعطّل التطبيق كله.
+  try {
+    Promise.resolve(
+      plugin.addListener('pushNotificationActionPerformed', (action: any) => {
+        const path = safePushPath(action?.notification?.data?.url);
+        if (path) navigate(path);
+      }),
+    ).catch(() => undefined);
+  } catch {
+    /* لا شيء: التنبيه ميزة إضافية ولا يجوز أن يمنع الإقلاع */
+  }
   void (async () => {
     if ((await readNativePushPermission()) !== 'granted' || !hasStoredNativeToken()) return;
     const refresh = async () => {
