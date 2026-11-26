@@ -94,7 +94,7 @@ test('widget corner: three tokens at :root, 0px outside the Duo, set once inside
   assert.doesNotMatch(css, /--duo-cutout/);
   // physical right only: never the logical end side, which flips with dir
   assert.match(css, /header\.fixed\.tebyan-app-header \{ padding-right: calc\(var\(--duo-widget-w\) \+ var\(--duo-widget-gap\)\) !important; \}/);
-  assert.match(css, /padding-top: calc\(env\(safe-area-inset-top, 0px\) \+ var\(--duo-widget-h\) \+ var\(--duo-widget-gap\)\) !important;/);
+  assert.match(css, /padding-top: calc\(var\(--tb-safe-top\) \+ var\(--duo-widget-h\) \+ var\(--duo-widget-gap\)\) !important;/);
   assert.match(css, /\.tebyan-keepout-pad \{ padding-right: calc\(var\(--duo-widget-w\)/);
   assert.match(css, /\.tebyan-book-overlay \{ padding-right: calc\(var\(--duo-widget-w\)/);
 });
