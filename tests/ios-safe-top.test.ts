@@ -19,3 +19,10 @@ test('top safe-area insets use --tb-safe-top', () => {
 test('native shell inset feeds --tb-safe-top', () => {
   assert.match(read('src/index.css'), /--tb-safe-top:\s*max\(env\(safe-area-inset-top, 0px\), var\(--duo-native-safe-top, 0px\)\)/);
 });
+
+test('narrow-screen header.fixed rule keeps the top safe area', () => {
+  const css = read('src/index.css');
+  const block = css.match(/header\.fixed \{\s*padding: 0\.65rem 0\.75rem !important;[\s\S]*?\}/);
+  assert.ok(block, 'header.fixed narrow rule exists');
+  assert.match(block[0], /padding-top: calc\(var\(--tb-safe-top\) \+ 0\.65rem\) !important;/);
+});
