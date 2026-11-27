@@ -16,6 +16,7 @@ import { clearLocalUserDataOnSignOut, clearQuestionHistory } from '../lib/localU
 import { useUser } from '../contexts/UserContext';
 import { auth, db } from '../lib/firebase';
 import DeleteAccountSection from './DeleteAccountSection';
+import AiConsentToggle from './AiConsentToggle';
 import NativePushToggle from './NativePushToggle';
 import { doc } from 'firebase/firestore';
 import { updateDoc } from '../lib/firestoreWrites';
@@ -1089,6 +1090,8 @@ export default function ClientProfilePanel({ isOpen, onClose, language = 'ar' }:
                   </div>
 
                   <NativePushToggle />
+
+                  <AiConsentToggle language={language} />
 
                   <DeleteAccountSection language={language} />
 

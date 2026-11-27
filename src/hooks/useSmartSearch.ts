@@ -71,7 +71,9 @@ ${latestText}`;
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           config: {
             responseMimeType: "application/json",
-          }
+          },
+          // اقتراح الصياغة أثناء الكتابة لا يفتح حوار الموافقة ولا يرسل شيئًا قبلها.
+          consentMode: 'silent',
         });
 
         let suggestion = response.text?.trim() || "";
@@ -100,7 +102,9 @@ ${latestText}`;
           setSmartSuggestion("");
         }
       } catch (error: any) {
-        if (error?.message === "AI_SERVICE_SUSPENDED") {
+        if (error?.code === "AI_CONSENT_REQUIRED") {
+          setSmartSuggestion("");
+        } else if (error?.message === "AI_SERVICE_SUSPENDED") {
           setSmartSuggestion("عذراً، محرك الذكاء الاصطناعي يخضع للصيانة حالياً.");
         } else if (error?.message?.includes("ضغط") || error?.message?.includes("API_KEY_EXPIRED") || error?.message?.includes("منتهي")) {
           setSmartSuggestion("");

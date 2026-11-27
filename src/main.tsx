@@ -17,6 +17,7 @@ import { IS_DEMO_MODE } from './lib/demoMode';
 
 import { AuthProvider } from './components/AuthProvider';
 import AdminRoute from './components/AdminRoute';
+import AiConsentDialog from './components/AiConsentDialog';
 import { initNativePush } from './lib/nativePush';
 
 // التحديث الذاتي الصامت: بصمة الإصدار، منارتها، ثم التحديث والتصعيد عند اللزوم.
@@ -94,6 +95,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/admin" element={
               <AdminRoute>
                 <AdminDashboard />
+                <AiConsentDialog language="ar" />
               </AdminRoute>
             } />
             <Route path="*" element={<RedirectHome />} />

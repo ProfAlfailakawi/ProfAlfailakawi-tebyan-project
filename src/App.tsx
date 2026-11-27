@@ -1,4 +1,5 @@
 import { GamificationProvider } from "./components/GamificationProvider";
+import AiConsentDialog from "./components/AiConsentDialog";
 import { isAdminIdentity } from "./lib/adminAccess";
 import { isAppleNativeShell } from "./lib/appleNativeShell";
 import { UserProvider } from "./contexts/UserContext";
@@ -1970,6 +1971,7 @@ const AppContent: React.FC = () => {
 
       <PWAInstallPrompt />
       <OnboardingTour language={language} />
+      <AiConsentDialog language={language} />
     </div>
   );
 };
