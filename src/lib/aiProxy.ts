@@ -1,6 +1,7 @@
 
 import { buildUserAddressingInstruction, getActiveUser, resolveUserAddressing } from "../utils/genderHelper";
 import { getAppCheckHeaders } from "./appCheck";
+import { AiConsentRequiredError, ensureAiConsent, type AiConsentMode } from "./aiConsent";
 import { IS_DEMO_MODE } from "./demoMode";
 import { demoAiResponse, demoAudioResponse } from "./demoAi";
 import { apiAnswers, isPlatformUpdating, showUpdatingNotice, UPDATING_MESSAGE } from "./updatingNotice";
@@ -15,6 +16,8 @@ export async function proxyGenerateContent(params: {
   model?: string;
   contents: any[];
   config?: any;
+  /** 'silent' للنداءات الخلفية: دون موافقة لا حوار ولا إرسال. */
+  consentMode?: AiConsentMode;
 }) {
 
   // Inject Panic Mode (Calm Mode) instructions if enabled
@@ -46,8 +49,12 @@ ${buildUserAddressingInstruction(addressing)}
   // وضع العرض: ردود محلية جاهزة، بلا أي نداء شبكة (لا /api/ai ولا App Check).
   if (IS_DEMO_MODE) return demoAiResponse(params);
 
+  // Apple 5.1.1(i)/5.1.2(i): لا شيء يُرسَل إلى Google Gemini قبل موافقة المستخدم داخل التطبيق.
+  const { consentMode, ...forwardParams } = modifiedParams as typeof modifiedParams & { consentMode?: AiConsentMode };
+  if (!(await ensureAiConsent(consentMode || 'prompt'))) throw new AiConsentRequiredError();
+
   // استخدام الرابط الأساسي للخادم إذا كان معرفاً في 환경 الإنتاج، وإلا استخدام مسار نسبي
-  const baseUrl = (import.meta as any).env.VITE_API_BASE_URL || '';
+  const baseUrl = (import.meta as any).env?.VITE_API_BASE_URL || '';
   
   // we use root-relative path for /api calls, which is safest in a container
   const apiPath = `/api/ai/generate`;
@@ -61,7 +68,7 @@ ${buildUserAddressingInstruction(addressing)}
     response = await fetch(apiPath, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...appCheckHeaders },
-      body: JSON.stringify(modifiedParams),
+      body: JSON.stringify(forwardParams),
     });
   } catch (fetchError: any) {
     console.error('[AI Proxy] Fetch failed:', fetchError);
@@ -145,6 +152,9 @@ export async function proxyGenerateAudio(params: {
   style?: string;
 }) {
   if (IS_DEMO_MODE) return demoAudioResponse();
+
+  // Apple 5.1.1(i)/5.1.2(i): نص القراءة الصوتية لا يُرسَل قبل الموافقة.
+  if (!(await ensureAiConsent('prompt'))) throw new AiConsentRequiredError();
 
   // we use root-relative path for /api calls
   const apiPath = `/api/ai/audio`;
